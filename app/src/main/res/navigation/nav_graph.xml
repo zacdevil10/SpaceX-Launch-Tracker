@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/dashboard_page_fragment">
+
+    <fragment
+        android:id="@+id/dashboard_page_fragment"
+        android:label="@string/menu_home"
+        android:name="uk.co.zac_h.spacex.dashboard.DashboardFragment"/>
+
+</navigation>
