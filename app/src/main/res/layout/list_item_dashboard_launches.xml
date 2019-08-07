@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/dashboard_heading_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        tools:text="Launch Heading"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/heading"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/dashboard_flight_no_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textSize="12sp"
+        app:layout_constraintLeft_toLeftOf="@id/dashboard_heading_text"
+        app:layout_constraintTop_toBottomOf="@id/dashboard_heading_text"
+        tools:text="Flight 73" />
+
+    <TextView
+        android:id="@+id/dashboard_block_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/dashboard_heading_text"
+        app:layout_constraintTop_toTopOf="@+id/dashboard_flight_no_text"
+        tools:text="Block 5" />
+
+    <TextView
+        android:id="@+id/dashboard_mission_name_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="@id/dashboard_flight_no_text"
+        app:layout_constraintRight_toRightOf="@+id/dashboard_block_text"
+        app:layout_constraintTop_toBottomOf="@id/dashboard_flight_no_text"
+        tools:text="Nusantara Satu (PSN-6) / GTO-1 / Beresheet" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
