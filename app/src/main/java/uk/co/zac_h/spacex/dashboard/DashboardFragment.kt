@@ -16,7 +16,7 @@ class DashboardFragment : Fragment(), DashboardView {
     private var presenter: DashboardPresenter? = null
 
     private lateinit var dashboardLaunchesAdapter: DashboardLaunchesAdapter
-    private var launchArray = ArrayList<LaunchesModel>()
+    private var launchMap = LinkedHashMap<String, LaunchesModel>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -26,7 +26,7 @@ class DashboardFragment : Fragment(), DashboardView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        dashboardLaunchesAdapter = DashboardLaunchesAdapter(launchArray)
+        dashboardLaunchesAdapter = DashboardLaunchesAdapter(context, launchMap)
 
         presenter = DashboardPresenterImpl(this, DashboardInteractorImpl())
 
@@ -42,10 +42,11 @@ class DashboardFragment : Fragment(), DashboardView {
         }
     }
 
-    override fun updateLaunchesList(launchesModel: LaunchesModel?) {
+    override fun updateLaunchesList(id: String, launchesModel: LaunchesModel?) {
         if (launchesModel != null) {
-            launchArray.add(launchesModel)
-            dashboardLaunchesAdapter.notifyDataSetChanged()
+            launchMap[id] = launchesModel
         }
+
+        dashboardLaunchesAdapter.notifyDataSetChanged()
     }
 }

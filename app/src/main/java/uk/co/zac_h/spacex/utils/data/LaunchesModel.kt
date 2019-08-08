@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.utils.data
 
 import com.squareup.moshi.Json
+import java.util.*
 
 data class LaunchesModel(
     @field:Json(name = "flight_number") var flightNumber: Int,
@@ -8,8 +9,6 @@ data class LaunchesModel(
     @field:Json(name = "mission_id") var missionId: List<String>,
     @field:Json(name = "launch_year") var launchYear: Int,
     @field:Json(name = "launch_date_unix") var launchDateUnix: Long,
-    @field:Json(name = "launch_date_utc") var launchDateUTC: String,
-    @field:Json(name = "launch_date_local") var launchDateLocal: String,
     @field:Json(name = "is_tentative") var tentative: Boolean?,
     @field:Json(name = "tentative_max_precision") var tentativeMaxPrecision: String,
     @field:Json(name = "tbd") var tbd: Boolean?,

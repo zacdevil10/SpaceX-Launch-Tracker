@@ -16,7 +16,7 @@ class DashboardInteractorImpl : DashboardInteractor {
             withContext(Dispatchers.Main) {
                 try {
                     if (response.isSuccessful) {
-                        listener.onSuccess(response.body())
+                        listener.onSuccess(id, response.body())
                     } else {
                         listener.onError("Error: ${response.code()}")
                     }

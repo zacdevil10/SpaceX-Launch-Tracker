@@ -9,8 +9,8 @@ class DashboardPresenterImpl(private val view: DashboardView, private val intera
         interactor.getSingleLaunch(id, this)
     }
 
-    override fun onSuccess(launchesModel: LaunchesModel?) {
-        view.updateLaunchesList(launchesModel)
+    override fun onSuccess(id: String, launchesModel: LaunchesModel?) {
+        view.updateLaunchesList(id, launchesModel)
     }
 
     override fun onError(error: String) {

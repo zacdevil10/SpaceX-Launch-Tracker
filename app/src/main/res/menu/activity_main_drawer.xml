@@ -22,7 +22,7 @@
             android:title="@string/menu_history" />
     </group>
 
-    <item android:title="@string/about">
+    <item android:title="@string/menu_about">
         <menu>
             <item
                 android:id="@+id/nav_share"

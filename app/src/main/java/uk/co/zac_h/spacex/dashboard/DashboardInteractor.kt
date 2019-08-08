@@ -7,7 +7,7 @@ interface DashboardInteractor {
     fun getSingleLaunch(id: String, listener: DashboardInteractor.InteractorCallback)
 
     interface InteractorCallback {
-        fun onSuccess(launchesModel: LaunchesModel?)
+        fun onSuccess(id: String, launchesModel: LaunchesModel?)
         fun onError(error: String)
     }
 

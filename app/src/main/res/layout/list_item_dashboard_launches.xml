@@ -50,4 +50,12 @@
         app:layout_constraintTop_toBottomOf="@id/dashboard_flight_no_text"
         tools:text="Nusantara Satu (PSN-6) / GTO-1 / Beresheet" />
 
+    <TextView
+        android:id="@+id/dashboard_date_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="@id/dashboard_flight_no_text"
+        app:layout_constraintTop_toBottomOf="@id/dashboard_mission_name_text"
+        tools:text="14 Oct 2019 - 12:35"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
