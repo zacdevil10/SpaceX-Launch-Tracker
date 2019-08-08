@@ -12,6 +12,9 @@ interface SpaceXInterface {
     @GET("launches/{flight}")
     suspend fun getSingleLaunch(@Path("flight") flight: String): Response<LaunchesModel>
 
+    @GET("launches/{launches}")
+    suspend fun getLaunches(@Path("launches") launches: String): Response<List<LaunchesModel>>
+
     companion object RetrofitSetup {
         fun create(): SpaceXInterface {
             val retrofit = Retrofit.Builder().apply {

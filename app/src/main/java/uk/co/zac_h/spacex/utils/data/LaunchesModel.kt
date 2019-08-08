@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.utils.data
 
 import com.squareup.moshi.Json
-import java.util.*
 
 data class LaunchesModel(
     @field:Json(name = "flight_number") var flightNumber: Int,
