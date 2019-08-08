@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_dashboard.*
@@ -36,6 +37,13 @@ class DashboardFragment : Fragment(), DashboardView {
             adapter = dashboardLaunchesAdapter
         }
 
+        dashboard_swipe_refresh.setOnRefreshListener {
+            presenter?.apply {
+                getSingleLaunch("next")
+                getSingleLaunch("latest")
+            }
+        }
+
         presenter?.apply {
             getSingleLaunch("next")
             getSingleLaunch("latest")
@@ -47,6 +55,18 @@ class DashboardFragment : Fragment(), DashboardView {
             launchMap[id] = launchesModel
         }
 
-        dashboardLaunchesAdapter.notifyDataSetChanged()
+        if (launchMap.size == 2) dashboardLaunchesAdapter.notifyDataSetChanged()
+    }
+
+    override fun toggleProgress(visibility: Int) {
+        dashboard_progress_bar.visibility = visibility
+    }
+
+    override fun toggleSwipeProgress(isRefreshing: Boolean) {
+        dashboard_swipe_refresh.isRefreshing = isRefreshing
+    }
+
+    override fun showError(error: String) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 }
