@@ -51,7 +51,7 @@ class LaunchesListFragment : Fragment(), LaunchesView {
 
     override fun updateLaunchesList(launches: List<LaunchesModel>?) {
         if (launches != null) {
-            launchesList.addAll(launches)
+            launchesList.addAll(if (arguments?.getString("launchParam") == "past") launches.asReversed() else launches)
         }
 
         launchesAdapter.notifyDataSetChanged()
