@@ -12,6 +12,7 @@
     <string name="menu_home">Home</string>
     <string name="menu_news">News</string>
     <string name="menu_launches">Launches</string>
+    <string name="menu_statistics">Statistics</string>
     <string name="menu_history">History</string>
     <string name="menu_roadster">Roadster</string>
     <string name="menu_about_spacex">SpaceX</string>
@@ -22,6 +23,20 @@
     <string name="latest_launch">Latest Launch</string>
     <string name="flight_number">Flight %1$d</string>
     <string name="block_number">Block %1$s</string>
+
+    <!--Statistics-->
+    <string-array name="stats_data_type">
+        <item>Total launches</item>
+        <item>Total launches for Dragon</item>
+        <item>Launch rate for all rockets</item>
+        <item>Launch rate for each rocket type</item>
+        <item>Launch rate for payload type</item>
+    </string-array>
+
+    <string-array name="filter_total_launches">
+        <item>Successful launches</item>
+        <item>Failed launches</item>
+    </string-array>
 
 
 </resources>
