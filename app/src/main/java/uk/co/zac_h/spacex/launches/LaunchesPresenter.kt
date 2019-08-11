@@ -4,4 +4,6 @@ interface LaunchesPresenter {
 
     fun getLaunchList(id: String)
 
+    fun cancelRequests()
+
 }

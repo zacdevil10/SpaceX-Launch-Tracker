@@ -1,10 +1,6 @@
 <resources>
     <string name="app_name">SpaceX</string>
 
-    <string name="title_activity_main">Home</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-
     <string name="nav_header_title">SpaceX Launch Tracker</string>
     <string name="nav_header_subtitle">By Zac Hadjineophytou</string>
     <string name="nav_header_desc">Navigation header</string>
@@ -24,19 +20,18 @@
     <string name="flight_number">Flight %1$d</string>
     <string name="block_number">Block %1$s</string>
 
+    <!--Filter labels-->
+    <string name="filter_successes">successes</string>
+    <string name="filter_failures">failures</string>
+    <string name="filter">Filter:</string>
+
+    <!--Rocket names-->
+    <string name="falcon_1">Falcon 1</string>
+    <string name="falcon_9">Falcon 9</string>
+    <string name="falcon_heavy">Falcon Heavy</string>
+
     <!--Statistics-->
-    <string-array name="stats_data_type">
-        <item>Total launches</item>
-        <item>Total launches for Dragon</item>
-        <item>Launch rate for all rockets</item>
-        <item>Launch rate for each rocket type</item>
-        <item>Launch rate for payload type</item>
-    </string-array>
-
-    <string-array name="filter_total_launches">
-        <item>Successful launches</item>
-        <item>Failed launches</item>
-    </string-array>
-
+    <string name="success_rate_heading">Launch Success Rate</string>
+    <string name="percentage">%1$d%%</string>
 
 </resources>

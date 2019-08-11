@@ -6,6 +6,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import uk.co.zac_h.spacex.utils.data.LaunchesModel
+import uk.co.zac_h.spacex.utils.data.RocketsModel
 
 interface SpaceXInterface {
 
@@ -14,6 +15,13 @@ interface SpaceXInterface {
 
     @GET("launches/{launches}")
     suspend fun getLaunches(@Path("launches") launches: String): Response<List<LaunchesModel>>
+
+    @GET("rockets/{rocket_id}")
+    suspend fun getSingleRocket(@Path("rocket_id") id: String): Response<RocketsModel>
+
+    @GET("rockets")
+    suspend fun getRockets(): Response<List<RocketsModel>>
+
 
     companion object RetrofitSetup {
         fun create(): SpaceXInterface {

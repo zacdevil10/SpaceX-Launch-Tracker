@@ -1,16 +1,20 @@
 package uk.co.zac_h.spacex.dashboard
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import retrofit2.HttpException
 import uk.co.zac_h.spacex.utils.data.rest.SpaceXInterface
+import kotlin.coroutines.CoroutineContext
 
 class DashboardInteractorImpl : DashboardInteractor {
 
+    private val parentJob = Job()
+    private val coroutineContext: CoroutineContext
+        get() = parentJob + Dispatchers.Default
+
+    private val scope = CoroutineScope(coroutineContext)
+
     override fun getSingleLaunch(id: String, listener: DashboardInteractor.InteractorCallback) {
-        CoroutineScope(Dispatchers.IO).launch {
+        scope.launch {
             val response = SpaceXInterface.create().getSingleLaunch(id)
 
             withContext(Dispatchers.Main) {
@@ -29,4 +33,5 @@ class DashboardInteractorImpl : DashboardInteractor {
         }
     }
 
+    override fun cancelAllRequests() = coroutineContext.cancel()
 }

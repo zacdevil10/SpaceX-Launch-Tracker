@@ -1,16 +1,20 @@
 package uk.co.zac_h.spacex.launches
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import retrofit2.HttpException
 import uk.co.zac_h.spacex.utils.data.rest.SpaceXInterface
+import kotlin.coroutines.CoroutineContext
 
 class LaunchesInteractorImpl : LaunchesInteractor {
 
+    private val parentJob = Job()
+    private val coroutineContext: CoroutineContext
+        get() = parentJob + Dispatchers.Default
+
+    private val scope = CoroutineScope(coroutineContext)
+
     override fun getLaunches(id: String, listener: LaunchesInteractor.InteractorCallback) {
-        CoroutineScope(Dispatchers.IO).launch {
+        scope.launch {
             val response = SpaceXInterface.create().getLaunches(id)
 
             withContext(Dispatchers.Main) {
@@ -29,4 +33,5 @@ class LaunchesInteractorImpl : LaunchesInteractor {
         }
     }
 
+    override fun cancelAllRequests() = coroutineContext.cancel()
 }

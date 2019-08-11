@@ -3,7 +3,7 @@ package uk.co.zac_h.spacex.statistics.adapters
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import uk.co.zac_h.spacex.statistics.graphs.TotalLaunchesChartFragment
+import uk.co.zac_h.spacex.statistics.graphs.ui.TotalLaunchesChartFragment
 
 class StatisticsPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 

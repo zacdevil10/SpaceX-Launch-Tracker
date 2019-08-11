@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.statistics.graphs
+package uk.co.zac_h.spacex.statistics.graphs.ui
 
 import android.graphics.Color
 import android.graphics.Typeface
@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
@@ -23,11 +22,13 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.android.synthetic.main.fragment_total_launches_chart.*
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.statistics.adapters.StatisticsFilterListAdapter
+import uk.co.zac_h.spacex.statistics.graphs.GraphsInteractorImpl
+import uk.co.zac_h.spacex.statistics.graphs.GraphsPresenter
+import uk.co.zac_h.spacex.statistics.graphs.GraphsPresenterImpl
+import uk.co.zac_h.spacex.statistics.graphs.GraphsView
 import uk.co.zac_h.spacex.utils.data.LaunchesModel
 
-
-class TotalLaunchesChartFragment : Fragment(), GraphsView {
+class TotalLaunchesChartFragment : Fragment(), TotalLaunchesView, GraphsView {
 
     private lateinit var presenter: GraphsPresenter
 
@@ -42,11 +43,19 @@ class TotalLaunchesChartFragment : Fragment(), GraphsView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = GraphsPresenterImpl(this, GraphsInteractorImpl())
+        presenter = GraphsPresenterImpl(
+            this, this,
+            GraphsInteractorImpl()
+        )
 
-        total_launches_filter_recycler.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = StatisticsFilterListAdapter(this@TotalLaunchesChartFragment, resources.getStringArray(R.array.filter_total_launches))
+        total_launches_success_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) total_launches_failure_toggle.isChecked = false
+            presenter.updateFilter("success", isChecked)
+        }
+
+        total_launches_failure_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) total_launches_success_toggle.isChecked = false
+            presenter.updateFilter("failed", isChecked)
         }
 
         total_launches_pie_chart.apply {
@@ -66,6 +75,12 @@ class TotalLaunchesChartFragment : Fragment(), GraphsView {
         }
 
         presenter.getLaunchList("past")
+        presenter.getRocketsList()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.cancelRequests()
     }
 
     private fun setData() {
@@ -77,8 +92,8 @@ class TotalLaunchesChartFragment : Fragment(), GraphsView {
         var falconHeavy = 0f
 
         launches.forEach {
-            if (filterSuccessful && it.success != null && it.success!!) return@forEach
-            if (filterFailed && !it.success!!) return@forEach
+            if (filterSuccessful && it.success != null && !it.success!!) return@forEach
+            if (filterFailed && it.success!!) return@forEach
 
             when (it.rocket.id) {
                 "falcon1" -> falconOne++
@@ -86,10 +101,6 @@ class TotalLaunchesChartFragment : Fragment(), GraphsView {
                 "falconheavy" -> falconHeavy++
             }
         }
-
-        val range = "${launches[0].launchYear} - ${launches[launches.size - 1].launchYear}"
-
-        total_launches_pie_chart.centerText = generateCenterSpannableText(range)
 
         entries.add(PieEntry(falconOne, "Falcon 1"))
         entries.add(PieEntry(falconNine, "Falcon 9"))
@@ -117,13 +128,15 @@ class TotalLaunchesChartFragment : Fragment(), GraphsView {
             setValueTextSize(11f)
         }
 
-        total_launches_pie_chart.data = data
-
-        total_launches_pie_chart.invalidate()
+        total_launches_pie_chart.apply {
+            centerText = generateCenterSpannableText("${launches[0].launchYear} - ${launches[launches.size - 1].launchYear}")
+            this.data = data
+            invalidate()
+        }
     }
 
     private fun generateCenterSpannableText(range: String): SpannableString {
-        val s = SpannableString("Falcon Launches\n$range")
+        val s = SpannableString("SpaceX Launches\n$range")
         s.setSpan(RelativeSizeSpan(1.7f), 0, 15, 0)
         s.setSpan(StyleSpan(Typeface.NORMAL), 15, s.length - 11, 0)
         s.setSpan(RelativeSizeSpan(.8f), 15, s.length - 11, 0)
@@ -149,5 +162,22 @@ class TotalLaunchesChartFragment : Fragment(), GraphsView {
 
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun setSuccessRate(id: Int, percent: Int) {
+        when (id) {
+            1 -> {
+                total_launches_falcon_one_rate_progress.progress = percent
+                total_launches_falcon_one_percent_text.text = context?.getString(R.string.percentage, percent)
+            }
+            2 -> {
+                total_launches_falcon_nine_rate_progress.progress = percent
+                total_launches_falcon_nine_percent_text.text = context?.getString(R.string.percentage, percent)
+            }
+            3 -> {
+                total_launches_falcon_heavy_rate_progress.progress = percent
+                total_launches_falcon_heavy_percent_text.text = context?.getString(R.string.percentage, percent)
+            }
+        }
     }
 }

@@ -11,6 +11,10 @@ class DashboardPresenterImpl(private val view: DashboardView, private val intera
         interactor.getSingleLaunch(id, this)
     }
 
+    override fun cancelRequests() {
+        interactor.cancelAllRequests()
+    }
+
     override fun onSuccess(id: String, launchesModel: LaunchesModel?) {
         view.updateLaunchesList(id, launchesModel)
         view.toggleProgress(View.GONE)

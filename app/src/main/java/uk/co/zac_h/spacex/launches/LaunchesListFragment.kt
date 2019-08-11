@@ -14,7 +14,7 @@ import uk.co.zac_h.spacex.utils.data.LaunchesModel
 
 class LaunchesListFragment : Fragment(), LaunchesView {
 
-    private var presenter: LaunchesPresenter? = null
+    private lateinit var presenter: LaunchesPresenter
     private lateinit var launchesAdapter: LaunchesAdapter
     private var launchesList = ArrayList<LaunchesModel>()
 
@@ -46,7 +46,12 @@ class LaunchesListFragment : Fragment(), LaunchesView {
 
         val param = arguments?.getString("launchParam")
 
-        if (param != null) presenter?.getLaunchList(param)
+        if (param != null) presenter.getLaunchList(param)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.cancelRequests()
     }
 
     override fun updateLaunchesList(launches: List<LaunchesModel>?) {

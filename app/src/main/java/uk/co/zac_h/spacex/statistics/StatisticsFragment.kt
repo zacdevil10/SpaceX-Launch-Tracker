@@ -21,10 +21,5 @@ class StatisticsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         statistics_view_pager.adapter = StatisticsPagerAdapter(childFragmentManager)
-
-        /*statistics_graphs_recycler.apply {
-            layoutManager = GridLayoutManager(this@StatisticsFragment.context, 2)
-            adapter = StatisticsFilterListAdapter(resources.getStringArray(R.array.stats_data_type))
-        }*/
     }
 }

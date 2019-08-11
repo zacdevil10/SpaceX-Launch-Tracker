@@ -4,4 +4,10 @@ interface GraphsPresenter {
 
     fun getLaunchList(id: String)
 
+    fun getRocketsList()
+
+    fun updateFilter(id: String, state: Boolean)
+
+    fun cancelRequests()
+
 }

@@ -8,6 +8,10 @@ class LaunchesPresenterImpl(private val view: LaunchesView, private val interact
         interactor.getLaunches(id, this)
     }
 
+    override fun cancelRequests() {
+        interactor.cancelAllRequests()
+    }
+
     override fun onSuccess(launches: List<LaunchesModel>?) {
         view.updateLaunchesList(launches)
     }

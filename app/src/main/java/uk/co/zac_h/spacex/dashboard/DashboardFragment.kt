@@ -14,7 +14,7 @@ import uk.co.zac_h.spacex.utils.data.LaunchesModel
 
 class DashboardFragment : Fragment(), DashboardView {
 
-    private var presenter: DashboardPresenter? = null
+    private lateinit var presenter: DashboardPresenter
 
     private lateinit var dashboardLaunchesAdapter: DashboardLaunchesAdapter
     private var launchMap = LinkedHashMap<String, LaunchesModel>()
@@ -38,16 +38,21 @@ class DashboardFragment : Fragment(), DashboardView {
         }
 
         dashboard_swipe_refresh.setOnRefreshListener {
-            presenter?.apply {
+            presenter.apply {
                 getSingleLaunch("next")
                 getSingleLaunch("latest")
             }
         }
 
-        presenter?.apply {
+        presenter.apply {
             getSingleLaunch("next")
             getSingleLaunch("latest")
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.cancelRequests()
     }
 
     override fun updateLaunchesList(id: String, launchesModel: LaunchesModel?) {

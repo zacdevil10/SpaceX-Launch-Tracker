@@ -4,4 +4,6 @@ interface DashboardPresenter {
 
     fun getSingleLaunch(id: String)
 
+    fun cancelRequests()
+
 }

@@ -1,13 +1,19 @@
 package uk.co.zac_h.spacex.statistics.graphs
 
 import uk.co.zac_h.spacex.utils.data.LaunchesModel
+import uk.co.zac_h.spacex.utils.data.RocketsModel
 
 interface GraphsInteractor {
 
     fun getLaunches(id: String, listener: InteractorCallback)
 
+    fun getRockets(listener: InteractorCallback)
+
+    fun cancelAllRequests()
+
     interface InteractorCallback {
         fun onSuccess(launches: List<LaunchesModel>?)
+        fun onRocketsSuccess(rockets: List<RocketsModel>?)
         fun onError(error: String)
     }
 }
