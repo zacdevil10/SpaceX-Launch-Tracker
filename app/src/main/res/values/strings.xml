@@ -33,5 +33,6 @@
     <!--Statistics-->
     <string name="success_rate_heading">Launch Success Rate</string>
     <string name="percentage">%1$d%%</string>
+    <string name="pie_chart_title">Launches\n%1$s</string>
 
 </resources>

@@ -101,9 +101,9 @@ class TotalLaunchesChartFragment : Fragment(), TotalLaunchesView, GraphsView {
             }
         }
 
-        entries.add(PieEntry(falconOne, "Falcon 1"))
-        entries.add(PieEntry(falconNine, "Falcon 9"))
-        entries.add(PieEntry(falconHeavy, "Falcon Heavy"))
+        entries.add(PieEntry(falconOne, context?.getString(R.string.falcon_1)))
+        entries.add(PieEntry(falconNine, context?.getString(R.string.falcon_9)))
+        entries.add(PieEntry(falconHeavy, context?.getString(R.string.falcon_heavy)))
 
         colors.add(ColorTemplate.rgb("29b6f6"))
         colors.add(ColorTemplate.rgb("9ccc65"))
@@ -136,10 +136,10 @@ class TotalLaunchesChartFragment : Fragment(), TotalLaunchesView, GraphsView {
     }
 
     private fun generateCenterSpannableText(range: String): SpannableString {
-        val s = SpannableString("SpaceX Launches\n$range")
-        s.setSpan(RelativeSizeSpan(1.7f), 0, 15, 0)
-        s.setSpan(StyleSpan(Typeface.NORMAL), 15, s.length - 11, 0)
-        s.setSpan(RelativeSizeSpan(.8f), 15, s.length - 11, 0)
+        val s = SpannableString(context?.getString(R.string.pie_chart_title, range))
+        s.setSpan(RelativeSizeSpan(1.7f), 0, 8, 0)
+        s.setSpan(StyleSpan(Typeface.NORMAL), 8, s.length - 11, 0)
+        s.setSpan(RelativeSizeSpan(.8f), 8, s.length - 11, 0)
         s.setSpan(ForegroundColorSpan(ColorTemplate.rgb("29b6f6")), s.length - 11, s.length, 0)
         return s
     }
