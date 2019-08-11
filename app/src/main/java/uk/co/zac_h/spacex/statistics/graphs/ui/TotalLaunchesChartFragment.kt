@@ -59,7 +59,6 @@ class TotalLaunchesChartFragment : Fragment(), TotalLaunchesView, GraphsView {
         }
 
         total_launches_pie_chart.apply {
-            animateY(1400, Easing.EaseInOutCubic)
             isDrawHoleEnabled = true
             setHoleColor(ContextCompat.getColor(context, R.color.colorPrimary))
             setDrawEntryLabels(false)
@@ -83,7 +82,7 @@ class TotalLaunchesChartFragment : Fragment(), TotalLaunchesView, GraphsView {
         presenter.cancelRequests()
     }
 
-    private fun setData() {
+    private fun setData(animate: Boolean) {
         val entries = ArrayList<PieEntry>()
         val colors = ArrayList<Int>()
 
@@ -129,6 +128,7 @@ class TotalLaunchesChartFragment : Fragment(), TotalLaunchesView, GraphsView {
         }
 
         total_launches_pie_chart.apply {
+            if (animate) animateY(1400, Easing.EaseInOutCubic)
             centerText = generateCenterSpannableText("${launches[0].launchYear} - ${launches[launches.size - 1].launchYear}")
             this.data = data
             invalidate()
@@ -147,7 +147,7 @@ class TotalLaunchesChartFragment : Fragment(), TotalLaunchesView, GraphsView {
     override fun setLaunchesList(launches: List<LaunchesModel>?) {
         if (launches != null) {
             this.launches.addAll(launches)
-            setData()
+            setData(animate = true)
         }
     }
 
@@ -157,7 +157,7 @@ class TotalLaunchesChartFragment : Fragment(), TotalLaunchesView, GraphsView {
             "failed" -> filterFailed = isFiltered
         }
 
-        setData()
+        setData(animate = false)
     }
 
     override fun showError(error: String) {
