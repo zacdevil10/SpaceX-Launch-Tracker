@@ -25,8 +25,8 @@ class StatisticsPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAd
     override fun getPageTitle(position: Int): CharSequence? = when (position) {
         0 -> "Launch History"
         1 -> "Launch Rate"
-        2 -> "Another thing"
-        3 -> "How many more?"
+        2 -> "Landing Rate"
+        3 -> "Payload"
         4 -> "One more?"
         5 -> "No, two?"
         6 -> "Lets make it 3"

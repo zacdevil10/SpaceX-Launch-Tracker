@@ -8,6 +8,17 @@
     android:orientation="vertical"
     tools:context=".statistics.graphs.launchhistory.LaunchHistoryFragment">
 
+    <ProgressBar
+        android:id="@+id/launch_history_progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/launch_history_filter_constraint"
         android:layout_width="match_parent"

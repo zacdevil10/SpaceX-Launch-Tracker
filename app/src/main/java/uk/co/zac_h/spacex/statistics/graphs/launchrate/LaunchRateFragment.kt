@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.components.XAxis
@@ -24,6 +25,10 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
 
     private var launches = ArrayList<LaunchesModel>()
 
+    private var filterFalconOne = true
+    private var filterFalconNine = true
+    private var filterFalconHeavy = true
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
         inflater.inflate(R.layout.fragment_launch_rate, container, false)
 
@@ -32,7 +37,18 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
 
         presenter = LaunchRatePresenterImpl(this, LaunchRateInteractorImpl())
 
-        launch_rate_line_chart.apply {
+        launch_rate_falcon_one_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            presenter.updateFilter("falcon1", isChecked)
+        }
+        launch_rate_falcon_nine_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            presenter.updateFilter("falcon9", isChecked)
+        }
+
+        launch_rate_falcon_heavy_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            presenter.updateFilter("falconheavy", isChecked)
+        }
+
+        launch_rate_bar_chart.apply {
             xAxis.apply {
                 position = XAxis.XAxisPosition.BOTTOM
                 textColor = Color.WHITE
@@ -69,6 +85,10 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
         val dataMap = LinkedHashMap<Int, Int>()
 
         launches.forEach {
+            if (!filterFalconOne && it.rocket.id == "falcon1") return@forEach
+            if (!filterFalconNine && it.rocket.id == "falcon9") return@forEach
+            if (!filterFalconHeavy && it.rocket.id == "falconheavy") return@forEach
+
             dataMap[it.launchYear + 1] = dataMap[it.launchYear + 1]?.plus(1) ?: 1
         }
 
@@ -91,10 +111,11 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
         }
         dataSets.add(set)
 
-        launch_rate_line_chart.apply {
+        launch_rate_bar_chart.apply {
             xAxis.setLabelCount(dataMap.size + 2, true)
             xAxis.setCenterAxisLabels(true)
             data = BarData(dataSets)
+            invalidate()
         }
     }
 
@@ -103,6 +124,20 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
             this.launches.addAll(launches)
             setData()
         }
+    }
+
+    override fun updateLaunchesList(filterId: String, isFiltered: Boolean) {
+        when (filterId) {
+            "falcon1" -> filterFalconOne = isFiltered
+            "falcon9" -> filterFalconNine = isFiltered
+            "falconheavy" -> filterFalconHeavy = isFiltered
+        }
+
+        setData()
+    }
+
+    override fun toggleProgress(visibility: Int) {
+        launch_rate_progress_bar.visibility = visibility
     }
 
     override fun showError(error: String) {

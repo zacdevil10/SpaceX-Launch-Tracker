@@ -3,4 +3,8 @@
     <color name="colorPrimary">#212121</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#29b6f6</color>
+
+    <color name="falconOne">#29b6f6</color>
+    <color name="falconNine">#9ccc65</color>
+    <color name="falconHeavy">#ff7043</color>
 </resources>

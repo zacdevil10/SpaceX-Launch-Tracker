@@ -4,6 +4,8 @@ interface LaunchRatePresenter {
 
     fun getLaunchList()
 
+    fun updateFilter(id: String, isChecked: Boolean)
+
     fun cancelRequests()
 
 }

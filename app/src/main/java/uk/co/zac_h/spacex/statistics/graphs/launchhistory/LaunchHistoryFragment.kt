@@ -162,6 +162,10 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
         setData(animate = false)
     }
 
+    override fun toggleProgress(visibility: Int) {
+        launch_history_progress_bar.visibility = visibility
+    }
+
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }

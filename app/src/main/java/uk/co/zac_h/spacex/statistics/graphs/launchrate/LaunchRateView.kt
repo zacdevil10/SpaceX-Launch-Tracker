@@ -6,6 +6,10 @@ interface LaunchRateView {
 
     fun setLaunchesList(launches: List<LaunchesModel>?)
 
+    fun updateLaunchesList(filterId: String, isFiltered: Boolean)
+
+    fun toggleProgress(visibility: Int)
+
     fun showError(error: String)
 
 }

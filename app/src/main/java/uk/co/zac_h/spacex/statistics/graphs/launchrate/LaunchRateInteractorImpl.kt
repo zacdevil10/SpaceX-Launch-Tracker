@@ -15,7 +15,7 @@ class LaunchRateInteractorImpl : LaunchRateInteractor {
 
     override fun getLaunches(listener: LaunchRateInteractor.InteractorCallback) {
         scope.launch {
-            val response = SpaceXInterface.create().getAllLaunches()
+            val response = SpaceXInterface.create().getLaunches()
 
             withContext(Dispatchers.Main) {
                 try {

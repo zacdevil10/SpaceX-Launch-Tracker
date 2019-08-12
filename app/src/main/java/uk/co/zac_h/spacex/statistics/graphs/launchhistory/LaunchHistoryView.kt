@@ -10,6 +10,8 @@ interface LaunchHistoryView {
 
     fun updateLaunchesList(filter: String, isFiltered: Boolean)
 
+    fun toggleProgress(visibility: Int)
+
     fun showError(error: String)
 
 }

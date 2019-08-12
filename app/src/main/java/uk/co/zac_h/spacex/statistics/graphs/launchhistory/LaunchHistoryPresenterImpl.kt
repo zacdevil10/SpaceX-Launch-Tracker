@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
+import android.view.View
 import uk.co.zac_h.spacex.utils.data.LaunchesModel
 import uk.co.zac_h.spacex.utils.data.RocketsModel
 
@@ -7,6 +8,7 @@ class LaunchHistoryPresenterImpl(private val view: LaunchHistoryView, private va
     LaunchHistoryInteractor.InteractorCallback {
 
     override fun getLaunchList(id: String) {
+        view.toggleProgress(View.VISIBLE)
         interactor.getLaunches(id, this)
     }
 
@@ -29,6 +31,7 @@ class LaunchHistoryPresenterImpl(private val view: LaunchHistoryView, private va
     }
 
     override fun onSuccess(launches: List<LaunchesModel>?) {
+        view.toggleProgress(View.GONE)
         view.setLaunchesList(launches)
     }
 
