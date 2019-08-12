@@ -61,8 +61,11 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
             }
             axisLeft.apply {
                 textColor = Color.WHITE
+                granularity = 1f
+                axisMinimum = 0f
             }
             axisRight.isEnabled = false
+            legend.isEnabled = false
             description.isEnabled = false
             setDrawBorders(false)
         }
@@ -91,8 +94,6 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
 
             dataMap[it.launchYear + 1] = dataMap[it.launchYear + 1]?.plus(1) ?: 1
         }
-
-        println(dataMap)
 
         dataMap.forEach {
             entries.add(BarEntry(it.key.toFloat(), it.value.toFloat()))
