@@ -1,10 +1,10 @@
-package uk.co.zac_h.spacex.statistics.graphs
+package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
-import uk.co.zac_h.spacex.statistics.graphs.ui.TotalLaunchesView
 import uk.co.zac_h.spacex.utils.data.LaunchesModel
 import uk.co.zac_h.spacex.utils.data.RocketsModel
 
-class GraphsPresenterImpl(private val view: TotalLaunchesView, private val graphsView: GraphsView, private val interactor: GraphsInteractor) : GraphsPresenter, GraphsInteractor.InteractorCallback {
+class LaunchHistoryPresenterImpl(private val view: LaunchHistoryView, private val interactor: LaunchHistoryInteractor) : LaunchHistoryPresenter,
+    LaunchHistoryInteractor.InteractorCallback {
 
     override fun getLaunchList(id: String) {
         interactor.getLaunches(id, this)
@@ -15,7 +15,7 @@ class GraphsPresenterImpl(private val view: TotalLaunchesView, private val graph
     }
 
     override fun updateFilter(id: String, state: Boolean) {
-        graphsView.updateLaunchesList(id, state)
+        view.updateLaunchesList(id, state)
     }
 
     override fun cancelRequests() {
@@ -29,10 +29,10 @@ class GraphsPresenterImpl(private val view: TotalLaunchesView, private val graph
     }
 
     override fun onSuccess(launches: List<LaunchesModel>?) {
-        graphsView.setLaunchesList(launches)
+        view.setLaunchesList(launches)
     }
 
     override fun onError(error: String) {
-        graphsView.showError(error)
+        view.showError(error)
     }
 }

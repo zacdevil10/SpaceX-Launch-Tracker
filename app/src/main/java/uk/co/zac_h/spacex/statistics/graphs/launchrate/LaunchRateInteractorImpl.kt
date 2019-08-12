@@ -1,11 +1,11 @@
-package uk.co.zac_h.spacex.statistics.graphs
+package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 import uk.co.zac_h.spacex.utils.data.rest.SpaceXInterface
 import kotlin.coroutines.CoroutineContext
 
-class GraphsInteractorImpl : GraphsInteractor {
+class LaunchRateInteractorImpl : LaunchRateInteractor {
 
     private val parentJob = Job()
     private val coroutineContext: CoroutineContext
@@ -13,9 +13,9 @@ class GraphsInteractorImpl : GraphsInteractor {
 
     private val scope = CoroutineScope(coroutineContext)
 
-    override fun getLaunches(id: String, listener: GraphsInteractor.InteractorCallback) {
+    override fun getLaunches(listener: LaunchRateInteractor.InteractorCallback) {
         scope.launch {
-            val response = SpaceXInterface.create().getLaunches(id)
+            val response = SpaceXInterface.create().getAllLaunches()
 
             withContext(Dispatchers.Main) {
                 try {
@@ -33,26 +33,5 @@ class GraphsInteractorImpl : GraphsInteractor {
         }
     }
 
-    override fun getRockets(listener: GraphsInteractor.InteractorCallback) {
-        scope.launch {
-            val response = SpaceXInterface.create().getRockets()
-
-            withContext(Dispatchers.Main) {
-                try {
-                    if (response.isSuccessful) {
-                        listener.onRocketsSuccess(response.body())
-                    } else {
-                        listener.onError(response.message())
-                    }
-                } catch (e: HttpException) {
-                    listener.onError(e.localizedMessage)
-                } catch (e: Throwable) {
-                    listener.onError(e.localizedMessage)
-                }
-            }
-        }
-    }
-
     override fun cancelAllRequests() = coroutineContext.cancel()
-
 }

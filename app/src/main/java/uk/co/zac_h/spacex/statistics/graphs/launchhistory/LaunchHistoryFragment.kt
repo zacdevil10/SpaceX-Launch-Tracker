@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.statistics.graphs.ui
+package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
 import android.graphics.Color
 import android.graphics.Typeface
@@ -20,17 +20,13 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
-import kotlinx.android.synthetic.main.fragment_total_launches_chart.*
+import kotlinx.android.synthetic.main.fragment_launch_history.*
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.statistics.graphs.GraphsInteractorImpl
-import uk.co.zac_h.spacex.statistics.graphs.GraphsPresenter
-import uk.co.zac_h.spacex.statistics.graphs.GraphsPresenterImpl
-import uk.co.zac_h.spacex.statistics.graphs.GraphsView
 import uk.co.zac_h.spacex.utils.data.LaunchesModel
 
-class TotalLaunchesChartFragment : Fragment(), TotalLaunchesView, GraphsView {
+class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
 
-    private lateinit var presenter: GraphsPresenter
+    private lateinit var presenter: LaunchHistoryPresenter
 
     private var launches = ArrayList<LaunchesModel>()
 
@@ -38,27 +34,27 @@ class TotalLaunchesChartFragment : Fragment(), TotalLaunchesView, GraphsView {
     private var filterFailed = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        inflater.inflate(R.layout.fragment_total_launches_chart, container, false)
+        inflater.inflate(R.layout.fragment_launch_history, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = GraphsPresenterImpl(
-            this, this,
-            GraphsInteractorImpl()
+        presenter = LaunchHistoryPresenterImpl(
+            this,
+            LaunchHistoryInteractorImpl()
         )
 
-        total_launches_success_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) total_launches_failure_toggle.isChecked = false
+        launch_history_success_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) launch_history_failure_toggle.isChecked = false
             presenter.updateFilter("success", isChecked)
         }
 
-        total_launches_failure_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) total_launches_success_toggle.isChecked = false
+        launch_history_failure_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) launch_history_success_toggle.isChecked = false
             presenter.updateFilter("failed", isChecked)
         }
 
-        total_launches_pie_chart.apply {
+        launch_history_pie_chart.apply {
             isDrawHoleEnabled = true
             setHoleColor(ContextCompat.getColor(context, R.color.colorPrimary))
             setDrawEntryLabels(false)
@@ -127,9 +123,10 @@ class TotalLaunchesChartFragment : Fragment(), TotalLaunchesView, GraphsView {
             setValueTextSize(11f)
         }
 
-        total_launches_pie_chart.apply {
+        launch_history_pie_chart.apply {
             if (animate) animateY(1400, Easing.EaseInOutCubic)
-            centerText = generateCenterSpannableText("${launches[0].launchYear} - ${launches[launches.size - 1].launchYear}")
+            centerText =
+                generateCenterSpannableText("${launches[0].launchYear} - ${launches[launches.size - 1].launchYear}")
             this.data = data
             invalidate()
         }
@@ -167,16 +164,16 @@ class TotalLaunchesChartFragment : Fragment(), TotalLaunchesView, GraphsView {
     override fun setSuccessRate(id: Int, percent: Int) {
         when (id) {
             1 -> {
-                total_launches_falcon_one_rate_progress.progress = percent
-                total_launches_falcon_one_percent_text.text = context?.getString(R.string.percentage, percent)
+                launch_history_falcon_one_rate_progress.progress = percent
+                launch_history_falcon_one_percent_text.text = context?.getString(R.string.percentage, percent)
             }
             2 -> {
-                total_launches_falcon_nine_rate_progress.progress = percent
-                total_launches_falcon_nine_percent_text.text = context?.getString(R.string.percentage, percent)
+                launch_history_falcon_nine_rate_progress.progress = percent
+                launch_history_falcon_nine_percent_text.text = context?.getString(R.string.percentage, percent)
             }
             3 -> {
-                total_launches_falcon_heavy_rate_progress.progress = percent
-                total_launches_falcon_heavy_percent_text.text = context?.getString(R.string.percentage, percent)
+                launch_history_falcon_heavy_rate_progress.progress = percent
+                launch_history_falcon_heavy_percent_text.text = context?.getString(R.string.percentage, percent)
             }
         }
     }

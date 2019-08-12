@@ -1,12 +1,10 @@
-package uk.co.zac_h.spacex.statistics.graphs
+package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
 import uk.co.zac_h.spacex.utils.data.LaunchesModel
 
-interface GraphsView {
+interface LaunchRateView {
 
     fun setLaunchesList(launches: List<LaunchesModel>?)
-
-    fun updateLaunchesList(filter: String, isFiltered: Boolean)
 
     fun showError(error: String)
 

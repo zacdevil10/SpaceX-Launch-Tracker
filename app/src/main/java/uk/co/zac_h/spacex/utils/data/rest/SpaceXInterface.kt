@@ -16,6 +16,9 @@ interface SpaceXInterface {
     @GET("launches/{launches}")
     suspend fun getLaunches(@Path("launches") launches: String): Response<List<LaunchesModel>>
 
+    @GET("launches")
+    suspend fun getAllLaunches(): Response<List<LaunchesModel>>
+
     @GET("rockets/{rocket_id}")
     suspend fun getSingleRocket(@Path("rocket_id") id: String): Response<RocketsModel>
 

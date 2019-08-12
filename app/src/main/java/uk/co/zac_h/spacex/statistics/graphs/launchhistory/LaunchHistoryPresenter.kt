@@ -1,6 +1,6 @@
-package uk.co.zac_h.spacex.statistics.graphs
+package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
-interface GraphsPresenter {
+interface LaunchHistoryPresenter {
 
     fun getLaunchList(id: String)
 

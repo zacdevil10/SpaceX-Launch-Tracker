@@ -21,5 +21,6 @@ class StatisticsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         statistics_view_pager.adapter = StatisticsPagerAdapter(childFragmentManager)
+        statistics_tab_layout.setupWithViewPager(statistics_view_pager)
     }
 }
