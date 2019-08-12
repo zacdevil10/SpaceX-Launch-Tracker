@@ -69,7 +69,12 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
             }
         }
 
-        presenter.getLaunchList("past")
+        if (launches.isEmpty()) {
+            presenter.getLaunchList("past")
+        } else {
+            setData(false)
+        }
+
         presenter.getRocketsList()
     }
 
