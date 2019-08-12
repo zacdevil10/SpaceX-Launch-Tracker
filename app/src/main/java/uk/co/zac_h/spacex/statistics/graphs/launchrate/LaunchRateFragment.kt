@@ -11,6 +11,7 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.android.synthetic.main.fragment_launch_rate.*
@@ -31,20 +32,30 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
 
         presenter = LaunchRatePresenterImpl(this, LaunchRateInteractorImpl())
 
-        val xAxis = launch_rate_line_chart.xAxis
-
-        xAxis.apply {
-            position = XAxis.XAxisPosition.BOTTOM
-            textColor = Color.WHITE
-        }
-
         launch_rate_line_chart.apply {
+            xAxis.apply {
+                position = XAxis.XAxisPosition.BOTTOM
+                textColor = Color.WHITE
+                valueFormatter = object : ValueFormatter() {
+                    override fun getFormattedValue(value: Float): String {
+                        return "'" + value.toInt().toString().takeLast(2)
+                    }
+                }
+                setDrawGridLines(false)
+            }
+            axisLeft.apply {
+                textColor = Color.WHITE
+            }
+            axisRight.isEnabled = false
             description.isEnabled = false
             setDrawBorders(false)
-
         }
 
-        presenter.getLaunchList()
+        if (launches.isEmpty()) {
+            presenter.getLaunchList()
+        } else {
+            setData()
+        }
     }
 
     override fun onDestroyView() {
@@ -58,7 +69,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
         val dataMap = LinkedHashMap<Int, Int>()
 
         launches.forEach {
-            dataMap[it.launchYear] = dataMap[it.launchYear]?.plus(1) ?: 1
+            dataMap[it.launchYear + 1] = dataMap[it.launchYear + 1]?.plus(1) ?: 1
         }
 
         println(dataMap)
@@ -72,10 +83,19 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
             color = ColorTemplate.rgb("29b6f6")
             valueTextColor = Color.WHITE
             valueTextSize = 9f
+            valueFormatter = object : ValueFormatter() {
+                override fun getFormattedValue(value: Float): String {
+                    return "" + value.toInt()
+                }
+            }
         }
         dataSets.add(set)
 
-        launch_rate_line_chart.data = BarData(dataSets)
+        launch_rate_line_chart.apply {
+            xAxis.setLabelCount(dataMap.size + 2, true)
+            xAxis.setCenterAxisLabels(true)
+            data = BarData(dataSets)
+        }
     }
 
     override fun setLaunchesList(launches: List<LaunchesModel>?) {
