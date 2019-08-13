@@ -5,6 +5,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import uk.co.zac_h.spacex.utils.data.LandingPadModel
 import uk.co.zac_h.spacex.utils.data.LaunchesModel
 import uk.co.zac_h.spacex.utils.data.LaunchpadModel
 import uk.co.zac_h.spacex.utils.data.RocketsModel
@@ -28,6 +29,9 @@ interface SpaceXInterface {
 
     @GET("launchpads")
     suspend fun getLaunchpads(): Response<List<LaunchpadModel>>
+
+    @GET("landpads")
+    suspend fun getLandingPads(): Response<List<LandingPadModel>>
 
     companion object RetrofitSetup {
         fun create(): SpaceXInterface {

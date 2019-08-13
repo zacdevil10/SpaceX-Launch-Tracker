@@ -84,8 +84,13 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
     }
 
     private fun setData(animate: Boolean) {
-        val entries = ArrayList<PieEntry>()
         val colors = ArrayList<Int>()
+
+        colors.add(ColorTemplate.rgb("29b6f6"))
+        colors.add(ColorTemplate.rgb("9ccc65"))
+        colors.add(ColorTemplate.rgb("ff7043"))
+
+        val entries = ArrayList<PieEntry>()
 
         var falconOne = 0f
         var falconNine = 0f
@@ -105,10 +110,6 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
         entries.add(PieEntry(falconOne, context?.getString(R.string.falcon_1)))
         entries.add(PieEntry(falconNine, context?.getString(R.string.falcon_9)))
         entries.add(PieEntry(falconHeavy, context?.getString(R.string.falcon_heavy)))
-
-        colors.add(ColorTemplate.rgb("29b6f6"))
-        colors.add(ColorTemplate.rgb("9ccc65"))
-        colors.add(ColorTemplate.rgb("ff7043"))
 
         val dataSet = PieDataSet(entries, "")
         dataSet.apply {

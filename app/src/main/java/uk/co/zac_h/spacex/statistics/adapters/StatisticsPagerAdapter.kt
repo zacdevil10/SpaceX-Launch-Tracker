@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import uk.co.zac_h.spacex.statistics.graphs.launchhistory.LaunchHistoryFragment
 import uk.co.zac_h.spacex.statistics.graphs.launchrate.LaunchRateFragment
+import uk.co.zac_h.spacex.statistics.graphs.padstats.PadStatsFragment
 
 class StatisticsPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
 
@@ -12,7 +13,7 @@ class StatisticsPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAd
         when (position) {
             0 -> LaunchHistoryFragment()
             1 -> LaunchRateFragment()
-            2 -> LaunchHistoryFragment()
+            2 -> PadStatsFragment()
             3 -> LaunchHistoryFragment()
             else -> null
         }

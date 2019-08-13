@@ -12,9 +12,8 @@ import uk.co.zac_h.spacex.utils.format
 
 class LaunchesAdapter(private val context: Context?, private val launches: ArrayList<LaunchesModel>): RecyclerView.Adapter<LaunchesAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_launches, parent, false))
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+        ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_launches, parent, false))
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val launch = launches[position]

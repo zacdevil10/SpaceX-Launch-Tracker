@@ -5,14 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.formatter.StackedValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.utils.ColorTemplate
@@ -91,14 +89,15 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
 
     private fun setData() {
         val colors = ArrayList<Int>()
+
         colors.add(ColorTemplate.rgb("29b6f6"))
         colors.add(ColorTemplate.rgb("FFFFFF"))
 
         val dataSets = ArrayList<IBarDataSet>()
 
         val entries = ArrayList<BarEntry>()
-        val dataMap = LinkedHashMap<Int, Int>()
 
+        val dataMap = LinkedHashMap<Int, Int>()
         val dataMapFuture = LinkedHashMap<Int, Int>()
 
         for (i in 2006..launches[launches.size - 1].launchYear) {
@@ -131,7 +130,6 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
                     val vals = stackedEntry.yVals
                     // find out if we are on top of the stack
                     return if (vals[vals.size - 1] == value) {
-
                         // return the "sum" across all stack values
                         "" + stackedEntry.y.toInt()
                     } else {

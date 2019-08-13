@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="16dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:id="@+id/list_item_pad_name_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Vandenberg Air Force Base Space Launch Complex 4E and a little bit more" />
+
+        <TextView
+            android:id="@+id/list_item_pad_attempted_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Attempts"
+            android:textAlignment="center"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/list_item_pad_success_label"
+            app:layout_constraintTop_toBottomOf="@id/list_item_pad_name_text" />
+
+        <TextView
+            android:id="@+id/list_item_pad_attempted_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/heading"
+            app:layout_constraintEnd_toEndOf="@+id/list_item_pad_attempted_label"
+            app:layout_constraintStart_toStartOf="@+id/list_item_pad_attempted_label"
+            app:layout_constraintTop_toBottomOf="@+id/list_item_pad_attempted_label"
+            tools:text="53" />
+
+        <TextView
+            android:id="@+id/list_item_pad_success_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Successes"
+            android:textAlignment="center"
+            app:layout_constraintLeft_toRightOf="@id/list_item_pad_attempted_label"
+            app:layout_constraintRight_toLeftOf="@id/list_item_pad_status_label"
+            app:layout_constraintTop_toBottomOf="@id/list_item_pad_name_text" />
+
+        <TextView
+            android:id="@+id/list_item_pad_success_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/heading"
+            app:layout_constraintEnd_toEndOf="@+id/list_item_pad_success_label"
+            app:layout_constraintStart_toStartOf="@+id/list_item_pad_success_label"
+            app:layout_constraintTop_toBottomOf="@+id/list_item_pad_success_label"
+            tools:text="50" />
+
+        <TextView
+            android:id="@+id/list_item_pad_status_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Status"
+            android:textAlignment="center"
+            app:layout_constraintLeft_toRightOf="@id/list_item_pad_success_label"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/list_item_pad_name_text" />
+
+        <ImageView
+            android:id="@+id/list_item_pad_status_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:tint="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="@+id/list_item_pad_status_label"
+            app:layout_constraintStart_toStartOf="@+id/list_item_pad_status_label"
+            app:layout_constraintTop_toBottomOf="@+id/list_item_pad_status_label"
+            tools:src="@drawable/ic_build_black_24dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

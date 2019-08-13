@@ -35,7 +35,8 @@
     <string name="percentage">%1$d%%</string>
     <string name="pie_chart_title">Launches\n%1$s</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="attempted_launches">Attempted Launches: %1$d</string>
+    <string name="successful_launches">Successful Launches: %1$d</string>
+    <string name="launchpad_status">Status: %1$s</string>
 
 </resources>
