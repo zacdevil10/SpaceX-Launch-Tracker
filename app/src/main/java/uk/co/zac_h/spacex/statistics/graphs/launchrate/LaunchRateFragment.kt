@@ -67,9 +67,14 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
                 axisMinimum = 0f
             }
             axisRight.isEnabled = false
-            legend.isEnabled = false
+            setScaleEnabled(false)
             description.isEnabled = false
             setDrawBorders(false)
+
+            legend.apply {
+                textColor= Color.WHITE
+
+            }
         }
 
         if (launches.isEmpty()) {
@@ -116,7 +121,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
             entries.add(BarEntry(it.key.toFloat(), floatArrayOf(it.value.toFloat(), dataMapFuture[it.key]?.toFloat() ?: 0f)))
         }
 
-        val set = BarDataSet(entries, "")
+        val set = BarDataSet(entries, "Launches")
         set.apply {
             setColors(colors)
             valueTextColor = Color.WHITE
