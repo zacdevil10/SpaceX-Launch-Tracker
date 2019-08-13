@@ -1,17 +1,15 @@
 package uk.co.zac_h.spacex.statistics.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.utils.data.LaunchpadModel
 
-class PadStatsLaunchSitesAdapter(private val context: Context?, private var sites: ArrayList<LaunchpadModel>) :
+class PadStatsLaunchSitesAdapter(private var sites: ArrayList<LaunchpadModel>) :
     RecyclerView.Adapter<PadStatsLaunchSitesAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =

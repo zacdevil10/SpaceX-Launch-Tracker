@@ -1,16 +1,13 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout.HORIZONTAL
 import android.widget.Toast
-import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_pad_stats.*
-
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsLaunchSitesAdapter
 import uk.co.zac_h.spacex.utils.data.LaunchpadModel
@@ -31,7 +28,7 @@ class PadStatsFragment : Fragment(), PadStatsView {
 
         presenter = PadStatsPresenterImpl(this, PadStatsInteractorImpl())
 
-        launchSitesAdapter = PadStatsLaunchSitesAdapter(context, launchpads)
+        launchSitesAdapter = PadStatsLaunchSitesAdapter(launchpads)
 
         pad_stats_launch_sites_recycler.apply {
             layoutManager = LinearLayoutManager(this@PadStatsFragment.context)

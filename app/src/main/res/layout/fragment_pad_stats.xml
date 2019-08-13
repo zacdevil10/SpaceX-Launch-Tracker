@@ -17,7 +17,7 @@
             android:id="@+id/pad_stats_launch_sites_title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Launch Sites"
+            android:text="@string/launch_sites"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/heading" />
 

@@ -35,8 +35,10 @@
     <string name="percentage">%1$d%%</string>
     <string name="pie_chart_title">Launches\n%1$s</string>
 
-    <string name="attempted_launches">Attempted Launches: %1$d</string>
-    <string name="successful_launches">Successful Launches: %1$d</string>
-    <string name="launchpad_status">Status: %1$s</string>
+    <string name="status_label">Status</string>
+    <string name="successes_label">Successes</string>
+    <string name="attempts_label">Attempts</string>
+    <string name="launch_pad_status_desc">Launch pad status</string>
+    <string name="launch_sites">Launch Sites</string>
 
 </resources>
