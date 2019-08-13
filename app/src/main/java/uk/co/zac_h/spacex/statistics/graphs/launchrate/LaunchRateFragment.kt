@@ -12,6 +12,7 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.StackedValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.utils.ColorTemplate
@@ -57,6 +58,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
                         return "'" + value.toInt().toString().takeLast(2)
                     }
                 }
+                granularity = 1f
                 setDrawGridLines(false)
             }
             axisLeft.apply {
@@ -83,38 +85,64 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
     }
 
     private fun setData() {
+        val colors = ArrayList<Int>()
+        colors.add(ColorTemplate.rgb("29b6f6"))
+        colors.add(ColorTemplate.rgb("FFFFFF"))
+
         val dataSets = ArrayList<IBarDataSet>()
+
         val entries = ArrayList<BarEntry>()
         val dataMap = LinkedHashMap<Int, Int>()
+
+        val dataMapFuture = LinkedHashMap<Int, Int>()
+
+        for (i in 2006..launches[launches.size - 1].launchYear) {
+            dataMap[i + 1] = 0
+        }
 
         launches.forEach {
             if (!filterFalconOne && it.rocket.id == "falcon1") return@forEach
             if (!filterFalconNine && it.rocket.id == "falcon9") return@forEach
             if (!filterFalconHeavy && it.rocket.id == "falconheavy") return@forEach
 
-            dataMap[it.launchYear + 1] = dataMap[it.launchYear + 1]?.plus(1) ?: 1
+            if (it.launchDateUnix.times(1000) <= System.currentTimeMillis()) {
+                dataMap[it.launchYear + 1] = dataMap[it.launchYear + 1]?.plus(1) ?: 1
+            } else {
+                dataMapFuture[it.launchYear + 1] = dataMapFuture[it.launchYear + 1]?.plus(1) ?: 1
+            }
         }
 
         dataMap.forEach {
-            entries.add(BarEntry(it.key.toFloat(), it.value.toFloat()))
+            entries.add(BarEntry(it.key.toFloat(), floatArrayOf(it.value.toFloat(), dataMapFuture[it.key]?.toFloat() ?: 0f)))
         }
 
         val set = BarDataSet(entries, "")
         set.apply {
-            color = ColorTemplate.rgb("29b6f6")
+            setColors(colors)
             valueTextColor = Color.WHITE
             valueTextSize = 9f
             valueFormatter = object : ValueFormatter() {
-                override fun getFormattedValue(value: Float): String {
-                    return "" + value.toInt()
+                override fun getBarStackedLabel(value: Float, stackedEntry: BarEntry): String {
+                    val vals = stackedEntry.yVals
+                    // find out if we are on top of the stack
+                    return if (vals[vals.size - 1] == value) {
+
+                        // return the "sum" across all stack values
+                        "" + stackedEntry.y.toInt()
+                    } else {
+                        "" + value.toInt()
+                    }
                 }
             }
+            stackLabels = arrayOf("Past", "Future")
         }
+
         dataSets.add(set)
 
         launch_rate_bar_chart.apply {
-            xAxis.setLabelCount(dataMap.size + 2, true)
-            xAxis.setCenterAxisLabels(true)
+            xAxis.apply {
+                setLabelCount(dataMap.size + 1, true)
+            }
             data = BarData(dataSets)
             invalidate()
         }
