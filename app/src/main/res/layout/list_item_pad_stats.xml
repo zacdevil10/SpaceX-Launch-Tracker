@@ -13,19 +13,31 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp">
 
+        <ImageView
+            android:id="@+id/list_item_pad_type_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_island"
+            android:tint="@color/falconNine"
+            app:layout_constraintLeft_toLeftOf="@id/list_item_pad_name_text"
+            app:layout_constraintBottom_toBottomOf="@+id/list_item_pad_name_text"
+            app:layout_constraintTop_toTopOf="@+id/list_item_pad_name_text" />
+
         <TextView
             android:id="@+id/list_item_pad_name_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Vandenberg Air Force Base Space Launch Complex 4E and a little bit more" />
+            tools:text="Vandenberg Air Force Base Space Launch Complex 4E" />
 
         <TextView
             android:id="@+id/list_item_pad_attempted_label"

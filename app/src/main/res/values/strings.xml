@@ -40,5 +40,6 @@
     <string name="attempts_label">Attempts</string>
     <string name="launch_pad_status_desc">Launch pad status</string>
     <string name="launch_sites">Launch Sites</string>
+    <string name="landing_sites">Landing Sites</string>
 
 </resources>

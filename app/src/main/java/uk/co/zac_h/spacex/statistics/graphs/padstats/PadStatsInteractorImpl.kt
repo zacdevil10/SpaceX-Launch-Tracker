@@ -20,7 +20,27 @@ class PadStatsInteractorImpl : PadStatsInteractor {
             withContext(Dispatchers.Main) {
                 try {
                     if (response.isSuccessful) {
-                        listener.onSuccess(response.body())
+                        listener.onGetLaunchpads(response.body())
+                    } else {
+                        listener.onError("Error: ${response.code()}")
+                    }
+                } catch (e: HttpException) {
+                    listener.onError(e.localizedMessage)
+                } catch (e: Throwable) {
+                    listener.onError(e.localizedMessage)
+                }
+            }
+        }
+    }
+
+    override fun getLandingPads(listener: PadStatsInteractor.InteractorCallback) {
+        scope.launch {
+            val response = SpaceXInterface.create().getLandingPads()
+
+            withContext(Dispatchers.Main) {
+                try {
+                    if (response.isSuccessful) {
+                        listener.onGetLandingPads(response.body())
                     } else {
                         listener.onError("Error: ${response.code()}")
                     }

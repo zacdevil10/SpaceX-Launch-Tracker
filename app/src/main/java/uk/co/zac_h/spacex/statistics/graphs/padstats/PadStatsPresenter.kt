@@ -4,6 +4,8 @@ interface PadStatsPresenter {
 
     fun getLaunchpads()
 
+    fun getLandingPads()
+
     fun cancelRequests()
 
 }
