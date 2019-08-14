@@ -15,14 +15,16 @@ class LaunchHistoryInteractorImpl : LaunchHistoryInteractor {
 
     override fun getLaunches(id: String, listener: LaunchHistoryInteractor.InteractorCallback) {
         scope.launch {
-            val response = SpaceXInterface.create().getLaunches(id, "asc")
+            val response = async(SupervisorJob(parentJob)) {
+                SpaceXInterface.create().getLaunches(id, "asc")
+            }
 
             withContext(Dispatchers.Main) {
                 try {
-                    if (response.isSuccessful) {
-                        listener.onSuccess(response.body())
+                    if (response.await().isSuccessful) {
+                        listener.onSuccess(response.await().body())
                     } else {
-                        listener.onError(response.message())
+                        listener.onError(response.await().message())
                     }
                 } catch (e: HttpException) {
                     listener.onError(e.localizedMessage)
@@ -35,14 +37,16 @@ class LaunchHistoryInteractorImpl : LaunchHistoryInteractor {
 
     override fun getRockets(listener: LaunchHistoryInteractor.InteractorCallback) {
         scope.launch {
-            val response = SpaceXInterface.create().getRockets()
+            val response = async(SupervisorJob(parentJob)) {
+                SpaceXInterface.create().getRockets()
+            }
 
             withContext(Dispatchers.Main) {
                 try {
-                    if (response.isSuccessful) {
-                        listener.onRocketsSuccess(response.body())
+                    if (response.await().isSuccessful) {
+                        listener.onRocketsSuccess(response.await().body())
                     } else {
-                        listener.onError(response.message())
+                        listener.onError(response.await().message())
                     }
                 } catch (e: HttpException) {
                     listener.onError(e.localizedMessage)

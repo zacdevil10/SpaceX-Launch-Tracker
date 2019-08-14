@@ -15,14 +15,16 @@ class LaunchRateInteractorImpl : LaunchRateInteractor {
 
     override fun getLaunches(listener: LaunchRateInteractor.InteractorCallback) {
         scope.launch {
-            val response = SpaceXInterface.create().getLaunches()
+            val response = async(SupervisorJob(parentJob)) {
+                SpaceXInterface.create().getLaunches()
+            }
 
             withContext(Dispatchers.Main) {
                 try {
-                    if (response.isSuccessful) {
-                        listener.onSuccess(response.body())
+                    if (response.await().isSuccessful) {
+                        listener.onSuccess(response.await().body())
                     } else {
-                        listener.onError(response.message())
+                        listener.onError(response.await().message())
                     }
                 } catch (e: HttpException) {
                     listener.onError(e.localizedMessage)

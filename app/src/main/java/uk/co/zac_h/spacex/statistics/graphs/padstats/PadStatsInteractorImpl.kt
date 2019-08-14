@@ -15,14 +15,17 @@ class PadStatsInteractorImpl : PadStatsInteractor {
 
     override fun getLaunchpads(listener: PadStatsInteractor.InteractorCallback) {
         scope.launch {
-            val response = SpaceXInterface.create().getLaunchpads()
+
+            val response = async(SupervisorJob(parentJob)) {
+                SpaceXInterface.create().getLaunchpads()
+            }
 
             withContext(Dispatchers.Main) {
                 try {
-                    if (response.isSuccessful) {
-                        listener.onGetLaunchpads(response.body())
+                    if (response.await().isSuccessful) {
+                        listener.onGetLaunchpads(response.await().body())
                     } else {
-                        listener.onError("Error: ${response.code()}")
+                        listener.onError("Error: ${response.await().code()}")
                     }
                 } catch (e: HttpException) {
                     listener.onError(e.localizedMessage)
@@ -35,14 +38,16 @@ class PadStatsInteractorImpl : PadStatsInteractor {
 
     override fun getLandingPads(listener: PadStatsInteractor.InteractorCallback) {
         scope.launch {
-            val response = SpaceXInterface.create().getLandingPads()
+            val response = async(SupervisorJob(parentJob)) {
+                SpaceXInterface.create().getLandingPads()
+            }
 
             withContext(Dispatchers.Main) {
                 try {
-                    if (response.isSuccessful) {
-                        listener.onGetLandingPads(response.body())
+                    if (response.await().isSuccessful) {
+                        listener.onGetLandingPads(response.await().body())
                     } else {
-                        listener.onError("Error: ${response.code()}")
+                        listener.onError("Error: ${response.await().code()}")
                     }
                 } catch (e: HttpException) {
                     listener.onError(e.localizedMessage)

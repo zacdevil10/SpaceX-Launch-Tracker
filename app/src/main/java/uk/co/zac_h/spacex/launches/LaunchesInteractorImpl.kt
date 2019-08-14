@@ -15,14 +15,16 @@ class LaunchesInteractorImpl : LaunchesInteractor {
 
     override fun getLaunches(id: String, order: String, listener: LaunchesInteractor.InteractorCallback) {
         scope.launch {
-            val response = SpaceXInterface.create().getLaunches(id, order)
+            val response = async(SupervisorJob(parentJob)) {
+                SpaceXInterface.create().getLaunches(id, order)
+            }
 
             withContext(Dispatchers.Main) {
                 try {
-                    if (response.isSuccessful) {
-                        listener.onSuccess(response.body())
+                    if (response.await().isSuccessful) {
+                        listener.onSuccess(response.await().body())
                     } else {
-                        listener.onError("Error: ${response.code()}")
+                        listener.onError("Error: ${response.await().code()}")
                     }
                 } catch (e: HttpException) {
                     listener.onError(e.localizedMessage)
