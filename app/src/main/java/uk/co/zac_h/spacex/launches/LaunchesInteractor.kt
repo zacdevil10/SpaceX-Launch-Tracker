@@ -4,7 +4,7 @@ import uk.co.zac_h.spacex.utils.data.LaunchesModel
 
 interface LaunchesInteractor {
 
-    fun getLaunches(id: String, listener: InteractorCallback)
+    fun getLaunches(id: String, order: String, listener: InteractorCallback)
 
     fun cancelAllRequests()
 

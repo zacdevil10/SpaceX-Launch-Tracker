@@ -13,9 +13,9 @@ class LaunchesInteractorImpl : LaunchesInteractor {
 
     private val scope = CoroutineScope(coroutineContext)
 
-    override fun getLaunches(id: String, listener: LaunchesInteractor.InteractorCallback) {
+    override fun getLaunches(id: String, order: String, listener: LaunchesInteractor.InteractorCallback) {
         scope.launch {
-            val response = SpaceXInterface.create().getLaunches(id)
+            val response = SpaceXInterface.create().getLaunches(id, order)
 
             withContext(Dispatchers.Main) {
                 try {

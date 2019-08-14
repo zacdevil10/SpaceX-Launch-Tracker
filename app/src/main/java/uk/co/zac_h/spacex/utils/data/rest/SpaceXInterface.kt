@@ -5,6 +5,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 import uk.co.zac_h.spacex.utils.data.LandingPadModel
 import uk.co.zac_h.spacex.utils.data.LaunchesModel
 import uk.co.zac_h.spacex.utils.data.LaunchpadModel
@@ -16,7 +17,7 @@ interface SpaceXInterface {
     suspend fun getSingleLaunch(@Path("flight") flight: String): Response<LaunchesModel>
 
     @GET("launches/{launches}")
-    suspend fun getLaunches(@Path("launches") launches: String): Response<List<LaunchesModel>>
+    suspend fun getLaunches(@Path("launches") launches: String, @Query("order") order: String): Response<List<LaunchesModel>>
 
     @GET("launches")
     suspend fun getLaunches(): Response<List<LaunchesModel>>
