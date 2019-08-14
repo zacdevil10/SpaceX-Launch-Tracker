@@ -10,7 +10,10 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.utils.data.LaunchesModel
 import uk.co.zac_h.spacex.utils.format
 
-class LaunchesAdapter(private val context: Context?, private val launches: ArrayList<LaunchesModel>): RecyclerView.Adapter<LaunchesAdapter.ViewHolder>() {
+class LaunchesAdapter(
+    private val context: Context?,
+    private val launches: ArrayList<LaunchesModel>
+) : RecyclerView.Adapter<LaunchesAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_launches, parent, false))
@@ -24,6 +27,10 @@ class LaunchesAdapter(private val context: Context?, private val launches: Array
             flightNumber.text = context?.getString(R.string.flight_number, launch.flightNumber)
 
             launch.rocket.firstStage?.cores?.forEach { i ->
+                if (i.block == null) {
+                    blockText = "TBD "
+                    return@forEach
+                }
                 blockText += "${i.block} "
             }
 
@@ -32,11 +39,20 @@ class LaunchesAdapter(private val context: Context?, private val launches: Array
                     if (launch.rocket.firstStage?.cores?.get(0)?.reused != null && launch.rocket.firstStage?.cores?.get(
                             0
                         )?.reused!!
-                    ) View.VISIBLE else View.INVISIBLE
+                    )
+                        View.VISIBLE else View.INVISIBLE
+                landingVehicleTag.visibility = View.VISIBLE
                 landingVehicleTag.text = launch.rocket.firstStage?.cores?.get(0)?.landingVehicle
+            } else {
+                reusedTag.visibility = View.INVISIBLE
+                landingVehicleTag.visibility = View.INVISIBLE
             }
 
-            blockNumber.text = context?.getString(R.string.block_number, blockText)
+            blockNumber.text = context?.getString(
+                R.string.vehicle_block_type,
+                launch.rocket.name,
+                blockText.dropLast(1).replace(" ", " | ")
+            )
             missionName.text = launch.missionName
             date.text = launch.launchDateUnix.format()
         }

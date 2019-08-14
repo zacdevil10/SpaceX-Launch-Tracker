@@ -39,7 +39,7 @@ class DashboardLaunchesAdapter(private val context: Context?, private val launch
                 blockText += "${i.block} "
             }
 
-            blockNumber.text = context?.getString(R.string.block_number, blockText)
+            blockNumber.text = context?.getString(R.string.vehicle_block_type, launch?.rocket?.name, blockText)
             missionName.text = launch?.missionName
             date.text = launch?.launchDateUnix?.format()
         }

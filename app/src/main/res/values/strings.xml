@@ -17,7 +17,7 @@
     <string name="next_launch">Next launch</string>
     <string name="latest_launch">Latest Launch</string>
     <string name="flight_number">Flight %1$d</string>
-    <string name="block_number">Block %1$s</string>
+    <string name="vehicle_block_type">%1$s - Block %2$s</string>
 
     <!--Filter labels-->
     <string name="filter_successes">successes</string>
