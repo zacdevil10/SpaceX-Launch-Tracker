@@ -14,17 +14,15 @@ class StatisticsPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAd
             0 -> LaunchHistoryFragment()
             1 -> LaunchRateFragment()
             2 -> PadStatsFragment()
-            3 -> LaunchHistoryFragment()
             else -> null
         }
 
-    override fun getCount(): Int = 4
+    override fun getCount(): Int = 3
 
     override fun getPageTitle(position: Int): CharSequence? = when (position) {
         0 -> "Launch History"
         1 -> "Launch Rate"
         2 -> "Launch/Landing Pads"
-        3 -> "Payload"
         else -> null
     }
 

@@ -17,8 +17,9 @@
             android:id="@+id/list_item_pad_type_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_island"
+            android:src="@drawable/ic_landscape"
             android:tint="@color/falconNine"
+            android:contentDescription="@string/launch_pad_type_desc"
             app:layout_constraintLeft_toLeftOf="@id/list_item_pad_name_text"
             app:layout_constraintBottom_toBottomOf="@+id/list_item_pad_name_text"
             app:layout_constraintTop_toTopOf="@+id/list_item_pad_name_text" />
