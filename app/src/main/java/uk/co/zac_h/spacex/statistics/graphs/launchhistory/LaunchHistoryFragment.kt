@@ -62,6 +62,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
             setDrawEntryLabels(false)
             description.isEnabled = false
             setCenterTextColor(Color.WHITE)
+            isRotationEnabled = false
 
             legend.apply {
                 verticalAlignment = Legend.LegendVerticalAlignment.TOP
