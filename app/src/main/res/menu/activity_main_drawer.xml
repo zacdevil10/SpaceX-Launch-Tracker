@@ -9,31 +9,23 @@
             android:icon="@drawable/ic_dashboard_black_24dp"
             android:title="@string/menu_home" />
         <item
-            android:id="@+id/nav_news"
-            android:icon="@drawable/ic_rss_feed_black_24dp"
-            android:title="@string/menu_news" />
-        <item
-            android:id="@+id/nav_launches"
-            android:icon="@drawable/ic_file_upload_black_24dp"
+            android:id="@id/launches_page_fragment"
+            android:icon="@drawable/ic_rocket"
             android:title="@string/menu_launches" />
         <item
-            android:id="@+id/nav_history"
-            android:icon="@drawable/ic_access_time_black_24dp"
-            android:title="@string/menu_history" />
+            android:id="@id/statistics_page_fragment"
+            android:icon="@drawable/ic_data_usage_black_24dp"
+            android:title="@string/menu_statistics"/>
     </group>
 
-    <item android:title="@string/about">
+    <item android:title="@string/menu_about">
         <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:icon="@drawable/ic_info_outline_black_24dp"
-                android:title="@string/menu_about_spacex" />
             <item
                 android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_settings_black_24dp"
                 android:title="@string/menu_settings" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@id/about_page_fragment"
                 android:icon="@drawable/ic_info_outline_black_24dp"
                 android:title="@string/menu_about" />
         </menu>
