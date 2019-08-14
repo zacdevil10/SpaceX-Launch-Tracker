@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
+import android.util.Log
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 import uk.co.zac_h.spacex.utils.data.rest.SpaceXInterface
@@ -30,7 +31,7 @@ class PadStatsInteractorImpl : PadStatsInteractor {
                 } catch (e: HttpException) {
                     listener.onError(e.localizedMessage)
                 } catch (e: Throwable) {
-                    listener.onError(e.localizedMessage)
+                    Log.e(this@PadStatsInteractorImpl.javaClass.name, e.localizedMessage)
                 }
             }
         }
@@ -52,7 +53,7 @@ class PadStatsInteractorImpl : PadStatsInteractor {
                 } catch (e: HttpException) {
                     listener.onError(e.localizedMessage)
                 } catch (e: Throwable) {
-                    listener.onError(e.localizedMessage)
+                    Log.e(this@PadStatsInteractorImpl.javaClass.name, e.localizedMessage)
                 }
             }
         }

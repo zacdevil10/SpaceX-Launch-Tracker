@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.launches
 
+import android.util.Log
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 import uk.co.zac_h.spacex.utils.data.rest.SpaceXInterface
@@ -24,12 +25,12 @@ class LaunchesInteractorImpl : LaunchesInteractor {
                     if (response.await().isSuccessful) {
                         listener.onSuccess(response.await().body())
                     } else {
-                        listener.onError("Error: ${response.await().code()}")
+                        listener.onError(response.await().message())
                     }
                 } catch (e: HttpException) {
                     listener.onError(e.localizedMessage)
                 } catch (e: Throwable) {
-                    listener.onError(e.localizedMessage)
+                    Log.e(this@LaunchesInteractorImpl.javaClass.name, e.localizedMessage)
                 }
             }
         }

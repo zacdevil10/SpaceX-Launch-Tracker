@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
+import android.util.Log
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 import uk.co.zac_h.spacex.utils.data.rest.SpaceXInterface
@@ -29,7 +30,7 @@ class LaunchHistoryInteractorImpl : LaunchHistoryInteractor {
                 } catch (e: HttpException) {
                     listener.onError(e.localizedMessage)
                 } catch (e: Throwable) {
-                    listener.onError(e.localizedMessage)
+                    Log.e(this@LaunchHistoryInteractorImpl.javaClass.name, e.localizedMessage)
                 }
             }
         }
@@ -51,7 +52,7 @@ class LaunchHistoryInteractorImpl : LaunchHistoryInteractor {
                 } catch (e: HttpException) {
                     listener.onError(e.localizedMessage)
                 } catch (e: Throwable) {
-                    listener.onError(e.localizedMessage)
+                    Log.e(this@LaunchHistoryInteractorImpl.javaClass.name, e.localizedMessage)
                 }
             }
         }

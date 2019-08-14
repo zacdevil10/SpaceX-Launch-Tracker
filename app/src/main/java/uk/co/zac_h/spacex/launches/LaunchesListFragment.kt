@@ -72,7 +72,7 @@ class LaunchesListFragment : Fragment(), LaunchesView {
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {
-        launches_swipe_refresh.isRefreshing = isRefreshing
+        launches_swipe_refresh?.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {
