@@ -15,7 +15,7 @@ class LaunchHistoryInteractorImpl : LaunchHistoryInteractor {
 
     override fun getLaunches(id: String, listener: LaunchHistoryInteractor.InteractorCallback) {
         scope.launch {
-            val response = SpaceXInterface.create().getLaunches(id)
+            val response = SpaceXInterface.create().getLaunches(id, "asc")
 
             withContext(Dispatchers.Main) {
                 try {

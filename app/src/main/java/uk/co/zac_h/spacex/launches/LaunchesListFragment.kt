@@ -1,13 +1,13 @@
 package uk.co.zac_h.spacex.launches
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_launches_list.*
-
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.utils.data.LaunchesModel
@@ -46,7 +46,7 @@ class LaunchesListFragment : Fragment(), LaunchesView {
 
         val param = arguments?.getString("launchParam")
 
-        if (param != null) presenter.getLaunchList(param)
+        if (param != null) presenter.getLaunchList(param, if (param == "past") "desc" else "asc")
     }
 
     override fun onDestroy() {
@@ -56,14 +56,14 @@ class LaunchesListFragment : Fragment(), LaunchesView {
 
     override fun updateLaunchesList(launches: List<LaunchesModel>?) {
         if (launches != null) {
-            launchesList.addAll(if (arguments?.getString("launchParam") == "past") launches.asReversed() else launches)
+            launchesList.addAll(launches)
         }
 
         launchesAdapter.notifyDataSetChanged()
     }
 
     override fun toggleProgress(visibility: Int) {
-
+        launches_progress_bar.visibility = visibility
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {
@@ -71,6 +71,6 @@ class LaunchesListFragment : Fragment(), LaunchesView {
     }
 
     override fun showError(error: String) {
-
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 }
