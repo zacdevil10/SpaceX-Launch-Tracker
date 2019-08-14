@@ -60,6 +60,24 @@
                 app:layout_constraintTop_toBottomOf="@id/launches_mission_name_text"
                 tools:text="14 Oct 2019 - 12:35"/>
 
+            <TextView
+                android:id="@+id/launches_reused_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reused"
+                android:visibility="invisible"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/launches_date_text" />
+
+            <TextView
+                android:id="@+id/launches_landing_vehicle_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/launches_reused_text"
+                app:layout_constraintTop_toBottomOf="@id/launches_date_text"
+                android:layout_marginStart="16dp"
+                tools:text="OCISLY" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

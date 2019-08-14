@@ -27,6 +27,15 @@ class LaunchesAdapter(private val context: Context?, private val launches: Array
                 blockText += "${i.block} "
             }
 
+            if (launch.rocket.id == "falcon9") {
+                reusedTag.visibility =
+                    if (launch.rocket.firstStage?.cores?.get(0)?.reused != null && launch.rocket.firstStage?.cores?.get(
+                            0
+                        )?.reused!!
+                    ) View.VISIBLE else View.INVISIBLE
+                landingVehicleTag.text = launch.rocket.firstStage?.cores?.get(0)?.landingVehicle
+            }
+
             blockNumber.text = context?.getString(R.string.block_number, blockText)
             missionName.text = launch.missionName
             date.text = launch.launchDateUnix.format()
@@ -40,5 +49,8 @@ class LaunchesAdapter(private val context: Context?, private val launches: Array
         val blockNumber: TextView = itemView.findViewById(R.id.launches_block_text)
         val missionName: TextView = itemView.findViewById(R.id.launches_mission_name_text)
         val date: TextView = itemView.findViewById(R.id.launches_date_text)
+
+        val reusedTag: TextView = itemView.findViewById(R.id.launches_reused_text)
+        val landingVehicleTag: TextView = itemView.findViewById(R.id.launches_landing_vehicle_text)
     }
 }
