@@ -19,4 +19,9 @@
         android:label="@string/menu_statistics"
         android:name="uk.co.zac_h.spacex.statistics.StatisticsFragment"/>
 
+    <fragment
+        android:id="@+id/about_page_fragment"
+        android:label="@string/menu_about"
+        android:name="uk.co.zac_h.spacex.about.AboutFragment" />
+
 </navigation>
