@@ -47,6 +47,10 @@ class LaunchesListFragment : Fragment(), LaunchesView {
         val param = arguments?.getString("launchParam")
 
         if (param != null) presenter.getLaunchList(param, if (param == "past") "desc" else "asc")
+
+        launches_swipe_refresh.setOnRefreshListener {
+            if (param != null) presenter.getLaunchList(param, if (param == "past") "desc" else "asc")
+        }
     }
 
     override fun onDestroy() {
@@ -56,6 +60,7 @@ class LaunchesListFragment : Fragment(), LaunchesView {
 
     override fun updateLaunchesList(launches: List<LaunchesModel>?) {
         if (launches != null) {
+            launchesList.clear()
             launchesList.addAll(launches)
         }
 
@@ -67,7 +72,7 @@ class LaunchesListFragment : Fragment(), LaunchesView {
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {
-
+        launches_swipe_refresh.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {

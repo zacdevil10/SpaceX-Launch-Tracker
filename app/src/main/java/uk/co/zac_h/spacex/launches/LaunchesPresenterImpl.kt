@@ -17,10 +17,12 @@ class LaunchesPresenterImpl(private val view: LaunchesView, private val interact
     override fun onSuccess(launches: List<LaunchesModel>?) {
         view.toggleProgress(View.GONE)
         view.updateLaunchesList(launches)
+        view.toggleSwipeProgress(false)
     }
 
     override fun onError(error: String) {
         view.showError(error)
+        view.toggleSwipeProgress(false)
     }
 
 }
