@@ -34,6 +34,8 @@ class LaunchesAdapter(
                 blockText += "${i.block} "
             }
 
+            val landed = launch.rocket.firstStage?.cores?.get(0)?.landingSuccess
+
             if (launch.rocket.id == "falcon9") {
                 reusedTag.visibility =
                     if (launch.rocket.firstStage?.cores?.get(0)?.reused != null && launch.rocket.firstStage?.cores?.get(
@@ -41,7 +43,7 @@ class LaunchesAdapter(
                         )?.reused!!
                     )
                         View.VISIBLE else View.INVISIBLE
-                landingVehicleTag.visibility = View.VISIBLE
+                landingVehicleTag.visibility = if (landed != null && landed) View.VISIBLE else View.INVISIBLE
                 landingVehicleTag.text = launch.rocket.firstStage?.cores?.get(0)?.landingVehicle
             } else {
                 reusedTag.visibility = View.INVISIBLE
