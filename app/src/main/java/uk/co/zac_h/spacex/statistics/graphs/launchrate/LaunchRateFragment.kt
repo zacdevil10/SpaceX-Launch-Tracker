@@ -165,7 +165,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
             "falconheavy" -> filterFalconHeavy = isFiltered
         }
 
-        setData()
+        if (launches.size > 0) setData()
     }
 
     override fun toggleProgress(visibility: Int) {
