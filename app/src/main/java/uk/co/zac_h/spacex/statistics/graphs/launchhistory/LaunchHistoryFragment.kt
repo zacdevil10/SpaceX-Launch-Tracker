@@ -46,16 +46,6 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
             )
         }
 
-        launch_history_success_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) launch_history_failure_toggle.isChecked = false
-            presenter?.updateFilter("success", isChecked)
-        }
-
-        launch_history_failure_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) launch_history_success_toggle.isChecked = false
-            presenter?.updateFilter("failed", isChecked)
-        }
-
         launch_history_pie_chart.apply {
             isDrawHoleEnabled = true
             setHoleColor(ContextCompat.getColor(context, R.color.colorPrimary))
@@ -79,6 +69,16 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
         }
 
         presenter?.getRocketsList()
+
+        launch_history_success_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) launch_history_failure_toggle.isChecked = false
+            presenter?.updateFilter("success", isChecked)
+        }
+
+        launch_history_failure_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) launch_history_success_toggle.isChecked = false
+            presenter?.updateFilter("failed", isChecked)
+        }
     }
 
     override fun onDestroyView() {
@@ -163,7 +163,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
             "failed" -> filterFailed = isFiltered
         }
 
-        setData(animate = false)
+        if (launches.size > 0) setData(animate = false)
     }
 
     override fun toggleProgress(visibility: Int) {
