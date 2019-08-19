@@ -1,7 +1,10 @@
 package uk.co.zac_h.spacex.utils.data
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class LaunchesModel(
     @field:Json(name = "flight_number") var flightNumber: Int,
     @field:Json(name = "mission_name") var missionName: String,
@@ -23,4 +26,4 @@ data class LaunchesModel(
     @field:Json(name = "static_fire_date_utc") var staticFireDateUTC: String?,
     @field:Json(name = "static_fire_date_unix") var staticFireDateUnix: Long?
     //@field:Json(name = "timeline") var timeline: LaunchTimelineModel
-)
+) : Parcelable

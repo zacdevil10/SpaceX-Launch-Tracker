@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.os.bundleOf
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.utils.data.LaunchesModel
@@ -42,6 +44,13 @@ class DashboardLaunchesAdapter(private val context: Context?, private val launch
             blockNumber.text = context?.getString(R.string.vehicle_block_type, launch?.rocket?.name, blockText)
             missionName.text = launch?.missionName
             date.text = launch?.launchDateUnix?.format()
+
+            itemView.setOnClickListener {
+                itemView.findNavController().navigate(
+                    R.id.launch_details_fragment,
+                    bundleOf("launch" to launch, "title" to launch?.missionName)
+                )
+            }
         }
     }
 

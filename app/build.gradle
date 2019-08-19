@@ -4,11 +4,15 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 28
+    dataBinding {
+        enabled = true
+    }
+
+    compileSdkVersion 29
     defaultConfig {
         applicationId "uk.co.zac_h.spacex"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "0.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -19,6 +23,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+androidExtensions {
+    experimental = true
 }
 
 dependencies {
@@ -40,6 +48,9 @@ dependencies {
     kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.8.0'
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.1'
+
+    //Picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
     //MP Chart library
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
