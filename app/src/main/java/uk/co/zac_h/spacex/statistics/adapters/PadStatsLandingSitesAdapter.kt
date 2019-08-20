@@ -33,7 +33,7 @@ class PadStatsLandingSitesAdapter (private var sites: ArrayList<LandingPadModel>
 
             if (site.type == "ASDS") type.apply {
                 setImageResource(R.drawable.ic_waves)
-                imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent))
+                imageTintList = ColorStateList.valueOf(ContextCompat.getColor(context, R.color.ocean))
             }
         }
     }
