@@ -18,6 +18,8 @@ class PayloadAdapter(private var payloads: List<PayloadModel>?) : RecyclerView.A
 
         holder.apply {
             payloadName.text = payload?.id
+            payloadOrbit.text = payload?.orbit
+            payloadManufacturer.text = payload?.manufacturer
         }
     }
 
@@ -25,5 +27,8 @@ class PayloadAdapter(private var payloads: List<PayloadModel>?) : RecyclerView.A
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val payloadName: TextView = itemView.findViewById(R.id.list_item_payload_name_text)
+        val payloadOrbit: TextView = itemView.findViewById(R.id.list_item_payload_orbit_text)
+        val payloadManufacturer: TextView =
+            itemView.findViewById(R.id.list_item_payload_manufacturer_text)
     }
 }
