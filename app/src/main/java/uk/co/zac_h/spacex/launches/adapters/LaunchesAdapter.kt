@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.utils.data.LaunchesModel
 import uk.co.zac_h.spacex.utils.format
+import uk.co.zac_h.spacex.utils.formatBlockNumber
 
 class LaunchesAdapter(
     private val context: Context?,
@@ -23,18 +24,8 @@ class LaunchesAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val launch = launches[position]
 
-        var blockText = ""
-
         holder.apply {
             flightNumber.text = context?.getString(R.string.flight_number, launch.flightNumber)
-
-            launch.rocket.firstStage?.cores?.forEach { i ->
-                if (i.block == null) {
-                    blockText = "TBD "
-                    return@forEach
-                }
-                blockText += "${i.block} "
-            }
 
             val landed = launch.rocket.firstStage?.cores?.get(0)?.landingSuccess
 
@@ -55,7 +46,7 @@ class LaunchesAdapter(
             blockNumber.text = context?.getString(
                 R.string.vehicle_block_type,
                 launch.rocket.name,
-                blockText.dropLast(1).replace(" ", " | ")
+                launch.rocket.firstStage?.cores?.formatBlockNumber()
             )
             missionName.text = launch.missionName
             date.text = launch.launchDateUnix.format()

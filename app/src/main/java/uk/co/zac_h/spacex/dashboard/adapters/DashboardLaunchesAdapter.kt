@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.utils.data.LaunchesModel
 import uk.co.zac_h.spacex.utils.format
+import uk.co.zac_h.spacex.utils.formatBlockNumber
 import java.util.*
 
 class DashboardLaunchesAdapter(private val context: Context?, private val launches: LinkedHashMap<String, LaunchesModel>): RecyclerView.Adapter<DashboardLaunchesAdapter.ViewHolder>() {
@@ -32,16 +33,14 @@ class DashboardLaunchesAdapter(private val context: Context?, private val launch
             "latest" -> holder.heading.text = context?.getString(R.string.latest_launch)
         }
 
-        var blockText = ""
-
         holder.apply {
             flightNumber.text = context?.getString(R.string.flight_number, launch?.flightNumber)
 
-            launch?.rocket?.firstStage?.cores?.forEach { i ->
-                blockText += "${i.block} "
-            }
-
-            blockNumber.text = context?.getString(R.string.vehicle_block_type, launch?.rocket?.name, blockText)
+            blockNumber.text = context?.getString(
+                R.string.vehicle_block_type,
+                launch?.rocket?.name,
+                launch?.rocket?.firstStage?.cores?.formatBlockNumber()
+            )
             missionName.text = launch?.missionName
             date.text = launch?.launchDateUnix?.format()
 
