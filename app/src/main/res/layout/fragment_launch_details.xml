@@ -2,6 +2,7 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_launch_details"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".launches.details.LaunchDetailsFragment">
@@ -115,13 +116,18 @@
             app:layout_constraintTop_toBottomOf="@id/launch_details_card"
             app:layout_constraintRight_toRightOf="parent" />
 
-        <ImageView
-            android:id="@+id/launch_details_first_stage_collapse_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:tint="@android:color/white"
-            android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
+        <ToggleButton
+            android:id="@+id/launch_details_first_stage_collapse_toggle"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/expand_collapse_toggle"
+            android:checked="true"
+            android:text=""
+            android:textOff=""
+            android:textOn=""
+            android:backgroundTint="@android:color/white"
             android:layout_marginEnd="16dp"
+            android:clickable="false"
             app:layout_constraintRight_toRightOf="@id/launch_details_first_stage_text"
             app:layout_constraintTop_toTopOf="@id/launch_details_first_stage_text"
             app:layout_constraintBottom_toBottomOf="@id/launch_details_first_stage_text" />
@@ -150,13 +156,18 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/launch_details_cores_recycler" />
 
-        <ImageView
-            android:id="@+id/launch_details_payload_collapse_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:tint="@android:color/white"
-            android:src="@drawable/ic_keyboard_arrow_down_black_24dp"
+        <ToggleButton
+            android:id="@+id/launch_details_payload_collapse_toggle"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/expand_collapse_toggle"
+            android:checked="false"
+            android:text=""
+            android:textOff=""
+            android:textOn=""
+            android:backgroundTint="@android:color/white"
             android:layout_marginEnd="16dp"
+            android:clickable="false"
             app:layout_constraintRight_toRightOf="@id/launch_details_payload_text"
             app:layout_constraintTop_toTopOf="@id/launch_details_payload_text"
             app:layout_constraintBottom_toBottomOf="@id/launch_details_payload_text" />

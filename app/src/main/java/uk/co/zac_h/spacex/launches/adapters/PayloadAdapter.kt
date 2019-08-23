@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.os.bundleOf
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.utils.data.PayloadModel
@@ -20,6 +22,13 @@ class PayloadAdapter(private var payloads: List<PayloadModel>?) : RecyclerView.A
             payloadName.text = payload?.id
             payloadOrbit.text = payload?.orbit
             payloadManufacturer.text = payload?.manufacturer
+
+            itemView.setOnClickListener {
+                itemView.findNavController().navigate(
+                    R.id.payload_details_fragment,
+                    bundleOf("launch" to payload, "title" to payload?.id)
+                )
+            }
         }
     }
 

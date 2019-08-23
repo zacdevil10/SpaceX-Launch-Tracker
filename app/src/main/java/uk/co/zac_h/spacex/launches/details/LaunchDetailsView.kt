@@ -1,10 +1,11 @@
 package uk.co.zac_h.spacex.launches.details
 
-import android.view.View
+import android.widget.ToggleButton
+import androidx.recyclerview.widget.RecyclerView
 
 interface LaunchDetailsView {
 
-    fun expandCollapse(recycler: View, expCollapseIcon: View) {
+    fun expandCollapse(recycler: RecyclerView, expCollapse: ToggleButton)
 
-    }
+    fun setupExpandCollapse(recycler: RecyclerView, expCollapse: ToggleButton)
 }

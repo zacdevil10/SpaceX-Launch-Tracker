@@ -4,8 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.RotateAnimation
+import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_launch_details.*
 import uk.co.zac_h.spacex.R
@@ -69,7 +73,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
             }
         } else {
             launch_details_first_stage_text.visibility = View.GONE
-            launch_details_first_stage_collapse_image.visibility = View.GONE
+            launch_details_first_stage_collapse_toggle.visibility = View.GONE
         }
 
         launch_details_payload_recycler.apply {
@@ -82,23 +86,67 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
             setExpandCollapseListener(
                 launch_details_first_stage_text,
                 launch_details_cores_recycler,
-                launch_details_first_stage_collapse_image
+                launch_details_first_stage_collapse_toggle
             )
             setExpandCollapseListener(
                 launch_details_payload_text,
                 launch_details_payload_recycler,
-                launch_details_payload_collapse_image
+                launch_details_payload_collapse_toggle
             )
+        }
+
+        val rotation = RotateAnimation(
+            180f,
+            0f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f,
+            Animation.RELATIVE_TO_SELF,
+            0.5f
+        )
+        rotation.apply {
+            duration = 500
+        }
+
+        launch_details_first_stage_collapse_toggle.setOnCheckedChangeListener { compoundButton, b ->
+            compoundButton.startAnimation(rotation)
+        }
+
+        launch_details_payload_collapse_toggle.setOnCheckedChangeListener { compoundButton, b ->
+            compoundButton.startAnimation(rotation)
         }
     }
 
-    override fun expandCollapse(recycler: View, expCollapseIcon: View) {
-        if (recycler.visibility == View.VISIBLE) {
+    override fun onResume() {
+        super.onResume()
+
+        println(launch_details_first_stage_collapse_toggle.isChecked)
+
+        presenter.apply {
+            expandCollapse(
+                launch_details_cores_recycler,
+                launch_details_first_stage_collapse_toggle
+            )
+            expandCollapse(launch_details_payload_recycler, launch_details_payload_collapse_toggle)
+        }
+    }
+
+    override fun expandCollapse(recycler: RecyclerView, expCollapse: ToggleButton) {
+        if (expCollapse.isChecked) {
+            expCollapse.isChecked = false
             recycler.visibility = View.GONE
-            expCollapseIcon.animate().rotation(0f)
         } else {
-            expCollapseIcon.animate().rotation(180f)
+            expCollapse.isChecked = true
             recycler.visibility = View.VISIBLE
+        }
+    }
+
+    override fun setupExpandCollapse(recycler: RecyclerView, expCollapse: ToggleButton) {
+        if (expCollapse.isChecked) {
+            expCollapse.isChecked = true
+            recycler.visibility = View.VISIBLE
+        } else {
+            expCollapse.isChecked = false
+            recycler.visibility = View.GONE
         }
     }
 
