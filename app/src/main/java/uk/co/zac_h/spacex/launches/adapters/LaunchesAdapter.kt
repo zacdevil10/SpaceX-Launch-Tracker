@@ -19,7 +19,13 @@ class LaunchesAdapter(
 ) : RecyclerView.Adapter<LaunchesAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_launches, parent, false))
+        ViewHolder(
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.list_item_launches,
+                parent,
+                false
+            )
+        )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val launch = launches[position]
@@ -27,16 +33,16 @@ class LaunchesAdapter(
         holder.apply {
             flightNumber.text = context?.getString(R.string.flight_number, launch.flightNumber)
 
-            val landed = launch.rocket.firstStage?.cores?.get(0)?.landingSuccess
-
             if (launch.rocket.id == "falcon9") {
-                reusedTag.visibility =
-                    if (launch.rocket.firstStage?.cores?.get(0)?.reused != null && launch.rocket.firstStage?.cores?.get(
-                            0
-                        )?.reused!!
-                    )
-                        View.VISIBLE else View.INVISIBLE
-                landingVehicleTag.visibility = if (landed != null && landed) View.VISIBLE else View.INVISIBLE
+                reusedTag.visibility = launch.rocket.firstStage?.cores?.get(0)?.reused?.let {
+                    if (it) View.VISIBLE else View.INVISIBLE
+                } ?: View.INVISIBLE
+
+                landingVehicleTag.visibility =
+                    launch.rocket.firstStage?.cores?.get(0)?.landingSuccess?.let {
+                        if (it) View.VISIBLE else View.INVISIBLE
+                    } ?: View.INVISIBLE
+
                 landingVehicleTag.text = launch.rocket.firstStage?.cores?.get(0)?.landingVehicle
             } else {
                 reusedTag.visibility = View.INVISIBLE
@@ -53,14 +59,17 @@ class LaunchesAdapter(
 
             itemView.setOnClickListener {
                 itemView.findNavController()
-                    .navigate(R.id.launch_details_fragment, bundleOf("launch" to launch, "title" to launch.missionName))
+                    .navigate(
+                        R.id.launch_details_fragment,
+                        bundleOf("launch" to launch, "title" to launch.missionName)
+                    )
             }
         }
     }
 
     override fun getItemCount(): Int = launches.size
 
-    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val flightNumber: TextView = itemView.findViewById(R.id.launches_flight_no_text)
         val blockNumber: TextView = itemView.findViewById(R.id.launches_block_text)
         val missionName: TextView = itemView.findViewById(R.id.launches_mission_name_text)

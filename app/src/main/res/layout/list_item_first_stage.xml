@@ -29,7 +29,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Reused"
+            android:text="@string/reused"
             android:textAlignment="center"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/list_item_pad_success_label"
@@ -43,6 +43,7 @@
             app:layout_constraintEnd_toEndOf="@+id/list_item_first_stage_reused_text"
             app:layout_constraintStart_toStartOf="@+id/list_item_first_stage_reused_text"
             app:layout_constraintTop_toBottomOf="@+id/list_item_first_stage_reused_text"
+            android:contentDescription="@string/reused_status_desc"
             tools:src="@drawable/ic_check_circle_black_24dp" />
 
         <TextView
@@ -50,7 +51,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Landed"
+            android:text="@string/landed_label"
             android:textAlignment="center"
             app:layout_constraintLeft_toRightOf="@id/list_item_first_stage_reused_text"
             app:layout_constraintRight_toLeftOf="@id/list_item_first_stage_landing_text"
@@ -64,6 +65,7 @@
             app:layout_constraintEnd_toEndOf="@+id/list_item_pad_success_label"
             app:layout_constraintStart_toStartOf="@+id/list_item_pad_success_label"
             app:layout_constraintTop_toBottomOf="@+id/list_item_pad_success_label"
+            android:contentDescription="@string/landed_status_desc"
             tools:src="@drawable/ic_check_circle_black_24dp" />
 
         <TextView
@@ -72,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:text="Landing"
+            android:text="@string/landing_label"
             android:textAlignment="center"
             app:layout_constraintLeft_toRightOf="@id/list_item_pad_success_label"
             app:layout_constraintRight_toRightOf="parent"
@@ -82,7 +84,7 @@
             android:id="@+id/list_item_first_stage_landing_image"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="@+id/list_item_pad_success_text"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/list_item_first_stage_landing_text"
             app:layout_constraintStart_toStartOf="@+id/list_item_first_stage_landing_text"
             app:layout_constraintTop_toTopOf="@+id/list_item_first_stage_landed_image"

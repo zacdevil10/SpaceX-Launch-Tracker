@@ -4,7 +4,10 @@ import android.view.View
 import uk.co.zac_h.spacex.utils.data.LandingPadModel
 import uk.co.zac_h.spacex.utils.data.LaunchpadModel
 
-class PadStatsPresenterImpl(private val view: PadStatsView, private val interactor: PadStatsInteractor) : PadStatsPresenter, PadStatsInteractor.InteractorCallback {
+class PadStatsPresenterImpl(
+    private val view: PadStatsView,
+    private val interactor: PadStatsInteractor
+) : PadStatsPresenter, PadStatsInteractor.InteractorCallback {
 
     override fun getLaunchpads() {
         view.toggleLaunchpadsProgress(View.VISIBLE)

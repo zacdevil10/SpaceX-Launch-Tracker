@@ -26,10 +26,11 @@ class LaunchesListFragment : Fragment(), LaunchesView {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_launches_list, container, false)
-    }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? = inflater.inflate(R.layout.fragment_launches_list, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,12 +45,12 @@ class LaunchesListFragment : Fragment(), LaunchesView {
             adapter = launchesAdapter
         }
 
-        val param = arguments?.getString("launchParam")
+        arguments?.getString("launchParam")?.let {
+            presenter.getLaunchList(it, if (it == "past") "desc" else "asc")
 
-        if (param != null) presenter.getLaunchList(param, if (param == "past") "desc" else "asc")
-
-        launches_swipe_refresh.setOnRefreshListener {
-            if (param != null) presenter.getLaunchList(param, if (param == "past") "desc" else "asc")
+            launches_swipe_refresh.setOnRefreshListener {
+                presenter.getLaunchList(it, if (it == "past") "desc" else "asc")
+            }
         }
     }
 

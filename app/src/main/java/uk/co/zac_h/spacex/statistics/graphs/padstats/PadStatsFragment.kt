@@ -24,7 +24,11 @@ class PadStatsFragment : Fragment(), PadStatsView {
     private var launchpads = ArrayList<LaunchpadModel>()
     private var landingPads = ArrayList<LandingPadModel>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
         inflater.inflate(R.layout.fragment_pad_stats, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,8 +51,10 @@ class PadStatsFragment : Fragment(), PadStatsView {
             adapter = landingSitesAdapter
         }
 
-        if (launchpads.isEmpty()) presenter.getLaunchpads()
-        if (landingPads.isEmpty()) presenter.getLandingPads()
+        presenter.apply {
+            if (launchpads.isEmpty()) getLaunchpads()
+            if (landingPads.isEmpty()) getLandingPads()
+        }
     }
 
     override fun setLaunchpadsList(launchpads: List<LaunchpadModel>?) {

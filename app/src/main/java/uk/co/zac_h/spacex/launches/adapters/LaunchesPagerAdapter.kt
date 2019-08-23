@@ -5,7 +5,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import uk.co.zac_h.spacex.launches.LaunchesListFragment
 
-class LaunchesPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+class LaunchesPagerAdapter(fragmentManager: FragmentManager) :
+    FragmentPagerAdapter(fragmentManager) {
 
     override fun getItem(position: Int): Fragment? =
         when (position) {
@@ -13,7 +14,6 @@ class LaunchesPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdap
             1 -> LaunchesListFragment.newInstance("past")
             else -> null
         }
-
 
     override fun getCount(): Int = 2
 

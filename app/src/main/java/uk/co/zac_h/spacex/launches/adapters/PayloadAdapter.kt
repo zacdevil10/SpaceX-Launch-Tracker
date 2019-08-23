@@ -10,10 +10,17 @@ import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.utils.data.PayloadModel
 
-class PayloadAdapter(private var payloads: List<PayloadModel>?) : RecyclerView.Adapter<PayloadAdapter.ViewHolder>() {
+class PayloadAdapter(private var payloads: List<PayloadModel>?) :
+    RecyclerView.Adapter<PayloadAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_payload, parent, false))
+        ViewHolder(
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.list_item_payload,
+                parent,
+                false
+            )
+        )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val payload = payloads?.get(position)

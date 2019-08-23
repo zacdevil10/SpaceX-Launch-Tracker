@@ -19,9 +19,7 @@ import uk.co.zac_h.spacex.utils.data.LaunchesModel
 import uk.co.zac_h.spacex.utils.format
 import uk.co.zac_h.spacex.utils.formatBlockNumber
 
-class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
-
-    private lateinit var presenter: LaunchDetailsPresenter
+class LaunchDetailsFragment : Fragment() {
 
     private var coreAssigned: Boolean = false
 
@@ -35,43 +33,45 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = LaunchDetailsPresenterImpl(this)
-
         val launch = arguments?.getParcelable("launch") as LaunchesModel?
-
-        launch_details_number_text.text =
-            context?.getString(R.string.flight_number, launch?.flightNumber)
-
-        launch_details_block_text.text = context?.getString(
-            R.string.vehicle_block_type,
-            launch?.rocket?.name,
-            launch?.rocket?.firstStage?.cores?.formatBlockNumber()
-        )
-        launch_details_mission_name_text.text = launch?.missionName
-        launch_details_site_name_text.text = launch?.launchSite?.name
-        launch_details_date_text.text = launch?.launchDateUnix?.format()
-
-        launch?.staticFireDateUnix?.let {
-            launch_details_static_fire_date_text.text = it.format()
-        }
-
-        launch_details_details_text.text = launch?.details
 
         Picasso.get().load(launch?.links?.missionPatchSmall)
             .into(launch_details_mission_patch_image)
 
-        launch?.rocket?.firstStage?.cores?.forEach {
-            if (coreAssigned) return@forEach
-            coreAssigned = it.serial != null
+        launch?.let {
+            launch_details_number_text.text =
+                context?.getString(R.string.flight_number, launch.flightNumber)
+
+            launch_details_block_text.text = context?.getString(
+                R.string.vehicle_block_type,
+                launch.rocket.name,
+                launch.rocket.firstStage?.cores?.formatBlockNumber()
+            )
+            launch_details_mission_name_text.text = launch.missionName
+            launch_details_site_name_text.text = launch.launchSite.name
+            launch_details_date_text.text = launch.launchDateUnix.format()
+
+            launch.staticFireDateUnix?.let {
+                launch_details_static_fire_date_text.text = it.format()
+            }
+
+            launch_details_details_text.text = launch.details
+
+            launch.rocket.firstStage?.cores?.forEach {
+                if (coreAssigned) return@forEach
+                coreAssigned = it.serial != null
+            }
         }
 
         if (coreAssigned) {
+            //If a core has been assigned to a launch then add the adapter to the RecyclerView
             launch_details_cores_recycler.apply {
                 layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
                 setHasFixedSize(true)
                 adapter = FirstStageAdapter(launch?.rocket?.firstStage?.cores)
             }
         } else {
+            //If no core has been assigned yet then hide the RecyclerView and related heading
             launch_details_first_stage_text.visibility = View.GONE
             launch_details_first_stage_collapse_toggle.visibility = View.GONE
         }
@@ -82,19 +82,20 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
             adapter = PayloadAdapter(launch?.rocket?.secondStage?.payloads)
         }
 
-        presenter.apply {
-            setExpandCollapseListener(
-                launch_details_first_stage_text,
+        launch_details_first_stage_text.setOnClickListener {
+            expandCollapse(
                 launch_details_cores_recycler,
                 launch_details_first_stage_collapse_toggle
             )
-            setExpandCollapseListener(
-                launch_details_payload_text,
+        }
+        launch_details_payload_text.setOnClickListener {
+            expandCollapse(
                 launch_details_payload_recycler,
                 launch_details_payload_collapse_toggle
             )
         }
 
+        //Set rotation animation of toggle buttons when expanding/collapsing recycler view
         val rotation = RotateAnimation(
             180f,
             0f,
@@ -103,9 +104,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
             Animation.RELATIVE_TO_SELF,
             0.5f
         )
-        rotation.apply {
-            duration = 500
-        }
+        rotation.duration = 500
 
         launch_details_first_stage_collapse_toggle.setOnCheckedChangeListener { compoundButton, b ->
             compoundButton.startAnimation(rotation)
@@ -119,18 +118,23 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
     override fun onResume() {
         super.onResume()
 
-        println(launch_details_first_stage_collapse_toggle.isChecked)
-
-        presenter.apply {
-            expandCollapse(
-                launch_details_cores_recycler,
-                launch_details_first_stage_collapse_toggle
-            )
-            expandCollapse(launch_details_payload_recycler, launch_details_payload_collapse_toggle)
-        }
+        /**
+         * Set and restore Expand/Collapse state of recycler view when returning to fragment
+         */
+        setupExpandCollapse(
+            launch_details_cores_recycler,
+            launch_details_first_stage_collapse_toggle
+        )
+        setupExpandCollapse(launch_details_payload_recycler, launch_details_payload_collapse_toggle)
     }
 
-    override fun expandCollapse(recycler: RecyclerView, expCollapse: ToggleButton) {
+    /**
+     * Toggle expand/collapse of [recycler] views on selection of TextView
+     *
+     * @param[recycler] is the view you wish to show or hide
+     * @param[expCollapse] is the toggle button that shows the collapse state of the recycler
+     */
+    private fun expandCollapse(recycler: RecyclerView, expCollapse: ToggleButton) {
         if (expCollapse.isChecked) {
             expCollapse.isChecked = false
             recycler.visibility = View.GONE
@@ -140,7 +144,13 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
         }
     }
 
-    override fun setupExpandCollapse(recycler: RecyclerView, expCollapse: ToggleButton) {
+    /**
+     * Initial expand/collapse of [recycler] views
+     *
+     * @param[recycler] is the view you wish to show or hide
+     * @param[expCollapse] is the toggle button that shows the collapse state of the recycler
+     */
+    private fun setupExpandCollapse(recycler: RecyclerView, expCollapse: ToggleButton) {
         if (expCollapse.isChecked) {
             expCollapse.isChecked = true
             recycler.visibility = View.VISIBLE
@@ -149,5 +159,4 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
             recycler.visibility = View.GONE
         }
     }
-
 }

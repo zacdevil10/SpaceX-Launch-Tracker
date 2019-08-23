@@ -33,19 +33,39 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
     private var filterSuccessful = false
     private var filterFailed = false
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
         inflater.inflate(R.layout.fragment_launch_history, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         if (presenter == null) {
-            presenter = LaunchHistoryPresenterImpl(
-                this,
-                LaunchHistoryInteractorImpl()
-            )
+            presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
         }
 
+        if (launches.isEmpty()) {
+            presenter?.getLaunchList("past")
+        } else {
+            setData(false)
+        }
+
+        presenter?.getRocketsList()
+
+        launch_history_success_toggle.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) launch_history_failure_toggle.isChecked = false
+            presenter?.updateFilter("success", isChecked)
+        }
+
+        launch_history_failure_toggle.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) launch_history_success_toggle.isChecked = false
+            presenter?.updateFilter("failed", isChecked)
+        }
+
+        //Pie chart appearance
         launch_history_pie_chart.apply {
             isDrawHoleEnabled = true
             setHoleColor(ContextCompat.getColor(context, R.color.colorPrimary))
@@ -60,24 +80,6 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
                 orientation = Legend.LegendOrientation.VERTICAL
                 textColor = Color.WHITE
             }
-        }
-
-        if (launches.isEmpty()) {
-            presenter?.getLaunchList("past")
-        } else {
-            setData(false)
-        }
-
-        presenter?.getRocketsList()
-
-        launch_history_success_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) launch_history_failure_toggle.isChecked = false
-            presenter?.updateFilter("success", isChecked)
-        }
-
-        launch_history_failure_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) launch_history_success_toggle.isChecked = false
-            presenter?.updateFilter("failed", isChecked)
         }
     }
 
@@ -114,8 +116,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
         entries.add(PieEntry(falconNine, context?.getString(R.string.falcon_9)))
         entries.add(PieEntry(falconHeavy, context?.getString(R.string.falcon_heavy)))
 
-        val dataSet = PieDataSet(entries, "")
-        dataSet.apply {
+        val dataSet = PieDataSet(entries, "").apply {
             sliceSpace = 3f
             setColors(colors)
             valueFormatter = object : ValueFormatter() {
@@ -125,9 +126,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
             }
         }
 
-        val data = PieData(dataSet)
-
-        data.apply {
+        val data = PieData(dataSet).apply {
             setValueTextColor(Color.WHITE)
             setValueTextSize(11f)
         }
@@ -142,12 +141,12 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
     }
 
     private fun generateCenterSpannableText(range: String): SpannableString {
-        val s = SpannableString(context?.getString(R.string.pie_chart_title, range))
-        s.setSpan(RelativeSizeSpan(1.7f), 0, 8, 0)
-        s.setSpan(StyleSpan(Typeface.NORMAL), 8, s.length - 11, 0)
-        s.setSpan(RelativeSizeSpan(.8f), 8, s.length - 11, 0)
-        s.setSpan(ForegroundColorSpan(ColorTemplate.rgb("29b6f6")), s.length - 11, s.length, 0)
-        return s
+        return SpannableString(context?.getString(R.string.pie_chart_title, range)).apply {
+            setSpan(RelativeSizeSpan(1.7f), 0, 8, 0)
+            setSpan(StyleSpan(Typeface.NORMAL), 8, length - 11, 0)
+            setSpan(RelativeSizeSpan(.8f), 8, length - 11, 0)
+            setSpan(ForegroundColorSpan(ColorTemplate.rgb("29b6f6")), length - 11, length, 0)
+        }
     }
 
     override fun setLaunchesList(launches: List<LaunchesModel>?) {
@@ -178,15 +177,18 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
         when (id) {
             1 -> {
                 launch_history_falcon_one_rate_progress.progress = percent
-                launch_history_falcon_one_percent_text.text = context?.getString(R.string.percentage, percent)
+                launch_history_falcon_one_percent_text.text =
+                    context?.getString(R.string.percentage, percent)
             }
             2 -> {
                 launch_history_falcon_nine_rate_progress.progress = percent
-                launch_history_falcon_nine_percent_text.text = context?.getString(R.string.percentage, percent)
+                launch_history_falcon_nine_percent_text.text =
+                    context?.getString(R.string.percentage, percent)
             }
             3 -> {
                 launch_history_falcon_heavy_rate_progress.progress = percent
-                launch_history_falcon_heavy_percent_text.text = context?.getString(R.string.percentage, percent)
+                launch_history_falcon_heavy_percent_text.text =
+                    context?.getString(R.string.percentage, percent)
             }
         }
     }

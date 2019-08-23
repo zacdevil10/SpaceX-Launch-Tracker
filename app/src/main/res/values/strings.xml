@@ -27,6 +27,16 @@
     <string name="falcon_9">Falcon 9</string>
     <string name="falcon_heavy">Falcon Heavy</string>
 
+    <!--Launch Details-->
+    <string name="mission_patch">Mission patch</string>
+    <string name="first_stage">First Stage</string>
+    <string name="payload_label">Payload</string>
+    <string name="details_label">Details</string>
+    <string name="reused_status_desc">Reused status</string>
+    <string name="landed_label">Landed</string>
+    <string name="landed_status_desc">Landed status</string>
+    <string name="landing_label">Landing</string>
+
     <!--Statistics-->
     <string name="success_rate_heading">Launch Success Rate</string>
     <string name="percentage">%1$d%%</string>
@@ -43,8 +53,5 @@
     <!--About-->
     <string name="powered_by">Powered by the r/SpaceX API</string>
     <string name="spacex_launch_tracker_icon_desc">SpaceX Launch Tracker Icon</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

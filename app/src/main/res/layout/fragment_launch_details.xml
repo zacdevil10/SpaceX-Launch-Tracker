@@ -32,6 +32,7 @@
                     android:layout_height="64dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/mission_patch"
                     tools:src="@drawable/ic_check_circle_black_24dp" />
 
                 <TextView
@@ -106,7 +107,7 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:layout_marginTop="8dp"
-            android:text="First Stage"
+            android:text="@string/first_stage"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/heading"
             android:background="?attr/selectableItemBackground"
@@ -146,7 +147,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:text="Payload"
+            android:text="@string/payload_label"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/heading"
             android:background="?attr/selectableItemBackground"
