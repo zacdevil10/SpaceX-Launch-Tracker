@@ -137,7 +137,6 @@
             android:id="@+id/launch_details_cores_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/launch_details_first_stage_text" />
@@ -162,7 +161,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:background="@drawable/expand_collapse_toggle"
-            android:checked="false"
+            android:checked="true"
             android:text=""
             android:textOff=""
             android:textOn=""
@@ -177,7 +176,6 @@
             android:id="@+id/launch_details_payload_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/launch_details_payload_text" />

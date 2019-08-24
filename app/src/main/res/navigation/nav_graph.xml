@@ -46,20 +46,6 @@
             android:name="title"
             app:argType="string"
             android:defaultValue="Launch Details" />
-        <action
-            android:id="@+id/action_launch_details_fragment_to_payload_details_fragment"
-            app:destination="@id/payload_details_fragment" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/payload_details_fragment"
-        android:name="uk.co.zac_h.spacex.launches.details.payload.PayloadDetailsFragment"
-        android:label="{title}"
-        tools:layout="@layout/fragment_payload_details">
-        <argument
-            android:name="title"
-            app:argType="string"
-            android:defaultValue="Payload Details" />
     </fragment>
 
 </navigation>

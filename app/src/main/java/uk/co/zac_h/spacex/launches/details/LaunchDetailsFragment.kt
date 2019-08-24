@@ -78,7 +78,8 @@ class LaunchDetailsFragment : Fragment() {
 
         launch_details_payload_recycler.apply {
             layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
-            setHasFixedSize(true)
+            isNestedScrollingEnabled = false
+            setHasFixedSize(false)
             adapter = PayloadAdapter(launch?.rocket?.secondStage?.payloads)
         }
 
@@ -88,6 +89,7 @@ class LaunchDetailsFragment : Fragment() {
                 launch_details_first_stage_collapse_toggle
             )
         }
+
         launch_details_payload_text.setOnClickListener {
             expandCollapse(
                 launch_details_payload_recycler,

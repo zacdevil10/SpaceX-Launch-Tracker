@@ -15,3 +15,13 @@ fun List<CoreSpecModel>.formatBlockNumber(): String {
 
     return blockText.dropLast(1).replace(" ", " | ")
 }
+
+fun List<String>.formatCustomers(): String {
+    var customers = ""
+
+    this.forEach { i ->
+        customers += "${i}, "
+    }
+
+    return customers.dropLast(2)
+}

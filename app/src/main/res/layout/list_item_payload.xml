@@ -1,69 +1,315 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:foreground="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_margin="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp">
 
         <TextView
             android:id="@+id/list_item_payload_name_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
             android:textColor="@android:color/white"
             android:textSize="16sp"
-            android:layout_marginTop="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/list_item_payload_orbit_text"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/list_item_payload_manufacturer_text"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/list_item_payload_expand_collapse_toggle"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="Amos-17" />
 
-        <TextView
-            android:id="@+id/list_item_payload_orbit_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <ToggleButton
+            android:id="@+id/list_item_payload_expand_collapse_toggle"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/expand_collapse_toggle"
+            android:checked="false"
+            android:text=""
+            android:textOff=""
+            android:textOn=""
+            android:backgroundTint="@android:color/white"
             android:layout_marginEnd="16dp"
-            app:layout_constraintTop_toTopOf="@id/list_item_payload_name_text"
+            android:clickable="false"
             app:layout_constraintBottom_toBottomOf="@id/list_item_payload_name_text"
             app:layout_constraintRight_toRightOf="parent"
-            tools:text="GTO" />
+            app:layout_constraintTop_toTopOf="@id/list_item_payload_name_text" />
 
         <TextView
             android:id="@+id/list_item_payload_manufacturer_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            app:layout_constraintTop_toBottomOf="@id/list_item_payload_name_text"
+            android:textSize="14sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/list_item_payload_name_text"
             tools:text="Boeing Satellite Systems" />
 
-        <TextView
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/list_item_payload_details_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="8dp"
-            android:padding="8dp"
-            android:text="@string/details_label"
-            android:textSize="12sp"
-            android:clickable="true"
-            android:focusable="true"
-            android:textAllCaps="true"
-            android:background="?attr/selectableItemBackground"
+            android:layout_marginEnd="16dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/list_item_payload_manufacturer_text"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/list_item_payload_manufacturer_text">
+
+            <TextView
+                android:id="@+id/list_item_payload_customer_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Customer"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/list_item_payload_customer_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/list_item_payload_customer_label"
+                app:layout_constraintBottom_toBottomOf="@id/list_item_payload_customer_label"
+                tools:text="Spacecom" />
+
+            <TextView
+                android:id="@+id/list_item_payload_orbit_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Orbit"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_payload_customer_label" />
+
+            <TextView
+                android:id="@+id/list_item_payload_orbit_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/list_item_payload_orbit_label"
+                app:layout_constraintBottom_toBottomOf="@id/list_item_payload_orbit_label"
+                tools:text="VLEO" />
+
+            <TextView
+                android:id="@+id/list_item_payload_lifespan_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lifespan"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_payload_orbit_label" />
+
+            <TextView
+                android:id="@+id/list_item_payload_lifespan_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/list_item_payload_lifespan_label"
+                tools:text="15 Years" />
+
+            <TextView
+                android:id="@+id/list_item_payload_mass_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mass"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_payload_lifespan_label" />
+
+            <TextView
+                android:id="@+id/list_item_payload_mass_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/list_item_payload_mass_label"
+                tools:text="6500 kg / 14330.05 lbs" />
+
+            <TextView
+                android:id="@+id/list_item_payload_type_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Payload type"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_payload_mass_label" />
+
+            <TextView
+                android:id="@+id/list_item_payload_type_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/list_item_payload_type_label"
+                tools:text="Satellite" />
+
+            <TextView
+                android:id="@+id/list_item_payload_refsystem_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reference System"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_payload_type_label" />
+
+            <TextView
+                android:id="@+id/list_item_payload_refsystem_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/list_item_payload_refsystem_label"
+                tools:text="geocentric" />
+
+            <TextView
+                android:id="@+id/list_item_payload_regime_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Regime"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_payload_refsystem_label" />
+
+            <TextView
+                android:id="@+id/list_item_payload_regime_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/list_item_payload_regime_label"
+                tools:text="medium-earth" />
+
+            <TextView
+                android:id="@+id/list_item_payload_long_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Longitude"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_payload_regime_label" />
+
+            <TextView
+                android:id="@+id/list_item_payload_long_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/list_item_payload_long_label"
+                tools:text="0.184839" />
+
+            <TextView
+                android:id="@+id/list_item_payload_semimajor_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Semi Major Axis"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_payload_long_label" />
+
+            <TextView
+                android:id="@+id/list_item_payload_semimajor_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/list_item_payload_semimajor_label"
+                tools:text="15397.891" />
+
+            <TextView
+                android:id="@+id/list_item_payload_eccentricity_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Eccentricity"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_payload_semimajor_label" />
+
+            <TextView
+                android:id="@+id/list_item_payload_eccentricity_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/list_item_payload_eccentricity_label"
+                tools:text="0.1960963" />
+
+            <TextView
+                android:id="@+id/list_item_payload_periapsis_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Periapsis (km)"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_payload_eccentricity_label" />
+
+            <TextView
+                android:id="@+id/list_item_payload_periapsis_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/list_item_payload_periapsis_label"
+                tools:text="6000.287" />
+
+            <TextView
+                android:id="@+id/list_item_payload_apoapsis_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Apoapsis (km)"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_payload_periapsis_label" />
+
+            <TextView
+                android:id="@+id/list_item_payload_apoapsis_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/list_item_payload_apoapsis_label"
+                tools:text="12039.226" />
+
+            <TextView
+                android:id="@+id/list_item_payload_inclination_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Inclination"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_payload_apoapsis_label" />
+
+            <TextView
+                android:id="@+id/list_item_payload_inclination_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/list_item_payload_inclination_label"
+                tools:text="43.0545" />
+
+            <TextView
+                android:id="@+id/list_item_payload_period_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Period"
+                android:layout_marginTop="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_payload_inclination_label" />
+
+            <TextView
+                android:id="@+id/list_item_payload_period_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="@id/list_item_payload_period_label"
+                tools:text="316.921" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
