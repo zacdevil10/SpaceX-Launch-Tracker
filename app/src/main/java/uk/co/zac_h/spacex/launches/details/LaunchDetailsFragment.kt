@@ -19,7 +19,9 @@ import uk.co.zac_h.spacex.utils.data.LaunchesModel
 import uk.co.zac_h.spacex.utils.format
 import uk.co.zac_h.spacex.utils.formatBlockNumber
 
-class LaunchDetailsFragment : Fragment() {
+class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
+
+    private lateinit var presenter: LaunchDetailsPresenter
 
     private var coreAssigned: Boolean = false
 
@@ -33,54 +35,15 @@ class LaunchDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val launch = arguments?.getParcelable("launch") as LaunchesModel?
+        presenter = LaunchDetailsPresenterImpl(this, LaunchDetailsInteractorImpl())
 
-        Picasso.get().load(launch?.links?.missionPatchSmall)
-            .into(launch_details_mission_patch_image)
+        val launch = arguments?.getParcelable("launch") as LaunchesModel?
+        val id = arguments?.getString("launch_id")
 
         launch?.let {
-            launch_details_number_text.text =
-                context?.getString(R.string.flight_number, launch.flightNumber)
-
-            launch_details_block_text.text = context?.getString(
-                R.string.vehicle_block_type,
-                launch.rocket.name,
-                launch.rocket.firstStage?.cores?.formatBlockNumber()
-            )
-            launch_details_mission_name_text.text = launch.missionName
-            launch_details_site_name_text.text = launch.launchSite.name
-            launch_details_date_text.text = launch.launchDateUnix.format()
-
-            launch.staticFireDateUnix?.let {
-                launch_details_static_fire_date_text.text = it.format()
-            }
-
-            launch_details_details_text.text = launch.details
-
-            launch.rocket.firstStage?.cores?.forEach {
-                if (coreAssigned) return@forEach
-                coreAssigned = it.serial != null
-            }
-        }
-
-        if (coreAssigned) {
-            //If a core has been assigned to a launch then add the adapter to the RecyclerView
-            launch_details_cores_recycler.apply {
-                layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
-                setHasFixedSize(true)
-                adapter = FirstStageAdapter(launch?.rocket?.firstStage?.cores)
-            }
-        } else {
-            //If no core has been assigned yet then hide the RecyclerView and related heading
-            launch_details_first_stage_text.visibility = View.GONE
-            launch_details_first_stage_collapse_toggle.visibility = View.GONE
-        }
-
-        launch_details_payload_recycler.apply {
-            layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
-            isNestedScrollingEnabled = false
-            setHasFixedSize(false)
-            adapter = PayloadAdapter(launch?.rocket?.secondStage?.payloads)
+            presenter.addLaunchModel(it)
+        } ?: id?.let {
+            presenter.getLaunch(it)
         }
 
         launch_details_first_stage_text.setOnClickListener {
@@ -128,6 +91,56 @@ class LaunchDetailsFragment : Fragment() {
             launch_details_first_stage_collapse_toggle
         )
         setupExpandCollapse(launch_details_payload_recycler, launch_details_payload_collapse_toggle)
+    }
+
+    override fun updateLaunchDataView(launch: LaunchesModel?) {
+        launch?.let {
+            Picasso.get().load(launch.links.missionPatchSmall)
+                .into(launch_details_mission_patch_image)
+
+            launch_details_number_text.text =
+                context?.getString(R.string.flight_number, launch.flightNumber)
+
+            launch_details_block_text.text = context?.getString(
+                R.string.vehicle_block_type,
+                launch.rocket.name,
+                launch.rocket.firstStage?.cores?.formatBlockNumber()
+            )
+            launch_details_mission_name_text.text = launch.missionName
+            launch_details_site_name_text.text = launch.launchSite.name
+            launch_details_date_text.text = launch.launchDateUnix.format()
+
+            launch.staticFireDateUnix?.let {
+                launch_details_static_fire_date_text.text = it.format()
+            }
+
+            launch_details_details_text.text = launch.details
+
+            launch.rocket.firstStage?.cores?.forEach {
+                if (coreAssigned) return@forEach
+                coreAssigned = it.serial != null
+            }
+        } ?: presenter
+
+        if (coreAssigned) {
+            //If a core has been assigned to a launch then add the adapter to the RecyclerView
+            launch_details_cores_recycler.apply {
+                layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
+                setHasFixedSize(true)
+                adapter = FirstStageAdapter(launch?.rocket?.firstStage?.cores)
+            }
+        } else {
+            //If no core has been assigned yet then hide the RecyclerView and related heading
+            launch_details_first_stage_text.visibility = View.GONE
+            launch_details_first_stage_collapse_toggle.visibility = View.GONE
+        }
+
+        launch_details_payload_recycler.apply {
+            layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
+            isNestedScrollingEnabled = false
+            setHasFixedSize(false)
+            adapter = PayloadAdapter(launch?.rocket?.secondStage?.payloads)
+        }
     }
 
     /**

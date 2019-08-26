@@ -5,6 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.os.bundleOf
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.utils.data.CoreSpecModel
@@ -60,6 +62,14 @@ class FirstStageAdapter(private val cores: List<CoreSpecModel>?) :
                     }
                 }
             }
+
+            detailsButton.setOnClickListener {
+                itemView.findNavController()
+                    .navigate(
+                        R.id.action_launch_details_fragment_to_core_details_fragment,
+                        bundleOf("core" to core, "title" to core?.serial)
+                    )
+            }
         }
     }
 
@@ -72,5 +82,7 @@ class FirstStageAdapter(private val cores: List<CoreSpecModel>?) :
         val landedImage: ImageView = itemView.findViewById(R.id.list_item_first_stage_landed_image)
         val landingImage: ImageView =
             itemView.findViewById(R.id.list_item_first_stage_landing_image)
+        val detailsButton: TextView =
+            itemView.findViewById(R.id.list_item_first_stage_details_button)
     }
 }

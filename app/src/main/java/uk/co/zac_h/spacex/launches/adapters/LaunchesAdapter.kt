@@ -60,7 +60,7 @@ class LaunchesAdapter(
             itemView.setOnClickListener {
                 itemView.findNavController()
                     .navigate(
-                        R.id.launch_details_fragment,
+                        R.id.action_launches_page_fragment_to_launch_details_fragment,
                         bundleOf("launch" to launch, "title" to launch.missionName)
                     )
             }
