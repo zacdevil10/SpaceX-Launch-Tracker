@@ -16,7 +16,6 @@ class DashboardInteractorImpl : DashboardInteractor {
 
     override fun getSingleLaunch(id: String, listener: DashboardInteractor.InteractorCallback) {
         scope.launch {
-
             val response = async(SupervisorJob(parentJob)) {
                 SpaceXInterface.create().getSingleLaunch(id)
             }
@@ -29,9 +28,14 @@ class DashboardInteractorImpl : DashboardInteractor {
                         listener.onError("Error: ${response.await().code()}")
                     }
                 } catch (e: HttpException) {
-                    listener.onError(e.localizedMessage)
+                    listener.onError(
+                        e.localizedMessage ?: "There was a network error! Please try refreshing."
+                    )
                 } catch (e: Throwable) {
-                    Log.e(this@DashboardInteractorImpl.javaClass.name, e.localizedMessage)
+                    Log.e(
+                        this@DashboardInteractorImpl.javaClass.name,
+                        e.localizedMessage ?: "Job failed to execute"
+                    )
                 }
             }
         }

@@ -13,7 +13,13 @@ class PadStatsLaunchSitesAdapter(private var sites: ArrayList<LaunchpadModel>) :
     RecyclerView.Adapter<PadStatsLaunchSitesAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_pad_stats, parent, false))
+        ViewHolder(
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.list_item_pad_stats,
+                parent,
+                false
+            )
+        )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val site = sites[position]
@@ -22,12 +28,14 @@ class PadStatsLaunchSitesAdapter(private var sites: ArrayList<LaunchpadModel>) :
             nameText.text = site.nameLong
             attemptedText.text = site.launchAttempts.toString()
             successText.text = site.launchSuccesses.toString()
-            statusImage.setImageResource(when (site.status) {
-                "active" -> R.drawable.ic_check_circle_black_24dp
-                "retired" -> R.drawable.ic_remove_circle_black_24dp
-                "under construction" -> R.drawable.ic_build_black_24dp
-                else -> R.drawable.ic_dashboard_black_24dp
-            })
+            statusImage.setImageResource(
+                when (site.status) {
+                    "active" -> R.drawable.ic_check_circle_black_24dp
+                    "retired" -> R.drawable.ic_remove_circle_black_24dp
+                    "under construction" -> R.drawable.ic_build_black_24dp
+                    else -> R.drawable.ic_remove_circle_black_24dp
+                }
+            )
         }
     }
 

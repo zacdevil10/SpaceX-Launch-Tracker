@@ -28,9 +28,14 @@ class LaunchesInteractorImpl : LaunchesInteractor {
                         listener.onError(response.await().message())
                     }
                 } catch (e: HttpException) {
-                    listener.onError(e.localizedMessage)
+                    listener.onError(
+                        e.localizedMessage ?: "There was a network error! Please try refreshing."
+                    )
                 } catch (e: Throwable) {
-                    Log.e(this@LaunchesInteractorImpl.javaClass.name, e.localizedMessage)
+                    Log.e(
+                        this@LaunchesInteractorImpl.javaClass.name,
+                        e.localizedMessage ?: "Job failed to execute"
+                    )
                 }
             }
         }

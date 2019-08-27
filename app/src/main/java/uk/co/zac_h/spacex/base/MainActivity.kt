@@ -12,8 +12,11 @@ import uk.co.zac_h.spacex.R
 
 class MainActivity : AppCompatActivity() {
 
-    private val startDestinations =
-        mutableSetOf(R.id.dashboard_page_fragment, R.id.launches_page_fragment, R.id.statistics_page_fragment)
+    private val startDestinations = mutableSetOf(
+        R.id.dashboard_page_fragment,
+        R.id.launches_page_fragment,
+        R.id.statistics_page_fragment
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,11 +25,10 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host)
 
         val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig = AppBarConfiguration.Builder(startDestinations).setDrawerLayout(drawerLayout).build()
+        val appBarConfig =
+            AppBarConfiguration.Builder(startDestinations).setDrawerLayout(drawerLayout).build()
 
         findViewById<Toolbar>(R.id.toolbar).setupWithNavController(navController, appBarConfig)
         findViewById<NavigationView>(R.id.nav_view).setupWithNavController(navController)
-
     }
-
 }

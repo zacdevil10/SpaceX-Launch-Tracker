@@ -16,7 +16,6 @@ class PadStatsInteractorImpl : PadStatsInteractor {
 
     override fun getLaunchpads(listener: PadStatsInteractor.InteractorCallback) {
         scope.launch {
-
             val response = async(SupervisorJob(parentJob)) {
                 SpaceXInterface.create().getLaunchpads()
             }
@@ -29,9 +28,14 @@ class PadStatsInteractorImpl : PadStatsInteractor {
                         listener.onError("Error: ${response.await().code()}")
                     }
                 } catch (e: HttpException) {
-                    listener.onError(e.localizedMessage)
+                    listener.onError(
+                        e.localizedMessage ?: "There was a network error! Please try refreshing."
+                    )
                 } catch (e: Throwable) {
-                    Log.e(this@PadStatsInteractorImpl.javaClass.name, e.localizedMessage)
+                    Log.e(
+                        this@PadStatsInteractorImpl.javaClass.name,
+                        e.localizedMessage ?: "Job failed to execute"
+                    )
                 }
             }
         }
@@ -51,9 +55,14 @@ class PadStatsInteractorImpl : PadStatsInteractor {
                         listener.onError("Error: ${response.await().code()}")
                     }
                 } catch (e: HttpException) {
-                    listener.onError(e.localizedMessage)
+                    listener.onError(
+                        e.localizedMessage ?: "There was a network error! Please try refreshing."
+                    )
                 } catch (e: Throwable) {
-                    Log.e(this@PadStatsInteractorImpl.javaClass.name, e.localizedMessage)
+                    Log.e(
+                        this@PadStatsInteractorImpl.javaClass.name,
+                        e.localizedMessage ?: "Job failed to execute"
+                    )
                 }
             }
         }

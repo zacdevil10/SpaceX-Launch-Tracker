@@ -28,7 +28,11 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
     private var filterFalconNine = true
     private var filterFalconHeavy = true
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
         inflater.inflate(R.layout.fragment_launch_rate, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,14 +40,14 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
 
         presenter = LaunchRatePresenterImpl(this, LaunchRateInteractorImpl())
 
-        launch_rate_falcon_one_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+        launch_rate_falcon_one_toggle.setOnCheckedChangeListener { _, isChecked ->
             presenter.updateFilter("falcon1", isChecked)
         }
-        launch_rate_falcon_nine_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+        launch_rate_falcon_nine_toggle.setOnCheckedChangeListener { _, isChecked ->
             presenter.updateFilter("falcon9", isChecked)
         }
 
-        launch_rate_falcon_heavy_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+        launch_rate_falcon_heavy_toggle.setOnCheckedChangeListener { _, isChecked ->
             presenter.updateFilter("falconheavy", isChecked)
         }
 
@@ -70,7 +74,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
             setDrawBorders(false)
 
             legend.apply {
-                textColor= Color.WHITE
+                textColor = Color.WHITE
 
             }
         }
@@ -117,11 +121,15 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
         }
 
         dataMap.forEach {
-            entries.add(BarEntry(it.key.toFloat(), floatArrayOf(it.value.toFloat(), dataMapFuture[it.key]?.toFloat() ?: 0f)))
+            entries.add(
+                BarEntry(
+                    it.key.toFloat(),
+                    floatArrayOf(it.value.toFloat(), dataMapFuture[it.key]?.toFloat() ?: 0f)
+                )
+            )
         }
 
-        val set = BarDataSet(entries, "Launches")
-        set.apply {
+        val set = BarDataSet(entries, "Launches").apply {
             setColors(colors)
             valueTextColor = Color.WHITE
             valueTextSize = 9f
