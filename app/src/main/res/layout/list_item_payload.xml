@@ -74,7 +74,7 @@
                 android:id="@+id/list_item_payload_customer_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Customer"
+                android:text="@string/customer_label"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -91,7 +91,7 @@
                 android:id="@+id/list_item_payload_orbit_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Orbit"
+                android:text="@string/orbit_label"
                 android:layout_marginTop="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_customer_label" />
@@ -109,7 +109,7 @@
                 android:id="@+id/list_item_payload_lifespan_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lifespan"
+                android:text="@string/lifespan_label"
                 android:layout_marginTop="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_orbit_label" />
@@ -126,7 +126,7 @@
                 android:id="@+id/list_item_payload_mass_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mass"
+                android:text="@string/mass_label"
                 android:layout_marginTop="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_lifespan_label" />
@@ -143,7 +143,7 @@
                 android:id="@+id/list_item_payload_type_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Payload type"
+                android:text="@string/payload_type_label"
                 android:layout_marginTop="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_mass_label" />
@@ -160,7 +160,7 @@
                 android:id="@+id/list_item_payload_refsystem_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Reference System"
+                android:text="@string/reference_system_label"
                 android:layout_marginTop="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_type_label" />
@@ -177,7 +177,7 @@
                 android:id="@+id/list_item_payload_regime_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Regime"
+                android:text="@string/regime_label"
                 android:layout_marginTop="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_refsystem_label" />
@@ -194,7 +194,7 @@
                 android:id="@+id/list_item_payload_long_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Longitude"
+                android:text="@string/longitude_label"
                 android:layout_marginTop="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_regime_label" />
@@ -211,7 +211,7 @@
                 android:id="@+id/list_item_payload_semimajor_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Semi Major Axis"
+                android:text="@string/semi_major_axis_label"
                 android:layout_marginTop="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_long_label" />
@@ -228,7 +228,7 @@
                 android:id="@+id/list_item_payload_eccentricity_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Eccentricity"
+                android:text="@string/eccentricity_label"
                 android:layout_marginTop="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_semimajor_label" />
@@ -245,7 +245,7 @@
                 android:id="@+id/list_item_payload_periapsis_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Periapsis (km)"
+                android:text="@string/periapsis_km_label"
                 android:layout_marginTop="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_eccentricity_label" />
@@ -262,7 +262,7 @@
                 android:id="@+id/list_item_payload_apoapsis_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Apoapsis (km)"
+                android:text="@string/apoapsis_km_label"
                 android:layout_marginTop="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_periapsis_label" />
@@ -279,7 +279,7 @@
                 android:id="@+id/list_item_payload_inclination_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Inclination"
+                android:text="@string/inclination_label"
                 android:layout_marginTop="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_apoapsis_label" />
@@ -296,7 +296,7 @@
                 android:id="@+id/list_item_payload_period_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Period"
+                android:text="@string/period_label"
                 android:layout_marginTop="8dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_inclination_label" />

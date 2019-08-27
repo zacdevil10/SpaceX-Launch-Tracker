@@ -4,7 +4,7 @@ import uk.co.zac_h.spacex.utils.data.LaunchesModel
 
 interface LaunchDetailsInteractor {
 
-    fun getSingleLaunch(id: String, listener: LaunchDetailsInteractor.InteractorCallback)
+    fun getSingleLaunch(id: String, listener: InteractorCallback)
 
     interface InteractorCallback {
         fun onSuccess(launchesModel: LaunchesModel?)

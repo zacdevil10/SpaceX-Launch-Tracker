@@ -103,7 +103,7 @@
                 android:id="@+id/list_item_first_stage_details_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Details"
+                android:text="@string/details_label"
                 android:textSize="12sp"
                 android:padding="8dp"
                 android:layout_margin="8dp"

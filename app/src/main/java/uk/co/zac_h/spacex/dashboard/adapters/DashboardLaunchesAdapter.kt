@@ -14,21 +14,28 @@ import uk.co.zac_h.spacex.utils.format
 import uk.co.zac_h.spacex.utils.formatBlockNumber
 import java.util.*
 
-class DashboardLaunchesAdapter(private val context: Context?, private val launches: LinkedHashMap<String, LaunchesModel>): RecyclerView.Adapter<DashboardLaunchesAdapter.ViewHolder>() {
+class DashboardLaunchesAdapter(
+    private val context: Context?,
+    private val launches: LinkedHashMap<String, LaunchesModel>
+) : RecyclerView.Adapter<DashboardLaunchesAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_dashboard_launches, parent, false))
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
+        LayoutInflater.from(parent.context).inflate(
+            R.layout.list_item_dashboard_launches,
+            parent,
+            false
+        )
+    )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val key = when(position) {
+        val key = when (position) {
             0 -> "next"
             1 -> "latest"
             else -> ""
         }
         val launch = launches[key]
 
-        when(key) {
+        when (key) {
             "next" -> holder.heading.text = context?.getString(R.string.next_launch)
             "latest" -> holder.heading.text = context?.getString(R.string.latest_launch)
         }
@@ -42,7 +49,9 @@ class DashboardLaunchesAdapter(private val context: Context?, private val launch
                 launch?.rocket?.firstStage?.cores?.formatBlockNumber()
             )
             missionName.text = launch?.missionName
-            date.text = launch?.launchDateUnix?.format()
+            date.text = launch?.tbd?.let {
+                launch.launchDateUnix.format(it)
+            } ?: launch?.launchDateUnix?.format()
 
             itemView.setOnClickListener {
                 itemView.findNavController().navigate(
@@ -55,7 +64,7 @@ class DashboardLaunchesAdapter(private val context: Context?, private val launch
 
     override fun getItemCount(): Int = launches.size
 
-    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val heading: TextView = itemView.findViewById(R.id.dashboard_heading_text)
         val flightNumber: TextView = itemView.findViewById(R.id.dashboard_flight_no_text)
         val blockNumber: TextView = itemView.findViewById(R.id.dashboard_block_text)

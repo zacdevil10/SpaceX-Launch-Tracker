@@ -6,9 +6,12 @@ import uk.co.zac_h.spacex.utils.data.LaunchesModel
 class DashboardPresenterImpl(private val view: DashboardView, private val interactor: DashboardInteractor): DashboardPresenter,
     DashboardInteractor.InteractorCallback {
 
-    override fun getSingleLaunch(id: String) {
+    override fun getLatestLaunches() {
         view.toggleProgress(View.VISIBLE)
-        interactor.getSingleLaunch(id, this)
+        interactor.apply {
+            getSingleLaunch("next", this@DashboardPresenterImpl)
+            getSingleLaunch("latest", this@DashboardPresenterImpl)
+        }
     }
 
     override fun cancelRequests() {

@@ -40,16 +40,10 @@ class DashboardFragment : Fragment(), DashboardView {
         }
 
         dashboard_swipe_refresh.setOnRefreshListener {
-            presenter.apply {
-                getSingleLaunch("next")
-                getSingleLaunch("latest")
-            }
+            presenter.getLatestLaunches()
         }
 
-        presenter.apply {
-            getSingleLaunch("next")
-            getSingleLaunch("latest")
-        }
+        presenter.getLatestLaunches()
     }
 
     override fun onDestroyView() {

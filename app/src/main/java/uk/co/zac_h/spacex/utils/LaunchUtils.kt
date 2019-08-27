@@ -20,7 +20,7 @@ fun List<String>.formatCustomers(): String {
     var customers = ""
 
     this.forEach { i ->
-        customers += "${i}, "
+        customers += "$i, "
     }
 
     return customers.dropLast(2)

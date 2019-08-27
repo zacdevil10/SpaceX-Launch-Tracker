@@ -18,6 +18,7 @@ class CoreDetailsPresenterImpl(
     override fun onSuccess(coreModel: CoreModel?) {
         view.toggleProgress(View.INVISIBLE)
         view.updateCoreMissionsList(coreModel)
+        view.updateCoreStats(coreModel)
     }
 
     override fun onError(error: String) {

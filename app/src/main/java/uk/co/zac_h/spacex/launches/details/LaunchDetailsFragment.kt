@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
+import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -108,7 +109,9 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
             )
             launch_details_mission_name_text.text = launch.missionName
             launch_details_site_name_text.text = launch.launchSite.name
-            launch_details_date_text.text = launch.launchDateUnix.format()
+            launch_details_date_text.text = launch.tbd?.let { tbd ->
+                launch.launchDateUnix.format(tbd)
+            } ?: launch.launchDateUnix.format()
 
             launch.staticFireDateUnix?.let {
                 launch_details_static_fire_date_text.text = it.format()
@@ -139,7 +142,10 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
             layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
             isNestedScrollingEnabled = false
             setHasFixedSize(false)
-            adapter = PayloadAdapter(launch?.rocket?.secondStage?.payloads)
+            adapter = PayloadAdapter(
+                this@LaunchDetailsFragment.context,
+                launch?.rocket?.secondStage?.payloads
+            )
         }
     }
 
@@ -173,5 +179,13 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
             expCollapse.isChecked = false
             recycler.visibility = View.GONE
         }
+    }
+
+    override fun toggleProgress(visibility: Int) {
+        launch_details_progress.visibility = visibility
+    }
+
+    override fun showError(error: String) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 }

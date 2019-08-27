@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.launches.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.utils.data.PayloadModel
 import uk.co.zac_h.spacex.utils.formatCustomers
 
-class PayloadAdapter(private var payloads: List<PayloadModel>?) :
+class PayloadAdapter(private var context: Context?, private var payloads: List<PayloadModel>?) :
     RecyclerView.Adapter<PayloadAdapter.ViewHolder>() {
 
     private var expandedPosition = -1
@@ -42,7 +43,8 @@ class PayloadAdapter(private var payloads: List<PayloadModel>?) :
             payloadCustomer.text = payload?.customers?.formatCustomers()
             payloadOrbit.text = payload?.orbit
             payloadLifespan.text = payload?.orbitParams?.lifespanYears?.toString() ?: "0"
-            payloadMass.text = "${payload?.massKg} kg / ${payload?.massLbs} lbs"
+            payloadMass.text =
+                context?.getString(R.string.payload_value, payload?.massKg, payload?.massLbs)
             payloadType.text = payload?.type ?: "Unknown"
             payloadRefSystem.text = payload?.orbitParams?.referenceSystem ?: "Unknown"
             payloadRegime.text = payload?.orbitParams?.regime ?: "Unknown"

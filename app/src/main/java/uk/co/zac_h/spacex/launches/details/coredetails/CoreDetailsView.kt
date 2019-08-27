@@ -6,6 +6,8 @@ interface CoreDetailsView {
 
     fun updateCoreMissionsList(coreModel: CoreModel?)
 
+    fun updateCoreStats(coreModel: CoreModel?)
+
     fun toggleProgress(visibility: Int)
 
     fun showError(error: String)

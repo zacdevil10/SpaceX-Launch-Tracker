@@ -55,7 +55,9 @@ class LaunchesAdapter(
                 launch.rocket.firstStage?.cores?.formatBlockNumber()
             )
             missionName.text = launch.missionName
-            date.text = launch.launchDateUnix.format()
+            date.text = launch.tbd?.let {
+                launch.launchDateUnix.format(it)
+            } ?: launch.launchDateUnix.format()
 
             itemView.setOnClickListener {
                 itemView.findNavController()

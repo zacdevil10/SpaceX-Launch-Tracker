@@ -13,6 +13,7 @@ import uk.co.zac_h.spacex.launches.adapters.CoreMissionsAdapter
 import uk.co.zac_h.spacex.utils.data.CoreMissionsModel
 import uk.co.zac_h.spacex.utils.data.CoreModel
 import uk.co.zac_h.spacex.utils.data.CoreSpecModel
+import uk.co.zac_h.spacex.utils.setImageAndTint
 
 class CoreDetailsFragment : Fragment(), CoreDetailsView {
 
@@ -56,8 +57,30 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView {
         missionsAdapter.notifyDataSetChanged()
     }
 
+    override fun updateCoreStats(coreModel: CoreModel?) {
+        coreModel?.let {
+            core_details_block_text.text = it.block
+            core_details_details_text.text = it.details
+            core_details_status_text.text = it.status
+            core_details_reuse_text.text = it.reuseCount.toString()
+            core_details_rtls_attempts_text.text = it.attemptsRtls.toString()
+            core_details_rtls_landings_text.text = it.landingsRtls.toString()
+            core_details_asds_attempts_text.text = it.attemptsAsds.toString()
+            core_details_asds_landings_text.text = it.landingsAsds.toString()
+            core_details_water_landing_image.apply {
+                it.landingWater?.let { waterLanding ->
+                    if (waterLanding) setImageAndTint(
+                        R.drawable.ic_check_circle_black_24dp,
+                        R.color.success
+                    )
+                    else setImageAndTint(R.drawable.ic_remove_circle_black_24dp, R.color.failed)
+                } ?: setImageAndTint(R.drawable.ic_remove_circle_black_24dp, R.color.failed)
+            }
+        }
+    }
+
     override fun toggleProgress(visibility: Int) {
-        core_details_mission_progress_bar.visibility = visibility
+        core_details_progress_bar.visibility = visibility
     }
 
     override fun showError(error: String) {
