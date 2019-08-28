@@ -12,7 +12,7 @@ interface LaunchHistoryInteractor {
     fun cancelAllRequests()
 
     interface InteractorCallback {
-        fun onSuccess(launches: List<LaunchesModel>?)
+        fun onSuccess(launches: List<LaunchesModel>?, animate: Boolean)
         fun onRocketsSuccess(rockets: List<RocketsModel>?)
         fun onError(error: String)
     }

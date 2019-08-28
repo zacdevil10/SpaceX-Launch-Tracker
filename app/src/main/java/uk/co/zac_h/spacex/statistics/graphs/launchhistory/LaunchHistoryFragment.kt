@@ -22,16 +22,10 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.android.synthetic.main.fragment_launch_history.*
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.utils.data.LaunchesModel
 
 class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
 
     private lateinit var presenter: LaunchHistoryPresenter
-
-    private var launches = ArrayList<LaunchesModel>()
-
-    private var filterSuccessful = false
-    private var filterFailed = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,15 +37,13 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
+        if (!::presenter.isInitialized) presenter =
+            LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
 
-        if (launches.isEmpty()) {
-            presenter.getLaunchList("past")
-        } else {
-            setData(false)
+        presenter.apply {
+            getLaunchList("past")
+            getRocketsList()
         }
-
-        presenter.getRocketsList()
 
         launch_history_success_toggle.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) launch_history_failure_toggle.isChecked = false
@@ -86,33 +78,25 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
         presenter.cancelRequests()
     }
 
-    private fun setData(animate: Boolean) {
+    private fun generateCenterSpannableText(range: String): SpannableString {
+        return SpannableString(context?.getString(R.string.pie_chart_title, range)).apply {
+            setSpan(RelativeSizeSpan(1.7f), 0, 8, 0)
+            setSpan(StyleSpan(Typeface.NORMAL), 8, length - 11, 0)
+            setSpan(RelativeSizeSpan(.8f), 8, length - 11, 0)
+            setSpan(ForegroundColorSpan(ColorTemplate.rgb("29b6f6")), length - 11, length, 0)
+        }
+    }
+
+    override fun updatePieChart(
+        entries: ArrayList<PieEntry>,
+        centerText: String,
+        animate: Boolean
+    ) {
         val colors = ArrayList<Int>()
 
         colors.add(ColorTemplate.rgb("29b6f6"))
         colors.add(ColorTemplate.rgb("9ccc65"))
         colors.add(ColorTemplate.rgb("ff7043"))
-
-        val entries = ArrayList<PieEntry>()
-
-        var falconOne = 0f
-        var falconNine = 0f
-        var falconHeavy = 0f
-
-        launches.forEach {
-            if (filterSuccessful && it.success != null && !it.success!!) return@forEach
-            if (filterFailed && it.success!!) return@forEach
-
-            when (it.rocket.id) {
-                "falcon1" -> falconOne++
-                "falcon9" -> falconNine++
-                "falconheavy" -> falconHeavy++
-            }
-        }
-
-        entries.add(PieEntry(falconOne, context?.getString(R.string.falcon_1)))
-        entries.add(PieEntry(falconNine, context?.getString(R.string.falcon_9)))
-        entries.add(PieEntry(falconHeavy, context?.getString(R.string.falcon_heavy)))
 
         val dataSet = PieDataSet(entries, "").apply {
             sliceSpace = 3f
@@ -131,44 +115,10 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
 
         launch_history_pie_chart.apply {
             if (animate) animateY(1400, Easing.EaseInOutCubic)
-            centerText =
-                generateCenterSpannableText("${launches[0].launchYear} - ${launches[launches.size - 1].launchYear}")
+            this.centerText = generateCenterSpannableText(centerText)
             this.data = data
             invalidate()
         }
-    }
-
-    private fun generateCenterSpannableText(range: String): SpannableString {
-        return SpannableString(context?.getString(R.string.pie_chart_title, range)).apply {
-            setSpan(RelativeSizeSpan(1.7f), 0, 8, 0)
-            setSpan(StyleSpan(Typeface.NORMAL), 8, length - 11, 0)
-            setSpan(RelativeSizeSpan(.8f), 8, length - 11, 0)
-            setSpan(ForegroundColorSpan(ColorTemplate.rgb("29b6f6")), length - 11, length, 0)
-        }
-    }
-
-    override fun setLaunchesList(launches: List<LaunchesModel>?) {
-        if (launches != null) {
-            this.launches.addAll(launches)
-            setData(animate = true)
-        }
-    }
-
-    override fun updateLaunchesList(filter: String, isFiltered: Boolean) {
-        when (filter) {
-            "success" -> filterSuccessful = isFiltered
-            "failed" -> filterFailed = isFiltered
-        }
-
-        if (launches.size > 0) setData(animate = false)
-    }
-
-    override fun toggleProgress(visibility: Int) {
-        launch_history_progress_bar.visibility = visibility
-    }
-
-    override fun showError(error: String) {
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun setSuccessRate(id: Int, percent: Int) {
@@ -189,5 +139,17 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
                     context?.getString(R.string.percentage, percent)
             }
         }
+    }
+
+    override fun showProgress() {
+        launch_history_progress_bar.visibility = View.VISIBLE
+    }
+
+    override fun hideProgress() {
+        launch_history_progress_bar.visibility = View.GONE
+    }
+
+    override fun showError(error: String) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 }
