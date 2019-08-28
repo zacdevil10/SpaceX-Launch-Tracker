@@ -9,20 +9,18 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_pad_stats.*
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.statistics.adapters.PadStatsLandingSitesAdapter
-import uk.co.zac_h.spacex.statistics.adapters.PadStatsLaunchSitesAdapter
+import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
 import uk.co.zac_h.spacex.utils.data.LandingPadModel
 import uk.co.zac_h.spacex.utils.data.LaunchpadModel
+import uk.co.zac_h.spacex.utils.data.StatsPadModel
 
 class PadStatsFragment : Fragment(), PadStatsView {
 
     private lateinit var presenter: PadStatsPresenter
 
-    private lateinit var launchSitesAdapter: PadStatsLaunchSitesAdapter
-    private lateinit var landingSitesAdapter: PadStatsLandingSitesAdapter
+    private lateinit var padAdapter: PadStatsSitesAdapter
 
-    private var launchpads = ArrayList<LaunchpadModel>()
-    private var landingPads = ArrayList<LandingPadModel>()
+    private var padList = ArrayList<StatsPadModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,47 +34,56 @@ class PadStatsFragment : Fragment(), PadStatsView {
 
         presenter = PadStatsPresenterImpl(this, PadStatsInteractorImpl())
 
-        launchSitesAdapter = PadStatsLaunchSitesAdapter(launchpads)
-        landingSitesAdapter = PadStatsLandingSitesAdapter(landingPads)
+        padAdapter = PadStatsSitesAdapter(padList)
 
         pad_stats_launch_sites_recycler.apply {
             layoutManager = LinearLayoutManager(this@PadStatsFragment.context)
-            setHasFixedSize(false)
-            adapter = launchSitesAdapter
-        }
-
-        pad_stats_landing_sites_recycler.apply {
-            layoutManager = LinearLayoutManager(this@PadStatsFragment.context)
-            setHasFixedSize(false)
-            adapter = landingSitesAdapter
+            setHasFixedSize(true)
+            adapter = padAdapter
         }
 
         presenter.apply {
-            if (launchpads.isEmpty()) getLaunchpads()
-            if (landingPads.isEmpty()) getLandingPads()
+            getPads()
         }
     }
 
     override fun setLaunchpadsList(launchpads: List<LaunchpadModel>?) {
-        if (launchpads != null) {
-            this.launchpads.addAll(launchpads)
+        padList.add(StatsPadModel("Launch Sites", 0, 0, "", isHeading = true))
+        launchpads?.forEach {
+            padList.add(
+                StatsPadModel(
+                    it.nameLong,
+                    it.launchAttempts,
+                    it.launchSuccesses,
+                    it.status
+                )
+            )
         }
-        launchSitesAdapter.notifyDataSetChanged()
+        padAdapter.notifyDataSetChanged()
     }
 
     override fun setLandingPadsList(landingPads: List<LandingPadModel>?) {
-        if (landingPads != null) {
-            this.landingPads.addAll(landingPads)
+        padList.add(StatsPadModel("Landing Sites", 0, 0, "", isHeading = true))
+        landingPads?.forEach {
+            padList.add(
+                StatsPadModel(
+                    it.nameFull,
+                    it.landingAttempts,
+                    it.landingSuccesses,
+                    it.status,
+                    it.type
+                )
+            )
         }
-        landingSitesAdapter.notifyDataSetChanged()
+        padAdapter.notifyDataSetChanged()
     }
 
-    override fun toggleLaunchpadsProgress(visibility: Int) {
-        pad_stats_launch_sites_progress_bar.visibility = visibility
+    override fun showProgress() {
+        pad_stats_sites_progress_bar.visibility = View.VISIBLE
     }
 
-    override fun toggleLandingPadsProgress(visibility: Int) {
-        pad_stats_landing_sites_progress_bar.visibility = visibility
+    override fun hideProgress() {
+        pad_stats_sites_progress_bar.visibility = View.GONE
     }
 
     override fun showError(error: String) {
