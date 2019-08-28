@@ -4,11 +4,14 @@ import com.github.mikephil.charting.data.PieEntry
 import uk.co.zac_h.spacex.utils.data.LaunchesModel
 import uk.co.zac_h.spacex.utils.data.RocketsModel
 
-class LaunchHistoryPresenterImpl(private val view: LaunchHistoryView, private val interactor: LaunchHistoryInteractor) : LaunchHistoryPresenter,
+class LaunchHistoryPresenterImpl(
+    private val view: LaunchHistoryView,
+    private val interactor: LaunchHistoryInteractor
+) : LaunchHistoryPresenter,
     LaunchHistoryInteractor.InteractorCallback {
 
     private lateinit var launchesList: List<LaunchesModel>
-    private val rockets = ArrayList<RocketsModel>()
+    private lateinit var rocketsList: List<RocketsModel>
 
     private var filterSuccessful = false
     private var filterFailed = false
@@ -18,15 +21,15 @@ class LaunchHistoryPresenterImpl(private val view: LaunchHistoryView, private va
             view.showProgress()
             interactor.getLaunches(id, this)
         } else {
-            this.onSuccess(launchesList, false)
+            onSuccess(launchesList, false)
         }
     }
 
     override fun getRocketsList() {
-        if (rockets.isEmpty()) {
+        if (!::rocketsList.isInitialized) {
             interactor.getRockets(this)
         } else {
-            this.onRocketsSuccess(rockets)
+            onRocketsSuccess(rocketsList)
         }
     }
 
@@ -36,7 +39,10 @@ class LaunchHistoryPresenterImpl(private val view: LaunchHistoryView, private va
             "failed" -> filterFailed = isFiltered
         }
 
-        this.onSuccess(launchesList, false)
+        if (::launchesList.isInitialized && launchesList.isNotEmpty()) onSuccess(
+            launchesList,
+            false
+        )
     }
 
     override fun cancelRequests() {
@@ -45,7 +51,7 @@ class LaunchHistoryPresenterImpl(private val view: LaunchHistoryView, private va
 
     override fun onRocketsSuccess(rockets: List<RocketsModel>?) {
         rockets?.let {
-            this.rockets.addAll(rockets)
+            if (!::rocketsList.isInitialized) rocketsList = rockets
 
             rockets.forEach {
                 view.setSuccessRate(it.id, it.successRate)

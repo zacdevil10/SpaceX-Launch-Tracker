@@ -1,14 +1,14 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
-import uk.co.zac_h.spacex.utils.data.LaunchesModel
+import com.github.mikephil.charting.data.BarEntry
 
 interface LaunchRateView {
 
-    fun setLaunchesList(launches: List<LaunchesModel>?)
+    fun updateBarChart(entries: ArrayList<BarEntry>, dataSize: Int)
 
-    fun updateLaunchesList(filterId: String, isFiltered: Boolean)
+    fun showProgress()
 
-    fun toggleProgress(visibility: Int)
+    fun hideProgress()
 
     fun showError(error: String)
 

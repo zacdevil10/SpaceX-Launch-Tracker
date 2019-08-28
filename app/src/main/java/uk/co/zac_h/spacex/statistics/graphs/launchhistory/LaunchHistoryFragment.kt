@@ -1,12 +1,7 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
 import android.graphics.Color
-import android.graphics.Typeface
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
-import android.text.style.RelativeSizeSpan
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +17,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.android.synthetic.main.fragment_launch_history.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.utils.generateCenterSpannableText
 
 class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
 
@@ -78,15 +74,6 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
         presenter.cancelRequests()
     }
 
-    private fun generateCenterSpannableText(range: String): SpannableString {
-        return SpannableString(context?.getString(R.string.pie_chart_title, range)).apply {
-            setSpan(RelativeSizeSpan(1.7f), 0, 8, 0)
-            setSpan(StyleSpan(Typeface.NORMAL), 8, length - 11, 0)
-            setSpan(RelativeSizeSpan(.8f), 8, length - 11, 0)
-            setSpan(ForegroundColorSpan(ColorTemplate.rgb("29b6f6")), length - 11, length, 0)
-        }
-    }
-
     override fun updatePieChart(
         entries: ArrayList<PieEntry>,
         centerText: String,
@@ -115,7 +102,8 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
 
         launch_history_pie_chart.apply {
             if (animate) animateY(1400, Easing.EaseInOutCubic)
-            this.centerText = generateCenterSpannableText(centerText)
+            this.centerText = context?.getString(R.string.pie_chart_title, centerText)
+                ?.generateCenterSpannableText()
             this.data = data
             invalidate()
         }
