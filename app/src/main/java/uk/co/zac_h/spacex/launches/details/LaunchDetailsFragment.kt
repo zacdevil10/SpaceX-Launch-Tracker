@@ -99,9 +99,10 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
             Picasso.get().load(launch.links.missionPatchSmall)
                 .into(launch_details_mission_patch_image)
 
-            launch_details_number_text.text =
-                context?.getString(R.string.flight_number, launch.flightNumber)
-
+            launch_details_number_text.text = context?.getString(
+                R.string.flight_number,
+                launch.flightNumber
+            )
             launch_details_block_text.text = context?.getString(
                 R.string.vehicle_block_type,
                 launch.rocket.name,
@@ -123,14 +124,14 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
                 if (coreAssigned) return@forEach
                 coreAssigned = it.serial != null
             }
-        } ?: presenter
+        }
 
-        if (coreAssigned) {
+        if (coreAssigned) launch?.rocket?.firstStage?.cores?.let {
             //If a core has been assigned to a launch then add the adapter to the RecyclerView
             launch_details_cores_recycler.apply {
                 layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
                 setHasFixedSize(true)
-                adapter = FirstStageAdapter(launch?.rocket?.firstStage?.cores)
+                adapter = FirstStageAdapter(it)
             }
         } else {
             //If no core has been assigned yet then hide the RecyclerView and related heading
@@ -140,7 +141,6 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
 
         launch_details_payload_recycler.apply {
             layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
-            isNestedScrollingEnabled = false
             setHasFixedSize(false)
             adapter = PayloadAdapter(
                 this@LaunchDetailsFragment.context,
@@ -181,8 +181,12 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
         }
     }
 
-    override fun toggleProgress(visibility: Int) {
-        launch_details_progress.visibility = visibility
+    override fun showProgress() {
+        launch_details_progress.visibility = View.VISIBLE
+    }
+
+    override fun hideProgress() {
+        launch_details_progress.visibility = View.GONE
     }
 
     override fun showError(error: String) {

@@ -51,16 +51,17 @@ class DashboardFragment : Fragment(), DashboardView {
         presenter.cancelRequests()
     }
 
-    override fun updateLaunchesList(id: String, launchesModel: LaunchesModel?) {
-        if (launchesModel != null) {
-            launchMap[id] = launchesModel
-        }
-
-        if (launchMap.size == 2) dashboardLaunchesAdapter.notifyDataSetChanged()
+    override fun updateLaunchesList(id: String, launches: LinkedHashMap<String, LaunchesModel>) {
+        launchMap.putAll(launches)
+        dashboardLaunchesAdapter.notifyDataSetChanged()
     }
 
-    override fun toggleProgress(visibility: Int) {
-        dashboard_progress_bar.visibility = visibility
+    override fun showProgress() {
+        dashboard_progress_bar.visibility = View.VISIBLE
+    }
+
+    override fun hideProgress() {
+        dashboard_progress_bar.visibility = View.GONE
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {

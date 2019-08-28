@@ -14,7 +14,11 @@ class LaunchesInteractorImpl : LaunchesInteractor {
 
     private val scope = CoroutineScope(coroutineContext)
 
-    override fun getLaunches(id: String, order: String, listener: LaunchesInteractor.InteractorCallback) {
+    override fun getLaunches(
+        id: String,
+        order: String,
+        listener: LaunchesInteractor.InteractorCallback
+    ) {
         scope.launch {
             val response = async(SupervisorJob(parentJob)) {
                 SpaceXInterface.create().getLaunches(id, order)

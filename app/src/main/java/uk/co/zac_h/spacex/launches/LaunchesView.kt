@@ -6,7 +6,9 @@ interface LaunchesView {
 
     fun updateLaunchesList(launches: List<LaunchesModel>?)
 
-    fun toggleProgress(visibility: Int)
+    fun showProgress()
+
+    fun hideProgress()
 
     fun toggleSwipeProgress(isRefreshing: Boolean)
 

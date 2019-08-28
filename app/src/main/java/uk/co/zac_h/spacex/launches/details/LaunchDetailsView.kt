@@ -6,7 +6,9 @@ interface LaunchDetailsView {
 
     fun updateLaunchDataView(launch: LaunchesModel?)
 
-    fun toggleProgress(visibility: Int)
+    fun showProgress()
+
+    fun hideProgress()
 
     fun showError(error: String)
 }

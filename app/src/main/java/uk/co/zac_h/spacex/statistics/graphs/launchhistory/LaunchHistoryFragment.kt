@@ -26,7 +26,7 @@ import uk.co.zac_h.spacex.utils.data.LaunchesModel
 
 class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
 
-    private var presenter: LaunchHistoryPresenter? = null
+    private lateinit var presenter: LaunchHistoryPresenter
 
     private var launches = ArrayList<LaunchesModel>()
 
@@ -43,26 +43,24 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (presenter == null) {
-            presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
-        }
+        presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
 
         if (launches.isEmpty()) {
-            presenter?.getLaunchList("past")
+            presenter.getLaunchList("past")
         } else {
             setData(false)
         }
 
-        presenter?.getRocketsList()
+        presenter.getRocketsList()
 
         launch_history_success_toggle.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) launch_history_failure_toggle.isChecked = false
-            presenter?.updateFilter("success", isChecked)
+            presenter.updateFilter("success", isChecked)
         }
 
         launch_history_failure_toggle.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) launch_history_success_toggle.isChecked = false
-            presenter?.updateFilter("failed", isChecked)
+            presenter.updateFilter("failed", isChecked)
         }
 
         //Pie chart appearance
@@ -85,7 +83,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter?.cancelRequests()
+        presenter.cancelRequests()
     }
 
     private fun setData(animate: Boolean) {

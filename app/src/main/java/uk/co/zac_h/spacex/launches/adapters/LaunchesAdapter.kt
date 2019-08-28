@@ -55,9 +55,7 @@ class LaunchesAdapter(
                 launch.rocket.firstStage?.cores?.formatBlockNumber()
             )
             missionName.text = launch.missionName
-            date.text = launch.tbd?.let {
-                launch.launchDateUnix.format(it)
-            } ?: launch.launchDateUnix.format()
+            date.text = launch.launchDateUnix.format(launch.tbd?.let { it } ?: false)
 
             itemView.setOnClickListener {
                 itemView.findNavController()
@@ -76,7 +74,6 @@ class LaunchesAdapter(
         val blockNumber: TextView = itemView.findViewById(R.id.launches_block_text)
         val missionName: TextView = itemView.findViewById(R.id.launches_mission_name_text)
         val date: TextView = itemView.findViewById(R.id.launches_date_text)
-
         val reusedTag: TextView = itemView.findViewById(R.id.launches_reused_text)
         val landingVehicleTag: TextView = itemView.findViewById(R.id.launches_landing_vehicle_text)
     }

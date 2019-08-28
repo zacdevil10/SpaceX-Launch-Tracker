@@ -42,9 +42,12 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
             //Payload specs
             payloadCustomer.text = payload?.customers?.formatCustomers()
             payloadOrbit.text = payload?.orbit
-            payloadLifespan.text = payload?.orbitParams?.lifespanYears?.toString() ?: "0"
-            payloadMass.text =
-                context?.getString(R.string.payload_value, payload?.massKg, payload?.massLbs)
+            payloadLifespan.text = payload?.orbitParams?.lifespanYears?.toInt()?.toString() ?: "0"
+            payloadMass.text = context?.getString(
+                R.string.payload_value,
+                payload?.massKg?.toInt(),
+                payload?.massLbs?.toInt()
+            )
             payloadType.text = payload?.type ?: "Unknown"
             payloadRefSystem.text = payload?.orbitParams?.referenceSystem ?: "Unknown"
             payloadRegime.text = payload?.orbitParams?.regime ?: "Unknown"
