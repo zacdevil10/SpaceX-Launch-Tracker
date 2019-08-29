@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="58dp">
+    android:layout_height="58dp"
+    android:background="@android:color/white">
 
     <TextView
         android:id="@+id/list_item_heading"

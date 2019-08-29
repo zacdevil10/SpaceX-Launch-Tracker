@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_pad_stats.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
+import uk.co.zac_h.spacex.utils.HeaderItemDecoration
 import uk.co.zac_h.spacex.utils.data.LandingPadModel
 import uk.co.zac_h.spacex.utils.data.LaunchpadModel
 import uk.co.zac_h.spacex.utils.data.StatsPadModel
@@ -40,6 +41,7 @@ class PadStatsFragment : Fragment(), PadStatsView {
             layoutManager = LinearLayoutManager(this@PadStatsFragment.context)
             setHasFixedSize(true)
             adapter = padAdapter
+            addItemDecoration(HeaderItemDecoration(this, padAdapter.isHeader()))
         }
 
         presenter.apply {

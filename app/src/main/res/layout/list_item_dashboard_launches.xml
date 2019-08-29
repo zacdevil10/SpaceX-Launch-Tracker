@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="@android:color/white"
+        android:textAppearance="@style/AppTheme.MainText"
         android:textSize="18sp"
         app:layout_constraintLeft_toLeftOf="@id/dashboard_flight_no_text"
         app:layout_constraintRight_toRightOf="@+id/dashboard_block_text"

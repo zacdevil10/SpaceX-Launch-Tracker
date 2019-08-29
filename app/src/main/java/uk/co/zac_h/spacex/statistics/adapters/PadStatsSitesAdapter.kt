@@ -63,6 +63,12 @@ class PadStatsSitesAdapter(private var sites: ArrayList<StatsPadModel>) :
         }
     }
 
+    fun isHeader(): (itemPosition: Int) -> Boolean {
+        return {
+            sites[it].isHeading
+        }
+    }
+
     override fun getItemCount(): Int = sites.size
 
     override fun getItemViewType(position: Int): Int = if (sites[position].isHeading) 0 else 1
