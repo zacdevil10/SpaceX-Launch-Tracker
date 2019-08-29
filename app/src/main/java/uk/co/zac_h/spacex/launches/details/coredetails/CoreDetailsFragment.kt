@@ -79,8 +79,12 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView {
         }
     }
 
-    override fun toggleProgress(visibility: Int) {
-        core_details_progress_bar.visibility = visibility
+    override fun showProgress() {
+        core_details_progress_bar.visibility = View.VISIBLE
+    }
+
+    override fun hideProgress() {
+        core_details_progress_bar.visibility = View.INVISIBLE
     }
 
     override fun showError(error: String) {

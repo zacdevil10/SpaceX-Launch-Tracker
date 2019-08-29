@@ -8,7 +8,9 @@ interface CoreDetailsView {
 
     fun updateCoreStats(coreModel: CoreModel?)
 
-    fun toggleProgress(visibility: Int)
+    fun showProgress()
+
+    fun hideProgress()
 
     fun showError(error: String)
 }

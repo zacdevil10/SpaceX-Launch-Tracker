@@ -9,9 +9,9 @@ interface PadStatsView {
 
     fun setLandingPadsList(landingPads: List<LandingPadModel>?)
 
-    fun toggleLaunchpadsProgress(visibility: Int)
+    fun showProgress()
 
-    fun toggleLandingPadsProgress(visibility: Int)
+    fun hideProgress()
 
     fun showError(error: String)
 

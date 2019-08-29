@@ -35,12 +35,12 @@ class DashboardLaunchesAdapter(
         }
         val launch = launches[key]
 
-        when (key) {
-            "next" -> holder.heading.text = context?.getString(R.string.next_launch)
-            "latest" -> holder.heading.text = context?.getString(R.string.latest_launch)
-        }
-
         holder.apply {
+            when (position) {
+                0 -> heading.text = context?.getString(R.string.next_launch)
+                1 -> heading.text = context?.getString(R.string.latest_launch)
+            }
+
             flightNumber.text = context?.getString(R.string.flight_number, launch?.flightNumber)
 
             blockNumber.text = context?.getString(

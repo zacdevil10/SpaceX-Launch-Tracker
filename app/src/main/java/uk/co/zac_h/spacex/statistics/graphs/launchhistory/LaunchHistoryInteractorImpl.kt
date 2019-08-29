@@ -23,7 +23,7 @@ class LaunchHistoryInteractorImpl : LaunchHistoryInteractor {
             withContext(Dispatchers.Main) {
                 try {
                     if (response.await().isSuccessful) {
-                        listener.onSuccess(response.await().body())
+                        listener.onSuccess(response.await().body(), true)
                     } else {
                         listener.onError("Error: ${response.await().code()}")
                     }

@@ -45,11 +45,14 @@ class LaunchesListFragment : Fragment(), LaunchesView {
             adapter = launchesAdapter
         }
 
-        arguments?.getString("launchParam")?.let {
-            presenter.getLaunchList(it, if (it == "past") "desc" else "asc")
+        arguments?.getString("launchParam")?.let { launchId ->
+            if (launchesList.isEmpty()) presenter.getLaunchList(
+                launchId,
+                if (launchId == "past") "desc" else "asc"
+            )
 
             launches_swipe_refresh.setOnRefreshListener {
-                presenter.getLaunchList(it, if (it == "past") "desc" else "asc")
+                presenter.getLaunchList(launchId, if (launchId == "past") "desc" else "asc")
             }
         }
     }
@@ -60,16 +63,20 @@ class LaunchesListFragment : Fragment(), LaunchesView {
     }
 
     override fun updateLaunchesList(launches: List<LaunchesModel>?) {
-        if (launches != null) {
+        launches?.let {
             launchesList.clear()
-            launchesList.addAll(launches)
+            launchesList.addAll(it)
         }
 
         launchesAdapter.notifyDataSetChanged()
     }
 
-    override fun toggleProgress(visibility: Int) {
-        launches_progress_bar.visibility = visibility
+    override fun showProgress() {
+        launches_progress_bar.visibility = View.VISIBLE
+    }
+
+    override fun hideProgress() {
+        launches_progress_bar.visibility = View.GONE
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {

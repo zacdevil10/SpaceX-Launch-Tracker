@@ -12,7 +12,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.utils.data.CoreSpecModel
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
-class FirstStageAdapter(private val cores: List<CoreSpecModel>?) :
+class FirstStageAdapter(private val cores: List<CoreSpecModel>) :
     RecyclerView.Adapter<FirstStageAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -25,13 +25,13 @@ class FirstStageAdapter(private val cores: List<CoreSpecModel>?) :
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val core = cores?.get(position)
+        val core = cores[position]
 
         holder.apply {
-            coreSerial.text = core?.serial
+            coreSerial.text = core.serial
 
             reusedImage.apply {
-                core?.reused?.let { reused ->
+                core.reused?.let { reused ->
                     if (reused) {
                         setImageAndTint(R.drawable.ic_check_circle_black_24dp, R.color.success)
                     } else {
@@ -41,7 +41,7 @@ class FirstStageAdapter(private val cores: List<CoreSpecModel>?) :
             }
 
             landedImage.apply {
-                core?.landingSuccess?.let { landingSuccess ->
+                core.landingSuccess?.let { landingSuccess ->
                     if (landingSuccess) {
                         setImageAndTint(R.drawable.ic_check_circle_black_24dp, R.color.success)
                     } else {
@@ -51,7 +51,7 @@ class FirstStageAdapter(private val cores: List<CoreSpecModel>?) :
             }
 
             landingImage.apply {
-                core?.landingIntent?.let { landingIntent ->
+                core.landingIntent?.let { landingIntent ->
                     if (landingIntent) {
                         when (core.landingType) {
                             "ASDS" -> setImageAndTint(R.drawable.ic_waves, R.color.ocean)
@@ -67,13 +67,13 @@ class FirstStageAdapter(private val cores: List<CoreSpecModel>?) :
                 itemView.findNavController()
                     .navigate(
                         R.id.action_launch_details_fragment_to_core_details_fragment,
-                        bundleOf("core" to core, "title" to core?.serial)
+                        bundleOf("core" to core, "title" to core.serial)
                     )
             }
         }
     }
 
-    override fun getItemCount(): Int = cores?.size ?: 0
+    override fun getItemCount(): Int = cores.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val coreSerial: TextView =
