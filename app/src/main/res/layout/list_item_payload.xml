@@ -38,7 +38,7 @@
             android:text=""
             android:textOff=""
             android:textOn=""
-
+            android:backgroundTint="@android:color/white"
             android:layout_marginEnd="16dp"
             android:clickable="false"
             app:layout_constraintBottom_toBottomOf="@id/list_item_payload_name_text"
