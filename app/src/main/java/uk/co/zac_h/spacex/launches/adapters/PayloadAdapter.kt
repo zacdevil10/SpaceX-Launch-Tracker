@@ -74,7 +74,6 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
         val payloadManufacturer: TextView =
             itemView.findViewById(R.id.list_item_payload_manufacturer_text)
         val details: ConstraintLayout = itemView.findViewById(R.id.list_item_payload_details_layout)
-
         val expandIndicator: ToggleButton =
             itemView.findViewById(R.id.list_item_payload_expand_collapse_toggle)
 

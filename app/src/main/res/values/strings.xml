@@ -61,6 +61,7 @@
     <string name="inclination_label">Inclination</string>
     <string name="period_label">Period</string>
     <string name="payload_value">%1$d kg / %2$d lbs</string>
+    <string name="static_fire_label">(static fire)</string>
 
     <!--Statistics-->
     <string name="success_rate_heading">Launch Success Rate</string>

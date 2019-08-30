@@ -100,6 +100,9 @@ class LaunchDetailsFragment : Fragment(),
 
     override fun updateLaunchDataView(launch: LaunchesModel?) {
         launch?.let {
+            launch_details_mission_patch_image.visibility =
+                launch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
+
             Picasso.get().load(launch.links.missionPatchSmall)
                 .into(launch_details_mission_patch_image)
 
@@ -119,6 +122,7 @@ class LaunchDetailsFragment : Fragment(),
             } ?: launch.launchDateUnix.format()
 
             launch.staticFireDateUnix?.let {
+                launch_details_static_fire_date_label.visibility = View.VISIBLE
                 launch_details_static_fire_date_text.text = it.format()
             }
 
@@ -160,13 +164,11 @@ class LaunchDetailsFragment : Fragment(),
      * @param[expCollapse] is the toggle button that shows the collapse state of the recycler
      */
     private fun expandCollapse(recycler: RecyclerView, expCollapse: ToggleButton) {
-        if (expCollapse.isChecked) {
-            expCollapse.isChecked = false
-            recycler.visibility = View.GONE
-        } else {
-            expCollapse.isChecked = true
-            recycler.visibility = View.VISIBLE
+        when {
+            expCollapse.isChecked -> recycler.visibility = View.GONE
+            else -> recycler.visibility = View.VISIBLE
         }
+        expCollapse.isChecked = !expCollapse.isChecked
     }
 
     /**
