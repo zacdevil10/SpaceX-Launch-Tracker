@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.launches.details
+package uk.co.zac_h.spacex.launches.details.core
 
 import android.util.Log
 import kotlinx.coroutines.*
@@ -6,7 +6,7 @@ import retrofit2.HttpException
 import uk.co.zac_h.spacex.utils.data.rest.SpaceXInterface
 import kotlin.coroutines.CoroutineContext
 
-class LaunchDetailsInteractorImpl : LaunchDetailsInteractor {
+class CoreDetailsInteractorImpl : CoreDetailsInteractor {
 
     private val parentJob = Job()
     private val coroutineContext: CoroutineContext
@@ -14,10 +14,13 @@ class LaunchDetailsInteractorImpl : LaunchDetailsInteractor {
 
     private val scope = CoroutineScope(coroutineContext)
 
-    override fun getSingleLaunch(id: String, listener: LaunchDetailsInteractor.InteractorCallback) {
+    override fun getCoreDetails(
+        serial: String,
+        listener: CoreDetailsInteractor.InteractorCallback
+    ) {
         scope.launch {
             val response = async(SupervisorJob(parentJob)) {
-                SpaceXInterface.create().getSingleLaunch(id)
+                SpaceXInterface.create().getSingleCore(serial)
             }
 
             withContext(Dispatchers.Main) {
@@ -33,11 +36,13 @@ class LaunchDetailsInteractorImpl : LaunchDetailsInteractor {
                     )
                 } catch (e: Throwable) {
                     Log.e(
-                        this@LaunchDetailsInteractorImpl.javaClass.name,
+                        this@CoreDetailsInteractorImpl.javaClass.name,
                         e.localizedMessage ?: "Job failed to execute"
                     )
                 }
             }
         }
     }
+
+    override fun cancelAllRequests() = coroutineContext.cancel()
 }

@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.launches.details
+package uk.co.zac_h.spacex.launches.details.launch
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,7 +20,8 @@ import uk.co.zac_h.spacex.utils.data.LaunchesModel
 import uk.co.zac_h.spacex.utils.format
 import uk.co.zac_h.spacex.utils.formatBlockNumber
 
-class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
+class LaunchDetailsFragment : Fragment(),
+    LaunchDetailsView {
 
     private lateinit var presenter: LaunchDetailsPresenter
 
@@ -36,7 +37,10 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = LaunchDetailsPresenterImpl(this, LaunchDetailsInteractorImpl())
+        presenter = LaunchDetailsPresenterImpl(
+            this,
+            LaunchDetailsInteractorImpl()
+        )
 
         val launch = arguments?.getParcelable("launch") as LaunchesModel?
         val id = arguments?.getString("launch_id")
