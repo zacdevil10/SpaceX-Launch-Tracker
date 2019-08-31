@@ -11,17 +11,13 @@ import kotlinx.android.synthetic.main.fragment_pad_stats.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
 import uk.co.zac_h.spacex.utils.HeaderItemDecoration
-import uk.co.zac_h.spacex.utils.data.LandingPadModel
-import uk.co.zac_h.spacex.utils.data.LaunchpadModel
 import uk.co.zac_h.spacex.utils.data.StatsPadModel
 
 class PadStatsFragment : Fragment(), PadStatsView {
 
     private lateinit var presenter: PadStatsPresenter
 
-    private lateinit var padAdapter: PadStatsSitesAdapter
-
-    private var padList = ArrayList<StatsPadModel>()
+    private lateinit var padsAdapter: PadStatsSitesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,51 +29,25 @@ class PadStatsFragment : Fragment(), PadStatsView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = PadStatsPresenterImpl(this, PadStatsInteractorImpl())
+        if (!::presenter.isInitialized) presenter =
+            PadStatsPresenterImpl(this, PadStatsInteractorImpl())
 
-        padAdapter = PadStatsSitesAdapter(padList)
+        presenter.getPads()
+    }
+
+    override fun setPadsList(pads: ArrayList<StatsPadModel>) {
+        padsAdapter = PadStatsSitesAdapter(pads)
 
         pad_stats_launch_sites_recycler.apply {
             layoutManager = LinearLayoutManager(this@PadStatsFragment.context)
             setHasFixedSize(true)
-            adapter = padAdapter
-            addItemDecoration(HeaderItemDecoration(this, padAdapter.isHeader()))
-        }
-
-        presenter.apply {
-            getPads()
+            adapter = padsAdapter
+            addItemDecoration(HeaderItemDecoration(this, padsAdapter.isHeader()))
         }
     }
 
-    override fun setLaunchpadsList(launchpads: List<LaunchpadModel>?) {
-        padList.add(StatsPadModel("Launch Sites", 0, 0, "", isHeading = true))
-        launchpads?.forEach {
-            padList.add(
-                StatsPadModel(
-                    it.nameLong,
-                    it.launchAttempts,
-                    it.launchSuccesses,
-                    it.status
-                )
-            )
-        }
-        padAdapter.notifyDataSetChanged()
-    }
-
-    override fun setLandingPadsList(landingPads: List<LandingPadModel>?) {
-        padList.add(StatsPadModel("Landing Sites", 0, 0, "", isHeading = true))
-        landingPads?.forEach {
-            padList.add(
-                StatsPadModel(
-                    it.nameFull,
-                    it.landingAttempts,
-                    it.landingSuccesses,
-                    it.status,
-                    it.type
-                )
-            )
-        }
-        padAdapter.notifyDataSetChanged()
+    override fun updateRecycler() {
+        padsAdapter.notifyDataSetChanged()
     }
 
     override fun showProgress() {
