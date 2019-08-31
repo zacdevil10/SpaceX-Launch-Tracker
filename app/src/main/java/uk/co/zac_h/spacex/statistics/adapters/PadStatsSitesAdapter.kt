@@ -24,7 +24,7 @@ class PadStatsSitesAdapter(private var sites: ArrayList<StatsPadModel>) :
                     )
                 )
             }
-            1 -> {
+            else -> {
                 ViewHolder(
                     LayoutInflater.from(parent.context).inflate(
                         R.layout.list_item_pad_stats,
@@ -33,8 +33,7 @@ class PadStatsSitesAdapter(private var sites: ArrayList<StatsPadModel>) :
                     )
                 )
             }
-            else -> null
-        }!!
+        }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val site = sites[position]
@@ -53,13 +52,12 @@ class PadStatsSitesAdapter(private var sites: ArrayList<StatsPadModel>) :
                     }
                 )
 
-                if (site.type == "ASDS") type.apply {
-                    setImageAndTint(R.drawable.ic_waves, R.color.ocean)
+                when (site.type) {
+                    "ASDS" -> type.setImageAndTint(R.drawable.ic_waves, R.color.ocean)
+                    "RTLS" -> type.setImageAndTint(R.drawable.ic_landscape, R.color.landscape)
                 }
             }
-            is HeaderViewHolder -> holder.apply {
-                heading.text = site.name
-            }
+            is HeaderViewHolder -> holder.heading.text = site.name
         }
     }
 
