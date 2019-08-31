@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.launches.details
+package uk.co.zac_h.spacex.launches.details.launch
 
 import uk.co.zac_h.spacex.utils.data.LaunchesModel
 

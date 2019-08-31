@@ -13,7 +13,7 @@ import uk.co.zac_h.spacex.utils.data.CoreMissionsModel
 
 class CoreMissionsAdapter(
     private val context: Context?,
-    private val missions: ArrayList<CoreMissionsModel>
+    private val missions: List<CoreMissionsModel>
 ) :
     RecyclerView.Adapter<CoreMissionsAdapter.ViewHolder>() {
 

@@ -53,7 +53,7 @@ class HeaderItemDecoration(
     private fun getHeaderViewForItem(itemPosition: Int, parent: RecyclerView): View? {
         parent.adapter?.let {
             val headerPosition = getHeaderPositionForItem(itemPosition)
-            val headerType = it.getItemViewType(headerPosition) ?: return null
+            val headerType = it.getItemViewType(headerPosition)
             // if match reuse viewHolder
             if (currentHeader?.first == headerPosition && currentHeader?.second?.itemViewType == headerType) {
                 return currentHeader?.second?.itemView
@@ -86,14 +86,12 @@ class HeaderItemDecoration(
     private fun getChildInContact(parent: RecyclerView, contactPoint: Int): View? {
         var childInContact: View? = null
         parent.children.forEach {
-            val mBounds = Rect()
-            parent.getDecoratedBoundsWithMargins(it, mBounds)
-            if (mBounds.bottom > contactPoint) {
-                if (mBounds.top <= contactPoint) {
-                    // This child overlaps the contactPoint
-                    childInContact = it
-                    return@forEach
-                }
+            val bounds = Rect()
+            parent.getDecoratedBoundsWithMargins(it, bounds)
+            if (bounds.bottom > contactPoint && bounds.top <= contactPoint) {
+                // This child overlaps the contactPoint
+                childInContact = it
+                return@forEach
             }
         }
         return childInContact

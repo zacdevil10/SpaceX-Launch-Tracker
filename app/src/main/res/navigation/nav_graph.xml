@@ -47,7 +47,7 @@
 
     <fragment
         android:id="@+id/launch_details_fragment"
-        android:name="uk.co.zac_h.spacex.launches.details.LaunchDetailsFragment"
+        android:name="uk.co.zac_h.spacex.launches.details.launch.LaunchDetailsFragment"
         android:label="{title}"
         tools:layout="@layout/fragment_launch_details">
         <argument
@@ -65,7 +65,7 @@
 
     <fragment
         android:id="@+id/core_details_fragment"
-        android:name="uk.co.zac_h.spacex.launches.details.coredetails.CoreDetailsFragment"
+        android:name="uk.co.zac_h.spacex.launches.details.core.CoreDetailsFragment"
         android:label="{title}"
         tools:layout="@layout/fragment_core_details">
         <argument

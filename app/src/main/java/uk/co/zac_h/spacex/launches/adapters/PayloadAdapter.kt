@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.utils.data.PayloadModel
 import uk.co.zac_h.spacex.utils.formatCustomers
+import kotlin.math.roundToInt
 
 class PayloadAdapter(private var context: Context?, private var payloads: List<PayloadModel>?) :
     RecyclerView.Adapter<PayloadAdapter.ViewHolder>() {
@@ -45,8 +46,8 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
             payloadLifespan.text = payload?.orbitParams?.lifespanYears?.toInt()?.toString() ?: "0"
             payloadMass.text = context?.getString(
                 R.string.payload_value,
-                payload?.massKg?.toInt(),
-                payload?.massLbs?.toInt()
+                payload?.massKg?.roundToInt() ?: 0,
+                payload?.massLbs?.roundToInt() ?: 0
             )
             payloadType.text = payload?.type ?: "Unknown"
             payloadRefSystem.text = payload?.orbitParams?.referenceSystem ?: "Unknown"
@@ -73,7 +74,6 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
         val payloadManufacturer: TextView =
             itemView.findViewById(R.id.list_item_payload_manufacturer_text)
         val details: ConstraintLayout = itemView.findViewById(R.id.list_item_payload_details_layout)
-
         val expandIndicator: ToggleButton =
             itemView.findViewById(R.id.list_item_payload_expand_collapse_toggle)
 

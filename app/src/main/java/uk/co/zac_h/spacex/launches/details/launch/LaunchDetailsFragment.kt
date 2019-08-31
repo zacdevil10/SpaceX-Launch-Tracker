@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.launches.details
+package uk.co.zac_h.spacex.launches.details.launch
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,7 +20,8 @@ import uk.co.zac_h.spacex.utils.data.LaunchesModel
 import uk.co.zac_h.spacex.utils.format
 import uk.co.zac_h.spacex.utils.formatBlockNumber
 
-class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
+class LaunchDetailsFragment : Fragment(),
+    LaunchDetailsView {
 
     private lateinit var presenter: LaunchDetailsPresenter
 
@@ -36,7 +37,10 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = LaunchDetailsPresenterImpl(this, LaunchDetailsInteractorImpl())
+        presenter = LaunchDetailsPresenterImpl(
+            this,
+            LaunchDetailsInteractorImpl()
+        )
 
         val launch = arguments?.getParcelable("launch") as LaunchesModel?
         val id = arguments?.getString("launch_id")
@@ -96,6 +100,9 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
 
     override fun updateLaunchDataView(launch: LaunchesModel?) {
         launch?.let {
+            launch_details_mission_patch_image.visibility =
+                launch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
+
             Picasso.get().load(launch.links.missionPatchSmall)
                 .into(launch_details_mission_patch_image)
 
@@ -115,6 +122,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
             } ?: launch.launchDateUnix.format()
 
             launch.staticFireDateUnix?.let {
+                launch_details_static_fire_date_label.visibility = View.VISIBLE
                 launch_details_static_fire_date_text.text = it.format()
             }
 
@@ -156,13 +164,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView {
      * @param[expCollapse] is the toggle button that shows the collapse state of the recycler
      */
     private fun expandCollapse(recycler: RecyclerView, expCollapse: ToggleButton) {
-        if (expCollapse.isChecked) {
-            expCollapse.isChecked = false
-            recycler.visibility = View.GONE
-        } else {
-            expCollapse.isChecked = true
-            recycler.visibility = View.VISIBLE
+        when {
+            expCollapse.isChecked -> recycler.visibility = View.GONE
+            else -> recycler.visibility = View.VISIBLE
         }
+        expCollapse.isChecked = !expCollapse.isChecked
     }
 
     /**
