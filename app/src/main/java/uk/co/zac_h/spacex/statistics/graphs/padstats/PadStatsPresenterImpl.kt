@@ -16,9 +16,8 @@ class PadStatsPresenterImpl(
             view.showProgress()
             interactor.getLaunchpads(this)
             interactor.getLandingPads(this)
-        } else {
-            view.setPadsList(padList)
         }
+        view.setPadsList(padList)
     }
 
     override fun cancelRequests() {
@@ -40,7 +39,6 @@ class PadStatsPresenterImpl(
 
         view.apply {
             hideProgress()
-            setPadsList(padList)
             updateRecycler()
         }
     }
@@ -61,7 +59,6 @@ class PadStatsPresenterImpl(
 
         view.apply {
             hideProgress()
-            setPadsList(padList)
             updateRecycler()
         }
     }

@@ -18,7 +18,6 @@ import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
 import uk.co.zac_h.spacex.utils.data.LaunchesModel
 import uk.co.zac_h.spacex.utils.format
-import uk.co.zac_h.spacex.utils.formatBlockNumber
 
 class LaunchDetailsFragment : Fragment(),
     LaunchDetailsView {
@@ -110,11 +109,7 @@ class LaunchDetailsFragment : Fragment(),
                 R.string.flight_number,
                 launch.flightNumber
             )
-            launch_details_block_text.text = context?.getString(
-                R.string.vehicle_block_type,
-                launch.rocket.name,
-                launch.rocket.firstStage?.cores?.formatBlockNumber()
-            )
+            launch_details_rocket_type_text.text = launch.rocket.name
             launch_details_mission_name_text.text = launch.missionName
             launch_details_site_name_text.text = launch.launchSite.name
             launch_details_date_text.text = launch.tbd?.let { tbd ->
