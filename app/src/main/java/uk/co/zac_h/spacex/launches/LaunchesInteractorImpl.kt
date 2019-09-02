@@ -14,7 +14,11 @@ class LaunchesInteractorImpl : LaunchesInteractor {
 
     private val scope = CoroutineScope(coroutineContext)
 
-    override fun getLaunches(id: String, order: String, listener: LaunchesInteractor.InteractorCallback) {
+    override fun getLaunches(
+        id: String,
+        order: String,
+        listener: LaunchesInteractor.InteractorCallback
+    ) {
         scope.launch {
             val response = async(SupervisorJob(parentJob)) {
                 SpaceXInterface.create().getLaunches(id, order)
@@ -28,9 +32,14 @@ class LaunchesInteractorImpl : LaunchesInteractor {
                         listener.onError(response.await().message())
                     }
                 } catch (e: HttpException) {
-                    listener.onError(e.localizedMessage)
+                    listener.onError(
+                        e.localizedMessage ?: "There was a network error! Please try refreshing."
+                    )
                 } catch (e: Throwable) {
-                    Log.e(this@LaunchesInteractorImpl.javaClass.name, e.localizedMessage)
+                    Log.e(
+                        this@LaunchesInteractorImpl.javaClass.name,
+                        e.localizedMessage ?: "Job failed to execute"
+                    )
                 }
             }
         }

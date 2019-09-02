@@ -4,9 +4,11 @@ import uk.co.zac_h.spacex.utils.data.LaunchesModel
 
 interface DashboardView {
 
-    fun updateLaunchesList(id: String, launchesModel: LaunchesModel?)
+    fun updateLaunchesList(id: String, launches: LinkedHashMap<String, LaunchesModel>)
 
-    fun toggleProgress(visibility: Int)
+    fun showProgress()
+
+    fun hideProgress()
 
     fun toggleSwipeProgress(isRefreshing: Boolean)
 

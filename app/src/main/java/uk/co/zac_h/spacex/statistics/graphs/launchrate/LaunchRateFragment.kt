@@ -16,34 +16,32 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.android.synthetic.main.fragment_launch_rate.*
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.utils.data.LaunchesModel
 
 class LaunchRateFragment : Fragment(), LaunchRateView {
 
     private lateinit var presenter: LaunchRatePresenter
 
-    private var launches = ArrayList<LaunchesModel>()
-
-    private var filterFalconOne = true
-    private var filterFalconNine = true
-    private var filterFalconHeavy = true
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
         inflater.inflate(R.layout.fragment_launch_rate, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = LaunchRatePresenterImpl(this, LaunchRateInteractorImpl())
+        if (!::presenter.isInitialized) presenter =
+            LaunchRatePresenterImpl(this, LaunchRateInteractorImpl())
 
-        launch_rate_falcon_one_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+        launch_rate_falcon_one_toggle.setOnCheckedChangeListener { _, isChecked ->
             presenter.updateFilter("falcon1", isChecked)
         }
-        launch_rate_falcon_nine_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+        launch_rate_falcon_nine_toggle.setOnCheckedChangeListener { _, isChecked ->
             presenter.updateFilter("falcon9", isChecked)
         }
 
-        launch_rate_falcon_heavy_toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+        launch_rate_falcon_heavy_toggle.setOnCheckedChangeListener { _, isChecked ->
             presenter.updateFilter("falconheavy", isChecked)
         }
 
@@ -70,16 +68,12 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
             setDrawBorders(false)
 
             legend.apply {
-                textColor= Color.WHITE
+                textColor = Color.WHITE
 
             }
         }
 
-        if (launches.isEmpty()) {
-            presenter.getLaunchList()
-        } else {
-            setData()
-        }
+        presenter.getLaunchList()
     }
 
     override fun onDestroyView() {
@@ -87,41 +81,13 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
         presenter.cancelRequests()
     }
 
-    private fun setData() {
+    override fun updateBarChart(entries: ArrayList<BarEntry>, dataSize: Int) {
         val colors = ArrayList<Int>()
 
         colors.add(ColorTemplate.rgb("29b6f6"))
         colors.add(ColorTemplate.rgb("FFFFFF"))
 
-        val dataSets = ArrayList<IBarDataSet>()
-
-        val entries = ArrayList<BarEntry>()
-
-        val dataMap = LinkedHashMap<Int, Int>()
-        val dataMapFuture = LinkedHashMap<Int, Int>()
-
-        for (i in 2006..launches[launches.size - 1].launchYear) {
-            dataMap[i + 1] = 0
-        }
-
-        launches.forEach {
-            if (!filterFalconOne && it.rocket.id == "falcon1") return@forEach
-            if (!filterFalconNine && it.rocket.id == "falcon9") return@forEach
-            if (!filterFalconHeavy && it.rocket.id == "falconheavy") return@forEach
-
-            if (it.launchDateUnix.times(1000) <= System.currentTimeMillis()) {
-                dataMap[it.launchYear + 1] = dataMap[it.launchYear + 1]?.plus(1) ?: 1
-            } else {
-                dataMapFuture[it.launchYear + 1] = dataMapFuture[it.launchYear + 1]?.plus(1) ?: 1
-            }
-        }
-
-        dataMap.forEach {
-            entries.add(BarEntry(it.key.toFloat(), floatArrayOf(it.value.toFloat(), dataMapFuture[it.key]?.toFloat() ?: 0f)))
-        }
-
-        val set = BarDataSet(entries, "Launches")
-        set.apply {
+        val set = BarDataSet(entries, "Launches").apply {
             setColors(colors)
             valueTextColor = Color.WHITE
             valueTextSize = 9f
@@ -140,36 +106,24 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
             stackLabels = arrayOf("Past", "Future")
         }
 
+        val dataSets = ArrayList<IBarDataSet>()
         dataSets.add(set)
 
         launch_rate_bar_chart.apply {
             xAxis.apply {
-                setLabelCount(dataMap.size + 1, true)
+                setLabelCount(dataSize, true)
             }
             data = BarData(dataSets)
             invalidate()
         }
     }
 
-    override fun setLaunchesList(launches: List<LaunchesModel>?) {
-        if (launches != null) {
-            this.launches.addAll(launches)
-            setData()
-        }
+    override fun showProgress() {
+        launch_rate_progress_bar.visibility = View.VISIBLE
     }
 
-    override fun updateLaunchesList(filterId: String, isFiltered: Boolean) {
-        when (filterId) {
-            "falcon1" -> filterFalconOne = isFiltered
-            "falcon9" -> filterFalconNine = isFiltered
-            "falconheavy" -> filterFalconHeavy = isFiltered
-        }
-
-        setData()
-    }
-
-    override fun toggleProgress(visibility: Int) {
-        launch_rate_progress_bar.visibility = visibility
+    override fun hideProgress() {
+        launch_rate_progress_bar.visibility = View.GONE
     }
 
     override fun showError(error: String) {

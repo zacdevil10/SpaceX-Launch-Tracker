@@ -26,10 +26,11 @@ class LaunchesListFragment : Fragment(), LaunchesView {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_launches_list, container, false)
-    }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? = inflater.inflate(R.layout.fragment_launches_list, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -44,12 +45,15 @@ class LaunchesListFragment : Fragment(), LaunchesView {
             adapter = launchesAdapter
         }
 
-        val param = arguments?.getString("launchParam")
+        arguments?.getString("launchParam")?.let { launchId ->
+            if (launchesList.isEmpty()) presenter.getLaunchList(
+                launchId,
+                if (launchId == "past") "desc" else "asc"
+            )
 
-        if (param != null) presenter.getLaunchList(param, if (param == "past") "desc" else "asc")
-
-        launches_swipe_refresh.setOnRefreshListener {
-            if (param != null) presenter.getLaunchList(param, if (param == "past") "desc" else "asc")
+            launches_swipe_refresh.setOnRefreshListener {
+                presenter.getLaunchList(launchId, if (launchId == "past") "desc" else "asc")
+            }
         }
     }
 
@@ -59,16 +63,20 @@ class LaunchesListFragment : Fragment(), LaunchesView {
     }
 
     override fun updateLaunchesList(launches: List<LaunchesModel>?) {
-        if (launches != null) {
+        launches?.let {
             launchesList.clear()
-            launchesList.addAll(launches)
+            launchesList.addAll(it)
         }
 
         launchesAdapter.notifyDataSetChanged()
     }
 
-    override fun toggleProgress(visibility: Int) {
-        launches_progress_bar.visibility = visibility
+    override fun showProgress() {
+        launches_progress_bar.visibility = View.VISIBLE
+    }
+
+    override fun hideProgress() {
+        launches_progress_bar.visibility = View.GONE
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {

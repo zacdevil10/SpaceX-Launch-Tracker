@@ -6,10 +6,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-import uk.co.zac_h.spacex.utils.data.LandingPadModel
-import uk.co.zac_h.spacex.utils.data.LaunchesModel
-import uk.co.zac_h.spacex.utils.data.LaunchpadModel
-import uk.co.zac_h.spacex.utils.data.RocketsModel
+import uk.co.zac_h.spacex.utils.data.*
 
 interface SpaceXInterface {
 
@@ -22,11 +19,11 @@ interface SpaceXInterface {
     @GET("launches")
     suspend fun getLaunches(): Response<List<LaunchesModel>>
 
-    @GET("rockets/{rocket_id}")
-    suspend fun getSingleRocket(@Path("rocket_id") id: String): Response<RocketsModel>
-
     @GET("rockets")
     suspend fun getRockets(): Response<List<RocketsModel>>
+
+    @GET("cores/{serial}")
+    suspend fun getSingleCore(@Path("serial") serial: String): Response<CoreModel>
 
     @GET("launchpads")
     suspend fun getLaunchpads(): Response<List<LaunchpadModel>>

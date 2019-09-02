@@ -1,19 +1,23 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
-import android.view.View
 import uk.co.zac_h.spacex.utils.data.LandingPadModel
 import uk.co.zac_h.spacex.utils.data.LaunchpadModel
+import uk.co.zac_h.spacex.utils.data.StatsPadModel
 
-class PadStatsPresenterImpl(private val view: PadStatsView, private val interactor: PadStatsInteractor) : PadStatsPresenter, PadStatsInteractor.InteractorCallback {
+class PadStatsPresenterImpl(
+    private val view: PadStatsView,
+    private val interactor: PadStatsInteractor
+) : PadStatsPresenter, PadStatsInteractor.InteractorCallback {
 
-    override fun getLaunchpads() {
-        view.toggleLaunchpadsProgress(View.VISIBLE)
-        interactor.getLaunchpads(this)
-    }
+    private var padList = ArrayList<StatsPadModel>()
 
-    override fun getLandingPads() {
-        view.toggleLandingPadsProgress(View.VISIBLE)
-        interactor.getLandingPads(this)
+    override fun getPads() {
+        if (padList.isEmpty()) {
+            view.showProgress()
+            interactor.getLaunchpads(this)
+            interactor.getLandingPads(this)
+        }
+        view.setPadsList(padList)
     }
 
     override fun cancelRequests() {
@@ -21,13 +25,42 @@ class PadStatsPresenterImpl(private val view: PadStatsView, private val interact
     }
 
     override fun onGetLaunchpads(launchpads: List<LaunchpadModel>?) {
-        view.toggleLaunchpadsProgress(View.INVISIBLE)
-        view.setLaunchpadsList(launchpads)
+        padList.add(StatsPadModel("Launch Sites", 0, 0, "", isHeading = true))
+        launchpads?.forEach {
+            padList.add(
+                StatsPadModel(
+                    it.nameLong,
+                    it.launchAttempts,
+                    it.launchSuccesses,
+                    it.status
+                )
+            )
+        }
+
+        view.apply {
+            hideProgress()
+            updateRecycler()
+        }
     }
 
     override fun onGetLandingPads(landingPads: List<LandingPadModel>?) {
-        view.toggleLandingPadsProgress(View.INVISIBLE)
-        view.setLandingPadsList(landingPads)
+        padList.add(StatsPadModel("Landing Sites", 0, 0, "", isHeading = true))
+        landingPads?.forEach {
+            padList.add(
+                StatsPadModel(
+                    it.nameFull,
+                    it.landingAttempts,
+                    it.landingSuccesses,
+                    it.status,
+                    it.type
+                )
+            )
+        }
+
+        view.apply {
+            hideProgress()
+            updateRecycler()
+        }
     }
 
     override fun onError(error: String) {

@@ -6,7 +6,7 @@ interface LaunchHistoryPresenter {
 
     fun getRocketsList()
 
-    fun updateFilter(id: String, state: Boolean)
+    fun updateFilter(filter: String, isFiltered: Boolean)
 
     fun cancelRequests()
 

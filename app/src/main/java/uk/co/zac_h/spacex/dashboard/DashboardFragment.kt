@@ -19,10 +19,12 @@ class DashboardFragment : Fragment(), DashboardView {
     private lateinit var dashboardLaunchesAdapter: DashboardLaunchesAdapter
     private var launchMap = LinkedHashMap<String, LaunchesModel>()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dashboard, container, false)
-    }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? =
+        inflater.inflate(R.layout.fragment_dashboard, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -38,16 +40,10 @@ class DashboardFragment : Fragment(), DashboardView {
         }
 
         dashboard_swipe_refresh.setOnRefreshListener {
-            presenter.apply {
-                getSingleLaunch("next")
-                getSingleLaunch("latest")
-            }
+            presenter.getLatestLaunches()
         }
 
-        presenter.apply {
-            getSingleLaunch("next")
-            getSingleLaunch("latest")
-        }
+        presenter.getLatestLaunches()
     }
 
     override fun onDestroyView() {
@@ -55,16 +51,17 @@ class DashboardFragment : Fragment(), DashboardView {
         presenter.cancelRequests()
     }
 
-    override fun updateLaunchesList(id: String, launchesModel: LaunchesModel?) {
-        if (launchesModel != null) {
-            launchMap[id] = launchesModel
-        }
-
-        if (launchMap.size == 2) dashboardLaunchesAdapter.notifyDataSetChanged()
+    override fun updateLaunchesList(id: String, launches: LinkedHashMap<String, LaunchesModel>) {
+        launchMap.putAll(launches)
+        dashboardLaunchesAdapter.notifyDataSetChanged()
     }
 
-    override fun toggleProgress(visibility: Int) {
-        dashboard_progress_bar.visibility = visibility
+    override fun showProgress() {
+        dashboard_progress_bar.visibility = View.VISIBLE
+    }
+
+    override fun hideProgress() {
+        dashboard_progress_bar.visibility = View.GONE
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {

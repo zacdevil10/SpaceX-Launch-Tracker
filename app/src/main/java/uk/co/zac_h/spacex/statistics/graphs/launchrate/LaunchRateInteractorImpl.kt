@@ -25,12 +25,17 @@ class LaunchRateInteractorImpl : LaunchRateInteractor {
                     if (response.await().isSuccessful) {
                         listener.onSuccess(response.await().body())
                     } else {
-                        listener.onError(response.await().message())
+                        listener.onError("Error: ${response.await().code()}")
                     }
                 } catch (e: HttpException) {
-                    listener.onError(e.localizedMessage)
+                    listener.onError(
+                        e.localizedMessage ?: "There was a network error! Please try refreshing."
+                    )
                 } catch (e: Throwable) {
-                    Log.e(this@LaunchRateInteractorImpl.javaClass.name, e.localizedMessage)
+                    Log.e(
+                        this@LaunchRateInteractorImpl.javaClass.name,
+                        e.localizedMessage ?: "Job failed to execute"
+                    )
                 }
             }
         }

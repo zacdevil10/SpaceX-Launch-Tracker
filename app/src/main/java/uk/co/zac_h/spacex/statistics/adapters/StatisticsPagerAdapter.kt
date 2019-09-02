@@ -7,7 +7,8 @@ import uk.co.zac_h.spacex.statistics.graphs.launchhistory.LaunchHistoryFragment
 import uk.co.zac_h.spacex.statistics.graphs.launchrate.LaunchRateFragment
 import uk.co.zac_h.spacex.statistics.graphs.padstats.PadStatsFragment
 
-class StatisticsPagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager) {
+class StatisticsPagerAdapter(fragmentManager: FragmentManager) :
+    FragmentPagerAdapter(fragmentManager) {
 
     override fun getItem(position: Int): Fragment? =
         when (position) {

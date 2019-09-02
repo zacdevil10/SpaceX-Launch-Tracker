@@ -19,183 +19,195 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/launch_history_filter_constraint"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@id/launch_history_pie_chart"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/launch_history_filters_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/filter"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ToggleButton
-            android:id="@+id/launch_history_success_toggle"
-            android:layout_width="wrap_content"
-            android:layout_height="24dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/filter_toggle_green"
-            android:checked="false"
-            android:text="@string/filter_successes"
-            android:textOff="@string/filter_successes"
-            android:textOn="@string/filter_successes"
-            android:textSize="@dimen/filter_text_size"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/launch_history_filters_text"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ToggleButton
-            android:id="@+id/launch_history_failure_toggle"
-            android:layout_width="wrap_content"
-            android:layout_height="24dp"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/filter_toggle_red"
-            android:checked="false"
-            android:text="@string/filter_failures"
-            android:textOff="@string/filter_failures"
-            android:textOn="@string/filter_failures"
-            android:textSize="@dimen/filter_text_size"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/launch_history_success_toggle"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <com.github.mikephil.charting.charts.PieChart
-        android:id="@+id/launch_history_pie_chart"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/launch_history_progress_card"
-        app:layout_constraintTop_toBottomOf="@id/launch_history_filter_constraint" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/launch_history_progress_card"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/launch_history_pie_chart">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/launch_history_progress_constraint"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/launch_history_success_title_text"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/launch_history_filter_constraint"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/success_rate_heading"
-                android:textColor="@color/colorAccent"
-                android:textSize="@dimen/heading"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:padding="16dp"
+                app:layout_constraintBottom_toTopOf="@id/launch_history_pie_chart"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <ProgressBar
-                android:id="@+id/launch_history_falcon_one_rate_progress"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:indeterminate="false"
-                android:max="100"
-                android:progressDrawable="@drawable/circular_progress"
+                <TextView
+                    android:id="@+id/launch_history_filters_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ToggleButton
+                    android:id="@+id/launch_history_success_toggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/filter_toggle_green"
+                    android:checked="false"
+                    android:text="@string/filter_successes"
+                    android:textOff="@string/filter_successes"
+                    android:textOn="@string/filter_successes"
+                    android:textSize="@dimen/filter_text_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/launch_history_filters_text"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ToggleButton
+                    android:id="@+id/launch_history_failure_toggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/filter_toggle_red"
+                    android:checked="false"
+                    android:text="@string/filter_failures"
+                    android:textOff="@string/filter_failures"
+                    android:textOn="@string/filter_failures"
+                    android:textSize="@dimen/filter_text_size"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/launch_history_success_toggle"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/launch_history_pie_chart"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                app:layout_constraintBottom_toTopOf="@id/launch_history_progress_card"
+                app:layout_constraintTop_toBottomOf="@id/launch_history_filter_constraint" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/launch_history_progress_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/launch_history_falcon_nine_rate_progress"
-                app:layout_constraintTop_toBottomOf="@id/launch_history_success_title_text" />
-
-            <TextView
-                android:id="@+id/launch_history_falcon_one_percent_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@id/launch_history_falcon_one_rate_progress"
-                app:layout_constraintLeft_toLeftOf="@id/launch_history_falcon_one_rate_progress"
-                app:layout_constraintRight_toRightOf="@id/launch_history_falcon_one_rate_progress"
-                app:layout_constraintTop_toTopOf="@id/launch_history_falcon_one_rate_progress"
-                tools:text="100%" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/falcon_1"
-                app:layout_constraintLeft_toLeftOf="@id/launch_history_falcon_one_rate_progress"
-                app:layout_constraintRight_toRightOf="@id/launch_history_falcon_one_rate_progress"
-                app:layout_constraintTop_toBottomOf="@id/launch_history_falcon_one_rate_progress" />
-
-            <ProgressBar
-                android:id="@+id/launch_history_falcon_nine_rate_progress"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:indeterminate="false"
-                android:max="100"
-                android:progressDrawable="@drawable/circular_progress"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/launch_history_falcon_one_rate_progress"
-                app:layout_constraintRight_toLeftOf="@id/launch_history_falcon_heavy_rate_progress"
-                app:layout_constraintTop_toBottomOf="@id/launch_history_success_title_text" />
-
-            <TextView
-                android:id="@+id/launch_history_falcon_nine_percent_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@id/launch_history_falcon_nine_rate_progress"
-                app:layout_constraintLeft_toLeftOf="@id/launch_history_falcon_nine_rate_progress"
-                app:layout_constraintRight_toRightOf="@id/launch_history_falcon_nine_rate_progress"
-                app:layout_constraintTop_toTopOf="@id/launch_history_falcon_nine_rate_progress"
-                tools:text="100%" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/falcon_9"
-                app:layout_constraintLeft_toLeftOf="@id/launch_history_falcon_nine_rate_progress"
-                app:layout_constraintRight_toRightOf="@id/launch_history_falcon_nine_rate_progress"
-                app:layout_constraintTop_toBottomOf="@id/launch_history_falcon_nine_rate_progress" />
-
-            <ProgressBar
-                android:id="@+id/launch_history_falcon_heavy_rate_progress"
-                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:indeterminate="false"
-                android:max="100"
-                android:progressDrawable="@drawable/circular_progress"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/launch_history_falcon_nine_rate_progress"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/launch_history_success_title_text" />
+                app:layout_constraintTop_toBottomOf="@id/launch_history_pie_chart">
 
-            <TextView
-                android:id="@+id/launch_history_falcon_heavy_percent_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="@id/launch_history_falcon_heavy_rate_progress"
-                app:layout_constraintLeft_toLeftOf="@id/launch_history_falcon_heavy_rate_progress"
-                app:layout_constraintRight_toRightOf="@id/launch_history_falcon_heavy_rate_progress"
-                app:layout_constraintTop_toTopOf="@id/launch_history_falcon_heavy_rate_progress"
-                tools:text="100%" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/launch_history_progress_constraint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/falcon_heavy"
-                app:layout_constraintLeft_toLeftOf="@id/launch_history_falcon_heavy_rate_progress"
-                app:layout_constraintRight_toRightOf="@id/launch_history_falcon_heavy_rate_progress"
-                app:layout_constraintTop_toBottomOf="@id/launch_history_falcon_heavy_rate_progress" />
+                    <TextView
+                        android:id="@+id/launch_history_success_title_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/success_rate_heading"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="@dimen/heading"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ProgressBar
+                        android:id="@+id/launch_history_falcon_one_rate_progress"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:progressDrawable="@drawable/circular_progress"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintRight_toLeftOf="@id/launch_history_falcon_nine_rate_progress"
+                        app:layout_constraintTop_toBottomOf="@id/launch_history_success_title_text" />
+
+                    <TextView
+                        android:id="@+id/launch_history_falcon_one_percent_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="@id/launch_history_falcon_one_rate_progress"
+                        app:layout_constraintLeft_toLeftOf="@id/launch_history_falcon_one_rate_progress"
+                        app:layout_constraintRight_toRightOf="@id/launch_history_falcon_one_rate_progress"
+                        app:layout_constraintTop_toTopOf="@id/launch_history_falcon_one_rate_progress"
+                        tools:text="100%" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/falcon_1"
+                        app:layout_constraintLeft_toLeftOf="@id/launch_history_falcon_one_rate_progress"
+                        app:layout_constraintRight_toRightOf="@id/launch_history_falcon_one_rate_progress"
+                        app:layout_constraintTop_toBottomOf="@id/launch_history_falcon_one_rate_progress" />
+
+                    <ProgressBar
+                        android:id="@+id/launch_history_falcon_nine_rate_progress"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:progressDrawable="@drawable/circular_progress"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toRightOf="@id/launch_history_falcon_one_rate_progress"
+                        app:layout_constraintRight_toLeftOf="@id/launch_history_falcon_heavy_rate_progress"
+                        app:layout_constraintTop_toBottomOf="@id/launch_history_success_title_text" />
+
+                    <TextView
+                        android:id="@+id/launch_history_falcon_nine_percent_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="@id/launch_history_falcon_nine_rate_progress"
+                        app:layout_constraintLeft_toLeftOf="@id/launch_history_falcon_nine_rate_progress"
+                        app:layout_constraintRight_toRightOf="@id/launch_history_falcon_nine_rate_progress"
+                        app:layout_constraintTop_toTopOf="@id/launch_history_falcon_nine_rate_progress"
+                        tools:text="100%" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/falcon_9"
+                        app:layout_constraintLeft_toLeftOf="@id/launch_history_falcon_nine_rate_progress"
+                        app:layout_constraintRight_toRightOf="@id/launch_history_falcon_nine_rate_progress"
+                        app:layout_constraintTop_toBottomOf="@id/launch_history_falcon_nine_rate_progress" />
+
+                    <ProgressBar
+                        android:id="@+id/launch_history_falcon_heavy_rate_progress"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:progressDrawable="@drawable/circular_progress"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toRightOf="@id/launch_history_falcon_nine_rate_progress"
+                        app:layout_constraintRight_toRightOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/launch_history_success_title_text" />
+
+                    <TextView
+                        android:id="@+id/launch_history_falcon_heavy_percent_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="@id/launch_history_falcon_heavy_rate_progress"
+                        app:layout_constraintLeft_toLeftOf="@id/launch_history_falcon_heavy_rate_progress"
+                        app:layout_constraintRight_toRightOf="@id/launch_history_falcon_heavy_rate_progress"
+                        app:layout_constraintTop_toTopOf="@id/launch_history_falcon_heavy_rate_progress"
+                        tools:text="100%" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/falcon_heavy"
+                        app:layout_constraintLeft_toLeftOf="@id/launch_history_falcon_heavy_rate_progress"
+                        app:layout_constraintRight_toRightOf="@id/launch_history_falcon_heavy_rate_progress"
+                        app:layout_constraintTop_toBottomOf="@id/launch_history_falcon_heavy_rate_progress" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.cardview.widget.CardView>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

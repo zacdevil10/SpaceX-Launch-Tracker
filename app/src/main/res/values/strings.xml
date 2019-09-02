@@ -8,7 +8,6 @@
     <string name="menu_home">Home</string>
     <string name="menu_launches">Launches</string>
     <string name="menu_statistics">Statistics</string>
-    <string name="menu_settings">Settings</string>
     <string name="menu_about">About</string>
 
     <string name="next_launch">Next launch</string>
@@ -27,6 +26,42 @@
     <string name="falcon_9">Falcon 9</string>
     <string name="falcon_heavy">Falcon Heavy</string>
 
+    <!--Launch Details-->
+    <string name="mission_patch">Mission patch</string>
+    <string name="first_stage">First Stage</string>
+    <string name="payload_label">Payload</string>
+    <string name="details_label">Details</string>
+    <string name="reused_status_desc">Reused status</string>
+    <string name="landed_label">Landed</string>
+    <string name="landed_status_desc">Landed status</string>
+    <string name="landing_label">Landing</string>
+    <string name="flights_label">Flights</string>
+    <string name="missions_label">Missions</string>
+    <string name="rtls_attempts_label">RTLS Attempts</string>
+    <string name="rtls_landings_label">RTLS Landings</string>
+    <string name="asds_attempts_label">ASDS Attempts</string>
+    <string name="asds_landings_label">ASDS Landings</string>
+    <string name="core_serial_label">Core Serial</string>
+    <string name="water_landing_label">Water Landing</string>
+    <string name="water_landing_indicator">Water Landing Indicator</string>
+    <string name="block_label">Block</string>
+    <string name="customer_label">Customer</string>
+    <string name="orbit_label">Orbit</string>
+    <string name="lifespan_label">Lifespan</string>
+    <string name="mass_label">Mass</string>
+    <string name="payload_type_label">Payload type</string>
+    <string name="reference_system_label">Reference System</string>
+    <string name="regime_label">Regime</string>
+    <string name="longitude_label">Longitude</string>
+    <string name="semi_major_axis_label">Semi Major Axis</string>
+    <string name="eccentricity_label">Eccentricity</string>
+    <string name="periapsis_km_label">Periapsis (km)</string>
+    <string name="apoapsis_km_label">Apoapsis (km)</string>
+    <string name="inclination_label">Inclination</string>
+    <string name="period_label">Period</string>
+    <string name="payload_value">%1$d kg / %2$d lbs</string>
+    <string name="static_fire_label">(static fire)</string>
+
     <!--Statistics-->
     <string name="success_rate_heading">Launch Success Rate</string>
     <string name="percentage">%1$d%%</string>
@@ -37,8 +72,6 @@
     <string name="attempts_label">Attempts</string>
     <string name="launch_pad_status_desc">Launch pad status</string>
     <string name="launch_pad_type_desc">Pad type</string>
-    <string name="launch_sites">Launch Sites</string>
-    <string name="landing_sites">Landing Sites</string>
 
     <!--About-->
     <string name="powered_by">Powered by the r/SpaceX API</string>
