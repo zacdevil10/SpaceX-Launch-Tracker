@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="uk.co.zac_h.spacex">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-
+    <!-- Required to act as a custom watch face. -->
     <application
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
@@ -15,8 +14,6 @@
         <activity
             android:name=".base.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
-            <tools:validation testUrl="https://spacex.zac-h.co.uk" />
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,10 +26,18 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="https"
-                    android:host="spacex.zac-h.co.uk" />
+                    android:host="spacex.zac-h.co.uk"
+                    android:scheme="https" />
             </intent-filter>
+
+            <tools:validation testUrl="https://spacex.zac-h.co.uk" />
         </activity>
     </application>
+
+    <!-- Required for complications to receive complication data and open the provider chooser. -->
+    <uses-permission android:name="com.google.android.wearable.permission.RECEIVE_COMPLICATION_DATA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
 </manifest>
