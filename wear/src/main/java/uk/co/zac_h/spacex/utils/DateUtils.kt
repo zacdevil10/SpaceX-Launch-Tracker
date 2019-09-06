@@ -5,7 +5,7 @@ import java.util.*
 
 fun Long.format(tbd: Boolean = false): String =
     SimpleDateFormat(
-        if (!tbd) "dd MMM yy - HH:mm zzz" else "MMM yy - HH:mm zzz",
+        if (!tbd) "dd MMM yy - HH:mm" else "MMM yy - HH:mm",
         Locale.getDefault()
     ).apply {
         timeZone = TimeZone.getDefault()

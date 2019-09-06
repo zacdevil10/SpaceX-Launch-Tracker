@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--
-    Because the window insets on round devices are larger than 15dp, this padding only applies
-    to square screens.
-    -->
-    <dimen name="box_inset_layout_padding">0dp</dimen>
+    <dimen name="heading_start_margin">8dp</dimen>
+    <dimen name="container_scroll_over">8dp</dimen>
 
     <!--
     This padding applies to both square and round screens. The total padding between the buttons
