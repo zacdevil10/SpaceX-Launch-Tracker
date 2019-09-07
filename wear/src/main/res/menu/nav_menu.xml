@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/dashboard_nav"
+        android:icon="@drawable/ic_dashboard_white_24dp"
+        android:title="Dashboard" />
+
+    <item
+        android:id="@+id/launches_nav"
+        android:icon="@drawable/ic_dashboard_white_24dp"
+        android:title="Launches" />
+
+    <item
+        android:id="@+id/stats_nav"
+        android:icon="@drawable/ic_dashboard_white_24dp"
+        android:title="Statistics" />
+
+    <item
+        android:id="@+id/about_nav"
+        android:icon="@drawable/ic_dashboard_white_24dp"
+        android:title="About" />
+</menu>

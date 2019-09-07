@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="heading_start_margin">32dp</dimen>
+    <dimen name="container_scroll_over">64dp</dimen>
+</resources>
