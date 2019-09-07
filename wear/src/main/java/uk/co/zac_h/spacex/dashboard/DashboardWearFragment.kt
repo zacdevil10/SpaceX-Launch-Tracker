@@ -9,8 +9,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.utils.data.LaunchesModel
-import uk.co.zac_h.spacex.utils.format
+import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.utils.formatDateMillisShort
 
 class DashboardWearFragment : Fragment(), DashboardWearView {
 
@@ -43,8 +43,8 @@ class DashboardWearFragment : Fragment(), DashboardWearView {
     override fun updateNextLaunch(launch: LaunchesModel) {
         dashboard_name_text.text = launch.missionName
         dashboard_date_text.text = launch.tbd?.let {
-            launch.launchDateUnix.format(it)
-        } ?: launch.launchDateUnix.format()
+            launch.launchDateUnix.formatDateMillisShort(it)
+        } ?: launch.launchDateUnix.formatDateMillisShort()
         dashboard_flight_text.text =
             context?.getString(R.string.flight_number, launch.flightNumber)
     }
@@ -52,8 +52,8 @@ class DashboardWearFragment : Fragment(), DashboardWearView {
     override fun updateLatestLaunch(launch: LaunchesModel) {
         dashboard_latest_name_text.text = launch.missionName
         dashboard_latest_date_text.text = launch.tbd?.let {
-            launch.launchDateUnix.format(it)
-        } ?: launch.launchDateUnix.format()
+            launch.launchDateUnix.formatDateMillisShort(it)
+        } ?: launch.launchDateUnix.formatDateMillisShort()
         dashboard_latest_flight_text.text =
             context?.getString(R.string.flight_number, launch.flightNumber)
     }

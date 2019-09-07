@@ -9,8 +9,8 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.utils.data.LaunchesModel
-import uk.co.zac_h.spacex.utils.format
+import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.utils.formatDateMillisLong
 import uk.co.zac_h.spacex.utils.formatBlockNumber
 import java.util.*
 
@@ -50,8 +50,8 @@ class DashboardLaunchesAdapter(
             )
             missionName.text = launch?.missionName
             date.text = launch?.tbd?.let {
-                launch.launchDateUnix.format(it)
-            } ?: launch?.launchDateUnix?.format()
+                launch.launchDateUnix.formatDateMillisLong(it)
+            } ?: launch?.launchDateUnix?.formatDateMillisLong()
 
             itemView.setOnClickListener {
                 itemView.findNavController().navigate(

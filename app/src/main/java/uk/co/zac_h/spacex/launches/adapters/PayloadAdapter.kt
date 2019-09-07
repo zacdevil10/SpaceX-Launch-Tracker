@@ -9,7 +9,7 @@ import android.widget.ToggleButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.utils.data.PayloadModel
+import uk.co.zac_h.spacex.model.PayloadModel
 import uk.co.zac_h.spacex.utils.formatCustomers
 import kotlin.math.roundToInt
 

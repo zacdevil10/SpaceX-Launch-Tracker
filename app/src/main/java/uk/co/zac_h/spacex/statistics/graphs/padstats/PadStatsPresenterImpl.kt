@@ -1,8 +1,8 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
-import uk.co.zac_h.spacex.utils.data.LandingPadModel
-import uk.co.zac_h.spacex.utils.data.LaunchpadModel
-import uk.co.zac_h.spacex.utils.data.StatsPadModel
+import uk.co.zac_h.spacex.model.LandingPadModel
+import uk.co.zac_h.spacex.model.LaunchpadModel
+import uk.co.zac_h.spacex.model.StatsPadModel
 
 class PadStatsPresenterImpl(
     private val view: PadStatsView,

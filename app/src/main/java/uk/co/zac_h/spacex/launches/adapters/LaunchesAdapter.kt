@@ -9,8 +9,8 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.utils.data.LaunchesModel
-import uk.co.zac_h.spacex.utils.format
+import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.utils.formatDateMillisLong
 import uk.co.zac_h.spacex.utils.formatBlockNumber
 
 class LaunchesAdapter(
@@ -55,7 +55,7 @@ class LaunchesAdapter(
                 launch.rocket.firstStage?.cores?.formatBlockNumber()
             )
             missionName.text = launch.missionName
-            date.text = launch.launchDateUnix.format(launch.tbd?.let { it } ?: false)
+            date.text = launch.launchDateUnix.formatDateMillisLong(launch.tbd?.let { it } ?: false)
 
             itemView.setOnClickListener {
                 itemView.findNavController()

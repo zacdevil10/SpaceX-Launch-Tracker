@@ -10,12 +10,12 @@ import uk.co.zac_h.spacex.statistics.graphs.padstats.PadStatsFragment
 class StatisticsPagerAdapter(fragmentManager: FragmentManager) :
     FragmentPagerAdapter(fragmentManager) {
 
-    override fun getItem(position: Int): Fragment? =
+    override fun getItem(position: Int): Fragment =
         when (position) {
             0 -> LaunchHistoryFragment()
             1 -> LaunchRateFragment()
             2 -> PadStatsFragment()
-            else -> null
+            else -> throw IllegalArgumentException("")
         }
 
     override fun getCount(): Int = 3
@@ -24,7 +24,7 @@ class StatisticsPagerAdapter(fragmentManager: FragmentManager) :
         0 -> "Launch History"
         1 -> "Launch Rate"
         2 -> "Launch/Landing Pads"
-        else -> null
+        else -> throw IllegalArgumentException("")
     }
 
 

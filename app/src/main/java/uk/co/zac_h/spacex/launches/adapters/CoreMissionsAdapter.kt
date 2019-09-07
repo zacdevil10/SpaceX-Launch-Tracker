@@ -9,7 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.utils.data.CoreMissionsModel
+import uk.co.zac_h.spacex.model.CoreMissionsModel
 
 class CoreMissionsAdapter(
     private val context: Context?,

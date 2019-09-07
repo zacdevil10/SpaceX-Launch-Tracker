@@ -1,8 +1,8 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
 import com.github.mikephil.charting.data.PieEntry
-import uk.co.zac_h.spacex.utils.data.LaunchesModel
-import uk.co.zac_h.spacex.utils.data.RocketsModel
+import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.model.RocketsModel
 
 class LaunchHistoryPresenterImpl(
     private val view: LaunchHistoryView,

@@ -8,11 +8,11 @@ import uk.co.zac_h.spacex.launches.LaunchesListFragment
 class LaunchesPagerAdapter(fragmentManager: FragmentManager) :
     FragmentPagerAdapter(fragmentManager) {
 
-    override fun getItem(position: Int): Fragment? =
+    override fun getItem(position: Int): Fragment =
         when (position) {
             0 -> LaunchesListFragment.newInstance("upcoming")
             1 -> LaunchesListFragment.newInstance("past")
-            else -> null
+            else -> throw IllegalArgumentException("")
         }
 
     override fun getCount(): Int = 2
@@ -20,7 +20,7 @@ class LaunchesPagerAdapter(fragmentManager: FragmentManager) :
     override fun getPageTitle(position: Int): CharSequence? = when (position) {
         0 -> "Upcoming"
         1 -> "Past"
-        else -> null
+        else -> throw IllegalArgumentException("")
     }
 
 }

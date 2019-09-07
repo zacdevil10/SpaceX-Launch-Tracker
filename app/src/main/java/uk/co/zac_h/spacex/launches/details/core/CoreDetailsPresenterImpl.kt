@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.launches.details.core
 
-import uk.co.zac_h.spacex.utils.data.CoreModel
+import uk.co.zac_h.spacex.model.CoreModel
 
 class CoreDetailsPresenterImpl(
     private val view: CoreDetailsView,
