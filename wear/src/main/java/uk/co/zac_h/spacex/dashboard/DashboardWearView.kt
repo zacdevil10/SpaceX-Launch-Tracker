@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.dashboard
 
-import uk.co.zac_h.spacex.utils.data.LaunchesModel
+import uk.co.zac_h.spacex.model.LaunchesModel
 
 interface DashboardWearView {
 

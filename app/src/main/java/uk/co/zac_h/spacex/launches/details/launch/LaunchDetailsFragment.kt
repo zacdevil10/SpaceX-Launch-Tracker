@@ -16,8 +16,8 @@ import kotlinx.android.synthetic.main.fragment_launch_details.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
-import uk.co.zac_h.spacex.utils.data.LaunchesModel
-import uk.co.zac_h.spacex.utils.format
+import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.utils.formatDateMillisLong
 
 class LaunchDetailsFragment : Fragment(),
     LaunchDetailsView {
@@ -113,12 +113,12 @@ class LaunchDetailsFragment : Fragment(),
             launch_details_mission_name_text.text = launch.missionName
             launch_details_site_name_text.text = launch.launchSite.name
             launch_details_date_text.text = launch.tbd?.let { tbd ->
-                launch.launchDateUnix.format(tbd)
-            } ?: launch.launchDateUnix.format()
+                launch.launchDateUnix.formatDateMillisLong(tbd)
+            } ?: launch.launchDateUnix.formatDateMillisLong()
 
             launch.staticFireDateUnix?.let {
                 launch_details_static_fire_date_label.visibility = View.VISIBLE
-                launch_details_static_fire_date_text.text = it.format()
+                launch_details_static_fire_date_text.text = it.formatDateMillisLong()
             }
 
             launch_details_details_text.text = launch.details
