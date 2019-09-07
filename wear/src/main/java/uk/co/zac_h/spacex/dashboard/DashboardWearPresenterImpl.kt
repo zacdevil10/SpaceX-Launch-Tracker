@@ -8,11 +8,27 @@ class DashboardWearPresenterImpl(
     private val interactor: DashboardWearInteractor
 ) : DashboardWearPresenter, DashboardWearInteractor.Callback {
 
+    private lateinit var next: LaunchesModel
+    private lateinit var latest: LaunchesModel
+
     override fun getLaunch(id: String) {
-        interactor.getSingleLaunch(id, this)
-        view.apply {
-            showNextProgress()
-            showLatestProgress()
+        when (id) {
+            "next" -> {
+                if (!::next.isInitialized) {
+                    view.showNextProgress()
+                    interactor.getSingleLaunch(id, this)
+                } else {
+                    onNextSuccess(next)
+                }
+            }
+            "latest" -> {
+                if (!::latest.isInitialized) {
+                    view.showLatestProgress()
+                    interactor.getSingleLaunch(id, this)
+                } else {
+                    onLatestSuccess(latest)
+                }
+            }
         }
     }
 
@@ -46,6 +62,8 @@ class DashboardWearPresenterImpl(
 
     override fun onNextSuccess(launch: LaunchesModel?) {
         launch?.let {
+            if (!::next.isInitialized) next = launch
+
             view.apply {
                 updateNextLaunch(it)
                 hideNextProgress()
@@ -56,6 +74,8 @@ class DashboardWearPresenterImpl(
 
     override fun onLatestSuccess(launch: LaunchesModel?) {
         launch?.let {
+            if (!::latest.isInitialized) latest = launch
+
             view.apply{
                 updateLatestLaunch(it)
                 hideLatestProgress()

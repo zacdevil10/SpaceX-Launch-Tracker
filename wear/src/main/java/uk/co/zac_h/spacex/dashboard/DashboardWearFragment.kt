@@ -1,12 +1,12 @@
 package uk.co.zac_h.spacex.dashboard
 
-import android.app.Fragment
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.utils.data.LaunchesModel
@@ -23,10 +23,10 @@ class DashboardWearFragment : Fragment(), DashboardWearView {
         savedInstanceState: Bundle?
     ): View? = inflater.inflate(R.layout.fragment_dashboard, container, false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = DashboardWearPresenterImpl(this, DashboardWearInteractorImpl())
+        if (!::presenter.isInitialized) presenter = DashboardWearPresenterImpl(this, DashboardWearInteractorImpl())
 
         presenter.apply {
             getLaunch("next")
@@ -34,8 +34,8 @@ class DashboardWearFragment : Fragment(), DashboardWearView {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onDestroyView() {
+        super.onDestroyView()
         countdown?.cancel()
         presenter.cancelRequests()
     }

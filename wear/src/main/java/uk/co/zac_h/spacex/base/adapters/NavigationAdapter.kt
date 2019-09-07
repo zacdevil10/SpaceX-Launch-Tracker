@@ -15,14 +15,14 @@ class NavigationAdapter(private val context: Context) : WearableNavigationDrawer
             1 -> "Launches"
             2 -> "Statistics"
             3 -> "About"
-            else -> ""
+            else -> throw IllegalArgumentException("Drawer Position is out of range")
         }
 
     override fun getItemDrawable(pos: Int): Drawable? = when (pos) {
-        0 -> context.getDrawable(R.drawable.ic_dashboard_black_24dp)
-        1 -> context.getDrawable(R.drawable.ic_dashboard_black_24dp)
-        2 -> context.getDrawable(R.drawable.ic_dashboard_black_24dp)
-        3 -> context.getDrawable(R.drawable.ic_dashboard_black_24dp)
-        else -> context.getDrawable(R.drawable.ic_dashboard_black_24dp)
+        0 -> context.getDrawable(R.drawable.ic_dashboard_white_24dp)
+        1 -> context.getDrawable(R.drawable.ic_build_white_24dp)
+        2 -> context.getDrawable(R.drawable.ic_build_white_24dp)
+        3 -> context.getDrawable(R.drawable.ic_build_white_24dp)
+        else -> throw IllegalArgumentException("Drawer Position is out of range")
     }
 }
