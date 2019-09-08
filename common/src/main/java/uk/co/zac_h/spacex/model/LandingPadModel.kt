@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.model
 
 import com.squareup.moshi.Json
-import uk.co.zac_h.spacex.model.SiteLocationModel
 
 data class LandingPadModel(
     @field:Json(name = "id") var id: String,

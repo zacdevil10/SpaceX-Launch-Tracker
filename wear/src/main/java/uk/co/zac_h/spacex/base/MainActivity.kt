@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.base
 
 import android.os.Bundle
-import android.support.wearable.activity.WearableActivity
 import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import uk.co.zac_h.spacex.R

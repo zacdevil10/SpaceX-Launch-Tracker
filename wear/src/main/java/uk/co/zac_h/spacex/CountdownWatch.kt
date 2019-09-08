@@ -1,28 +1,22 @@
 package uk.co.zac_h.spacex
 
+
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Rect
-import android.graphics.Typeface
+import android.graphics.*
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import androidx.core.content.ContextCompat
 import android.support.wearable.watchface.CanvasWatchFaceService
 import android.support.wearable.watchface.WatchFaceService
 import android.support.wearable.watchface.WatchFaceStyle
 import android.view.SurfaceHolder
 import android.view.WindowInsets
-
-
+import androidx.core.content.ContextCompat
 import java.lang.ref.WeakReference
-import java.util.Calendar
-import java.util.TimeZone
+import java.util.*
 
 /**
  * Digital watch face with seconds. In ambient mode, the seconds aren't displayed. On devices with
@@ -57,8 +51,8 @@ class CountdownWatch : CanvasWatchFaceService() {
         return Engine()
     }
 
-    private class EngineHandler(reference: CountdownWatch.Engine) : Handler() {
-        private val mWeakReference: WeakReference<CountdownWatch.Engine> = WeakReference(reference)
+    private class EngineHandler(reference: Engine) : Handler() {
+        private val mWeakReference: WeakReference<Engine> = WeakReference(reference)
 
         override fun handleMessage(msg: Message) {
             val engine = mWeakReference.get()
