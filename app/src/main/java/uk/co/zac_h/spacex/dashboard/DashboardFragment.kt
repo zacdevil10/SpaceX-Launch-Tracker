@@ -49,6 +49,7 @@ class DashboardFragment : Fragment(), DashboardView {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequests()
+        dashboard_launches_recycler.adapter = null
     }
 
     override fun updateLaunchesList(id: String, launches: LinkedHashMap<String, LaunchesModel>) {

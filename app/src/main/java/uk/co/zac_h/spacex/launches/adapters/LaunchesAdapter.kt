@@ -4,19 +4,29 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.LaunchesModel
-import uk.co.zac_h.spacex.utils.formatDateMillisLong
 import uk.co.zac_h.spacex.utils.formatBlockNumber
+import uk.co.zac_h.spacex.utils.formatDateMillisLong
+import java.util.*
+import kotlin.collections.ArrayList
 
 class LaunchesAdapter(
     private val context: Context?,
     private val launches: ArrayList<LaunchesModel>
-) : RecyclerView.Adapter<LaunchesAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<LaunchesAdapter.ViewHolder>(), Filterable {
+
+    private var filteredLaunches: ArrayList<LaunchesModel>
+
+    init {
+        filteredLaunches = launches
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
@@ -28,7 +38,7 @@ class LaunchesAdapter(
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val launch = launches[position]
+        val launch = filteredLaunches[position]
 
         holder.apply {
             flightNumber.text = context?.getString(R.string.flight_number, launch.flightNumber)
@@ -67,7 +77,55 @@ class LaunchesAdapter(
         }
     }
 
-    override fun getItemCount(): Int = launches.size
+    override fun getItemCount(): Int = filteredLaunches.size
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(search: CharSequence?): FilterResults {
+                val filterResults = FilterResults()
+                search?.let {
+                    filteredLaunches = when {
+                        it.isEmpty() -> launches
+                        else -> {
+                            val filteredList = ArrayList<LaunchesModel>()
+                            launches.forEach { launch ->
+                                if (launch.missionName.toLowerCase(Locale.getDefault()).contains(
+                                        it.toString().toLowerCase(
+                                            Locale.getDefault()
+                                        )
+                                    ) || launch.launchYear.toString().contains(it) || launch.flightNumber.toString().contains(
+                                        it
+                                    )
+                                ) {
+                                    filteredList.add(launch)
+                                    return@forEach
+                                }
+
+                                launch.rocket.name?.let { rocketName ->
+                                    if (rocketName.toLowerCase(Locale.getDefault()).contains(search)) filteredList.add(
+                                        launch
+                                    )
+                                }
+                            }
+
+                            filteredList
+                        }
+                    }
+
+                    filterResults.values = filteredLaunches
+                    filterResults.count = filteredLaunches.size
+                }
+                return filterResults
+            }
+
+            override fun publishResults(
+                charSequence: CharSequence?,
+                filterResults: FilterResults?
+            ) {
+                notifyDataSetChanged()
+            }
+        }
+    }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val flightNumber: TextView = itemView.findViewById(R.id.launches_flight_no_text)
