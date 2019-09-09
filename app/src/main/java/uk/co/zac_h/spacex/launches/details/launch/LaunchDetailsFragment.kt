@@ -9,6 +9,7 @@ import android.view.animation.RotateAnimation
 import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
@@ -145,6 +146,7 @@ class LaunchDetailsFragment : Fragment(),
         launch_details_payload_recycler.apply {
             layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
             setHasFixedSize(false)
+            addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
             adapter = PayloadAdapter(
                 this@LaunchDetailsFragment.context,
                 launch?.rocket?.secondStage?.payloads
