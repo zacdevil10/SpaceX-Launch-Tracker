@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import uk.co.zac_h.spacex.launches.LaunchesListFragment
 
 class LaunchesPagerAdapter(fragmentManager: FragmentManager) :
-    FragmentPagerAdapter(fragmentManager) {
+    FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     override fun getItem(position: Int): Fragment =
         when (position) {

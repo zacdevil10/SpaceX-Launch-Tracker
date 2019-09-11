@@ -1,1 +1,2 @@
 include ':app', ':wear', ':common'
+rootProject.name='SpaceX'

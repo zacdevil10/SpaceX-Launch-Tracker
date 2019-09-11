@@ -5,7 +5,8 @@ import android.graphics.drawable.Drawable
 import androidx.wear.widget.drawer.WearableNavigationDrawerView
 import uk.co.zac_h.spacex.R
 
-class NavigationAdapter(private val context: Context) : WearableNavigationDrawerView.WearableNavigationDrawerAdapter() {
+class NavigationWearAdapter(private val context: Context) :
+    WearableNavigationDrawerView.WearableNavigationDrawerAdapter() {
 
     override fun getCount(): Int = 4
 

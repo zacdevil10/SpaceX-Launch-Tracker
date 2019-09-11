@@ -4,11 +4,12 @@ import android.os.Bundle
 import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.adapters.NavigationAdapter
+
+import uk.co.zac_h.spacex.base.adapters.NavigationWearAdapter
 import uk.co.zac_h.spacex.dashboard.DashboardWearFragment
 import uk.co.zac_h.spacex.utils.WIPWearFragment
 
-class MainActivity : FragmentActivity() {
+class MainWearActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,7 +18,7 @@ class MainActivity : FragmentActivity() {
         supportFragmentManager.beginTransaction().replace(R.id.content_frame, DashboardWearFragment()).commit()
 
         top_navigation_drawer.apply {
-            setAdapter(NavigationAdapter(this@MainActivity))
+            setAdapter(NavigationWearAdapter(this@MainWearActivity))
             controller.peekDrawer()
             addOnItemSelectedListener {
                 when (it) {

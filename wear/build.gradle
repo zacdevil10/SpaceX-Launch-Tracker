@@ -11,8 +11,8 @@ android {
         applicationId "uk.co.zac_h.spacex"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        versionCode 7
+        versionName "0.2.01"
         multiDexEnabled true
     }
     buildTypes {

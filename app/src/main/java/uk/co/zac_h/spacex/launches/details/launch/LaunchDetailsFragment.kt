@@ -76,11 +76,11 @@ class LaunchDetailsFragment : Fragment(),
         )
         rotation.duration = 500
 
-        launch_details_first_stage_collapse_toggle.setOnCheckedChangeListener { compoundButton, b ->
+        launch_details_first_stage_collapse_toggle.setOnCheckedChangeListener { compoundButton, _ ->
             compoundButton.startAnimation(rotation)
         }
 
-        launch_details_payload_collapse_toggle.setOnCheckedChangeListener { compoundButton, b ->
+        launch_details_payload_collapse_toggle.setOnCheckedChangeListener { compoundButton, _ ->
             compoundButton.startAnimation(rotation)
         }
     }
