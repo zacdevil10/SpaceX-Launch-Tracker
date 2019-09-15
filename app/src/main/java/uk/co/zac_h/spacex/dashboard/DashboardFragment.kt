@@ -10,14 +10,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardLaunchesAdapter
-import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.utils.DashboardListModel
+import uk.co.zac_h.spacex.utils.HeaderItemDecoration
 
 class DashboardFragment : Fragment(), DashboardView {
 
     private lateinit var presenter: DashboardPresenter
 
     private lateinit var dashboardLaunchesAdapter: DashboardLaunchesAdapter
-    private var launchMap = LinkedHashMap<String, LaunchesModel>()
+    private var launchesArray = ArrayList<DashboardListModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,7 +30,7 @@ class DashboardFragment : Fragment(), DashboardView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        dashboardLaunchesAdapter = DashboardLaunchesAdapter(context, launchMap)
+        dashboardLaunchesAdapter = DashboardLaunchesAdapter(context, launchesArray)
 
         presenter = DashboardPresenterImpl(this, DashboardInteractorImpl())
 
@@ -37,13 +38,14 @@ class DashboardFragment : Fragment(), DashboardView {
             layoutManager = LinearLayoutManager(this@DashboardFragment.context)
             setHasFixedSize(true)
             adapter = dashboardLaunchesAdapter
+            addItemDecoration(HeaderItemDecoration(this, dashboardLaunchesAdapter.isHeader()))
         }
 
         dashboard_swipe_refresh.setOnRefreshListener {
             presenter.getLatestLaunches()
         }
 
-        presenter.getLatestLaunches()
+        if (launchesArray.isEmpty()) presenter.getLatestLaunches()
     }
 
     override fun onDestroyView() {
@@ -52,8 +54,9 @@ class DashboardFragment : Fragment(), DashboardView {
         dashboard_launches_recycler.adapter = null
     }
 
-    override fun updateLaunchesList(id: String, launches: LinkedHashMap<String, LaunchesModel>) {
-        launchMap.putAll(launches)
+    override fun updateLaunchesList(launches: ArrayList<DashboardListModel>) {
+        launchesArray.clear()
+        launchesArray.addAll(launches)
         dashboardLaunchesAdapter.notifyDataSetChanged()
     }
 

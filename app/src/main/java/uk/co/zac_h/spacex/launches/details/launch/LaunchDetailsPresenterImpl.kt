@@ -4,9 +4,12 @@ import uk.co.zac_h.spacex.model.LaunchesModel
 
 class LaunchDetailsPresenterImpl(
     private val view: LaunchDetailsView,
+    private val helper: LaunchDetailsHelper,
     private val interactor: LaunchDetailsInteractor
 ) : LaunchDetailsPresenter,
     LaunchDetailsInteractor.InteractorCallback {
+
+    private var launchModel: LaunchesModel? = null
 
     override fun getLaunch(id: String) {
         view.showProgress()
@@ -14,12 +17,26 @@ class LaunchDetailsPresenterImpl(
     }
 
     override fun addLaunchModel(launchModel: LaunchesModel?) {
+        this.launchModel = launchModel
         view.updateLaunchDataView(launchModel)
     }
 
-    override fun onSuccess(launchesModel: LaunchesModel?) {
+    override fun pinLaunch(pin: Boolean) {
+        when (pin) {
+            true -> launchModel?.flightNumber?.let { helper.pinLaunch(it) }
+            false -> launchModel?.flightNumber?.let { helper.removePinnedLaunch(it) }
+        }
+    }
+
+    override fun isPinned(): Boolean =
+        launchModel?.flightNumber?.let { helper.isPinned(it) } ?: false
+
+    override fun isPinned(id: Int): Boolean = helper.isPinned(id)
+
+    override fun onSuccess(launchModel: LaunchesModel?) {
+        this.launchModel = launchModel
         view.hideProgress()
-        view.updateLaunchDataView(launchesModel)
+        view.updateLaunchDataView(launchModel)
     }
 
     override fun onError(error: String) {

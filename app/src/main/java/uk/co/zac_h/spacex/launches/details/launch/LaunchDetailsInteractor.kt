@@ -7,7 +7,7 @@ interface LaunchDetailsInteractor {
     fun getSingleLaunch(id: String, listener: InteractorCallback)
 
     interface InteractorCallback {
-        fun onSuccess(launchesModel: LaunchesModel?)
+        fun onSuccess(launchModel: LaunchesModel?)
         fun onError(error: String)
     }
 }

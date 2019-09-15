@@ -4,6 +4,8 @@ interface DashboardPresenter {
 
     fun getLatestLaunches()
 
+    fun getPinnedLaunch(id: String)
+
     fun cancelRequests()
 
 }

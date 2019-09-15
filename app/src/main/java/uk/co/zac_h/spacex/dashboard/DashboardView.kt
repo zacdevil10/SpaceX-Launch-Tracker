@@ -1,10 +1,10 @@
 package uk.co.zac_h.spacex.dashboard
 
-import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.utils.DashboardListModel
 
 interface DashboardView {
 
-    fun updateLaunchesList(id: String, launches: LinkedHashMap<String, LaunchesModel>)
+    fun updateLaunchesList(launches: ArrayList<DashboardListModel>)
 
     fun showProgress()
 

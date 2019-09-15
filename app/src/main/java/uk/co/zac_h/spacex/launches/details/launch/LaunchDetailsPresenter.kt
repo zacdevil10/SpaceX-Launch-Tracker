@@ -7,4 +7,10 @@ interface LaunchDetailsPresenter {
     fun getLaunch(id: String)
 
     fun addLaunchModel(launchModel: LaunchesModel?)
+
+    fun pinLaunch(pin: Boolean)
+
+    fun isPinned(): Boolean
+
+    fun isPinned(id: Int): Boolean
 }
