@@ -4,7 +4,7 @@ import uk.co.zac_h.spacex.utils.DashboardListModel
 
 interface DashboardView {
 
-    fun updateLaunchesList(launches: ArrayList<DashboardListModel>)
+    fun updateLaunchesList(launches: ArrayList<ArrayList<DashboardListModel>>)
 
     fun showProgress()
 

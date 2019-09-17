@@ -8,6 +8,8 @@ class PinnedSharedPreferencesHelper(private val preferences: SharedPreferences?)
         preferences?.edit()?.putBoolean(id, true)?.apply()
     }
 
+    fun getAllPinnedLaunches(): MutableMap<String, *>? = preferences?.all
+
     fun isPinned(id: String): Boolean {
         return preferences?.getBoolean(id, false) ?: false
     }

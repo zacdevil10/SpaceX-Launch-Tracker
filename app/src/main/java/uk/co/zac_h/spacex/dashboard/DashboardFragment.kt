@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.dashboard
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,13 +13,14 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardLaunchesAdapter
 import uk.co.zac_h.spacex.utils.DashboardListModel
 import uk.co.zac_h.spacex.utils.HeaderItemDecoration
+import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 
 class DashboardFragment : Fragment(), DashboardView {
 
     private lateinit var presenter: DashboardPresenter
+    private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
     private lateinit var dashboardLaunchesAdapter: DashboardLaunchesAdapter
-    private var launchesArray = ArrayList<DashboardListModel>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,22 +32,25 @@ class DashboardFragment : Fragment(), DashboardView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        dashboardLaunchesAdapter = DashboardLaunchesAdapter(context, launchesArray)
+        pinnedSharedPreferences = PinnedSharedPreferencesHelper(
+            context?.getSharedPreferences(
+                "pinned",
+                Context.MODE_PRIVATE
+            )
+        )
 
-        presenter = DashboardPresenterImpl(this, DashboardInteractorImpl())
+        presenter = DashboardPresenterImpl(this, pinnedSharedPreferences, DashboardInteractorImpl())
 
         dashboard_launches_recycler.apply {
             layoutManager = LinearLayoutManager(this@DashboardFragment.context)
             setHasFixedSize(true)
-            adapter = dashboardLaunchesAdapter
-            addItemDecoration(HeaderItemDecoration(this, dashboardLaunchesAdapter.isHeader()))
         }
 
         dashboard_swipe_refresh.setOnRefreshListener {
             presenter.getLatestLaunches()
         }
 
-        if (launchesArray.isEmpty()) presenter.getLatestLaunches()
+        presenter.getLatestLaunches()
     }
 
     override fun onDestroyView() {
@@ -54,10 +59,14 @@ class DashboardFragment : Fragment(), DashboardView {
         dashboard_launches_recycler.adapter = null
     }
 
-    override fun updateLaunchesList(launches: ArrayList<DashboardListModel>) {
-        launchesArray.clear()
-        launchesArray.addAll(launches)
-        dashboardLaunchesAdapter.notifyDataSetChanged()
+    override fun updateLaunchesList(launches: ArrayList<ArrayList<DashboardListModel>>) {
+        println("The launches list: $launches")
+        dashboardLaunchesAdapter = DashboardLaunchesAdapter(context, launches)
+
+        dashboard_launches_recycler.apply {
+            adapter = dashboardLaunchesAdapter
+            addItemDecoration(HeaderItemDecoration(this, dashboardLaunchesAdapter.isHeader()))
+        }
     }
 
     override fun showProgress() {

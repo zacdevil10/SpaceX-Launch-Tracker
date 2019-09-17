@@ -16,7 +16,7 @@ import java.util.*
 
 class DashboardLaunchesAdapter(
     private val context: Context?,
-    private val launches: ArrayList<DashboardListModel>
+    private val launches: ArrayList<ArrayList<DashboardListModel>>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
@@ -42,7 +42,25 @@ class DashboardLaunchesAdapter(
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val launch = launches[position]
+        val next = launches[0].size.minus(1)
+        val latest = launches[1].size.minus(1)
+        val pinned = launches[2].size.minus(1)
+
+        val key = when (position) {
+            in 0..next -> 0
+            in next.plus(1)..latest -> 1
+            in next.plus(1) + latest.plus(1) until next + latest + pinned -> 2
+            else -> 0
+        }
+
+        val pos = when (key) {
+            0 -> position
+            1 -> position - (next + 1)
+            2 -> position - (next + latest + 2)
+            else -> position
+        }
+
+        val launch = launches[key][pos]
 
         when (holder) {
             is ViewHolder -> holder.apply {
@@ -73,13 +91,61 @@ class DashboardLaunchesAdapter(
 
     fun isHeader(): (itemPosition: Int) -> Boolean {
         return {
-            launches[it].isHeader
+            val next = launches[0].size.minus(1)
+            val latest = launches[1].size.minus(1)
+            val pinned = launches[2].size.minus(1)
+
+            val key = when (it) {
+                in 0..next -> 0
+                in next.plus(1)..latest -> 1
+                in next.plus(1) + latest.plus(1) until next + latest + pinned -> 2
+                else -> 0
+            }
+
+            val pos = when (key) {
+                0 -> it
+                1 -> it - (next + 1)
+                2 -> it - (next + latest + 2)
+                else -> it
+            }
+
+            launches[key][pos].isHeader
         }
     }
 
-    override fun getItemCount(): Int = launches.size
+    override fun getItemCount(): Int {
+        val next = launches[0].size
+        val latest = launches[1].size
+        val pinned = launches[2].size
+        return next + latest + pinned
+    }
 
-    override fun getItemViewType(position: Int): Int = if (launches[position].isHeader) 0 else 1
+    override fun getItemViewType(position: Int): Int {
+        val next = launches[0].size.minus(1)
+        val latest = launches[1].size.minus(1)
+        val pinned = launches[2].size.minus(1)
+
+        val key = when (position) {
+            in 0..next -> 0
+            in next.plus(1)..latest -> 1
+            in next.plus(1) + latest.plus(1) until next + latest + pinned -> 2
+            else -> 0
+        }
+
+        val pos = when (key) {
+            0 -> position
+            1 -> position - (next + 1)
+            2 -> position - (next + latest + 2)
+            else -> position
+        }
+
+        launches[key][pos].let {
+            return if (it.isHeader)
+                0
+            else
+                1
+        }
+    }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val flightNumber: TextView = itemView.findViewById(R.id.dashboard_flight_no_text)

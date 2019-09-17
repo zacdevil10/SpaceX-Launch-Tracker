@@ -2,26 +2,45 @@ package uk.co.zac_h.spacex.dashboard
 
 import uk.co.zac_h.spacex.model.LaunchesModel
 import uk.co.zac_h.spacex.utils.DashboardListModel
+import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 
 class DashboardPresenterImpl(
     private val view: DashboardView,
+    private val prefs: PinnedSharedPreferencesHelper,
     private val interactor: DashboardInteractor
 ) : DashboardPresenter,
     DashboardInteractor.InteractorCallback {
 
-    private val launchesArray = ArrayList<DashboardListModel>()
+    private val launchesMap = ArrayList<ArrayList<DashboardListModel>>()
+
+    private val next = ArrayList<DashboardListModel>()
+    private val latest = ArrayList<DashboardListModel>()
+    private val pinned = ArrayList<DashboardListModel>()
+
+    private var completeNext: Boolean = false
+    private var completeLatest: Boolean = false
+    private var completePinned: Boolean = false
+
+    init {
+        next.add(DashboardListModel(null, true, "Next Launch"))
+        latest.add(DashboardListModel(null, true, "Latest Launch"))
+        pinned.add(DashboardListModel(null, true, "Pinned Launches"))
+
+        launchesMap.add(next)
+        launchesMap.add(latest)
+        launchesMap.add(pinned)
+    }
 
     override fun getLatestLaunches() {
         view.showProgress()
-        launchesArray.clear()
         interactor.apply {
             getSingleLaunch("next", this@DashboardPresenterImpl)
             getSingleLaunch("latest", this@DashboardPresenterImpl)
-        }
-    }
 
-    override fun getPinnedLaunch(id: String) {
-        interactor.getSingleLaunch(id, this)
+            prefs.getAllPinnedLaunches()?.forEach {
+                if (it.value as Boolean) getSingleLaunch(it.key, this@DashboardPresenterImpl)
+            }
+        }
     }
 
     override fun cancelRequests() {
@@ -32,21 +51,22 @@ class DashboardPresenterImpl(
         launchesModel?.let {
             when (id) {
                 "next" -> {
-                    launchesArray.add(0, DashboardListModel(launchesModel, false, null))
-                    launchesArray.add(0, DashboardListModel(null, true, "Next Launch"))
+                    next.add(DashboardListModel(launchesModel, false, null))
+                    completeNext = true
                 }
                 "latest" -> {
-                    launchesArray.add(DashboardListModel(null, true, "Latest Launch"))
-                    launchesArray.add(DashboardListModel(launchesModel, false, null))
+                    latest.add(DashboardListModel(launchesModel, false, null))
+                    completeLatest = true
                 }
                 else -> {
-                    launchesArray.add(DashboardListModel(null, true, "Pinned Launches"))
-                    launchesArray.add(DashboardListModel(launchesModel, false, null))
+                    pinned.add(DashboardListModel(launchesModel, false, null))
+                    completePinned = true
                 }
             }
         }
-        if (launchesArray.size > 1) {
-            view.updateLaunchesList(launchesArray)
+
+        if (completeNext && completeLatest && completePinned) {
+            view.updateLaunchesList(launchesMap)
             view.hideProgress()
             view.toggleSwipeProgress(false)
         }
