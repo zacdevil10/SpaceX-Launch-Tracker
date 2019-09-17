@@ -77,4 +77,7 @@
     <string name="powered_by">Powered by the r/SpaceX API</string>
     <string name="spacex_launch_tracker_icon_desc">SpaceX Launch Tracker Icon</string>
 
+    <!--Menu-->
+    <string name="search">Search</string>
+
 </resources>

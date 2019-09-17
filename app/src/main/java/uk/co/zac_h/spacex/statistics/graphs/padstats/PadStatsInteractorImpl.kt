@@ -3,7 +3,7 @@ package uk.co.zac_h.spacex.statistics.graphs.padstats
 import android.util.Log
 import kotlinx.coroutines.*
 import retrofit2.HttpException
-import uk.co.zac_h.spacex.utils.data.rest.SpaceXInterface
+import uk.co.zac_h.spacex.rest.SpaceXInterface
 import kotlin.coroutines.CoroutineContext
 
 class PadStatsInteractorImpl : PadStatsInteractor {

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardLaunchesAdapter
-import uk.co.zac_h.spacex.utils.data.LaunchesModel
+import uk.co.zac_h.spacex.model.LaunchesModel
 
 class DashboardFragment : Fragment(), DashboardView {
 
@@ -49,6 +49,7 @@ class DashboardFragment : Fragment(), DashboardView {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequests()
+        dashboard_launches_recycler.adapter = null
     }
 
     override fun updateLaunchesList(id: String, launches: LinkedHashMap<String, LaunchesModel>) {

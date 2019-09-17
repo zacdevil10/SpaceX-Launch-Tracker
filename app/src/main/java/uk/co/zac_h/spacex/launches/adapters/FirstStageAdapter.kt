@@ -9,7 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.utils.data.CoreSpecModel
+import uk.co.zac_h.spacex.model.CoreSpecModel
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
 class FirstStageAdapter(private val cores: List<CoreSpecModel>) :
