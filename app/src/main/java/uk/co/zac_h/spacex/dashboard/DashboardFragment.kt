@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardLaunchesAdapter
-import uk.co.zac_h.spacex.utils.DashboardListModel
-import uk.co.zac_h.spacex.utils.HeaderItemDecoration
+import uk.co.zac_h.spacex.dashboard.adapters.DashboardPinnedAdapter
+import uk.co.zac_h.spacex.model.LaunchesModel
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 
 class DashboardFragment : Fragment(), DashboardView {
@@ -21,6 +21,7 @@ class DashboardFragment : Fragment(), DashboardView {
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
     private lateinit var dashboardLaunchesAdapter: DashboardLaunchesAdapter
+    private lateinit var pinnedAdapter: DashboardPinnedAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,13 +42,8 @@ class DashboardFragment : Fragment(), DashboardView {
 
         presenter = DashboardPresenterImpl(this, pinnedSharedPreferences, DashboardInteractorImpl())
 
-        dashboard_launches_recycler.apply {
-            layoutManager = LinearLayoutManager(this@DashboardFragment.context)
-            setHasFixedSize(true)
-        }
-
         dashboard_swipe_refresh.setOnRefreshListener {
-            presenter.getLatestLaunches()
+            presenter.getLatestLaunches(true)
         }
 
         presenter.getLatestLaunches()
@@ -56,17 +52,42 @@ class DashboardFragment : Fragment(), DashboardView {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequests()
-        dashboard_launches_recycler.adapter = null
     }
 
-    override fun updateLaunchesList(launches: ArrayList<ArrayList<DashboardListModel>>) {
-        println("The launches list: $launches")
+    override fun setLaunchesList(launches: LinkedHashMap<String, LaunchesModel>) {
         dashboardLaunchesAdapter = DashboardLaunchesAdapter(context, launches)
 
         dashboard_launches_recycler.apply {
+            layoutManager = LinearLayoutManager(this@DashboardFragment.context)
+            setHasFixedSize(true)
             adapter = dashboardLaunchesAdapter
-            addItemDecoration(HeaderItemDecoration(this, dashboardLaunchesAdapter.isHeader()))
         }
+    }
+
+    override fun setPinnedList(pinned: ArrayList<LaunchesModel>) {
+        pinnedAdapter = DashboardPinnedAdapter(context, pinned)
+
+        dashboard_pinned_launches_recycler.apply {
+            layoutManager = LinearLayoutManager(this@DashboardFragment.context)
+            setHasFixedSize(true)
+            adapter = pinnedAdapter
+        }
+    }
+
+    override fun updateLaunchesList() {
+        dashboardLaunchesAdapter.notifyDataSetChanged()
+    }
+
+    override fun updatePinnedList() {
+        pinnedAdapter.notifyDataSetChanged()
+    }
+
+    override fun showPinnedHeading() {
+        dashboard_pinned_heading_text.visibility = View.VISIBLE
+    }
+
+    override fun hidePinnedHeading() {
+        dashboard_pinned_heading_text.visibility = View.GONE
     }
 
     override fun showProgress() {

@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.dashboard
 
 import uk.co.zac_h.spacex.model.LaunchesModel
-import uk.co.zac_h.spacex.utils.DashboardListModel
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 
 class DashboardPresenterImpl(
@@ -11,35 +10,38 @@ class DashboardPresenterImpl(
 ) : DashboardPresenter,
     DashboardInteractor.InteractorCallback {
 
-    private val launchesMap = ArrayList<ArrayList<DashboardListModel>>()
+    private val launchesMap = LinkedHashMap<String, LaunchesModel>()
+    private val pinnedLaunches = ArrayList<LaunchesModel>()
 
-    private val next = ArrayList<DashboardListModel>()
-    private val latest = ArrayList<DashboardListModel>()
-    private val pinned = ArrayList<DashboardListModel>()
-
-    private var completeNext: Boolean = false
-    private var completeLatest: Boolean = false
-    private var completePinned: Boolean = false
-
-    init {
-        next.add(DashboardListModel(null, true, "Next Launch"))
-        latest.add(DashboardListModel(null, true, "Latest Launch"))
-        pinned.add(DashboardListModel(null, true, "Pinned Launches"))
-
-        launchesMap.add(next)
-        launchesMap.add(latest)
-        launchesMap.add(pinned)
-    }
-
-    override fun getLatestLaunches() {
+    override fun getLatestLaunches(isRefresh: Boolean) {
         view.showProgress()
-        interactor.apply {
-            getSingleLaunch("next", this@DashboardPresenterImpl)
-            getSingleLaunch("latest", this@DashboardPresenterImpl)
+        view.hidePinnedHeading()
 
-            prefs.getAllPinnedLaunches()?.forEach {
-                if (it.value as Boolean) getSingleLaunch(it.key, this@DashboardPresenterImpl)
+        if (isRefresh) {
+            launchesMap.clear()
+            pinnedLaunches.clear()
+        }
+
+        if (launchesMap.isEmpty()) {
+            interactor.apply {
+                getSingleLaunch("next", this@DashboardPresenterImpl)
+                getSingleLaunch("latest", this@DashboardPresenterImpl)
             }
+
+            if (!isRefresh) view.setLaunchesList(launchesMap)
+        }
+
+        if (pinnedLaunches.isEmpty()) {
+            interactor.apply {
+                prefs.getAllPinnedLaunches()?.forEach {
+                    if (it.value as Boolean) getSingleLaunch(
+                        it.key,
+                        this@DashboardPresenterImpl
+                    )
+                }
+            }
+
+            if (!isRefresh) view.setPinnedList(pinnedLaunches)
         }
     }
 
@@ -50,26 +52,20 @@ class DashboardPresenterImpl(
     override fun onSuccess(id: String, launchesModel: LaunchesModel?) {
         launchesModel?.let {
             when (id) {
-                "next" -> {
-                    next.add(DashboardListModel(launchesModel, false, null))
-                    completeNext = true
-                }
-                "latest" -> {
-                    latest.add(DashboardListModel(launchesModel, false, null))
-                    completeLatest = true
+                "next", "latest" -> {
+                    launchesMap[id] = it
                 }
                 else -> {
-                    pinned.add(DashboardListModel(launchesModel, false, null))
-                    completePinned = true
+                    pinnedLaunches.add(it)
+                    view.updatePinnedList()
+                    view.showPinnedHeading()
                 }
             }
         }
 
-        if (completeNext && completeLatest && completePinned) {
-            view.updateLaunchesList(launchesMap)
-            view.hideProgress()
-            view.toggleSwipeProgress(false)
-        }
+        view.updateLaunchesList()
+        view.hideProgress()
+        view.toggleSwipeProgress(false)
     }
 
     override fun onError(error: String) {

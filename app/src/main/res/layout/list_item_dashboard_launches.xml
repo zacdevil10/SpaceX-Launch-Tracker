@@ -4,24 +4,39 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingStart="32dp"
+    android:paddingEnd="32dp"
     android:background="?attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/dashboard_heading_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/colorAccent"
+        android:textSize="@dimen/heading"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/dashboard_flight_no_text"
+        tools:text="Launch Heading" />
 
     <TextView
         android:id="@+id/dashboard_flight_no_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:textSize="12sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dashboard_heading_text"
+        app:layout_constraintBottom_toTopOf="@id/dashboard_mission_name_text"
         tools:text="Flight 73" />
 
     <TextView
         android:id="@+id/dashboard_block_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
         android:textSize="12sp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/dashboard_flight_no_text"
@@ -38,6 +53,7 @@
         app:layout_constraintLeft_toLeftOf="@id/dashboard_flight_no_text"
         app:layout_constraintRight_toRightOf="@+id/dashboard_block_text"
         app:layout_constraintTop_toBottomOf="@id/dashboard_flight_no_text"
+        app:layout_constraintBottom_toTopOf="@id/dashboard_date_text"
         tools:text="Nusantara Satu (PSN-6) / GTO-1 / Beresheet" />
 
     <TextView
