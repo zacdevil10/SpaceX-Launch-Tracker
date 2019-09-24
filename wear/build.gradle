@@ -11,7 +11,7 @@ android {
         applicationId "uk.co.zac_h.spacex"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 7
+        versionCode 9
         versionName "0.2.01"
         multiDexEnabled true
     }
@@ -41,8 +41,8 @@ dependencies {
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
 
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.core:core-ktx:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.core:core-ktx:1.1.0'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 }

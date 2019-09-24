@@ -12,12 +12,11 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.LaunchesModel
 import uk.co.zac_h.spacex.utils.formatBlockNumber
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
-import java.util.*
 
-class DashboardLaunchesAdapter(
+class DashboardPinnedAdapter(
     private val context: Context?,
-    private val launches: LinkedHashMap<String, LaunchesModel>
-) : RecyclerView.Adapter<DashboardLaunchesAdapter.ViewHolder>() {
+    private val launches: ArrayList<LaunchesModel>
+) : RecyclerView.Adapter<DashboardPinnedAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
@@ -29,20 +28,13 @@ class DashboardLaunchesAdapter(
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val key = when (position) {
-            0 -> "next"
-            1 -> "latest"
-            else -> ""
-        }
-        val launch = launches[key]
+        val launch = launches[position]
 
         holder.apply {
-            when (position) {
-                0 -> heading.text = context?.getString(R.string.next_launch)
-                1 -> heading.text = context?.getString(R.string.latest_launch)
-            }
 
-            launch?.let {
+            heading.visibility = View.GONE
+
+            launch.let {
                 flightNumber.text = context?.getString(R.string.flight_number, it.flightNumber)
 
                 blockNumber.text = context?.getString(
