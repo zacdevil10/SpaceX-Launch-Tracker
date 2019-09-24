@@ -63,8 +63,8 @@ class DashboardPresenterImpl(
             }
         }
 
-        view.updateLaunchesList()
-        view.hideProgress()
+        if (launchesMap.size == 2) view.updateLaunchesList()
+        if (!interactor.hasActiveRequest()) view.hideProgress()
         view.toggleSwipeProgress(false)
     }
 
