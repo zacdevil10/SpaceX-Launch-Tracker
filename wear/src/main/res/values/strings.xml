@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">SpaceX</string>
+    <string name="nav_header_title">SpaceX Launch Tracker</string>
+    <string name="nav_header_subtitle">By Zac Hadjineophytou</string>
 
     <!--Menu-->
     <string name="menu_dashboard">Dashboard</string>
@@ -15,4 +17,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="my_digital_name">SpaceX Countdown</string>
+
+    <!--About-->
+    <string name="powered_by">Powered by the r/SpaceX API</string>
+    <string name="spacex_launch_tracker_icon_desc">SpaceX Launch Tracker Icon</string>
 </resources>

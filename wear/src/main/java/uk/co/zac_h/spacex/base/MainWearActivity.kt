@@ -1,15 +1,17 @@
 package uk.co.zac_h.spacex.base
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.about.AboutWearFragment
 
 import uk.co.zac_h.spacex.base.adapters.NavigationWearAdapter
 import uk.co.zac_h.spacex.dashboard.DashboardWearFragment
-import uk.co.zac_h.spacex.utils.WIPWearFragment
+import uk.co.zac_h.spacex.launches.LaunchesWearFragment
 
-class MainWearActivity : FragmentActivity() {
+class MainWearActivity : FragmentActivity(), MainWearView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,16 +24,16 @@ class MainWearActivity : FragmentActivity() {
             controller.peekDrawer()
             addOnItemSelectedListener {
                 when (it) {
-                    0 -> supportFragmentManager.beginTransaction().replace(R.id.content_frame, DashboardWearFragment()).commit()
-                    1 -> showWIPFragment()
-                    2 -> showWIPFragment()
-                    3 -> showWIPFragment()
+                    0 -> replaceFragment(DashboardWearFragment())
+                    1 -> replaceFragment(LaunchesWearFragment.newInstance("upcoming"))
+                    2 -> replaceFragment(LaunchesWearFragment.newInstance("past"))
+                    3 -> replaceFragment(AboutWearFragment())
                 }
             }
         }
     }
 
-    private fun showWIPFragment() {
-        supportFragmentManager.beginTransaction().replace(R.id.content_frame, WIPWearFragment()).commit()
+    override fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit()
     }
 }

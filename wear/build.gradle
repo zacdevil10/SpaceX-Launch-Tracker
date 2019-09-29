@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "uk.co.zac_h.spacex"
-        minSdkVersion 23
+        minSdkVersion 25
         targetSdkVersion 29
         versionCode 9
         versionName "0.2.01"
@@ -27,7 +27,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.google.android.support:wearable:2.5.0'
-    implementation 'com.google.android.gms:play-services-wearable:17.0.0'
     implementation 'androidx.percentlayout:percentlayout:1.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
