@@ -67,7 +67,7 @@ class DashboardWearFragment : Fragment(), DashboardWearView {
             }
 
             override fun onFinish() {
-                dashboard_countdown_text.text = "Finished"
+                dashboard_countdown_text.text = "Liftoff"
             }
         }.start()
     }

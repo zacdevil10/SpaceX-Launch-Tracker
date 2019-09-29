@@ -13,17 +13,17 @@ class NavigationWearAdapter(private val context: Context) :
     override fun getItemText(pos: Int): CharSequence =
         when (pos) {
             0 -> "Dashboard"
-            1 -> "Launches"
-            2 -> "Statistics"
+            1 -> "Upcoming Launches"
+            2 -> "Past Launches"
             3 -> "About"
             else -> throw IllegalArgumentException("Drawer Position is out of range")
         }
 
     override fun getItemDrawable(pos: Int): Drawable? = when (pos) {
         0 -> context.getDrawable(R.drawable.ic_dashboard_white_24dp)
-        1 -> context.getDrawable(R.drawable.ic_build_white_24dp)
-        2 -> context.getDrawable(R.drawable.ic_build_white_24dp)
-        3 -> context.getDrawable(R.drawable.ic_build_white_24dp)
+        1 -> context.getDrawable(R.drawable.ic_rocket)
+        2 -> context.getDrawable(R.drawable.ic_history_white_24dp)
+        3 -> context.getDrawable(R.drawable.ic_info_outline_white_24dp)
         else -> throw IllegalArgumentException("Drawer Position is out of range")
     }
 }

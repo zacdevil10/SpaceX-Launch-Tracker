@@ -6,6 +6,8 @@ interface DashboardInteractor {
 
     fun getSingleLaunch(id: String, listener: InteractorCallback)
 
+    fun hasActiveRequest(): Boolean
+
     fun cancelAllRequests()
 
     interface InteractorCallback {

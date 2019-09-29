@@ -1,13 +1,13 @@
 package uk.co.zac_h.spacex.launches.details.launch
 
+import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.Toast
 import android.widget.ToggleButton
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,14 +18,29 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
 import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 
 class LaunchDetailsFragment : Fragment(),
     LaunchDetailsView {
 
     private lateinit var presenter: LaunchDetailsPresenter
+    private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
+
+    private var launch: LaunchesModel? = null
+    private var id: String? = null
+
+    private var pinned: Boolean = false
 
     private var coreAssigned: Boolean = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+
+        launch = arguments?.getParcelable("launch") as LaunchesModel?
+        id = arguments?.getString("launch_id")
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,18 +52,26 @@ class LaunchDetailsFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        pinnedSharedPreferences = PinnedSharedPreferencesHelper(
+            context?.getSharedPreferences(
+                "pinned",
+                Context.MODE_PRIVATE
+            )
+        )
+
         presenter = LaunchDetailsPresenterImpl(
             this,
+            LaunchDetailsHelperImpl(pinnedSharedPreferences),
             LaunchDetailsInteractorImpl()
         )
 
-        val launch = arguments?.getParcelable("launch") as LaunchesModel?
-        val id = arguments?.getString("launch_id")
-
         launch?.let {
             presenter.addLaunchModel(it)
+            pinned = presenter.isPinned()
         } ?: id?.let {
             presenter.getLaunch(it)
+            pinned = presenter.isPinned(it.toInt())
+            println(presenter.isPinned(it.toInt()))
         }
 
         launch_details_first_stage_text.setOnClickListener {
@@ -73,8 +96,9 @@ class LaunchDetailsFragment : Fragment(),
             0.5f,
             Animation.RELATIVE_TO_SELF,
             0.5f
-        )
-        rotation.duration = 500
+        ).apply {
+            duration = 500
+        }
 
         launch_details_first_stage_collapse_toggle.setOnCheckedChangeListener { compoundButton, _ ->
             compoundButton.startAnimation(rotation)
@@ -96,6 +120,36 @@ class LaunchDetailsFragment : Fragment(),
             launch_details_first_stage_collapse_toggle
         )
         setupExpandCollapse(launch_details_payload_recycler, launch_details_payload_collapse_toggle)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_details, menu)
+        menu.findItem(R.id.pin).icon = context?.let {
+            ContextCompat.getDrawable(
+                it,
+                if (id?.let { id -> presenter.isPinned(id.toInt()) }
+                        ?: presenter.isPinned()) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp)
+        }
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.pin -> {
+                presenter.pinLaunch(!pinned)
+
+                pinned = !pinned
+
+                item.icon = context?.let {
+                    ContextCompat.getDrawable(
+                        it,
+                        if (pinned) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
+                    )
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun updateLaunchDataView(launch: LaunchesModel?) {

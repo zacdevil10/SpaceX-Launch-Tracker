@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.dashboard
+package uk.co.zac_h.spacex.launches
 
 import android.util.Log
 import kotlinx.coroutines.*
@@ -6,7 +6,7 @@ import retrofit2.HttpException
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import kotlin.coroutines.CoroutineContext
 
-class DashboardWearInteractorImpl : DashboardWearInteractor {
+class LaunchesWearInteractorImpl : LaunchesWearInteractor {
 
     private val parentJob = Job()
     private val coroutineContext: CoroutineContext
@@ -14,23 +14,20 @@ class DashboardWearInteractorImpl : DashboardWearInteractor {
 
     private val scope = CoroutineScope(coroutineContext)
 
-    override fun getSingleLaunch(id: String, listener: DashboardWearInteractor.Callback) {
+    override fun getAllLaunches(
+        id: String,
+        order: String,
+        listener: LaunchesWearInteractor.Callback
+    ) {
         scope.launch {
             val response = async(SupervisorJob(parentJob)) {
-                SpaceXInterface.create().getSingleLaunch(id)
+                SpaceXInterface.create().getLaunches(id, order)
             }
 
             withContext(Dispatchers.Main) {
                 try {
                     if (response.await().isSuccessful) {
-                        when (id) {
-                            "next" -> listener.onNextSuccess(response.await().body())
-                            "latest" -> listener.onLatestSuccess(response.await().body())
-                            else -> Log.e(
-                                this@DashboardWearInteractorImpl.javaClass.name,
-                                "Invalid launch ID"
-                            )
-                        }
+                        listener.onSuccess(response.await().body())
                     } else {
                         listener.onError("Error: ${response.await().code()}")
                     }
@@ -38,7 +35,7 @@ class DashboardWearInteractorImpl : DashboardWearInteractor {
                     listener.onError("Error: ${e.localizedMessage}")
                 } catch (e: Throwable) {
                     Log.e(
-                        this@DashboardWearInteractorImpl.javaClass.name,
+                        this@LaunchesWearInteractorImpl.javaClass.name,
                         e.localizedMessage ?: "Job failed to execute"
                     )
                 }
@@ -46,5 +43,5 @@ class DashboardWearInteractorImpl : DashboardWearInteractor {
         }
     }
 
-    override fun cancelAllRequests() = coroutineContext.cancel()
+    override fun cancelRequest() = coroutineContext.cancel()
 }

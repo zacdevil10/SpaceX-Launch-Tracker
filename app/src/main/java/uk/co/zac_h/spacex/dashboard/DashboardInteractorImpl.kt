@@ -14,13 +14,17 @@ class DashboardInteractorImpl : DashboardInteractor {
 
     private val scope = CoroutineScope(coroutineContext)
 
+    private val active = ArrayList<String>()
+
     override fun getSingleLaunch(id: String, listener: DashboardInteractor.InteractorCallback) {
+        active.add(id)
         scope.launch {
             val response = async(SupervisorJob(parentJob)) {
                 SpaceXInterface.create().getSingleLaunch(id)
             }
 
             withContext(Dispatchers.Main) {
+                active.remove(id)
                 try {
                     if (response.await().isSuccessful) {
                         listener.onSuccess(id, response.await().body())
@@ -40,6 +44,8 @@ class DashboardInteractorImpl : DashboardInteractor {
             }
         }
     }
+
+    override fun hasActiveRequest(): Boolean = active.isNotEmpty()
 
     override fun cancelAllRequests() = coroutineContext.cancel()
 }

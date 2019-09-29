@@ -2,33 +2,35 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="?attr/selectableItemBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:paddingStart="32dp"
+    android:paddingEnd="32dp"
+    android:background="?attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/dashboard_heading_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        tools:text="Launch Heading"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:textColor="@color/colorAccent"
         android:textSize="@dimen/heading"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/dashboard_flight_no_text"
+        tools:text="Launch Heading" />
 
     <TextView
         android:id="@+id/dashboard_flight_no_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:textSize="12sp"
-        app:layout_constraintLeft_toLeftOf="@id/dashboard_heading_text"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dashboard_heading_text"
+        app:layout_constraintBottom_toTopOf="@id/dashboard_mission_name_text"
         tools:text="Flight 73" />
 
     <TextView
@@ -36,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@+id/dashboard_heading_text"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/dashboard_flight_no_text"
         tools:text="Block 5" />
 
@@ -51,16 +53,18 @@
         app:layout_constraintLeft_toLeftOf="@id/dashboard_flight_no_text"
         app:layout_constraintRight_toRightOf="@+id/dashboard_block_text"
         app:layout_constraintTop_toBottomOf="@id/dashboard_flight_no_text"
+        app:layout_constraintBottom_toTopOf="@id/dashboard_date_text"
         tools:text="Nusantara Satu (PSN-6) / GTO-1 / Beresheet" />
 
     <TextView
         android:id="@+id/dashboard_date_text"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        app:layout_constraintLeft_toLeftOf="@id/dashboard_flight_no_text"
-        app:layout_constraintTop_toBottomOf="@id/dashboard_mission_name_text"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:text="14 Oct 2019 - 12:35"/>
+        app:layout_constraintLeft_toLeftOf="@id/dashboard_flight_no_text"
+        app:layout_constraintRight_toRightOf="@id/dashboard_mission_name_text"
+        app:layout_constraintTop_toBottomOf="@id/dashboard_mission_name_text"
+        tools:text="14 Oct 2019 - 12:35" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

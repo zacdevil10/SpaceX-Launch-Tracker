@@ -4,7 +4,17 @@ import uk.co.zac_h.spacex.model.LaunchesModel
 
 interface DashboardView {
 
-    fun updateLaunchesList(id: String, launches: LinkedHashMap<String, LaunchesModel>)
+    fun setLaunchesList(launches: LinkedHashMap<String, LaunchesModel>)
+
+    fun setPinnedList(pinned: ArrayList<LaunchesModel>)
+
+    fun updateLaunchesList()
+
+    fun updatePinnedList()
+
+    fun showPinnedHeading()
+
+    fun hidePinnedHeading()
 
     fun showProgress()
 
