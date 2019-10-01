@@ -31,11 +31,22 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/dashboard_countdown_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/heading"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="43:13:23:55" />
+
+                <TextView
                     android:id="@+id/dashboard_pinned_heading_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="32dp"
-                    android:text="Pinned Launches"
+                    android:text="@string/pinned_launches"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/heading"
                     android:visibility="gone"
@@ -47,7 +58,7 @@
                     android:layout_height="wrap_content"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/dashboard_countdown_text"
                     tools:itemCount="2"
                     tools:listitem="@layout/list_item_dashboard_launches" />
 
@@ -58,7 +69,9 @@
                     android:layout_marginTop="8dp"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/dashboard_pinned_heading_text" />
+                    app:layout_constraintTop_toBottomOf="@id/dashboard_pinned_heading_text"
+                    tools:itemCount="4"
+                    tools:listitem="@layout/list_item_dashboard_launches" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
