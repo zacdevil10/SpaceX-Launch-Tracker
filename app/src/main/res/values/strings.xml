@@ -79,5 +79,6 @@
 
     <!--Menu-->
     <string name="search">Search</string>
+    <string name="pinned_launches">Pinned Launches</string>
 
 </resources>

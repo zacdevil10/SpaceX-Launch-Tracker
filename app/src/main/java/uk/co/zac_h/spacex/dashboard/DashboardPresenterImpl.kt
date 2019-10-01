@@ -2,6 +2,7 @@ package uk.co.zac_h.spacex.dashboard
 
 import uk.co.zac_h.spacex.model.LaunchesModel
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
+import java.util.concurrent.TimeUnit
 
 class DashboardPresenterImpl(
     private val view: DashboardView,
@@ -45,6 +46,30 @@ class DashboardPresenterImpl(
         }
     }
 
+    override fun updateCountdown(time: Long) {
+        val remaining = String.format(
+            "%02d:%02d:%02d:%02d",
+            TimeUnit.MILLISECONDS.toDays(time),
+            TimeUnit.MILLISECONDS.toHours(time) - TimeUnit.DAYS.toHours(
+                TimeUnit.MILLISECONDS.toDays(
+                    time
+                )
+            ),
+            TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(
+                TimeUnit.MILLISECONDS.toHours(
+                    time
+                )
+            ),
+            TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(
+                TimeUnit.MILLISECONDS.toMinutes(
+                    time
+                )
+            )
+        )
+
+        view.updateCountdown(remaining)
+    }
+
     override fun cancelRequests() {
         interactor.cancelAllRequests()
     }
@@ -63,7 +88,10 @@ class DashboardPresenterImpl(
             }
         }
 
-        if (launchesMap.size == 2) view.updateLaunchesList()
+        if (launchesMap.size == 2) {
+            launchesMap["next"]?.launchDateUnix?.let { view.setCountdown(it) }
+            view.updateLaunchesList()
+        }
         if (!interactor.hasActiveRequest()) view.hideProgress()
         view.toggleSwipeProgress(false)
     }

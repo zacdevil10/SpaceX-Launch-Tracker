@@ -2,6 +2,7 @@ package uk.co.zac_h.spacex.dashboard
 
 import android.content.Context
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,8 @@ class DashboardFragment : Fragment(), DashboardView {
 
     private lateinit var dashboardLaunchesAdapter: DashboardLaunchesAdapter
     private lateinit var pinnedAdapter: DashboardPinnedAdapter
+
+    private var countdownTimer: CountDownTimer? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,6 +54,7 @@ class DashboardFragment : Fragment(), DashboardView {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        countdownTimer?.cancel()
         presenter.cancelRequests()
     }
 
@@ -80,6 +84,24 @@ class DashboardFragment : Fragment(), DashboardView {
 
     override fun updatePinnedList() {
         pinnedAdapter.notifyDataSetChanged()
+    }
+
+    override fun setCountdown(launchDateUnix: Long) {
+        val time = launchDateUnix.times(1000) - System.currentTimeMillis()
+
+        countdownTimer = object : CountDownTimer(time, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                presenter.updateCountdown(millisUntilFinished)
+            }
+
+            override fun onFinish() {
+
+            }
+        }.start()
+    }
+
+    override fun updateCountdown(countdown: String) {
+        dashboard_countdown_text?.text = countdown
     }
 
     override fun showPinnedHeading() {
