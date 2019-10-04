@@ -43,6 +43,11 @@ class LaunchesWearFragment : Fragment(), LaunchesWearView {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.cancelRequests()
+    }
+
     override fun updateLaunches(launches: List<LaunchesModel>) {
         launches_recycler.apply {
             layoutManager = WearableLinearLayoutManager(this@LaunchesWearFragment.context)

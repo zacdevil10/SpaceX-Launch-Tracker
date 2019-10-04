@@ -13,12 +13,11 @@
     <string name="flight_number">FN-%1$d</string>
     <string name="next_launch_label">Next Launch</string>
     <string name="latest_launch_label">Latest Launch</string>
-    <string name="work_in_progress_label">Work In Progress</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="my_digital_name">SpaceX Countdown</string>
+    <string name="liftoff_label">Liftoff</string>
 
     <!--About-->
     <string name="powered_by">Powered by the r/SpaceX API</string>
     <string name="spacex_launch_tracker_icon_desc">SpaceX Launch Tracker Icon</string>
+    <string name="reload_desc">Reload</string>
+
 </resources>

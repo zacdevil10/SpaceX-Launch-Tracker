@@ -80,5 +80,6 @@
     <!--Menu-->
     <string name="search">Search</string>
     <string name="pinned_launches">Pinned Launches</string>
+    <string name="pin">Pin</string>
 
 </resources>

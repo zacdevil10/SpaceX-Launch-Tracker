@@ -15,6 +15,10 @@ class LaunchesWearPresenterImpl(
         interactor.getAllLaunches(id, if (id == "past") "desc" else "asc", this)
     }
 
+    override fun cancelRequests() {
+        interactor.cancelRequest()
+    }
+
     override fun onSuccess(launches: List<LaunchesModel>?) {
         launches?.let {
             view.apply {
