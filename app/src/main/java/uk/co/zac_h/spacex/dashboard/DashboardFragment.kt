@@ -52,10 +52,27 @@ class DashboardFragment : Fragment(), DashboardView {
         presenter.getLatestLaunches()
     }
 
+    override fun onResume() {
+        super.onResume()
+        dashboard_swipe_refresh.isEnabled = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dashboard_swipe_refresh.isEnabled = false
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         countdownTimer?.cancel()
         presenter.cancelRequests()
+        dashboard_launches_recycler.adapter = null
+        dashboard_pinned_launches_recycler.adapter = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        countdownTimer?.cancel()
     }
 
     override fun setLaunchesList(launches: LinkedHashMap<String, LaunchesModel>) {
@@ -97,7 +114,9 @@ class DashboardFragment : Fragment(), DashboardView {
             override fun onFinish() {
 
             }
-        }.start()
+        }
+
+        countdownTimer?.start()
     }
 
     override fun updateCountdown(countdown: String) {
