@@ -35,6 +35,11 @@ class PadStatsFragment : Fragment(), PadStatsView {
         presenter.getPads()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        pad_stats_launch_sites_recycler.adapter = null
+    }
+
     override fun setPadsList(pads: ArrayList<StatsPadModel>) {
         padsAdapter = PadStatsSitesAdapter(pads)
 

@@ -2,9 +2,12 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/launches_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="16dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?attr/selectableItemBackground"
@@ -20,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/launches_mission_patch_image"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Flight 73" />
 
@@ -33,17 +36,30 @@
             app:layout_constraintTop_toTopOf="@+id/launches_flight_no_text"
             tools:text="Block 5" />
 
+        <ImageView
+            android:id="@+id/launches_mission_patch_image"
+            android:layout_width="72dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/mission_patch"
+            android:paddingEnd="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/launches_date_text"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="RtlSymmetry"
+            tools:src="@drawable/ic_check_circle_black_24dp" />
+
         <TextView
             android:id="@+id/launches_mission_name_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
             android:ellipsize="end"
             android:singleLine="true"
             android:textAppearance="@style/AppTheme.MainText"
             android:textSize="18sp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="@+id/launches_block_text"
+            app:layout_constraintLeft_toRightOf="@id/launches_mission_patch_image"
+            app:layout_constraintRight_toLeftOf="@id/launches_label_container"
             app:layout_constraintTop_toBottomOf="@id/launches_flight_no_text"
             tools:text="Nusantara Satu (PSN-6) / GTO-1 / Beresheet" />
 
@@ -53,30 +69,41 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/launches_reused_text"
+            android:singleLine="true"
+            app:layout_constraintLeft_toRightOf="@id/launches_mission_patch_image"
+            app:layout_constraintRight_toLeftOf="@+id/launches_label_container"
             app:layout_constraintTop_toBottomOf="@id/launches_mission_name_text"
             tools:text="14 Oct 2019 - 12:35" />
 
-        <TextView
-            android:id="@+id/launches_reused_text"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/launches_label_container"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/reused"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/launches_mission_name_text" />
+            app:layout_constraintBottom_toBottomOf="@+id/launches_date_text"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/launches_block_text">
 
-        <TextView
-            android:id="@+id/launches_landing_vehicle_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/launches_reused_text" />
+            <TextView
+                android:id="@+id/launches_reused_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reused"
+                android:textColor="@color/colorAccent"
+                android:visibility="gone"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/launches_landing_vehicle_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/colorAccent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.LaunchesModel
 import uk.co.zac_h.spacex.utils.formatBlockNumber
@@ -43,20 +45,26 @@ class LaunchesAdapter(
         holder.apply {
             flightNumber.text = context?.getString(R.string.flight_number, launch.flightNumber)
 
+            missionPatch.visibility =
+                launch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
+
+            Picasso.get().load(launch.links.missionPatchSmall)
+                .into(missionPatch)
+
             if (launch.rocket.id == "falcon9") {
                 reusedTag.visibility = launch.rocket.firstStage?.cores?.get(0)?.reused?.let {
-                    if (it) View.VISIBLE else View.INVISIBLE
-                } ?: View.INVISIBLE
+                    if (it) View.VISIBLE else View.GONE
+                } ?: View.GONE
 
                 landingVehicleTag.visibility =
                     launch.rocket.firstStage?.cores?.get(0)?.landingSuccess?.let {
-                        if (it) View.VISIBLE else View.INVISIBLE
-                    } ?: View.INVISIBLE
+                        if (it) View.VISIBLE else View.GONE
+                    } ?: View.GONE
 
                 landingVehicleTag.text = launch.rocket.firstStage?.cores?.get(0)?.landingVehicle
             } else {
-                reusedTag.visibility = View.INVISIBLE
-                landingVehicleTag.visibility = View.INVISIBLE
+                reusedTag.visibility = View.GONE
+                landingVehicleTag.visibility = View.GONE
             }
 
             blockNumber.text = context?.getString(
@@ -130,6 +138,7 @@ class LaunchesAdapter(
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val flightNumber: TextView = itemView.findViewById(R.id.launches_flight_no_text)
         val blockNumber: TextView = itemView.findViewById(R.id.launches_block_text)
+        val missionPatch: ImageView = itemView.findViewById(R.id.launches_mission_patch_image)
         val missionName: TextView = itemView.findViewById(R.id.launches_mission_name_text)
         val date: TextView = itemView.findViewById(R.id.launches_date_text)
         val reusedTag: TextView = itemView.findViewById(R.id.launches_reused_text)

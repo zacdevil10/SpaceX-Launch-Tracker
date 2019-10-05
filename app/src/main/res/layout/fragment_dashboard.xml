@@ -45,7 +45,7 @@
                     android:id="@+id/dashboard_pinned_heading_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
+                    android:layout_marginStart="16dp"
                     android:text="@string/pinned_launches"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/heading"

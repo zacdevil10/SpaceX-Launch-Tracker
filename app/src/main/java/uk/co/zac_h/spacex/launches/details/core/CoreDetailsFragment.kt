@@ -39,6 +39,11 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        core_details_mission_recycler.adapter = null
+    }
+
     override fun updateCoreMissionsList(coreModel: CoreModel) {
         coreModel.missions?.let {
             core_details_mission_recycler.apply {

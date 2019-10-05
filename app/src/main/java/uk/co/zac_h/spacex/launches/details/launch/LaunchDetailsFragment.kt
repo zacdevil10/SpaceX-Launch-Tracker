@@ -122,6 +122,12 @@ class LaunchDetailsFragment : Fragment(),
         setupExpandCollapse(launch_details_payload_recycler, launch_details_payload_collapse_toggle)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        launch_details_cores_recycler.adapter = null
+        launch_details_payload_recycler.adapter = null
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_details, menu)
         menu.findItem(R.id.pin).icon = context?.let {
