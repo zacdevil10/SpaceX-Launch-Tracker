@@ -63,6 +63,27 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        launches_swipe_refresh.isEnabled = true
+    }
+
+    override fun onPause() {
+        super.onPause()
+        launches_swipe_refresh.isEnabled = false
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        launches_recycler.adapter = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.cancelRequests()
+        if (::searchView.isInitialized) searchView.setOnQueryTextListener(null)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_launches, menu)
 
@@ -106,11 +127,5 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.cancelRequests()
-        if (::searchView.isInitialized) searchView.setOnQueryTextListener(null)
     }
 }

@@ -12,6 +12,10 @@ interface DashboardView {
 
     fun updatePinnedList()
 
+    fun updateCountdown(countdown: String)
+
+    fun setCountdown(launchDateUnix: Long)
+
     fun showPinnedHeading()
 
     fun hidePinnedHeading()

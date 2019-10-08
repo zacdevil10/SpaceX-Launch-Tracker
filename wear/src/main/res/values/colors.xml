@@ -3,7 +3,4 @@
     <color name="colorPrimary">#212121</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#29b6f6</color>
-
-    <color name="background">#000000</color>
-    <color name="digital_text">#ffffff</color>
 </resources>
