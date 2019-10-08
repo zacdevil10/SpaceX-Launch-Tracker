@@ -6,6 +6,8 @@ interface LaunchDetailsView {
 
     fun updateLaunchDataView(launch: LaunchesModel?)
 
+    fun openWebLink(link: String)
+
     fun showProgress()
 
     fun hideProgress()

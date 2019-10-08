@@ -53,6 +53,20 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/launch_details_cores_recycler" />
 
+        <TextView
+            android:id="@+id/launch_details_links_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="16dp"
+            android:text="@string/links_label"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/heading"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/launch_details_payload_recycler" />
+
         <ToggleButton
             android:id="@+id/launch_details_first_stage_collapse_toggle"
             android:layout_width="24dp"
@@ -187,7 +201,9 @@
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/launch_details_first_stage_text" />
+            app:layout_constraintTop_toBottomOf="@id/launch_details_first_stage_text"
+            tools:listitem="@layout/list_item_first_stage"
+            tools:itemCount="1" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/launch_details_payload_recycler"
@@ -195,7 +211,17 @@
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/launch_details_payload_text" />
+            app:layout_constraintTop_toBottomOf="@id/launch_details_payload_text"
+            tools:listitem="@layout/list_item_payload"
+            tools:itemCount="1" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/launch_details_links_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/launch_details_links_text" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -89,7 +89,18 @@ class DashboardPresenterImpl(
         }
 
         if (launchesMap.size == 2) {
-            launchesMap["next"]?.launchDateUnix?.let { view.setCountdown(it) }
+            launchesMap["next"]?.let { launch ->
+                launch.tbd?.let {
+                    if (!it) {
+                        view.apply {
+                            setCountdown(launch.launchDateUnix)
+                            showCountdown()
+                        }
+                    } else {
+                        view.hideCountdown()
+                    }
+                }
+            }
             view.updateLaunchesList()
         }
         if (!interactor.hasActiveRequest()) view.hideProgress()

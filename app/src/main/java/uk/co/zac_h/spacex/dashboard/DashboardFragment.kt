@@ -139,6 +139,14 @@ class DashboardFragment : Fragment(), DashboardView {
         dashboard_progress_bar.visibility = View.GONE
     }
 
+    override fun showCountdown() {
+        dashboard_countdown_text.visibility = View.VISIBLE
+    }
+
+    override fun hideCountdown() {
+        dashboard_countdown_text.visibility = View.GONE
+    }
+
     override fun toggleSwipeProgress(isRefreshing: Boolean) {
         dashboard_swipe_refresh.isRefreshing = isRefreshing
     }

@@ -5,7 +5,7 @@ import java.util.*
 
 fun Long.formatDateMillisLong(tbd: Boolean = false): String =
     SimpleDateFormat(
-        if (!tbd) "dd MMM yy - HH:mm zzz" else "MMM yy - HH:mm zzz",
+        if (!tbd) "dd MMM yyyy - HH:mm zzz" else "MMM yyyy - HH:mm zzz",
         Locale.getDefault()
     ).apply {
         timeZone = TimeZone.getDefault()
@@ -13,7 +13,7 @@ fun Long.formatDateMillisLong(tbd: Boolean = false): String =
 
 fun Long.formatDateMillisShort(tbd: Boolean = false): String =
     SimpleDateFormat(
-        if (!tbd) "dd MMM yy - HH:mm" else "MMM yy - HH:mm",
+        if (!tbd) "dd MMM yy - HH:mm" else "MMM yyyy - HH:mm",
         Locale.getDefault()
     ).apply {
         timeZone = TimeZone.getDefault()
