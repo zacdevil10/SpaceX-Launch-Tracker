@@ -81,5 +81,6 @@
     <string name="search">Search</string>
     <string name="pinned_launches">Pinned Launches</string>
     <string name="pin">Pin</string>
+    <string name="links_label">Links</string>
 
 </resources>

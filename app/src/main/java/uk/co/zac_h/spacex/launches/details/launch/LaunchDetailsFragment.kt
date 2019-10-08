@@ -1,6 +1,8 @@
 package uk.co.zac_h.spacex.launches.details.launch
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.view.animation.Animation
@@ -10,14 +12,17 @@ import android.widget.ToggleButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_launch_details.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
+import uk.co.zac_h.spacex.launches.adapters.LaunchLinksAdapter
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
 import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.utils.LinksModel
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 
@@ -29,6 +34,8 @@ class LaunchDetailsFragment : Fragment(),
 
     private var launch: LaunchesModel? = null
     private var id: String? = null
+
+    private var links = ArrayList<LinksModel>()
 
     private var pinned: Boolean = false
 
@@ -188,29 +195,49 @@ class LaunchDetailsFragment : Fragment(),
                 if (coreAssigned) return@forEach
                 coreAssigned = it.serial != null
             }
-        }
 
-        if (coreAssigned) launch?.rocket?.firstStage?.cores?.let {
-            //If a core has been assigned to a launch then add the adapter to the RecyclerView
-            launch_details_cores_recycler.apply {
-                layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
-                setHasFixedSize(true)
-                adapter = FirstStageAdapter(it)
+            if (coreAssigned) launch.rocket.firstStage?.cores?.let {
+                //If a core has been assigned to a launch then add the adapter to the RecyclerView
+                launch_details_cores_recycler.apply {
+                    layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
+                    setHasFixedSize(true)
+                    adapter = FirstStageAdapter(it)
+                }
+            } else {
+                //If no core has been assigned yet then hide the RecyclerView and related heading
+                launch_details_first_stage_text.visibility = View.GONE
+                launch_details_first_stage_collapse_toggle.visibility = View.GONE
             }
-        } else {
-            //If no core has been assigned yet then hide the RecyclerView and related heading
-            launch_details_first_stage_text.visibility = View.GONE
-            launch_details_first_stage_collapse_toggle.visibility = View.GONE
-        }
 
-        launch_details_payload_recycler.apply {
-            layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
-            setHasFixedSize(false)
-            addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
-            adapter = PayloadAdapter(
-                this@LaunchDetailsFragment.context,
-                launch?.rocket?.secondStage?.payloads
-            )
+            launch_details_payload_recycler.apply {
+                layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
+                setHasFixedSize(false)
+                addItemDecoration(
+                    DividerItemDecoration(
+                        this.context,
+                        DividerItemDecoration.VERTICAL
+                    )
+                )
+                adapter = PayloadAdapter(
+                    this@LaunchDetailsFragment.context,
+                    launch.rocket.secondStage?.payloads
+                )
+            }
+
+            launch.links.videoLink?.let { links.add(LinksModel("Watch", it)) }
+            launch.links.redditCampaign?.let { links.add(LinksModel("Reddit Campaign", it)) }
+            launch.links.redditLaunch?.let { links.add(LinksModel("Reddit Launch", it)) }
+            launch.links.redditMedia?.let { links.add(LinksModel("Reddit Media", it)) }
+            launch.links.presskit?.let { links.add(LinksModel("Press Kit", it)) }
+            launch.links.wikipedia?.let { links.add(LinksModel("Wikipedia Article", it)) }
+
+            if (links.isEmpty()) launch_details_links_text.visibility = View.GONE
+
+            launch_details_links_recycler.apply {
+                layoutManager = GridLayoutManager(this@LaunchDetailsFragment.context, 2)
+                setHasFixedSize(true)
+                adapter = LaunchLinksAdapter(links, this@LaunchDetailsFragment)
+            }
         }
     }
 
@@ -242,6 +269,10 @@ class LaunchDetailsFragment : Fragment(),
             expCollapse.isChecked = false
             recycler.visibility = View.GONE
         }
+    }
+
+    override fun openWebLink(link: String) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 
     override fun showProgress() {
