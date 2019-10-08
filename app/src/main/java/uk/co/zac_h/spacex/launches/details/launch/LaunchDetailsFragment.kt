@@ -231,6 +231,8 @@ class LaunchDetailsFragment : Fragment(),
             launch.links.presskit?.let { links.add(LinksModel("Press Kit", it)) }
             launch.links.wikipedia?.let { links.add(LinksModel("Wikipedia Article", it)) }
 
+            if (links.isEmpty()) launch_details_links_text.visibility = View.GONE
+
             launch_details_links_recycler.apply {
                 layoutManager = GridLayoutManager(this@LaunchDetailsFragment.context, 2)
                 setHasFixedSize(true)
