@@ -38,6 +38,7 @@
                     android:textAlignment="center"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/heading"
+                    android:visibility="gone"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="43:13:23:55" />
 

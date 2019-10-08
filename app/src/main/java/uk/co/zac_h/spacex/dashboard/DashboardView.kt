@@ -24,6 +24,10 @@ interface DashboardView {
 
     fun hideProgress()
 
+    fun showCountdown()
+
+    fun hideCountdown()
+
     fun toggleSwipeProgress(isRefreshing: Boolean)
 
     fun showError(error: String)
