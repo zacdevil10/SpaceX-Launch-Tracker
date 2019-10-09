@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.about
+package uk.co.zac_h.spacex.about.company
 
 import android.util.Log
 import kotlinx.coroutines.*

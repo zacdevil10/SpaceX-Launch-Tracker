@@ -18,3 +18,11 @@ fun Long.formatDateMillisShort(tbd: Boolean = false): String =
     ).apply {
         timeZone = TimeZone.getDefault()
     }.format(Date(this.times(1000L)))
+
+fun Long.formatDateMillisDDMMM(): String =
+    SimpleDateFormat(
+        "dd MMM",
+        Locale.getDefault()
+    ).apply {
+        timeZone = TimeZone.getDefault()
+    }.format(Date(this.times(1000L)))

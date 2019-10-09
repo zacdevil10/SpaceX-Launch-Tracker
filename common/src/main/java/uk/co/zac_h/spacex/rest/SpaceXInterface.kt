@@ -31,6 +31,9 @@ interface SpaceXInterface {
     @GET("landpads")
     suspend fun getLandingPads(): Response<List<LandingPadModel>>
 
+    @GET("history")
+    suspend fun getHistory(@Query("order") order: String): Response<List<HistoryModel>>
+
     @GET("info")
     suspend fun getCompanyInfo(): Response<CompanyModel>
 
