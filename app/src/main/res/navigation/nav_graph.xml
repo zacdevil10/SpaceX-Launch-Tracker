@@ -40,6 +40,12 @@
         tools:layout="@layout/fragment_statistics" />
 
     <fragment
+        android:id="@+id/company_page_fragment"
+        android:label="@string/menu_company"
+        android:name="uk.co.zac_h.spacex.about.CompanyFragment"
+        tools:layout="@layout/fragment_company" />
+
+    <fragment
         android:id="@+id/about_page_fragment"
         android:label="@string/menu_about"
         android:name="uk.co.zac_h.spacex.about.AboutFragment"

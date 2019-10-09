@@ -31,6 +31,9 @@ interface SpaceXInterface {
     @GET("landpads")
     suspend fun getLandingPads(): Response<List<LandingPadModel>>
 
+    @GET("info")
+    suspend fun getCompanyInfo(): Response<CompanyModel>
+
     companion object RetrofitSetup {
         fun create(): SpaceXInterface {
             val retrofit = Retrofit.Builder().apply {
