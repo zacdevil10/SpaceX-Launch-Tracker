@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.about
+package uk.co.zac_h.spacex.about.company
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -23,7 +23,10 @@ class CompanyFragment : Fragment(), CompanyView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = CompanyPresenterImpl(this, CompanyInteractorImpl())
+        presenter = CompanyPresenterImpl(
+            this,
+            CompanyInteractorImpl()
+        )
 
         presenter.getCompanyInfo()
     }
