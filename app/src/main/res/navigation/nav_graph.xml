@@ -49,7 +49,15 @@
         android:id="@+id/history_page_fragment"
         android:label="History"
         android:name="uk.co.zac_h.spacex.about.history.HistoryFragment"
-        tools:layout="@layout/fragment_history" />
+        tools:layout="@layout/fragment_history">
+        <action
+            android:id="@+id/action_history_fragment_to_launch_details_fragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"
+            app:destination="@id/launch_details_fragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/about_page_fragment"

@@ -11,10 +11,7 @@ import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_launch_details.*
 import uk.co.zac_h.spacex.R
@@ -34,8 +31,6 @@ class LaunchDetailsFragment : Fragment(),
 
     private var launch: LaunchesModel? = null
     private var id: String? = null
-
-    private var links = ArrayList<LinksModel>()
 
     private var pinned: Boolean = false
 
@@ -78,7 +73,6 @@ class LaunchDetailsFragment : Fragment(),
         } ?: id?.let {
             presenter.getLaunch(it)
             pinned = presenter.isPinned(it.toInt())
-            println(presenter.isPinned(it.toInt()))
         }
 
         launch_details_first_stage_text.setOnClickListener {
@@ -167,6 +161,8 @@ class LaunchDetailsFragment : Fragment(),
 
     override fun updateLaunchDataView(launch: LaunchesModel?) {
         launch?.let {
+            this.launch = launch
+
             launch_details_mission_patch_image.visibility =
                 launch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
 
@@ -222,7 +218,10 @@ class LaunchDetailsFragment : Fragment(),
                     this@LaunchDetailsFragment.context,
                     launch.rocket.secondStage?.payloads
                 )
+                (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
             }
+
+            val links = ArrayList<LinksModel>()
 
             launch.links.videoLink?.let { links.add(LinksModel("Watch", it)) }
             launch.links.redditCampaign?.let { links.add(LinksModel("Reddit Campaign", it)) }
