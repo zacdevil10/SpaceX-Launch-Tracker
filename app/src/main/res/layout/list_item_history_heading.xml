@@ -16,7 +16,7 @@
 
     <View
         android:id="@+id/list_item_history_line_top"
-        android:layout_width="2dp"
+        android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:background="@android:color/white"
@@ -37,7 +37,7 @@
 
     <View
         android:id="@+id/list_item_history_line_bottom"
-        android:layout_width="2dp"
+        android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:background="@android:color/white"
@@ -49,7 +49,6 @@
         android:id="@+id/list_item_history_heading_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_marginStart="9dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@id/list_item_history_marker"
         android:background="?android:attr/colorBackground">
