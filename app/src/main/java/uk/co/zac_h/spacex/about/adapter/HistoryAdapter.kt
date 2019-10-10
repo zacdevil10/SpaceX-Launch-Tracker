@@ -9,10 +9,14 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.about.history.HistoryView
 import uk.co.zac_h.spacex.utils.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.formatDateMillisDDMMM
 
-class HistoryAdapter(private var events: ArrayList<HistoryHeaderModel>) :
+class HistoryAdapter(
+    private var events: ArrayList<HistoryHeaderModel>,
+    private var view: HistoryView
+) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
@@ -70,6 +74,17 @@ class HistoryAdapter(private var events: ArrayList<HistoryHeaderModel>) :
                 articleButton.visibility =
                     event.historyModel?.links?.article?.let { View.VISIBLE } ?: View.GONE
 
+                redditButton.setOnClickListener {
+                    event.historyModel?.links?.reddit?.let { link -> view.openWebLink(link) }
+                }
+
+                wikiButton.setOnClickListener {
+                    event.historyModel?.links?.wikipedia?.let { link -> view.openWebLink(link) }
+                }
+
+                articleButton.setOnClickListener {
+                    event.historyModel?.links?.article?.let { link -> view.openWebLink(link) }
+                }
 
             }
             is HeaderViewHolder -> holder.apply {

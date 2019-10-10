@@ -13,11 +13,13 @@ class HistoryPresenterImpl(
     private var year: Int = 0
 
     override fun getHistory() {
+        view.showProgress()
         interactor.getAllHistoricEvents(this)
     }
 
     override fun onSuccess(history: List<HistoryModel>?) {
         history?.let {
+            historyHeaders.clear()
             it.forEach { model ->
                 val newYear = model.dateUtc.subSequence(0, 4).toString().toInt()
                 if (year != newYear) {
@@ -27,11 +29,18 @@ class HistoryPresenterImpl(
                 historyHeaders.add(HistoryHeaderModel(null, model, false))
             }
 
-            view.updateRecycler(historyHeaders)
+            view.apply {
+                hideProgress()
+                updateRecycler(historyHeaders)
+                toggleSwipeProgress(false)
+            }
         }
     }
 
     override fun onError(error: String) {
-
+        view.apply {
+            showError(error)
+            toggleSwipeProgress(false)
+        }
     }
 }

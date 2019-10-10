@@ -4,7 +4,7 @@ import uk.co.zac_h.spacex.model.HistoryModel
 
 interface HistoryInteractor {
 
-    fun getAllHistoricEvents(listener: HistoryInteractor.Callback)
+    fun getAllHistoricEvents(listener: Callback)
 
     fun cancelAllRequests()
 

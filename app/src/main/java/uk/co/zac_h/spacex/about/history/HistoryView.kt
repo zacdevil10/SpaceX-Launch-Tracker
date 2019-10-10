@@ -6,4 +6,14 @@ interface HistoryView {
 
     fun updateRecycler(history: ArrayList<HistoryHeaderModel>)
 
+    fun openWebLink(link: String)
+
+    fun showProgress()
+
+    fun hideProgress()
+
+    fun toggleSwipeProgress(isRefreshing: Boolean)
+
+    fun showError(error: String)
+
 }

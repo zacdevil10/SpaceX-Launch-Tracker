@@ -1,9 +1,12 @@
 package uk.co.zac_h.spacex.about.history
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_history.*
@@ -29,7 +32,7 @@ class HistoryFragment : Fragment(), HistoryView {
 
         presenter = HistoryPresenterImpl(this, HistoryInteractorImpl())
 
-        historyAdapter = HistoryAdapter(history)
+        historyAdapter = HistoryAdapter(history, this)
 
         history_recycler.apply {
             layoutManager = LinearLayoutManager(this@HistoryFragment.context)
@@ -38,13 +41,38 @@ class HistoryFragment : Fragment(), HistoryView {
             addItemDecoration(HeaderItemDecoration(this, historyAdapter.isHeader()))
         }
 
-        presenter.getHistory()
+        if (history.isEmpty()) presenter.getHistory()
+
+        history_swipe_refresh.setOnRefreshListener {
+            presenter.getHistory()
+        }
     }
 
     override fun updateRecycler(history: ArrayList<HistoryHeaderModel>) {
+        this.history.clear()
         this.history.addAll(history)
 
         historyAdapter.notifyDataSetChanged()
+    }
+
+    override fun openWebLink(link: String) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
+    }
+
+    override fun showProgress() {
+        history_progress_bar.visibility = View.VISIBLE
+    }
+
+    override fun hideProgress() {
+        history_progress_bar.visibility = View.GONE
+    }
+
+    override fun toggleSwipeProgress(isRefreshing: Boolean) {
+        history_swipe_refresh?.isRefreshing = isRefreshing
+    }
+
+    override fun showError(error: String) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
 }
