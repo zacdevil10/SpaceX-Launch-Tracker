@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.view.*
 import android.view.animation.Animation
 import android.view.animation.RotateAnimation
@@ -186,6 +187,25 @@ class LaunchDetailsFragment : Fragment(),
             }
 
             launch_details_details_text.text = launch.details
+
+            launch_details_calendar_button.setOnClickListener {
+                val calendarIntent = Intent(Intent.ACTION_INSERT).apply {
+                    data = CalendarContract.Events.CONTENT_URI
+                    putExtra(
+                        CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                        launch.launchDateUnix.times(1000L)
+                    )
+                    putExtra(
+                        CalendarContract.EXTRA_EVENT_END_TIME,
+                        launch.launchDateUnix.times(1000L).plus(3600000)
+                    )
+                    putExtra(
+                        CalendarContract.Events.TITLE,
+                        "${launch.missionName} - ${launch.rocket.name} Launch Event"
+                    )
+                }
+                startActivity(calendarIntent)
+            }
 
             launch.rocket.firstStage?.cores?.forEach {
                 if (coreAssigned) return@forEach
