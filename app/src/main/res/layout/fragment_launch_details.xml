@@ -32,7 +32,7 @@
             android:focusable="true"
             android:padding="16dp"
             android:text="@string/first_stage"
-            android:textColor="@color/colorAccent"
+            android:textColor="@android:color/white"
             android:textSize="@dimen/heading"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -47,7 +47,7 @@
             android:focusable="true"
             android:padding="16dp"
             android:text="@string/payload_label"
-            android:textColor="@color/colorAccent"
+            android:textColor="@android:color/white"
             android:textSize="@dimen/heading"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -61,7 +61,7 @@
             android:focusable="true"
             android:padding="16dp"
             android:text="@string/links_label"
-            android:textColor="@color/colorAccent"
+            android:textColor="@android:color/white"
             android:textSize="@dimen/heading"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -193,6 +193,42 @@
                 app:layout_constraintTop_toBottomOf="@id/launch_details_static_fire_date_text"
                 tools:text="SpaceX's first flight of 2019 will be the eighth and final launch of its planned Iridium flights. Delivering 10 satellites to low earth orbit, this brings the total up to 75 and completes the Iridium NEXT constellation. This mission launches from SLC-4E at Vandenberg AFB. The booster is expected to land on JRTI." />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/launch_details_calendar_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="8dp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/launch_details_details_text">
+
+                <ImageView
+                    android:id="@+id/launch_details_calendar_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_event_black_24dp"
+                    android:tint="@color/colorAccent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:contentDescription="@string/create_calendar_event_icon_desc" />
+
+                <TextView
+                    android:id="@+id/launch_details_calendar_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/create_event_label"
+                    android:textColor="@color/colorAccent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/launch_details_calendar_image"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -202,8 +238,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/launch_details_first_stage_text"
-            tools:listitem="@layout/list_item_first_stage"
-            tools:itemCount="1" />
+            tools:itemCount="1"
+            tools:listitem="@layout/list_item_first_stage" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/launch_details_payload_recycler"
@@ -212,8 +248,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/launch_details_payload_text"
-            tools:listitem="@layout/list_item_payload"
-            tools:itemCount="1" />
+            tools:itemCount="1"
+            tools:listitem="@layout/list_item_payload" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/launch_details_links_recycler"

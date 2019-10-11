@@ -9,6 +9,9 @@
     <string name="menu_launches">Launches</string>
     <string name="menu_statistics">Statistics</string>
     <string name="menu_about">About</string>
+    <string name="menu_about_spacex">About SpaceX</string>
+    <string name="menu_company">Company</string>
+    <string name="menu_history">History</string>
 
     <string name="next_launch">Next Launch</string>
     <string name="latest_launch">Latest Launch</string>
@@ -61,6 +64,7 @@
     <string name="period_label">Period</string>
     <string name="payload_value">%1$d kg / %2$d lbs</string>
     <string name="static_fire_label">(static fire)</string>
+    <string name="links_label">Links</string>
 
     <!--Statistics-->
     <string name="success_rate_heading">Launch Success Rate</string>
@@ -81,6 +85,31 @@
     <string name="search">Search</string>
     <string name="pinned_launches">Pinned Launches</string>
     <string name="pin">Pin</string>
-    <string name="links_label">Links</string>
+
+    <!--About SpaceX-->
+    <string name="founded_label">Founded</string>
+    <string name="ceo_label">CEO</string>
+    <string name="cto_label">CTO</string>
+    <string name="coo_label">COO</string>
+    <string name="cto_propulsion_label">CTO Propulsion</string>
+    <string name="valuation_label">Valuation</string>
+    <string name="employees_label">Employees</string>
+    <string name="vehicles_label">Vehicles</string>
+    <string name="launch_sites_label">Launch Sites</string>
+    <string name="test_sites_label">Test Sites</string>
+    <string name="spacex_logo_desc">SpaceX Logo</string>
+    <string name="address">%1$s, %2$s, %3$s</string>
+    <string name="founded">%1$s, %2$d</string>
+
+    <string name="create_calendar_event_icon_desc">Create Calendar Event Icon</string>
+    <string name="create_event_label">Create Event</string>
+    <string name="launch_details_icon_desc">Launch Details Icon</string>
+    <string name="launch_details_label">Launch Details</string>
+    <string name="reddit_campaign_icon_desc">Reddit Campaign Icon</string>
+    <string name="reddit_campaign_label">Reddit Campaign</string>
+    <string name="wikipedia_icon_desc">Wikipedia Icon</string>
+    <string name="wikipedia_label">Wikipedia</string>
+    <string name="article_icon_desc">Article Icon</string>
+    <string name="article_label">Article</string>
 
 </resources>
