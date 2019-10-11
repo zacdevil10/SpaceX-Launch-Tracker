@@ -98,14 +98,15 @@
             android:tint="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/launch_details_icon_desc" />
 
         <TextView
             android:id="@+id/list_item_history_details_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="Launch Details"
+            android:text="@string/launch_details_label"
             android:textAllCaps="true"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -137,14 +138,15 @@
             android:tint="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/reddit_campaign_icon_desc" />
 
         <TextView
             android:id="@+id/list_item_history_reddit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="Reddit Campaign"
+            android:text="@string/reddit_campaign_label"
             android:textAllCaps="true"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -176,14 +178,15 @@
             android:tint="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/wikipedia_icon_desc" />
 
         <TextView
             android:id="@+id/list_item_history_wiki_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="Wikipedia"
+            android:text="@string/wikipedia_label"
             android:textAllCaps="true"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -216,14 +219,15 @@
             android:tint="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/article_icon_desc" />
 
         <TextView
             android:id="@+id/list_item_history_article_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="Article"
+            android:text="@string/article_label"
             android:textAllCaps="true"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -101,7 +101,15 @@
     <string name="address">%1$s, %2$s, %3$s</string>
     <string name="founded">%1$s, %2$d</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="create_calendar_event_icon_desc">Create Calendar Event Icon</string>
+    <string name="create_event_label">Create Event</string>
+    <string name="launch_details_icon_desc">Launch Details Icon</string>
+    <string name="launch_details_label">Launch Details</string>
+    <string name="reddit_campaign_icon_desc">Reddit Campaign Icon</string>
+    <string name="reddit_campaign_label">Reddit Campaign</string>
+    <string name="wikipedia_icon_desc">Wikipedia Icon</string>
+    <string name="wikipedia_label">Wikipedia</string>
+    <string name="article_icon_desc">Article Icon</string>
+    <string name="article_label">Article</string>
 
 </resources>
