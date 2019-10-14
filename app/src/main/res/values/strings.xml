@@ -112,4 +112,7 @@
     <string name="article_icon_desc">Article Icon</string>
     <string name="article_label">Article</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

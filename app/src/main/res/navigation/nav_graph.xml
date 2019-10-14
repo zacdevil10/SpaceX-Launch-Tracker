@@ -34,6 +34,14 @@
     </fragment>
 
     <fragment
+        android:id="@+id/vehicles_page_fragment"
+        android:label="Vehicles"
+        android:name="uk.co.zac_h.spacex.vehicles.VehiclesFragment"
+        tools:layout="@layout/fragment_vehicles">
+
+    </fragment>
+
+    <fragment
         android:id="@+id/statistics_page_fragment"
         android:label="@string/menu_statistics"
         android:name="uk.co.zac_h.spacex.statistics.StatisticsFragment"
