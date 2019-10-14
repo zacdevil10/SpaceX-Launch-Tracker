@@ -114,5 +114,10 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="menu_vehicles">Vehicles</string>
+    <string name="first_flight_label">First Flight</string>
+    <string name="capsule_specs_label">Capsule Specs</string>
+    <string name="rocket_specs_label">Rocket Specs</string>
+    <string name="rocket_image_desc">Rocket Image</string>
 
 </resources>

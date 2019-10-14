@@ -22,6 +22,9 @@ interface SpaceXInterface {
     @GET("rockets")
     suspend fun getRockets(): Response<List<RocketsModel>>
 
+    @GET("capsules")
+    suspend fun getCapsules(): Response<List<CapsulesModel>>
+
     @GET("cores/{serial}")
     suspend fun getSingleCore(@Path("serial") serial: String): Response<CoreModel>
 

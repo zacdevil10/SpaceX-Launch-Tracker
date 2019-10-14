@@ -3,7 +3,7 @@ package uk.co.zac_h.spacex.vehicles.adapters
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import uk.co.zac_h.spacex.launches.LaunchesListFragment
+import uk.co.zac_h.spacex.vehicles.capsules.CapsulesFragment
 import uk.co.zac_h.spacex.vehicles.rockets.RocketFragment
 
 class VehiclesPagerAdapter(fragmentManager: FragmentManager) :
@@ -12,8 +12,8 @@ class VehiclesPagerAdapter(fragmentManager: FragmentManager) :
     override fun getItem(position: Int): Fragment =
         when (position) {
             0 -> RocketFragment()
-            1 -> LaunchesListFragment.newInstance("past")
-            else -> throw IllegalArgumentException("")
+            1 -> CapsulesFragment()
+            else -> throw IllegalArgumentException("Invalid position: $position")
         }
 
     override fun getCount(): Int = 2

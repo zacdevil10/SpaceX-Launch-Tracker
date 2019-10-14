@@ -35,7 +35,7 @@
 
     <fragment
         android:id="@+id/vehicles_page_fragment"
-        android:label="Vehicles"
+        android:label="@string/menu_vehicles"
         android:name="uk.co.zac_h.spacex.vehicles.VehiclesFragment"
         tools:layout="@layout/fragment_vehicles">
 

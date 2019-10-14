@@ -9,11 +9,11 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.CoreMissionsModel
+import uk.co.zac_h.spacex.model.MissionsModel
 
 class CoreMissionsAdapter(
     private val context: Context?,
-    private val missions: List<CoreMissionsModel>
+    private val missions: List<MissionsModel>
 ) :
     RecyclerView.Adapter<CoreMissionsAdapter.ViewHolder>() {
 
