@@ -16,6 +16,9 @@ class CapsulesFragment : Fragment(), CapsulesView {
 
     private lateinit var presenter: CapsulesPresenter
 
+    private lateinit var capsulesAdapter: CapsulesAdapter
+    private val capsulesArray = ArrayList<CapsulesModel>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,7 +29,13 @@ class CapsulesFragment : Fragment(), CapsulesView {
 
         presenter = CapsulesPresenterImpl(this, CapsulesInteractorImpl())
 
-        presenter.getCapsules()
+        capsules_recycler.apply {
+            layoutManager = LinearLayoutManager(this@CapsulesFragment.context)
+            setHasFixedSize(true)
+            adapter = CapsulesAdapter(capsulesArray)
+        }
+
+        if (capsulesArray.isEmpty()) presenter.getCapsules()
     }
 
     override fun onDestroyView() {
@@ -35,11 +44,10 @@ class CapsulesFragment : Fragment(), CapsulesView {
     }
 
     override fun updateCapsules(capsules: List<CapsulesModel>) {
-        capsules_recycler.apply {
-            layoutManager = LinearLayoutManager(this@CapsulesFragment.context)
-            setHasFixedSize(true)
-            adapter = CapsulesAdapter(capsules)
-        }
+        capsulesArray.clear()
+        capsulesArray.addAll(capsules)
+
+        capsulesAdapter.notifyDataSetChanged()
     }
 
     override fun showProgress() {

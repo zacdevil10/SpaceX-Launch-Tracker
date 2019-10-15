@@ -139,4 +139,11 @@
     <string name="second_stage_label">Second Stage</string>
     <string name="thrust_label">Thrust</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="type_label">Type</string>
+    <string name="reuse_count_label">Reuse Count</string>
+    <string name="landings_label">Landings</string>
+    <string name="no_missions_found">No missions found.</string>
+
 </resources>

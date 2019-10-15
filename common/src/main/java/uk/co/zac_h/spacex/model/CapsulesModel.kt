@@ -1,7 +1,10 @@
 package uk.co.zac_h.spacex.model
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class CapsulesModel(
     @field:Json(name = "capsule_serial") var serial: String,
     @field:Json(name = "capsule_id") var id: String,
@@ -13,4 +16,4 @@ data class CapsulesModel(
     @field:Json(name = "type") var type: String,
     @field:Json(name = "details") var details: String,
     @field:Json(name = "reuse_count") var reuseCount: Int
-)
+) : Parcelable
