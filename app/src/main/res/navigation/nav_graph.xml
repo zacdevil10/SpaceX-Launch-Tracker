@@ -39,6 +39,13 @@
         android:name="uk.co.zac_h.spacex.vehicles.VehiclesFragment"
         tools:layout="@layout/fragment_vehicles">
 
+        <action
+            android:id="@+id/action_vehicles_page_fragment_to_rocket_details_fragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"
+            app:destination="@id/rocket_details_fragment" />
     </fragment>
 
     <fragment
@@ -107,6 +114,17 @@
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out"
             app:destination="@id/launch_details_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/rocket_details_fragment"
+        android:name="uk.co.zac_h.spacex.vehicles.rockets.details.RocketDetailsFragment"
+        android:label="{title}"
+        tools:layout="@layout/fragment_rocket_details">
+        <argument
+            android:name="title"
+            app:argType="string"
+            android:defaultValue="Rocket Details" />
     </fragment>
 
 </navigation>

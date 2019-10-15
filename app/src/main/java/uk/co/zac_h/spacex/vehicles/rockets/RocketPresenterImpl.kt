@@ -10,6 +10,10 @@ class RocketPresenterImpl(private val view: RocketView, private val interactor: 
         interactor.getRockets(this)
     }
 
+    override fun cancelRequest() {
+        interactor.cancelAllRequests()
+    }
+
     override fun onSuccess(rockets: List<RocketsModel>?) {
         rockets?.let { view.updateRockets(it.reversed()) }
         view.hideProgress()

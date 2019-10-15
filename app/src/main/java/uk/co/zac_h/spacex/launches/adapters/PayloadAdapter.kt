@@ -45,7 +45,7 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
             payloadOrbit.text = payload?.orbit
             payloadLifespan.text = payload?.orbitParams?.lifespanYears?.toInt()?.toString() ?: "0"
             payloadMass.text = context?.getString(
-                R.string.payload_value,
+                R.string.mass,
                 payload?.massKg?.roundToInt() ?: 0,
                 payload?.massLbs?.roundToInt() ?: 0
             )

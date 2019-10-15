@@ -16,6 +16,9 @@ class RocketFragment : Fragment(), RocketView {
 
     private lateinit var presenter: RocketPresenter
 
+    private lateinit var rocketsAdapter: RocketsAdapter
+    private val rocketsArray = ArrayList<RocketsModel>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,15 +29,27 @@ class RocketFragment : Fragment(), RocketView {
 
         presenter = RocketPresenterImpl(this, RocketInteractorImpl())
 
-        presenter.getRockets()
-    }
+        rocketsAdapter = RocketsAdapter(rocketsArray)
 
-    override fun updateRockets(rockets: List<RocketsModel>) {
         rocket_recycler.apply {
             layoutManager = LinearLayoutManager(this@RocketFragment.context)
             setHasFixedSize(true)
-            adapter = RocketsAdapter(rockets)
+            adapter = rocketsAdapter
         }
+
+        if (rocketsArray.isEmpty()) presenter.getRockets()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.cancelRequest()
+    }
+
+    override fun updateRockets(rockets: List<RocketsModel>) {
+        rocketsArray.clear()
+        rocketsArray.addAll(rockets)
+
+        rocketsAdapter.notifyDataSetChanged()
     }
 
     override fun showProgress() {
