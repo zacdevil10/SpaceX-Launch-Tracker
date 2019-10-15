@@ -62,7 +62,7 @@
     <string name="apoapsis_km_label">Apoapsis (km)</string>
     <string name="inclination_label">Inclination</string>
     <string name="period_label">Period</string>
-    <string name="mass">%1$d kg / %2$d lbs</string>
+    <string name="mass">%1$s kg / %2$s lbs</string>
     <string name="static_fire_label">(static fire)</string>
     <string name="links_label">Links</string>
 

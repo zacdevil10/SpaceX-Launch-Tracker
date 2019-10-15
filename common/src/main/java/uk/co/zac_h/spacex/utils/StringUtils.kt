@@ -6,6 +6,7 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
+import java.text.DecimalFormat
 
 fun String.generateCenterSpannableText(): SpannableString =
     SpannableString(this).apply {
@@ -22,3 +23,5 @@ private fun String.rgb(): Int {
     val b = color shr 0 and 0xFF
     return Color.rgb(r, g, b)
 }
+
+fun Any.metricFormat(): String = DecimalFormat("#,###.##").format(this)

@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.PayloadWeightsModel
+import uk.co.zac_h.spacex.utils.metricFormat
 
 class RocketPayloadAdapter(
     private val context: Context?,
@@ -28,7 +29,11 @@ class RocketPayloadAdapter(
 
         holder.apply {
             orbit.text = payload.name
-            mass.text = context?.getString(R.string.mass, payload.kg, payload.lb)
+            mass.text = context?.getString(
+                R.string.mass,
+                payload.kg.metricFormat(),
+                payload.lb.metricFormat()
+            )
         }
     }
 

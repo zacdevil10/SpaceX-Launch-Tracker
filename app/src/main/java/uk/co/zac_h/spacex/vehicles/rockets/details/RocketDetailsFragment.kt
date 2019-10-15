@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_rocket_details.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.RocketsModel
+import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.setImageAndTint
 import uk.co.zac_h.spacex.vehicles.adapters.RocketPayloadAdapter
 import java.text.DecimalFormat
@@ -53,23 +54,21 @@ class RocketDetailsFragment : Fragment() {
             rocket_details_first_flight_text.text = it.firstFlight
             rocket_details_stages_text.text = it.stages.toString()
 
-            val metricFormat = DecimalFormat("#,###.##")
-
             rocket_details_height_text.text = context?.getString(
                 R.string.measurements,
-                metricFormat.format(it.height.meters),
-                metricFormat.format(it.height.feet)
+                it.height.meters.metricFormat(),
+                it.height.feet.metricFormat()
             )
             rocket_details_diameter_text.text = context?.getString(
                 R.string.measurements,
-                metricFormat.format(it.diameter.meters),
-                metricFormat.format(it.diameter.feet)
+                it.diameter.meters.metricFormat(),
+                it.diameter.feet.metricFormat()
             )
             rocket_details_mass_text.text =
                 context?.getString(
                     R.string.mass_formatted,
-                    metricFormat.format(it.mass.kg),
-                    metricFormat.format(it.mass.lb)
+                    it.mass.kg.metricFormat(),
+                    it.mass.lb.metricFormat()
                 )
 
             with(it.firstStage) {
@@ -87,32 +86,32 @@ class RocketDetailsFragment : Fragment() {
                 rocket_details_engines_first_text.text = engines.toString()
                 rocket_details_fuel_first_text.text = context?.getString(
                     R.string.ton_format,
-                    metricFormat.format(fuelAmountTons)
+                    fuelAmountTons.metricFormat()
                 )
                 rocket_details_burn_first_text.text =
                     context?.getString(R.string.seconds_format, burnTimeSec ?: 0)
                 rocket_details_thrust_sea_text.text = context?.getString(
                     R.string.thrust,
-                    metricFormat.format(thrustSeaLevel.kN),
-                    metricFormat.format(thrustSeaLevel.lbf)
+                    thrustSeaLevel.kN.metricFormat(),
+                    thrustSeaLevel.lbf.metricFormat()
                 )
                 rocket_details_thrust_vac_text.text = context?.getString(
                     R.string.thrust,
-                    metricFormat.format(thrustVacuum.kN),
-                    metricFormat.format(thrustVacuum.lbf)
+                    thrustVacuum.kN.metricFormat(),
+                    thrustVacuum.lbf.metricFormat()
                 )
             }
 
             with(it.secondStage) {
                 rocket_details_engines_second_text.text = engines.toString()
                 rocket_details_fuel_second_text.text =
-                    context?.getString(R.string.ton_format, metricFormat.format(fuelAmountTons))
+                    context?.getString(R.string.ton_format, fuelAmountTons.metricFormat())
                 rocket_details_burn_second_text.text =
                     context?.getString(R.string.seconds_format, burnTimeSec ?: 0)
                 rocket_details_thrust_second_text.text = context?.getString(
                     R.string.thrust,
-                    metricFormat.format(thrust.kN),
-                    metricFormat.format(thrust.lbf)
+                    thrust.kN.metricFormat(),
+                    thrust.lbf.metricFormat()
                 )
             }
 
