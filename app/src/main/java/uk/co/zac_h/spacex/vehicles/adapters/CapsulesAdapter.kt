@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.vehicles.adapters
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,6 +26,7 @@ class CapsulesAdapter(private val capsules: List<CapsulesModel>) :
             )
         )
 
+    @SuppressLint("DefaultLocale")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val capsule = capsules[position]
 
