@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.launches.adapters
+package uk.co.zac_h.spacex.vehicles.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.MissionsModel
 
-class CoreMissionsAdapter(
+class CapsuleMissionsAdapter(
     private val context: Context?,
     private val missions: List<MissionsModel>
 ) :
-    RecyclerView.Adapter<CoreMissionsAdapter.ViewHolder>() {
+    RecyclerView.Adapter<CapsuleMissionsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
         LayoutInflater.from(parent.context).inflate(
@@ -35,7 +35,7 @@ class CoreMissionsAdapter(
             itemView.setOnClickListener {
                 itemView.findNavController()
                     .navigate(
-                        R.id.action_core_details_fragment_to_launch_details_fragment,
+                        R.id.action_capsule_details_fragment_to_launch_details_fragment,
                         bundleOf(
                             "launch_id" to mission.flightNumber.toString(),
                             "title" to mission.name

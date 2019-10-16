@@ -34,6 +34,27 @@
     </fragment>
 
     <fragment
+        android:id="@+id/vehicles_page_fragment"
+        android:label="@string/menu_vehicles"
+        android:name="uk.co.zac_h.spacex.vehicles.VehiclesFragment"
+        tools:layout="@layout/fragment_vehicles">
+        <action
+            android:id="@+id/action_vehicles_page_fragment_to_rocket_details_fragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"
+            app:destination="@id/rocket_details_fragment" />
+        <action
+            android:id="@+id/action_vehicles_page_fragment_to_capsule_details_fragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"
+            app:destination="@id/capsule_details_fragment" />
+    </fragment>
+
+    <fragment
         android:id="@+id/statistics_page_fragment"
         android:label="@string/menu_statistics"
         android:name="uk.co.zac_h.spacex.statistics.StatisticsFragment"
@@ -94,6 +115,35 @@
             android:defaultValue="Core Details" />
         <action
             android:id="@+id/action_core_details_fragment_to_launch_details_fragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"
+            app:destination="@id/launch_details_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/rocket_details_fragment"
+        android:name="uk.co.zac_h.spacex.vehicles.rockets.details.RocketDetailsFragment"
+        android:label="{title}"
+        tools:layout="@layout/fragment_rocket_details">
+        <argument
+            android:name="title"
+            app:argType="string"
+            android:defaultValue="Rocket Details" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/capsule_details_fragment"
+        android:name="uk.co.zac_h.spacex.vehicles.capsules.details.CapsuleDetailsFragment"
+        android:label="{title}"
+        tools:layout="@layout/fragment_capsule_details">
+        <argument
+            android:name="title"
+            app:argType="string"
+            android:defaultValue="Capsule Details" />
+        <action
+            android:id="@+id/action_capsule_details_fragment_to_launch_details_fragment"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"

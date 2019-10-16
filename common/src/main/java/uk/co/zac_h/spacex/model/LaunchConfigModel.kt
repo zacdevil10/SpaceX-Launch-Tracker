@@ -10,7 +10,7 @@ data class LaunchConfigModel(
     @field:Json(name = "rocket_name") var name: String?,
     @field:Json(name = "rocket_type") var type: String?,
     @field:Json(name = "first_stage") var firstStage: CoresListModel?,
-    @field:Json(name = "second_stage") var secondStage: SecondStageModel?,
+    @field:Json(name = "second_stage") var secondStage: SecondStagePayloadListModel?,
     @field:Json(name = "fairings") var fairings: FairingsModel?
 ) : Parcelable
 
@@ -34,7 +34,7 @@ data class CoreSpecModel(
 ) : Parcelable
 
 @Parcelize
-data class SecondStageModel(
+data class SecondStagePayloadListModel(
     @field:Json(name = "block") var block: Int?,
     @field:Json(name = "payloads") var payloads: List<PayloadModel>?
 ) : Parcelable

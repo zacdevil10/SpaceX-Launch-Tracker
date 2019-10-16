@@ -62,7 +62,7 @@
     <string name="apoapsis_km_label">Apoapsis (km)</string>
     <string name="inclination_label">Inclination</string>
     <string name="period_label">Period</string>
-    <string name="payload_value">%1$d kg / %2$d lbs</string>
+    <string name="mass">%1$s kg / %2$s lbs</string>
     <string name="static_fire_label">(static fire)</string>
     <string name="links_label">Links</string>
 
@@ -111,5 +111,36 @@
     <string name="wikipedia_label">Wikipedia</string>
     <string name="article_icon_desc">Article Icon</string>
     <string name="article_label">Article</string>
+
+    <!-- Vehicles -->
+    <string name="menu_vehicles">Vehicles</string>
+    <string name="first_flight_label">First Flight</string>
+    <string name="capsule_specs_label">Capsule Specs</string>
+    <string name="rocket_specs_label">Rocket Specs</string>
+    <string name="rocket_image_desc">Rocket Image</string>
+    <string name="measurements">%1$s m / %2$s ft</string>
+    <string name="mass_formatted">%1$s kg / %2$s lbs</string>
+    <string name="ton_format">%1$s t</string>
+    <string name="thrust">%1$s kN / %2$s lbf</string>
+    <string name="seconds_format">%1$d s</string>
+    <string name="name_label">Name</string>
+    <string name="active_label">Active</string>
+    <string name="status_image_desc">Status Image</string>
+    <string name="cost_per_launch_label">Cost Per Launch</string>
+    <string name="stages_label">Stages</string>
+    <string name="height_label">Height</string>
+    <string name="diameter_label">Diameter</string>
+    <string name="reusable_label">Reusable</string>
+    <string name="engines_label">Engines</string>
+    <string name="fuel_amount_label">Fuel Amount</string>
+    <string name="burn_time_label">Burn Time</string>
+    <string name="thrust_at_sea_level_label">Thrust At Sea Level</string>
+    <string name="thrust_in_vacuum_label">Thrust In Vacuum</string>
+    <string name="second_stage_label">Second Stage</string>
+    <string name="thrust_label">Thrust</string>
+    <string name="type_label">Type</string>
+    <string name="reuse_count_label">Reuse Count</string>
+    <string name="landings_label">Landings</string>
+    <string name="no_missions_found">No missions found.</string>
 
 </resources>
