@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?actionBarSize"
-        app:tabMode="scrollable"/>
+        app:tabBackground="@color/colorPrimary"
+        app:tabMode="scrollable" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/statistics_view_pager"
