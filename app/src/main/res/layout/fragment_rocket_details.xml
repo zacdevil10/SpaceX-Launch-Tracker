@@ -323,12 +323,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:singleLine="true"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_thrust_sea_label"
             app:layout_constraintLeft_toRightOf="@id/rocket_details_thrust_sea_label"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_thrust_sea_label"
-            tools:text="420 kN / 94,000 lbf" />
+            tools:text="420,000 kN / 28,094,000 lbf" />
 
         <TextView
             android:id="@+id/rocket_details_thrust_vac_label"
@@ -344,12 +345,13 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:singleLine="true"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_thrust_vac_label"
             app:layout_constraintLeft_toRightOf="@id/rocket_details_thrust_vac_label"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_thrust_vac_label"
-            tools:text="420 kN / 110,000 lbf" />
+            tools:text="420,000 kN / 31,110,000 lbf" />
 
         <TextView
             android:id="@+id/rocket_details_second_stage_heading"
