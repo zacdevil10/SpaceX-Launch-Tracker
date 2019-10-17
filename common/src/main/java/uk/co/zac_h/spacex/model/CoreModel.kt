@@ -8,7 +8,7 @@ data class CoreModel(
     @field:Json(name = "status") val status: String?,
     @field:Json(name = "original_launch") val originalLaunchDate: String?,
     @field:Json(name = "original_launch_unix") val originalLaunchDateUnix: Long?,
-    @field:Json(name = "missions") val missions: List<CoreMissionsModel>?,
+    @field:Json(name = "missions") val missions: List<MissionsModel>?,
     @field:Json(name = "reuse_count") val reuseCount: Int?,
     @field:Json(name = "rtls_attempts") val attemptsRtls: Int?,
     @field:Json(name = "rtls_landings") val landingsRtls: Int?,
@@ -16,9 +16,4 @@ data class CoreModel(
     @field:Json(name = "asds_landings") val landingsAsds: Int?,
     @field:Json(name = "water_landing") val landingWater: Boolean?,
     @field:Json(name = "details") val details: String?
-)
-
-data class CoreMissionsModel(
-    @field:Json(name = "name") val name: String?,
-    @field:Json(name = "flight") val flightNumber: Int?
 )

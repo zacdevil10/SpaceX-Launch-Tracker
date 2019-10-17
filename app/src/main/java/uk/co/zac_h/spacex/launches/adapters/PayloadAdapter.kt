@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.PayloadModel
 import uk.co.zac_h.spacex.utils.formatCustomers
-import kotlin.math.roundToInt
+import uk.co.zac_h.spacex.utils.metricFormat
 
 class PayloadAdapter(private var context: Context?, private var payloads: List<PayloadModel>?) :
     RecyclerView.Adapter<PayloadAdapter.ViewHolder>() {
@@ -45,9 +45,9 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
             payloadOrbit.text = payload?.orbit
             payloadLifespan.text = payload?.orbitParams?.lifespanYears?.toInt()?.toString() ?: "0"
             payloadMass.text = context?.getString(
-                R.string.payload_value,
-                payload?.massKg?.roundToInt() ?: 0,
-                payload?.massLbs?.roundToInt() ?: 0
+                R.string.mass,
+                payload?.massKg?.metricFormat() ?: 0,
+                payload?.massLbs?.metricFormat() ?: 0
             )
             payloadType.text = payload?.type ?: "Unknown"
             payloadRefSystem.text = payload?.orbitParams?.referenceSystem ?: "Unknown"
