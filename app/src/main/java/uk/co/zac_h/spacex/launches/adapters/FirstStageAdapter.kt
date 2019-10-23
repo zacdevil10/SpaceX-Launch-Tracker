@@ -67,7 +67,7 @@ class FirstStageAdapter(private val cores: List<CoreSpecModel>) :
                 itemView.findNavController()
                     .navigate(
                         R.id.action_launch_details_fragment_to_core_details_fragment,
-                        bundleOf("core" to core, "title" to core.serial)
+                        bundleOf("core_id" to core.serial, "title" to core.serial)
                     )
             }
         }
