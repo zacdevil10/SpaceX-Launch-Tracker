@@ -24,9 +24,9 @@ class DashboardInteractorImpl : DashboardInteractor {
             }
 
             withContext(Dispatchers.Main) {
+                active.remove(id)
                 try {
                     if (response.await().isSuccessful) {
-                        active.remove(id)
                         listener.onSuccess(id, response.await().body())
                     } else {
                         listener.onError("Error: ${response.await().code()}")
