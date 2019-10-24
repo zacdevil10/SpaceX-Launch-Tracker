@@ -143,5 +143,8 @@
     <string name="landings_label">Landings</string>
     <string name="no_missions_found">No missions found.</string>
     <string name="block">Block %1$s</string>
+    <string name="sort_label">Sort</string>
+    <string name="newest_first_label">Newest first</string>
+    <string name="oldest_first_label">Oldest first</string>
 
 </resources>

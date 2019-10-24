@@ -18,6 +18,7 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener {
     private lateinit var coreAdapter: CoreAdapter
     private val coresArray = ArrayList<CoreModel>()
 
+    private var sortNew = false
     private lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +60,27 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener {
 
         super.onCreateOptionsMenu(menu, inflater)
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        when (item.itemId) {
+            R.id.sort_new -> {
+                if (!sortNew) {
+                    sortNew = true
+                    coresArray.reverse()
+                    coreAdapter.notifyDataSetChanged()
+                }
+                true
+            }
+            R.id.sort_old -> {
+                if (sortNew) {
+                    sortNew = false
+                    coresArray.reverse()
+                    coreAdapter.notifyDataSetChanged()
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
         coreAdapter.filter.filter(query)
