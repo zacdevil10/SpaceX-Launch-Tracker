@@ -33,7 +33,7 @@ class CoreAdapter(private val context: Context?, private val cores: ArrayList<Co
 
         holder.apply {
             serial.text = core.serial
-            core.block?.let { block.text = context?.getString(R.string.block, it) }
+            block.text = core.block?.let { context?.getString(R.string.block, it) } ?: ""
             details.text = core.details
             status.text = core.status?.capitalize() ?: "Unknown"
             date.text = core.originalLaunchDateUnix?.formatDateMillisShort() ?: "TBD"
