@@ -36,10 +36,7 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = CoreDetailsPresenterImpl(
-            this,
-            CoreDetailsInteractorImpl()
-        )
+        presenter = CoreDetailsPresenterImpl(this, CoreDetailsInteractorImpl())
 
         core?.let {
             presenter.addCoreModel(it)
@@ -55,7 +52,8 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView {
 
     override fun updateCoreDetails(coreModel: CoreModel) {
         coreModel.apply {
-            core_details_block_text.text = block
+            core_details_serial_text.text = serial
+            core_details_block_text.text = block ?: "TBD"
             core_details_details_text.text = details
             core_details_status_text.text = status
             core_details_reuse_text.text = reuseCount.toString()
