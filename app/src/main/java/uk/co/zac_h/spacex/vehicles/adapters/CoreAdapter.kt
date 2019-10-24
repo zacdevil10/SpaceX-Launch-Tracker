@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
@@ -14,9 +16,17 @@ import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.CoreModel
 import uk.co.zac_h.spacex.utils.formatDateMillisShort
+import java.util.*
+import kotlin.collections.ArrayList
 
 class CoreAdapter(private val context: Context?, private val cores: ArrayList<CoreModel>) :
-    RecyclerView.Adapter<CoreAdapter.ViewHolder>() {
+    RecyclerView.Adapter<CoreAdapter.ViewHolder>(), Filterable {
+
+    private var filteredCores: ArrayList<CoreModel>
+
+    init {
+        filteredCores = cores
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
@@ -29,7 +39,7 @@ class CoreAdapter(private val context: Context?, private val cores: ArrayList<Co
 
     @SuppressLint("DefaultLocale")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val core = cores[position]
+        val core = filteredCores[position]
 
         holder.apply {
             serial.text = core.serial
@@ -43,7 +53,41 @@ class CoreAdapter(private val context: Context?, private val cores: ArrayList<Co
         }
     }
 
-    override fun getItemCount(): Int = cores.size
+    override fun getItemCount(): Int = filteredCores.size
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(search: CharSequence?): FilterResults {
+                val filterResults = FilterResults()
+                search?.let {
+                    filteredCores = when {
+                        it.isEmpty() -> cores
+                        else -> {
+                            val filteredList = ArrayList<CoreModel>()
+                            cores.forEach { core ->
+                                if (core.serial.toLowerCase(Locale.getDefault()).contains(
+                                        search.toString().toLowerCase(
+                                            Locale.getDefault()
+                                        )
+                                    )
+                                ) {
+                                    filteredList.add(core)
+                                }
+                            }
+                            filteredList
+                        }
+                    }
+                    filterResults.values = filteredCores
+                    filterResults.count = filteredCores.size
+                }
+                return filterResults
+            }
+
+            override fun publishResults(p0: CharSequence?, p1: FilterResults?) {
+                notifyDataSetChanged()
+            }
+        }
+    }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val card: CardView = itemView.findViewById(R.id.list_item_core_card)
