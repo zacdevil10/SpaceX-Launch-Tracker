@@ -21,7 +21,7 @@ class VehiclesPagerAdapter(fragmentManager: FragmentManager) :
     override fun getCount(): Int = 3
 
     override fun getPageTitle(position: Int): CharSequence? = when (position) {
-        0 -> "Vehicles"
+        0 -> "Rockets"
         1 -> "Cores"
         2 -> "Capsules"
         else -> super.getPageTitle(position)
