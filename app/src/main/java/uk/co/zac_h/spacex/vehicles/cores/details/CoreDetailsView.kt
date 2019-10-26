@@ -1,12 +1,10 @@
-package uk.co.zac_h.spacex.launches.details.core
+package uk.co.zac_h.spacex.vehicles.cores.details
 
 import uk.co.zac_h.spacex.model.CoreModel
 
 interface CoreDetailsView {
 
-    fun updateCoreMissionsList(coreModel: CoreModel)
-
-    fun updateCoreStats(coreModel: CoreModel)
+    fun updateCoreDetails(coreModel: CoreModel)
 
     fun showProgress()
 

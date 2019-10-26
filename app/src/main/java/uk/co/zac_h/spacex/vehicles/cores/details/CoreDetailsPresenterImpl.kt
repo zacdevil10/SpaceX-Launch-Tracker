@@ -1,21 +1,23 @@
-package uk.co.zac_h.spacex.launches.details.core
+package uk.co.zac_h.spacex.vehicles.cores.details
 
 import uk.co.zac_h.spacex.model.CoreModel
 
 class CoreDetailsPresenterImpl(
     private val view: CoreDetailsView,
     private val interactor: CoreDetailsInteractor
-) : CoreDetailsPresenter, CoreDetailsInteractor.InteractorCallback {
+) : CoreDetailsPresenter,
+    CoreDetailsInteractor.InteractorCallback {
 
-    private lateinit var coreDetails: CoreModel
+    private var coreDetails: CoreModel? = null
 
     override fun getCoreDetails(serial: String) {
-        if (!::coreDetails.isInitialized) {
-            view.showProgress()
-            interactor.getCoreDetails(serial, this)
-        } else {
-            onSuccess(coreDetails)
-        }
+        view.showProgress()
+        interactor.getCoreDetails(serial, this)
+    }
+
+    override fun addCoreModel(coreModel: CoreModel) {
+        coreDetails = coreModel
+        view.updateCoreDetails(coreModel)
     }
 
     override fun onSuccess(coreModel: CoreModel?) {
@@ -24,8 +26,7 @@ class CoreDetailsPresenterImpl(
 
             view.apply {
                 hideProgress()
-                updateCoreMissionsList(coreModel)
-                updateCoreStats(coreModel)
+                updateCoreDetails(coreModel)
             }
         }
     }

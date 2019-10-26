@@ -52,6 +52,13 @@
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out"
             app:destination="@id/capsule_details_fragment" />
+        <action
+            android:id="@+id/action_vehicles_page_fragment_to_core_details_fragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out"
+            app:destination="@id/core_details_fragment" />
     </fragment>
 
     <fragment
@@ -88,7 +95,7 @@
 
     <fragment
         android:id="@+id/launch_details_fragment"
-        android:name="uk.co.zac_h.spacex.launches.details.launch.LaunchDetailsFragment"
+        android:name="uk.co.zac_h.spacex.launches.details.LaunchDetailsFragment"
         android:label="{title}"
         tools:layout="@layout/fragment_launch_details">
         <argument
@@ -106,7 +113,7 @@
 
     <fragment
         android:id="@+id/core_details_fragment"
-        android:name="uk.co.zac_h.spacex.launches.details.core.CoreDetailsFragment"
+        android:name="uk.co.zac_h.spacex.vehicles.cores.details.CoreDetailsFragment"
         android:label="{title}"
         tools:layout="@layout/fragment_core_details">
         <argument

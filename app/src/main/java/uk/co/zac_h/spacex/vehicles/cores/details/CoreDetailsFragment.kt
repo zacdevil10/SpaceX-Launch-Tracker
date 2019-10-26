@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.launches.details.core
+package uk.co.zac_h.spacex.vehicles.cores.details
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,12 +11,21 @@ import kotlinx.android.synthetic.main.fragment_core_details.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.launches.adapters.CoreMissionsAdapter
 import uk.co.zac_h.spacex.model.CoreModel
-import uk.co.zac_h.spacex.model.CoreSpecModel
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
 class CoreDetailsFragment : Fragment(), CoreDetailsView {
 
     private lateinit var presenter: CoreDetailsPresenter
+
+    private var core: CoreModel? = null
+    private var id: String? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        core = arguments?.getParcelable("core") as CoreModel?
+        id = arguments?.getString("core_id")
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,14 +36,11 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (!::presenter.isInitialized) presenter =
-            CoreDetailsPresenterImpl(this, CoreDetailsInteractorImpl())
+        presenter = CoreDetailsPresenterImpl(this, CoreDetailsInteractorImpl())
 
-        val core = arguments?.getParcelable("core") as CoreSpecModel?
-
-        core?.serial?.let {
-            core_details_serial_text.text = it
-
+        core?.let {
+            presenter.addCoreModel(it)
+        } ?: id?.let {
             presenter.getCoreDetails(it)
         }
     }
@@ -44,19 +50,10 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView {
         core_details_mission_recycler.adapter = null
     }
 
-    override fun updateCoreMissionsList(coreModel: CoreModel) {
-        coreModel.missions?.let {
-            core_details_mission_recycler.apply {
-                layoutManager = LinearLayoutManager(this@CoreDetailsFragment.context)
-                setHasFixedSize(true)
-                adapter = CoreMissionsAdapter(context, it)
-            }
-        }
-    }
-
-    override fun updateCoreStats(coreModel: CoreModel) {
+    override fun updateCoreDetails(coreModel: CoreModel) {
         coreModel.apply {
-            core_details_block_text.text = block
+            core_details_serial_text.text = serial
+            core_details_block_text.text = block ?: "TBD"
             core_details_details_text.text = details
             core_details_status_text.text = status
             core_details_reuse_text.text = reuseCount.toString()
@@ -72,6 +69,14 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView {
                     )
                     else setImageAndTint(R.drawable.ic_remove_circle_black_24dp, R.color.failed)
                 } ?: setImageAndTint(R.drawable.ic_remove_circle_black_24dp, R.color.failed)
+            }
+        }
+
+        coreModel.missions?.let {
+            core_details_mission_recycler.apply {
+                layoutManager = LinearLayoutManager(this@CoreDetailsFragment.context)
+                setHasFixedSize(true)
+                adapter = CoreMissionsAdapter(context, it)
             }
         }
     }
