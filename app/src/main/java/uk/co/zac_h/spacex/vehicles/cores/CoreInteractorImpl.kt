@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.launches.details.core
+package uk.co.zac_h.spacex.vehicles.cores
 
 import android.util.Log
 import kotlinx.coroutines.*
@@ -6,7 +6,7 @@ import retrofit2.HttpException
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import kotlin.coroutines.CoroutineContext
 
-class CoreDetailsInteractorImpl : CoreDetailsInteractor {
+class CoreInteractorImpl : CoreInteractor {
 
     private val parentJob = Job()
     private val coroutineContext: CoroutineContext
@@ -14,13 +14,10 @@ class CoreDetailsInteractorImpl : CoreDetailsInteractor {
 
     private val scope = CoroutineScope(coroutineContext)
 
-    override fun getCoreDetails(
-        serial: String,
-        listener: CoreDetailsInteractor.InteractorCallback
-    ) {
+    override fun getCores(listener: CoreInteractor.Callback) {
         scope.launch {
             val response = async(SupervisorJob(parentJob)) {
-                SpaceXInterface.create().getSingleCore(serial)
+                SpaceXInterface.create().getCores()
             }
 
             withContext(Dispatchers.Main) {
@@ -36,7 +33,7 @@ class CoreDetailsInteractorImpl : CoreDetailsInteractor {
                     )
                 } catch (e: Throwable) {
                     Log.e(
-                        this@CoreDetailsInteractorImpl.javaClass.name,
+                        this@CoreInteractorImpl.javaClass.name,
                         e.localizedMessage ?: "Job failed to execute"
                     )
                 }

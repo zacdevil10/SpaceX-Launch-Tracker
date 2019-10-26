@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".vehicles.capsules.CapsulesFragment">
+    tools:context=".vehicles.cores.CoreFragment">
 
     <ProgressBar
-        android:id="@+id/capsules_progress_bar"
+        android:id="@+id/core_progress_bar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -18,10 +18,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/capsules_recycler"
+        android:id="@+id/core_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        android:paddingBottom="8dp" />
+        android:paddingBottom="8dp"
+        tools:listitem="@layout/list_item_core" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

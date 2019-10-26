@@ -1,7 +1,10 @@
 package uk.co.zac_h.spacex.model
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class CoreModel(
     @field:Json(name = "core_serial") val serial: String,
     @field:Json(name = "block") val block: String?,
@@ -16,4 +19,4 @@ data class CoreModel(
     @field:Json(name = "asds_landings") val landingsAsds: Int?,
     @field:Json(name = "water_landing") val landingWater: Boolean?,
     @field:Json(name = "details") val details: String?
-)
+) : Parcelable

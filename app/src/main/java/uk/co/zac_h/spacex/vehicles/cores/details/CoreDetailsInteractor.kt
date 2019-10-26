@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.launches.details.core
+package uk.co.zac_h.spacex.vehicles.cores.details
 
 import uk.co.zac_h.spacex.model.CoreModel
 
