@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.launches.adapters
 
+import android.animation.LayoutTransition
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -37,6 +38,8 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
             itemView.isActivated = isExpanded
             expandIndicator.isChecked = isExpanded
 
+            root.layoutTransition.disableTransitionType(LayoutTransition.CHANGING)
+
             payloadName.text = payload?.id
             payloadManufacturer.text = payload?.manufacturer
 
@@ -62,6 +65,7 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
 
             itemView.setOnClickListener {
                 expandedPosition = if (isExpanded) -1 else position
+                root.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
                 notifyItemChanged(position)
             }
         }
@@ -70,6 +74,8 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
     override fun getItemCount(): Int = payloads?.size ?: 0
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val root: ConstraintLayout = itemView.findViewById(R.id.root)
+
         val payloadName: TextView = itemView.findViewById(R.id.list_item_payload_name_text)
         val payloadManufacturer: TextView =
             itemView.findViewById(R.id.list_item_payload_manufacturer_text)
