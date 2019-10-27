@@ -49,6 +49,9 @@ dependencies {
 
     implementation project(":common")
 
+    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.slice:slice-builders-ktx:1.0.0-alpha6'
+
     wearApp project(":wear")
 
     implementation "androidx.navigation:navigation-fragment-ktx:2.1.0"
