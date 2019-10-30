@@ -19,6 +19,8 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
     private lateinit var searchView: SearchView
 
+    private var launchParam: String? = null
+
     companion object {
         fun newInstance(launchParam: String) = LaunchesListFragment().apply {
             arguments = Bundle().apply {
@@ -41,6 +43,8 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        launchParam = arguments?.getString("launchParam")
+
         presenter = LaunchesPresenterImpl(this, LaunchesInteractorImpl())
 
         launchesAdapter = LaunchesAdapter(context, launchesList)
@@ -51,7 +55,7 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
             adapter = launchesAdapter
         }
 
-        arguments?.getString("launchParam")?.let { launchId ->
+        launchParam?.let { launchId ->
             if (launchesList.isEmpty()) presenter.getLaunchList(
                 launchId,
                 if (launchId == "past") "desc" else "asc"
@@ -127,5 +131,8 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+        launchParam?.let { launchId ->
+            presenter.getLaunchList(launchId, if (launchId == "past") "desc" else "asc")
+        }
     }
 }
