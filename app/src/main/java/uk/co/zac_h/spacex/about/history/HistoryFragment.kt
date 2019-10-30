@@ -12,7 +12,6 @@ import kotlinx.android.synthetic.main.fragment_history.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
 import uk.co.zac_h.spacex.utils.HeaderItemDecoration
-import uk.co.zac_h.spacex.utils.HeaderItemDecorationHorizontal
 import uk.co.zac_h.spacex.utils.HistoryHeaderModel
 
 class HistoryFragment : Fragment(), HistoryView {
@@ -39,12 +38,13 @@ class HistoryFragment : Fragment(), HistoryView {
         history_recycler.apply {
             setHasFixedSize(true)
             adapter = historyAdapter
-            addItemDecoration(isTabletLand?.let {
-                if (isTabletLand) HeaderItemDecorationHorizontal(
+            addItemDecoration(
+                HeaderItemDecoration(
                     this,
-                    historyAdapter.isHeader()
-                ) else HeaderItemDecoration(this, historyAdapter.isHeader())
-            } ?: HeaderItemDecoration(this, historyAdapter.isHeader()))
+                    historyAdapter.isHeader(),
+                    isTabletLand ?: false
+                )
+            )
         }
 
         if (history.isEmpty()) presenter.getHistory()
