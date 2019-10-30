@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_history.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
@@ -36,6 +37,13 @@ class HistoryFragment : Fragment(), HistoryView {
         val isTabletLand = context?.resources?.getBoolean(R.bool.isTabletLand)
 
         history_recycler.apply {
+            layoutManager = isTabletLand?.let {
+                if (isTabletLand) LinearLayoutManager(
+                    this@HistoryFragment.context,
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                ) else LinearLayoutManager(this@HistoryFragment.context)
+            } ?: LinearLayoutManager(this@HistoryFragment.context)
             setHasFixedSize(true)
             adapter = historyAdapter
             addItemDecoration(
