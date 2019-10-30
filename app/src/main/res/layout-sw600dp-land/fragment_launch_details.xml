@@ -7,8 +7,9 @@
     tools:context=".launches.details.LaunchDetailsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+        android:layout_width="600dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:animateLayoutChanges="true">
 
         <ProgressBar
