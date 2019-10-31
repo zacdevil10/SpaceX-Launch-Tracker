@@ -8,6 +8,8 @@ interface LaunchHistoryView {
 
     fun updatePieChart(entries: ArrayList<PieEntry>, centerText: String, animate: Boolean)
 
+    fun showFilter(filterVisible: Boolean)
+
     fun showProgress()
 
     fun hideProgress()

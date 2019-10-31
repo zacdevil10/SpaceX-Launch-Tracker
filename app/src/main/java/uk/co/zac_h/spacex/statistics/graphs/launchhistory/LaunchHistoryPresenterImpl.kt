@@ -33,6 +33,10 @@ class LaunchHistoryPresenterImpl(
         }
     }
 
+    override fun showFilter(filterVisible: Boolean) {
+        view.showFilter(filterVisible)
+    }
+
     override fun updateFilter(filter: String, isFiltered: Boolean) {
         when (filter) {
             "success" -> filterSuccessful = isFiltered
