@@ -6,7 +6,7 @@
         android:id="@+id/filter"
         android:icon="@drawable/ic_filter_list_black_24dp"
         app:iconTint="@android:color/white"
-        android:title="Filter"
+        android:title="@string/filter_label"
         app:showAsAction="ifRoom" />
 
 </menu>
