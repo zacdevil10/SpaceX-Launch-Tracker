@@ -47,7 +47,7 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        core_details_mission_recycler.adapter = null
+        presenter.cancelRequest()
     }
 
     override fun updateCoreDetails(coreModel: CoreModel) {

@@ -7,4 +7,6 @@ interface CoreDetailsPresenter {
     fun addCoreModel(coreModel: CoreModel)
 
     fun getCoreDetails(serial: String)
+
+    fun cancelRequest()
 }

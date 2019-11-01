@@ -41,4 +41,6 @@ class LaunchDetailsInteractorImpl :
             }
         }
     }
+
+    override fun cancelRequest() = coroutineContext.cancel()
 }
