@@ -82,6 +82,7 @@
                 android:id="@+id/launch_history_pie_chart"
                 android:layout_width="0dp"
                 android:layout_height="400dp"
+                android:layout_marginTop="16dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/launch_history_progress_card"
