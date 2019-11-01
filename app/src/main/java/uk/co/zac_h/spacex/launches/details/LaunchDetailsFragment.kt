@@ -140,23 +140,25 @@ class LaunchDetailsFragment : Fragment(),
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.pin -> {
-                presenter.pinLaunch(!pinned)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.pin -> {
+            presenter.pinLaunch(!pinned)
 
-                pinned = !pinned
+            pinned = !pinned
 
-                item.icon = context?.let {
-                    ContextCompat.getDrawable(
-                        it,
-                        if (pinned) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
-                    )
-                }
-                true
+            item.icon = context?.let {
+                ContextCompat.getDrawable(
+                    it,
+                    if (pinned) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
+                )
             }
-            else -> super.onOptionsItemSelected(item)
+            true
         }
+        R.id.create_event -> {
+            presenter.createEvent()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun updateLaunchDataView(launch: LaunchesModel?) {
@@ -186,25 +188,6 @@ class LaunchDetailsFragment : Fragment(),
             }
 
             launch_details_details_text.text = launch.details
-
-            launch_details_calendar_button.setOnClickListener {
-                val calendarIntent = Intent(Intent.ACTION_INSERT).apply {
-                    data = CalendarContract.Events.CONTENT_URI
-                    putExtra(
-                        CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                        launch.launchDateUnix.times(1000L)
-                    )
-                    putExtra(
-                        CalendarContract.EXTRA_EVENT_END_TIME,
-                        launch.launchDateUnix.times(1000L).plus(3600000)
-                    )
-                    putExtra(
-                        CalendarContract.Events.TITLE,
-                        "${launch.missionName} - ${launch.rocket.name} Launch Event"
-                    )
-                }
-                startActivity(calendarIntent)
-            }
 
             launch.rocket.firstStage?.cores?.forEach {
                 if (coreAssigned) return@forEach
@@ -256,6 +239,27 @@ class LaunchDetailsFragment : Fragment(),
                 setHasFixedSize(true)
                 adapter = LaunchLinksAdapter(links, this@LaunchDetailsFragment)
             }
+        }
+    }
+
+    override fun newCalendarEvent() {
+        launch?.let {
+            val calendarIntent = Intent(Intent.ACTION_INSERT).apply {
+                data = CalendarContract.Events.CONTENT_URI
+                putExtra(
+                    CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                    it.launchDateUnix.times(1000L)
+                )
+                putExtra(
+                    CalendarContract.EXTRA_EVENT_END_TIME,
+                    it.launchDateUnix.times(1000L).plus(3600000)
+                )
+                putExtra(
+                    CalendarContract.Events.TITLE,
+                    "${it.missionName} - SpaceX"
+                )
+            }
+            startActivity(calendarIntent)
         }
     }
 

@@ -33,6 +33,10 @@ class LaunchDetailsPresenterImpl(
 
     override fun isPinned(id: Int): Boolean = helper.isPinned(id)
 
+    override fun createEvent() {
+        view.newCalendarEvent()
+    }
+
     override fun cancelRequest() {
         interactor.cancelRequest()
     }
