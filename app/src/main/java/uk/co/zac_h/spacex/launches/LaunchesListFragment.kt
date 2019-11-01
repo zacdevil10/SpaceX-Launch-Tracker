@@ -79,12 +79,11 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
     override fun onDestroyView() {
         super.onDestroyView()
-        launches_recycler.adapter = null
+        presenter.cancelRequests()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.cancelRequests()
         if (::searchView.isInitialized) searchView.setOnQueryTextListener(null)
     }
 

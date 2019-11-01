@@ -12,9 +12,12 @@ class PadStatsPresenterImpl(
     private var padList = ArrayList<StatsPadModel>()
 
     override fun getPads() {
+        padList.clear()
         view.showProgress()
-        interactor.getLaunchpads(this)
-        interactor.getLandingPads(this)
+        interactor.apply {
+            getLaunchpads(this@PadStatsPresenterImpl)
+            getLandingPads(this@PadStatsPresenterImpl)
+        }
     }
 
     override fun cancelRequests() {

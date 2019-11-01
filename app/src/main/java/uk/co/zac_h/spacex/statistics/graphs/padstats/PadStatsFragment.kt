@@ -1,9 +1,7 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +18,11 @@ class PadStatsFragment : Fragment(), PadStatsView {
     private lateinit var padsAdapter: PadStatsSitesAdapter
 
     private var pads = ArrayList<StatsPadModel>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,6 +51,19 @@ class PadStatsFragment : Fragment(), PadStatsView {
     override fun onDestroyView() {
         super.onDestroyView()
         pad_stats_launch_sites_recycler.adapter = null
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_statistics_pads, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.reload -> {
+            presenter.getPads()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun updateRecycler(pads: ArrayList<StatsPadModel>) {
