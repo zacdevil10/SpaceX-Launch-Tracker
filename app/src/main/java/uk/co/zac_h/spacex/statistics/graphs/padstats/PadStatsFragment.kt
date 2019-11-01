@@ -19,6 +19,8 @@ class PadStatsFragment : Fragment(), PadStatsView {
 
     private lateinit var padsAdapter: PadStatsSitesAdapter
 
+    private var pads = ArrayList<StatsPadModel>()
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -29,18 +31,8 @@ class PadStatsFragment : Fragment(), PadStatsView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (!::presenter.isInitialized) presenter =
-            PadStatsPresenterImpl(this, PadStatsInteractorImpl())
+        presenter = PadStatsPresenterImpl(this, PadStatsInteractorImpl())
 
-        presenter.getPads()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        pad_stats_launch_sites_recycler.adapter = null
-    }
-
-    override fun setPadsList(pads: ArrayList<StatsPadModel>) {
         padsAdapter = PadStatsSitesAdapter(pads)
 
         pad_stats_launch_sites_recycler.apply {
@@ -49,9 +41,19 @@ class PadStatsFragment : Fragment(), PadStatsView {
             adapter = padsAdapter
             addItemDecoration(HeaderItemDecoration(this, padsAdapter.isHeader(), false))
         }
+
+        if (pads.isEmpty()) presenter.getPads()
     }
 
-    override fun updateRecycler() {
+    override fun onDestroyView() {
+        super.onDestroyView()
+        pad_stats_launch_sites_recycler.adapter = null
+    }
+
+    override fun updateRecycler(pads: ArrayList<StatsPadModel>) {
+        this.pads.clear()
+        this.pads.addAll(pads)
+
         padsAdapter.notifyDataSetChanged()
     }
 

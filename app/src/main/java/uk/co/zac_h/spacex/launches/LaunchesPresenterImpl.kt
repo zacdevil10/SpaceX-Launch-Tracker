@@ -17,14 +17,18 @@ class LaunchesPresenterImpl(
     }
 
     override fun onSuccess(launches: List<LaunchesModel>?) {
-        view.hideProgress()
-        view.updateLaunchesList(launches)
-        view.toggleSwipeProgress(false)
+        view.apply {
+            hideProgress()
+            updateLaunchesList(launches)
+            toggleSwipeProgress(false)
+        }
     }
 
     override fun onError(error: String) {
-        view.showError(error)
-        view.toggleSwipeProgress(false)
+        view.apply {
+            showError(error)
+            toggleSwipeProgress(false)
+        }
     }
 
 }

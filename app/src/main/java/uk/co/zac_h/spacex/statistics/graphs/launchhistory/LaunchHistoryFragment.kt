@@ -15,13 +15,20 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.android.synthetic.main.fragment_launch_history.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.model.RocketsModel
 import uk.co.zac_h.spacex.utils.generateCenterSpannableText
 
 class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
 
     private lateinit var presenter: LaunchHistoryPresenter
 
-    private var filterVisible: Boolean = false
+    private var filterVisible = false
+    private var filterSuccessful = false
+    private var filterFailed = false
+
+    private var launchesList = ArrayList<LaunchesModel>()
+    private var rocketsList = ArrayList<RocketsModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,22 +45,21 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (!::presenter.isInitialized) presenter =
-            LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
+        presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
 
         presenter.apply {
-            getLaunchList("past")
-            getRocketsList()
+            if (launchesList.isEmpty()) getLaunchList() else addLaunchList(launchesList)
+            if (rocketsList.isEmpty()) getRocketsList() else addRocketsList(rocketsList)
         }
 
         launch_history_success_toggle.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) launch_history_failure_toggle.isChecked = false
-            presenter.updateFilter("success", isChecked)
+            presenter.updateFilter(launchesList, "success", isChecked)
         }
 
         launch_history_failure_toggle.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) launch_history_success_toggle.isChecked = false
-            presenter.updateFilter("failed", isChecked)
+            presenter.updateFilter(launchesList, "failed", isChecked)
         }
 
         //Pie chart appearance
@@ -94,19 +100,47 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
             presenter.showFilter(!filterVisible)
             true
         }
+        R.id.reload -> {
+            presenter.getLaunchList()
+            true
+        }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updatePieChart(
-        entries: ArrayList<PieEntry>,
-        centerText: String,
-        animate: Boolean
-    ) {
+    override fun updatePieChart(launches: ArrayList<LaunchesModel>, animate: Boolean) {
+        launchesList.clear()
+        launchesList.addAll(launches)
         val colors = ArrayList<Int>()
 
         colors.add(ColorTemplate.rgb("29b6f6"))
         colors.add(ColorTemplate.rgb("9ccc65"))
         colors.add(ColorTemplate.rgb("ff7043"))
+
+        val entries = ArrayList<PieEntry>()
+
+        var falconOne = 0f
+        var falconNine = 0f
+        var falconHeavy = 0f
+
+        launchesList.forEach {
+            it.success?.let { success ->
+                if (filterSuccessful && !success) return@forEach
+                if (filterFailed && success) return@forEach
+            }
+
+            when (it.rocket.id) {
+                "falcon1" -> falconOne++
+                "falcon9" -> falconNine++
+                "falconheavy" -> falconHeavy++
+            }
+        }
+
+        entries.add(PieEntry(falconOne, "Falcon 1"))
+        entries.add(PieEntry(falconNine, "Falcon 9"))
+        entries.add(PieEntry(falconHeavy, "Falcon Heavy"))
+
+        val centerText =
+            "${launchesList[0].launchYear} - ${launchesList[launchesList.size - 1].launchYear}"
 
         val dataSet = PieDataSet(entries, "").apply {
             sliceSpace = 3f
@@ -132,22 +166,26 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
         }
     }
 
-    override fun setSuccessRate(id: Int, percent: Int) {
-        when (id) {
-            1 -> {
-                launch_history_falcon_one_rate_progress.progress = percent
-                launch_history_falcon_one_percent_text.text =
-                    context?.getString(R.string.percentage, percent)
-            }
-            2 -> {
-                launch_history_falcon_nine_rate_progress.progress = percent
-                launch_history_falcon_nine_percent_text.text =
-                    context?.getString(R.string.percentage, percent)
-            }
-            3 -> {
-                launch_history_falcon_heavy_rate_progress.progress = percent
-                launch_history_falcon_heavy_percent_text.text =
-                    context?.getString(R.string.percentage, percent)
+    override fun setSuccessRate(rockets: ArrayList<RocketsModel>) {
+        rocketsList.clear()
+        rockets.forEach {
+            rocketsList.add(it)
+            when (it.id) {
+                1 -> {
+                    launch_history_falcon_one_rate_progress.progress = it.successRate
+                    launch_history_falcon_one_percent_text.text =
+                        context?.getString(R.string.percentage, it.successRate)
+                }
+                2 -> {
+                    launch_history_falcon_nine_rate_progress.progress = it.successRate
+                    launch_history_falcon_nine_percent_text.text =
+                        context?.getString(R.string.percentage, it.successRate)
+                }
+                3 -> {
+                    launch_history_falcon_heavy_rate_progress.progress = it.successRate
+                    launch_history_falcon_heavy_percent_text.text =
+                        context?.getString(R.string.percentage, it.successRate)
+                }
             }
         }
     }
@@ -159,6 +197,14 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
         }
 
         this.filterVisible = filterVisible
+    }
+
+    override fun setFilterSuccessful(isFiltered: Boolean) {
+        filterSuccessful = isFiltered
+    }
+
+    override fun setFilterFailed(isFiltered: Boolean) {
+        filterFailed = isFiltered
     }
 
     override fun showProgress() {

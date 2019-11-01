@@ -23,6 +23,6 @@ class CompanyPresenterImpl(
     }
 
     override fun onError(error: String) {
-
+        view.showError(error)
     }
 }

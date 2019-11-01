@@ -108,7 +108,9 @@ class DashboardPresenterImpl(
     }
 
     override fun onError(error: String) {
-        view.showError(error)
-        view.toggleSwipeProgress(false)
+        view.apply {
+            showError(error)
+            toggleSwipeProgress(false)
+        }
     }
 }

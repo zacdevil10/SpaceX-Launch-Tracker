@@ -66,8 +66,6 @@ class DashboardFragment : Fragment(), DashboardView {
         super.onDestroyView()
         countdownTimer?.cancel()
         presenter.cancelRequests()
-        dashboard_launches_recycler.adapter = null
-        dashboard_pinned_launches_recycler.adapter = null
     }
 
     override fun onDestroy() {

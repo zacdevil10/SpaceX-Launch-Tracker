@@ -4,9 +4,7 @@ import uk.co.zac_h.spacex.model.StatsPadModel
 
 interface PadStatsView {
 
-    fun setPadsList(pads: ArrayList<StatsPadModel>)
-
-    fun updateRecycler()
+    fun updateRecycler(pads: ArrayList<StatsPadModel>)
 
     fun showProgress()
 

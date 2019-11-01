@@ -17,6 +17,10 @@ class HistoryPresenterImpl(
         interactor.getAllHistoricEvents(this)
     }
 
+    override fun cancelRequest() {
+        interactor.cancelAllRequests()
+    }
+
     override fun onSuccess(history: List<HistoryModel>?) {
         history?.let {
             historyHeaders.clear()

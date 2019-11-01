@@ -9,4 +9,11 @@
         android:title="@string/filter_label"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/reload"
+        android:icon="@drawable/ic_refresh_black_24dp"
+        app:iconTint="@android:color/white"
+        android:title="@string/reload_label"
+        app:showAsAction="ifRoom" />
+
 </menu>

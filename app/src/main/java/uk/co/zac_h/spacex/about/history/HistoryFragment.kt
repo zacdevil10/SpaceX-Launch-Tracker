@@ -38,11 +38,15 @@ class HistoryFragment : Fragment(), HistoryView {
 
         history_recycler.apply {
             layoutManager = isTabletLand?.let {
-                if (isTabletLand) LinearLayoutManager(
-                    this@HistoryFragment.context,
-                    LinearLayoutManager.HORIZONTAL,
-                    false
-                ) else LinearLayoutManager(this@HistoryFragment.context)
+                if (isTabletLand) {
+                    LinearLayoutManager(
+                        this@HistoryFragment.context,
+                        LinearLayoutManager.HORIZONTAL,
+                        false
+                    )
+                } else {
+                    LinearLayoutManager(this@HistoryFragment.context)
+                }
             } ?: LinearLayoutManager(this@HistoryFragment.context)
             setHasFixedSize(true)
             adapter = historyAdapter
@@ -60,6 +64,11 @@ class HistoryFragment : Fragment(), HistoryView {
         history_swipe_refresh.setOnRefreshListener {
             presenter.getHistory()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.cancelRequest()
     }
 
     override fun updateRecycler(history: ArrayList<HistoryHeaderModel>) {
