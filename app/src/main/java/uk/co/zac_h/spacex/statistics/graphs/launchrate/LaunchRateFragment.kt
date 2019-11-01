@@ -2,9 +2,7 @@ package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.components.XAxis
@@ -20,6 +18,13 @@ import uk.co.zac_h.spacex.R
 class LaunchRateFragment : Fragment(), LaunchRateView {
 
     private lateinit var presenter: LaunchRatePresenter
+
+    private var filterVisible: Boolean = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -76,9 +81,27 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
         presenter.getLaunchList()
     }
 
+    override fun onResume() {
+        super.onResume()
+        presenter.showFilter(filterVisible)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequests()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_statistics, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.filter -> {
+            presenter.showFilter(!filterVisible)
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun updateBarChart(entries: ArrayList<BarEntry>, dataSize: Int) {
@@ -116,6 +139,15 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
             data = BarData(dataSets)
             invalidate()
         }
+    }
+
+    override fun showFilter(filterVisible: Boolean) {
+        launch_rate_filter_scroll.visibility = when (filterVisible) {
+            true -> View.VISIBLE
+            false -> View.GONE
+        }
+
+        this.filterVisible = filterVisible
     }
 
     override fun showProgress() {

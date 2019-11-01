@@ -9,7 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 class HeaderItemDecoration(
     recyclerView: RecyclerView,
-    private val isHeader: (itemPosition: Int) -> Boolean
+    private val isHeader: (itemPosition: Int) -> Boolean,
+    private val isHorizontal: Boolean
 ) : RecyclerView.ItemDecoration() {
 
     private var currentHeader: Pair<Int, RecyclerView.ViewHolder>? = null
@@ -39,7 +40,7 @@ class HeaderItemDecoration(
 
         val headerView = getHeaderViewForItem(topChildPosition, parent) ?: return
 
-        val contactPoint = headerView.bottom
+        val contactPoint = if (isHorizontal) headerView.right else headerView.bottom
         val childInContact = getChildInContact(parent, contactPoint) ?: return
 
         if (isHeader(parent.getChildAdapterPosition(childInContact))) {
@@ -78,7 +79,11 @@ class HeaderItemDecoration(
 
     private fun moveHeader(c: Canvas, currentHeader: View, nextHeader: View) {
         c.save()
-        c.translate(0f, (nextHeader.top - currentHeader.height).toFloat())
+        if (isHorizontal) {
+            c.translate((nextHeader.left - currentHeader.width).toFloat(), 0f)
+        } else {
+            c.translate(0f, (nextHeader.top - currentHeader.height).toFloat())
+        }
         currentHeader.draw(c)
         c.restore()
     }
@@ -88,10 +93,18 @@ class HeaderItemDecoration(
         parent.children.forEach {
             val bounds = Rect()
             parent.getDecoratedBoundsWithMargins(it, bounds)
-            if (bounds.bottom > contactPoint && bounds.top <= contactPoint) {
-                // This child overlaps the contactPoint
-                childInContact = it
-                return@forEach
+            if (isHorizontal) {
+                if (bounds.right > contactPoint && bounds.left <= contactPoint) {
+                    // This child overlaps the contactPoint
+                    childInContact = it
+                    return@forEach
+                }
+            } else {
+                if (bounds.bottom > contactPoint && bounds.top <= contactPoint) {
+                    // This child overlaps the contactPoint
+                    childInContact = it
+                    return@forEach
+                }
             }
         }
         return childInContact

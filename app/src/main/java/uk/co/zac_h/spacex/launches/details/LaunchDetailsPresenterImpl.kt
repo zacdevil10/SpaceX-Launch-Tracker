@@ -33,10 +33,16 @@ class LaunchDetailsPresenterImpl(
 
     override fun isPinned(id: Int): Boolean = helper.isPinned(id)
 
+    override fun cancelRequest() {
+        interactor.cancelRequest()
+    }
+
     override fun onSuccess(launchModel: LaunchesModel?) {
         this.launchModel = launchModel
-        view.hideProgress()
-        view.updateLaunchDataView(launchModel)
+        view.apply {
+            hideProgress()
+            updateLaunchDataView(launchModel)
+        }
     }
 
     override fun onError(error: String) {

@@ -18,7 +18,7 @@ class PadStatsSitesAdapter(private var sites: ArrayList<StatsPadModel>) :
             0 -> {
                 HeaderViewHolder(
                     LayoutInflater.from(parent.context).inflate(
-                        R.layout.list_item_heading,
+                        R.layout.list_item_pad_stats_heading,
                         parent,
                         false
                     )

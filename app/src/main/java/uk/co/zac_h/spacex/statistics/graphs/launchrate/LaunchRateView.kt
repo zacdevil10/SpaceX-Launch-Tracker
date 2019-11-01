@@ -6,6 +6,8 @@ interface LaunchRateView {
 
     fun updateBarChart(entries: ArrayList<BarEntry>, dataSize: Int)
 
+    fun showFilter(filterVisible: Boolean)
+
     fun showProgress()
 
     fun hideProgress()

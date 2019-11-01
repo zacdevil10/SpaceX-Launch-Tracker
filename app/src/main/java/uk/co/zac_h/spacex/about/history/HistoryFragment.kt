@@ -34,11 +34,25 @@ class HistoryFragment : Fragment(), HistoryView {
 
         historyAdapter = HistoryAdapter(history, this)
 
+        val isTabletLand = context?.resources?.getBoolean(R.bool.isTabletLand)
+
         history_recycler.apply {
-            layoutManager = LinearLayoutManager(this@HistoryFragment.context)
+            layoutManager = isTabletLand?.let {
+                if (isTabletLand) LinearLayoutManager(
+                    this@HistoryFragment.context,
+                    LinearLayoutManager.HORIZONTAL,
+                    false
+                ) else LinearLayoutManager(this@HistoryFragment.context)
+            } ?: LinearLayoutManager(this@HistoryFragment.context)
             setHasFixedSize(true)
             adapter = historyAdapter
-            addItemDecoration(HeaderItemDecoration(this, historyAdapter.isHeader()))
+            addItemDecoration(
+                HeaderItemDecoration(
+                    this,
+                    historyAdapter.isHeader(),
+                    isTabletLand ?: false
+                )
+            )
         }
 
         if (history.isEmpty()) presenter.getHistory()

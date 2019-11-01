@@ -126,8 +126,7 @@ class LaunchDetailsFragment : Fragment(),
 
     override fun onDestroyView() {
         super.onDestroyView()
-        launch_details_cores_recycler.adapter = null
-        launch_details_payload_recycler.adapter = null
+        presenter.cancelRequest()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

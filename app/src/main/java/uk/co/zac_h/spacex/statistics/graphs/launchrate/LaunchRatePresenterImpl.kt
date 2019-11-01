@@ -23,6 +23,10 @@ class LaunchRatePresenterImpl(
         }
     }
 
+    override fun showFilter(filterVisible: Boolean) {
+        view.showFilter(filterVisible)
+    }
+
     override fun updateFilter(id: String, isChecked: Boolean) {
         when (id) {
             "falcon1" -> filterFalconOne = isChecked

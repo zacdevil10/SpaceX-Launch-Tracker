@@ -6,6 +6,8 @@ interface LaunchDetailsInteractor {
 
     fun getSingleLaunch(id: String, listener: InteractorCallback)
 
+    fun cancelRequest()
+
     interface InteractorCallback {
         fun onSuccess(launchModel: LaunchesModel?)
         fun onError(error: String)

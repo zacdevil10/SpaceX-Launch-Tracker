@@ -2,9 +2,7 @@ package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -22,6 +20,13 @@ import uk.co.zac_h.spacex.utils.generateCenterSpannableText
 class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
 
     private lateinit var presenter: LaunchHistoryPresenter
+
+    private var filterVisible: Boolean = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,9 +74,27 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        presenter.showFilter(filterVisible)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequests()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_statistics, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.filter -> {
+            presenter.showFilter(!filterVisible)
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun updatePieChart(
@@ -127,6 +150,15 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
                     context?.getString(R.string.percentage, percent)
             }
         }
+    }
+
+    override fun showFilter(filterVisible: Boolean) {
+        launch_history_filter_constraint.visibility = when (filterVisible) {
+            true -> View.VISIBLE
+            false -> View.GONE
+        }
+
+        this.filterVisible = filterVisible
     }
 
     override fun showProgress() {

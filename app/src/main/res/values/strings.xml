@@ -146,5 +146,6 @@
     <string name="sort_label">Sort</string>
     <string name="newest_first_label">Newest first</string>
     <string name="oldest_first_label">Oldest first</string>
+    <string name="filter_label">Filter</string>
 
 </resources>

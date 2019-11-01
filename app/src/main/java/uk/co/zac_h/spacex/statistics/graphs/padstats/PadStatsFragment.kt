@@ -47,7 +47,7 @@ class PadStatsFragment : Fragment(), PadStatsView {
             layoutManager = LinearLayoutManager(this@PadStatsFragment.context)
             setHasFixedSize(true)
             adapter = padsAdapter
-            addItemDecoration(HeaderItemDecoration(this, padsAdapter.isHeader()))
+            addItemDecoration(HeaderItemDecoration(this, padsAdapter.isHeader(), false))
         }
     }
 
