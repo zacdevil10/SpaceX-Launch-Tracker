@@ -48,7 +48,7 @@ class DashboardPresenterImpl(
 
     override fun updateCountdown(time: Long) {
         val remaining = String.format(
-            "%02d:%02d:%02d:%02d",
+            "T-%02d:%02d:%02d:%02d",
             TimeUnit.MILLISECONDS.toDays(time),
             TimeUnit.MILLISECONDS.toHours(time) - TimeUnit.DAYS.toHours(
                 TimeUnit.MILLISECONDS.toDays(
