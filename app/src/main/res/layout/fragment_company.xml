@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/company_constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".about.company.CompanyFragment">
@@ -30,20 +31,20 @@
                 android:id="@+id/company_logo_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="32dp"
                 android:layout_marginEnd="16dp"
+                android:contentDescription="@string/spacex_logo_desc"
                 android:src="@drawable/ic_spacex_logo"
                 android:tint="@android:color/white"
-                app:layout_constraintTop_toTopOf="parent"
-                android:contentDescription="@string/spacex_logo_desc" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/company_address_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
                 android:layout_marginTop="8dp"
+                android:textAlignment="center"
                 app:layout_constraintTop_toBottomOf="@id/company_logo_image"
                 tools:text="Rocket Road, Hawthorne, California" />
 

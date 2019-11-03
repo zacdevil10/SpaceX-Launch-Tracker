@@ -7,9 +7,9 @@ class LaunchesPresenterImpl(
     private val interactor: LaunchesInteractor
 ) : LaunchesPresenter, LaunchesInteractor.InteractorCallback {
 
-    override fun getLaunchList(id: String, order: String) {
+    override fun getLaunchList(id: String) {
         view.showProgress()
-        interactor.getLaunches(id, order, this)
+        interactor.getLaunches(id, if (id == "past") "desc" else "asc", this)
     }
 
     override fun cancelRequests() {

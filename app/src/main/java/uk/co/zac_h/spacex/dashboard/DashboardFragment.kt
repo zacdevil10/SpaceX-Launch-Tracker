@@ -15,8 +15,10 @@ import uk.co.zac_h.spacex.dashboard.adapters.DashboardLaunchesAdapter
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardPinnedAdapter
 import uk.co.zac_h.spacex.model.LaunchesModel
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class DashboardFragment : Fragment(), DashboardView {
+class DashboardFragment : Fragment(), DashboardView,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: DashboardPresenter
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
@@ -25,6 +27,8 @@ class DashboardFragment : Fragment(), DashboardView {
     private lateinit var pinnedAdapter: DashboardPinnedAdapter
 
     private var countdownTimer: CountDownTimer? = null
+
+    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,6 +48,13 @@ class DashboardFragment : Fragment(), DashboardView {
         )
 
         presenter = DashboardPresenterImpl(this, pinnedSharedPreferences, DashboardInteractorImpl())
+
+        networkStateChangeListener = OnNetworkStateChangeListener(
+            context
+        ).apply {
+            addListener(this@DashboardFragment)
+            registerReceiver()
+        }
 
         dashboard_swipe_refresh.setOnRefreshListener {
             presenter.getLatestLaunches(true)
@@ -66,6 +77,8 @@ class DashboardFragment : Fragment(), DashboardView {
         super.onDestroyView()
         countdownTimer?.cancel()
         presenter.cancelRequests()
+        networkStateChangeListener.removeListener(this)
+        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun onDestroy() {
@@ -150,6 +163,14 @@ class DashboardFragment : Fragment(), DashboardView {
     }
 
     override fun showError(error: String) {
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+
+    }
+
+    override fun networkAvailable() {
+        Toast.makeText(context, "Network available", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun networkLost() {
+        Toast.makeText(context, "Network unavailable", Toast.LENGTH_SHORT).show()
     }
 }

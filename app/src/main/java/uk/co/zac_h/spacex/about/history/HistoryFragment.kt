@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.fragment_history.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
 import uk.co.zac_h.spacex.utils.HeaderItemDecoration
-import uk.co.zac_h.spacex.utils.HistoryHeaderModel
+import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 
 class HistoryFragment : Fragment(), HistoryView {
 

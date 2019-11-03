@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.launches.details.LaunchDetailsView
-import uk.co.zac_h.spacex.utils.LinksModel
+import uk.co.zac_h.spacex.utils.models.LinksModel
 
 class LaunchLinksAdapter(
     private val links: ArrayList<LinksModel>,

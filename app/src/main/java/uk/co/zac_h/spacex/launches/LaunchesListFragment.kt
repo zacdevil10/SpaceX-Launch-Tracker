@@ -56,13 +56,10 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
         }
 
         launchParam?.let { launchId ->
-            if (launchesList.isEmpty()) presenter.getLaunchList(
-                launchId,
-                if (launchId == "past") "desc" else "asc"
-            )
+            if (launchesList.isEmpty()) presenter.getLaunchList(launchId)
 
             launches_swipe_refresh.setOnRefreshListener {
-                presenter.getLaunchList(launchId, if (launchId == "past") "desc" else "asc")
+                presenter.getLaunchList(launchId)
             }
         }
     }
@@ -130,8 +127,5 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
-        launchParam?.let { launchId ->
-            presenter.getLaunchList(launchId, if (launchId == "past") "desc" else "asc")
-        }
     }
 }

@@ -149,4 +149,7 @@
     <string name="filter_label">Filter</string>
     <string name="reload_label">Reload</string>
 
+    <string name="network_connection">No network connection detected!</string>
+    <string name="dismiss_label">Dismiss</string>
+
 </resources>

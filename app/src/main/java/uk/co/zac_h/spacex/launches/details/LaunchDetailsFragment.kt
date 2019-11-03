@@ -20,9 +20,9 @@ import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.launches.adapters.LaunchLinksAdapter
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
 import uk.co.zac_h.spacex.model.LaunchesModel
-import uk.co.zac_h.spacex.utils.LinksModel
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
+import uk.co.zac_h.spacex.utils.models.LinksModel
 
 class LaunchDetailsFragment : Fragment(),
     LaunchDetailsView {
@@ -225,12 +225,54 @@ class LaunchDetailsFragment : Fragment(),
 
             val links = ArrayList<LinksModel>()
 
-            launch.links.videoLink?.let { links.add(LinksModel("Watch", it)) }
-            launch.links.redditCampaign?.let { links.add(LinksModel("Reddit Campaign", it)) }
-            launch.links.redditLaunch?.let { links.add(LinksModel("Reddit Launch", it)) }
-            launch.links.redditMedia?.let { links.add(LinksModel("Reddit Media", it)) }
-            launch.links.presskit?.let { links.add(LinksModel("Press Kit", it)) }
-            launch.links.wikipedia?.let { links.add(LinksModel("Wikipedia Article", it)) }
+            launch.links.videoLink?.let {
+                links.add(
+                    LinksModel(
+                        "Watch",
+                        it
+                    )
+                )
+            }
+            launch.links.redditCampaign?.let {
+                links.add(
+                    LinksModel(
+                        "Reddit Campaign",
+                        it
+                    )
+                )
+            }
+            launch.links.redditLaunch?.let {
+                links.add(
+                    LinksModel(
+                        "Reddit Launch",
+                        it
+                    )
+                )
+            }
+            launch.links.redditMedia?.let {
+                links.add(
+                    LinksModel(
+                        "Reddit Media",
+                        it
+                    )
+                )
+            }
+            launch.links.presskit?.let {
+                links.add(
+                    LinksModel(
+                        "Press Kit",
+                        it
+                    )
+                )
+            }
+            launch.links.wikipedia?.let {
+                links.add(
+                    LinksModel(
+                        "Wikipedia Article",
+                        it
+                    )
+                )
+            }
 
             if (links.isEmpty()) launch_details_links_text.visibility = View.GONE
 
