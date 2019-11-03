@@ -9,11 +9,17 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_company.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.CompanyModel
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import java.text.DecimalFormat
 
-class CompanyFragment : Fragment(), CompanyView {
+class CompanyFragment : Fragment(), CompanyView,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: CompanyPresenter
+
+    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
+
+    private var companyInfo: CompanyModel? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,15 +34,26 @@ class CompanyFragment : Fragment(), CompanyView {
             CompanyInteractorImpl()
         )
 
+        networkStateChangeListener = OnNetworkStateChangeListener(
+            context
+        ).apply {
+            addListener(this@CompanyFragment)
+            registerReceiver()
+            updateState()
+        }
+
         presenter.getCompanyInfo()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequest()
+        networkStateChangeListener.removeListener(this)
+        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun updateCompanyInfo(companyModel: CompanyModel) {
+        companyInfo = companyModel
         with(companyModel.headquarters) {
             company_address_text.text = context?.getString(R.string.address, address, city, state)
         }
@@ -65,6 +82,12 @@ class CompanyFragment : Fragment(), CompanyView {
 
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            if (companyInfo == null) presenter.getCompanyInfo()
+        }
     }
 
 }

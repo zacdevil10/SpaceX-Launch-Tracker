@@ -23,12 +23,15 @@ import uk.co.zac_h.spacex.model.LaunchesModel
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 import uk.co.zac_h.spacex.utils.models.LinksModel
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchDetailsFragment : Fragment(),
-    LaunchDetailsView {
+class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: LaunchDetailsPresenter
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
+
+    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private var launch: LaunchesModel? = null
     private var id: String? = null
@@ -61,6 +64,14 @@ class LaunchDetailsFragment : Fragment(),
                 Context.MODE_PRIVATE
             )
         )
+
+        networkStateChangeListener = OnNetworkStateChangeListener(
+            context
+        ).apply {
+            addListener(this@LaunchDetailsFragment)
+            registerReceiver()
+            updateState()
+        }
 
         presenter = LaunchDetailsPresenterImpl(
             this,
@@ -127,6 +138,8 @@ class LaunchDetailsFragment : Fragment(),
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequest()
+        networkStateChangeListener.removeListener(this)
+        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -349,5 +362,13 @@ class LaunchDetailsFragment : Fragment(),
 
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            id?.let {
+                if (launch == null) presenter.getLaunch(it)
+            }
+        }
     }
 }

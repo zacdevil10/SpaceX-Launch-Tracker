@@ -6,7 +6,6 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_dashboard.*
@@ -54,6 +53,7 @@ class DashboardFragment : Fragment(), DashboardView,
         ).apply {
             addListener(this@DashboardFragment)
             registerReceiver()
+            updateState()
         }
 
         dashboard_swipe_refresh.setOnRefreshListener {
@@ -167,10 +167,8 @@ class DashboardFragment : Fragment(), DashboardView,
     }
 
     override fun networkAvailable() {
-        Toast.makeText(context, "Network available", Toast.LENGTH_SHORT).show()
-    }
-
-    override fun networkLost() {
-        Toast.makeText(context, "Network unavailable", Toast.LENGTH_SHORT).show()
+        activity?.runOnUiThread {
+            presenter.getLatestLaunches(true)
+        }
     }
 }

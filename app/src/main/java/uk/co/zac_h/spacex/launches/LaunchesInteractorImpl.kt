@@ -4,6 +4,7 @@ import android.util.Log
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 import uk.co.zac_h.spacex.rest.SpaceXInterface
+import java.net.UnknownHostException
 import kotlin.coroutines.CoroutineContext
 
 class LaunchesInteractorImpl : LaunchesInteractor {
@@ -34,6 +35,10 @@ class LaunchesInteractorImpl : LaunchesInteractor {
                 } catch (e: HttpException) {
                     listener.onError(
                         e.localizedMessage ?: "There was a network error! Please try refreshing."
+                    )
+                } catch (e: UnknownHostException) {
+                    listener.onError(
+                        e.localizedMessage ?: "Unable to resolve host! Please try refreshing."
                     )
                 } catch (e: Throwable) {
                     Log.e(

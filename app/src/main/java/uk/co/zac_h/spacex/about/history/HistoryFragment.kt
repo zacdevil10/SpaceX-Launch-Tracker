@@ -14,10 +14,14 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
 import uk.co.zac_h.spacex.utils.HeaderItemDecoration
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class HistoryFragment : Fragment(), HistoryView {
+class HistoryFragment : Fragment(), HistoryView,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: HistoryPresenter
+
+    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private val history = ArrayList<HistoryHeaderModel>()
     private lateinit var historyAdapter: HistoryAdapter
@@ -31,6 +35,14 @@ class HistoryFragment : Fragment(), HistoryView {
         super.onViewCreated(view, savedInstanceState)
 
         presenter = HistoryPresenterImpl(this, HistoryInteractorImpl())
+
+        networkStateChangeListener = OnNetworkStateChangeListener(
+            context
+        ).apply {
+            addListener(this@HistoryFragment)
+            registerReceiver()
+            updateState()
+        }
 
         historyAdapter = HistoryAdapter(history, this)
 
@@ -69,6 +81,8 @@ class HistoryFragment : Fragment(), HistoryView {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequest()
+        networkStateChangeListener.removeListener(this)
+        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun updateRecycler(history: ArrayList<HistoryHeaderModel>) {
@@ -96,6 +110,12 @@ class HistoryFragment : Fragment(), HistoryView {
 
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            if (history.isEmpty()) presenter.getHistory()
+        }
     }
 
 }

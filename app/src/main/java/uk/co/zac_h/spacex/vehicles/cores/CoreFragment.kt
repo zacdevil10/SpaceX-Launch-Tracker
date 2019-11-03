@@ -9,11 +9,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_core.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.CoreModel
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
 
-class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener {
+class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: CorePresenter
+
+    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private lateinit var coreAdapter: CoreAdapter
     private val coresArray = ArrayList<CoreModel>()
@@ -36,6 +40,14 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener {
 
         presenter = CorePresenterImpl(this, CoreInteractorImpl())
 
+        networkStateChangeListener = OnNetworkStateChangeListener(
+            context
+        ).apply {
+            addListener(this@CoreFragment)
+            registerReceiver()
+            updateState()
+        }
+
         coreAdapter = CoreAdapter(context, coresArray)
 
         core_recycler.apply {
@@ -50,6 +62,8 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener {
     override fun onDestroy() {
         super.onDestroy()
         presenter.cancelRequest()
+        networkStateChangeListener.removeListener(this)
+        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -109,5 +123,11 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener {
 
     override fun error(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            if (coresArray.isEmpty()) presenter.getCores()
+        }
     }
 }

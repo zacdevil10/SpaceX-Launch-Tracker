@@ -10,10 +10,14 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.StatsPadModel
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
 import uk.co.zac_h.spacex.utils.HeaderItemDecoration
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class PadStatsFragment : Fragment(), PadStatsView {
+class PadStatsFragment : Fragment(), PadStatsView,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: PadStatsPresenter
+
+    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private lateinit var padsAdapter: PadStatsSitesAdapter
 
@@ -36,6 +40,14 @@ class PadStatsFragment : Fragment(), PadStatsView {
 
         presenter = PadStatsPresenterImpl(this, PadStatsInteractorImpl())
 
+        networkStateChangeListener = OnNetworkStateChangeListener(
+            context
+        ).apply {
+            addListener(this@PadStatsFragment)
+            registerReceiver()
+            updateState()
+        }
+
         padsAdapter = PadStatsSitesAdapter(pads)
 
         pad_stats_launch_sites_recycler.apply {
@@ -50,7 +62,8 @@ class PadStatsFragment : Fragment(), PadStatsView {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        pad_stats_launch_sites_recycler.adapter = null
+        networkStateChangeListener.removeListener(this)
+        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -83,5 +96,11 @@ class PadStatsFragment : Fragment(), PadStatsView {
 
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            if (pads.isEmpty()) presenter.getPads()
+        }
     }
 }

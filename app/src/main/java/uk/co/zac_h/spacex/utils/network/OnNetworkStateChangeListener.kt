@@ -18,8 +18,8 @@ class OnNetworkStateChangeListener(private val context: Context?) {
     private var connected: Boolean? = null
 
     interface NetworkStateReceiverListener {
-        fun networkAvailable()
-        fun networkLost()
+        fun networkAvailable() {}
+        fun networkLost() {}
     }
 
     init {

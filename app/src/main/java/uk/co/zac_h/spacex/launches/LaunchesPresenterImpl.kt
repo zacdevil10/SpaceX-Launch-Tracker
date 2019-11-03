@@ -27,6 +27,7 @@ class LaunchesPresenterImpl(
     override fun onError(error: String) {
         view.apply {
             showError(error)
+            hideProgress()
             toggleSwipeProgress(false)
         }
     }

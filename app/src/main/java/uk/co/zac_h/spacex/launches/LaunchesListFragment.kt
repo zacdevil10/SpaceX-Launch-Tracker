@@ -10,8 +10,10 @@ import kotlinx.android.synthetic.main.fragment_launches_list.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextListener {
+class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextListener,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: LaunchesPresenter
     private lateinit var launchesAdapter: LaunchesAdapter
@@ -20,6 +22,8 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
     private lateinit var searchView: SearchView
 
     private var launchParam: String? = null
+
+    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     companion object {
         fun newInstance(launchParam: String) = LaunchesListFragment().apply {
@@ -46,6 +50,14 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
         launchParam = arguments?.getString("launchParam")
 
         presenter = LaunchesPresenterImpl(this, LaunchesInteractorImpl())
+
+        networkStateChangeListener = OnNetworkStateChangeListener(
+            context
+        ).apply {
+            addListener(this@LaunchesListFragment)
+            registerReceiver()
+            updateState()
+        }
 
         launchesAdapter = LaunchesAdapter(context, launchesList)
 
@@ -77,6 +89,8 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequests()
+        networkStateChangeListener.removeListener(this)
+        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun onDestroy() {
@@ -127,5 +141,13 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            launchParam?.let { launchId ->
+                if (launchesList.isEmpty()) presenter.getLaunchList(launchId)
+            }
+        }
     }
 }

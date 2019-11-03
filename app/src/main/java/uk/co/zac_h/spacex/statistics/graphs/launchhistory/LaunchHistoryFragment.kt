@@ -18,10 +18,14 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.LaunchesModel
 import uk.co.zac_h.spacex.model.RocketsModel
 import uk.co.zac_h.spacex.utils.generateCenterSpannableText
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
+class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: LaunchHistoryPresenter
+
+    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private var filterVisible = false
     private var filterSuccessful = false
@@ -46,6 +50,14 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
         super.onViewCreated(view, savedInstanceState)
 
         presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
+
+        networkStateChangeListener = OnNetworkStateChangeListener(
+            context
+        ).apply {
+            addListener(this@LaunchHistoryFragment)
+            registerReceiver()
+            updateState()
+        }
 
         presenter.apply {
             if (launchesList.isEmpty()) getLaunchList() else addLaunchList(launchesList)
@@ -88,6 +100,8 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequests()
+        networkStateChangeListener.removeListener(this)
+        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -217,5 +231,14 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView {
 
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            presenter.apply {
+                if (launchesList.isEmpty()) getLaunchList()
+                if (rocketsList.isEmpty()) getRocketsList()
+            }
+        }
     }
 }
