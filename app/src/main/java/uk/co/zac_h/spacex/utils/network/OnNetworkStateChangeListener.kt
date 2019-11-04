@@ -12,6 +12,9 @@ class OnNetworkStateChangeListener(private val context: Context?) {
 
     private val listeners: MutableSet<NetworkStateReceiverListener> = HashSet()
 
+    private lateinit var connectivityManager: ConnectivityManager
+    private lateinit var networkCallback: ConnectivityManager.NetworkCallback
+
     private var broadcastReceiver: BroadcastReceiver? = null
     private var intentFilter: IntentFilter? = null
 
@@ -25,12 +28,10 @@ class OnNetworkStateChangeListener(private val context: Context?) {
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             context?.let { context ->
-                val connectivityManager =
+                connectivityManager =
                     context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-                connectivityManager.registerDefaultNetworkCallback(object :
-                    ConnectivityManager.NetworkCallback() {
-
+                networkCallback = object : ConnectivityManager.NetworkCallback() {
                     override fun onAvailable(network: Network) {
                         super.onAvailable(network)
                         connected = true
@@ -42,7 +43,7 @@ class OnNetworkStateChangeListener(private val context: Context?) {
                         connected = false
                         notifyStateToAll()
                     }
-                })
+                }
             }
         } else {
             broadcastReceiver = object : BroadcastReceiver() {
@@ -91,11 +92,13 @@ class OnNetworkStateChangeListener(private val context: Context?) {
     fun registerReceiver() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
             context?.registerReceiver(broadcastReceiver, intentFilter)
+        else connectivityManager.registerDefaultNetworkCallback(networkCallback)
     }
 
     fun unregisterReceiver() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
             context?.unregisterReceiver(broadcastReceiver)
+        else connectivityManager.unregisterNetworkCallback(networkCallback)
     }
 
     fun addListener(listener: NetworkStateReceiverListener) {
