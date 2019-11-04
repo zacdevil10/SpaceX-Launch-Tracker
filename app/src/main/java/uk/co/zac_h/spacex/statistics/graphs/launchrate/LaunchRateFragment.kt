@@ -54,7 +54,6 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
         ).apply {
             addListener(this@LaunchRateFragment)
             registerReceiver()
-            updateState()
         }
 
         launch_rate_falcon_one_toggle.setOnCheckedChangeListener { _, isChecked ->

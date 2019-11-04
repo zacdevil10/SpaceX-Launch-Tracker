@@ -41,7 +41,6 @@ class HistoryFragment : Fragment(), HistoryView,
         ).apply {
             addListener(this@HistoryFragment)
             registerReceiver()
-            updateState()
         }
 
         historyAdapter = HistoryAdapter(history, this)

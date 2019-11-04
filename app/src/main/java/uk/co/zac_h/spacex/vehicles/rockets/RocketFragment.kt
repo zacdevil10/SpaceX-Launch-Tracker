@@ -38,7 +38,6 @@ class RocketFragment : Fragment(), RocketView,
         ).apply {
             addListener(this@RocketFragment)
             registerReceiver()
-            updateState()
         }
 
         rocketsAdapter = RocketsAdapter(rocketsArray)

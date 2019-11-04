@@ -70,7 +70,6 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
         ).apply {
             addListener(this@LaunchDetailsFragment)
             registerReceiver()
-            updateState()
         }
 
         presenter = LaunchDetailsPresenterImpl(

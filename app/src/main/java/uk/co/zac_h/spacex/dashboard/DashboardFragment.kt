@@ -6,6 +6,7 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_dashboard.*
@@ -24,6 +25,8 @@ class DashboardFragment : Fragment(), DashboardView,
 
     private lateinit var dashboardLaunchesAdapter: DashboardLaunchesAdapter
     private lateinit var pinnedAdapter: DashboardPinnedAdapter
+
+    private val pinnedArray = ArrayList<LaunchesModel>()
 
     private var countdownTimer: CountDownTimer? = null
 
@@ -53,7 +56,14 @@ class DashboardFragment : Fragment(), DashboardView,
         ).apply {
             addListener(this@DashboardFragment)
             registerReceiver()
-            updateState()
+        }
+
+        pinnedAdapter = DashboardPinnedAdapter(context, pinnedArray)
+
+        dashboard_pinned_launches_recycler.apply {
+            layoutManager = LinearLayoutManager(this@DashboardFragment.context)
+            setHasFixedSize(true)
+            adapter = pinnedAdapter
         }
 
         dashboard_swipe_refresh.setOnRefreshListener {
@@ -70,6 +80,7 @@ class DashboardFragment : Fragment(), DashboardView,
 
     override fun onPause() {
         super.onPause()
+        pinnedArray.clear()
         dashboard_swipe_refresh.isEnabled = false
     }
 
@@ -96,21 +107,14 @@ class DashboardFragment : Fragment(), DashboardView,
         }
     }
 
-    override fun setPinnedList(pinned: ArrayList<LaunchesModel>) {
-        pinnedAdapter = DashboardPinnedAdapter(context, pinned)
-
-        dashboard_pinned_launches_recycler.apply {
-            layoutManager = LinearLayoutManager(this@DashboardFragment.context)
-            setHasFixedSize(true)
-            adapter = pinnedAdapter
-        }
-    }
-
     override fun updateLaunchesList() {
         dashboardLaunchesAdapter.notifyDataSetChanged()
     }
 
-    override fun updatePinnedList() {
+    override fun updatePinnedList(pinned: LinkedHashMap<String, LaunchesModel>) {
+        pinnedArray.clear()
+        pinnedArray.addAll(pinned.values)
+
         pinnedAdapter.notifyDataSetChanged()
     }
 
@@ -134,12 +138,12 @@ class DashboardFragment : Fragment(), DashboardView,
         dashboard_countdown_text?.text = countdown
     }
 
-    override fun showPinnedHeading() {
-        dashboard_pinned_heading_text.visibility = View.VISIBLE
+    override fun showPinnedMessage() {
+        if (pinnedArray.isEmpty()) dashboard_pinned_message_text.visibility = View.VISIBLE
     }
 
-    override fun hidePinnedHeading() {
-        dashboard_pinned_heading_text.visibility = View.GONE
+    override fun hidePinnedMessage() {
+        dashboard_pinned_message_text.visibility = View.GONE
     }
 
     override fun showProgress() {
@@ -163,7 +167,7 @@ class DashboardFragment : Fragment(), DashboardView,
     }
 
     override fun showError(error: String) {
-
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {

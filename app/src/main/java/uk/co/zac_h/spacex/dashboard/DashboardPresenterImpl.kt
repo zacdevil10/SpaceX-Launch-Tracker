@@ -12,11 +12,11 @@ class DashboardPresenterImpl(
     DashboardInteractor.InteractorCallback {
 
     private val launchesMap = LinkedHashMap<String, LaunchesModel>()
-    private val pinnedLaunches = ArrayList<LaunchesModel>()
+    private val pinnedLaunches = LinkedHashMap<String, LaunchesModel>()
 
     override fun getLatestLaunches(isRefresh: Boolean) {
         view.showProgress()
-        view.hidePinnedHeading()
+        view.showPinnedMessage()
 
         if (isRefresh) {
             launchesMap.clear()
@@ -41,8 +41,6 @@ class DashboardPresenterImpl(
                     )
                 }
             }
-
-            if (!isRefresh) view.setPinnedList(pinnedLaunches)
         }
     }
 
@@ -81,9 +79,9 @@ class DashboardPresenterImpl(
                     launchesMap[id] = it
                 }
                 else -> {
-                    pinnedLaunches.add(it)
-                    view.updatePinnedList()
-                    view.showPinnedHeading()
+                    pinnedLaunches[id] = it
+                    view.hidePinnedMessage()
+                    view.updatePinnedList(pinnedLaunches)
                 }
             }
         }

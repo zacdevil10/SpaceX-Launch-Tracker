@@ -38,7 +38,6 @@ class CapsulesFragment : Fragment(), CapsulesView,
         ).apply {
             addListener(this@CapsulesFragment)
             registerReceiver()
-            updateState()
         }
 
         capsules_recycler.apply {

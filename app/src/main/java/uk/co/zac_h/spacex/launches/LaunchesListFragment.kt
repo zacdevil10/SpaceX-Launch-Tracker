@@ -56,7 +56,6 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
         ).apply {
             addListener(this@LaunchesListFragment)
             registerReceiver()
-            updateState()
         }
 
         launchesAdapter = LaunchesAdapter(context, launchesList)
@@ -145,8 +144,8 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            launchParam?.let { launchId ->
-                if (launchesList.isEmpty()) presenter.getLaunchList(launchId)
+            if (launchesList.isEmpty()) launchParam?.let { launchId ->
+                presenter.getLaunchList(launchId)
             }
         }
     }

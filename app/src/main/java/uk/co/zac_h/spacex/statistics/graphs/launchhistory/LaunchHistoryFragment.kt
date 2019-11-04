@@ -56,7 +56,6 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
         ).apply {
             addListener(this@LaunchHistoryFragment)
             registerReceiver()
-            updateState()
         }
 
         presenter.apply {

@@ -45,7 +45,6 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
         ).apply {
             addListener(this@CoreFragment)
             registerReceiver()
-            updateState()
         }
 
         coreAdapter = CoreAdapter(context, coresArray)

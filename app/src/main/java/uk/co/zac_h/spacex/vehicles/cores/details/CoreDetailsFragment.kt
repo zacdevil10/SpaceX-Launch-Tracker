@@ -47,7 +47,6 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView,
         ).apply {
             addListener(this@CoreDetailsFragment)
             registerReceiver()
-            updateState()
         }
 
         core?.let {

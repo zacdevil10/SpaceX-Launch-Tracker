@@ -39,7 +39,6 @@ class CompanyFragment : Fragment(), CompanyView,
         ).apply {
             addListener(this@CompanyFragment)
             registerReceiver()
-            updateState()
         }
 
         presenter.getCompanyInfo()

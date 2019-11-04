@@ -45,7 +45,6 @@ class PadStatsFragment : Fragment(), PadStatsView,
         ).apply {
             addListener(this@PadStatsFragment)
             registerReceiver()
-            updateState()
         }
 
         padsAdapter = PadStatsSitesAdapter(pads)

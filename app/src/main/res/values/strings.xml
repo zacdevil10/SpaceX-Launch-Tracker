@@ -101,7 +101,6 @@
     <string name="address">%1$s, %2$s, %3$s</string>
     <string name="founded">%1$s, %2$d</string>
 
-    <string name="create_calendar_event_icon_desc">Create Calendar Event Icon</string>
     <string name="create_event_label">Create Event</string>
     <string name="launch_details_icon_desc">Launch Details Icon</string>
     <string name="launch_details_label">Launch Details</string>
@@ -151,5 +150,6 @@
 
     <string name="network_connection">No network connection detected!</string>
     <string name="dismiss_label">Dismiss</string>
+    <string name="no_pinned_launches_found_label">No pinned launches found.</string>
 
 </resources>
