@@ -12,12 +12,12 @@ class PadStatsPresenterImpl(
     private var padList = ArrayList<StatsPadModel>()
 
     override fun getPads() {
-        if (padList.isEmpty()) {
-            view.showProgress()
-            interactor.getLaunchpads(this)
-            interactor.getLandingPads(this)
+        padList.clear()
+        view.showProgress()
+        interactor.apply {
+            getLaunchpads(this@PadStatsPresenterImpl)
+            getLandingPads(this@PadStatsPresenterImpl)
         }
-        view.setPadsList(padList)
     }
 
     override fun cancelRequests() {
@@ -39,7 +39,7 @@ class PadStatsPresenterImpl(
 
         view.apply {
             hideProgress()
-            updateRecycler()
+            updateRecycler(padList)
         }
     }
 
@@ -59,7 +59,7 @@ class PadStatsPresenterImpl(
 
         view.apply {
             hideProgress()
-            updateRecycler()
+            updateRecycler(padList)
         }
     }
 

@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
-import com.github.mikephil.charting.data.PieEntry
 import uk.co.zac_h.spacex.model.LaunchesModel
 import uk.co.zac_h.spacex.model.RocketsModel
 
@@ -10,39 +9,42 @@ class LaunchHistoryPresenterImpl(
 ) : LaunchHistoryPresenter,
     LaunchHistoryInteractor.InteractorCallback {
 
-    private lateinit var launchesList: List<LaunchesModel>
-    private lateinit var rocketsList: List<RocketsModel>
+    private var launchesList = ArrayList<LaunchesModel>()
+    private var rocketsList = ArrayList<RocketsModel>()
 
-    private var filterSuccessful = false
-    private var filterFailed = false
+    override fun getLaunchList() {
+        view.showProgress()
+        interactor.getLaunches("past", this)
+    }
 
-    override fun getLaunchList(id: String) {
-        if (!::launchesList.isInitialized) {
-            view.showProgress()
-            interactor.getLaunches(id, this)
-        } else {
-            onSuccess(launchesList, false)
-        }
+    override fun addLaunchList(launches: ArrayList<LaunchesModel>) {
+        onSuccess(launches, false)
     }
 
     override fun getRocketsList() {
-        if (!::rocketsList.isInitialized) {
-            interactor.getRockets(this)
-        } else {
-            onRocketsSuccess(rocketsList)
-        }
+        interactor.getRockets(this)
     }
 
-    override fun updateFilter(filter: String, isFiltered: Boolean) {
+    override fun addRocketsList(rockets: ArrayList<RocketsModel>) {
+        onRocketsSuccess(rockets)
+    }
+
+    override fun showFilter(filterVisible: Boolean) {
+        view.showFilter(filterVisible)
+    }
+
+    override fun updateFilter(
+        launches: ArrayList<LaunchesModel>,
+        filter: String,
+        isFiltered: Boolean
+    ) {
+        println("Filter: $launchesList")
         when (filter) {
-            "success" -> filterSuccessful = isFiltered
-            "failed" -> filterFailed = isFiltered
+            "success" -> view.setFilterSuccessful(isFiltered)
+            "failed" -> view.setFilterFailed(isFiltered)
         }
 
-        if (::launchesList.isInitialized && launchesList.isNotEmpty()) onSuccess(
-            launchesList,
-            false
-        )
+        if (launchesList.isNotEmpty()) onSuccess(launches, false)
     }
 
     override fun cancelRequests() {
@@ -51,43 +53,22 @@ class LaunchHistoryPresenterImpl(
 
     override fun onRocketsSuccess(rockets: List<RocketsModel>?) {
         rockets?.let {
-            if (!::rocketsList.isInitialized) rocketsList = rockets
+            rocketsList.clear()
+            rocketsList.addAll(rockets)
 
-            rockets.forEach {
-                view.setSuccessRate(it.id, it.successRate)
-            }
+            view.setSuccessRate(rocketsList)
         }
     }
 
     override fun onSuccess(launches: List<LaunchesModel>?, animate: Boolean) {
         launches?.let {
-            if (!::launchesList.isInitialized) launchesList = launches
+            launchesList.clear()
+            launchesList.addAll(it)
 
-            val entries = ArrayList<PieEntry>()
-
-            var falconOne = 0f
-            var falconNine = 0f
-            var falconHeavy = 0f
-
-            launches.forEach {
-                if (filterSuccessful && it.success != null && !it.success!!) return@forEach
-                if (filterFailed && it.success!!) return@forEach
-
-                when (it.rocket.id) {
-                    "falcon1" -> falconOne++
-                    "falcon9" -> falconNine++
-                    "falconheavy" -> falconHeavy++
-                }
+            view.apply {
+                hideProgress()
+                updatePieChart(launchesList, animate)
             }
-
-            entries.add(PieEntry(falconOne, "Falcon 1"))
-            entries.add(PieEntry(falconNine, "Falcon 9"))
-            entries.add(PieEntry(falconHeavy, "Falcon Heavy"))
-
-            val centerText = "${launches[0].launchYear} - ${launches[launches.size - 1].launchYear}"
-
-            view.hideProgress()
-            view.updatePieChart(entries, centerText, animate)
         }
     }
 

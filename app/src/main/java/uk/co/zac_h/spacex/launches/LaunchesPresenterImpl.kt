@@ -7,9 +7,9 @@ class LaunchesPresenterImpl(
     private val interactor: LaunchesInteractor
 ) : LaunchesPresenter, LaunchesInteractor.InteractorCallback {
 
-    override fun getLaunchList(id: String, order: String) {
+    override fun getLaunchList(id: String) {
         view.showProgress()
-        interactor.getLaunches(id, order, this)
+        interactor.getLaunches(id, if (id == "past") "desc" else "asc", this)
     }
 
     override fun cancelRequests() {
@@ -17,14 +17,18 @@ class LaunchesPresenterImpl(
     }
 
     override fun onSuccess(launches: List<LaunchesModel>?) {
-        view.hideProgress()
-        view.updateLaunchesList(launches)
-        view.toggleSwipeProgress(false)
+        view.apply {
+            hideProgress()
+            updateLaunchesList(launches)
+            toggleSwipeProgress(false)
+        }
     }
 
     override fun onError(error: String) {
-        view.showError(error)
-        view.toggleSwipeProgress(false)
+        view.apply {
+            showError(error)
+            toggleSwipeProgress(false)
+        }
     }
 
 }

@@ -10,5 +10,5 @@ interface RocketView {
 
     fun hideProgress()
 
-    fun error(error: String)
+    fun showError(error: String)
 }

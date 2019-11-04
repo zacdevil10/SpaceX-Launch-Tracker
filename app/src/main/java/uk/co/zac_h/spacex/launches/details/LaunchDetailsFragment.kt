@@ -20,15 +20,18 @@ import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.launches.adapters.LaunchLinksAdapter
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
 import uk.co.zac_h.spacex.model.LaunchesModel
-import uk.co.zac_h.spacex.utils.LinksModel
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
+import uk.co.zac_h.spacex.utils.models.LinksModel
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchDetailsFragment : Fragment(),
-    LaunchDetailsView {
+class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: LaunchDetailsPresenter
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
+
+    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private var launch: LaunchesModel? = null
     private var id: String? = null
@@ -61,6 +64,13 @@ class LaunchDetailsFragment : Fragment(),
                 Context.MODE_PRIVATE
             )
         )
+
+        networkStateChangeListener = OnNetworkStateChangeListener(
+            context
+        ).apply {
+            addListener(this@LaunchDetailsFragment)
+            registerReceiver()
+        }
 
         presenter = LaunchDetailsPresenterImpl(
             this,
@@ -126,8 +136,9 @@ class LaunchDetailsFragment : Fragment(),
 
     override fun onDestroyView() {
         super.onDestroyView()
-        launch_details_cores_recycler.adapter = null
-        launch_details_payload_recycler.adapter = null
+        presenter.cancelRequest()
+        networkStateChangeListener.removeListener(this)
+        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -141,23 +152,25 @@ class LaunchDetailsFragment : Fragment(),
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.pin -> {
-                presenter.pinLaunch(!pinned)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.pin -> {
+            presenter.pinLaunch(!pinned)
 
-                pinned = !pinned
+            pinned = !pinned
 
-                item.icon = context?.let {
-                    ContextCompat.getDrawable(
-                        it,
-                        if (pinned) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
-                    )
-                }
-                true
+            item.icon = context?.let {
+                ContextCompat.getDrawable(
+                    it,
+                    if (pinned) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
+                )
             }
-            else -> super.onOptionsItemSelected(item)
+            true
         }
+        R.id.create_event -> {
+            presenter.createEvent()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun updateLaunchDataView(launch: LaunchesModel?) {
@@ -187,25 +200,6 @@ class LaunchDetailsFragment : Fragment(),
             }
 
             launch_details_details_text.text = launch.details
-
-            launch_details_calendar_button.setOnClickListener {
-                val calendarIntent = Intent(Intent.ACTION_INSERT).apply {
-                    data = CalendarContract.Events.CONTENT_URI
-                    putExtra(
-                        CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                        launch.launchDateUnix.times(1000L)
-                    )
-                    putExtra(
-                        CalendarContract.EXTRA_EVENT_END_TIME,
-                        launch.launchDateUnix.times(1000L).plus(3600000)
-                    )
-                    putExtra(
-                        CalendarContract.Events.TITLE,
-                        "${launch.missionName} - ${launch.rocket.name} Launch Event"
-                    )
-                }
-                startActivity(calendarIntent)
-            }
 
             launch.rocket.firstStage?.cores?.forEach {
                 if (coreAssigned) return@forEach
@@ -243,12 +237,54 @@ class LaunchDetailsFragment : Fragment(),
 
             val links = ArrayList<LinksModel>()
 
-            launch.links.videoLink?.let { links.add(LinksModel("Watch", it)) }
-            launch.links.redditCampaign?.let { links.add(LinksModel("Reddit Campaign", it)) }
-            launch.links.redditLaunch?.let { links.add(LinksModel("Reddit Launch", it)) }
-            launch.links.redditMedia?.let { links.add(LinksModel("Reddit Media", it)) }
-            launch.links.presskit?.let { links.add(LinksModel("Press Kit", it)) }
-            launch.links.wikipedia?.let { links.add(LinksModel("Wikipedia Article", it)) }
+            launch.links.videoLink?.let {
+                links.add(
+                    LinksModel(
+                        "Watch",
+                        it
+                    )
+                )
+            }
+            launch.links.redditCampaign?.let {
+                links.add(
+                    LinksModel(
+                        "Reddit Campaign",
+                        it
+                    )
+                )
+            }
+            launch.links.redditLaunch?.let {
+                links.add(
+                    LinksModel(
+                        "Reddit Launch",
+                        it
+                    )
+                )
+            }
+            launch.links.redditMedia?.let {
+                links.add(
+                    LinksModel(
+                        "Reddit Media",
+                        it
+                    )
+                )
+            }
+            launch.links.presskit?.let {
+                links.add(
+                    LinksModel(
+                        "Press Kit",
+                        it
+                    )
+                )
+            }
+            launch.links.wikipedia?.let {
+                links.add(
+                    LinksModel(
+                        "Wikipedia Article",
+                        it
+                    )
+                )
+            }
 
             if (links.isEmpty()) launch_details_links_text.visibility = View.GONE
 
@@ -257,6 +293,27 @@ class LaunchDetailsFragment : Fragment(),
                 setHasFixedSize(true)
                 adapter = LaunchLinksAdapter(links, this@LaunchDetailsFragment)
             }
+        }
+    }
+
+    override fun newCalendarEvent() {
+        launch?.let {
+            val calendarIntent = Intent(Intent.ACTION_INSERT).apply {
+                data = CalendarContract.Events.CONTENT_URI
+                putExtra(
+                    CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                    it.launchDateUnix.times(1000L)
+                )
+                putExtra(
+                    CalendarContract.EXTRA_EVENT_END_TIME,
+                    it.launchDateUnix.times(1000L).plus(3600000)
+                )
+                putExtra(
+                    CalendarContract.Events.TITLE,
+                    "${it.missionName} - SpaceX"
+                )
+            }
+            startActivity(calendarIntent)
         }
     }
 
@@ -304,5 +361,13 @@ class LaunchDetailsFragment : Fragment(),
 
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            id?.let {
+                if (launch == null) presenter.getLaunch(it)
+            }
+        }
     }
 }

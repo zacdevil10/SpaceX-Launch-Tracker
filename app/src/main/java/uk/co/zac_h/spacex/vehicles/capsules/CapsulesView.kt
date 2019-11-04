@@ -10,5 +10,5 @@ interface CapsulesView {
 
     fun hideProgress()
 
-    fun error(error: String)
+    fun showError(error: String)
 }

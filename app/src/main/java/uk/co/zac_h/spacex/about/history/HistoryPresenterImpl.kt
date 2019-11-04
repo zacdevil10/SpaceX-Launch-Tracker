@@ -1,7 +1,7 @@
 package uk.co.zac_h.spacex.about.history
 
 import uk.co.zac_h.spacex.model.HistoryModel
-import uk.co.zac_h.spacex.utils.HistoryHeaderModel
+import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 
 class HistoryPresenterImpl(
     private val view: HistoryView,
@@ -17,16 +17,32 @@ class HistoryPresenterImpl(
         interactor.getAllHistoricEvents(this)
     }
 
+    override fun cancelRequest() {
+        interactor.cancelAllRequests()
+    }
+
     override fun onSuccess(history: List<HistoryModel>?) {
         history?.let {
             historyHeaders.clear()
             it.forEach { model ->
                 val newYear = model.dateUtc.subSequence(0, 4).toString().toInt()
                 if (year != newYear) {
-                    historyHeaders.add(HistoryHeaderModel(newYear.toString(), null, true))
+                    historyHeaders.add(
+                        HistoryHeaderModel(
+                            newYear.toString(),
+                            null,
+                            true
+                        )
+                    )
                     year = newYear
                 }
-                historyHeaders.add(HistoryHeaderModel(null, model, false))
+                historyHeaders.add(
+                    HistoryHeaderModel(
+                        null,
+                        model,
+                        false
+                    )
+                )
             }
 
             view.apply {

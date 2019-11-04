@@ -15,8 +15,10 @@ import uk.co.zac_h.spacex.dashboard.adapters.DashboardLaunchesAdapter
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardPinnedAdapter
 import uk.co.zac_h.spacex.model.LaunchesModel
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class DashboardFragment : Fragment(), DashboardView {
+class DashboardFragment : Fragment(), DashboardView,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: DashboardPresenter
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
@@ -24,7 +26,11 @@ class DashboardFragment : Fragment(), DashboardView {
     private lateinit var dashboardLaunchesAdapter: DashboardLaunchesAdapter
     private lateinit var pinnedAdapter: DashboardPinnedAdapter
 
+    private val pinnedArray = ArrayList<LaunchesModel>()
+
     private var countdownTimer: CountDownTimer? = null
+
+    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,6 +51,21 @@ class DashboardFragment : Fragment(), DashboardView {
 
         presenter = DashboardPresenterImpl(this, pinnedSharedPreferences, DashboardInteractorImpl())
 
+        networkStateChangeListener = OnNetworkStateChangeListener(
+            context
+        ).apply {
+            addListener(this@DashboardFragment)
+            registerReceiver()
+        }
+
+        pinnedAdapter = DashboardPinnedAdapter(context, pinnedArray)
+
+        dashboard_pinned_launches_recycler.apply {
+            layoutManager = LinearLayoutManager(this@DashboardFragment.context)
+            setHasFixedSize(true)
+            adapter = pinnedAdapter
+        }
+
         dashboard_swipe_refresh.setOnRefreshListener {
             presenter.getLatestLaunches(true)
         }
@@ -59,6 +80,7 @@ class DashboardFragment : Fragment(), DashboardView {
 
     override fun onPause() {
         super.onPause()
+        pinnedArray.clear()
         dashboard_swipe_refresh.isEnabled = false
     }
 
@@ -66,8 +88,8 @@ class DashboardFragment : Fragment(), DashboardView {
         super.onDestroyView()
         countdownTimer?.cancel()
         presenter.cancelRequests()
-        dashboard_launches_recycler.adapter = null
-        dashboard_pinned_launches_recycler.adapter = null
+        networkStateChangeListener.removeListener(this)
+        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun onDestroy() {
@@ -85,21 +107,14 @@ class DashboardFragment : Fragment(), DashboardView {
         }
     }
 
-    override fun setPinnedList(pinned: ArrayList<LaunchesModel>) {
-        pinnedAdapter = DashboardPinnedAdapter(context, pinned)
-
-        dashboard_pinned_launches_recycler.apply {
-            layoutManager = LinearLayoutManager(this@DashboardFragment.context)
-            setHasFixedSize(true)
-            adapter = pinnedAdapter
-        }
-    }
-
     override fun updateLaunchesList() {
         dashboardLaunchesAdapter.notifyDataSetChanged()
     }
 
-    override fun updatePinnedList() {
+    override fun updatePinnedList(pinned: LinkedHashMap<String, LaunchesModel>) {
+        pinnedArray.clear()
+        pinnedArray.addAll(pinned.values)
+
         pinnedAdapter.notifyDataSetChanged()
     }
 
@@ -123,12 +138,12 @@ class DashboardFragment : Fragment(), DashboardView {
         dashboard_countdown_text?.text = countdown
     }
 
-    override fun showPinnedHeading() {
-        dashboard_pinned_heading_text.visibility = View.VISIBLE
+    override fun showPinnedMessage() {
+        if (pinnedArray.isEmpty()) dashboard_pinned_message_text.visibility = View.VISIBLE
     }
 
-    override fun hidePinnedHeading() {
-        dashboard_pinned_heading_text.visibility = View.GONE
+    override fun hidePinnedMessage() {
+        dashboard_pinned_message_text.visibility = View.GONE
     }
 
     override fun showProgress() {
@@ -153,5 +168,11 @@ class DashboardFragment : Fragment(), DashboardView {
 
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            presenter.getLatestLaunches(true)
+        }
     }
 }

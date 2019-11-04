@@ -8,10 +8,13 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private val startDestinations = mutableSetOf(
         R.id.dashboard_page_fragment,
@@ -20,11 +23,30 @@ class MainActivity : AppCompatActivity() {
         R.id.statistics_page_fragment
     )
 
+    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
+
+    private var snackbar: Snackbar? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(toolbar)
+
+        networkStateChangeListener = OnNetworkStateChangeListener(
+            this
+        ).apply {
+            addListener(this@MainActivity)
+            registerReceiver()
+        }
+
+        snackbar = Snackbar.make(
+            drawer_layout,
+            R.string.network_connection,
+            Snackbar.LENGTH_INDEFINITE
+        ).apply {
+            setAction(R.string.dismiss_label) { dismiss() }
+        }
 
         val navController = findNavController(R.id.nav_host)
 
@@ -34,5 +56,25 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<Toolbar>(R.id.toolbar).setupWithNavController(navController, appBarConfig)
         findViewById<NavigationView>(R.id.nav_view).setupWithNavController(navController)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        networkStateChangeListener.updateState()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        snackbar = null
+        networkStateChangeListener.removeListener(this)
+        networkStateChangeListener.unregisterReceiver()
+    }
+
+    override fun networkAvailable() {
+        snackbar?.dismiss()
+    }
+
+    override fun networkLost() {
+        snackbar?.show()
     }
 }

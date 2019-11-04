@@ -20,6 +20,10 @@ class CoreDetailsPresenterImpl(
         view.updateCoreDetails(coreModel)
     }
 
+    override fun cancelRequest() {
+        interactor.cancelAllRequests()
+    }
+
     override fun onSuccess(coreModel: CoreModel?) {
         coreModel?.let {
             coreDetails = coreModel

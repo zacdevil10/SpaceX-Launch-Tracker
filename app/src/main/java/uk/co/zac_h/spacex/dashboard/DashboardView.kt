@@ -6,19 +6,17 @@ interface DashboardView {
 
     fun setLaunchesList(launches: LinkedHashMap<String, LaunchesModel>)
 
-    fun setPinnedList(pinned: ArrayList<LaunchesModel>)
-
     fun updateLaunchesList()
 
-    fun updatePinnedList()
+    fun updatePinnedList(pinned: LinkedHashMap<String, LaunchesModel>)
 
     fun updateCountdown(countdown: String)
 
     fun setCountdown(launchDateUnix: Long)
 
-    fun showPinnedHeading()
+    fun showPinnedMessage()
 
-    fun hidePinnedHeading()
+    fun hidePinnedMessage()
 
     fun showProgress()
 

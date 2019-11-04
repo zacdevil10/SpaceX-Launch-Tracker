@@ -1,12 +1,19 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
-import com.github.mikephil.charting.data.PieEntry
+import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.model.RocketsModel
 
 interface LaunchHistoryView {
 
-    fun setSuccessRate(id: Int, percent: Int)
+    fun setSuccessRate(rockets: ArrayList<RocketsModel>)
 
-    fun updatePieChart(entries: ArrayList<PieEntry>, centerText: String, animate: Boolean)
+    fun updatePieChart(launches: ArrayList<LaunchesModel>, animate: Boolean)
+
+    fun showFilter(filterVisible: Boolean)
+
+    fun setFilterSuccessful(isFiltered: Boolean)
+
+    fun setFilterFailed(isFiltered: Boolean)
 
     fun showProgress()
 

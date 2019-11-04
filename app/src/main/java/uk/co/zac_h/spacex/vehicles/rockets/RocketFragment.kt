@@ -10,11 +10,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_rocket.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.RocketsModel
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 
-class RocketFragment : Fragment(), RocketView {
+class RocketFragment : Fragment(), RocketView,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: RocketPresenter
+
+    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private lateinit var rocketsAdapter: RocketsAdapter
     private val rocketsArray = ArrayList<RocketsModel>()
@@ -28,6 +32,13 @@ class RocketFragment : Fragment(), RocketView {
         super.onViewCreated(view, savedInstanceState)
 
         presenter = RocketPresenterImpl(this, RocketInteractorImpl())
+
+        networkStateChangeListener = OnNetworkStateChangeListener(
+            context
+        ).apply {
+            addListener(this@RocketFragment)
+            registerReceiver()
+        }
 
         rocketsAdapter = RocketsAdapter(rocketsArray)
 
@@ -43,6 +54,8 @@ class RocketFragment : Fragment(), RocketView {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequest()
+        networkStateChangeListener.removeListener(this)
+        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun updateRockets(rockets: List<RocketsModel>) {
@@ -60,7 +73,13 @@ class RocketFragment : Fragment(), RocketView {
         rocket_progress_bar.visibility = View.GONE
     }
 
-    override fun error(error: String) {
+    override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            if (rocketsArray.isEmpty()) presenter.getRockets()
+        }
     }
 }

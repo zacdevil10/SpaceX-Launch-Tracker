@@ -10,8 +10,8 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.history.HistoryView
-import uk.co.zac_h.spacex.utils.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.formatDateMillisDDMMM
+import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 
 class HistoryAdapter(
     private var events: ArrayList<HistoryHeaderModel>,
@@ -118,13 +118,11 @@ class HistoryAdapter(
             itemView.findViewById(R.id.list_item_history_wiki_button)
         val articleButton: ConstraintLayout =
             itemView.findViewById(R.id.list_item_history_article_button)
-
         val lineBottom: View = itemView.findViewById(R.id.list_item_history_line_bottom)
     }
 
     class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val heading: TextView = itemView.findViewById(R.id.list_item_history_heading)
-
         val lineTop: View = itemView.findViewById(R.id.list_item_history_line_top)
     }
 }

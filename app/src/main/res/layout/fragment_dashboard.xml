@@ -38,20 +38,10 @@
                     android:textAlignment="center"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/heading"
+                    android:letterSpacing="0.1"
                     android:visibility="gone"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="43:13:23:55" />
-
-                <TextView
-                    android:id="@+id/dashboard_pinned_heading_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="@string/pinned_launches"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/heading"
-                    android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@id/dashboard_launches_recycler" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/dashboard_launches_recycler"
@@ -63,6 +53,18 @@
                     tools:itemCount="2"
                     tools:listitem="@layout/list_item_dashboard_launches" />
 
+                <TextView
+                    android:id="@+id/dashboard_pinned_heading_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/pinned_launches"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/heading"
+                    app:layout_constraintTop_toBottomOf="@id/dashboard_launches_recycler" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/dashboard_pinned_launches_recycler"
                     android:layout_width="match_parent"
@@ -73,6 +75,15 @@
                     app:layout_constraintTop_toBottomOf="@id/dashboard_pinned_heading_text"
                     tools:itemCount="4"
                     tools:listitem="@layout/list_item_dashboard_launches" />
+
+                <TextView
+                    android:id="@+id/dashboard_pinned_message_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_pinned_launches_found_label"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/dashboard_pinned_launches_recycler" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

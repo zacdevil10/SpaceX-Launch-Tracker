@@ -11,11 +11,15 @@ import kotlinx.android.synthetic.main.fragment_core_details.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.launches.adapters.CoreMissionsAdapter
 import uk.co.zac_h.spacex.model.CoreModel
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
-class CoreDetailsFragment : Fragment(), CoreDetailsView {
+class CoreDetailsFragment : Fragment(), CoreDetailsView,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: CoreDetailsPresenter
+
+    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private var core: CoreModel? = null
     private var id: String? = null
@@ -38,6 +42,13 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView {
 
         presenter = CoreDetailsPresenterImpl(this, CoreDetailsInteractorImpl())
 
+        networkStateChangeListener = OnNetworkStateChangeListener(
+            context
+        ).apply {
+            addListener(this@CoreDetailsFragment)
+            registerReceiver()
+        }
+
         core?.let {
             presenter.addCoreModel(it)
         } ?: id?.let {
@@ -47,11 +58,14 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        core_details_mission_recycler.adapter = null
+        presenter.cancelRequest()
+        networkStateChangeListener.removeListener(this)
+        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun updateCoreDetails(coreModel: CoreModel) {
         coreModel.apply {
+            core = coreModel
             core_details_serial_text.text = serial
             core_details_block_text.text = block ?: "TBD"
             core_details_details_text.text = details
@@ -91,5 +105,13 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView {
 
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            id?.let {
+                if (core == null) presenter.getCoreDetails(it)
+            }
+        }
     }
 }

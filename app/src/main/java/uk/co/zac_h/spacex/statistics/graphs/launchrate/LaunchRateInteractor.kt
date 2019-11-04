@@ -9,7 +9,7 @@ interface LaunchRateInteractor {
     fun cancelAllRequests()
 
     interface InteractorCallback {
-        fun onSuccess(launches: List<LaunchesModel>?)
+        fun onSuccess(launches: List<LaunchesModel>?, animate: Boolean)
         fun onError(error: String)
     }
 }

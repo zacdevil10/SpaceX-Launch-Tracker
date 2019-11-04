@@ -1,9 +1,7 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,12 +10,23 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.StatsPadModel
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
 import uk.co.zac_h.spacex.utils.HeaderItemDecoration
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class PadStatsFragment : Fragment(), PadStatsView {
+class PadStatsFragment : Fragment(), PadStatsView,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: PadStatsPresenter
 
+    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
+
     private lateinit var padsAdapter: PadStatsSitesAdapter
+
+    private var pads = ArrayList<StatsPadModel>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,29 +38,50 @@ class PadStatsFragment : Fragment(), PadStatsView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (!::presenter.isInitialized) presenter =
-            PadStatsPresenterImpl(this, PadStatsInteractorImpl())
+        presenter = PadStatsPresenterImpl(this, PadStatsInteractorImpl())
 
-        presenter.getPads()
-    }
+        networkStateChangeListener = OnNetworkStateChangeListener(
+            context
+        ).apply {
+            addListener(this@PadStatsFragment)
+            registerReceiver()
+        }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        pad_stats_launch_sites_recycler.adapter = null
-    }
-
-    override fun setPadsList(pads: ArrayList<StatsPadModel>) {
         padsAdapter = PadStatsSitesAdapter(pads)
 
         pad_stats_launch_sites_recycler.apply {
             layoutManager = LinearLayoutManager(this@PadStatsFragment.context)
             setHasFixedSize(true)
             adapter = padsAdapter
-            addItemDecoration(HeaderItemDecoration(this, padsAdapter.isHeader()))
+            addItemDecoration(HeaderItemDecoration(this, padsAdapter.isHeader(), false))
         }
+
+        if (pads.isEmpty()) presenter.getPads()
     }
 
-    override fun updateRecycler() {
+    override fun onDestroyView() {
+        super.onDestroyView()
+        networkStateChangeListener.removeListener(this)
+        networkStateChangeListener.unregisterReceiver()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_statistics_pads, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.reload -> {
+            presenter.getPads()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
+    }
+
+    override fun updateRecycler(pads: ArrayList<StatsPadModel>) {
+        this.pads.clear()
+        this.pads.addAll(pads)
+
         padsAdapter.notifyDataSetChanged()
     }
 
@@ -65,5 +95,11 @@ class PadStatsFragment : Fragment(), PadStatsView {
 
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            if (pads.isEmpty()) presenter.getPads()
+        }
     }
 }

@@ -12,11 +12,11 @@ class DashboardPresenterImpl(
     DashboardInteractor.InteractorCallback {
 
     private val launchesMap = LinkedHashMap<String, LaunchesModel>()
-    private val pinnedLaunches = ArrayList<LaunchesModel>()
+    private val pinnedLaunches = LinkedHashMap<String, LaunchesModel>()
 
     override fun getLatestLaunches(isRefresh: Boolean) {
         view.showProgress()
-        view.hidePinnedHeading()
+        view.showPinnedMessage()
 
         if (isRefresh) {
             launchesMap.clear()
@@ -41,14 +41,12 @@ class DashboardPresenterImpl(
                     )
                 }
             }
-
-            if (!isRefresh) view.setPinnedList(pinnedLaunches)
         }
     }
 
     override fun updateCountdown(time: Long) {
         val remaining = String.format(
-            "%02d:%02d:%02d:%02d",
+            "T-%02d:%02d:%02d:%02d",
             TimeUnit.MILLISECONDS.toDays(time),
             TimeUnit.MILLISECONDS.toHours(time) - TimeUnit.DAYS.toHours(
                 TimeUnit.MILLISECONDS.toDays(
@@ -81,9 +79,9 @@ class DashboardPresenterImpl(
                     launchesMap[id] = it
                 }
                 else -> {
-                    pinnedLaunches.add(it)
-                    view.updatePinnedList()
-                    view.showPinnedHeading()
+                    pinnedLaunches[id] = it
+                    view.hidePinnedMessage()
+                    view.updatePinnedList(pinnedLaunches)
                 }
             }
         }
@@ -108,7 +106,9 @@ class DashboardPresenterImpl(
     }
 
     override fun onError(error: String) {
-        view.showError(error)
-        view.toggleSwipeProgress(false)
+        view.apply {
+            showError(error)
+            toggleSwipeProgress(false)
+        }
     }
 }

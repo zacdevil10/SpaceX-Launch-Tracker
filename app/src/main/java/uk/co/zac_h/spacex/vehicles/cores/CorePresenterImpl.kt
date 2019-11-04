@@ -20,6 +20,6 @@ class CorePresenterImpl(private val view: CoreView, private val interactor: Core
     }
 
     override fun onError(error: String) {
-        view.error(error)
+        view.showError(error)
     }
 }

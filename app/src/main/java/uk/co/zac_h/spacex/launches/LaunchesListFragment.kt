@@ -10,14 +10,20 @@ import kotlinx.android.synthetic.main.fragment_launches_list.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextListener {
+class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextListener,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: LaunchesPresenter
     private lateinit var launchesAdapter: LaunchesAdapter
     private var launchesList = ArrayList<LaunchesModel>()
 
     private lateinit var searchView: SearchView
+
+    private var launchParam: String? = null
+
+    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     companion object {
         fun newInstance(launchParam: String) = LaunchesListFragment().apply {
@@ -41,7 +47,16 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        launchParam = arguments?.getString("launchParam")
+
         presenter = LaunchesPresenterImpl(this, LaunchesInteractorImpl())
+
+        networkStateChangeListener = OnNetworkStateChangeListener(
+            context
+        ).apply {
+            addListener(this@LaunchesListFragment)
+            registerReceiver()
+        }
 
         launchesAdapter = LaunchesAdapter(context, launchesList)
 
@@ -51,14 +66,11 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
             adapter = launchesAdapter
         }
 
-        arguments?.getString("launchParam")?.let { launchId ->
-            if (launchesList.isEmpty()) presenter.getLaunchList(
-                launchId,
-                if (launchId == "past") "desc" else "asc"
-            )
+        launchParam?.let { launchId ->
+            if (launchesList.isEmpty()) presenter.getLaunchList(launchId)
 
             launches_swipe_refresh.setOnRefreshListener {
-                presenter.getLaunchList(launchId, if (launchId == "past") "desc" else "asc")
+                presenter.getLaunchList(launchId)
             }
         }
     }
@@ -75,12 +87,13 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
     override fun onDestroyView() {
         super.onDestroyView()
-        launches_recycler.adapter = null
+        presenter.cancelRequests()
+        networkStateChangeListener.removeListener(this)
+        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter.cancelRequests()
         if (::searchView.isInitialized) searchView.setOnQueryTextListener(null)
     }
 
@@ -127,5 +140,13 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            if (launchesList.isEmpty()) launchParam?.let { launchId ->
+                presenter.getLaunchList(launchId)
+            }
+        }
     }
 }

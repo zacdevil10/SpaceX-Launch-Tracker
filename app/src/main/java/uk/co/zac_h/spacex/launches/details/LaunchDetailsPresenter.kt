@@ -13,4 +13,8 @@ interface LaunchDetailsPresenter {
     fun isPinned(): Boolean
 
     fun isPinned(id: Int): Boolean
+
+    fun createEvent()
+
+    fun cancelRequest()
 }
