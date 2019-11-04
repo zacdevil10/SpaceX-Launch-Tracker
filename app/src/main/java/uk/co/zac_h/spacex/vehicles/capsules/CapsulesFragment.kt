@@ -71,7 +71,7 @@ class CapsulesFragment : Fragment(), CapsulesView,
         capsules_progress_bar.visibility = View.GONE
     }
 
-    override fun error(error: String) {
+    override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 

@@ -22,6 +22,6 @@ class CapsulesPresenterImpl(
     }
 
     override fun onError(error: String) {
-        view.error(error)
+        view.showError(error)
     }
 }

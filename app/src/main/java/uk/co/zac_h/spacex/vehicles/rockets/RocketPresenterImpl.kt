@@ -20,6 +20,6 @@ class RocketPresenterImpl(private val view: RocketView, private val interactor: 
     }
 
     override fun onError(error: String) {
-        view.error(error)
+        view.showError(error)
     }
 }
