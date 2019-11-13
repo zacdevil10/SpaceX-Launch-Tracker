@@ -55,8 +55,6 @@ class PadStatsFragment : Fragment(), PadStatsView,
             adapter = padsAdapter
             addItemDecoration(HeaderItemDecoration(this, padsAdapter.isHeader(), false))
         }
-
-        if (pads.isEmpty()) presenter.getPads()
     }
 
     override fun onDestroyView() {
