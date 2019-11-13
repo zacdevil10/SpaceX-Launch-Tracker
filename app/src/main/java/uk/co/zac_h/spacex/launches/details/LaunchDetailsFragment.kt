@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.launches.details
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -313,7 +314,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
                     "${it.missionName} - SpaceX"
                 )
             }
-            startActivity(calendarIntent)
+            try {
+                startActivity(calendarIntent)
+            } catch (e: ActivityNotFoundException) {
+                showError("No supported calendar apps found.")
+            }
         }
     }
 
