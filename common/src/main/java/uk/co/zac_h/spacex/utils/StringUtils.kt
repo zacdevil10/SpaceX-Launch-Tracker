@@ -6,6 +6,7 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
+import java.net.URLEncoder
 import java.text.DecimalFormat
 
 fun String.generateCenterSpannableText(): SpannableString =
@@ -25,3 +26,5 @@ private fun String.rgb(): Int {
 }
 
 fun Any.metricFormat(): String = DecimalFormat("#,###.##").format(this)
+
+fun String.encodeUtf8(): String = URLEncoder.encode(this, "UTF-8")
