@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.news
+package uk.co.zac_h.spacex.news.twitter
 
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 

@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.news
+package uk.co.zac_h.spacex.news.twitter
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,7 +11,8 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.news.adapters.TwitterFeedAdapter
 
-class TwitterFeedFragment : Fragment(), TwitterFeedView {
+class TwitterFeedFragment : Fragment(),
+    TwitterFeedView {
 
     private lateinit var presenter: TwitterFeedPresenter
     private lateinit var twitterAdapter: TwitterFeedAdapter
@@ -25,7 +26,10 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = TwitterFeedPresenterImpl(this, TwitterFeedInteractorImpl())
+        presenter = TwitterFeedPresenterImpl(
+            this,
+            TwitterFeedInteractorImpl()
+        )
 
         twitterAdapter = TwitterFeedAdapter(context, tweetsList)
 

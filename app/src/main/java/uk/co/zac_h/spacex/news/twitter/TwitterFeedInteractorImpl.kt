@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.news
+package uk.co.zac_h.spacex.news.twitter
 
 import android.util.Log
 import kotlinx.coroutines.*
@@ -7,7 +7,8 @@ import uk.co.zac_h.spacex.rest.TwitterInterface
 import java.net.UnknownHostException
 import kotlin.coroutines.CoroutineContext
 
-class TwitterFeedInteractorImpl : TwitterFeedInteractor {
+class TwitterFeedInteractorImpl :
+    TwitterFeedInteractor {
 
     private val parentJob = Job()
     private val coroutineContext: CoroutineContext

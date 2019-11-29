@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/twitter_page_fragment"
-        android:name="uk.co.zac_h.spacex.news.TwitterFeedFragment"
+        android:name="uk.co.zac_h.spacex.news.twitter.TwitterFeedFragment"
         android:label="@string/menu_news"
         tools:layout="@layout/fragment_twitter_feed" />
 
