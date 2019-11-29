@@ -10,8 +10,8 @@
             android:title="@string/menu_home" />
         <item
             android:id="@id/twitter_page_fragment"
-            android:icon="@drawable/ic_calendar_plus"
-            android:title="News" />
+            android:icon="@drawable/ic_newspaper"
+            android:title="@string/menu_news" />
         <item
             android:id="@id/launches_page_fragment"
             android:icon="@drawable/ic_event_black_24dp"

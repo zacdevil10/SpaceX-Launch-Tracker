@@ -21,9 +21,9 @@ class TwitterFeedInteractorImpl : TwitterFeedInteractor {
                 TwitterInterface.create().getAllTweets(
                     screenName = "SpaceX",
                     rts = false,
-                    trim = true,
+                    trim = false,
                     mode = "extended",
-                    count = 15
+                    count = 300
                 )
             }
 
