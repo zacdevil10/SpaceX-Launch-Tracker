@@ -8,13 +8,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.squareup.picasso.Picasso
+import uk.co.zac_h.mediarecyclerview.models.MediaModel
+import uk.co.zac_h.mediarecyclerview.ui.MediaRecyclerView
+import uk.co.zac_h.mediarecyclerview.utils.MediaType
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.utils.CircleImageTransform
 import uk.co.zac_h.spacex.utils.formatDateString
-import kotlin.math.min
 
 class TwitterFeedAdapter(
     private val context: Context?,
@@ -46,14 +47,23 @@ class TwitterFeedAdapter(
             mediaCard.visibility = tweet.entities?.let { View.VISIBLE } ?: View.GONE
 
             tweet.entities?.let {
-                media.apply {
-                    layoutManager = StaggeredGridLayoutManager(
-                        min(it.media.size, 2),
-                        StaggeredGridLayoutManager.VERTICAL
+                val urls = ArrayList<MediaModel>()
+
+                it.media.forEach { tweetMedia ->
+                    urls.add(
+                        MediaModel(
+                            tweetMedia.url,
+                            when (tweetMedia.type) {
+                                "photo" -> MediaType.IMAGE
+                                "video" -> MediaType.VIDEO
+                                "animated_gif" -> MediaType.IMAGE
+                                else -> throw IllegalArgumentException("Unknown media type.")
+                            }
+                        )
                     )
-                    setHasFixedSize(false)
-                    adapter = TwitterMediaAdapter(this@TwitterFeedAdapter.context, it.media)
                 }
+
+                media.configure(context, urls)
             }
         }
     }
@@ -66,7 +76,7 @@ class TwitterFeedAdapter(
         val name: TextView = itemView.findViewById(R.id.tweet_name)
         val screenName: TextView = itemView.findViewById(R.id.tweet_screen_name)
         val mediaCard: CardView = itemView.findViewById(R.id.tweet_media_card)
-        val media: RecyclerView = itemView.findViewById(R.id.tweet_media_recycler)
+        val media: MediaRecyclerView = itemView.findViewById(R.id.tweet_media_recycler)
         val desc: TextView = itemView.findViewById(R.id.tweet_full_text)
     }
 }
