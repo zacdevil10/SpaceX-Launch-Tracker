@@ -6,17 +6,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_twitter_feed.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.news.adapters.TwitterFeedAdapter
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class TwitterFeedFragment : Fragment(),
-    TwitterFeedView {
+class TwitterFeedFragment : Fragment(), TwitterFeedView,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: TwitterFeedPresenter
+
+    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
+
     private lateinit var twitterAdapter: TwitterFeedAdapter
     private var tweetsList = ArrayList<TimelineTweetModel>()
 
@@ -33,6 +38,13 @@ class TwitterFeedFragment : Fragment(),
             TwitterFeedInteractorImpl()
         )
 
+        networkStateChangeListener = OnNetworkStateChangeListener(context)
+            .apply {
+                addListener(this@TwitterFeedFragment)
+                registerReceiver()
+            }
+
+
         twitterAdapter = TwitterFeedAdapter(tweetsList, this)
 
         twitter_feed_recycler.apply {
@@ -41,20 +53,47 @@ class TwitterFeedFragment : Fragment(),
             adapter = twitterAdapter
         }
 
-        presenter.getTweets()
+        twitter_feed_swipe_refresh.setOnRefreshListener {
+            presenter.getTweets()
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequests()
+        networkStateChangeListener.removeListener(this)
+        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun updateRecycler(tweets: List<TimelineTweetModel>) {
+        tweetsList.clear()
         tweetsList.addAll(tweets)
         twitterAdapter.notifyDataSetChanged()
     }
 
     override fun openWebLink(link: String) {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
+    }
+
+    override fun showProgress() {
+        twitter_feed_progress_bar.visibility = View.VISIBLE
+    }
+
+    override fun hideProgress() {
+        twitter_feed_progress_bar.visibility = View.GONE
+    }
+
+    override fun toggleSwipeProgress(isRefreshing: Boolean) {
+        twitter_feed_swipe_refresh.isRefreshing = isRefreshing
+    }
+
+    override fun showError(error: String) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            presenter.getTweets()
+        }
     }
 }

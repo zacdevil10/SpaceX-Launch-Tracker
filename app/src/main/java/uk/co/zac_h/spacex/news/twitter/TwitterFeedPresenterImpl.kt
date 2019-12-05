@@ -8,6 +8,7 @@ class TwitterFeedPresenterImpl(
 ) : TwitterFeedPresenter, TwitterFeedInteractor.Callback {
 
     override fun getTweets() {
+        view.showProgress()
         interactor.getTwitterTimeline(this)
     }
 
@@ -21,11 +22,15 @@ class TwitterFeedPresenterImpl(
 
     override fun onSuccess(tweets: List<TimelineTweetModel>?) {
         tweets?.let {
-            view.updateRecycler(tweets)
+            view.apply {
+                updateRecycler(tweets)
+                toggleSwipeProgress(false)
+                hideProgress()
+            }
         }
     }
 
     override fun onError(error: String) {
-
+        view.showError(error)
     }
 }
