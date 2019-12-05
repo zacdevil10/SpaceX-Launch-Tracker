@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.news.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,12 +13,15 @@ import uk.co.zac_h.mediarecyclerview.ui.MediaRecyclerView
 import uk.co.zac_h.mediarecyclerview.utils.MediaType
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
+import uk.co.zac_h.spacex.news.twitter.TwitterFeedView
 import uk.co.zac_h.spacex.utils.CircleImageTransform
+import uk.co.zac_h.spacex.utils.HtmlTextView
 import uk.co.zac_h.spacex.utils.formatDateString
+import java.util.regex.Pattern
 
 class TwitterFeedAdapter(
-    private val context: Context?,
-    private val twitterFeed: ArrayList<TimelineTweetModel>
+    private val twitterFeed: ArrayList<TimelineTweetModel>,
+    private val view: TwitterFeedView
 ) :
     RecyclerView.Adapter<TwitterFeedAdapter.ViewHolder>() {
 
@@ -36,34 +38,62 @@ class TwitterFeedAdapter(
         val tweet = twitterFeed[position]
 
         holder.apply {
+            itemView.setOnClickListener {
+                view.openWebLink("https://twitter.com/SpaceX/status/${tweet.id}")
+            }
+
             Picasso.get().load(tweet.user.profileUrl).transform(CircleImageTransform())
                 .into(profileImage)
             date.text = tweet.created.formatDateString()
             name.text = tweet.user.name
             screenName.text = "@${tweet.user.screenName}"
-            desc.text = tweet.text
 
-            media.visibility = tweet.entities?.let { View.VISIBLE } ?: View.GONE
-            mediaCard.visibility = tweet.entities?.let { View.VISIBLE } ?: View.GONE
+            var tweetMessage = tweet.text
 
-            tweet.entities?.let {
+            tweet.entities.urls.forEach {
+                tweetMessage =
+                    tweetMessage.replace(it.url, "<a href='${it.url}'>${it.displayUrl}</a>")
+            }
+
+            val pattern = Pattern.compile("((https://t.co/)\\w+)\$")
+            val matcher = pattern.matcher(tweetMessage)
+
+            tweetMessage = matcher.replaceAll("")
+
+            tweet.entities.mentions.forEach {
+                tweetMessage = tweetMessage.replace(
+                    "@${it.screenName}",
+                    "<a href='https://twitter.com/${it.screenName}'>@${it.screenName}</a>",
+                    true
+                )
+            }
+
+            desc.setHtmlText(tweetMessage)
+            desc.movementMethod = HtmlTextView.LocalLinkMovementMethod
+
+            media.visibility = tweet.extendedEntities?.let { View.VISIBLE } ?: View.GONE
+            mediaCard.visibility = tweet.extendedEntities?.let { View.VISIBLE } ?: View.GONE
+
+            tweet.extendedEntities?.let {
                 val urls = ArrayList<MediaModel>()
 
                 it.media.forEach { tweetMedia ->
                     urls.add(
-                        MediaModel(
-                            tweetMedia.url,
-                            when (tweetMedia.type) {
-                                "photo" -> MediaType.IMAGE
-                                "video" -> MediaType.VIDEO
-                                "animated_gif" -> MediaType.IMAGE
-                                else -> throw IllegalArgumentException("Unknown media type.")
-                            }
-                        )
+                        when (tweetMedia.type) {
+                            "photo" -> MediaModel(tweetMedia.url, MediaType.IMAGE)
+                            "video" -> MediaModel(
+                                tweetMedia.info.variants[0].url,
+                                MediaType.VIDEO,
+                                tweetMedia.url
+                            )
+                            else -> return@forEach
+                        }
                     )
                 }
 
-                media.configure(context, urls)
+                media.apply {
+                    configure(context, urls)
+                }
             }
         }
     }
@@ -77,6 +107,6 @@ class TwitterFeedAdapter(
         val screenName: TextView = itemView.findViewById(R.id.tweet_screen_name)
         val mediaCard: CardView = itemView.findViewById(R.id.tweet_media_card)
         val media: MediaRecyclerView = itemView.findViewById(R.id.tweet_media_recycler)
-        val desc: TextView = itemView.findViewById(R.id.tweet_full_text)
+        val desc: HtmlTextView = itemView.findViewById(R.id.tweet_full_text)
     }
 }

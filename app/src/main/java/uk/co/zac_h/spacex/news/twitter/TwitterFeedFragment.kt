@@ -1,5 +1,7 @@
 package uk.co.zac_h.spacex.news.twitter
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,7 +33,7 @@ class TwitterFeedFragment : Fragment(),
             TwitterFeedInteractorImpl()
         )
 
-        twitterAdapter = TwitterFeedAdapter(context, tweetsList)
+        twitterAdapter = TwitterFeedAdapter(tweetsList, this)
 
         twitter_feed_recycler.apply {
             layoutManager = LinearLayoutManager(this@TwitterFeedFragment.context)
@@ -45,5 +47,9 @@ class TwitterFeedFragment : Fragment(),
     override fun updateRecycler(tweets: List<TimelineTweetModel>) {
         tweetsList.addAll(tweets)
         twitterAdapter.notifyDataSetChanged()
+    }
+
+    override fun openWebLink(link: String) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 }
