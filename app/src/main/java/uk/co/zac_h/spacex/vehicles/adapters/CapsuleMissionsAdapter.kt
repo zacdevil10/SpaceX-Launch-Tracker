@@ -9,7 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.MissionsModel
+import uk.co.zac_h.spacex.model.spacex.MissionsModel
 
 class CapsuleMissionsAdapter(
     private val context: Context?,

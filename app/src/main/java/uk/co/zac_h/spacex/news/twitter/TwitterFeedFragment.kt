@@ -44,6 +44,11 @@ class TwitterFeedFragment : Fragment(),
         presenter.getTweets()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter.cancelRequests()
+    }
+
     override fun updateRecycler(tweets: List<TimelineTweetModel>) {
         tweetsList.addAll(tweets)
         twitterAdapter.notifyDataSetChanged()

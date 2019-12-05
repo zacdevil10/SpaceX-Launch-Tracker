@@ -6,6 +6,8 @@ interface TwitterFeedInteractor {
 
     fun getTwitterTimeline(listener: Callback)
 
+    fun getTwitterTimelineFromId(id: Long, listener: Callback)
+
     fun cancelAllRequests()
 
     interface Callback {

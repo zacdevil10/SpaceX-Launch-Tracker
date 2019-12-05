@@ -6,7 +6,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-import uk.co.zac_h.spacex.model.*
+import uk.co.zac_h.spacex.model.spacex.*
 
 interface SpaceXInterface {
 

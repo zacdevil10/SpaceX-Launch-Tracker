@@ -16,7 +16,7 @@ import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.news.twitter.TwitterFeedView
 import uk.co.zac_h.spacex.utils.CircleImageTransform
 import uk.co.zac_h.spacex.utils.HtmlTextView
-import uk.co.zac_h.spacex.utils.formatDateString
+import uk.co.zac_h.spacex.utils.convertDate
 import java.util.regex.Pattern
 
 class TwitterFeedAdapter(
@@ -44,7 +44,7 @@ class TwitterFeedAdapter(
 
             Picasso.get().load(tweet.user.profileUrl).transform(CircleImageTransform())
                 .into(profileImage)
-            date.text = tweet.created.formatDateString()
+            date.text = tweet.created.convertDate()
             name.text = tweet.user.name
             screenName.text = "@${tweet.user.screenName}"
 

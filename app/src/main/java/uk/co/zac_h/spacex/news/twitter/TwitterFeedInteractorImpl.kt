@@ -24,7 +24,43 @@ class TwitterFeedInteractorImpl :
                     rts = false,
                     trim = false,
                     mode = "extended",
-                    count = 30
+                    count = 15
+                )
+            }
+
+            withContext(Dispatchers.Main) {
+                try {
+                    if (response.await().isSuccessful) {
+                        listener.onSuccess(response.await().body())
+                    } else {
+                        listener.onError(response.await().message())
+                    }
+                } catch (e: HttpException) {
+                    listener.onError(
+                        e.localizedMessage ?: "There was a network error! Please try refreshing."
+                    )
+                } catch (e: UnknownHostException) {
+                    listener.onError("Unable to resolve host! Check your network connection and try again.")
+                } catch (e: Throwable) {
+                    Log.e(
+                        this@TwitterFeedInteractorImpl.javaClass.name,
+                        e.localizedMessage ?: "Job failed to execute"
+                    )
+                }
+            }
+        }
+    }
+
+    override fun getTwitterTimelineFromId(id: Long, listener: TwitterFeedInteractor.Callback) {
+        scope.launch {
+            val response = async(SupervisorJob(parentJob)) {
+                TwitterInterface.create().getAllTweets(
+                    screenName = "SpaceX",
+                    rts = false,
+                    trim = false,
+                    mode = "extended",
+                    count = 30,
+                    maxId = id
                 )
             }
 

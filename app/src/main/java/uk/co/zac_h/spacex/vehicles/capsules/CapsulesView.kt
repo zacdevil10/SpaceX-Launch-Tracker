@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
-import uk.co.zac_h.spacex.model.CapsulesModel
+import uk.co.zac_h.spacex.model.spacex.CapsulesModel
 
 interface CapsulesView {
 

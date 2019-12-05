@@ -11,6 +11,14 @@ class TwitterFeedPresenterImpl(
         interactor.getTwitterTimeline(this)
     }
 
+    override fun getTweets(maxId: Long) {
+        interactor.getTwitterTimelineFromId(maxId, this)
+    }
+
+    override fun cancelRequests() {
+        interactor.cancelAllRequests()
+    }
+
     override fun onSuccess(tweets: List<TimelineTweetModel>?) {
         tweets?.let {
             view.updateRecycler(tweets)
