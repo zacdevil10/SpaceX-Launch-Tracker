@@ -61,6 +61,7 @@ data class TweetVideoInfoModel(
 
 @Parcelize
 data class TweetVideoVariantsModel(
-    @field:Json(name = "bitrate") var bitrate: Long,
+    @field:Json(name = "bitrate") var bitrate: Long?,
+    @field:Json(name = "content_type") var contentType: String,
     @field:Json(name = "url") var url: String
 ) : Parcelable

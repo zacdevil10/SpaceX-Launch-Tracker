@@ -74,15 +74,32 @@ class TwitterFeedAdapter(
             media.visibility = tweet.extendedEntities?.let { View.VISIBLE } ?: View.GONE
             mediaCard.visibility = tweet.extendedEntities?.let { View.VISIBLE } ?: View.GONE
 
+            var bitratePosition = 0
+
             tweet.extendedEntities?.let {
                 val urls = ArrayList<MediaModel>()
+
+                it.media.forEach { tweetMedia ->
+                    var bitrate: Long = 0
+                    if (tweetMedia.type == "video") {
+                        tweetMedia.info.variants.forEachIndexed { index, mediaVariants ->
+                            mediaVariants.bitrate?.let { bit ->
+                                if (bit > bitrate) {
+                                    bitrate = bit
+                                } else {
+                                    bitratePosition = index
+                                }
+                            }
+                        }
+                    }
+                }
 
                 it.media.forEach { tweetMedia ->
                     urls.add(
                         when (tweetMedia.type) {
                             "photo" -> MediaModel(tweetMedia.url, MediaType.IMAGE)
                             "video" -> MediaModel(
-                                tweetMedia.info.variants[0].url,
+                                tweetMedia.info.variants[bitratePosition].url,
                                 MediaType.VIDEO,
                                 tweetMedia.url
                             )
