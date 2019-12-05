@@ -8,6 +8,18 @@
     android:clickable="true"
     android:focusable="true">
 
+    <View
+        android:id="@+id/tweet_reply_indicator_top"
+        android:layout_width="2dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="4dp"
+        android:background="@drawable/reply_indicator_top"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/tweet_profile_image"
+        app:layout_constraintLeft_toLeftOf="@id/tweet_profile_image"
+        app:layout_constraintRight_toRightOf="@id/tweet_profile_image"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/tweet_profile_image"
         android:layout_width="40dp"
@@ -18,6 +30,18 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/ic_calendar_plus"
         tools:tint="@android:color/white" />
+
+    <View
+        android:id="@+id/tweet_reply_indicator_bottom"
+        android:layout_width="2dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/reply_indicator_bottom"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/tweet_profile_image"
+        app:layout_constraintRight_toRightOf="@id/tweet_profile_image"
+        app:layout_constraintTop_toBottomOf="@id/tweet_profile_image" />
 
     <TextView
         android:id="@+id/tweet_name"
@@ -40,13 +64,23 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="\@SpaceX" />
 
+    <View
+        android:id="@+id/tweet_heading_separator"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:layout_marginStart="4dp"
+        android:background="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="@id/tweet_screen_name"
+        app:layout_constraintLeft_toRightOf="@id/tweet_screen_name"
+        app:layout_constraintTop_toTopOf="@id/tweet_screen_name" />
+
     <TextView
         android:id="@+id/tweet_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintLeft_toRightOf="@id/tweet_screen_name"
+        app:layout_constraintLeft_toRightOf="@id/tweet_heading_separator"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Date" />
 
@@ -54,12 +88,12 @@
         android:id="@+id/tweet_media_card"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:cardBackgroundColor="@android:color/transparent"
         app:cardCornerRadius="8dp"
         app:elevation="0dp"
-        app:cardBackgroundColor="@android:color/transparent"
         app:layout_constraintLeft_toRightOf="@id/tweet_profile_image"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tweet_name">
@@ -83,10 +117,10 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:textColorLink="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/tweet_profile_image"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tweet_media_card"
-        app:layout_constraintBottom_toBottomOf="parent"
         tools:text="The Dragon spacecraft supporting this mission previously flew in support of our fourth and eleventh commercial resupply missions" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

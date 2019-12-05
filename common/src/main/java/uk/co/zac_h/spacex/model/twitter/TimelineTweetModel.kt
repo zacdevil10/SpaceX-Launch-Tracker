@@ -11,7 +11,8 @@ data class TimelineTweetModel(
     @field:Json(name = "full_text") var text: String,
     @field:Json(name = "entities") var entities: TimelineEntityModel,
     @field:Json(name = "extended_entities") var extendedEntities: TimelineExtendedEntityModel?,
-    @field:Json(name = "user") var user: TwitterUserModel
+    @field:Json(name = "user") var user: TwitterUserModel,
+    @field:Json(name = "in_reply_to_status_id") var replyStatusId: Long?
 ) : Parcelable
 
 @Parcelize

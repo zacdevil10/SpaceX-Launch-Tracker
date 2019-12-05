@@ -95,6 +95,19 @@ class TwitterFeedAdapter(
                     configure(context, urls)
                 }
             }
+
+            if (position < twitterFeed.size - 1) {
+                indicatorBottom.visibility = twitterFeed[position].replyStatusId?.let {
+                    if (twitterFeed[position + 1].id == it) View.VISIBLE else View.GONE
+                } ?: View.GONE
+            }
+
+            if (position != 0) {
+                indicatorTop.visibility = twitterFeed[position - 1].replyStatusId?.let {
+                    if (twitterFeed[position].id == it) View.VISIBLE else View.GONE
+                } ?: View.GONE
+            }
+
         }
     }
 
@@ -108,5 +121,8 @@ class TwitterFeedAdapter(
         val mediaCard: CardView = itemView.findViewById(R.id.tweet_media_card)
         val media: MediaRecyclerView = itemView.findViewById(R.id.tweet_media_recycler)
         val desc: HtmlTextView = itemView.findViewById(R.id.tweet_full_text)
+
+        val indicatorTop: View = itemView.findViewById(R.id.tweet_reply_indicator_top)
+        val indicatorBottom: View = itemView.findViewById(R.id.tweet_reply_indicator_bottom)
     }
 }

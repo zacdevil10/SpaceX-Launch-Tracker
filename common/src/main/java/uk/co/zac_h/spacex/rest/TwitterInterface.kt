@@ -21,6 +21,16 @@ interface TwitterInterface {
         @Query("count") count: Int
     ): Response<List<TimelineTweetModel>>
 
+    @GET("statuses/user_timeline.json")
+    suspend fun getAllTweets(
+        @Query("screen_name") screenName: String,
+        @Query("include_rts") rts: Boolean,
+        @Query("trim_user") trim: Boolean,
+        @Query("tweet_mode") mode: String,
+        @Query("count") count: Int,
+        @Query("max_id") maxId: Long
+    ): Response<List<TimelineTweetModel>>
+
     companion object RetrofitSetup {
 
         private const val CONSUMER_KEY = BuildConfig.CONSUMER_KEY

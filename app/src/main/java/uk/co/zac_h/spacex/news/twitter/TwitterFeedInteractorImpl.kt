@@ -24,7 +24,7 @@ class TwitterFeedInteractorImpl :
                     rts = false,
                     trim = false,
                     mode = "extended",
-                    count = 300
+                    count = 30
                 )
             }
 
