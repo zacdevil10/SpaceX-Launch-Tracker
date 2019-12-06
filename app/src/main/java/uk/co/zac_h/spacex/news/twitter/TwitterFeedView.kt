@@ -6,6 +6,8 @@ interface TwitterFeedView {
 
     fun updateRecycler(tweets: List<TimelineTweetModel>)
 
+    fun addPagedData(tweets: List<TimelineTweetModel>)
+
     fun openWebLink(link: String)
 
     fun showProgress()

@@ -13,7 +13,7 @@ import uk.co.zac_h.spacex.utils.OAuthSigningInterceptor
 interface TwitterInterface {
 
     @GET("statuses/user_timeline.json")
-    suspend fun getAllTweets(
+    suspend fun getTweets(
         @Query("screen_name") screenName: String,
         @Query("include_rts") rts: Boolean,
         @Query("trim_user") trim: Boolean,
@@ -22,7 +22,7 @@ interface TwitterInterface {
     ): Response<List<TimelineTweetModel>>
 
     @GET("statuses/user_timeline.json")
-    suspend fun getAllTweets(
+    suspend fun getTweetsFromId(
         @Query("screen_name") screenName: String,
         @Query("include_rts") rts: Boolean,
         @Query("trim_user") trim: Boolean,

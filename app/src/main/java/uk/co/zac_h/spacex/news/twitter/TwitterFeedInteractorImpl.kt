@@ -19,7 +19,7 @@ class TwitterFeedInteractorImpl :
     override fun getTwitterTimeline(listener: TwitterFeedInteractor.Callback) {
         scope.launch {
             val response = async(SupervisorJob(parentJob)) {
-                TwitterInterface.create().getAllTweets(
+                TwitterInterface.create().getTweets(
                     screenName = "SpaceX",
                     rts = false,
                     trim = false,
@@ -54,12 +54,12 @@ class TwitterFeedInteractorImpl :
     override fun getTwitterTimelineFromId(id: Long, listener: TwitterFeedInteractor.Callback) {
         scope.launch {
             val response = async(SupervisorJob(parentJob)) {
-                TwitterInterface.create().getAllTweets(
+                TwitterInterface.create().getTweetsFromId(
                     screenName = "SpaceX",
                     rts = false,
                     trim = false,
                     mode = "extended",
-                    count = 30,
+                    count = 15,
                     maxId = id
                 )
             }
@@ -67,7 +67,7 @@ class TwitterFeedInteractorImpl :
             withContext(Dispatchers.Main) {
                 try {
                     if (response.await().isSuccessful) {
-                        listener.onSuccess(response.await().body())
+                        listener.onPagedSuccess(response.await().body())
                     } else {
                         listener.onError(response.await().message())
                     }

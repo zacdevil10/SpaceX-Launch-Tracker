@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.fragment_twitter_feed.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.news.adapters.TwitterFeedAdapter
+import uk.co.zac_h.spacex.utils.PaginationScrollListener
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class TwitterFeedFragment : Fragment(), TwitterFeedView,
@@ -24,6 +25,9 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
     private lateinit var twitterAdapter: TwitterFeedAdapter
     private var tweetsList = ArrayList<TimelineTweetModel>()
+
+    private var isLastPage = false
+    private var isLoading = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,11 +50,24 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
 
         twitterAdapter = TwitterFeedAdapter(tweetsList, this)
+        val layout = LinearLayoutManager(this@TwitterFeedFragment.context)
 
         twitter_feed_recycler.apply {
-            layoutManager = LinearLayoutManager(this@TwitterFeedFragment.context)
+            layoutManager = layout
             setHasFixedSize(true)
             adapter = twitterAdapter
+
+            addOnScrollListener(object : PaginationScrollListener(layout) {
+                override fun isLastPage(): Boolean = isLastPage
+
+                override fun isLoading(): Boolean = isLoading
+
+                override fun loadItems() {
+                    isLoading = true
+
+                    presenter.getTweets(tweetsList[tweetsList.size - 1].id)
+                }
+            })
         }
 
         twitter_feed_swipe_refresh.setOnRefreshListener {
@@ -68,6 +85,13 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
     override fun updateRecycler(tweets: List<TimelineTweetModel>) {
         tweetsList.clear()
         tweetsList.addAll(tweets)
+        twitterAdapter.notifyDataSetChanged()
+    }
+
+    override fun addPagedData(tweets: List<TimelineTweetModel>) {
+        isLoading = false
+        tweetsList.addAll(tweets)
+        tweetsList.removeAt(tweetsList.size - 15)
         twitterAdapter.notifyDataSetChanged()
     }
 

@@ -12,6 +12,7 @@ interface TwitterFeedInteractor {
 
     interface Callback {
         fun onSuccess(tweets: List<TimelineTweetModel>?)
+        fun onPagedSuccess(tweets: List<TimelineTweetModel>?)
         fun onError(error: String)
     }
 }

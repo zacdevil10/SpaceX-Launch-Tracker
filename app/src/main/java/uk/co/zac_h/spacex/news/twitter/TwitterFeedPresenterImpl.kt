@@ -30,6 +30,12 @@ class TwitterFeedPresenterImpl(
         }
     }
 
+    override fun onPagedSuccess(tweets: List<TimelineTweetModel>?) {
+        tweets?.let {
+            view.addPagedData(it)
+        }
+    }
+
     override fun onError(error: String) {
         view.showError(error)
     }

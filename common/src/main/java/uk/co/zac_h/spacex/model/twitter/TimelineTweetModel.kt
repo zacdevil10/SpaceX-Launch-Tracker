@@ -56,6 +56,8 @@ data class TwitterUserModel(
 
 @Parcelize
 data class TweetVideoInfoModel(
+    @field:Json(name = "aspect_ratio") var aspectRatio: List<Int>,
+    @field:Json(name = "duration_millis") var duration: Int,
     @field:Json(name = "variants") var variants: List<TweetVideoVariantsModel>
 ) : Parcelable
 
