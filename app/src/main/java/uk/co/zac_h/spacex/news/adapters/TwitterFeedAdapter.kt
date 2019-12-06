@@ -82,11 +82,11 @@ class TwitterFeedAdapter(
                 val urls = ArrayList<MediaModel>()
 
                 when (it.media[0].type) {
-                    "video" -> {
+                    "video", "animated_gif" -> {
                         it.media[0].info.aspectRatio.also { ratio ->
                             ConstraintSet().apply {
                                 clone(mediaConstraint)
-                                setDimensionRatio(mediaCard.id, "${ratio[0]}:${ratio[1]}")
+                                setDimensionRatio(media.id, "${ratio[0]}:${ratio[1]}")
                                 applyTo(mediaConstraint)
                             }
                         }
@@ -94,7 +94,7 @@ class TwitterFeedAdapter(
                     else -> {
                         ConstraintSet().apply {
                             clone(mediaConstraint)
-                            setDimensionRatio(mediaCard.id, "16:9")
+                            setDimensionRatio(media.id, "16:9")
                             applyTo(mediaConstraint)
                         }
                     }
@@ -119,7 +119,7 @@ class TwitterFeedAdapter(
                     urls.add(
                         when (tweetMedia.type) {
                             "photo" -> MediaModel(tweetMedia.url, MediaType.IMAGE)
-                            "video" -> MediaModel(
+                            "video", "animated_gif" -> MediaModel(
                                 tweetMedia.info.variants[bitratePosition].url,
                                 MediaType.VIDEO,
                                 tweetMedia.url
