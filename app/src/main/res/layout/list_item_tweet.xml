@@ -125,10 +125,96 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:textColorLink="@color/colorAccent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tweet_quoted_layout"
         app:layout_constraintLeft_toRightOf="@id/tweet_profile_image"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tweet_media_card"
         tools:text="The Dragon spacecraft supporting this mission previously flew in support of our fourth and eleventh commercial resupply missions" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/tweet_quoted_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:foreground="@drawable/rounded_corner_border"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tweet_full_text"
+        app:layout_constraintLeft_toRightOf="@id/tweet_profile_image"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <TextView
+            android:id="@+id/tweet_quoted_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/white"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="SpaceX" />
+
+        <TextView
+            android:id="@+id/tweet_quoted_screen_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintLeft_toRightOf="@id/tweet_quoted_name"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="\@SpaceX" />
+
+        <View
+            android:id="@+id/tweet_quoted_heading_separator"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="4dp"
+            android:background="@android:color/white"
+            app:layout_constraintBottom_toBottomOf="@id/tweet_quoted_screen_name"
+            app:layout_constraintLeft_toRightOf="@id/tweet_quoted_screen_name"
+            app:layout_constraintTop_toTopOf="@id/tweet_quoted_screen_name" />
+
+        <TextView
+            android:id="@+id/tweet_quoted_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintLeft_toRightOf="@id/tweet_quoted_heading_separator"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Date" />
+
+        <TextView
+            android:id="@+id/tweet_quoted_full_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:textColorLink="@color/colorAccent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tweet_quoted_name"
+            tools:text="This is a quoted tweets text area." />
+
+        <uk.co.zac_h.mediarecyclerview.ui.MediaRecyclerView
+            android:id="@+id/tweet_quoted_media_recycler"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+            android:layout_marginBottom="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tweet_quoted_full_text"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
