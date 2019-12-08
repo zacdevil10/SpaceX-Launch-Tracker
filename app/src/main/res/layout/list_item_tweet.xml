@@ -189,7 +189,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Date" />
 
-        <TextView
+        <uk.co.zac_h.spacex.utils.HtmlTextView
             android:id="@+id/tweet_quoted_full_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

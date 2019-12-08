@@ -10,6 +10,8 @@ interface TwitterFeedView {
 
     fun openWebLink(link: String)
 
+    fun showRecyclerLoading()
+
     fun showProgress()
 
     fun hideProgress()

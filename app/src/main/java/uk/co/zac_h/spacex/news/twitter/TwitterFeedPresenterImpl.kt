@@ -13,6 +13,7 @@ class TwitterFeedPresenterImpl(
     }
 
     override fun getTweets(maxId: Long) {
+        view.showRecyclerLoading()
         interactor.getTwitterTimelineFromId(maxId, this)
     }
 

@@ -25,7 +25,7 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
     private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private lateinit var twitterAdapter: TwitterFeedAdapter
-    private var tweetsList = ArrayList<TimelineTweetModel>()
+    private var tweetsList = ArrayList<TimelineTweetModel?>()
 
     private var isLastPage = false
     private var isLoading = false
@@ -65,8 +65,9 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
                 override fun loadItems() {
                     isLoading = true
-
-                    presenter.getTweets(tweetsList[tweetsList.size - 1].id)
+                    presenter.getTweets(
+                        tweetsList[tweetsList.size - 1]?.id ?: tweetsList[tweetsList.size - 2]!!.id
+                    )
                 }
             })
         }
@@ -91,6 +92,7 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
     override fun addPagedData(tweets: List<TimelineTweetModel>) {
         isLoading = false
+        twitterAdapter.removeNullData()
 
         tweetsList.addAllExcludingPosition(tweets, 0)
 
@@ -99,6 +101,12 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
     override fun openWebLink(link: String) {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
+    }
+
+    override fun showRecyclerLoading() {
+        activity?.runOnUiThread {
+            twitterAdapter.addNullData()
+        }
     }
 
     override fun showProgress() {

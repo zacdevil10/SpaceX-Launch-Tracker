@@ -23,81 +23,102 @@ import uk.co.zac_h.spacex.utils.convertDate
 import uk.co.zac_h.spacex.utils.formatWithUrls
 
 class TwitterFeedAdapter(
-    private val twitterFeed: ArrayList<TimelineTweetModel>,
+    private val twitterFeed: ArrayList<TimelineTweetModel?>,
     private val view: TwitterFeedView
 ) :
-    RecyclerView.Adapter<TwitterFeedAdapter.ViewHolder>() {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_tweet,
-                parent,
-                false
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+        when (viewType) {
+            0 -> TweetViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.list_item_tweet,
+                    parent,
+                    false
+                )
             )
-        )
+            1 -> LoadingViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.list_item_progress,
+                    parent,
+                    false
+                )
+            )
+            else -> throw IllegalArgumentException("Invalid view type.")
+        }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val tweet = twitterFeed[position]
 
-        holder.apply {
-            itemView.setOnClickListener {
-                view.openWebLink("https://twitter.com/SpaceX/status/${tweet.id}")
-            }
+        when (holder) {
+            is TweetViewHolder -> holder.apply {
+                tweet?.let {
+                    itemView.setOnClickListener {
+                        view.openWebLink("https://twitter.com/SpaceX/status/${tweet.id}")
+                    }
 
-            Picasso.get().load(tweet.user.profileUrl).transform(CircleImageTransform())
-                .into(profileImage)
-            date.text = tweet.created.convertDate()
-            name.text = tweet.user.name
-            screenName.text = "@${tweet.user.screenName}"
+                    Picasso.get().load(tweet.user.profileUrl).transform(CircleImageTransform())
+                        .into(profileImage)
+                    date.text = tweet.created.convertDate()
+                    name.text = tweet.user.name
+                    screenName.text = "@${tweet.user.screenName}"
 
-            desc.apply {
-                setHtmlText(
-                    tweet.text.formatWithUrls(
-                        tweet.entities.urls,
-                        tweet.entities.mentions,
-                        tweet.entities.hashtags
-                    )
-                )
-                movementMethod = HtmlTextView.LocalLinkMovementMethod
-            }
+                    desc.apply {
+                        setHtmlText(
+                            tweet.text.formatWithUrls(
+                                tweet.entities.urls,
+                                tweet.entities.mentions,
+                                tweet.entities.hashtags
+                            )
+                        )
+                        movementMethod = HtmlTextView.LocalLinkMovementMethod
+                    }
 
-            media.visibility = tweet.extendedEntities?.let { View.VISIBLE } ?: View.GONE
-            mediaCard.visibility = tweet.extendedEntities?.let { View.VISIBLE } ?: View.GONE
+                    media.visibility = tweet.extendedEntities?.let { View.VISIBLE } ?: View.GONE
+                    mediaCard.visibility = tweet.extendedEntities?.let { View.VISIBLE } ?: View.GONE
 
-            tweet.extendedEntities?.let {
-                setMediaRecycler(it, mediaConstraint, media)
-            }
+                    tweet.extendedEntities?.let {
+                        setMediaRecycler(it, mediaConstraint, media)
+                    }
 
-            if (position < twitterFeed.size - 1) {
-                indicatorBottom.visibility = twitterFeed[position].replyStatusId?.let {
-                    if (twitterFeed[position + 1].id == it) View.VISIBLE else View.GONE
-                } ?: View.GONE
-            }
+                    if (position < twitterFeed.size - 1) {
+                        indicatorBottom.visibility = twitterFeed[position]?.replyStatusId?.let {
+                            if (twitterFeed[position + 1]?.id == it) View.VISIBLE else View.GONE
+                        } ?: View.GONE
+                    }
 
-            if (position != 0) {
-                indicatorTop.visibility = twitterFeed[position - 1].replyStatusId?.let {
-                    if (twitterFeed[position].id == it) View.VISIBLE else View.GONE
-                } ?: View.GONE
-            }
+                    if (position != 0) {
+                        indicatorTop.visibility = twitterFeed[position - 1]?.replyStatusId?.let {
+                            if (twitterFeed[position]?.id == it) View.VISIBLE else View.GONE
+                        } ?: View.GONE
+                    }
 
-            quoteContainer.visibility = if (tweet.isQuote) View.VISIBLE else View.GONE
+                    quoteContainer.visibility = if (tweet.isQuote) View.VISIBLE else View.GONE
 
-            tweet.quotedStatusLink?.let { quoted ->
-                quoteContainer.setOnClickListener {
-                    view.openWebLink(quoted.expandedUrl)
+                    tweet.quotedStatusLink?.let { quoted ->
+                        quoteContainer.setOnClickListener {
+                            view.openWebLink(quoted.expandedUrl)
+                        }
+                    }
+
+                    tweet.quotedStatus?.let { quoted ->
+                        quoteDate.text = quoted.created.convertDate()
+                        quoteName.text = quoted.user.name
+                        quoteScreenName.text = "@${quoted.user.screenName}"
+                        quoteDesc.apply {
+                            setHtmlText(
+                                quoted.text.formatWithUrls(null, null, null)
+                            )
+                        }
+
+                        quoted.extendedEntities?.let { quotedMedia ->
+                            setMediaRecycler(quotedMedia, quoteContainer, quoteMediaRecycler)
+                        }
+                    }
                 }
             }
+            is LoadingViewHolder -> holder.apply {
 
-            tweet.quotedStatus?.let { quoted ->
-                quoteDate.text = quoted.created.convertDate()
-                quoteName.text = quoted.user.name
-                quoteScreenName.text = "@${quoted.user.screenName}"
-                quoteDesc.text = quoted.text
-
-                quoted.extendedEntities?.let { quotedMedia ->
-                    setMediaRecycler(quotedMedia, quoteContainer, quoteMediaRecycler)
-                }
             }
         }
     }
@@ -123,7 +144,7 @@ class TwitterFeedAdapter(
             else -> {
                 ConstraintSet().apply {
                     clone(constraintLayout)
-                    setDimensionRatio(mediaRecyclerView.id, "16:9")
+                    setDimensionRatio(mediaRecyclerView.id, "16:10")
                     applyTo(constraintLayout)
                 }
             }
@@ -136,7 +157,6 @@ class TwitterFeedAdapter(
                     mediaVariants.bitrate?.let { bit ->
                         if (bit > bitrate) {
                             bitrate = bit
-                        } else {
                             bitratePosition = index
                         }
                     }
@@ -163,9 +183,23 @@ class TwitterFeedAdapter(
         }
     }
 
+    fun addNullData() {
+        twitterFeed.add(null)
+        notifyItemInserted(twitterFeed.size - 1)
+    }
+
+    fun removeNullData() {
+        twitterFeed.removeAt(twitterFeed.size - 1)
+        notifyItemRemoved(twitterFeed.size)
+    }
+
     override fun getItemCount(): Int = twitterFeed.size
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    override fun getItemViewType(position: Int): Int {
+        return if (twitterFeed[position] != null) 0 else 1
+    }
+
+    class TweetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val profileImage: ImageView = itemView.findViewById(R.id.tweet_profile_image)
         val date: TextView = itemView.findViewById(R.id.tweet_date)
         val name: TextView = itemView.findViewById(R.id.tweet_name)
@@ -185,8 +219,12 @@ class TwitterFeedAdapter(
         val quoteName: TextView = itemView.findViewById(R.id.tweet_quoted_name)
         val quoteScreenName: TextView = itemView.findViewById(R.id.tweet_quoted_screen_name)
         val quoteDate: TextView = itemView.findViewById(R.id.tweet_quoted_date)
-        val quoteDesc: TextView = itemView.findViewById(R.id.tweet_quoted_full_text)
+        val quoteDesc: HtmlTextView = itemView.findViewById(R.id.tweet_quoted_full_text)
         val quoteMediaRecycler: MediaRecyclerView =
             itemView.findViewById(R.id.tweet_quoted_media_recycler)
+    }
+
+    class LoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
     }
 }
