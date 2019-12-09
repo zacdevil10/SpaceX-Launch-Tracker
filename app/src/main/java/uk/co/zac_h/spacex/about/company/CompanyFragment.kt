@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_company.*
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.CompanyModel
+import uk.co.zac_h.spacex.model.spacex.CompanyModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import java.text.DecimalFormat
 

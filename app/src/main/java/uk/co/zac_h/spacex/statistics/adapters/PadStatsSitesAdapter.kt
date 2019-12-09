@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.StatsPadModel
+import uk.co.zac_h.spacex.model.spacex.StatsPadModel
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
 class PadStatsSitesAdapter(private var sites: ArrayList<StatsPadModel>) :

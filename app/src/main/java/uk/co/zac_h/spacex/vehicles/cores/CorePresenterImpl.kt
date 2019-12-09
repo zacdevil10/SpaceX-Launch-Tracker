@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.vehicles.cores
 
-import uk.co.zac_h.spacex.model.CoreModel
+import uk.co.zac_h.spacex.model.spacex.CoreModel
 
 class CorePresenterImpl(private val view: CoreView, private val interactor: CoreInteractor) :
     CorePresenter, CoreInteractor.Callback {

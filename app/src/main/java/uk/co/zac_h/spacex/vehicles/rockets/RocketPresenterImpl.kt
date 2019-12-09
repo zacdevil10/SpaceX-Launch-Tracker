@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.vehicles.rockets
 
-import uk.co.zac_h.spacex.model.RocketsModel
+import uk.co.zac_h.spacex.model.spacex.RocketsModel
 
 class RocketPresenterImpl(private val view: RocketView, private val interactor: RocketInteractor) :
     RocketPresenter, RocketInteractor.Callback {

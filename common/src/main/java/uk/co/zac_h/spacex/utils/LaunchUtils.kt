@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.utils
 
-import uk.co.zac_h.spacex.model.CoreSpecModel
+import uk.co.zac_h.spacex.model.spacex.CoreSpecModel
 
 fun List<CoreSpecModel>.formatBlockNumber(): String {
     var blockText = ""

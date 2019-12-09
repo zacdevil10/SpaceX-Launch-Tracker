@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_rocket.*
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.RocketsModel
+import uk.co.zac_h.spacex.model.spacex.RocketsModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 

@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.about.history
 
-import uk.co.zac_h.spacex.model.HistoryModel
+import uk.co.zac_h.spacex.model.spacex.HistoryModel
 
 interface HistoryInteractor {
 

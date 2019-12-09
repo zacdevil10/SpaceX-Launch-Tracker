@@ -14,7 +14,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.CoreModel
+import uk.co.zac_h.spacex.model.spacex.CoreModel
 import uk.co.zac_h.spacex.utils.formatDateMillisShort
 import java.util.*
 import kotlin.collections.ArrayList

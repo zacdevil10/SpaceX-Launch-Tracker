@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.model
+package uk.co.zac_h.spacex.model.spacex
 
 import android.os.Parcelable
 import com.squareup.moshi.Json

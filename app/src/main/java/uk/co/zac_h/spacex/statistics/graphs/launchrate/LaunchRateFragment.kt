@@ -15,7 +15,7 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.android.synthetic.main.fragment_launch_rate.*
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class LaunchRateFragment : Fragment(), LaunchRateView,
