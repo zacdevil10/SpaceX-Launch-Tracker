@@ -93,7 +93,7 @@ class TwitterFeedAdapter(
                         } ?: View.GONE
                     }
 
-                    quoteContainer.visibility = if (tweet.isQuote) View.VISIBLE else View.GONE
+                    quoteCardView.visibility = if (tweet.isQuote) View.VISIBLE else View.GONE
 
                     tweet.quotedStatusLink?.let { quoted ->
                         quoteContainer.setOnClickListener {
@@ -215,7 +215,8 @@ class TwitterFeedAdapter(
         val indicatorBottom: View = itemView.findViewById(R.id.tweet_reply_indicator_bottom)
 
         //Quoted layout
-        val quoteContainer: ConstraintLayout = itemView.findViewById(R.id.tweet_quoted_layout)
+        val quoteCardView: CardView = itemView.findViewById(R.id.tweet_quoted_layout)
+        val quoteContainer: ConstraintLayout = itemView.findViewById(R.id.tweet_quoted_constraint)
         val quoteName: TextView = itemView.findViewById(R.id.tweet_quoted_name)
         val quoteScreenName: TextView = itemView.findViewById(R.id.tweet_quoted_screen_name)
         val quoteDate: TextView = itemView.findViewById(R.id.tweet_quoted_date)
