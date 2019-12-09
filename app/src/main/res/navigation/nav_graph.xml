@@ -7,90 +7,96 @@
 
     <fragment
         android:id="@+id/dashboard_page_fragment"
-        android:label="@string/menu_home"
         android:name="uk.co.zac_h.spacex.dashboard.DashboardFragment"
+        android:label="@string/menu_home"
         tools:layout="@layout/fragment_dashboard">
         <action
             android:id="@+id/action_dashboard_page_fragment_to_launch_details_fragment"
+            app:destination="@id/launch_details_fragment"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"
-            app:destination="@id/launch_details_fragment" />
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment
+        android:id="@+id/twitter_page_fragment"
+        android:name="uk.co.zac_h.spacex.news.twitter.TwitterFeedFragment"
+        android:label="@string/menu_news"
+        tools:layout="@layout/fragment_twitter_feed" />
+
+    <fragment
         android:id="@+id/launches_page_fragment"
-        android:label="@string/menu_launches"
         android:name="uk.co.zac_h.spacex.launches.LaunchesFragment"
+        android:label="@string/menu_launches"
         tools:layout="@layout/fragment_launches">
         <action
             android:id="@+id/action_launches_page_fragment_to_launch_details_fragment"
+            app:destination="@id/launch_details_fragment"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"
-            app:destination="@id/launch_details_fragment" />
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment
         android:id="@+id/vehicles_page_fragment"
-        android:label="@string/menu_vehicles"
         android:name="uk.co.zac_h.spacex.vehicles.VehiclesFragment"
+        android:label="@string/menu_vehicles"
         tools:layout="@layout/fragment_vehicles">
         <action
             android:id="@+id/action_vehicles_page_fragment_to_rocket_details_fragment"
+            app:destination="@id/rocket_details_fragment"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"
-            app:destination="@id/rocket_details_fragment" />
+            app:popExitAnim="@android:anim/fade_out" />
         <action
             android:id="@+id/action_vehicles_page_fragment_to_capsule_details_fragment"
+            app:destination="@id/capsule_details_fragment"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"
-            app:destination="@id/capsule_details_fragment" />
+            app:popExitAnim="@android:anim/fade_out" />
         <action
             android:id="@+id/action_vehicles_page_fragment_to_core_details_fragment"
+            app:destination="@id/core_details_fragment"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"
-            app:destination="@id/core_details_fragment" />
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment
         android:id="@+id/statistics_page_fragment"
-        android:label="@string/menu_statistics"
         android:name="uk.co.zac_h.spacex.statistics.StatisticsFragment"
+        android:label="@string/menu_statistics"
         tools:layout="@layout/fragment_statistics" />
 
     <fragment
         android:id="@+id/company_page_fragment"
-        android:label="@string/menu_company"
         android:name="uk.co.zac_h.spacex.about.company.CompanyFragment"
+        android:label="@string/menu_company"
         tools:layout="@layout/fragment_company" />
 
     <fragment
         android:id="@+id/history_page_fragment"
-        android:label="History"
         android:name="uk.co.zac_h.spacex.about.history.HistoryFragment"
+        android:label="History"
         tools:layout="@layout/fragment_history">
         <action
             android:id="@+id/action_history_fragment_to_launch_details_fragment"
+            app:destination="@id/launch_details_fragment"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"
-            app:destination="@id/launch_details_fragment" />
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment
         android:id="@+id/about_page_fragment"
-        android:label="@string/menu_about"
         android:name="uk.co.zac_h.spacex.about.AboutFragment"
+        android:label="@string/menu_about"
         tools:layout="@layout/fragment_about" />
 
     <fragment
@@ -100,15 +106,15 @@
         tools:layout="@layout/fragment_launch_details">
         <argument
             android:name="title"
-            app:argType="string"
-            android:defaultValue="Launch Details" />
+            android:defaultValue="Launch Details"
+            app:argType="string" />
         <action
             android:id="@+id/action_launch_details_fragment_to_core_details_fragment"
+            app:destination="@id/core_details_fragment"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"
-            app:destination="@id/core_details_fragment" />
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment
@@ -118,15 +124,15 @@
         tools:layout="@layout/fragment_core_details">
         <argument
             android:name="title"
-            app:argType="string"
-            android:defaultValue="Core Details" />
+            android:defaultValue="Core Details"
+            app:argType="string" />
         <action
             android:id="@+id/action_core_details_fragment_to_launch_details_fragment"
+            app:destination="@id/launch_details_fragment"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"
-            app:destination="@id/launch_details_fragment" />
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment
@@ -136,8 +142,8 @@
         tools:layout="@layout/fragment_rocket_details">
         <argument
             android:name="title"
-            app:argType="string"
-            android:defaultValue="Rocket Details" />
+            android:defaultValue="Rocket Details"
+            app:argType="string" />
     </fragment>
 
     <fragment
@@ -147,15 +153,15 @@
         tools:layout="@layout/fragment_capsule_details">
         <argument
             android:name="title"
-            app:argType="string"
-            android:defaultValue="Capsule Details" />
+            android:defaultValue="Capsule Details"
+            app:argType="string" />
         <action
             android:id="@+id/action_capsule_details_fragment_to_launch_details_fragment"
+            app:destination="@id/launch_details_fragment"
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out"
-            app:destination="@id/launch_details_fragment" />
+            app:popExitAnim="@android:anim/fade_out" />
     </fragment>
 
 </navigation>

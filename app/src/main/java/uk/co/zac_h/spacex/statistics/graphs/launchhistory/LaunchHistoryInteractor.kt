@@ -1,7 +1,7 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
-import uk.co.zac_h.spacex.model.LaunchesModel
-import uk.co.zac_h.spacex.model.RocketsModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.RocketsModel
 
 interface LaunchHistoryInteractor {
 

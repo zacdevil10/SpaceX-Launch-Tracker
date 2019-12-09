@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_rocket_details.*
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.RocketsModel
+import uk.co.zac_h.spacex.model.spacex.RocketsModel
 import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.setImageAndTint
 import uk.co.zac_h.spacex.vehicles.adapters.RocketPayloadAdapter

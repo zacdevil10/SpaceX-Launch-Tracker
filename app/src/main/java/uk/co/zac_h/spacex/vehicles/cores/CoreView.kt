@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.vehicles.cores
 
-import uk.co.zac_h.spacex.model.CoreModel
+import uk.co.zac_h.spacex.model.spacex.CoreModel
 
 interface CoreView {
 

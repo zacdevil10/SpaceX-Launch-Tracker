@@ -11,7 +11,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.CapsulesModel
+import uk.co.zac_h.spacex.model.spacex.CapsulesModel
 import uk.co.zac_h.spacex.utils.formatDateMillisShort
 
 class CapsulesAdapter(private val capsules: List<CapsulesModel>) :

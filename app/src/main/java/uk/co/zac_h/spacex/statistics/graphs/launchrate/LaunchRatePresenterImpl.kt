@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
-import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 
 class LaunchRatePresenterImpl(
     private val view: LaunchRateView,

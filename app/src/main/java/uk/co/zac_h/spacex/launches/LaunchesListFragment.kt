@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_launches_list.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
-import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextListener,

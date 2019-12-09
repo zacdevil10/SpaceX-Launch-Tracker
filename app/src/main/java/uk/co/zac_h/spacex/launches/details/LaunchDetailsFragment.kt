@@ -20,7 +20,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.launches.adapters.LaunchLinksAdapter
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
-import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 import uk.co.zac_h.spacex.utils.models.LinksModel

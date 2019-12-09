@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.launches
 
-import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 
 class LaunchesPresenterImpl(
     private val view: LaunchesView,

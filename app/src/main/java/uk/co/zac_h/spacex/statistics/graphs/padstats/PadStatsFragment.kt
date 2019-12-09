@@ -7,7 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_pad_stats.*
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.StatsPadModel
+import uk.co.zac_h.spacex.model.spacex.StatsPadModel
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
 import uk.co.zac_h.spacex.utils.HeaderItemDecoration
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
