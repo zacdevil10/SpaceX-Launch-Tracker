@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.news.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import uk.co.zac_h.spacex.utils.convertDate
 import uk.co.zac_h.spacex.utils.formatWithUrls
 
 class TwitterFeedAdapter(
+    private val context: Context?,
     private val twitterFeed: ArrayList<TimelineTweetModel?>,
     private val view: TwitterFeedView
 ) :
@@ -61,7 +63,8 @@ class TwitterFeedAdapter(
                         .into(profileImage)
                     date.text = tweet.created.convertDate()
                     name.text = tweet.user.name
-                    screenName.text = "@${tweet.user.screenName}"
+                    screenName.text =
+                        context?.getString(R.string.screen_name, tweet.user.screenName)
 
                     desc.apply {
                         setHtmlText(
@@ -104,7 +107,8 @@ class TwitterFeedAdapter(
                     tweet.quotedStatus?.let { quoted ->
                         quoteDate.text = quoted.created.convertDate()
                         quoteName.text = quoted.user.name
-                        quoteScreenName.text = "@${quoted.user.screenName}"
+                        quoteScreenName.text =
+                            context?.getString(R.string.screen_name, quoted.user.screenName)
                         quoteDesc.apply {
                             setHtmlText(
                                 quoted.text.formatWithUrls(null, null, null)
@@ -225,7 +229,5 @@ class TwitterFeedAdapter(
             itemView.findViewById(R.id.tweet_quoted_media_recycler)
     }
 
-    class LoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-    }
+    class LoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }

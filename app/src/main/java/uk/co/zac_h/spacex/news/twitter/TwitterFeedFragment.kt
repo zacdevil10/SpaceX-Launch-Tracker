@@ -50,7 +50,7 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
             }
 
 
-        twitterAdapter = TwitterFeedAdapter(tweetsList, this)
+        twitterAdapter = TwitterFeedAdapter(context, tweetsList, this)
         val layout = LinearLayoutManager(this@TwitterFeedFragment.context)
 
         twitter_feed_recycler.apply {

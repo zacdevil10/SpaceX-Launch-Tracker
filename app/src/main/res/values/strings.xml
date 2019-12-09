@@ -30,6 +30,9 @@
     <string name="falcon_9">Falcon 9</string>
     <string name="falcon_heavy">Falcon Heavy</string>
 
+    <!--News-->
+    <string name="screen_name">\@%1$s</string>
+
     <!--Launch Details-->
     <string name="mission_patch">Mission patch</string>
     <string name="first_stage">First Stage</string>
@@ -152,5 +155,6 @@
     <string name="network_connection">No network connection detected!</string>
     <string name="dismiss_label">Dismiss</string>
     <string name="no_pinned_launches_found_label">No pinned launches found.</string>
+    <string name="twitter_profile_image_desc">Twitter profile image</string>
 
 </resources>

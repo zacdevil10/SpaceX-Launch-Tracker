@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.Selection
 import android.text.Spannable
@@ -26,6 +27,7 @@ class HtmlTextView : TextView {
         defStyle
     )
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         linkHit = false
 

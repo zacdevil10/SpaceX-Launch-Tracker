@@ -14,9 +14,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".utils.ui.PhotoView"
-            android:theme="@style/PhotoViewTheme" />
-        <activity
             android:name=".base.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
