@@ -5,5 +5,4 @@
     <dimen name="nav_header_vertical_spacing">8dp</dimen>
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="heading">24sp</dimen>
-    <dimen name="filter_text_size">12sp</dimen>
 </resources>

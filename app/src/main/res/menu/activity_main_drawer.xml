@@ -44,7 +44,7 @@
             <item
                 android:id="@id/theme_alert_dialog"
                 android:icon="@drawable/ic_brightness_6_black_24dp"
-                android:title="Dark theme" />
+                android:title="@string/dark_theme_label" />
             <item
                 android:id="@id/about_page_fragment"
                 android:icon="@drawable/ic_info_outline_black_24dp"
