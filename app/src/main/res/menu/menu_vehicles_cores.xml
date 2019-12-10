@@ -12,7 +12,6 @@
     <item
         android:id="@+id/sort"
         android:icon="@drawable/ic_sort_black_24dp"
-        app:iconTint="@android:color/white"
         android:title="@string/sort_label"
         app:showAsAction="ifRoom">
 

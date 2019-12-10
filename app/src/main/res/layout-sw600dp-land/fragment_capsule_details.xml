@@ -20,18 +20,17 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:text="@string/type_label"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/capsule_details_type_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/heading"
-            app:layout_constraintLeft_toLeftOf="@id/capsule_details_type_label"
-            app:layout_constraintRight_toRightOf="@id/capsule_details_type_label"
+            android:textAppearance="?textAppearanceHeadline5"
+            app:layout_constraintStart_toStartOf="@id/capsule_details_type_label"
+            app:layout_constraintEnd_toEndOf="@id/capsule_details_type_label"
             app:layout_constraintTop_toBottomOf="@id/capsule_details_type_label"
             tools:text="Dragon 1.0" />
 
@@ -40,8 +39,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:layout_constraintLeft_toLeftOf="@id/capsule_details_type_text"
-            app:layout_constraintRight_toRightOf="@id/capsule_details_type_text"
+            app:layout_constraintStart_toStartOf="@id/capsule_details_type_text"
+            app:layout_constraintEnd_toEndOf="@id/capsule_details_type_text"
             app:layout_constraintTop_toBottomOf="@id/capsule_details_type_text"
             tools:lines="2"
             tools:text="@tools:sample/lorem/random" />
@@ -52,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/status_label"
-            app:layout_constraintLeft_toLeftOf="@id/capsule_details_type_text"
+            app:layout_constraintStart_toStartOf="@id/capsule_details_type_text"
             app:layout_constraintTop_toBottomOf="@id/capsule_details_text" />
 
         <TextView
@@ -62,8 +61,8 @@
             android:layout_marginStart="16dp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/capsule_details_status_label"
-            app:layout_constraintLeft_toRightOf="@id/capsule_details_status_label"
-            app:layout_constraintRight_toRightOf="@id/capsule_details_type_text"
+            app:layout_constraintStart_toEndOf="@id/capsule_details_status_label"
+            app:layout_constraintEnd_toEndOf="@id/capsule_details_type_text"
             app:layout_constraintTop_toTopOf="@id/capsule_details_status_label"
             tools:text="Retired" />
 
@@ -73,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/first_flight_label"
-            app:layout_constraintLeft_toLeftOf="@id/capsule_details_type_text"
+            app:layout_constraintStart_toStartOf="@id/capsule_details_type_text"
             app:layout_constraintTop_toBottomOf="@id/capsule_details_status_label" />
 
         <TextView
@@ -83,8 +82,8 @@
             android:layout_marginStart="16dp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/capsule_details_date_label"
-            app:layout_constraintLeft_toRightOf="@id/capsule_details_date_label"
-            app:layout_constraintRight_toRightOf="@id/capsule_details_type_text"
+            app:layout_constraintStart_toEndOf="@id/capsule_details_date_label"
+            app:layout_constraintEnd_toEndOf="@id/capsule_details_type_text"
             app:layout_constraintTop_toTopOf="@id/capsule_details_date_label"
             tools:text="21 Nov 19 - 01:00" />
 
@@ -94,7 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/reuse_count_label"
-            app:layout_constraintLeft_toLeftOf="@id/capsule_details_type_text"
+            app:layout_constraintStart_toStartOf="@id/capsule_details_type_text"
             app:layout_constraintTop_toBottomOf="@id/capsule_details_date_label" />
 
         <TextView
@@ -104,8 +103,8 @@
             android:layout_marginStart="16dp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/capsule_details_reuse_label"
-            app:layout_constraintLeft_toRightOf="@id/capsule_details_reuse_label"
-            app:layout_constraintRight_toRightOf="@id/capsule_details_type_text"
+            app:layout_constraintStart_toEndOf="@id/capsule_details_reuse_label"
+            app:layout_constraintEnd_toEndOf="@id/capsule_details_type_text"
             app:layout_constraintTop_toTopOf="@id/capsule_details_reuse_label"
             tools:text="5" />
 
@@ -115,7 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/landings_label"
-            app:layout_constraintLeft_toLeftOf="@id/capsule_details_type_text"
+            app:layout_constraintStart_toStartOf="@id/capsule_details_type_text"
             app:layout_constraintTop_toBottomOf="@id/capsule_details_reuse_label" />
 
         <TextView
@@ -125,8 +124,8 @@
             android:layout_marginStart="16dp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/capsule_details_landing_label"
-            app:layout_constraintLeft_toRightOf="@id/capsule_details_landing_label"
-            app:layout_constraintRight_toRightOf="@id/capsule_details_type_text"
+            app:layout_constraintStart_toEndOf="@id/capsule_details_landing_label"
+            app:layout_constraintEnd_toEndOf="@id/capsule_details_type_text"
             app:layout_constraintTop_toTopOf="@id/capsule_details_landing_label"
             tools:text="2" />
 
@@ -136,8 +135,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/missions_label"
-            app:layout_constraintLeft_toLeftOf="@id/capsule_details_type_label"
-            app:layout_constraintRight_toRightOf="@id/capsule_details_type_label"
+            app:layout_constraintStart_toStartOf="@id/capsule_details_type_label"
+            app:layout_constraintEnd_toEndOf="@id/capsule_details_type_label"
             app:layout_constraintTop_toBottomOf="@id/capsule_details_landing_label" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -156,8 +155,8 @@
             android:text="@string/no_missions_found"
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="@id/capsule_details_missions_recycler"
-            app:layout_constraintLeft_toLeftOf="@id/capsule_details_missions_recycler"
-            app:layout_constraintRight_toRightOf="@id/capsule_details_missions_recycler" />
+            app:layout_constraintStart_toStartOf="@id/capsule_details_missions_recycler"
+            app:layout_constraintEnd_toEndOf="@id/capsule_details_missions_recycler" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

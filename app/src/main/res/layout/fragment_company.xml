@@ -14,8 +14,8 @@
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.core.widget.NestedScrollView
@@ -36,15 +36,16 @@
                 android:layout_marginEnd="16dp"
                 android:contentDescription="@string/spacex_logo_desc"
                 android:src="@drawable/ic_spacex_logo"
-                android:tint="@android:color/white"
+                android:tint="@color/color_on_surface"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/company_address_text"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:textAlignment="center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_logo_image"
                 tools:text="Rocket Road, Hawthorne, California" />
 
@@ -56,9 +57,9 @@
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="16dp"
                 android:textAlignment="center"
-                android:textColor="@android:color/white"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                android:textAppearance="?textAppearanceBody2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_address_text"
                 tools:text="SpaceX designs, manufactures and launches advanced rockets and spacecraft. The company was founded in 2002 to revolutionize space technology, with the ultimate goal of enabling people to live on other planets." />
 
@@ -69,7 +70,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="32dp"
                 android:text="@string/founded_label"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_summary_text" />
 
             <TextView
@@ -80,8 +81,8 @@
                 android:layout_marginEnd="16dp"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_founded_label"
-                app:layout_constraintLeft_toRightOf="@id/company_founded_label"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/company_founded_label"
                 app:layout_constraintTop_toTopOf="@id/company_founded_label"
                 tools:text="Elon Musk, 2002" />
 
@@ -92,7 +93,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/ceo_label"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_founded_label" />
 
             <TextView
@@ -103,8 +104,8 @@
                 android:layout_marginEnd="16dp"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_ceo_label"
-                app:layout_constraintLeft_toRightOf="@id/company_ceo_label"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/company_ceo_label"
                 app:layout_constraintTop_toTopOf="@id/company_ceo_label"
                 tools:text="Elon Musk" />
 
@@ -115,7 +116,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/cto_label"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_ceo_label" />
 
             <TextView
@@ -126,8 +127,8 @@
                 android:layout_marginEnd="16dp"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_cto_label"
-                app:layout_constraintLeft_toRightOf="@id/company_cto_label"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/company_cto_label"
                 app:layout_constraintTop_toTopOf="@id/company_cto_label"
                 tools:text="Elon Musk" />
 
@@ -138,7 +139,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/coo_label"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_cto_label" />
 
             <TextView
@@ -149,8 +150,8 @@
                 android:layout_marginEnd="16dp"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_coo_label"
-                app:layout_constraintLeft_toRightOf="@id/company_coo_label"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/company_coo_label"
                 app:layout_constraintTop_toTopOf="@id/company_coo_label"
                 tools:text="Gwynne Shotwell" />
 
@@ -161,7 +162,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/cto_propulsion_label"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_coo_label" />
 
             <TextView
@@ -172,8 +173,8 @@
                 android:layout_marginEnd="16dp"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_cto_pro_label"
-                app:layout_constraintLeft_toRightOf="@id/company_cto_pro_label"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/company_cto_pro_label"
                 app:layout_constraintTop_toTopOf="@id/company_cto_pro_label"
                 tools:text="Tom Mueller" />
 
@@ -184,7 +185,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/valuation_label"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_cto_pro_label" />
 
             <TextView
@@ -195,8 +196,8 @@
                 android:layout_marginEnd="16dp"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_valuation_label"
-                app:layout_constraintLeft_toRightOf="@id/company_valuation_label"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/company_valuation_label"
                 app:layout_constraintTop_toTopOf="@id/company_valuation_label"
                 tools:text="27,500,000,000" />
 
@@ -207,7 +208,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/employees_label"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_valuation_label" />
 
             <TextView
@@ -218,8 +219,8 @@
                 android:layout_marginEnd="16dp"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_employees_label"
-                app:layout_constraintLeft_toRightOf="@id/company_employees_label"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/company_employees_label"
                 app:layout_constraintTop_toTopOf="@id/company_employees_label"
                 tools:text="3000" />
 
@@ -230,7 +231,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/vehicles_label"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_employees_label" />
 
             <TextView
@@ -241,8 +242,8 @@
                 android:layout_marginEnd="16dp"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_vehicles_label"
-                app:layout_constraintLeft_toRightOf="@id/company_vehicles_label"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/company_vehicles_label"
                 app:layout_constraintTop_toTopOf="@id/company_vehicles_label"
                 tools:text="3" />
 
@@ -253,7 +254,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/launch_sites_label"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_vehicles_label" />
 
             <TextView
@@ -264,8 +265,8 @@
                 android:layout_marginEnd="16dp"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_launch_sites_label"
-                app:layout_constraintLeft_toRightOf="@id/company_launch_sites_label"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/company_launch_sites_label"
                 app:layout_constraintTop_toTopOf="@id/company_launch_sites_label"
                 tools:text="3" />
 
@@ -276,7 +277,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/test_sites_label"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_launch_sites_label" />
 
             <TextView
@@ -287,8 +288,8 @@
                 android:layout_marginEnd="16dp"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_test_sites_label"
-                app:layout_constraintLeft_toRightOf="@id/company_test_sites_label"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/company_test_sites_label"
                 app:layout_constraintTop_toTopOf="@id/company_test_sites_label"
                 tools:text="3" />
 

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,6 +30,7 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
     private var isLastPage = false
     private var isLoading = false
+    private var isFabVisible = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,17 +65,31 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
                 override fun isLoading(): Boolean = isLoading
 
+                override fun isScrollUpVisible(): Boolean = isFabVisible
+
                 override fun loadItems() {
                     isLoading = true
                     presenter.getTweets(
                         tweetsList[tweetsList.size - 1]?.id ?: tweetsList[tweetsList.size - 2]!!.id
                     )
                 }
+
+                override fun onScrollTop() {
+                    presenter.toggleScrollUp(false)
+                }
+
+                override fun onScrolledDown() {
+                    presenter.toggleScrollUp(true)
+                }
             })
         }
 
         twitter_feed_swipe_refresh.setOnRefreshListener {
             presenter.getTweets()
+        }
+
+        twitter_feed_scroll_up.setOnClickListener {
+            twitter_feed_recycler.smoothScrollToPosition(0)
         }
     }
 
@@ -106,6 +122,25 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
     override fun showRecyclerLoading() {
         activity?.runOnUiThread {
             twitterAdapter.addNullData()
+        }
+    }
+
+    override fun showScrollUp() {
+        isFabVisible = true
+        val animation = AnimationUtils.loadAnimation(context, R.anim.slide_in_top)
+        twitter_feed_scroll_up.apply {
+            startAnimation(animation)
+            visibility = View.VISIBLE
+        }
+
+    }
+
+    override fun hideScrollUp() {
+        isFabVisible = false
+        val animation = AnimationUtils.loadAnimation(context, R.anim.slide_out_top)
+        twitter_feed_scroll_up.apply {
+            startAnimation(animation)
+            visibility = View.INVISIBLE
         }
     }
 

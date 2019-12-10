@@ -15,8 +15,8 @@
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <HorizontalScrollView
@@ -32,7 +32,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
-            android:padding="16dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
             <TextView
                 android:id="@+id/launch_rate_filters_text"
@@ -40,55 +41,39 @@
                 android:layout_height="wrap_content"
                 android:text="@string/filter"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ToggleButton
-                android:id="@+id/launch_rate_falcon_one_toggle"
+            <com.google.android.material.chip.ChipGroup
                 android:layout_width="wrap_content"
-                android:layout_height="24dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:background="@drawable/filter_toggle_falcon_one"
-                android:checked="true"
-                android:text="@string/falcon_1"
-                android:textOff="@string/falcon_1"
-                android:textOn="@string/falcon_1"
-                android:textSize="@dimen/filter_text_size"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/launch_rate_filters_text"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintStart_toEndOf="@id/launch_rate_filters_text"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <ToggleButton
-                android:id="@+id/launch_rate_falcon_nine_toggle"
-                android:layout_width="wrap_content"
-                android:layout_height="24dp"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/filter_toggle_falcon_nine"
-                android:checked="true"
-                android:text="@string/falcon_9"
-                android:textOff="@string/falcon_9"
-                android:textOn="@string/falcon_9"
-                android:textSize="@dimen/filter_text_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/launch_rate_falcon_one_toggle"
-                app:layout_constraintTop_toTopOf="parent" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/launch_rate_falcon_one_toggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/falcon_1" />
 
-            <ToggleButton
-                android:id="@+id/launch_rate_falcon_heavy_toggle"
-                android:layout_width="wrap_content"
-                android:layout_height="24dp"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/filter_toggle_falcon_heavy"
-                android:checked="true"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:text="@string/falcon_heavy"
-                android:textOff="@string/falcon_heavy"
-                android:textOn="@string/falcon_heavy"
-                android:textSize="@dimen/filter_text_size"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toRightOf="@id/launch_rate_falcon_nine_toggle"
-                app:layout_constraintTop_toTopOf="parent" />
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/launch_rate_falcon_nine_toggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/falcon_9" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/launch_rate_falcon_heavy_toggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="@string/falcon_heavy" />
+
+            </com.google.android.material.chip.ChipGroup>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -102,8 +87,8 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/launch_rate_filter_scroll" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

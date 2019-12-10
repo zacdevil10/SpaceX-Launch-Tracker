@@ -17,6 +17,14 @@ class TwitterFeedPresenterImpl(
         interactor.getTwitterTimelineFromId(maxId, this)
     }
 
+    override fun toggleScrollUp(visible: Boolean) {
+        if (visible) {
+            view.showScrollUp()
+        } else {
+            view.hideScrollUp()
+        }
+    }
+
     override fun cancelRequests() {
         interactor.cancelAllRequests()
     }

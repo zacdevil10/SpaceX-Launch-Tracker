@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="16dp"
-    android:layout_marginBottom="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
     android:layout_marginStart="32dp"
     android:layout_marginEnd="32dp">
 
@@ -22,7 +22,7 @@
             android:src="@drawable/ic_landscape"
             android:tint="@color/landscape"
             android:contentDescription="@string/launch_pad_type_desc"
-            app:layout_constraintLeft_toLeftOf="@id/list_item_pad_name_text"
+            app:layout_constraintStart_toStartOf="@id/list_item_pad_name_text"
             app:layout_constraintBottom_toBottomOf="@+id/list_item_pad_name_text"
             app:layout_constraintTop_toTopOf="@+id/list_item_pad_name_text" />
 
@@ -35,10 +35,9 @@
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
             android:textAlignment="center"
-            android:textAppearance="@style/AppTheme.MainText"
-            android:textSize="16sp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            android:textAppearance="?textAppearanceSubtitle1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Vandenberg Air Force Base Space Launch Complex 4E" />
 
@@ -49,8 +48,8 @@
             android:layout_marginTop="8dp"
             android:text="@string/attempts_label"
             android:textAlignment="center"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toLeftOf="@id/list_item_pad_success_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/list_item_pad_success_label"
             app:layout_constraintTop_toBottomOf="@id/list_item_pad_name_text" />
 
         <TextView
@@ -58,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/color_secondary"
             android:textSize="@dimen/heading"
             app:layout_constraintEnd_toEndOf="@+id/list_item_pad_attempted_label"
             app:layout_constraintStart_toStartOf="@+id/list_item_pad_attempted_label"
@@ -72,8 +71,8 @@
             android:layout_marginTop="8dp"
             android:text="@string/successes_label"
             android:textAlignment="center"
-            app:layout_constraintLeft_toRightOf="@id/list_item_pad_attempted_label"
-            app:layout_constraintRight_toLeftOf="@id/list_item_pad_status_label"
+            app:layout_constraintStart_toEndOf="@id/list_item_pad_attempted_label"
+            app:layout_constraintEnd_toStartOf="@id/list_item_pad_status_label"
             app:layout_constraintTop_toBottomOf="@id/list_item_pad_name_text" />
 
         <TextView
@@ -81,7 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/color_secondary"
             android:textSize="@dimen/heading"
             app:layout_constraintEnd_toEndOf="@+id/list_item_pad_success_label"
             app:layout_constraintStart_toStartOf="@+id/list_item_pad_success_label"
@@ -96,15 +95,15 @@
             android:layout_marginBottom="8dp"
             android:text="@string/status_label"
             android:textAlignment="center"
-            app:layout_constraintLeft_toRightOf="@id/list_item_pad_success_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/list_item_pad_success_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/list_item_pad_name_text" />
 
         <ImageView
             android:id="@+id/list_item_pad_status_image"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:tint="@color/colorAccent"
+            android:tint="@color/color_secondary"
             app:layout_constraintBottom_toBottomOf="@+id/list_item_pad_success_text"
             app:layout_constraintEnd_toEndOf="@+id/list_item_pad_status_label"
             app:layout_constraintStart_toStartOf="@+id/list_item_pad_status_label"
@@ -113,4 +112,4 @@
             android:contentDescription="@string/launch_pad_status_desc" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
