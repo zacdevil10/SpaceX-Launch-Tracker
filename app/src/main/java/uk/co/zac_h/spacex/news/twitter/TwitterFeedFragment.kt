@@ -75,7 +75,7 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
                 }
 
                 override fun onScrollTop() {
-                    presenter.toggleScrollUp(false)
+                    if (isFabVisible) presenter.toggleScrollUp(false)
                 }
 
                 override fun onScrolledDown() {
