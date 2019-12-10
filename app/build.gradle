@@ -59,6 +59,8 @@ dependencies {
 
     implementation "androidx.paging:paging-runtime-ktx:2.1.0"
 
+    implementation "androidx.lifecycle:lifecycle-livedata:2.1.0"
+
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.6.1'
 

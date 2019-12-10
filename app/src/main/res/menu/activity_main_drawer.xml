@@ -42,6 +42,10 @@
     <item android:title="@string/menu_about">
         <menu>
             <item
+                android:id="@id/theme_alert_dialog"
+                android:icon="@drawable/ic_brightness_6_black_24dp"
+                android:title="Dark theme" />
+            <item
                 android:id="@id/about_page_fragment"
                 android:icon="@drawable/ic_info_outline_black_24dp"
                 android:title="@string/menu_about" />
