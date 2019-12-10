@@ -6,7 +6,6 @@
         android:id="@+id/reload"
         android:icon="@drawable/ic_refresh_black_24dp"
         android:title="@string/reload_label"
-        app:iconTint="@android:color/white"
         app:showAsAction="ifRoom" />
 
 </menu>

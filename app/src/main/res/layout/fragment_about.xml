@@ -13,8 +13,8 @@
         android:src="@mipmap/ic_launcher_round"
         android:layout_marginTop="32dp"
         android:contentDescription="@string/spacex_launch_tracker_icon_desc"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/about_app_name_text" />
 
@@ -24,28 +24,30 @@
         android:layout_height="wrap_content"
         android:text="@string/nav_header_title"
         android:layout_marginTop="16dp"
-        android:textSize="@dimen/heading"
-        android:textAppearance="@style/AppTheme.MainText"
+        android:textAppearance="?textAppearanceHeadline6"
         app:layout_constraintTop_toBottomOf="@id/about_app_icon_image"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/about_author_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/nav_header_subtitle"
+        android:textAppearance="?textAppearanceSubtitle2"
+        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@id/about_app_name_text"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/powered_by"
         android:layout_marginTop="16dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:textAppearance="?textAppearanceBody2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/about_author_text" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

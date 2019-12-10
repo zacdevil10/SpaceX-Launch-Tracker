@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -57,6 +58,10 @@ class MainActivity : AppCompatActivity(),
 
         findViewById<Toolbar>(R.id.toolbar).setupWithNavController(navController, appBarConfig)
         findViewById<NavigationView>(R.id.nav_view).setupWithNavController(navController)
+
+        (application as App).preferencesRepo.themeModeLive.observe(this, Observer { mode ->
+            mode?.let { delegate.localNightMode = it }
+        })
     }
 
     override fun onStart() {

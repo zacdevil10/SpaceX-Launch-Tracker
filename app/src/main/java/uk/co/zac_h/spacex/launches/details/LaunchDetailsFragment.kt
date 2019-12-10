@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.view.*
@@ -12,6 +13,7 @@ import android.view.animation.RotateAnimation
 import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.*
 import com.squareup.picasso.Picasso
@@ -150,6 +152,8 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
                 if (id?.let { id -> presenter.isPinned(id.toInt()) }
                         ?: presenter.isPinned()) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp)
         }
+
+        setIconTint(menu.findItem(R.id.pin))
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -165,6 +169,8 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
                     if (pinned) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
                 )
             }
+
+            setIconTint(item)
             true
         }
         R.id.create_event -> {
@@ -172,6 +178,20 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
             true
         }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun setIconTint(item: MenuItem) {
+        var drawable = item.icon
+        drawable = DrawableCompat.wrap(drawable)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            DrawableCompat.setTint(
+                drawable.mutate(),
+                resources.getColor(android.R.color.white, null)
+            )
+        } else {
+            DrawableCompat.setTint(drawable.mutate(), resources.getColor(android.R.color.white))
+        }
+        item.icon = drawable
     }
 
     override fun updateLaunchDataView(launch: LaunchesModel?) {

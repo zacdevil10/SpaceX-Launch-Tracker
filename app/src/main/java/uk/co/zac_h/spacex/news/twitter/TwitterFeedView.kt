@@ -12,6 +12,10 @@ interface TwitterFeedView {
 
     fun showRecyclerLoading()
 
+    fun showScrollUp()
+
+    fun hideScrollUp()
+
     fun showProgress()
 
     fun hideProgress()

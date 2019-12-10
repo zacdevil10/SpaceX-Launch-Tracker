@@ -16,8 +16,8 @@
         android:background="@drawable/reply_indicator_top"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/tweet_profile_image"
-        app:layout_constraintLeft_toLeftOf="@id/tweet_profile_image"
-        app:layout_constraintRight_toRightOf="@id/tweet_profile_image"
+        app:layout_constraintStart_toStartOf="@id/tweet_profile_image"
+        app:layout_constraintEnd_toEndOf="@id/tweet_profile_image"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
@@ -26,11 +26,10 @@
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:contentDescription="@string/twitter_profile_image_desc"
-        tools:src="@drawable/ic_calendar_plus"
-        tools:tint="@android:color/white" />
+        tools:src="@drawable/ic_calendar_plus" />
 
     <View
         android:id="@+id/tweet_reply_indicator_bottom"
@@ -40,8 +39,8 @@
         android:background="@drawable/reply_indicator_bottom"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@id/tweet_profile_image"
-        app:layout_constraintRight_toRightOf="@id/tweet_profile_image"
+        app:layout_constraintStart_toStartOf="@id/tweet_profile_image"
+        app:layout_constraintEnd_toEndOf="@id/tweet_profile_image"
         app:layout_constraintTop_toBottomOf="@id/tweet_profile_image" />
 
     <TextView
@@ -50,8 +49,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:textColor="@android:color/white"
-        app:layout_constraintLeft_toRightOf="@id/tweet_profile_image"
+        android:textSize="14sp"
+        style="@style/TextAppearance.MaterialComponents.Headline6"
+        app:layout_constraintStart_toEndOf="@id/tweet_profile_image"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="SpaceX" />
 
@@ -61,7 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintLeft_toRightOf="@id/tweet_name"
+        app:layout_constraintStart_toEndOf="@id/tweet_name"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="\@SpaceX" />
 
@@ -72,7 +72,7 @@
         android:layout_marginStart="4dp"
         android:background="@android:color/white"
         app:layout_constraintBottom_toBottomOf="@id/tweet_screen_name"
-        app:layout_constraintLeft_toRightOf="@id/tweet_screen_name"
+        app:layout_constraintStart_toEndOf="@id/tweet_screen_name"
         app:layout_constraintTop_toTopOf="@id/tweet_screen_name" />
 
     <TextView
@@ -81,7 +81,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
-        app:layout_constraintLeft_toRightOf="@id/tweet_heading_separator"
+        app:layout_constraintStart_toEndOf="@id/tweet_heading_separator"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Date" />
 
@@ -96,8 +96,8 @@
         app:cardCornerRadius="8dp"
         app:cardElevation="0dp"
         app:elevation="0dp"
-        app:layout_constraintLeft_toRightOf="@id/tweet_profile_image"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tweet_profile_image"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tweet_name">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -109,8 +109,8 @@
                 android:id="@+id/tweet_media_recycler"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -125,10 +125,11 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:textColorLink="@color/colorAccent"
+        style="@style/TextAppearance.MaterialComponents.Subtitle2"
+        android:textColorLink="@color/color_secondary"
         app:layout_constraintBottom_toTopOf="@id/tweet_quoted_layout"
-        app:layout_constraintLeft_toRightOf="@id/tweet_profile_image"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tweet_profile_image"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tweet_media_card"
         tools:text="The Dragon spacecraft supporting this mission previously flew in support of our fourth and eleventh commercial resupply missions" />
 
@@ -140,15 +141,15 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        app:strokeColor="@color/colorAccent"
+        app:strokeColor="@color/color_secondary"
         app:strokeWidth="1dp"
         app:cardBackgroundColor="@android:color/transparent"
         app:cardCornerRadius="8dp"
         app:cardElevation="0dp"
         app:elevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/tweet_profile_image"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tweet_profile_image"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tweet_full_text">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -165,8 +166,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:textColor="@android:color/white"
-                app:layout_constraintLeft_toLeftOf="parent"
+                android:textSize="14sp"
+                style="@style/TextAppearance.MaterialComponents.Headline6"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="SpaceX" />
 
@@ -176,7 +178,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                app:layout_constraintLeft_toRightOf="@id/tweet_quoted_name"
+                app:layout_constraintStart_toEndOf="@id/tweet_quoted_name"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="\@SpaceX" />
 
@@ -187,7 +189,7 @@
                 android:layout_marginStart="4dp"
                 android:background="@android:color/white"
                 app:layout_constraintBottom_toBottomOf="@id/tweet_quoted_screen_name"
-                app:layout_constraintLeft_toRightOf="@id/tweet_quoted_screen_name"
+                app:layout_constraintStart_toEndOf="@id/tweet_quoted_screen_name"
                 app:layout_constraintTop_toTopOf="@id/tweet_quoted_screen_name" />
 
             <TextView
@@ -196,7 +198,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="8dp"
-                app:layout_constraintLeft_toRightOf="@id/tweet_quoted_heading_separator"
+                app:layout_constraintStart_toEndOf="@id/tweet_quoted_heading_separator"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Date" />
 
@@ -207,9 +209,9 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:textColorLink="@color/colorAccent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                android:textColorLink="@color/color_secondary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tweet_quoted_name"
                 tools:text="This is a quoted tweets text area." />
 
@@ -219,8 +221,8 @@
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tweet_quoted_full_text" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

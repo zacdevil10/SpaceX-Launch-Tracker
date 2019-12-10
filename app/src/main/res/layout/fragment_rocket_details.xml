@@ -20,18 +20,17 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="@string/name_label"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/rocket_details_name_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/heading"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            android:textAppearance="?textAppearanceHeadline5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_name_label"
             tools:text="Falcon Heavy" />
 
@@ -40,8 +39,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_name_text"
             tools:lines="4"
             tools:text="@tools:sample/lorem/random" />
@@ -52,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/active_label"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_text" />
 
         <ImageView
@@ -61,7 +60,7 @@
             android:layout_height="0dp"
             android:contentDescription="@string/status_image_desc"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_status_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_status_label"
             tools:src="@drawable/ic_check_circle_black_24dp"
             tools:tint="@color/success" />
@@ -72,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/cost_per_launch_label"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_status_label" />
 
         <TextView
@@ -82,8 +81,8 @@
             android:layout_marginStart="16dp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_cost_label"
-            app:layout_constraintLeft_toRightOf="@id/rocket_details_cost_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rocket_details_cost_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_cost_label"
             tools:text="$90,000,000" />
 
@@ -93,7 +92,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/success_rate_heading"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_cost_label" />
 
         <TextView
@@ -103,8 +102,8 @@
             android:layout_marginStart="16dp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_success_label"
-            app:layout_constraintLeft_toRightOf="@id/rocket_details_success_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rocket_details_success_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_success_label"
             tools:text="40%" />
 
@@ -114,7 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/first_flight_label"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_success_label" />
 
         <TextView
@@ -124,8 +123,8 @@
             android:layout_marginStart="16dp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_first_flight_label"
-            app:layout_constraintLeft_toRightOf="@id/rocket_details_first_flight_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rocket_details_first_flight_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_first_flight_label"
             tools:text="21 Feb 18" />
 
@@ -135,7 +134,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/stages_label"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_first_flight_label" />
 
         <TextView
@@ -145,8 +144,8 @@
             android:layout_marginStart="16dp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_stages_label"
-            app:layout_constraintLeft_toRightOf="@id/rocket_details_stages_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rocket_details_stages_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_stages_label"
             tools:text="2" />
 
@@ -156,7 +155,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/height_label"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_stages_label" />
 
         <TextView
@@ -166,8 +165,8 @@
             android:layout_marginStart="16dp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_height_label"
-            app:layout_constraintLeft_toRightOf="@id/rocket_details_height_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rocket_details_height_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_height_label"
             tools:text="70.25m / 230ft" />
 
@@ -177,7 +176,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/diameter_label"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_height_label" />
 
         <TextView
@@ -187,8 +186,8 @@
             android:layout_marginStart="16dp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_diameter_label"
-            app:layout_constraintLeft_toRightOf="@id/rocket_details_diameter_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rocket_details_diameter_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_diameter_label"
             tools:text="9.32m / 14.3ft" />
 
@@ -198,7 +197,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/mass_label"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_diameter_label" />
 
         <TextView
@@ -208,8 +207,8 @@
             android:layout_marginStart="16dp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_mass_label"
-            app:layout_constraintLeft_toRightOf="@id/rocket_details_mass_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rocket_details_mass_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_mass_label"
             tools:text="220,225kg / 730,740lbs" />
 
@@ -219,10 +218,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/first_stage"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/heading"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            android:textAppearance="?textAppearanceHeadline6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_mass_label" />
 
         <TextView
@@ -231,7 +229,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/reusable_label"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_first_stage_heading" />
 
         <ImageView
@@ -241,7 +239,7 @@
             android:layout_marginStart="16dp"
             android:contentDescription="@string/status_image_desc"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_reusable_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_reusable_label"
             tools:src="@drawable/ic_check_circle_black_24dp"
             tools:tint="@color/success" />
@@ -252,7 +250,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/engines_label"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_reusable_label" />
 
         <TextView
@@ -262,8 +260,8 @@
             android:layout_marginStart="16dp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_engines_first_label"
-            app:layout_constraintLeft_toRightOf="@id/rocket_details_engines_first_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rocket_details_engines_first_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_engines_first_label"
             tools:text="27" />
 
@@ -273,7 +271,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/fuel_amount_label"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_engines_first_label" />
 
         <TextView
@@ -283,8 +281,8 @@
             android:layout_marginStart="16dp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_fuel_first_label"
-            app:layout_constraintLeft_toRightOf="@id/rocket_details_fuel_first_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rocket_details_fuel_first_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_fuel_first_label"
             tools:text="27.2 T" />
 
@@ -294,7 +292,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/burn_time_label"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_fuel_first_label" />
 
         <TextView
@@ -304,8 +302,8 @@
             android:layout_marginStart="16dp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_burn_first_label"
-            app:layout_constraintLeft_toRightOf="@id/rocket_details_burn_first_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rocket_details_burn_first_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_burn_first_label"
             tools:text="170s" />
 
@@ -315,7 +313,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/thrust_at_sea_level_label"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_burn_first_label" />
 
         <TextView
@@ -326,8 +324,8 @@
             android:singleLine="true"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_thrust_sea_label"
-            app:layout_constraintLeft_toRightOf="@id/rocket_details_thrust_sea_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rocket_details_thrust_sea_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_thrust_sea_label"
             tools:text="420,000 kN / 28,094,000 lbf" />
 
@@ -337,7 +335,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/thrust_in_vacuum_label"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_thrust_sea_label" />
 
         <TextView
@@ -348,8 +346,8 @@
             android:singleLine="true"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_thrust_vac_label"
-            app:layout_constraintLeft_toRightOf="@id/rocket_details_thrust_vac_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rocket_details_thrust_vac_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_thrust_vac_label"
             tools:text="420,000 kN / 31,110,000 lbf" />
 
@@ -359,10 +357,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/second_stage_label"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/heading"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            android:textAppearance="?textAppearanceHeadline6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_thrust_vac_label" />
 
         <TextView
@@ -371,7 +368,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/engines_label"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_second_stage_heading" />
 
         <TextView
@@ -381,8 +378,8 @@
             android:layout_marginStart="16dp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_engines_second_label"
-            app:layout_constraintLeft_toRightOf="@id/rocket_details_engines_second_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rocket_details_engines_second_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_engines_second_label"
             tools:text="27" />
 
@@ -392,7 +389,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/fuel_amount_label"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_engines_second_label" />
 
         <TextView
@@ -402,8 +399,8 @@
             android:layout_marginStart="16dp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_fuel_second_label"
-            app:layout_constraintLeft_toRightOf="@id/rocket_details_fuel_second_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rocket_details_fuel_second_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_fuel_second_label"
             tools:text="27.2 T" />
 
@@ -413,7 +410,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/burn_time_label"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_fuel_second_label" />
 
         <TextView
@@ -423,8 +420,8 @@
             android:layout_marginStart="16dp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_burn_second_label"
-            app:layout_constraintLeft_toRightOf="@id/rocket_details_burn_second_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rocket_details_burn_second_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_burn_second_label"
             tools:text="170s" />
 
@@ -434,7 +431,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/thrust_label"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rocket_details_burn_second_label" />
 
         <TextView
@@ -444,8 +441,8 @@
             android:layout_marginStart="16dp"
             android:textAlignment="textEnd"
             app:layout_constraintBottom_toBottomOf="@id/rocket_details_thrust_second_label"
-            app:layout_constraintLeft_toRightOf="@id/rocket_details_thrust_second_label"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rocket_details_thrust_second_label"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/rocket_details_thrust_second_label"
             tools:text="420 kN / 94,000 lbf" />
 

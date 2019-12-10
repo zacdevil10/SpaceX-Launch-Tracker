@@ -21,8 +21,8 @@
     <string name="reused">Reused</string>
 
     <!--Filter labels-->
-    <string name="filter_successes">successes</string>
-    <string name="filter_failures">failures</string>
+    <string name="filter_successes">Successes</string>
+    <string name="filter_failures">Failures</string>
     <string name="filter">Filter:</string>
 
     <!--Rocket names-->
@@ -156,5 +156,6 @@
     <string name="dismiss_label">Dismiss</string>
     <string name="no_pinned_launches_found_label">No pinned launches found.</string>
     <string name="twitter_profile_image_desc">Twitter profile image</string>
+    <string name="scroll_up_label">Scroll Up</string>
 
 </resources>

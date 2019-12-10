@@ -63,30 +63,33 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
             if (rocketsList.isEmpty()) getRocketsList() else addRocketsList(rocketsList)
         }
 
-        launch_history_success_toggle.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) launch_history_failure_toggle.isChecked = false
-            presenter.updateFilter(launchesList, "success", isChecked)
-        }
-
-        launch_history_failure_toggle.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) launch_history_success_toggle.isChecked = false
-            presenter.updateFilter(launchesList, "failed", isChecked)
+        launch_history_chip_group.setOnCheckedChangeListener { group, checkedId ->
+            presenter.updateFilter(
+                launchesList,
+                "success",
+                launch_history_success_toggle.id == group.checkedChipId
+            )
+            presenter.updateFilter(
+                launchesList,
+                "failed",
+                launch_history_failure_toggle.id == group.checkedChipId
+            )
         }
 
         //Pie chart appearance
         launch_history_pie_chart.apply {
             isDrawHoleEnabled = true
-            setHoleColor(ContextCompat.getColor(context, R.color.colorPrimary))
+            setHoleColor(ContextCompat.getColor(context, R.color.color_background))
             setDrawEntryLabels(false)
             description.isEnabled = false
-            setCenterTextColor(Color.WHITE)
+            setCenterTextColor(ContextCompat.getColor(context, R.color.color_on_background))
             isRotationEnabled = false
 
             legend.apply {
                 verticalAlignment = Legend.LegendVerticalAlignment.TOP
                 horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
                 orientation = Legend.LegendOrientation.VERTICAL
-                textColor = Color.WHITE
+                textColor = ContextCompat.getColor(context, R.color.color_on_background)
             }
         }
     }

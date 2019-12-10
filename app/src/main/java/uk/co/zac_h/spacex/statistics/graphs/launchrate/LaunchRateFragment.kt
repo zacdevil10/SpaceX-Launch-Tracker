@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.XAxis
@@ -70,7 +71,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
         launch_rate_bar_chart.apply {
             xAxis.apply {
                 position = XAxis.XAxisPosition.BOTTOM
-                textColor = Color.WHITE
+                textColor = ContextCompat.getColor(context, R.color.color_on_background)
                 valueFormatter = object : ValueFormatter() {
                     override fun getFormattedValue(value: Float): String {
                         return "'" + value.toInt().toString().takeLast(2)
@@ -80,7 +81,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
                 setDrawGridLines(false)
             }
             axisLeft.apply {
-                textColor = Color.WHITE
+                textColor = ContextCompat.getColor(context, R.color.color_on_background)
                 granularity = 1f
                 axisMinimum = 0f
             }
@@ -90,7 +91,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
             setDrawBorders(false)
 
             legend.apply {
-                textColor = Color.WHITE
+                textColor = ContextCompat.getColor(context, R.color.color_on_background)
 
             }
         }
@@ -134,7 +135,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
         val colors = ArrayList<Int>()
 
         colors.add(ColorTemplate.rgb("29b6f6"))
-        colors.add(ColorTemplate.rgb("FFFFFF"))
+        colors.add(ColorTemplate.rgb("b00020"))
 
         val entries = ArrayList<BarEntry>()
 
@@ -169,7 +170,9 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
 
         val set = BarDataSet(entries, "Launches").apply {
             setColors(colors)
-            valueTextColor = Color.WHITE
+            valueTextColor =
+                context?.let { ContextCompat.getColor(it, R.color.color_on_background) }
+                    ?: Color.BLUE
             valueTextSize = 9f
             valueFormatter = object : ValueFormatter() {
                 override fun getBarStackedLabel(value: Float, stackedEntry: BarEntry): String {

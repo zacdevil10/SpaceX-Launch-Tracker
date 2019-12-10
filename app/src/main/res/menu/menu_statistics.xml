@@ -6,14 +6,12 @@
         android:id="@+id/filter"
         android:icon="@drawable/ic_filter_list_black_24dp"
         android:title="@string/filter_label"
-        app:iconTint="@android:color/white"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/reload"
         android:icon="@drawable/ic_refresh_black_24dp"
         android:title="@string/reload_label"
-        app:iconTint="@android:color/white"
         app:showAsAction="ifRoom" />
 
 </menu>
