@@ -96,3 +96,10 @@ private fun getString(
         }
     }
 }
+
+fun String.formatNewsFeedDate(): String {
+    val format = SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss zzz", Locale.getDefault())
+    val newFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+
+    return newFormat.format(format.parse(this))
+}

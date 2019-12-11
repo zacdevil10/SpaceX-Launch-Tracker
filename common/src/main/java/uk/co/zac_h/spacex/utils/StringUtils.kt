@@ -67,3 +67,19 @@ fun String.formatWithUrls(
 
     return message
 }
+
+fun String.clearHtmlTags(): String {
+    var text = this
+
+    val pattern = Pattern.compile("(<a(|\\s+[^>]+)>)+")
+    val matcher = pattern.matcher(text)
+
+    text = matcher.replaceAll("")
+
+    val patternToEnd = Pattern.compile("(</a>.*)+")
+    val matchToEnd = patternToEnd.matcher(text)
+
+    text = matchToEnd.replaceAll("")
+
+    return text
+}

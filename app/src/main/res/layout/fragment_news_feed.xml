@@ -4,46 +4,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".news.twitter.TwitterFeedFragment">
+    tools:context=".news.news.NewsFeedFragment">
 
     <ProgressBar
-        android:id="@+id/twitter_feed_progress_bar"
+        android:id="@+id/news_feed_progress_bar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/twitter_feed_swipe_refresh"
+        android:id="@+id/news_feed_swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/twitter_feed_recycler"
+            android:id="@+id/news_feed_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <com.google.android.material.chip.Chip
-        android:id="@+id/twitter_feed_scroll_up"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.Chip.Action"
-        app:chipBackgroundColor="@color/color_secondary"
-        app:chipIconTint="@android:color/white"
-        android:textColor="@android:color/white"
-        android:clipChildren="true"
-        android:visibility="invisible"
-        android:elevation="8dp"
-        android:text="@string/scroll_up_label"
-        app:chipIcon="@drawable/ic_arrow_upward_black_24dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
