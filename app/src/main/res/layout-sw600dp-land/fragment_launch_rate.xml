@@ -15,8 +15,8 @@
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <HorizontalScrollView
@@ -45,15 +45,18 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.chip.ChipGroup
+                android:id="@+id/launch_rate_chip_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@id/launch_rate_filters_text"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:singleLine="true">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/launch_rate_falcon_one_toggle"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
@@ -61,6 +64,7 @@
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/launch_rate_falcon_nine_toggle"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
@@ -68,6 +72,7 @@
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/launch_rate_falcon_heavy_toggle"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
@@ -87,8 +92,8 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/launch_rate_filter_scroll" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

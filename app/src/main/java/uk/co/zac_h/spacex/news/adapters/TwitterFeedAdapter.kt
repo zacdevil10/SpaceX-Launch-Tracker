@@ -55,7 +55,7 @@ class TwitterFeedAdapter(
         when (holder) {
             is TweetViewHolder -> holder.apply {
                 tweet?.let {
-                    itemView.setOnClickListener {
+                    container.setOnClickListener {
                         view.openWebLink("https://twitter.com/SpaceX/status/${tweet.id}")
                     }
 
@@ -204,6 +204,7 @@ class TwitterFeedAdapter(
     }
 
     class TweetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val container: ConstraintLayout = itemView.findViewById(R.id.tweet_container)
         val profileImage: ImageView = itemView.findViewById(R.id.tweet_profile_image)
         val date: TextView = itemView.findViewById(R.id.tweet_date)
         val name: TextView = itemView.findViewById(R.id.tweet_name)

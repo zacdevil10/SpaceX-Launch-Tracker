@@ -62,7 +62,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata:2.1.0"
 
     //Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.7.0'
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1'
 
@@ -73,7 +73,7 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     //MediaRecyclerView
-    implementation 'com.github.zacdevil10:MediaRecyclerView:v0.1.8-beta'
+    implementation 'com.github.zacdevil10:MediaRecyclerView:v0.1.9-beta'
 
     //Firebase
     implementation 'com.google.firebase:firebase-analytics:17.2.1'

@@ -19,4 +19,6 @@
     <color name="color_on_surface">#ffffff</color>
     <color name="color_on_error">#000000</color>
 
+    <color name="color_timeline">#ffffff</color>
+
 </resources>

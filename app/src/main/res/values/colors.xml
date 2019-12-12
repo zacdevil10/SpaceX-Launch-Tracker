@@ -26,6 +26,8 @@
     <color name="color_on_surface">#000000</color>
     <color name="color_on_error">#ffffff</color>
 
+    <color name="color_timeline">#757575</color>
+
     <color name="success">#4caf50</color>
     <color name="failed">#d32f2f</color>
 

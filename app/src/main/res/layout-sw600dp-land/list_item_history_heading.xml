@@ -28,7 +28,7 @@
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="32dp"
-        android:background="@color/color_on_surface"
+        android:background="@color/color_timeline"
         app:layout_constraintEnd_toStartOf="@id/list_item_history_marker"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,7 +38,7 @@
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:src="@drawable/event_circle"
-        android:tint="@color/color_on_surface"
+        android:tint="@color/color_timeline"
         app:layout_constraintBottom_toBottomOf="@id/list_item_history_line_top"
         app:layout_constraintEnd_toEndOf="@id/list_item_history_heading_container"
         app:layout_constraintStart_toStartOf="@id/list_item_history_heading_container"
@@ -50,7 +50,7 @@
         android:layout_width="0dp"
         android:layout_height="1dp"
         android:layout_marginTop="32dp"
-        android:background="@color/color_on_surface"
+        android:background="@color/color_timeline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/list_item_history_marker"
         app:layout_constraintTop_toTopOf="parent" />

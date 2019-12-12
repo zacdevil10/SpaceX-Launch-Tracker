@@ -240,6 +240,7 @@
             android:id="@+id/core_details_mission_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:overScrollMode="never"
             app:layout_constraintTop_toBottomOf="@id/core_details_mission_label" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

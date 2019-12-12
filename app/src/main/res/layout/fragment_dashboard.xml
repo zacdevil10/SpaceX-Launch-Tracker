@@ -67,7 +67,6 @@
                     android:id="@+id/dashboard_pinned_launches_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
                     android:overScrollMode="never"
                     app:layout_constraintTop_toBottomOf="@id/dashboard_pinned_heading_text"
                     tools:itemCount="4"
