@@ -25,8 +25,6 @@ class MainActivity : AppCompatActivity(),
         R.id.statistics_page_fragment
     )
 
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
-
     private var snackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,9 +33,7 @@ class MainActivity : AppCompatActivity(),
 
         setSupportActionBar(toolbar)
 
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            this
-        ).apply {
+        (application as App).networkStateChangeListener.apply {
             addListener(this@MainActivity)
             registerReceiver()
         }
@@ -66,14 +62,16 @@ class MainActivity : AppCompatActivity(),
 
     override fun onStart() {
         super.onStart()
-        networkStateChangeListener.updateState()
+        (application as App).networkStateChangeListener.updateState()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         snackbar = null
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
+        (application as App).networkStateChangeListener.apply {
+            removeListener(this@MainActivity)
+            unregisterReceiver()
+        }
     }
 
     override fun networkAvailable() {

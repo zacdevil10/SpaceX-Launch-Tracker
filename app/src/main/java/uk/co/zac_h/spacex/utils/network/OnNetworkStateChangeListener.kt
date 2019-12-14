@@ -34,12 +34,14 @@ class OnNetworkStateChangeListener(private val context: Context?) {
                 networkCallback = object : ConnectivityManager.NetworkCallback() {
                     override fun onAvailable(network: Network) {
                         super.onAvailable(network)
+                        println("Network available")
                         connected = true
                         notifyStateToAll()
                     }
 
                     override fun onLost(network: Network) {
                         super.onLost(network)
+                        println("Network connection lost")
                         connected = false
                         notifyStateToAll()
                     }

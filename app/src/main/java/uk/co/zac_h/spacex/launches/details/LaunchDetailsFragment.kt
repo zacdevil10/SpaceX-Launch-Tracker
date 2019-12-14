@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_launch_details.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.launches.adapters.LaunchLinksAdapter
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
@@ -33,8 +34,6 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
 
     private lateinit var presenter: LaunchDetailsPresenter
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private var launch: LaunchesModel? = null
     private var id: String? = null
@@ -68,13 +67,6 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
             )
         )
 
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
-            addListener(this@LaunchDetailsFragment)
-            registerReceiver()
-        }
-
         presenter = LaunchDetailsPresenterImpl(
             this,
             LaunchDetailsHelperImpl(pinnedSharedPreferences),
@@ -85,7 +77,6 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
             presenter.addLaunchModel(it)
             pinned = presenter.isPinned()
         } ?: id?.let {
-            presenter.getLaunch(it)
             pinned = presenter.isPinned(it.toInt())
         }
 
@@ -137,11 +128,22 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
         setupExpandCollapse(launch_details_payload_recycler, launch_details_payload_collapse_toggle)
     }
 
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.apply {
+            addListener(this@LaunchDetailsFragment)
+            updateState()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequest()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -189,6 +191,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
                 resources.getColor(android.R.color.white, null)
             )
         } else {
+            @Suppress("DEPRECATION")
             DrawableCompat.setTint(drawable.mutate(), resources.getColor(android.R.color.white))
         }
         item.icon = drawable

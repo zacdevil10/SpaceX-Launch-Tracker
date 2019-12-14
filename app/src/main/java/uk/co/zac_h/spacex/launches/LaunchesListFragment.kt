@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_launches_list.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
@@ -22,8 +23,6 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
     private lateinit var searchView: SearchView
 
     private var launchParam: String? = null
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     companion object {
         fun newInstance(launchParam: String) = LaunchesListFragment().apply {
@@ -51,13 +50,6 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
         presenter = LaunchesPresenterImpl(this, LaunchesInteractorImpl())
 
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
-            addListener(this@LaunchesListFragment)
-            registerReceiver()
-        }
-
         launchesAdapter = LaunchesAdapter(context, launchesList)
 
         launches_recycler.apply {
@@ -67,11 +59,17 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
         }
 
         launchParam?.let { launchId ->
-            if (launchesList.isEmpty()) presenter.getLaunchList(launchId)
-
             launches_swipe_refresh.setOnRefreshListener {
                 presenter.getLaunchList(launchId)
             }
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.apply {
+            addListener(this@LaunchesListFragment)
+            updateState()
         }
     }
 
@@ -82,14 +80,13 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
     override fun onPause() {
         super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
         launches_swipe_refresh.isEnabled = false
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequests()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun onDestroy() {

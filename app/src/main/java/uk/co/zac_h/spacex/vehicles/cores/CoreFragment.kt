@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_core.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.model.spacex.CoreModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
@@ -16,8 +17,6 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: CorePresenter
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private lateinit var coreAdapter: CoreAdapter
     private val coresArray = ArrayList<CoreModel>()
@@ -40,13 +39,6 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
 
         presenter = CorePresenterImpl(this, CoreInteractorImpl())
 
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
-            addListener(this@CoreFragment)
-            registerReceiver()
-        }
-
         coreAdapter = CoreAdapter(context, coresArray)
 
         core_recycler.apply {
@@ -58,11 +50,19 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
         if (coresArray.isEmpty()) presenter.getCores()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
         presenter.cancelRequest()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

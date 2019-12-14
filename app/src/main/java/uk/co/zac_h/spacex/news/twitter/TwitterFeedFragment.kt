@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_twitter_feed.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.news.adapters.TwitterFeedAdapter
 import uk.co.zac_h.spacex.utils.PaginationScrollListener
@@ -22,8 +23,6 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: TwitterFeedPresenter
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private lateinit var twitterAdapter: TwitterFeedAdapter
     private var tweetsList = ArrayList<TimelineTweetModel?>()
@@ -44,13 +43,6 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
             this,
             TwitterFeedInteractorImpl()
         )
-
-        networkStateChangeListener = OnNetworkStateChangeListener(context)
-            .apply {
-                addListener(this@TwitterFeedFragment)
-                registerReceiver()
-            }
-
 
         twitterAdapter = TwitterFeedAdapter(context, tweetsList, this)
         val layout = LinearLayoutManager(this@TwitterFeedFragment.context)
@@ -93,11 +85,22 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.apply {
+            addListener(this@TwitterFeedFragment)
+            updateState()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequests()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun updateRecycler(tweets: List<TimelineTweetModel>) {

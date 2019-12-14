@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardLaunchesAdapter
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardPinnedAdapter
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
@@ -29,8 +30,6 @@ class DashboardFragment : Fragment(), DashboardView,
     private val pinnedArray = ArrayList<LaunchesModel>()
 
     private var countdownTimer: CountDownTimer? = null
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,13 +50,6 @@ class DashboardFragment : Fragment(), DashboardView,
 
         presenter = DashboardPresenterImpl(this, pinnedSharedPreferences, DashboardInteractorImpl())
 
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
-            addListener(this@DashboardFragment)
-            registerReceiver()
-        }
-
         pinnedAdapter = DashboardPinnedAdapter(context, pinnedArray)
 
         dashboard_pinned_launches_recycler.apply {
@@ -67,10 +59,16 @@ class DashboardFragment : Fragment(), DashboardView,
         }
 
         dashboard_swipe_refresh.setOnRefreshListener {
-            presenter.getLatestLaunches(true)
+            presenter.getLatestLaunches()
         }
+    }
 
-        presenter.getLatestLaunches()
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.apply {
+            addListener(this@DashboardFragment)
+            updateState()
+        }
     }
 
     override fun onResume() {
@@ -80,6 +78,7 @@ class DashboardFragment : Fragment(), DashboardView,
 
     override fun onPause() {
         super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
         pinnedArray.clear()
         dashboard_swipe_refresh.isEnabled = false
     }
@@ -88,13 +87,6 @@ class DashboardFragment : Fragment(), DashboardView,
         super.onDestroyView()
         countdownTimer?.cancel()
         presenter.cancelRequests()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        countdownTimer?.cancel()
     }
 
     override fun setLaunchesList(launches: LinkedHashMap<String, LaunchesModel>) {
@@ -172,7 +164,7 @@ class DashboardFragment : Fragment(), DashboardView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            presenter.getLatestLaunches(true)
+            presenter.getLatestLaunches()
         }
     }
 }

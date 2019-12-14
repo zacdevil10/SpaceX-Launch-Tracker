@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_pad_stats.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.model.spacex.StatsPadModel
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
 import uk.co.zac_h.spacex.utils.HeaderItemDecoration
@@ -16,8 +17,6 @@ class PadStatsFragment : Fragment(), PadStatsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: PadStatsPresenter
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private lateinit var padsAdapter: PadStatsSitesAdapter
 
@@ -32,20 +31,12 @@ class PadStatsFragment : Fragment(), PadStatsView,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
-        inflater.inflate(R.layout.fragment_pad_stats, container, false)
+    ): View? = inflater.inflate(R.layout.fragment_pad_stats, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         presenter = PadStatsPresenterImpl(this, PadStatsInteractorImpl())
-
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
-            addListener(this@PadStatsFragment)
-            registerReceiver()
-        }
 
         padsAdapter = PadStatsSitesAdapter(pads)
 
@@ -55,12 +46,23 @@ class PadStatsFragment : Fragment(), PadStatsView,
             adapter = padsAdapter
             addItemDecoration(HeaderItemDecoration(this, padsAdapter.isHeader(), false))
         }
+
+        if (pads.isEmpty()) presenter.getPads()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
+        presenter.cancelRequests()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

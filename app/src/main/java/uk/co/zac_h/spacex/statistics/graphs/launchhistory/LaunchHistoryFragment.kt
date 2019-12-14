@@ -15,6 +15,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.android.synthetic.main.fragment_launch_history.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.model.spacex.RocketsModel
 import uk.co.zac_h.spacex.utils.generateCenterSpannableText
@@ -24,8 +25,6 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: LaunchHistoryPresenter
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private var filterVisible = false
     private var filterSuccessful = false
@@ -43,25 +42,12 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
-        inflater.inflate(R.layout.fragment_launch_history, container, false)
+    ): View? = inflater.inflate(R.layout.fragment_launch_history, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
-
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
-            addListener(this@LaunchHistoryFragment)
-            registerReceiver()
-        }
-
-        presenter.apply {
-            if (launchesList.isEmpty()) getLaunchList() else addLaunchList(launchesList)
-            if (rocketsList.isEmpty()) getRocketsList() else addRocketsList(rocketsList)
-        }
 
         launch_history_chip_group.setOnCheckedChangeListener { group, checkedId ->
             presenter.updateFilter(
@@ -74,6 +60,11 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
                 "failed",
                 launch_history_failure_toggle.id == group.checkedChipId
             )
+        }
+
+        presenter.apply {
+            if (launchesList.isEmpty()) getLaunchList() else addLaunchList(launchesList)
+            if (rocketsList.isEmpty()) getRocketsList() else addRocketsList(rocketsList)
         }
 
         //Pie chart appearance
@@ -94,16 +85,24 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+    }
+
     override fun onResume() {
         super.onResume()
         presenter.showFilter(filterVisible)
     }
 
+    override fun onPause() {
+        super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequests()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

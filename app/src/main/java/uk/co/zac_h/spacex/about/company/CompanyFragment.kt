@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_company.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.model.spacex.CompanyModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import java.text.DecimalFormat
@@ -16,8 +17,6 @@ class CompanyFragment : Fragment(), CompanyView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: CompanyPresenter
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private var companyInfo: CompanyModel? = null
 
@@ -29,26 +28,25 @@ class CompanyFragment : Fragment(), CompanyView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = CompanyPresenterImpl(
-            this,
-            CompanyInteractorImpl()
-        )
+        presenter = CompanyPresenterImpl(this, CompanyInteractorImpl())
+    }
 
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.apply {
             addListener(this@CompanyFragment)
-            registerReceiver()
+            updateState()
         }
+    }
 
-        presenter.getCompanyInfo()
+    override fun onPause() {
+        super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequest()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun updateCompanyInfo(companyModel: CompanyModel) {

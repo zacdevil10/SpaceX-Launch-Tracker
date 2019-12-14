@@ -16,6 +16,7 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.android.synthetic.main.fragment_launch_rate.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
@@ -23,8 +24,6 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: LaunchRatePresenter
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private var filterVisible: Boolean = false
     private var filterFalconOne = true
@@ -42,20 +41,12 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
-        inflater.inflate(R.layout.fragment_launch_rate, container, false)
+    ): View? = inflater.inflate(R.layout.fragment_launch_rate, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         presenter = LaunchRatePresenterImpl(this, LaunchRateInteractorImpl())
-
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
-            addListener(this@LaunchRateFragment)
-            registerReceiver()
-        }
 
         launch_rate_falcon_one_toggle.setOnCheckedChangeListener { _, isChecked ->
             presenter.updateFilter(launchesList, "falcon1", isChecked)
@@ -67,6 +58,8 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
         launch_rate_falcon_heavy_toggle.setOnCheckedChangeListener { _, isChecked ->
             presenter.updateFilter(launchesList, "falconheavy", isChecked)
         }
+
+        if (launchesList.isEmpty()) presenter.getLaunchList()
 
         launch_rate_bar_chart.apply {
             xAxis.apply {
@@ -95,8 +88,11 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
 
             }
         }
+    }
 
-        presenter.getLaunchList()
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
     override fun onResume() {
@@ -104,11 +100,14 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
         presenter.showFilter(filterVisible)
     }
 
+    override fun onPause() {
+        super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequests()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

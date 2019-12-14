@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_core_details.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.launches.adapters.CoreMissionsAdapter
 import uk.co.zac_h.spacex.model.spacex.CoreModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
@@ -18,8 +19,6 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: CoreDetailsPresenter
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private var core: CoreModel? = null
     private var id: String? = null
@@ -42,13 +41,6 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView,
 
         presenter = CoreDetailsPresenterImpl(this, CoreDetailsInteractorImpl())
 
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
-            addListener(this@CoreDetailsFragment)
-            registerReceiver()
-        }
-
         core?.let {
             presenter.addCoreModel(it)
         } ?: id?.let {
@@ -56,11 +48,19 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView,
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequest()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun updateCoreDetails(coreModel: CoreModel) {

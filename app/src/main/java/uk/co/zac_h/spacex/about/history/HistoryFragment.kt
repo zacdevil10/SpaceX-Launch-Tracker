@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_history.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.utils.HeaderItemDecoration
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
@@ -20,8 +21,6 @@ class HistoryFragment : Fragment(), HistoryView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: HistoryPresenter
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private val history = ArrayList<HistoryHeaderModel>()
     private lateinit var historyAdapter: HistoryAdapter
@@ -35,13 +34,6 @@ class HistoryFragment : Fragment(), HistoryView,
         super.onViewCreated(view, savedInstanceState)
 
         presenter = HistoryPresenterImpl(this, HistoryInteractorImpl())
-
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
-            addListener(this@HistoryFragment)
-            registerReceiver()
-        }
 
         historyAdapter = HistoryAdapter(history, this)
 
@@ -70,18 +62,27 @@ class HistoryFragment : Fragment(), HistoryView,
             )
         }
 
-        if (history.isEmpty()) presenter.getHistory()
-
         history_swipe_refresh.setOnRefreshListener {
             presenter.getHistory()
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.apply {
+            addListener(this@HistoryFragment)
+            updateState()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequest()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun updateRecycler(history: ArrayList<HistoryHeaderModel>) {

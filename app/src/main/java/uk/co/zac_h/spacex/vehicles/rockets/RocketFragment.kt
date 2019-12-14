@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_rocket.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.model.spacex.RocketsModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
@@ -17,8 +18,6 @@ class RocketFragment : Fragment(), RocketView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var presenter: RocketPresenter
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private lateinit var rocketsAdapter: RocketsAdapter
     private val rocketsArray = ArrayList<RocketsModel>()
@@ -33,13 +32,6 @@ class RocketFragment : Fragment(), RocketView,
 
         presenter = RocketPresenterImpl(this, RocketInteractorImpl())
 
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
-            addListener(this@RocketFragment)
-            registerReceiver()
-        }
-
         rocketsAdapter = RocketsAdapter(rocketsArray)
 
         rocket_recycler.apply {
@@ -51,11 +43,19 @@ class RocketFragment : Fragment(), RocketView,
         if (rocketsArray.isEmpty()) presenter.getRockets()
     }
 
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequest()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
     }
 
     override fun updateRockets(rockets: List<RocketsModel>) {
