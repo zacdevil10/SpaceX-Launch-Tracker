@@ -22,7 +22,7 @@ class HistoryFragment : Fragment(), HistoryView,
 
     private lateinit var presenter: HistoryPresenter
 
-    private val history = ArrayList<HistoryHeaderModel>()
+    private lateinit var history: ArrayList<HistoryHeaderModel>
     private lateinit var historyAdapter: HistoryAdapter
 
     override fun onCreateView(
@@ -34,6 +34,10 @@ class HistoryFragment : Fragment(), HistoryView,
         super.onViewCreated(view, savedInstanceState)
 
         presenter = HistoryPresenterImpl(this, HistoryInteractorImpl())
+
+        history = savedInstanceState?.let {
+            it.getParcelableArrayList<HistoryHeaderModel>("history") as ArrayList<HistoryHeaderModel>
+        } ?: ArrayList()
 
         historyAdapter = HistoryAdapter(history, this)
 
@@ -65,14 +69,15 @@ class HistoryFragment : Fragment(), HistoryView,
         history_swipe_refresh.setOnRefreshListener {
             presenter.getHistory()
         }
+
+        if (history.isEmpty()) {
+            presenter.getHistory()
+        }
     }
 
     override fun onStart() {
         super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.apply {
-            addListener(this@HistoryFragment)
-            updateState()
-        }
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this@HistoryFragment)
     }
 
     override fun onPause() {
@@ -80,12 +85,17 @@ class HistoryFragment : Fragment(), HistoryView,
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("history", history)
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequest()
     }
 
-    override fun updateRecycler(history: ArrayList<HistoryHeaderModel>) {
+    override fun addHistory(history: ArrayList<HistoryHeaderModel>) {
         this.history.clear()
         this.history.addAll(history)
 

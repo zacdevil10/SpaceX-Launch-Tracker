@@ -47,7 +47,7 @@ class HistoryPresenterImpl(
 
             view.apply {
                 hideProgress()
-                updateRecycler(historyHeaders)
+                addHistory(historyHeaders)
                 toggleSwipeProgress(false)
             }
         }
