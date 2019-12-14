@@ -83,14 +83,13 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
         twitter_feed_scroll_up.setOnClickListener {
             twitter_feed_recycler.smoothScrollToPosition(0)
         }
+
+        if (tweetsList.isEmpty()) presenter.getTweets()
     }
 
     override fun onStart() {
         super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.apply {
-            addListener(this@TwitterFeedFragment)
-            updateState()
-        }
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
     override fun onPause() {
@@ -165,7 +164,10 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            presenter.getTweets()
+            if (tweetsList.isEmpty()) presenter.getTweets()
+            if (isLoading) presenter.getTweets(
+                tweetsList[tweetsList.size - 1]?.id ?: tweetsList[tweetsList.size - 2]!!.id
+            )
         }
     }
 }

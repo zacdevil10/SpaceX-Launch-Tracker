@@ -188,8 +188,10 @@ class TwitterFeedAdapter(
     }
 
     fun addNullData() {
-        twitterFeed.add(null)
-        notifyItemInserted(twitterFeed.size - 1)
+        if (twitterFeed[twitterFeed.size - 1] != null) {
+            twitterFeed.add(null)
+            notifyItemInserted(twitterFeed.size - 1)
+        }
     }
 
     fun removeNullData() {
