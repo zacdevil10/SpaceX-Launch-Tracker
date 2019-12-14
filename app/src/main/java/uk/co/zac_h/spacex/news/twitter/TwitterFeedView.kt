@@ -10,15 +10,17 @@ interface TwitterFeedView {
 
     fun openWebLink(link: String)
 
-    fun showRecyclerLoading()
-
     fun showScrollUp()
 
     fun hideScrollUp()
 
     fun showProgress()
 
+    fun showPagingProgress()
+
     fun hideProgress()
+
+    fun hidePagingProgress()
 
     fun toggleSwipeProgress(isRefreshing: Boolean)
 

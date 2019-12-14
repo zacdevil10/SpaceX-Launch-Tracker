@@ -25,7 +25,7 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
     private lateinit var presenter: TwitterFeedPresenter
 
     private lateinit var twitterAdapter: TwitterFeedAdapter
-    private var tweetsList = ArrayList<TimelineTweetModel?>()
+    private lateinit var tweetsList: ArrayList<TimelineTweetModel>
 
     private var isLastPage = false
     private var isLoading = false
@@ -44,6 +44,10 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
             TwitterFeedInteractorImpl()
         )
 
+        tweetsList = savedInstanceState?.let {
+            it.getParcelableArrayList<TimelineTweetModel>("timeline") as ArrayList<TimelineTweetModel>
+        } ?: ArrayList()
+
         twitterAdapter = TwitterFeedAdapter(context, tweetsList, this)
         val layout = LinearLayoutManager(this@TwitterFeedFragment.context)
 
@@ -61,9 +65,7 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
                 override fun loadItems() {
                     isLoading = true
-                    presenter.getTweets(
-                        tweetsList[tweetsList.size - 1]?.id ?: tweetsList[tweetsList.size - 2]!!.id
-                    )
+                    presenter.getTweets(tweetsList[tweetsList.size - 1].id)
                 }
 
                 override fun onScrollTop() {
@@ -97,6 +99,11 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("timeline", tweetsList)
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.cancelRequests()
@@ -110,7 +117,6 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
     override fun addPagedData(tweets: List<TimelineTweetModel>) {
         isLoading = false
-        twitterAdapter.removeNullData()
 
         tweetsList.addAllExcludingPosition(tweets, 0)
 
@@ -119,12 +125,6 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
     override fun openWebLink(link: String) {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
-    }
-
-    override fun showRecyclerLoading() {
-        activity?.runOnUiThread {
-            twitterAdapter.addNullData()
-        }
     }
 
     override fun showScrollUp() {
@@ -150,8 +150,16 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
         twitter_feed_progress_bar.visibility = View.VISIBLE
     }
 
+    override fun showPagingProgress() {
+        twitter_feed_paging_progress_bar.visibility = View.VISIBLE
+    }
+
     override fun hideProgress() {
         twitter_feed_progress_bar.visibility = View.GONE
+    }
+
+    override fun hidePagingProgress() {
+        twitter_feed_paging_progress_bar.visibility = View.GONE
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {
@@ -165,9 +173,7 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             if (tweetsList.isEmpty()) presenter.getTweets()
-            if (isLoading) presenter.getTweets(
-                tweetsList[tweetsList.size - 1]?.id ?: tweetsList[tweetsList.size - 2]!!.id
-            )
+            if (isLoading) presenter.getTweets(tweetsList[tweetsList.size - 1].id)
         }
     }
 }
