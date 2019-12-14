@@ -18,7 +18,7 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
     private lateinit var presenter: LaunchesPresenter
     private lateinit var launchesAdapter: LaunchesAdapter
-    private var launchesList = ArrayList<LaunchesModel>()
+    private lateinit var launchesList: ArrayList<LaunchesModel>
 
     private lateinit var searchView: SearchView
 
@@ -50,6 +50,10 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
         presenter = LaunchesPresenterImpl(this, LaunchesInteractorImpl())
 
+        launchesList = savedInstanceState?.let {
+            it.getParcelableArrayList<LaunchesModel>("launches") as ArrayList<LaunchesModel>
+        } ?: ArrayList()
+
         launchesAdapter = LaunchesAdapter(context, launchesList)
 
         launches_recycler.apply {
@@ -62,15 +66,14 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
             launches_swipe_refresh.setOnRefreshListener {
                 presenter.getLaunchList(launchId)
             }
+
+            if (launchesList.isEmpty()) presenter.getLaunchList(launchId)
         }
     }
 
     override fun onStart() {
         super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.apply {
-            addListener(this@LaunchesListFragment)
-            updateState()
-        }
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
     override fun onResume() {
@@ -82,6 +85,11 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
         super.onPause()
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
         launches_swipe_refresh.isEnabled = false
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("launches", launchesList)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {

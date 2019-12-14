@@ -67,6 +67,10 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
             )
         )
 
+        savedInstanceState?.let {
+            launch = it.getParcelable("launch")
+        }
+
         presenter = LaunchDetailsPresenterImpl(
             this,
             LaunchDetailsHelperImpl(pinnedSharedPreferences),
@@ -139,6 +143,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
     override fun onPause() {
         super.onPause()
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable("launch", launch)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
