@@ -29,19 +29,31 @@ class CompanyFragment : Fragment(), CompanyView,
         super.onViewCreated(view, savedInstanceState)
 
         presenter = CompanyPresenterImpl(this, CompanyInteractorImpl())
+
+        savedInstanceState?.let {
+            companyInfo = it.getParcelable("info")
+        }
+
+        companyInfo?.let {
+            presenter.getCompanyInfo(it)
+        } ?: presenter.getCompanyInfo()
     }
 
     override fun onStart() {
         super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.apply {
-            addListener(this@CompanyFragment)
-            updateState()
-        }
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
     override fun onPause() {
         super.onPause()
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        companyInfo?.let {
+            outState.putParcelable("info", it)
+        }
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {

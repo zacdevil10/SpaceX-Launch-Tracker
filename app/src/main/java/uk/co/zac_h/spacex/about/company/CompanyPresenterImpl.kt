@@ -8,9 +8,11 @@ class CompanyPresenterImpl(
 ) : CompanyPresenter,
     CompanyInteractor.Callback {
 
-    override fun getCompanyInfo() {
+    override fun getCompanyInfo(companyInfo: CompanyModel?) {
         view.showProgress()
-        interactor.getCompanyInfo(this)
+        companyInfo?.let {
+            this.onSuccess(it)
+        } ?: interactor.getCompanyInfo(this)
     }
 
     override fun cancelRequest() {
