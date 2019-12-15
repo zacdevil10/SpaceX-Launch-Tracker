@@ -20,6 +20,14 @@ class CompanyFragment : Fragment(), CompanyView,
 
     private var companyInfo: CompanyModel? = null
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        savedInstanceState?.let {
+            companyInfo = it.getParcelable("info")
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -29,10 +37,6 @@ class CompanyFragment : Fragment(), CompanyView,
         super.onViewCreated(view, savedInstanceState)
 
         presenter = CompanyPresenterImpl(this, CompanyInteractorImpl())
-
-        savedInstanceState?.let {
-            companyInfo = it.getParcelable("info")
-        }
 
         companyInfo?.let {
             presenter.getCompanyInfo(it)

@@ -26,7 +26,11 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        core = arguments?.getParcelable("core") as CoreModel?
+        core = if (savedInstanceState != null) {
+            savedInstanceState.getParcelable("core")
+        } else {
+            arguments?.getParcelable("core")
+        }
         id = arguments?.getString("core_id")
     }
 
@@ -56,6 +60,11 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView,
     override fun onPause() {
         super.onPause()
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable("core", core)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {

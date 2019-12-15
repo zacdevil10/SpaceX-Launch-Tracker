@@ -20,7 +20,10 @@ class StatisticsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        statistics_view_pager.adapter = StatisticsPagerAdapter(childFragmentManager)
+        statistics_view_pager.apply {
+            adapter = StatisticsPagerAdapter(childFragmentManager)
+            offscreenPageLimit = 2
+        }
         statistics_tab_layout.setupWithViewPager(statistics_view_pager)
     }
 }

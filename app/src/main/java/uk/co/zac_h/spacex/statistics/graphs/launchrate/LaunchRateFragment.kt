@@ -30,11 +30,14 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
     private var filterFalconNine = true
     private var filterFalconHeavy = true
 
-    private var launchesList = ArrayList<LaunchesModel>()
+    private lateinit var launchesList: ArrayList<LaunchesModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        launchesList =
+            savedInstanceState?.getParcelableArrayList<LaunchesModel>("launches") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -59,7 +62,9 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
             presenter.updateFilter(launchesList, "falconheavy", isChecked)
         }
 
-        if (launchesList.isEmpty()) presenter.getLaunchList()
+        if (launchesList.isEmpty()) presenter.getLaunchList() else presenter.addLaunchList(
+            launchesList
+        )
 
         launch_rate_bar_chart.apply {
             xAxis.apply {
@@ -103,6 +108,11 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
     override fun onPause() {
         super.onPause()
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("launches", launchesList)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {

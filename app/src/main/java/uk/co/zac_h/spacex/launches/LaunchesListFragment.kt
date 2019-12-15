@@ -35,6 +35,10 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        launchesList = savedInstanceState?.let {
+            it.getParcelableArrayList<LaunchesModel>("launches") as ArrayList<LaunchesModel>
+        } ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -49,10 +53,6 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
         launchParam = arguments?.getString("launchParam")
 
         presenter = LaunchesPresenterImpl(this, LaunchesInteractorImpl())
-
-        launchesList = savedInstanceState?.let {
-            it.getParcelableArrayList<LaunchesModel>("launches") as ArrayList<LaunchesModel>
-        } ?: ArrayList()
 
         launchesAdapter = LaunchesAdapter(context, launchesList)
 

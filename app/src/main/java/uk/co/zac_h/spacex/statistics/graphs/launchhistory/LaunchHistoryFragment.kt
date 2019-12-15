@@ -30,12 +30,17 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
     private var filterSuccessful = false
     private var filterFailed = false
 
-    private var launchesList = ArrayList<LaunchesModel>()
-    private var rocketsList = ArrayList<RocketsModel>()
+    private lateinit var launchesList: ArrayList<LaunchesModel>
+    private lateinit var rocketsList: ArrayList<RocketsModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        launchesList =
+            savedInstanceState?.getParcelableArrayList<LaunchesModel>("launches") ?: ArrayList()
+        rocketsList =
+            savedInstanceState?.getParcelableArrayList<RocketsModel>("rockets") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -98,6 +103,12 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
     override fun onPause() {
         super.onPause()
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("launches", launchesList)
+        outState.putParcelableArrayList("rockets", rocketsList)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {

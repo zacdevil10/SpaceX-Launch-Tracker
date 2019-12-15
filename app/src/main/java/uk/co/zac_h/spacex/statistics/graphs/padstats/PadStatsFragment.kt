@@ -20,11 +20,13 @@ class PadStatsFragment : Fragment(), PadStatsView,
 
     private lateinit var padsAdapter: PadStatsSitesAdapter
 
-    private var pads = ArrayList<StatsPadModel>()
+    private lateinit var pads: ArrayList<StatsPadModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        pads = savedInstanceState?.getParcelableArrayList<StatsPadModel>("pads") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -58,6 +60,11 @@ class PadStatsFragment : Fragment(), PadStatsView,
     override fun onPause() {
         super.onPause()
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("pads", pads)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {

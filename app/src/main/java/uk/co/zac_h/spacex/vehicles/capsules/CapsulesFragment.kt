@@ -20,7 +20,14 @@ class CapsulesFragment : Fragment(), CapsulesView,
     private lateinit var presenter: CapsulesPresenter
 
     private lateinit var capsulesAdapter: CapsulesAdapter
-    private val capsulesArray = ArrayList<CapsulesModel>()
+    private lateinit var capsulesArray: ArrayList<CapsulesModel>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        capsulesArray =
+            savedInstanceState?.getParcelableArrayList<CapsulesModel>("capsules") ?: ArrayList()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +58,11 @@ class CapsulesFragment : Fragment(), CapsulesView,
     override fun onPause() {
         super.onPause()
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("capsules", capsulesArray)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {

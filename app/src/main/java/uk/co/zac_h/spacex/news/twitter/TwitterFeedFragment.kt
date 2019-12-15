@@ -31,6 +31,14 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
     private var isLoading = false
     private var isFabVisible = false
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        tweetsList = savedInstanceState?.let {
+            it.getParcelableArrayList<TimelineTweetModel>("timeline") as ArrayList<TimelineTweetModel>
+        } ?: ArrayList()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,10 +51,6 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
             this,
             TwitterFeedInteractorImpl()
         )
-
-        tweetsList = savedInstanceState?.let {
-            it.getParcelableArrayList<TimelineTweetModel>("timeline") as ArrayList<TimelineTweetModel>
-        } ?: ArrayList()
 
         twitterAdapter = TwitterFeedAdapter(context, tweetsList, this)
         val layout = LinearLayoutManager(this@TwitterFeedFragment.context)

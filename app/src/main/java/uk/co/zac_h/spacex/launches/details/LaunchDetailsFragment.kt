@@ -46,7 +46,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        launch = arguments?.getParcelable("launch") as LaunchesModel?
+        launch = if (savedInstanceState != null) {
+            savedInstanceState.getParcelable("launch")
+        } else {
+            arguments?.getParcelable("launch") as LaunchesModel?
+        }
         id = arguments?.getString("launch_id")
     }
 
@@ -66,10 +70,6 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
                 Context.MODE_PRIVATE
             )
         )
-
-        savedInstanceState?.let {
-            launch = it.getParcelable("launch")
-        }
 
         presenter = LaunchDetailsPresenterImpl(
             this,

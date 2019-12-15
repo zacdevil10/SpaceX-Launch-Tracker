@@ -19,7 +19,7 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
     private lateinit var presenter: CorePresenter
 
     private lateinit var coreAdapter: CoreAdapter
-    private val coresArray = ArrayList<CoreModel>()
+    private lateinit var coresArray: ArrayList<CoreModel>
 
     private var sortNew = false
     private lateinit var searchView: SearchView
@@ -27,6 +27,9 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        coresArray = savedInstanceState?.getParcelableArrayList<CoreModel>("cores") ?: ArrayList()
+        sortNew = savedInstanceState?.getBoolean("sort") ?: false
     }
 
     override fun onCreateView(
@@ -58,6 +61,12 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
     override fun onPause() {
         super.onPause()
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("cores", coresArray)
+        outState.putBoolean("sort", sortNew)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {

@@ -20,7 +20,14 @@ class RocketFragment : Fragment(), RocketView,
     private lateinit var presenter: RocketPresenter
 
     private lateinit var rocketsAdapter: RocketsAdapter
-    private val rocketsArray = ArrayList<RocketsModel>()
+    private lateinit var rocketsArray: ArrayList<RocketsModel>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        rocketsArray =
+            savedInstanceState?.getParcelableArrayList<RocketsModel>("rockets") ?: ArrayList()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,6 +38,10 @@ class RocketFragment : Fragment(), RocketView,
         super.onViewCreated(view, savedInstanceState)
 
         presenter = RocketPresenterImpl(this, RocketInteractorImpl())
+
+
+
+        println("Hello $rocketsArray")
 
         rocketsAdapter = RocketsAdapter(rocketsArray)
 
@@ -53,9 +64,20 @@ class RocketFragment : Fragment(), RocketView,
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("rockets", rocketsArray)
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        println("Could have been me")
         presenter.cancelRequest()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        println("Did someone call me?")
     }
 
     override fun updateRockets(rockets: List<RocketsModel>) {

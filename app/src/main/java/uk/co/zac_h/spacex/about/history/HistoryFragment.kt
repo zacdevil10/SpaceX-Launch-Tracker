@@ -25,6 +25,14 @@ class HistoryFragment : Fragment(), HistoryView,
     private lateinit var history: ArrayList<HistoryHeaderModel>
     private lateinit var historyAdapter: HistoryAdapter
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        history = savedInstanceState?.let {
+            it.getParcelableArrayList<HistoryHeaderModel>("history") as ArrayList<HistoryHeaderModel>
+        } ?: ArrayList()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,10 +42,6 @@ class HistoryFragment : Fragment(), HistoryView,
         super.onViewCreated(view, savedInstanceState)
 
         presenter = HistoryPresenterImpl(this, HistoryInteractorImpl())
-
-        history = savedInstanceState?.let {
-            it.getParcelableArrayList<HistoryHeaderModel>("history") as ArrayList<HistoryHeaderModel>
-        } ?: ArrayList()
 
         historyAdapter = HistoryAdapter(history, this)
 
