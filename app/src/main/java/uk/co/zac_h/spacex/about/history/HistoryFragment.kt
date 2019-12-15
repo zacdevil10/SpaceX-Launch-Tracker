@@ -79,9 +79,9 @@ class HistoryFragment : Fragment(), HistoryView,
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this@HistoryFragment)
+    override fun onResume() {
+        super.onResume()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
     override fun onPause() {
@@ -128,7 +128,7 @@ class HistoryFragment : Fragment(), HistoryView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (history.isEmpty()) presenter.getHistory()
+            if (history.isEmpty() || history_progress_bar.visibility == View.VISIBLE) presenter.getHistory()
         }
     }
 

@@ -102,11 +102,12 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
 
     override fun onResume() {
         super.onResume()
+
         presenter.showFilter(filterVisible)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
@@ -246,7 +247,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (launchesList.isEmpty()) presenter.getLaunchList()
+            if (launchesList.isEmpty() || launch_rate_progress_bar.visibility == View.VISIBLE) presenter.getLaunchList()
         }
     }
 }

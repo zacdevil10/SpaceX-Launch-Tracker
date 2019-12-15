@@ -57,8 +57,8 @@ class PadStatsFragment : Fragment(), PadStatsView,
         (context?.applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
@@ -106,7 +106,7 @@ class PadStatsFragment : Fragment(), PadStatsView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (pads.isEmpty()) presenter.getPads()
+            if (pads.isEmpty() || pad_stats_sites_progress_bar.visibility == View.VISIBLE) presenter.getPads()
         }
     }
 }

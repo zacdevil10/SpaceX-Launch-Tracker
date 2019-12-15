@@ -47,6 +47,9 @@ class TwitterFeedPresenterImpl(
     }
 
     override fun onError(error: String) {
-        view.showError(error)
+        view.apply {
+            showError(error)
+            toggleSwipeProgress(false)
+        }
     }
 }

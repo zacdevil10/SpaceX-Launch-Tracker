@@ -52,8 +52,8 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView,
         }
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         (context?.applicationContext as App).networkStateChangeListener.addListener(this)
     }
 

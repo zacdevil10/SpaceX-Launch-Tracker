@@ -83,8 +83,12 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
     override fun onPause() {
         super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
         launches_swipe_refresh.isEnabled = false
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -149,9 +153,10 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (launchesList.isEmpty()) launchParam?.let { launchId ->
-                presenter.getLaunchList(launchId)
-            }
+            if (launchesList.isEmpty() || launches_progress_bar.visibility == View.VISIBLE)
+                launchParam?.let { launchId ->
+                    presenter.getLaunchList(launchId)
+                }
         }
     }
 }

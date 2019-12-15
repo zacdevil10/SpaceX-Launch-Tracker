@@ -93,8 +93,8 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
         if (tweetsList.isEmpty()) presenter.getTweets()
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         (context?.applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
@@ -176,7 +176,7 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (tweetsList.isEmpty()) presenter.getTweets()
+            if (tweetsList.isEmpty() || twitter_feed_progress_bar.visibility == View.VISIBLE) presenter.getTweets()
             if (isLoading) presenter.getTweets(tweetsList[tweetsList.size - 1].id)
         }
     }

@@ -55,11 +55,11 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
 
     override fun onStart() {
         super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this@CoreFragment)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 

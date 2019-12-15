@@ -55,8 +55,8 @@ class CapsulesFragment : Fragment(), CapsulesView,
         (context?.applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 

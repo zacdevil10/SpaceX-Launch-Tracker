@@ -39,10 +39,6 @@ class RocketFragment : Fragment(), RocketView,
 
         presenter = RocketPresenterImpl(this, RocketInteractorImpl())
 
-
-
-        println("Hello $rocketsArray")
-
         rocketsAdapter = RocketsAdapter(rocketsArray)
 
         rocket_recycler.apply {
@@ -59,8 +55,8 @@ class RocketFragment : Fragment(), RocketView,
         (context?.applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
@@ -71,13 +67,7 @@ class RocketFragment : Fragment(), RocketView,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        println("Could have been me")
         presenter.cancelRequest()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        println("Did someone call me?")
     }
 
     override fun updateRockets(rockets: List<RocketsModel>) {

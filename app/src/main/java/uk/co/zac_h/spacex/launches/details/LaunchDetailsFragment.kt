@@ -81,6 +81,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
             presenter.addLaunchModel(it)
             pinned = presenter.isPinned()
         } ?: id?.let {
+            presenter.getLaunch(it)
             pinned = presenter.isPinned(it.toInt())
         }
 
@@ -121,7 +122,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
 
     override fun onResume() {
         super.onResume()
-
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
         /**
          * Set and restore Expand/Collapse state of recycler view when returning to fragment
          */
@@ -130,14 +131,6 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
             launch_details_first_stage_collapse_toggle
         )
         setupExpandCollapse(launch_details_payload_recycler, launch_details_payload_collapse_toggle)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.apply {
-            addListener(this@LaunchDetailsFragment)
-            updateState()
-        }
     }
 
     override fun onPause() {

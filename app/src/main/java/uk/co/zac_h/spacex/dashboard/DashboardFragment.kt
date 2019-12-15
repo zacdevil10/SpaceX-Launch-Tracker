@@ -63,17 +63,13 @@ class DashboardFragment : Fragment(), DashboardView,
         }
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
+        dashboard_swipe_refresh.isEnabled = true
         (context?.applicationContext as App).networkStateChangeListener.apply {
             addListener(this@DashboardFragment)
             updateState()
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        dashboard_swipe_refresh.isEnabled = true
     }
 
     override fun onPause() {

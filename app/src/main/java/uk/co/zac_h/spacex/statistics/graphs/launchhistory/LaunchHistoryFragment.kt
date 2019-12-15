@@ -100,8 +100,8 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
         presenter.showFilter(filterVisible)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
@@ -248,8 +248,8 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             presenter.apply {
-                if (launchesList.isEmpty()) getLaunchList()
-                if (rocketsList.isEmpty()) getRocketsList()
+                if (launchesList.isEmpty() || launch_history_progress_bar.visibility == View.VISIBLE) getLaunchList()
+                if (rocketsList.isEmpty() || launch_history_progress_bar.visibility == View.VISIBLE) getRocketsList()
             }
         }
     }
