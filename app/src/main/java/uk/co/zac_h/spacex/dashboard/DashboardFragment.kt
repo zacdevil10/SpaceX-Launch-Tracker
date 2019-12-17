@@ -61,27 +61,30 @@ class DashboardFragment : Fragment(), DashboardView,
         dashboard_swipe_refresh.setOnRefreshListener {
             presenter.getLatestLaunches()
         }
+
+        presenter.getLatestLaunches()
     }
 
-    override fun onResume() {
-        super.onResume()
-        dashboard_swipe_refresh.isEnabled = true
-        (context?.applicationContext as App).networkStateChangeListener.apply {
-            addListener(this@DashboardFragment)
-            updateState()
-        }
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
     override fun onPause() {
         super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
         pinnedArray.clear()
         dashboard_swipe_refresh.isEnabled = false
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         countdownTimer?.cancel()
+        countdownTimer = null
         presenter.cancelRequests()
     }
 
