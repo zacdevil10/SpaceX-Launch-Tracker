@@ -38,7 +38,6 @@ class LaunchHistoryPresenterImpl(
         filter: String,
         isFiltered: Boolean
     ) {
-        println("Filter: $launchesList")
         when (filter) {
             "success" -> view.setFilterSuccessful(isFiltered)
             "failed" -> view.setFilterFailed(isFiltered)

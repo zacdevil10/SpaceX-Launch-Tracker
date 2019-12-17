@@ -27,7 +27,6 @@
             android:id="@+id/twitter_feed_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="8dp"
             android:paddingBottom="16dp"
             android:clipToPadding="false" />
 
@@ -55,7 +54,7 @@
         android:clipChildren="true"
         android:visibility="invisible"
         android:elevation="8dp"
-        android:text="@string/scroll_up_label"
+        android:text="@string/scroll_to_top_label"
         app:chipIcon="@drawable/ic_arrow_upward_black_24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

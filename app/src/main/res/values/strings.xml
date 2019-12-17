@@ -156,7 +156,7 @@
     <string name="dismiss_label">Dismiss</string>
     <string name="no_pinned_launches_found_label">No pinned launches found.</string>
     <string name="twitter_profile_image_desc">Twitter profile image</string>
-    <string name="scroll_up_label">Scroll Up</string>
+    <string name="scroll_to_top_label">Scroll To Top</string>
     <string name="dark_theme_label">Dark theme</string>
 
 </resources>
