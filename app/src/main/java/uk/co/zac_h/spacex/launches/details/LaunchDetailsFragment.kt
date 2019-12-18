@@ -32,7 +32,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: LaunchDetailsPresenter
+    private var presenter: LaunchDetailsPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
     private var launch: LaunchesModel? = null
@@ -78,11 +78,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
         )
 
         launch?.let {
-            presenter.addLaunchModel(it)
-            pinned = presenter.isPinned()
+            presenter?.addLaunchModel(it)
+            pinned = presenter?.isPinned() ?: false
         } ?: id?.let {
-            presenter.getLaunch(it)
-            pinned = presenter.isPinned(it.toInt())
+            presenter?.getLaunch(it)
+            pinned = presenter?.isPinned(it.toInt()) ?: false
         }
 
         launch_details_first_stage_text.setOnClickListener {
@@ -145,7 +145,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequest()
+        presenter?.cancelRequest()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -153,8 +153,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
         menu.findItem(R.id.pin).icon = context?.let {
             ContextCompat.getDrawable(
                 it,
-                if (id?.let { id -> presenter.isPinned(id.toInt()) }
-                        ?: presenter.isPinned()) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp)
+                if (id?.let { id -> presenter?.isPinned(id.toInt()) } ?: presenter?.isPinned() == true) {
+                    R.drawable.ic_star_black_24dp
+                } else {
+                    R.drawable.ic_star_border_black_24dp
+                })
         }
 
         setIconTint(menu.findItem(R.id.pin))
@@ -163,7 +166,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.pin -> {
-            presenter.pinLaunch(!pinned)
+            presenter?.pinLaunch(!pinned)
 
             pinned = !pinned
 
@@ -178,7 +181,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
             true
         }
         R.id.create_event -> {
-            presenter.createEvent()
+            presenter?.createEvent()
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -396,7 +399,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             id?.let {
-                if (launch == null) presenter.getLaunch(it)
+                if (launch == null) presenter?.getLaunch(it)
             }
         }
     }

@@ -24,7 +24,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: LaunchHistoryPresenter
+    private var presenter: LaunchHistoryPresenter? = null
 
     private var filterVisible = false
     private var filterSuccessful = false
@@ -55,19 +55,19 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
         presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
 
         launch_history_chip_group.setOnCheckedChangeListener { group, checkedId ->
-            presenter.updateFilter(
+            presenter?.updateFilter(
                 launchesList,
                 "success",
                 launch_history_success_toggle.id == group.checkedChipId
             )
-            presenter.updateFilter(
+            presenter?.updateFilter(
                 launchesList,
                 "failed",
                 launch_history_failure_toggle.id == group.checkedChipId
             )
         }
 
-        presenter.apply {
+        presenter?.apply {
             if (launchesList.isEmpty()) getLaunchList() else addLaunchList(launchesList)
             if (rocketsList.isEmpty()) getRocketsList() else addRocketsList(rocketsList)
         }
@@ -97,7 +97,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
 
     override fun onResume() {
         super.onResume()
-        presenter.showFilter(filterVisible)
+        presenter?.showFilter(filterVisible)
     }
 
     override fun onStop() {
@@ -113,7 +113,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequests()
+        presenter?.cancelRequests()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -123,11 +123,11 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.filter -> {
-            presenter.showFilter(!filterVisible)
+            presenter?.showFilter(!filterVisible)
             true
         }
         R.id.reload -> {
-            presenter.getLaunchList()
+            presenter?.getLaunchList()
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -247,7 +247,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            presenter.apply {
+            presenter?.apply {
                 if (launchesList.isEmpty() || launch_history_progress_bar.visibility == View.VISIBLE) getLaunchList()
                 if (rocketsList.isEmpty() || launch_history_progress_bar.visibility == View.VISIBLE) getRocketsList()
             }

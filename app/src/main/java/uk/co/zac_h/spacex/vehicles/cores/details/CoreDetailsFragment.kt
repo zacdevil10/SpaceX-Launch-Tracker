@@ -18,7 +18,7 @@ import uk.co.zac_h.spacex.utils.setImageAndTint
 class CoreDetailsFragment : Fragment(), CoreDetailsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: CoreDetailsPresenter
+    private var presenter: CoreDetailsPresenter? = null
 
     private var core: CoreModel? = null
     private var id: String? = null
@@ -46,9 +46,9 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView,
         presenter = CoreDetailsPresenterImpl(this, CoreDetailsInteractorImpl())
 
         core?.let {
-            presenter.addCoreModel(it)
+            presenter?.addCoreModel(it)
         } ?: id?.let {
-            presenter.getCoreDetails(it)
+            presenter?.getCoreDetails(it)
         }
     }
 
@@ -69,7 +69,7 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequest()
+        presenter?.cancelRequest()
     }
 
     override fun updateCoreDetails(coreModel: CoreModel) {
@@ -119,7 +119,7 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             id?.let {
-                if (core == null) presenter.getCoreDetails(it)
+                if (core == null) presenter?.getCoreDetails(it)
             }
         }
     }

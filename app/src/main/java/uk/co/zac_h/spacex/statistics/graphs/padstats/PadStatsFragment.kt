@@ -16,7 +16,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class PadStatsFragment : Fragment(), PadStatsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: PadStatsPresenter
+    private var presenter: PadStatsPresenter? = null
 
     private lateinit var padsAdapter: PadStatsSitesAdapter
 
@@ -49,7 +49,7 @@ class PadStatsFragment : Fragment(), PadStatsView,
             addItemDecoration(HeaderItemDecoration(this, padsAdapter.isHeader(), false))
         }
 
-        if (pads.isEmpty()) presenter.getPads()
+        if (pads.isEmpty()) presenter?.getPads()
     }
 
     override fun onStart() {
@@ -69,7 +69,7 @@ class PadStatsFragment : Fragment(), PadStatsView,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequests()
+        presenter?.cancelRequests()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -79,7 +79,7 @@ class PadStatsFragment : Fragment(), PadStatsView,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.reload -> {
-            presenter.getPads()
+            presenter?.getPads()
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -106,7 +106,7 @@ class PadStatsFragment : Fragment(), PadStatsView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (pads.isEmpty() || pad_stats_sites_progress_bar.visibility == View.VISIBLE) presenter.getPads()
+            if (pads.isEmpty() || pad_stats_sites_progress_bar.visibility == View.VISIBLE) presenter?.getPads()
         }
     }
 }

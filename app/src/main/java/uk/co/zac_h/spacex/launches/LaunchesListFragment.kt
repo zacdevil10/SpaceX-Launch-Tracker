@@ -16,7 +16,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextListener,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: LaunchesPresenter
+    private var presenter: LaunchesPresenter? = null
     private lateinit var launchesAdapter: LaunchesAdapter
     private lateinit var launchesList: ArrayList<LaunchesModel>
 
@@ -64,10 +64,10 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
         launchParam?.let { launchId ->
             launches_swipe_refresh.setOnRefreshListener {
-                presenter.getLaunchList(launchId)
+                presenter?.getLaunchList(launchId)
             }
 
-            if (launchesList.isEmpty()) presenter.getLaunchList(launchId)
+            if (launchesList.isEmpty()) presenter?.getLaunchList(launchId)
         }
     }
 
@@ -98,7 +98,7 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequests()
+        presenter?.cancelRequests()
     }
 
     override fun onDestroy() {
@@ -155,7 +155,7 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
         activity?.runOnUiThread {
             if (launchesList.isEmpty() || launches_progress_bar.visibility == View.VISIBLE)
                 launchParam?.let { launchId ->
-                    presenter.getLaunchList(launchId)
+                    presenter?.getLaunchList(launchId)
                 }
         }
     }

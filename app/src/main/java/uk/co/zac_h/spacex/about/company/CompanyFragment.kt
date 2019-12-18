@@ -16,7 +16,7 @@ import java.text.DecimalFormat
 class CompanyFragment : Fragment(), CompanyView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: CompanyPresenter
+    private var presenter: CompanyPresenter? = null
 
     private var companyInfo: CompanyModel? = null
 
@@ -39,8 +39,8 @@ class CompanyFragment : Fragment(), CompanyView,
         presenter = CompanyPresenterImpl(this, CompanyInteractorImpl())
 
         companyInfo?.let {
-            presenter.getCompanyInfo(it)
-        } ?: presenter.getCompanyInfo()
+            presenter?.getCompanyInfo(it)
+        } ?: presenter?.getCompanyInfo()
     }
 
     override fun onResume() {
@@ -62,7 +62,7 @@ class CompanyFragment : Fragment(), CompanyView,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequest()
+        presenter?.cancelRequest()
     }
 
     override fun updateCompanyInfo(companyModel: CompanyModel) {
@@ -99,7 +99,7 @@ class CompanyFragment : Fragment(), CompanyView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (companyInfo == null) presenter.getCompanyInfo()
+            if (companyInfo == null) presenter?.getCompanyInfo()
         }
     }
 

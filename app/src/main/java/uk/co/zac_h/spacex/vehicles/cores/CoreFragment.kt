@@ -16,7 +16,7 @@ import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
 class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: CorePresenter
+    private var presenter: CorePresenter? = null
 
     private lateinit var coreAdapter: CoreAdapter
     private lateinit var coresArray: ArrayList<CoreModel>
@@ -50,7 +50,11 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
             adapter = coreAdapter
         }
 
-        if (coresArray.isEmpty()) presenter.getCores()
+        core_swipe_refresh.setOnRefreshListener {
+            presenter?.getCores()
+        }
+
+        if (coresArray.isEmpty()) presenter?.getCores()
     }
 
     override fun onStart() {
@@ -71,7 +75,7 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequest()
+        presenter?.cancelRequest()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -129,13 +133,17 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
         core_progress_bar.visibility = View.GONE
     }
 
+    override fun toggleSwipeRefresh(refreshing: Boolean) {
+        core_swipe_refresh.isRefreshing = refreshing
+    }
+
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (coresArray.isEmpty()) presenter.getCores()
+            if (coresArray.isEmpty() || core_progress_bar.visibility == View.VISIBLE) presenter?.getCores()
         }
     }
 }

@@ -17,11 +17,17 @@ class CapsulesPresenterImpl(
     }
 
     override fun onSuccess(capsules: List<CapsulesModel>?) {
-        view.hideProgress()
+        view.apply {
+            hideProgress()
+            toggleSwipeRefresh(false)
+        }
         capsules?.let { view.updateCapsules(it) }
     }
 
     override fun onError(error: String) {
-        view.showError(error)
+        view.apply {
+            showError(error)
+            toggleSwipeRefresh(false)
+        }
     }
 }

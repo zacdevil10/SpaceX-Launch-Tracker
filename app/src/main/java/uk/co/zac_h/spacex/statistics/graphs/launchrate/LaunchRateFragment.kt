@@ -23,7 +23,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class LaunchRateFragment : Fragment(), LaunchRateView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: LaunchRatePresenter
+    private var presenter: LaunchRatePresenter? = null
 
     private var filterVisible: Boolean = false
     private var filterFalconOne = true
@@ -52,17 +52,17 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
         presenter = LaunchRatePresenterImpl(this, LaunchRateInteractorImpl())
 
         launch_rate_falcon_one_toggle.setOnCheckedChangeListener { _, isChecked ->
-            presenter.updateFilter(launchesList, "falcon1", isChecked)
+            presenter?.updateFilter(launchesList, "falcon1", isChecked)
         }
         launch_rate_falcon_nine_toggle.setOnCheckedChangeListener { _, isChecked ->
-            presenter.updateFilter(launchesList, "falcon9", isChecked)
+            presenter?.updateFilter(launchesList, "falcon9", isChecked)
         }
 
         launch_rate_falcon_heavy_toggle.setOnCheckedChangeListener { _, isChecked ->
-            presenter.updateFilter(launchesList, "falconheavy", isChecked)
+            presenter?.updateFilter(launchesList, "falconheavy", isChecked)
         }
 
-        if (launchesList.isEmpty()) presenter.getLaunchList() else presenter.addLaunchList(
+        if (launchesList.isEmpty()) presenter?.getLaunchList() else presenter?.addLaunchList(
             launchesList
         )
 
@@ -103,7 +103,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
     override fun onResume() {
         super.onResume()
 
-        presenter.showFilter(filterVisible)
+        presenter?.showFilter(filterVisible)
     }
 
     override fun onStop() {
@@ -118,7 +118,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequests()
+        presenter?.cancelRequests()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -128,11 +128,11 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.filter -> {
-            presenter.showFilter(!filterVisible)
+            presenter?.showFilter(!filterVisible)
             true
         }
         R.id.reload -> {
-            presenter.getLaunchList()
+            presenter?.getLaunchList()
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -247,7 +247,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (launchesList.isEmpty() || launch_rate_progress_bar.visibility == View.VISIBLE) presenter.getLaunchList()
+            if (launchesList.isEmpty() || launch_rate_progress_bar.visibility == View.VISIBLE) presenter?.getLaunchList()
         }
     }
 }

@@ -21,7 +21,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class DashboardFragment : Fragment(), DashboardView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: DashboardPresenter
+    private var presenter: DashboardPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
     private lateinit var dashboardLaunchesAdapter: DashboardLaunchesAdapter
@@ -59,10 +59,10 @@ class DashboardFragment : Fragment(), DashboardView,
         }
 
         dashboard_swipe_refresh.setOnRefreshListener {
-            presenter.getLatestLaunches()
+            presenter?.getLatestLaunches()
         }
 
-        presenter.getLatestLaunches()
+        presenter?.getLatestLaunches()
     }
 
     override fun onStart() {
@@ -85,7 +85,7 @@ class DashboardFragment : Fragment(), DashboardView,
         super.onDestroyView()
         countdownTimer?.cancel()
         countdownTimer = null
-        presenter.cancelRequests()
+        presenter?.cancelRequests()
     }
 
     override fun setLaunchesList(launches: LinkedHashMap<String, LaunchesModel>) {
@@ -112,9 +112,10 @@ class DashboardFragment : Fragment(), DashboardView,
     override fun setCountdown(launchDateUnix: Long) {
         val time = launchDateUnix.times(1000) - System.currentTimeMillis()
 
+        countdownTimer?.cancel()
         countdownTimer = object : CountDownTimer(time, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                presenter.updateCountdown(millisUntilFinished)
+                presenter?.updateCountdown(millisUntilFinished)
             }
 
             override fun onFinish() {
@@ -163,7 +164,7 @@ class DashboardFragment : Fragment(), DashboardView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            presenter.getLatestLaunches()
+            presenter?.getLatestLaunches()
         }
     }
 }

@@ -22,7 +22,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class TwitterFeedFragment : Fragment(), TwitterFeedView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: TwitterFeedPresenter
+    private var presenter: TwitterFeedPresenter? = null
 
     private lateinit var twitterAdapter: TwitterFeedAdapter
     private lateinit var tweetsList: ArrayList<TimelineTweetModel>
@@ -69,28 +69,28 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
                 override fun loadItems() {
                     isLoading = true
-                    presenter.getTweets(tweetsList[tweetsList.size - 1].id)
+                    presenter?.getTweets(tweetsList[tweetsList.size - 1].id)
                 }
 
                 override fun onScrollTop() {
-                    if (isFabVisible) presenter.toggleScrollUp(false)
+                    if (isFabVisible) presenter?.toggleScrollUp(false)
                 }
 
                 override fun onScrolledDown() {
-                    presenter.toggleScrollUp(true)
+                    presenter?.toggleScrollUp(true)
                 }
             })
         }
 
         twitter_feed_swipe_refresh.setOnRefreshListener {
-            presenter.getTweets()
+            presenter?.getTweets()
         }
 
         twitter_feed_scroll_up.setOnClickListener {
             twitter_feed_recycler.smoothScrollToPosition(0)
         }
 
-        if (tweetsList.isEmpty()) presenter.getTweets()
+        if (tweetsList.isEmpty()) presenter?.getTweets()
     }
 
     override fun onResume() {
@@ -110,7 +110,7 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequests()
+        presenter?.cancelRequests()
     }
 
     override fun updateRecycler(tweets: List<TimelineTweetModel>) {
@@ -176,8 +176,8 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (tweetsList.isEmpty() || twitter_feed_progress_bar.visibility == View.VISIBLE) presenter.getTweets()
-            if (isLoading) presenter.getTweets(tweetsList[tweetsList.size - 1].id)
+            if (tweetsList.isEmpty() || twitter_feed_progress_bar.visibility == View.VISIBLE) presenter?.getTweets()
+            if (isLoading) presenter?.getTweets(tweetsList[tweetsList.size - 1].id)
         }
     }
 }

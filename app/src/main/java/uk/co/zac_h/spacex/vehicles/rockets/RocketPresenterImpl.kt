@@ -16,10 +16,16 @@ class RocketPresenterImpl(private val view: RocketView, private val interactor: 
 
     override fun onSuccess(rockets: List<RocketsModel>?) {
         rockets?.let { view.updateRockets(it.reversed()) }
-        view.hideProgress()
+        view.apply {
+            hideProgress()
+            toggleSwipeRefresh(false)
+        }
     }
 
     override fun onError(error: String) {
-        view.showError(error)
+        view.apply {
+            showError(error)
+            toggleSwipeRefresh(false)
+        }
     }
 }

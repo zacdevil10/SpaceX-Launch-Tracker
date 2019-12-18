@@ -17,7 +17,7 @@ import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
 class CapsulesFragment : Fragment(), CapsulesView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: CapsulesPresenter
+    private var presenter: CapsulesPresenter? = null
 
     private lateinit var capsulesAdapter: CapsulesAdapter
     private lateinit var capsulesArray: ArrayList<CapsulesModel>
@@ -47,7 +47,11 @@ class CapsulesFragment : Fragment(), CapsulesView,
             adapter = capsulesAdapter
         }
 
-        if (capsulesArray.isEmpty()) presenter.getCapsules()
+        capsules_swipe_refresh.setOnRefreshListener {
+            presenter?.getCapsules()
+        }
+
+        if (capsulesArray.isEmpty()) presenter?.getCapsules()
     }
 
     override fun onStart() {
@@ -67,7 +71,7 @@ class CapsulesFragment : Fragment(), CapsulesView,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequests()
+        presenter?.cancelRequests()
     }
 
     override fun updateCapsules(capsules: List<CapsulesModel>) {
@@ -85,13 +89,17 @@ class CapsulesFragment : Fragment(), CapsulesView,
         capsules_progress_bar.visibility = View.GONE
     }
 
+    override fun toggleSwipeRefresh(refreshing: Boolean) {
+        capsules_swipe_refresh.isRefreshing = refreshing
+    }
+
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (capsulesArray.isEmpty()) presenter.getCapsules()
+            if (capsulesArray.isEmpty() || capsules_progress_bar.visibility == View.VISIBLE) presenter?.getCapsules()
         }
     }
 }

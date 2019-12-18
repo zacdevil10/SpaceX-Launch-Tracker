@@ -17,7 +17,7 @@ import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 class RocketFragment : Fragment(), RocketView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: RocketPresenter
+    private var presenter: RocketPresenter? = null
 
     private lateinit var rocketsAdapter: RocketsAdapter
     private lateinit var rocketsArray: ArrayList<RocketsModel>
@@ -47,7 +47,11 @@ class RocketFragment : Fragment(), RocketView,
             adapter = rocketsAdapter
         }
 
-        if (rocketsArray.isEmpty()) presenter.getRockets()
+        rocket_swipe_refresh.setOnRefreshListener {
+            presenter?.getRockets()
+        }
+
+        if (rocketsArray.isEmpty()) presenter?.getRockets()
     }
 
     override fun onStart() {
@@ -67,7 +71,7 @@ class RocketFragment : Fragment(), RocketView,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequest()
+        presenter?.cancelRequest()
     }
 
     override fun updateRockets(rockets: List<RocketsModel>) {
@@ -85,13 +89,17 @@ class RocketFragment : Fragment(), RocketView,
         rocket_progress_bar.visibility = View.GONE
     }
 
+    override fun toggleSwipeRefresh(refreshing: Boolean) {
+        rocket_swipe_refresh.isRefreshing = refreshing
+    }
+
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (rocketsArray.isEmpty()) presenter.getRockets()
+            if (rocketsArray.isEmpty() || rocket_progress_bar.visibility == View.VISIBLE) presenter?.getRockets()
         }
     }
 }

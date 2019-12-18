@@ -20,7 +20,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class HistoryFragment : Fragment(), HistoryView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: HistoryPresenter
+    private var presenter: HistoryPresenter? = null
 
     private lateinit var history: ArrayList<HistoryHeaderModel>
     private lateinit var historyAdapter: HistoryAdapter
@@ -71,11 +71,11 @@ class HistoryFragment : Fragment(), HistoryView,
         }
 
         history_swipe_refresh.setOnRefreshListener {
-            presenter.getHistory()
+            presenter?.getHistory()
         }
 
         if (history.isEmpty()) {
-            presenter.getHistory()
+            presenter?.getHistory()
         }
     }
 
@@ -96,7 +96,7 @@ class HistoryFragment : Fragment(), HistoryView,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequest()
+        presenter?.cancelRequest()
     }
 
     override fun addHistory(history: ArrayList<HistoryHeaderModel>) {
@@ -128,7 +128,7 @@ class HistoryFragment : Fragment(), HistoryView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (history.isEmpty() || history_progress_bar.visibility == View.VISIBLE) presenter.getHistory()
+            if (history.isEmpty() || history_progress_bar.visibility == View.VISIBLE) presenter?.getHistory()
         }
     }
 
