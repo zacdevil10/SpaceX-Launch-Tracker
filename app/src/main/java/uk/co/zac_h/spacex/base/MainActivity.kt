@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -24,8 +25,6 @@ class MainActivity : AppCompatActivity(),
         R.id.statistics_page_fragment
     )
 
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
-
     private var snackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,9 +33,7 @@ class MainActivity : AppCompatActivity(),
 
         setSupportActionBar(toolbar)
 
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            this
-        ).apply {
+        (application as App).networkStateChangeListener.apply {
             addListener(this@MainActivity)
             registerReceiver()
         }
@@ -57,18 +54,24 @@ class MainActivity : AppCompatActivity(),
 
         findViewById<Toolbar>(R.id.toolbar).setupWithNavController(navController, appBarConfig)
         findViewById<NavigationView>(R.id.nav_view).setupWithNavController(navController)
+
+        (application as App).preferencesRepo.themeModeLive.observe(this, Observer { mode ->
+            mode?.let { delegate.localNightMode = it }
+        })
     }
 
     override fun onStart() {
         super.onStart()
-        networkStateChangeListener.updateState()
+        (application as App).networkStateChangeListener.updateState()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         snackbar = null
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
+        (application as App).networkStateChangeListener.apply {
+            removeListener(this@MainActivity)
+            unregisterReceiver()
+        }
     }
 
     override fun networkAvailable() {

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_core.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.model.spacex.CoreModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
@@ -15,12 +16,10 @@ import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
 class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: CorePresenter
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
+    private var presenter: CorePresenter? = null
 
     private lateinit var coreAdapter: CoreAdapter
-    private val coresArray = ArrayList<CoreModel>()
+    private lateinit var coresArray: ArrayList<CoreModel>
 
     private var sortNew = false
     private lateinit var searchView: SearchView
@@ -28,6 +27,9 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        coresArray = savedInstanceState?.getParcelableArrayList<CoreModel>("cores") ?: ArrayList()
+        sortNew = savedInstanceState?.getBoolean("sort") ?: false
     }
 
     override fun onCreateView(
@@ -40,13 +42,6 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
 
         presenter = CorePresenterImpl(this, CoreInteractorImpl())
 
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
-            addListener(this@CoreFragment)
-            registerReceiver()
-        }
-
         coreAdapter = CoreAdapter(context, coresArray)
 
         core_recycler.apply {
@@ -55,14 +50,32 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
             adapter = coreAdapter
         }
 
-        if (coresArray.isEmpty()) presenter.getCores()
+        core_swipe_refresh.setOnRefreshListener {
+            presenter?.getCores()
+        }
+
+        if (coresArray.isEmpty()) presenter?.getCores()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.cancelRequest()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this@CoreFragment)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("cores", coresArray)
+        outState.putBoolean("sort", sortNew)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter?.cancelRequest()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -120,13 +133,17 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
         core_progress_bar.visibility = View.GONE
     }
 
+    override fun toggleSwipeRefresh(refreshing: Boolean) {
+        core_swipe_refresh.isRefreshing = refreshing
+    }
+
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (coresArray.isEmpty()) presenter.getCores()
+            if (coresArray.isEmpty() || core_progress_bar.visibility == View.VISIBLE) presenter?.getCores()
         }
     }
 }

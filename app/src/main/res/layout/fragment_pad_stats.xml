@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/pad_stats_constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".statistics.graphs.padstats.PadStatsFragment">
 
-        <ProgressBar
-            android:id="@+id/pad_stats_sites_progress_bar"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent" />
+    <ProgressBar
+        android:id="@+id/pad_stats_sites_progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/pad_stats_launch_sites_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/pad_stats_launch_sites_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

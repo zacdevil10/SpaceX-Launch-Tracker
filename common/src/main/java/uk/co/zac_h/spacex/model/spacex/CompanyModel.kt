@@ -1,7 +1,10 @@
 package uk.co.zac_h.spacex.model.spacex
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class CompanyModel(
     @field:Json(name = "name") val name: String,
     @field:Json(name = "founder") val founder: String,
@@ -17,10 +20,12 @@ data class CompanyModel(
     @field:Json(name = "valuation") val valuation: Long,
     @field:Json(name = "headquarters") val headquarters: CompanyAddress,
     @field:Json(name = "summary") val summary: String
-)
+) : Parcelable
 
+
+@Parcelize
 data class CompanyAddress(
     @field:Json(name = "address") val address: String,
     @field:Json(name = "city") val city: String,
     @field:Json(name = "state") val state: String
-)
+) : Parcelable

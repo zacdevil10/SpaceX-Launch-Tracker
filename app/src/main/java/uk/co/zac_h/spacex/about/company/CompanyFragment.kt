@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_company.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.model.spacex.CompanyModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import java.text.DecimalFormat
@@ -15,11 +16,17 @@ import java.text.DecimalFormat
 class CompanyFragment : Fragment(), CompanyView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: CompanyPresenter
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
+    private var presenter: CompanyPresenter? = null
 
     private var companyInfo: CompanyModel? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        savedInstanceState?.let {
+            companyInfo = it.getParcelable("info")
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,26 +36,33 @@ class CompanyFragment : Fragment(), CompanyView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = CompanyPresenterImpl(
-            this,
-            CompanyInteractorImpl()
-        )
+        presenter = CompanyPresenterImpl(this, CompanyInteractorImpl())
 
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
-            addListener(this@CompanyFragment)
-            registerReceiver()
+        companyInfo?.let {
+            presenter?.getCompanyInfo(it)
+        } ?: presenter?.getCompanyInfo()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        companyInfo?.let {
+            outState.putParcelable("info", it)
         }
-
-        presenter.getCompanyInfo()
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequest()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
+        presenter?.cancelRequest()
     }
 
     override fun updateCompanyInfo(companyModel: CompanyModel) {
@@ -85,7 +99,7 @@ class CompanyFragment : Fragment(), CompanyView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (companyInfo == null) presenter.getCompanyInfo()
+            if (companyInfo == null) presenter?.getCompanyInfo()
         }
     }
 

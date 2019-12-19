@@ -6,5 +6,7 @@ interface TwitterFeedPresenter {
 
     fun getTweets(maxId: Long)
 
+    fun toggleScrollUp(visible: Boolean)
+
     fun cancelRequests()
 }

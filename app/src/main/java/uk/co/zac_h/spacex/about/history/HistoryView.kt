@@ -4,7 +4,7 @@ import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 
 interface HistoryView {
 
-    fun updateRecycler(history: ArrayList<HistoryHeaderModel>)
+    fun addHistory(history: ArrayList<HistoryHeaderModel>)
 
     fun openWebLink(link: String)
 

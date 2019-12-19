@@ -10,19 +10,19 @@
         android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:background="@android:color/white"
+        android:background="@color/color_timeline"
         app:layout_constraintBottom_toTopOf="@id/list_item_history_marker"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <View
         android:id="@+id/list_item_history_marker"
         android:layout_width="12dp"
         android:layout_height="12dp"
-        android:src="@drawable/event_circle"
+        android:background="@drawable/event_circle"
         app:layout_constraintBottom_toBottomOf="@id/list_item_history_date"
-        app:layout_constraintLeft_toLeftOf="@id/list_item_history_line_top"
-        app:layout_constraintRight_toRightOf="@id/list_item_history_line_top"
+        app:layout_constraintStart_toStartOf="@id/list_item_history_line_top"
+        app:layout_constraintEnd_toEndOf="@id/list_item_history_line_top"
         app:layout_constraintTop_toTopOf="@id/list_item_history_date"
         tools:ignore="ContentDescription" />
 
@@ -31,9 +31,9 @@
         android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:background="@android:color/white"
+        android:background="@color/color_timeline"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/list_item_history_marker" />
 
     <TextView
@@ -43,8 +43,8 @@
         android:layout_marginStart="48dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        app:layout_constraintLeft_toRightOf="@+id/list_item_history_marker"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/list_item_history_marker"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="20 Sep" />
 
@@ -55,10 +55,9 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
-        app:layout_constraintLeft_toLeftOf="@id/list_item_history_date"
-        app:layout_constraintRight_toRightOf="parent"
+        android:textAppearance="?textAppearanceHeadline6"
+        app:layout_constraintStart_toStartOf="@id/list_item_history_date"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/list_item_history_date"
         tools:text="First Block 5 Reflight" />
 
@@ -70,8 +69,8 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/list_item_history_details_button"
-        app:layout_constraintLeft_toLeftOf="@id/list_item_history_title"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="@id/list_item_history_title"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/list_item_history_title"
         tools:text="Falcon 1 becomes the first privately developed liquid fuel rocket to reach Earth orbit." />
 
@@ -86,8 +85,8 @@
         android:focusable="true"
         android:padding="8dp"
         app:layout_constraintBottom_toTopOf="@id/list_item_history_reddit_button"
-        app:layout_constraintLeft_toRightOf="@id/list_item_history_marker"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@id/list_item_history_marker"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/list_item_history_details">
 
         <ImageView
@@ -95,9 +94,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_rocket"
-            android:tint="@android:color/white"
+            android:tint="@color/color_on_surface"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/launch_details_icon_desc" />
 
@@ -110,7 +109,7 @@
             android:textAllCaps="true"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/list_item_history_details_image"
+            app:layout_constraintStart_toEndOf="@id/list_item_history_details_image"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -126,8 +125,8 @@
         android:focusable="true"
         android:padding="8dp"
         app:layout_constraintBottom_toTopOf="@id/list_item_history_wiki_button"
-        app:layout_constraintLeft_toRightOf="@id/list_item_history_marker"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@id/list_item_history_marker"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/list_item_history_details_button">
 
         <ImageView
@@ -135,9 +134,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/reddit"
-            android:tint="@android:color/white"
+            android:tint="@color/color_on_surface"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/reddit_campaign_icon_desc" />
 
@@ -150,7 +149,7 @@
             android:textAllCaps="true"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/list_item_history_reddit_image"
+            app:layout_constraintStart_toEndOf="@id/list_item_history_reddit_image"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -166,8 +165,8 @@
         android:focusable="true"
         android:padding="8dp"
         app:layout_constraintBottom_toTopOf="@id/list_item_history_article_button"
-        app:layout_constraintLeft_toRightOf="@id/list_item_history_marker"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@id/list_item_history_marker"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/list_item_history_reddit_button">
 
         <ImageView
@@ -175,9 +174,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/wikipedia"
-            android:tint="@android:color/white"
+            android:tint="@color/color_on_surface"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/wikipedia_icon_desc" />
 
@@ -190,7 +189,7 @@
             android:textAllCaps="true"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/list_item_history_wiki_image"
+            app:layout_constraintStart_toEndOf="@id/list_item_history_wiki_image"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -207,8 +206,8 @@
         android:focusable="true"
         android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/list_item_history_marker"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toEndOf="@id/list_item_history_marker"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/list_item_history_wiki_button">
 
         <ImageView
@@ -216,9 +215,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_assignment_black_24dp"
-            android:tint="@android:color/white"
+            android:tint="@color/color_on_surface"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:contentDescription="@string/article_icon_desc" />
 
@@ -231,7 +230,7 @@
             android:textAllCaps="true"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/list_item_history_article_image"
+            app:layout_constraintStart_toEndOf="@id/list_item_history_article_image"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

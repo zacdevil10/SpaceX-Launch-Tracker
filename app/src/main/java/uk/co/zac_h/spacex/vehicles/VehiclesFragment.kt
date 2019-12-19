@@ -19,7 +19,10 @@ class VehiclesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        vehicles_view_pager.adapter = VehiclesPagerAdapter(childFragmentManager)
+        vehicles_view_pager.apply {
+            adapter = VehiclesPagerAdapter(childFragmentManager)
+            offscreenPageLimit = 2
+        }
         vehicles_tab_layout.setupWithViewPager(vehicles_view_pager)
     }
 }

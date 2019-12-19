@@ -6,11 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_twitter_feed.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.news.adapters.TwitterFeedAdapter
 import uk.co.zac_h.spacex.utils.PaginationScrollListener
@@ -20,15 +22,22 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class TwitterFeedFragment : Fragment(), TwitterFeedView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: TwitterFeedPresenter
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
+    private var presenter: TwitterFeedPresenter? = null
 
     private lateinit var twitterAdapter: TwitterFeedAdapter
-    private var tweetsList = ArrayList<TimelineTweetModel?>()
+    private lateinit var tweetsList: ArrayList<TimelineTweetModel>
 
     private var isLastPage = false
     private var isLoading = false
+    private var isFabVisible = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        tweetsList = savedInstanceState?.let {
+            it.getParcelableArrayList<TimelineTweetModel>("timeline") as ArrayList<TimelineTweetModel>
+        } ?: ArrayList()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,13 +52,6 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
             TwitterFeedInteractorImpl()
         )
 
-        networkStateChangeListener = OnNetworkStateChangeListener(context)
-            .apply {
-                addListener(this@TwitterFeedFragment)
-                registerReceiver()
-            }
-
-
         twitterAdapter = TwitterFeedAdapter(context, tweetsList, this)
         val layout = LinearLayoutManager(this@TwitterFeedFragment.context)
 
@@ -63,25 +65,52 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
                 override fun isLoading(): Boolean = isLoading
 
+                override fun isScrollUpVisible(): Boolean = isFabVisible
+
                 override fun loadItems() {
                     isLoading = true
-                    presenter.getTweets(
-                        tweetsList[tweetsList.size - 1]?.id ?: tweetsList[tweetsList.size - 2]!!.id
-                    )
+                    presenter?.getTweets(tweetsList[tweetsList.size - 1].id)
+                }
+
+                override fun onScrollTop() {
+                    if (isFabVisible) presenter?.toggleScrollUp(false)
+                }
+
+                override fun onScrolledDown() {
+                    presenter?.toggleScrollUp(true)
                 }
             })
         }
 
         twitter_feed_swipe_refresh.setOnRefreshListener {
-            presenter.getTweets()
+            presenter?.getTweets()
         }
+
+        twitter_feed_scroll_up.setOnClickListener {
+            twitter_feed_recycler.smoothScrollToPosition(0)
+        }
+
+        if (tweetsList.isEmpty()) presenter?.getTweets()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("timeline", tweetsList)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequests()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
+        presenter?.cancelRequests()
     }
 
     override fun updateRecycler(tweets: List<TimelineTweetModel>) {
@@ -92,7 +121,6 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
     override fun addPagedData(tweets: List<TimelineTweetModel>) {
         isLoading = false
-        twitterAdapter.removeNullData()
 
         tweetsList.addAllExcludingPosition(tweets, 0)
 
@@ -103,9 +131,22 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 
-    override fun showRecyclerLoading() {
-        activity?.runOnUiThread {
-            twitterAdapter.addNullData()
+    override fun showScrollUp() {
+        isFabVisible = true
+        val animation = AnimationUtils.loadAnimation(context, R.anim.slide_in_top)
+        twitter_feed_scroll_up.apply {
+            startAnimation(animation)
+            visibility = View.VISIBLE
+        }
+
+    }
+
+    override fun hideScrollUp() {
+        isFabVisible = false
+        val animation = AnimationUtils.loadAnimation(context, R.anim.slide_out_top)
+        twitter_feed_scroll_up.apply {
+            startAnimation(animation)
+            visibility = View.INVISIBLE
         }
     }
 
@@ -113,8 +154,16 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
         twitter_feed_progress_bar.visibility = View.VISIBLE
     }
 
+    override fun showPagingProgress() {
+        twitter_feed_paging_progress_bar.visibility = View.VISIBLE
+    }
+
     override fun hideProgress() {
         twitter_feed_progress_bar.visibility = View.GONE
+    }
+
+    override fun hidePagingProgress() {
+        twitter_feed_paging_progress_bar.visibility = View.GONE
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {
@@ -127,7 +176,8 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            presenter.getTweets()
+            if (tweetsList.isEmpty() || twitter_feed_progress_bar.visibility == View.VISIBLE) presenter?.getTweets()
+            if (isLoading) presenter?.getTweets(tweetsList[tweetsList.size - 1].id)
         }
     }
 }

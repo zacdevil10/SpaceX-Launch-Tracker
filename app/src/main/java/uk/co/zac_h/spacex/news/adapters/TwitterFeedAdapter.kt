@@ -25,104 +25,88 @@ import uk.co.zac_h.spacex.utils.formatWithUrls
 
 class TwitterFeedAdapter(
     private val context: Context?,
-    private val twitterFeed: ArrayList<TimelineTweetModel?>,
+    private val twitterFeed: ArrayList<TimelineTweetModel>,
     private val view: TwitterFeedView
 ) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    RecyclerView.Adapter<TwitterFeedAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
-        when (viewType) {
-            0 -> TweetViewHolder(
-                LayoutInflater.from(parent.context).inflate(
-                    R.layout.list_item_tweet,
-                    parent,
-                    false
-                )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+        ViewHolder(
+            LayoutInflater.from(parent.context).inflate(
+                R.layout.list_item_tweet,
+                parent,
+                false
             )
-            1 -> LoadingViewHolder(
-                LayoutInflater.from(parent.context).inflate(
-                    R.layout.list_item_progress,
-                    parent,
-                    false
-                )
-            )
-            else -> throw IllegalArgumentException("Invalid view type.")
-        }
+        )
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val tweet = twitterFeed[position]
 
-        when (holder) {
-            is TweetViewHolder -> holder.apply {
-                tweet?.let {
-                    itemView.setOnClickListener {
-                        view.openWebLink("https://twitter.com/SpaceX/status/${tweet.id}")
-                    }
+        holder.apply {
 
-                    Picasso.get().load(tweet.user.profileUrl).transform(CircleImageTransform())
-                        .into(profileImage)
-                    date.text = tweet.created.convertDate()
-                    name.text = tweet.user.name
-                    screenName.text =
-                        context?.getString(R.string.screen_name, tweet.user.screenName)
+            container.setOnClickListener {
+                view.openWebLink("https://twitter.com/SpaceX/status/${tweet.id}")
+            }
 
-                    desc.apply {
-                        setHtmlText(
-                            tweet.text.formatWithUrls(
-                                tweet.entities.urls,
-                                tweet.entities.mentions,
-                                tweet.entities.hashtags
-                            )
-                        )
-                        movementMethod = HtmlTextView.LocalLinkMovementMethod
-                    }
+            Picasso.get().load(tweet.user.profileUrl).transform(CircleImageTransform())
+                .into(profileImage)
+            date.text = tweet.created.convertDate()
+            name.text = tweet.user.name
+            screenName.text =
+                context?.getString(R.string.screen_name, tweet.user.screenName)
 
-                    media.visibility = tweet.extendedEntities?.let { View.VISIBLE } ?: View.GONE
-                    mediaCard.visibility = tweet.extendedEntities?.let { View.VISIBLE } ?: View.GONE
+            desc.apply {
+                tweet.text?.formatWithUrls(
+                    tweet.entities.urls,
+                    tweet.entities.mentions,
+                    tweet.entities.hashtags
+                )?.let {
+                    setHtmlText(it)
+                }
+                movementMethod = HtmlTextView.LocalLinkMovementMethod
+            }
 
-                    tweet.extendedEntities?.let {
-                        setMediaRecycler(it, mediaConstraint, media)
-                    }
+            media.visibility = tweet.extendedEntities?.let { View.VISIBLE } ?: View.GONE
+            mediaCard.visibility = tweet.extendedEntities?.let { View.VISIBLE } ?: View.GONE
 
-                    if (position < twitterFeed.size - 1) {
-                        indicatorBottom.visibility = twitterFeed[position]?.replyStatusId?.let {
-                            if (twitterFeed[position + 1]?.id == it) View.VISIBLE else View.GONE
-                        } ?: View.GONE
-                    }
+            tweet.extendedEntities?.let {
+                setMediaRecycler(it, mediaConstraint, media)
+            }
 
-                    if (position != 0) {
-                        indicatorTop.visibility = twitterFeed[position - 1]?.replyStatusId?.let {
-                            if (twitterFeed[position]?.id == it) View.VISIBLE else View.GONE
-                        } ?: View.GONE
-                    }
+            if (position < twitterFeed.size - 1) {
+                indicatorBottom.visibility = tweet.replyStatusId?.let {
+                    if (twitterFeed[position + 1].id == it) View.VISIBLE else View.GONE
+                } ?: View.GONE
+            }
 
-                    quoteCardView.visibility = if (tweet.isQuote) View.VISIBLE else View.GONE
+            if (position != 0) {
+                indicatorTop.visibility = twitterFeed[position - 1].replyStatusId?.let {
+                    if (tweet.id == it) View.VISIBLE else View.GONE
+                } ?: View.GONE
+            }
 
-                    tweet.quotedStatusLink?.let { quoted ->
-                        quoteContainer.setOnClickListener {
-                            view.openWebLink(quoted.expandedUrl)
-                        }
-                    }
+            quoteCardView.visibility = if (tweet.isQuote) View.VISIBLE else View.GONE
 
-                    tweet.quotedStatus?.let { quoted ->
-                        quoteDate.text = quoted.created.convertDate()
-                        quoteName.text = quoted.user.name
-                        quoteScreenName.text =
-                            context?.getString(R.string.screen_name, quoted.user.screenName)
-                        quoteDesc.apply {
-                            setHtmlText(
-                                quoted.text.formatWithUrls(null, null, null)
-                            )
-                        }
-
-                        quoted.extendedEntities?.let { quotedMedia ->
-                            setMediaRecycler(quotedMedia, quoteContainer, quoteMediaRecycler)
-                        }
-                    }
+            tweet.quotedStatusLink?.let { quoted ->
+                quoteContainer.setOnClickListener {
+                    quoted.expandedUrl?.let { url -> view.openWebLink(url) }
                 }
             }
-            is LoadingViewHolder -> holder.apply {
 
+            tweet.quotedStatus?.let { quoted ->
+                quoteDate.text = quoted.created?.convertDate()
+                quoteName.text = quoted.user?.name
+                quoteScreenName.text =
+                    context?.getString(R.string.screen_name, quoted.user?.screenName)
+                quoteDesc.apply {
+                    quoted.text?.formatWithUrls(null, null, null)?.let {
+                        setHtmlText(it)
+                    }
+                }
+
+                quoted.extendedEntities?.let { quotedMedia ->
+                    setMediaRecycler(quotedMedia, quoteContainer, quoteMediaRecycler)
+                }
             }
         }
     }
@@ -135,9 +119,9 @@ class TwitterFeedAdapter(
         var bitratePosition = 0
         val urls = ArrayList<MediaModel>()
 
-        when (it.media[0].type) {
+        when (it.media?.get(0)?.type) {
             "video", "animated_gif" -> {
-                it.media[0].info.aspectRatio.also { ratio ->
+                it.media?.get(0)?.info?.aspectRatio?.let { ratio ->
                     ConstraintSet().apply {
                         clone(constraintLayout)
                         setDimensionRatio(mediaRecyclerView.id, "${ratio[0]}:${ratio[1]}")
@@ -154,10 +138,10 @@ class TwitterFeedAdapter(
             }
         }
 
-        it.media.forEach { tweetMedia ->
+        it.media?.forEach { tweetMedia ->
             var bitrate: Long = 0
             if (tweetMedia.type == "video") {
-                tweetMedia.info.variants.forEachIndexed { index, mediaVariants ->
+                tweetMedia.info?.variants?.forEachIndexed { index, mediaVariants ->
                     mediaVariants.bitrate?.let { bit ->
                         if (bit > bitrate) {
                             bitrate = bit
@@ -168,15 +152,24 @@ class TwitterFeedAdapter(
             }
         }
 
-        it.media.forEach { tweetMedia ->
+        it.media?.forEach { tweetMedia ->
             urls.add(
                 when (tweetMedia.type) {
-                    "photo" -> MediaModel(tweetMedia.url, MediaType.IMAGE)
-                    "video", "animated_gif" -> MediaModel(
-                        tweetMedia.info.variants[bitratePosition].url,
-                        MediaType.VIDEO,
-                        tweetMedia.url
-                    )
+                    "photo" -> {
+                        tweetMedia.url?.let { url -> MediaModel(url, MediaType.IMAGE) }
+                            ?: return@forEach
+                    }
+                    "video", "animated_gif" -> {
+                        tweetMedia.info?.variants?.get(bitratePosition)?.url?.let { static ->
+                            tweetMedia.url?.let { url ->
+                                MediaModel(
+                                    static,
+                                    MediaType.VIDEO,
+                                    url
+                                )
+                            }
+                        } ?: return@forEach
+                    }
                     else -> return@forEach
                 }
             )
@@ -187,23 +180,10 @@ class TwitterFeedAdapter(
         }
     }
 
-    fun addNullData() {
-        twitterFeed.add(null)
-        notifyItemInserted(twitterFeed.size - 1)
-    }
-
-    fun removeNullData() {
-        twitterFeed.removeAt(twitterFeed.size - 1)
-        notifyItemRemoved(twitterFeed.size)
-    }
-
     override fun getItemCount(): Int = twitterFeed.size
 
-    override fun getItemViewType(position: Int): Int {
-        return if (twitterFeed[position] != null) 0 else 1
-    }
-
-    class TweetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val container: ConstraintLayout = itemView.findViewById(R.id.tweet_container)
         val profileImage: ImageView = itemView.findViewById(R.id.tweet_profile_image)
         val date: TextView = itemView.findViewById(R.id.tweet_date)
         val name: TextView = itemView.findViewById(R.id.tweet_name)
@@ -228,6 +208,4 @@ class TwitterFeedAdapter(
         val quoteMediaRecycler: MediaRecyclerView =
             itemView.findViewById(R.id.tweet_quoted_media_recycler)
     }
-
-    class LoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }

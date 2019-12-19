@@ -21,8 +21,8 @@
     <string name="reused">Reused</string>
 
     <!--Filter labels-->
-    <string name="filter_successes">successes</string>
-    <string name="filter_failures">failures</string>
+    <string name="filter_successes">Successes</string>
+    <string name="filter_failures">Failures</string>
     <string name="filter">Filter:</string>
 
     <!--Rocket names-->
@@ -84,6 +84,7 @@
     <!--About-->
     <string name="powered_by">Powered by the r/SpaceX API</string>
     <string name="spacex_launch_tracker_icon_desc">SpaceX Launch Tracker Icon</string>
+    <string name="version_name">v%1$s</string>
 
     <!--Menu-->
     <string name="search">Search</string>
@@ -156,5 +157,7 @@
     <string name="dismiss_label">Dismiss</string>
     <string name="no_pinned_launches_found_label">No pinned launches found.</string>
     <string name="twitter_profile_image_desc">Twitter profile image</string>
+    <string name="scroll_to_top_label">Scroll To Top</string>
+    <string name="dark_theme_label">Dark theme</string>
 
 </resources>

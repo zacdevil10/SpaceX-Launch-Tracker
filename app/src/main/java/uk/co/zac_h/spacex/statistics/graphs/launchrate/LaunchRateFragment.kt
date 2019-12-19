@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.XAxis
@@ -15,62 +16,60 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.android.synthetic.main.fragment_launch_rate.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class LaunchRateFragment : Fragment(), LaunchRateView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: LaunchRatePresenter
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
+    private var presenter: LaunchRatePresenter? = null
 
     private var filterVisible: Boolean = false
     private var filterFalconOne = true
     private var filterFalconNine = true
     private var filterFalconHeavy = true
 
-    private var launchesList = ArrayList<LaunchesModel>()
+    private lateinit var launchesList: ArrayList<LaunchesModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        launchesList =
+            savedInstanceState?.getParcelableArrayList<LaunchesModel>("launches") ?: ArrayList()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
-        inflater.inflate(R.layout.fragment_launch_rate, container, false)
+    ): View? = inflater.inflate(R.layout.fragment_launch_rate, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         presenter = LaunchRatePresenterImpl(this, LaunchRateInteractorImpl())
 
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
-            addListener(this@LaunchRateFragment)
-            registerReceiver()
-        }
-
         launch_rate_falcon_one_toggle.setOnCheckedChangeListener { _, isChecked ->
-            presenter.updateFilter(launchesList, "falcon1", isChecked)
+            presenter?.updateFilter(launchesList, "falcon1", isChecked)
         }
         launch_rate_falcon_nine_toggle.setOnCheckedChangeListener { _, isChecked ->
-            presenter.updateFilter(launchesList, "falcon9", isChecked)
+            presenter?.updateFilter(launchesList, "falcon9", isChecked)
         }
 
         launch_rate_falcon_heavy_toggle.setOnCheckedChangeListener { _, isChecked ->
-            presenter.updateFilter(launchesList, "falconheavy", isChecked)
+            presenter?.updateFilter(launchesList, "falconheavy", isChecked)
         }
+
+        if (launchesList.isEmpty()) presenter?.getLaunchList() else presenter?.addLaunchList(
+            launchesList
+        )
 
         launch_rate_bar_chart.apply {
             xAxis.apply {
                 position = XAxis.XAxisPosition.BOTTOM
-                textColor = Color.WHITE
+                textColor = ContextCompat.getColor(context, R.color.color_on_background)
                 valueFormatter = object : ValueFormatter() {
                     override fun getFormattedValue(value: Float): String {
                         return "'" + value.toInt().toString().takeLast(2)
@@ -80,7 +79,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
                 setDrawGridLines(false)
             }
             axisLeft.apply {
-                textColor = Color.WHITE
+                textColor = ContextCompat.getColor(context, R.color.color_on_background)
                 granularity = 1f
                 axisMinimum = 0f
             }
@@ -90,24 +89,36 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
             setDrawBorders(false)
 
             legend.apply {
-                textColor = Color.WHITE
+                textColor = ContextCompat.getColor(context, R.color.color_on_background)
 
             }
         }
+    }
 
-        presenter.getLaunchList()
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
     override fun onResume() {
         super.onResume()
-        presenter.showFilter(filterVisible)
+
+        presenter?.showFilter(filterVisible)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("launches", launchesList)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequests()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
+        presenter?.cancelRequests()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -117,11 +128,11 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.filter -> {
-            presenter.showFilter(!filterVisible)
+            presenter?.showFilter(!filterVisible)
             true
         }
         R.id.reload -> {
-            presenter.getLaunchList()
+            presenter?.getLaunchList()
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -134,7 +145,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
         val colors = ArrayList<Int>()
 
         colors.add(ColorTemplate.rgb("29b6f6"))
-        colors.add(ColorTemplate.rgb("FFFFFF"))
+        colors.add(ColorTemplate.rgb("b00020"))
 
         val entries = ArrayList<BarEntry>()
 
@@ -169,7 +180,9 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
 
         val set = BarDataSet(entries, "Launches").apply {
             setColors(colors)
-            valueTextColor = Color.WHITE
+            valueTextColor =
+                context?.let { ContextCompat.getColor(it, R.color.color_on_background) }
+                    ?: Color.BLUE
             valueTextSize = 9f
             valueFormatter = object : ValueFormatter() {
                 override fun getBarStackedLabel(value: Float, stackedEntry: BarEntry): String {
@@ -234,7 +247,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (launchesList.isEmpty()) presenter.getLaunchList()
+            if (launchesList.isEmpty() || launch_rate_progress_bar.visibility == View.VISIBLE) presenter?.getLaunchList()
         }
     }
 }

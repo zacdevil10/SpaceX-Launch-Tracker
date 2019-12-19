@@ -15,6 +15,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.android.synthetic.main.fragment_launch_history.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.model.spacex.RocketsModel
 import uk.co.zac_h.spacex.utils.generateCenterSpannableText
@@ -23,84 +24,96 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: LaunchHistoryPresenter
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
+    private var presenter: LaunchHistoryPresenter? = null
 
     private var filterVisible = false
     private var filterSuccessful = false
     private var filterFailed = false
 
-    private var launchesList = ArrayList<LaunchesModel>()
-    private var rocketsList = ArrayList<RocketsModel>()
+    private lateinit var launchesList: ArrayList<LaunchesModel>
+    private lateinit var rocketsList: ArrayList<RocketsModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        launchesList =
+            savedInstanceState?.getParcelableArrayList<LaunchesModel>("launches") ?: ArrayList()
+        rocketsList =
+            savedInstanceState?.getParcelableArrayList<RocketsModel>("rockets") ?: ArrayList()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
-        inflater.inflate(R.layout.fragment_launch_history, container, false)
+    ): View? = inflater.inflate(R.layout.fragment_launch_history, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
 
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
-            addListener(this@LaunchHistoryFragment)
-            registerReceiver()
+        launch_history_chip_group.setOnCheckedChangeListener { group, checkedId ->
+            presenter?.updateFilter(
+                launchesList,
+                "success",
+                launch_history_success_toggle.id == group.checkedChipId
+            )
+            presenter?.updateFilter(
+                launchesList,
+                "failed",
+                launch_history_failure_toggle.id == group.checkedChipId
+            )
         }
 
-        presenter.apply {
+        presenter?.apply {
             if (launchesList.isEmpty()) getLaunchList() else addLaunchList(launchesList)
             if (rocketsList.isEmpty()) getRocketsList() else addRocketsList(rocketsList)
-        }
-
-        launch_history_success_toggle.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) launch_history_failure_toggle.isChecked = false
-            presenter.updateFilter(launchesList, "success", isChecked)
-        }
-
-        launch_history_failure_toggle.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) launch_history_success_toggle.isChecked = false
-            presenter.updateFilter(launchesList, "failed", isChecked)
         }
 
         //Pie chart appearance
         launch_history_pie_chart.apply {
             isDrawHoleEnabled = true
-            setHoleColor(ContextCompat.getColor(context, R.color.colorPrimary))
+            setHoleColor(ContextCompat.getColor(context, R.color.color_background))
             setDrawEntryLabels(false)
             description.isEnabled = false
-            setCenterTextColor(Color.WHITE)
+            setCenterTextColor(ContextCompat.getColor(context, R.color.color_on_background))
             isRotationEnabled = false
 
             legend.apply {
                 verticalAlignment = Legend.LegendVerticalAlignment.TOP
                 horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
                 orientation = Legend.LegendOrientation.VERTICAL
-                textColor = Color.WHITE
+                textColor = ContextCompat.getColor(context, R.color.color_on_background)
             }
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+    }
+
     override fun onResume() {
         super.onResume()
-        presenter.showFilter(filterVisible)
+        presenter?.showFilter(filterVisible)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("launches", launchesList)
+        outState.putParcelableArrayList("rockets", rocketsList)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequests()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
+        presenter?.cancelRequests()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -110,11 +123,11 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.filter -> {
-            presenter.showFilter(!filterVisible)
+            presenter?.showFilter(!filterVisible)
             true
         }
         R.id.reload -> {
-            presenter.getLaunchList()
+            presenter?.getLaunchList()
             true
         }
         else -> super.onOptionsItemSelected(item)
@@ -234,9 +247,9 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            presenter.apply {
-                if (launchesList.isEmpty()) getLaunchList()
-                if (rocketsList.isEmpty()) getRocketsList()
+            presenter?.apply {
+                if (launchesList.isEmpty() || launch_history_progress_bar.visibility == View.VISIBLE) getLaunchList()
+                if (rocketsList.isEmpty() || launch_history_progress_bar.visibility == View.VISIBLE) getRocketsList()
             }
         }
     }

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_history.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.utils.HeaderItemDecoration
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
@@ -19,12 +20,18 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class HistoryFragment : Fragment(), HistoryView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: HistoryPresenter
+    private var presenter: HistoryPresenter? = null
 
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
-
-    private val history = ArrayList<HistoryHeaderModel>()
+    private lateinit var history: ArrayList<HistoryHeaderModel>
     private lateinit var historyAdapter: HistoryAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        history = savedInstanceState?.let {
+            it.getParcelableArrayList<HistoryHeaderModel>("history") as ArrayList<HistoryHeaderModel>
+        } ?: ArrayList()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,13 +42,6 @@ class HistoryFragment : Fragment(), HistoryView,
         super.onViewCreated(view, savedInstanceState)
 
         presenter = HistoryPresenterImpl(this, HistoryInteractorImpl())
-
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
-            addListener(this@HistoryFragment)
-            registerReceiver()
-        }
 
         historyAdapter = HistoryAdapter(history, this)
 
@@ -70,21 +70,36 @@ class HistoryFragment : Fragment(), HistoryView,
             )
         }
 
-        if (history.isEmpty()) presenter.getHistory()
-
         history_swipe_refresh.setOnRefreshListener {
-            presenter.getHistory()
+            presenter?.getHistory()
         }
+
+        if (history.isEmpty()) {
+            presenter?.getHistory()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("history", history)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequest()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
+        presenter?.cancelRequest()
     }
 
-    override fun updateRecycler(history: ArrayList<HistoryHeaderModel>) {
+    override fun addHistory(history: ArrayList<HistoryHeaderModel>) {
         this.history.clear()
         this.history.addAll(history)
 
@@ -113,7 +128,7 @@ class HistoryFragment : Fragment(), HistoryView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (history.isEmpty()) presenter.getHistory()
+            if (history.isEmpty() || history_progress_bar.visibility == View.VISIBLE) presenter?.getHistory()
         }
     }
 

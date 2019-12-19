@@ -12,7 +12,6 @@
     <item
         android:id="@+id/sort"
         android:icon="@drawable/ic_sort_black_24dp"
-        app:iconTint="@android:color/white"
         android:title="@string/sort_label"
         app:showAsAction="ifRoom">
 
@@ -21,10 +20,12 @@
             <item
                 android:id="@+id/sort_new"
                 android:icon="@drawable/ic_arrow_downward_black_24dp"
+                app:iconTint="@color/color_on_background"
                 android:title="@string/newest_first_label" />
             <item
                 android:id="@+id/sort_old"
                 android:icon="@drawable/ic_arrow_upward_black_24dp"
+                app:iconTint="@color/color_on_background"
                 android:title="@string/oldest_first_label" />
 
         </menu>

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_launches_list.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
@@ -15,15 +16,13 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextListener,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: LaunchesPresenter
+    private var presenter: LaunchesPresenter? = null
     private lateinit var launchesAdapter: LaunchesAdapter
-    private var launchesList = ArrayList<LaunchesModel>()
+    private lateinit var launchesList: ArrayList<LaunchesModel>
 
     private lateinit var searchView: SearchView
 
     private var launchParam: String? = null
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     companion object {
         fun newInstance(launchParam: String) = LaunchesListFragment().apply {
@@ -36,6 +35,10 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        launchesList = savedInstanceState?.let {
+            it.getParcelableArrayList<LaunchesModel>("launches") as ArrayList<LaunchesModel>
+        } ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -51,13 +54,6 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
         presenter = LaunchesPresenterImpl(this, LaunchesInteractorImpl())
 
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
-            addListener(this@LaunchesListFragment)
-            registerReceiver()
-        }
-
         launchesAdapter = LaunchesAdapter(context, launchesList)
 
         launches_recycler.apply {
@@ -67,12 +63,17 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
         }
 
         launchParam?.let { launchId ->
-            if (launchesList.isEmpty()) presenter.getLaunchList(launchId)
-
             launches_swipe_refresh.setOnRefreshListener {
-                presenter.getLaunchList(launchId)
+                presenter?.getLaunchList(launchId)
             }
+
+            if (launchesList.isEmpty()) presenter?.getLaunchList(launchId)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
     override fun onResume() {
@@ -85,11 +86,19 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
         launches_swipe_refresh.isEnabled = false
     }
 
+    override fun onStop() {
+        super.onStop()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("launches", launchesList)
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequests()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
+        presenter?.cancelRequests()
     }
 
     override fun onDestroy() {
@@ -144,9 +153,10 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (launchesList.isEmpty()) launchParam?.let { launchId ->
-                presenter.getLaunchList(launchId)
-            }
+            if (launchesList.isEmpty() || launches_progress_bar.visibility == View.VISIBLE)
+                launchParam?.let { launchId ->
+                    presenter?.getLaunchList(launchId)
+                }
         }
     }
 }

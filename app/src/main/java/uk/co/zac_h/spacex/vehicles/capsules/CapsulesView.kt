@@ -10,5 +10,7 @@ interface CapsulesView {
 
     fun hideProgress()
 
+    fun toggleSwipeRefresh(refreshing: Boolean)
+
     fun showError(error: String)
 }

@@ -14,14 +14,12 @@ class DashboardPresenterImpl(
     private val launchesMap = LinkedHashMap<String, LaunchesModel>()
     private val pinnedLaunches = LinkedHashMap<String, LaunchesModel>()
 
-    override fun getLatestLaunches(isRefresh: Boolean) {
+    override fun getLatestLaunches() {
         view.showProgress()
         view.showPinnedMessage()
 
-        if (isRefresh) {
-            launchesMap.clear()
-            pinnedLaunches.clear()
-        }
+        launchesMap.clear()
+        pinnedLaunches.clear()
 
         if (launchesMap.isEmpty()) {
             interactor.apply {
@@ -29,7 +27,7 @@ class DashboardPresenterImpl(
                 getSingleLaunch("latest", this@DashboardPresenterImpl)
             }
 
-            if (!isRefresh) view.setLaunchesList(launchesMap)
+            view.setLaunchesList(launchesMap)
         }
 
         if (pinnedLaunches.isEmpty()) {

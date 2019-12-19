@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.view.*
@@ -12,11 +13,13 @@ import android.view.animation.RotateAnimation
 import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.*
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_launch_details.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.launches.adapters.LaunchLinksAdapter
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
@@ -29,10 +32,8 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: LaunchDetailsPresenter
+    private var presenter: LaunchDetailsPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     private var launch: LaunchesModel? = null
     private var id: String? = null
@@ -45,7 +46,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        launch = arguments?.getParcelable("launch") as LaunchesModel?
+        launch = if (savedInstanceState != null) {
+            savedInstanceState.getParcelable("launch")
+        } else {
+            arguments?.getParcelable("launch") as LaunchesModel?
+        }
         id = arguments?.getString("launch_id")
     }
 
@@ -66,13 +71,6 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
             )
         )
 
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
-            addListener(this@LaunchDetailsFragment)
-            registerReceiver()
-        }
-
         presenter = LaunchDetailsPresenterImpl(
             this,
             LaunchDetailsHelperImpl(pinnedSharedPreferences),
@@ -80,11 +78,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
         )
 
         launch?.let {
-            presenter.addLaunchModel(it)
-            pinned = presenter.isPinned()
+            presenter?.addLaunchModel(it)
+            pinned = presenter?.isPinned() ?: false
         } ?: id?.let {
-            presenter.getLaunch(it)
-            pinned = presenter.isPinned(it.toInt())
+            presenter?.getLaunch(it)
+            pinned = presenter?.isPinned(it.toInt()) ?: false
         }
 
         launch_details_first_stage_text.setOnClickListener {
@@ -124,7 +122,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
 
     override fun onResume() {
         super.onResume()
-
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
         /**
          * Set and restore Expand/Collapse state of recycler view when returning to fragment
          */
@@ -135,11 +133,19 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
         setupExpandCollapse(launch_details_payload_recycler, launch_details_payload_collapse_toggle)
     }
 
+    override fun onPause() {
+        super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable("launch", launch)
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequest()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
+        presenter?.cancelRequest()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -147,15 +153,20 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
         menu.findItem(R.id.pin).icon = context?.let {
             ContextCompat.getDrawable(
                 it,
-                if (id?.let { id -> presenter.isPinned(id.toInt()) }
-                        ?: presenter.isPinned()) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp)
+                if (id?.let { id -> presenter?.isPinned(id.toInt()) } ?: presenter?.isPinned() == true) {
+                    R.drawable.ic_star_black_24dp
+                } else {
+                    R.drawable.ic_star_border_black_24dp
+                })
         }
+
+        setIconTint(menu.findItem(R.id.pin))
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.pin -> {
-            presenter.pinLaunch(!pinned)
+            presenter?.pinLaunch(!pinned)
 
             pinned = !pinned
 
@@ -165,13 +176,30 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
                     if (pinned) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
                 )
             }
+
+            setIconTint(item)
             true
         }
         R.id.create_event -> {
-            presenter.createEvent()
+            presenter?.createEvent()
             true
         }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun setIconTint(item: MenuItem) {
+        var drawable = item.icon
+        drawable = DrawableCompat.wrap(drawable)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            DrawableCompat.setTint(
+                drawable.mutate(),
+                resources.getColor(android.R.color.white, null)
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            DrawableCompat.setTint(drawable.mutate(), resources.getColor(android.R.color.white))
+        }
+        item.icon = drawable
     }
 
     override fun updateLaunchDataView(launch: LaunchesModel?) {
@@ -371,7 +399,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             id?.let {
-                if (launch == null) presenter.getLaunch(it)
+                if (launch == null) presenter?.getLaunch(it)
             }
         }
     }

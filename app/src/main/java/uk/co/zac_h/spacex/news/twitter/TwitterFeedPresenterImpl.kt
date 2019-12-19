@@ -13,8 +13,16 @@ class TwitterFeedPresenterImpl(
     }
 
     override fun getTweets(maxId: Long) {
-        view.showRecyclerLoading()
+        view.showPagingProgress()
         interactor.getTwitterTimelineFromId(maxId, this)
+    }
+
+    override fun toggleScrollUp(visible: Boolean) {
+        if (visible) {
+            view.showScrollUp()
+        } else {
+            view.hideScrollUp()
+        }
     }
 
     override fun cancelRequests() {
@@ -34,10 +42,14 @@ class TwitterFeedPresenterImpl(
     override fun onPagedSuccess(tweets: List<TimelineTweetModel>?) {
         tweets?.let {
             view.addPagedData(it)
+            view.hidePagingProgress()
         }
     }
 
     override fun onError(error: String) {
-        view.showError(error)
+        view.apply {
+            showError(error)
+            toggleSwipeProgress(false)
+        }
     }
 }

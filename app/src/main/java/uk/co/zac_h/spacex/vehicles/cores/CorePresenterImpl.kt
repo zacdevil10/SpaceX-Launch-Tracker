@@ -15,11 +15,17 @@ class CorePresenterImpl(private val view: CoreView, private val interactor: Core
     }
 
     override fun onSuccess(cores: List<CoreModel>?) {
-        view.hideProgress()
+        view.apply {
+            hideProgress()
+            toggleSwipeRefresh(false)
+        }
         cores?.let { view.updateCores(it) }
     }
 
     override fun onError(error: String) {
-        view.showError(error)
+        view.apply {
+            showError(error)
+            toggleSwipeRefresh(false)
+        }
     }
 }

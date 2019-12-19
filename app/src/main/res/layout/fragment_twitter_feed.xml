@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".news.twitter.TwitterFeedFragment">
 
     <ProgressBar
@@ -13,8 +13,8 @@
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -26,8 +26,38 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/twitter_feed_recycler"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:paddingBottom="16dp"
+            android:clipToPadding="false" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <ProgressBar
+        android:id="@+id/twitter_feed_paging_progress_bar"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <com.google.android.material.chip.Chip
+        android:id="@+id/twitter_feed_scroll_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.Chip.Action"
+        app:chipBackgroundColor="@color/color_secondary"
+        app:chipIconTint="@android:color/white"
+        android:textColor="@android:color/white"
+        android:clipChildren="true"
+        android:visibility="invisible"
+        android:elevation="8dp"
+        android:text="@string/scroll_to_top_label"
+        app:chipIcon="@drawable/ic_arrow_upward_black_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

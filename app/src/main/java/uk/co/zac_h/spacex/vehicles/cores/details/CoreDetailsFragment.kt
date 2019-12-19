@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_core_details.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.launches.adapters.CoreMissionsAdapter
 import uk.co.zac_h.spacex.model.spacex.CoreModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
@@ -17,9 +18,7 @@ import uk.co.zac_h.spacex.utils.setImageAndTint
 class CoreDetailsFragment : Fragment(), CoreDetailsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: CoreDetailsPresenter
-
-    private lateinit var networkStateChangeListener: OnNetworkStateChangeListener
+    private var presenter: CoreDetailsPresenter? = null
 
     private var core: CoreModel? = null
     private var id: String? = null
@@ -27,7 +26,11 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        core = arguments?.getParcelable("core") as CoreModel?
+        core = if (savedInstanceState != null) {
+            savedInstanceState.getParcelable("core")
+        } else {
+            arguments?.getParcelable("core")
+        }
         id = arguments?.getString("core_id")
     }
 
@@ -42,25 +45,31 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView,
 
         presenter = CoreDetailsPresenterImpl(this, CoreDetailsInteractorImpl())
 
-        networkStateChangeListener = OnNetworkStateChangeListener(
-            context
-        ).apply {
-            addListener(this@CoreDetailsFragment)
-            registerReceiver()
-        }
-
         core?.let {
-            presenter.addCoreModel(it)
+            presenter?.addCoreModel(it)
         } ?: id?.let {
-            presenter.getCoreDetails(it)
+            presenter?.getCoreDetails(it)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable("core", core)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequest()
-        networkStateChangeListener.removeListener(this)
-        networkStateChangeListener.unregisterReceiver()
+        presenter?.cancelRequest()
     }
 
     override fun updateCoreDetails(coreModel: CoreModel) {
@@ -110,7 +119,7 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             id?.let {
-                if (core == null) presenter.getCoreDetails(it)
+                if (core == null) presenter?.getCoreDetails(it)
             }
         }
     }
