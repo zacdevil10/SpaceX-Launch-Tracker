@@ -6,10 +6,13 @@ interface RedditFeedInteractor {
 
     fun getSubreddit(listener: Callback)
 
+    fun getFromId(id: String, listener: Callback)
+
     fun cancelAllRequests()
 
     interface Callback {
         fun onSuccess(data: SubredditModel?)
+        fun onPagedSuccess(data: SubredditModel?)
         fun onError(error: String)
     }
 }

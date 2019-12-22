@@ -8,7 +8,13 @@ class RedditFeedPresenterImpl(
 ) : RedditFeedPresenter, RedditFeedInteractor.Callback {
 
     override fun getSub() {
+        view.showProgress()
         interactor.getSubreddit(this)
+    }
+
+    override fun getNextPage(id: String) {
+        view.showPagingProgress()
+        interactor.getFromId(id, this)
     }
 
     override fun cancelRequest() {
@@ -16,10 +22,22 @@ class RedditFeedPresenterImpl(
     }
 
     override fun onSuccess(data: SubredditModel?) {
+        view.apply {
+            hideProgress()
+            toggleSwipeRefresh(false)
+        }
         data?.let { view.updateRecycler(it) }
     }
 
-    override fun onError(error: String) {
+    override fun onPagedSuccess(data: SubredditModel?) {
+        view.hidePagingProgress()
+        data?.let { view.addPagedData(data) }
+    }
 
+    override fun onError(error: String) {
+        view.apply {
+            showError(error)
+            toggleSwipeRefresh(false)
+        }
     }
 }

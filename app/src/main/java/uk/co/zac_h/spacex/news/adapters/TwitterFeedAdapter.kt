@@ -18,10 +18,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.twitter.TimelineExtendedEntityModel
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.news.twitter.TwitterFeedView
-import uk.co.zac_h.spacex.utils.CircleImageTransform
-import uk.co.zac_h.spacex.utils.HtmlTextView
-import uk.co.zac_h.spacex.utils.convertDate
-import uk.co.zac_h.spacex.utils.formatWithUrls
+import uk.co.zac_h.spacex.utils.*
 
 class TwitterFeedAdapter(
     private val context: Context?,
@@ -50,7 +47,7 @@ class TwitterFeedAdapter(
 
             Picasso.get().load(tweet.user.profileUrl).transform(CircleImageTransform())
                 .into(profileImage)
-            date.text = tweet.created.convertDate()
+            date.text = tweet.created.dateStringToMillis().convertDate()
             name.text = tweet.user.name
             screenName.text =
                 context?.getString(R.string.screen_name, tweet.user.screenName)
@@ -94,7 +91,7 @@ class TwitterFeedAdapter(
             }
 
             tweet.quotedStatus?.let { quoted ->
-                quoteDate.text = quoted.created?.convertDate()
+                quoteDate.text = quoted.created?.dateStringToMillis()?.convertDate()
                 quoteName.text = quoted.user?.name
                 quoteScreenName.text =
                     context?.getString(R.string.screen_name, quoted.user?.screenName)

@@ -39,8 +39,8 @@ fun String.formatDateString(): Date? {
 
 fun String.dateStringToMillis(): Long = this.formatDateString()?.time ?: 0
 
-fun String.convertDate(): String {
-    var dateMilli = this.dateStringToMillis()
+fun Long.convertDate(): String {
+    var dateMilli = this
     if (dateMilli < 1000000000000L) {
         //Timestamp is in seconds
         dateMilli *= 1000

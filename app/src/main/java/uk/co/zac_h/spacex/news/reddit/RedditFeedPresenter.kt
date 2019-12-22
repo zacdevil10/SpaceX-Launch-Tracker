@@ -4,5 +4,7 @@ interface RedditFeedPresenter {
 
     fun getSub()
 
+    fun getNextPage(id: String)
+
     fun cancelRequest()
 }

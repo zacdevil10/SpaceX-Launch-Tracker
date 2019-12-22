@@ -1,23 +1,41 @@
 package uk.co.zac_h.spacex.news.reddit
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_reddit_feed.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.model.reddit.SubredditModel
 import uk.co.zac_h.spacex.model.reddit.SubredditPostModel
 import uk.co.zac_h.spacex.news.adapters.RedditAdapter
+import uk.co.zac_h.spacex.utils.PaginationScrollListener
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class RedditFeedFragment : Fragment(), RedditFeedView {
+class RedditFeedFragment : Fragment(), RedditFeedView,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var presenter: RedditFeedPresenter? = null
 
     private lateinit var redditAdapter: RedditAdapter
-    private val posts = ArrayList<SubredditPostModel>()
+    private lateinit var posts: ArrayList<SubredditPostModel>
+
+    private var isLastPage = false
+    private var isLoading = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        posts = savedInstanceState?.let {
+            it.getParcelableArrayList<SubredditPostModel>("posts") as ArrayList<SubredditPostModel>
+        } ?: ArrayList()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,14 +47,57 @@ class RedditFeedFragment : Fragment(), RedditFeedView {
 
         presenter = RedditFeedPresenterImpl(this, RedditFeedInteractorImpl())
 
-        redditAdapter = RedditAdapter(posts)
+        redditAdapter = RedditAdapter(this, posts)
+
+        val layout = LinearLayoutManager(this@RedditFeedFragment.context)
 
         reddit_recycler.apply {
-            layoutManager = LinearLayoutManager(this@RedditFeedFragment.context)
+            layoutManager = layout
+            setHasFixedSize(true)
             adapter = redditAdapter
+
+            addOnScrollListener(object : PaginationScrollListener(layout) {
+                override fun isLastPage(): Boolean = isLastPage
+
+                override fun isLoading(): Boolean = isLoading
+
+                override fun isScrollUpVisible(): Boolean = false
+
+                override fun loadItems() {
+                    isLoading = true
+                    presenter?.getNextPage(posts[posts.size - 1].data.name)
+                }
+
+                override fun onScrollTop() {
+
+                }
+
+                override fun onScrolledDown() {
+
+                }
+            })
         }
 
-        presenter?.getSub()
+        reddit_swipe_refresh.setOnRefreshListener {
+            presenter?.getSub()
+        }
+
+        if (posts.isEmpty()) presenter?.getSub()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("posts", posts)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
@@ -51,4 +112,45 @@ class RedditFeedFragment : Fragment(), RedditFeedView {
         redditAdapter.notifyDataSetChanged()
     }
 
+    override fun addPagedData(subredditData: SubredditModel) {
+        isLoading = false
+
+        posts.addAll(subredditData.data.children)
+        redditAdapter.notifyDataSetChanged()
+    }
+
+    override fun openWebLink(link: String) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
+    }
+
+    override fun showProgress() {
+        reddit_progress_bar.visibility = View.VISIBLE
+    }
+
+    override fun hideProgress() {
+        reddit_progress_bar.visibility = View.GONE
+    }
+
+    override fun toggleSwipeRefresh(refreshing: Boolean) {
+        reddit_swipe_refresh.isRefreshing = refreshing
+    }
+
+    override fun showPagingProgress() {
+        reddit_feed_paging_progress_bar.visibility = View.VISIBLE
+    }
+
+    override fun hidePagingProgress() {
+        reddit_feed_paging_progress_bar.visibility = View.GONE
+    }
+
+    override fun showError(error: String) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            if (posts.isEmpty() || reddit_progress_bar.visibility == View.VISIBLE) presenter?.getSub()
+            if (isLoading) presenter?.getNextPage(posts[posts.size - 1].data.name)
+        }
+    }
 }
