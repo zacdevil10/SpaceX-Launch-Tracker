@@ -60,7 +60,8 @@
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toStartOf="@id/list_item_reddit_title"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/list_item_reddit_author" />
+            app:layout_constraintTop_toBottomOf="@id/list_item_reddit_author"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/list_item_reddit_title"
@@ -102,7 +103,8 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_upward_black_24dp" />
+                android:src="@drawable/ic_arrow_upward_black_24dp"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/list_item_reddit_score"
@@ -115,7 +117,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:src="@drawable/ic_comment_black_24dp" />
+                android:src="@drawable/ic_comment_black_24dp"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/list_item_reddit_comments"

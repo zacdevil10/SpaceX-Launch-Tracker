@@ -14,7 +14,7 @@ class RedditFeedPresenterImpl(
 
     override fun getNextPage(id: String) {
         view.showPagingProgress()
-        interactor.getFromId(id, this)
+        interactor.getSubreddit(this, id)
     }
 
     override fun cancelRequest() {

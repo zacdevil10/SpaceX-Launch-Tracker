@@ -15,45 +15,18 @@ class RedditFeedInteractorImpl : RedditFeedInteractor {
 
     private val scope = CoroutineScope(coroutineContext)
 
-    override fun getSubreddit(listener: RedditFeedInteractor.Callback) {
+    override fun getSubreddit(listener: RedditFeedInteractor.Callback, id: String?) {
         scope.launch {
             val response = async(SupervisorJob(parentJob)) {
-                RedditInterface.create().getRedditFeed("SpaceX")
+                RedditInterface.create().getRedditFeed("SpaceX", id)
             }
 
             withContext(Dispatchers.Main) {
                 try {
                     if (response.await().isSuccessful) {
-                        listener.onSuccess(response.await().body())
-                    } else {
-                        listener.onError(response.await().message())
-                    }
-                } catch (e: HttpException) {
-                    listener.onError(
-                        e.localizedMessage ?: "There was a network error! Please try refreshing."
-                    )
-                } catch (e: UnknownHostException) {
-                    listener.onError("Unable to resolve host! Check your network connection and try again.")
-                } catch (e: Throwable) {
-                    Log.e(
-                        this@RedditFeedInteractorImpl.javaClass.name,
-                        e.localizedMessage ?: "Job failed to execute"
-                    )
-                }
-            }
-        }
-    }
-
-    override fun getFromId(id: String, listener: RedditFeedInteractor.Callback) {
-        scope.launch {
-            val response = async(SupervisorJob(parentJob)) {
-                RedditInterface.create().getRedditFeedFromId("SpaceX", id)
-            }
-
-            withContext(Dispatchers.Main) {
-                try {
-                    if (response.await().isSuccessful) {
-                        listener.onPagedSuccess(response.await().body())
+                        id?.let {
+                            listener.onPagedSuccess(response.await().body())
+                        } ?: listener.onSuccess(response.await().body())
                     } else {
                         listener.onError(response.await().message())
                     }

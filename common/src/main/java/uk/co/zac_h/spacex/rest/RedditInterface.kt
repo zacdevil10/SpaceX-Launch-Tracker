@@ -11,10 +11,7 @@ import uk.co.zac_h.spacex.model.reddit.SubredditModel
 interface RedditInterface {
 
     @GET("r/{subreddit}/.json")
-    suspend fun getRedditFeed(@Path("subreddit") subreddit: String): Response<SubredditModel>
-
-    @GET("r/{subreddit}/.json")
-    suspend fun getRedditFeedFromId(@Path("subreddit") subreddit: String, @Query("after") id: String): Response<SubredditModel>
+    suspend fun getRedditFeed(@Path("subreddit") subreddit: String, @Query("after") id: String? = null): Response<SubredditModel>
 
     companion object RetrofitSetup {
         fun create(): RedditInterface {
