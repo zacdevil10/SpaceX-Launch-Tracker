@@ -54,7 +54,7 @@ fun Long.convertDate(): String {
     val date = Date(dateMilli)
     val currentDate = Date(currentTime)
 
-    val lessThanSevenDays = SimpleDateFormat("EEEE", Locale.getDefault())
+    val lessThanSevenDays = SimpleDateFormat("dd MMM", Locale.getDefault())
     val moreThanSevenDays = SimpleDateFormat("dd MMM yy", Locale.getDefault())
 
     return getString(

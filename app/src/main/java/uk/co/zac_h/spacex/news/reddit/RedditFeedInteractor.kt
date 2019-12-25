@@ -4,7 +4,7 @@ import uk.co.zac_h.spacex.model.reddit.SubredditModel
 
 interface RedditFeedInteractor {
 
-    fun getSubreddit(listener: Callback, id: String? = null)
+    fun getSubreddit(listener: Callback, order: String, id: String? = null)
 
     fun cancelAllRequests()
 

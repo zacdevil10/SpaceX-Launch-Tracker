@@ -5,4 +5,8 @@
         <item name="itemTextAppearance">?textAppearanceBody2</item>
     </style>
 
+    <style name="SpinnerItem">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
 </resources>

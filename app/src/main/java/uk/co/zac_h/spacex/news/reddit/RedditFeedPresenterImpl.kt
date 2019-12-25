@@ -7,14 +7,14 @@ class RedditFeedPresenterImpl(
     private val interactor: RedditFeedInteractor
 ) : RedditFeedPresenter, RedditFeedInteractor.Callback {
 
-    override fun getSub() {
+    override fun getSub(order: String) {
         view.showProgress()
-        interactor.getSubreddit(this)
+        interactor.getSubreddit(listener = this, order = order)
     }
 
-    override fun getNextPage(id: String) {
+    override fun getNextPage(id: String, order: String) {
         view.showPagingProgress()
-        interactor.getSubreddit(this, id)
+        interactor.getSubreddit(listener = this, id = id, order = order)
     }
 
     override fun cancelRequest() {

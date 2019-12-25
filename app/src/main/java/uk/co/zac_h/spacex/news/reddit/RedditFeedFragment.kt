@@ -3,9 +3,10 @@ package uk.co.zac_h.spacex.news.reddit
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,8 +30,15 @@ class RedditFeedFragment : Fragment(), RedditFeedView,
     private var isLastPage = false
     private var isLoading = false
 
+    private var order: String = "hot"
+    private var orderPos: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+
+        order = savedInstanceState?.getString("order") ?: "hot"
+        orderPos = savedInstanceState?.getInt("orderPos") ?: 0
 
         posts = savedInstanceState?.let {
             it.getParcelableArrayList<SubredditPostModel>("posts") as ArrayList<SubredditPostModel>
@@ -47,7 +55,7 @@ class RedditFeedFragment : Fragment(), RedditFeedView,
 
         presenter = RedditFeedPresenterImpl(this, RedditFeedInteractorImpl())
 
-        redditAdapter = RedditAdapter(this, posts)
+        redditAdapter = RedditAdapter(context, this, posts)
 
         val layout = LinearLayoutManager(this@RedditFeedFragment.context)
 
@@ -65,7 +73,7 @@ class RedditFeedFragment : Fragment(), RedditFeedView,
 
                 override fun loadItems() {
                     isLoading = true
-                    presenter?.getNextPage(posts[posts.size - 1].data.name)
+                    presenter?.getNextPage(posts[posts.size - 1].data.name, order)
                 }
 
                 override fun onScrollTop() {
@@ -79,10 +87,10 @@ class RedditFeedFragment : Fragment(), RedditFeedView,
         }
 
         reddit_swipe_refresh.setOnRefreshListener {
-            presenter?.getSub()
+            presenter?.getSub(order)
         }
 
-        if (posts.isEmpty()) presenter?.getSub()
+        if (posts.isEmpty()) presenter?.getSub(order)
     }
 
     override fun onResume() {
@@ -97,6 +105,8 @@ class RedditFeedFragment : Fragment(), RedditFeedView,
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList("posts", posts)
+        outState.putString("order", order)
+        outState.putInt("orderPos", orderPos)
         super.onSaveInstanceState(outState)
     }
 
@@ -105,11 +115,54 @@ class RedditFeedFragment : Fragment(), RedditFeedView,
         presenter?.cancelRequest()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_reddit, menu)
+
+        val item = menu.findItem(R.id.reddit_order).actionView as Spinner
+        item.apply {
+            adapter = ArrayAdapter.createFromResource(
+                context,
+                R.array.order,
+                android.R.layout.simple_spinner_item
+            ).apply {
+                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            }
+            setSelection(orderPos)
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    p0: AdapterView<*>?,
+                    p1: View?,
+                    position: Int,
+                    p3: Long
+                ) {
+                    if (orderPos != position) when (position) {
+                        0 -> {
+                            order = "hot"
+                            presenter?.getSub(order)
+                        }
+                        1 -> {
+                            order = "new"
+                            presenter?.getSub(order)
+                        }
+                    }
+                    orderPos = position
+                }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {
+
+                }
+            }
+        }
+
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
     override fun updateRecycler(subredditData: SubredditModel) {
         posts.clear()
         posts.addAll(subredditData.data.children)
 
         redditAdapter.notifyDataSetChanged()
+        reddit_recycler.scrollToPosition(0)
     }
 
     override fun addPagedData(subredditData: SubredditModel) {
@@ -149,8 +202,10 @@ class RedditFeedFragment : Fragment(), RedditFeedView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (posts.isEmpty() || reddit_progress_bar.visibility == View.VISIBLE) presenter?.getSub()
-            if (isLoading) presenter?.getNextPage(posts[posts.size - 1].data.name)
+            if (posts.isEmpty() || reddit_progress_bar.visibility == View.VISIBLE) presenter?.getSub(
+                order
+            )
+            if (isLoading) presenter?.getNextPage(posts[posts.size - 1].data.name, order)
         }
     }
 }

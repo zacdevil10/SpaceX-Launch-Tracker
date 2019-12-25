@@ -15,10 +15,10 @@ class RedditFeedInteractorImpl : RedditFeedInteractor {
 
     private val scope = CoroutineScope(coroutineContext)
 
-    override fun getSubreddit(listener: RedditFeedInteractor.Callback, id: String?) {
+    override fun getSubreddit(listener: RedditFeedInteractor.Callback, order: String, id: String?) {
         scope.launch {
             val response = async(SupervisorJob(parentJob)) {
-                RedditInterface.create().getRedditFeed("SpaceX", id)
+                RedditInterface.create().getRedditFeed(subreddit = "SpaceX", id = id, order = order)
             }
 
             withContext(Dispatchers.Main) {

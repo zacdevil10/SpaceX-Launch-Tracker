@@ -33,5 +33,29 @@ data class RedditPostData(
     @field:Json(name = "thumbnail") var thumbnail: String,
     @field:Json(name = "score") var score: Int,
     @field:Json(name = "num_comments") var commentsCount: Int,
-    @field:Json(name = "url") var url: String
+    @field:Json(name = "url") var url: String,
+    @field:Json(name = "preview") var preview: RedditPreviewListModel?,
+    @field:Json(name = "domain") var domain: String,
+    @field:Json(name = "stickied") var stickied: Boolean,
+    @field:Json(name = "is_self") var isSelf: Boolean,
+    @field:Json(name = "is_reddit_media_domain") var redditDomain: Boolean,
+    @field:Json(name = "permalink") var permalink: String
+) : Parcelable
+
+@Parcelize
+data class RedditPreviewListModel(
+    @field:Json(name = "images") var images: List<RedditMediaAlternatesModel>
+) : Parcelable
+
+@Parcelize
+data class RedditMediaAlternatesModel(
+    @field:Json(name = "source") var source: RedditMediaModel,
+    @field:Json(name = "resolutions") var resolutions: List<RedditMediaModel>
+) : Parcelable
+
+@Parcelize
+data class RedditMediaModel(
+    @field:Json(name = "url") var url: String,
+    @field:Json(name = "width") var width: Int,
+    @field:Json(name = "height") var height: Int
 ) : Parcelable
