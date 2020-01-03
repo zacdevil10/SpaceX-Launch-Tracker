@@ -55,7 +55,7 @@ class RedditFeedFragment : Fragment(), RedditFeedView,
 
         presenter = RedditFeedPresenterImpl(this, RedditFeedInteractorImpl())
 
-        redditAdapter = RedditAdapter(context, this, posts)
+        redditAdapter = RedditAdapter(this, posts)
 
         val layout = LinearLayoutManager(this@RedditFeedFragment.context)
 
@@ -89,12 +89,11 @@ class RedditFeedFragment : Fragment(), RedditFeedView,
         reddit_swipe_refresh.setOnRefreshListener {
             presenter?.getSub(order)
         }
-
-        if (posts.isEmpty()) presenter?.getSub(order)
     }
 
     override fun onResume() {
         super.onResume()
+        if (posts.isEmpty()) presenter?.getSub(order)
         (context?.applicationContext as App).networkStateChangeListener.addListener(this)
     }
 

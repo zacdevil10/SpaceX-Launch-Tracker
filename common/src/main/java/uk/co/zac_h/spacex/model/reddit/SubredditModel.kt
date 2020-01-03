@@ -26,6 +26,7 @@ data class SubredditPostModel(
 @Parcelize
 data class RedditPostData(
     @field:Json(name = "selftext") var text: String,
+    @field:Json(name = "selftext_html") var textHtml: String?,
     @field:Json(name = "title") var title: String,
     @field:Json(name = "name") var name: String,
     @field:Json(name = "author") var author: String,

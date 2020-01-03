@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.news.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +10,6 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.squareup.picasso.Picasso
-import io.noties.markwon.Markwon
-import io.noties.markwon.movement.MovementMethodPlugin
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.reddit.SubredditPostModel
 import uk.co.zac_h.spacex.news.reddit.RedditFeedView
@@ -20,7 +17,6 @@ import uk.co.zac_h.spacex.utils.HtmlTextView
 import uk.co.zac_h.spacex.utils.convertDate
 
 class RedditAdapter(
-    private val context: Context?,
     private val view: RedditFeedView,
     private val posts: List<SubredditPostModel>
 ) :
@@ -45,7 +41,7 @@ class RedditAdapter(
         holder.apply {
             if (post.data.redditDomain || post.data.isSelf) {
                 thumbCard.visibility = View.GONE
-            } else {
+            } else if (post.data.thumbnail.isNotEmpty()) {
                 thumbCard.visibility = View.VISIBLE
                 Picasso.get().load(post.data.thumbnail)
                     .placeholder(R.drawable.ic_placeholder_reddit).into(thumbnail)
@@ -73,11 +69,8 @@ class RedditAdapter(
 
             title.text = post.data.title
 
-            context?.let {
-                Markwon.builder(context)
-                    .usePlugin(MovementMethodPlugin.create(HtmlTextView.LocalLinkMovementMethod))
-                    .build().setMarkdown(text, post.data.text)
-            }
+            text.plainText = true
+            post.data.textHtml?.let { text.setHtmlText(it) }
 
             author.text = post.data.author
             date.text = post.data.created.toLong().convertDate()
@@ -104,7 +97,7 @@ class RedditAdapter(
         val thumbnail: ImageView = itemView.findViewById(R.id.list_item_reddit_thumbnail)
         val thumbLink: TextView = itemView.findViewById(R.id.list_item_reddit_thumbnail_link)
         val title: TextView = itemView.findViewById(R.id.list_item_reddit_title)
-        val text: TextView = itemView.findViewById(R.id.list_item_reddit_text)
+        val text: HtmlTextView = itemView.findViewById(R.id.list_item_reddit_text)
         val preview: ImageView = itemView.findViewById(R.id.list_item_reddit_preview)
         val author: TextView = itemView.findViewById(R.id.list_item_reddit_author)
         val date: TextView = itemView.findViewById(R.id.list_item_reddit_date)

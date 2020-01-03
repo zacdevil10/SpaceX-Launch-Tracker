@@ -16,6 +16,7 @@ class HtmlTextView : TextView {
 
     private var linkHit = false
     private var consumeNonUrlClicks = false
+    var plainText = false
 
     constructor(context: Context) : super(context)
 
@@ -41,7 +42,7 @@ class HtmlTextView : TextView {
     fun setHtmlText(text: String) {
         val htmlText = HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY)
 
-        setText(htmlText)
+        setText(if (!plainText) htmlText else htmlText.toString().replace("\n", " "))
     }
 
     override fun hasFocusable(): Boolean = false
