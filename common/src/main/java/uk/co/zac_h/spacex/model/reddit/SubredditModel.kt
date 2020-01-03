@@ -25,7 +25,6 @@ data class SubredditPostModel(
 
 @Parcelize
 data class RedditPostData(
-    @field:Json(name = "selftext") var text: String,
     @field:Json(name = "selftext_html") var textHtml: String?,
     @field:Json(name = "title") var title: String,
     @field:Json(name = "name") var name: String,
@@ -34,7 +33,6 @@ data class RedditPostData(
     @field:Json(name = "thumbnail") var thumbnail: String,
     @field:Json(name = "score") var score: Int,
     @field:Json(name = "num_comments") var commentsCount: Int,
-    @field:Json(name = "url") var url: String,
     @field:Json(name = "preview") var preview: RedditPreviewListModel?,
     @field:Json(name = "domain") var domain: String,
     @field:Json(name = "stickied") var stickied: Boolean,

@@ -48,7 +48,7 @@ class RedditAdapter(
                 thumbLink.text = post.data.domain
             }
 
-            if (post.data.redditDomain && post.data.preview != null && post.data.text.isEmpty()) post.data.preview?.let {
+            if (post.data.redditDomain && post.data.preview != null && post.data.textHtml.isNullOrEmpty()) post.data.preview?.let {
                 preview.visibility = View.VISIBLE
                 val image = it.images[0].resolutions[it.images[0].resolutions.size - 1]
                 Picasso.get().load(image.url).into(preview)
@@ -77,7 +77,7 @@ class RedditAdapter(
             score.text = post.data.score.toString()
             comments.text = post.data.commentsCount.toString()
 
-            text.visibility = if (post.data.text.isEmpty()) View.GONE else View.VISIBLE
+            text.visibility = if (post.data.textHtml.isNullOrEmpty()) View.GONE else View.VISIBLE
 
             pin.visibility = if (post.data.stickied) View.VISIBLE else View.GONE
 
