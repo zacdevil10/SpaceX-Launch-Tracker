@@ -159,5 +159,11 @@
     <string name="twitter_profile_image_desc">Twitter profile image</string>
     <string name="scroll_to_top_label">Scroll To Top</string>
     <string name="dark_theme_label">Dark theme</string>
+    <string name="reddit_label">Reddit</string>
+
+    <string-array name="order">
+        <item>Hot</item>
+        <item>New</item>
+    </string-array>
 
 </resources>
