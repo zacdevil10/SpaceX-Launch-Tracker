@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -11,13 +10,16 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.android.synthetic.main.fragment_launch_rate.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.utils.models.RateStatsModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class LaunchRateFragment : Fragment(), LaunchRateView,
@@ -25,19 +27,14 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
 
     private var presenter: LaunchRatePresenter? = null
 
-    private var filterVisible: Boolean = false
-    private var filterFalconOne = true
-    private var filterFalconNine = true
-    private var filterFalconHeavy = true
-
-    private lateinit var launchesList: ArrayList<LaunchesModel>
+    private lateinit var statsList: ArrayList<RateStatsModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        launchesList =
-            savedInstanceState?.getParcelableArrayList<LaunchesModel>("launches") ?: ArrayList()
+        statsList =
+            savedInstanceState?.getParcelableArrayList<RateStatsModel>("launches") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -51,20 +48,8 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
 
         presenter = LaunchRatePresenterImpl(this, LaunchRateInteractorImpl())
 
-        launch_rate_falcon_one_toggle.setOnCheckedChangeListener { _, isChecked ->
-            presenter?.updateFilter(launchesList, "falcon1", isChecked)
-        }
-        launch_rate_falcon_nine_toggle.setOnCheckedChangeListener { _, isChecked ->
-            presenter?.updateFilter(launchesList, "falcon9", isChecked)
-        }
-
-        launch_rate_falcon_heavy_toggle.setOnCheckedChangeListener { _, isChecked ->
-            presenter?.updateFilter(launchesList, "falconheavy", isChecked)
-        }
-
-        if (launchesList.isEmpty()) presenter?.getLaunchList() else presenter?.addLaunchList(
-            launchesList
-        )
+        if (statsList.isEmpty()) presenter?.getLaunchList()
+        else presenter?.addLaunchList(statsList)
 
         launch_rate_bar_chart.apply {
             xAxis.apply {
@@ -75,11 +60,11 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
                         return "'" + value.toInt().toString().takeLast(2)
                     }
                 }
-                granularity = 1f
                 setDrawGridLines(false)
             }
             axisLeft.apply {
                 textColor = ContextCompat.getColor(context, R.color.color_on_background)
+                isGranularityEnabled = true
                 granularity = 1f
                 axisMinimum = 0f
             }
@@ -87,11 +72,58 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
             setScaleEnabled(false)
             description.isEnabled = false
             setDrawBorders(false)
-
+            isHighlightFullBarEnabled = true
             legend.apply {
                 textColor = ContextCompat.getColor(context, R.color.color_on_background)
-
             }
+
+            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+                override fun onValueSelected(e: Entry?, h: Highlight?) {
+                    e?.let {
+                        val stats = statsList[(e.x - 2006).toInt()]
+
+                        launch_rate_key.visibility = View.VISIBLE
+
+                        launch_rate_year.text = stats.year.toString()
+
+                        launch_rate_falcon_one_label.visibility =
+                            if (stats.falconOne == 0f) View.GONE else View.VISIBLE
+                        launch_rate_falcon_one_value.visibility =
+                            if (stats.falconOne == 0f) View.GONE else View.VISIBLE
+                        launch_rate_falcon_one_value.text = stats.falconOne.toInt().toString()
+
+                        launch_rate_falcon_nine_label.visibility =
+                            if (stats.falconNine == 0f) View.GONE else View.VISIBLE
+                        launch_rate_falcon_nine_value.visibility =
+                            if (stats.falconNine == 0f) View.GONE else View.VISIBLE
+                        launch_rate_falcon_nine_value.text = stats.falconNine.toInt().toString()
+
+                        launch_rate_falcon_heavy_label.visibility =
+                            if (stats.falconHeavy == 0f) View.GONE else View.VISIBLE
+                        launch_rate_falcon_heavy_value.visibility =
+                            if (stats.falconHeavy == 0f) View.GONE else View.VISIBLE
+                        launch_rate_falcon_heavy_value.text = stats.falconHeavy.toInt().toString()
+
+                        launch_rate_failures_label.visibility =
+                            if (stats.failure == 0f) View.GONE else View.VISIBLE
+                        launch_rate_failures_value.visibility =
+                            if (stats.failure == 0f) View.GONE else View.VISIBLE
+                        launch_rate_failures_value.text = stats.failure.toInt().toString()
+
+                        launch_rate_future_label.visibility =
+                            if (stats.planned == 0f) View.GONE else View.VISIBLE
+                        launch_rate_future_value.visibility =
+                            if (stats.planned == 0f) View.GONE else View.VISIBLE
+                        launch_rate_future_value.text = stats.planned.toInt().toString()
+
+                        launch_rate_total_value.text = e.y.toInt().toString()
+                    }
+                }
+
+                override fun onNothingSelected() {
+                    launch_rate_key.visibility = View.GONE
+                }
+            })
         }
     }
 
@@ -100,19 +132,13 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
         (context?.applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        presenter?.showFilter(filterVisible)
-    }
-
     override fun onStop() {
         super.onStop()
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("launches", launchesList)
+        outState.putParcelableArrayList("launches", statsList)
         super.onSaveInstanceState(outState)
     }
 
@@ -122,115 +148,74 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_statistics, menu)
+        inflater.inflate(R.menu.menu_statistics_pads, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.filter -> {
-            presenter?.showFilter(!filterVisible)
-            true
-        }
         R.id.reload -> {
+            statsList.clear()
             presenter?.getLaunchList()
             true
         }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updateBarChart(launches: ArrayList<LaunchesModel>, animate: Boolean) {
-        launchesList.clear()
-        launchesList.addAll(launches)
+    override fun updateBarChart(stats: ArrayList<RateStatsModel>, animate: Boolean) {
+        if (statsList.isEmpty()) statsList.addAll(stats)
 
         val colors = ArrayList<Int>()
 
-        colors.add(ColorTemplate.rgb("29b6f6"))
-        colors.add(ColorTemplate.rgb("b00020"))
+        colors.add(ColorTemplate.rgb("29b6f6")) //F1
+        colors.add(ColorTemplate.rgb("9ccc65")) //F9
+        colors.add(ColorTemplate.rgb("ff7043")) //FH
+        colors.add(ColorTemplate.rgb("b00020")) //Failures
+        colors.add(ColorTemplate.rgb("66bb6a")) //Future
 
         val entries = ArrayList<BarEntry>()
 
-        val dataMap = LinkedHashMap<Int, Int>()
-        val dataMapFuture = LinkedHashMap<Int, Int>()
+        var max = 0f
 
-        for (i in 2006..launches[launches.size - 1].launchYear) {
-            dataMap[i + 1] = 0
-        }
-
-        launches.forEach {
-            if (!filterFalconOne && it.rocket.id == "falcon1") return@forEach
-            if (!filterFalconNine && it.rocket.id == "falcon9") return@forEach
-            if (!filterFalconHeavy && it.rocket.id == "falconheavy") return@forEach
-
-            if (it.launchDateUnix.times(1000) <= System.currentTimeMillis()) {
-                dataMap[it.launchYear + 1] = dataMap[it.launchYear + 1]?.plus(1) ?: 1
-            } else {
-                dataMapFuture[it.launchYear + 1] =
-                    dataMapFuture[it.launchYear + 1]?.plus(1) ?: 1
-            }
-        }
-
-        dataMap.forEach {
+        stats.forEach {
+            val newMax = it.falconOne + it.falconNine + it.falconHeavy + it.failure + it.planned
+            if (newMax > max) max = newMax
             entries.add(
                 BarEntry(
-                    it.key.toFloat(),
-                    floatArrayOf(it.value.toFloat(), dataMapFuture[it.key]?.toFloat() ?: 0f)
+                    it.year.toFloat(),
+                    floatArrayOf(
+                        it.falconOne,
+                        it.falconNine,
+                        it.falconHeavy,
+                        it.failure,
+                        it.planned
+                    )
                 )
             )
         }
 
-        val set = BarDataSet(entries, "Launches").apply {
+        val set = BarDataSet(entries, "").apply {
             setColors(colors)
-            valueTextColor =
-                context?.let { ContextCompat.getColor(it, R.color.color_on_background) }
-                    ?: Color.BLUE
-            valueTextSize = 9f
-            valueFormatter = object : ValueFormatter() {
-                override fun getBarStackedLabel(value: Float, stackedEntry: BarEntry): String {
-                    val vals = stackedEntry.yVals
-                    // find out if we are on top of the stack
-                    return if (vals[vals.size - 1] == value) {
-                        // return the "sum" across all stack values
-                        "" + stackedEntry.y.toInt()
-                    } else {
-                        "" + value.toInt()
-                    }
-                }
-            }
-            stackLabels = arrayOf("Past", "Future")
+            setDrawValues(false)
+
+            stackLabels = arrayOf("Falcon 1", "Falcon 9", "Falcon Heavy", "Failures", "Future")
         }
 
         val dataSets = ArrayList<IBarDataSet>()
         dataSets.add(set)
 
         launch_rate_bar_chart.apply {
+            //setFitBars(true)
             if (animate) animateY(400, Easing.Linear)
-            xAxis.apply {
-                setLabelCount(dataMap.size + 1, true)
+            xAxis.labelCount = stats.size
+            axisLeft.apply {
+                axisMinimum = 0f
+                axisMaximum = if ((max.toInt() % 2) == 0) max else max.plus(1)
+                labelCount =
+                    if ((max.toInt() % 2) == 0) max.toInt() / 2 else max.toInt().plus(1) / 2
             }
             data = BarData(dataSets)
             invalidate()
         }
-    }
-
-    override fun showFilter(filterVisible: Boolean) {
-        launch_rate_filter_scroll.visibility = when (filterVisible) {
-            true -> View.VISIBLE
-            false -> View.GONE
-        }
-
-        this.filterVisible = filterVisible
-    }
-
-    override fun setFalconOneFilter(isFiltered: Boolean) {
-        filterFalconOne = isFiltered
-    }
-
-    override fun setFalconNineFilter(isFiltered: Boolean) {
-        filterFalconNine = isFiltered
-    }
-
-    override fun setFalconHeavyFilter(isFiltered: Boolean) {
-        filterFalconHeavy = isFiltered
     }
 
     override fun showProgress() {
@@ -247,7 +232,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (launchesList.isEmpty() || launch_rate_progress_bar.visibility == View.VISIBLE) presenter?.getLaunchList()
+            if (statsList.isEmpty() || launch_rate_progress_bar.visibility == View.VISIBLE) presenter?.getLaunchList()
         }
     }
 }

@@ -16,9 +16,8 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import kotlinx.android.synthetic.main.fragment_launch_history.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
-import uk.co.zac_h.spacex.model.spacex.RocketsModel
 import uk.co.zac_h.spacex.utils.generateCenterSpannableText
+import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
@@ -30,17 +29,14 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
     private var filterSuccessful = false
     private var filterFailed = false
 
-    private lateinit var launchesList: ArrayList<LaunchesModel>
-    private lateinit var rocketsList: ArrayList<RocketsModel>
+    private lateinit var launchStats: ArrayList<HistoryStatsModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        launchesList =
-            savedInstanceState?.getParcelableArrayList<LaunchesModel>("launches") ?: ArrayList()
-        rocketsList =
-            savedInstanceState?.getParcelableArrayList<RocketsModel>("rockets") ?: ArrayList()
+        launchStats =
+            savedInstanceState?.getParcelableArrayList<HistoryStatsModel>("launches") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -55,21 +51,21 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
         presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
 
         launch_history_chip_group.setOnCheckedChangeListener { group, checkedId ->
+            println(launchStats)
             presenter?.updateFilter(
-                launchesList,
+                launchStats,
                 "success",
                 launch_history_success_toggle.id == group.checkedChipId
             )
             presenter?.updateFilter(
-                launchesList,
+                launchStats,
                 "failed",
                 launch_history_failure_toggle.id == group.checkedChipId
             )
         }
 
         presenter?.apply {
-            if (launchesList.isEmpty()) getLaunchList() else addLaunchList(launchesList)
-            if (rocketsList.isEmpty()) getRocketsList() else addRocketsList(rocketsList)
+            if (launchStats.isEmpty()) getLaunchList() else addLaunchList(launchStats)
         }
 
         //Pie chart appearance
@@ -106,8 +102,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("launches", launchesList)
-        outState.putParcelableArrayList("rockets", rocketsList)
+        outState.putParcelableArrayList("launches", launchStats)
         super.onSaveInstanceState(outState)
     }
 
@@ -127,15 +122,16 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
             true
         }
         R.id.reload -> {
+            launchStats.clear()
             presenter?.getLaunchList()
             true
         }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updatePieChart(launches: ArrayList<LaunchesModel>, animate: Boolean) {
-        launchesList.clear()
-        launchesList.addAll(launches)
+    override fun updatePieChart(stats: ArrayList<HistoryStatsModel>, animate: Boolean) {
+        if (launchStats.isEmpty()) launchStats.addAll(stats)
+
         val colors = ArrayList<Int>()
 
         colors.add(ColorTemplate.rgb("29b6f6"))
@@ -144,29 +140,33 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
 
         val entries = ArrayList<PieEntry>()
 
-        var falconOne = 0f
-        var falconNine = 0f
-        var falconHeavy = 0f
+        var falconOne = 0
+        var falconNine = 0
+        var falconHeavy = 0
 
-        launchesList.forEach {
-            it.success?.let { success ->
-                if (filterSuccessful && !success) return@forEach
-                if (filterFailed && success) return@forEach
-            }
-
-            when (it.rocket.id) {
-                "falcon1" -> falconOne++
-                "falcon9" -> falconNine++
-                "falconheavy" -> falconHeavy++
+        stats.forEach {
+            when (it.name) {
+                "falcon1" -> falconOne = when {
+                    filterSuccessful -> it.successes
+                    filterFailed -> it.failures
+                    else -> it.successes + it.failures
+                }
+                "falcon9" -> falconNine = when {
+                    filterSuccessful -> it.successes
+                    filterFailed -> it.failures
+                    else -> it.successes + it.failures
+                }
+                "falconheavy" -> falconHeavy = when {
+                    filterSuccessful -> it.successes
+                    filterFailed -> it.failures
+                    else -> it.successes + it.failures
+                }
             }
         }
 
-        entries.add(PieEntry(falconOne, "Falcon 1"))
-        entries.add(PieEntry(falconNine, "Falcon 9"))
-        entries.add(PieEntry(falconHeavy, "Falcon Heavy"))
-
-        val centerText =
-            "${launchesList[0].launchYear} - ${launchesList[launchesList.size - 1].launchYear}"
+        if (falconOne > 0) entries.add(PieEntry(falconOne.toFloat(), "Falcon 1"))
+        if (falconNine > 0) entries.add(PieEntry(falconNine.toFloat(), "Falcon 9"))
+        if (falconHeavy > 0) entries.add(PieEntry(falconHeavy.toFloat(), "Falcon Heavy"))
 
         val dataSet = PieDataSet(entries, "").apply {
             sliceSpace = 3f
@@ -185,29 +185,27 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
 
         launch_history_pie_chart.apply {
             if (animate) animateY(1400, Easing.EaseInOutCubic)
-            this.centerText = context?.getString(R.string.pie_chart_title, centerText)
+            this.centerText = context?.getString(R.string.pie_chart_title, "2006 - 2020")
                 ?.generateCenterSpannableText()
             this.data = data
             invalidate()
         }
     }
 
-    override fun setSuccessRate(rockets: ArrayList<RocketsModel>) {
-        rocketsList.clear()
-        rockets.forEach {
-            rocketsList.add(it)
-            when (it.id) {
-                1 -> {
+    override fun setSuccessRate(stats: ArrayList<HistoryStatsModel>) {
+        stats.forEach {
+            when (it.name) {
+                "falcon1" -> {
                     launch_history_falcon_one_rate_progress.progress = it.successRate
                     launch_history_falcon_one_percent_text.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }
-                2 -> {
+                "falcon9" -> {
                     launch_history_falcon_nine_rate_progress.progress = it.successRate
                     launch_history_falcon_nine_percent_text.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }
-                3 -> {
+                "falconheavy" -> {
                     launch_history_falcon_heavy_rate_progress.progress = it.successRate
                     launch_history_falcon_heavy_percent_text.text =
                         context?.getString(R.string.percentage, it.successRate)
@@ -248,8 +246,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             presenter?.apply {
-                if (launchesList.isEmpty() || launch_history_progress_bar.visibility == View.VISIBLE) getLaunchList()
-                if (rocketsList.isEmpty() || launch_history_progress_bar.visibility == View.VISIBLE) getRocketsList()
+                if (launchStats.isEmpty() || launch_history_progress_bar.visibility == View.VISIBLE) getLaunchList()
             }
         }
     }
