@@ -16,6 +16,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.utils.formatBlockNumber
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
+import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -101,7 +102,9 @@ class LaunchesAdapter(
                                         it.toString().toLowerCase(
                                             Locale.getDefault()
                                         )
-                                    ) || launch.launchYear.toString().contains(it) || launch.flightNumber.toString().contains(
+                                    ) || launch.launchDateUnix.formatDateMillisYYYY().toString().contains(
+                                        it
+                                    ) || launch.flightNumber.toString().contains(
                                         it
                                     )
                                 ) {

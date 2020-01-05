@@ -31,8 +31,13 @@ fun Long.formatDateMillisDDMMM(): String =
         timeZone = TimeZone.getDefault()
     }.format(Date(this.times(1000L)))
 
+fun Long.formatDateMillisYYYY(): Int =
+    SimpleDateFormat("yyyy", Locale.getDefault()).apply {
+        timeZone = TimeZone.getDefault()
+    }.format(Date(this.times(1000L))).toInt()
+
 fun String.formatDateString(): Date? {
-    val formatInput = SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy")
+    val formatInput = SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy", Locale.getDefault())
 
     return formatInput.parse(this)
 }

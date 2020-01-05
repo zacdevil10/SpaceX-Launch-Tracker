@@ -44,38 +44,6 @@ class LaunchHistoryInteractorImpl : LaunchHistoryInteractor {
         }
     }
 
-    override fun getRockets(listener: LaunchHistoryInteractor.InteractorCallback) {
-        scope.launch {
-            val response = async(SupervisorJob(parentJob)) {
-                SpaceXInterface.create().getRockets()
-            }
-
-            withContext(Dispatchers.Main) {
-                try {
-                    if (response.await().isSuccessful) {
-                        listener.onRocketsSuccess(response.await().body())
-                    } else {
-                        listener.onError("Error: ${response.await().code()}")
-                    }
-                } catch (e: HttpException) {
-                    listener.onError(
-                        e.localizedMessage ?: "There was a network error! Please try refreshing."
-                    )
-                } catch (e: UnknownHostException) {
-                    listener.onError(
-                        e.localizedMessage
-                            ?: "Unable to resolve host! Check your network connection and try again."
-                    )
-                } catch (e: Throwable) {
-                    Log.e(
-                        this@LaunchHistoryInteractorImpl.javaClass.name,
-                        e.localizedMessage ?: "Job failed to execute"
-                    )
-                }
-            }
-        }
-    }
-
     override fun cancelAllRequests() = coroutineContext.cancel()
 
 }

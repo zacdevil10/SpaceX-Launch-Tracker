@@ -1,7 +1,8 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
-import uk.co.zac_h.spacex.model.spacex.RocketsModel
+import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
+import kotlin.math.roundToInt
 
 class LaunchHistoryPresenterImpl(
     private val view: LaunchHistoryView,
@@ -9,24 +10,16 @@ class LaunchHistoryPresenterImpl(
 ) : LaunchHistoryPresenter,
     LaunchHistoryInteractor.InteractorCallback {
 
-    private var launchesList = ArrayList<LaunchesModel>()
-    private var rocketsList = ArrayList<RocketsModel>()
+    private var launchesList = ArrayList<HistoryStatsModel>()
 
     override fun getLaunchList() {
         view.showProgress()
         interactor.getLaunches("past", this)
     }
 
-    override fun addLaunchList(launches: ArrayList<LaunchesModel>) {
-        onSuccess(launches, false)
-    }
-
-    override fun getRocketsList() {
-        interactor.getRockets(this)
-    }
-
-    override fun addRocketsList(rockets: ArrayList<RocketsModel>) {
-        onRocketsSuccess(rockets)
+    override fun addLaunchList(stats: ArrayList<HistoryStatsModel>) {
+        view.updatePieChart(stats, false)
+        view.setSuccessRate(stats)
     }
 
     override fun showFilter(filterVisible: Boolean) {
@@ -34,7 +27,7 @@ class LaunchHistoryPresenterImpl(
     }
 
     override fun updateFilter(
-        launches: ArrayList<LaunchesModel>,
+        launches: ArrayList<HistoryStatsModel>,
         filter: String,
         isFiltered: Boolean
     ) {
@@ -43,30 +36,53 @@ class LaunchHistoryPresenterImpl(
             "failed" -> view.setFilterFailed(isFiltered)
         }
 
-        if (launchesList.isNotEmpty()) onSuccess(launches, false)
+        view.updatePieChart(launches, false)
     }
 
     override fun cancelRequests() {
         interactor.cancelAllRequests()
     }
 
-    override fun onRocketsSuccess(rockets: List<RocketsModel>?) {
-        rockets?.let {
-            rocketsList.clear()
-            rocketsList.addAll(rockets)
-
-            view.setSuccessRate(rocketsList)
-        }
-    }
-
     override fun onSuccess(launches: List<LaunchesModel>?, animate: Boolean) {
+        val falconOne = HistoryStatsModel("falcon1")
+        val falconNine = HistoryStatsModel("falcon9")
+        val falconHeavy = HistoryStatsModel("falconheavy")
+
         launches?.let {
-            launchesList.clear()
-            launchesList.addAll(it)
+            launches.forEach {
+                when (it.rocket.id) {
+                    "falcon1" -> it.success?.let { success ->
+                        if (success) falconOne.successes++ else falconOne.failures++
+                    }
+                    "falcon9" -> it.success?.let { success ->
+                        if (success) falconNine.successes++ else falconNine.failures++
+                    }
+                    "falconheavy" -> it.success?.let { success ->
+                        if (success) falconHeavy.successes++ else falconHeavy.failures++
+                    }
+                }
+            }
+
+            falconOne.successRate =
+                falconOne.successes.toFloat().div(falconOne.successes + falconOne.failures)
+                    .times(100).roundToInt()
+            falconNine.successRate =
+                falconNine.successes.toFloat().div(falconNine.successes + falconNine.failures)
+                    .times(100).roundToInt()
+            falconHeavy.successRate =
+                falconHeavy.successes.toFloat().div(falconHeavy.successes + falconHeavy.failures)
+                    .times(100).roundToInt()
+
+            launchesList.apply {
+                add(falconOne)
+                add(falconNine)
+                add(falconHeavy)
+            }
 
             view.apply {
                 hideProgress()
                 updatePieChart(launchesList, animate)
+                setSuccessRate(launchesList)
             }
         }
     }
