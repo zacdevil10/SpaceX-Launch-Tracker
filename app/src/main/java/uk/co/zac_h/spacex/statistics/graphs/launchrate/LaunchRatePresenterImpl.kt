@@ -31,7 +31,7 @@ class LaunchRatePresenterImpl(
             var year = 2005
             launches.forEach {
                 val newYear = it.launchDateUnix.formatDateMillisYYYY()
-                if (newYear != year) {
+                if (newYear > year) {
                     if (newYear != year++) {
                         for (y in year until newYear) launchesList.add(RateStatsModel(y))
                     }
