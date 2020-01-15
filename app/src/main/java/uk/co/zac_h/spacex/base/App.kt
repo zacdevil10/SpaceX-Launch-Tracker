@@ -2,7 +2,6 @@ package uk.co.zac_h.spacex.base
 
 import android.app.Application
 import android.content.Context
-import com.gu.toolargetool.TooLargeTool
 import uk.co.zac_h.spacex.utils.PreferenceRepository
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
@@ -14,7 +13,7 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        TooLargeTool.startLogging(this)
+        //TooLargeTool.startLogging(this)
 
         preferencesRepo = PreferenceRepository(
             getSharedPreferences(DEFAULT_PREFERENCES, Context.MODE_PRIVATE)
