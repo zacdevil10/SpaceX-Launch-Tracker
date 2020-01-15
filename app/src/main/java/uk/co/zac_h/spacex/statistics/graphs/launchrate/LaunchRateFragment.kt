@@ -204,7 +204,6 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
         dataSets.add(set)
 
         launch_rate_bar_chart.apply {
-            //setFitBars(true)
             if (animate) animateY(400, Easing.Linear)
             xAxis.labelCount = stats.size
             axisLeft.apply {
