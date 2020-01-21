@@ -12,6 +12,9 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+
+        //TooLargeTool.startLogging(this)
+
         preferencesRepo = PreferenceRepository(
             getSharedPreferences(DEFAULT_PREFERENCES, Context.MODE_PRIVATE)
         )

@@ -10,7 +10,7 @@ private const val HOUR_MILLIS = 60 * MINUTE_MILLIS
 fun Long.formatDateMillisLong(tbd: Boolean = false): String =
     SimpleDateFormat(
         if (!tbd) "dd MMM yyyy - HH:mm zzz" else "MMM yyyy - HH:mm zzz",
-        Locale.getDefault()
+        Locale.ENGLISH
     ).apply {
         timeZone = TimeZone.getDefault()
     }.format(Date(this.times(1000L)))
@@ -18,7 +18,7 @@ fun Long.formatDateMillisLong(tbd: Boolean = false): String =
 fun Long.formatDateMillisShort(tbd: Boolean = false): String =
     SimpleDateFormat(
         if (!tbd) "dd MMM yy - HH:mm" else "MMM yyyy - HH:mm",
-        Locale.getDefault()
+        Locale.ENGLISH
     ).apply {
         timeZone = TimeZone.getDefault()
     }.format(Date(this.times(1000L)))
@@ -26,21 +26,26 @@ fun Long.formatDateMillisShort(tbd: Boolean = false): String =
 fun Long.formatDateMillisDDMMM(): String =
     SimpleDateFormat(
         "dd MMM",
-        Locale.getDefault()
+        Locale.ENGLISH
     ).apply {
         timeZone = TimeZone.getDefault()
     }.format(Date(this.times(1000L)))
 
+fun Long.formatDateMillisYYYY(): Int =
+    SimpleDateFormat("yyyy", Locale.ENGLISH).apply {
+        timeZone = TimeZone.getDefault()
+    }.format(Date(this.times(1000L))).toInt()
+
 fun String.formatDateString(): Date? {
-    val formatInput = SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy")
+    val formatInput = SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy", Locale.ENGLISH)
 
     return formatInput.parse(this)
 }
 
 fun String.dateStringToMillis(): Long = this.formatDateString()?.time ?: 0
 
-fun String.convertDate(): String {
-    var dateMilli = this.dateStringToMillis()
+fun Long.convertDate(): String {
+    var dateMilli = this
     if (dateMilli < 1000000000000L) {
         //Timestamp is in seconds
         dateMilli *= 1000
@@ -54,8 +59,8 @@ fun String.convertDate(): String {
     val date = Date(dateMilli)
     val currentDate = Date(currentTime)
 
-    val lessThanSevenDays = SimpleDateFormat("EEEE", Locale.getDefault())
-    val moreThanSevenDays = SimpleDateFormat("dd MMM yy", Locale.getDefault())
+    val lessThanSevenDays = SimpleDateFormat("dd MMM", Locale.ENGLISH)
+    val moreThanSevenDays = SimpleDateFormat("dd MMM yy", Locale.ENGLISH)
 
     return getString(
         dateMilli,

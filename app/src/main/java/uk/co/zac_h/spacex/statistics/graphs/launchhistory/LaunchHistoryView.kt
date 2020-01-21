@@ -1,13 +1,12 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
-import uk.co.zac_h.spacex.model.spacex.RocketsModel
+import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 
 interface LaunchHistoryView {
 
-    fun setSuccessRate(rockets: ArrayList<RocketsModel>)
+    fun setSuccessRate(stats: ArrayList<HistoryStatsModel>)
 
-    fun updatePieChart(launches: ArrayList<LaunchesModel>, animate: Boolean)
+    fun updatePieChart(stats: ArrayList<HistoryStatsModel>, animate: Boolean)
 
     fun showFilter(filterVisible: Boolean)
 

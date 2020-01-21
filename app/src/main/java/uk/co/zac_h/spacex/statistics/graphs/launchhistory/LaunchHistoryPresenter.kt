@@ -1,21 +1,16 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
-import uk.co.zac_h.spacex.model.spacex.RocketsModel
+import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 
 interface LaunchHistoryPresenter {
 
     fun getLaunchList()
 
-    fun addLaunchList(launches: ArrayList<LaunchesModel>)
-
-    fun getRocketsList()
-
-    fun addRocketsList(rockets: ArrayList<RocketsModel>)
+    fun addLaunchList(stats: ArrayList<HistoryStatsModel>)
 
     fun showFilter(filterVisible: Boolean)
 
-    fun updateFilter(launches: ArrayList<LaunchesModel>, filter: String, isFiltered: Boolean)
+    fun updateFilter(launches: ArrayList<HistoryStatsModel>, filter: String, isFiltered: Boolean)
 
     fun cancelRequests()
 

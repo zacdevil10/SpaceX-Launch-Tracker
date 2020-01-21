@@ -14,11 +14,15 @@
     <string name="menu_company">Company</string>
     <string name="menu_history">History</string>
 
-    <string name="next_launch">Next Launch</string>
-    <string name="latest_launch">Latest Launch</string>
+
     <string name="flight_number">Flight %1$d</string>
     <string name="vehicle_block_type">%1$s - Block %2$s</string>
     <string name="reused">Reused</string>
+
+    <!-- Dashboard -->
+    <string name="no_pinned_launches_found_label">No pinned launches found.</string>
+    <string name="next_launch">Next Launch</string>
+    <string name="latest_launch">Latest Launch</string>
 
     <!--Filter labels-->
     <string name="filter_successes">Successes</string>
@@ -32,6 +36,9 @@
 
     <!--News-->
     <string name="screen_name">\@%1$s</string>
+    <string name="twitter_profile_image_desc">Twitter profile image</string>
+    <string name="scroll_to_top_label">Scroll To Top</string>
+    <string name="reddit_label">Reddit</string>
 
     <!--Launch Details-->
     <string name="mission_patch">Mission patch</string>
@@ -74,6 +81,13 @@
     <string name="success_rate_heading">Launch Success Rate</string>
     <string name="percentage">%1$d%%</string>
     <string name="pie_chart_title">Launches\n%1$s</string>
+
+    <string name="falcon_1_rate_label">Falcon 1:</string>
+    <string name="falcon_9_rate_label">Falcon 9:</string>
+    <string name="falcon_heavy_rate_label">Falcon Heavy:</string>
+    <string name="failures_rate_label">Failures:</string>
+    <string name="future_rate_label">Future:</string>
+    <string name="total_rate_label">Total:</string>
 
     <string name="status_label">Status</string>
     <string name="successes_label">Successes</string>
@@ -153,11 +167,17 @@
     <string name="filter_label">Filter</string>
     <string name="reload_label">Reload</string>
 
+    <!-- Network -->
     <string name="network_connection">No network connection detected!</string>
     <string name="dismiss_label">Dismiss</string>
-    <string name="no_pinned_launches_found_label">No pinned launches found.</string>
-    <string name="twitter_profile_image_desc">Twitter profile image</string>
-    <string name="scroll_to_top_label">Scroll To Top</string>
+
+    <!-- Theme -->
     <string name="dark_theme_label">Dark theme</string>
+
+
+    <string-array name="order">
+        <item>Hot</item>
+        <item>New</item>
+    </string-array>
 
 </resources>

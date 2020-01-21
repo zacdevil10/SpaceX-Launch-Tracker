@@ -71,7 +71,7 @@
         android:layout_width="1dp"
         android:layout_height="1dp"
         android:layout_marginStart="4dp"
-        android:background="@android:color/white"
+        android:background="?colorOnBackground"
         app:layout_constraintBottom_toBottomOf="@id/tweet_screen_name"
         app:layout_constraintStart_toEndOf="@id/tweet_screen_name"
         app:layout_constraintTop_toTopOf="@id/tweet_screen_name" />

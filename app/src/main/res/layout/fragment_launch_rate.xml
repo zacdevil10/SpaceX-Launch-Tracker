@@ -15,74 +15,9 @@
         android:layout_height="wrap_content"
         android:indeterminate="true"
         android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <HorizontalScrollView
-        android:id="@+id/launch_rate_filter_scroll"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/launch_rate_filter_constraint"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
-
-            <TextView
-                android:id="@+id/launch_rate_filters_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/filter"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/launch_rate_chip_group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/launch_rate_filters_text"
-                app:layout_constraintTop_toTopOf="parent"
-                app:singleLine="true">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/launch_rate_falcon_one_toggle"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="@string/falcon_1" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/launch_rate_falcon_nine_toggle"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="@string/falcon_9" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/launch_rate_falcon_heavy_toggle"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="true"
-                    android:text="@string/falcon_heavy" />
-
-            </com.google.android.material.chip.ChipGroup>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </HorizontalScrollView>
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/launch_rate_bar_chart"
@@ -90,8 +25,161 @@
         android:layout_height="0dp"
         android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/launch_rate_filter_scroll" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/launch_rate_key"
+        android:layout_width="156dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:background="@color/color_rate_key"
+        android:padding="8dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/launch_rate_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?colorOnPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="2017" />
+
+        <TextView
+            android:id="@+id/launch_rate_falcon_one_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/falcon_1_rate_label"
+            android:textColor="?colorOnPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/launch_rate_year" />
+
+        <TextView
+            android:id="@+id/launch_rate_falcon_one_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="textEnd"
+            android:textColor="?colorOnPrimary"
+            app:layout_constraintBottom_toBottomOf="@id/launch_rate_falcon_one_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/launch_rate_falcon_one_label"
+            app:layout_constraintTop_toTopOf="@id/launch_rate_falcon_one_label"
+            tools:text="15" />
+
+        <TextView
+            android:id="@+id/launch_rate_falcon_nine_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/falcon_9_rate_label"
+            android:textColor="?colorOnPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/launch_rate_falcon_one_label" />
+
+        <TextView
+            android:id="@+id/launch_rate_falcon_nine_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="textEnd"
+            android:textColor="?colorOnPrimary"
+            app:layout_constraintBottom_toBottomOf="@id/launch_rate_falcon_nine_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/launch_rate_falcon_nine_label"
+            app:layout_constraintTop_toTopOf="@id/launch_rate_falcon_nine_label"
+            tools:text="15" />
+
+        <TextView
+            android:id="@+id/launch_rate_falcon_heavy_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/falcon_heavy_rate_label"
+            android:textColor="?colorOnPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/launch_rate_falcon_nine_label" />
+
+        <TextView
+            android:id="@+id/launch_rate_falcon_heavy_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="textEnd"
+            android:textColor="?colorOnPrimary"
+            app:layout_constraintBottom_toBottomOf="@id/launch_rate_falcon_heavy_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/launch_rate_falcon_heavy_label"
+            app:layout_constraintTop_toTopOf="@id/launch_rate_falcon_heavy_label"
+            tools:text="15" />
+
+        <TextView
+            android:id="@+id/launch_rate_failures_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/failures_rate_label"
+            android:textColor="?colorOnPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/launch_rate_falcon_heavy_label" />
+
+        <TextView
+            android:id="@+id/launch_rate_failures_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="textEnd"
+            android:textColor="?colorOnPrimary"
+            app:layout_constraintBottom_toBottomOf="@id/launch_rate_failures_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/launch_rate_failures_label"
+            app:layout_constraintTop_toTopOf="@id/launch_rate_failures_label"
+            tools:text="15" />
+
+        <TextView
+            android:id="@+id/launch_rate_future_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/future_rate_label"
+            android:textColor="?colorOnPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/launch_rate_failures_label" />
+
+        <TextView
+            android:id="@+id/launch_rate_future_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="textEnd"
+            android:textColor="?colorOnPrimary"
+            app:layout_constraintBottom_toBottomOf="@id/launch_rate_future_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/launch_rate_future_label"
+            app:layout_constraintTop_toTopOf="@id/launch_rate_future_label"
+            tools:text="15" />
+
+        <TextView
+            android:id="@+id/launch_rate_total_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/total_rate_label"
+            android:textColor="?colorOnPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/launch_rate_future_label" />
+
+        <TextView
+            android:id="@+id/launch_rate_total_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="textEnd"
+            android:textColor="?colorOnPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/launch_rate_total_label"
+            app:layout_constraintTop_toTopOf="@id/launch_rate_total_label"
+            tools:text="23" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
