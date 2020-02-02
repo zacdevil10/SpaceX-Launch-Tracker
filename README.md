@@ -1,3 +1,3 @@
-[![Github all releases](https://img.shields.io/github/downloads/Naereen/StrapDown.js/total.svg)](https://github.com/zacdevil10/SpaceX-Launch-Tracker/releases)
+![GitHub All Releases](https://img.shields.io/github/downloads/zacdevil10/spacex-launch-tracker/total?style=for-the-badge) ![GitHub release (latest by date)](https://img.shields.io/github/v/release/zacdevil10/spacex-launch-tracker?style=for-the-badge)
 
 # SpaceX-Launch-Tracker
