@@ -8,6 +8,9 @@
   <a href="https://github.com/zacdevil10/SpaceX-Launch-Tracker/releases/latest">
     <img src="https://img.shields.io/badge/Direct-Download-red.svg?style=for-the-badge">
   </a>
+  <a href="https://www.buymeacoffee.com/spacexlaunch">
+    <img src="https://img.shields.io/badge/Buy%20me%20a-coffee-orange.svg?style=for-the-badge">
+  </a>
 </p>
 
 <p align="center">
