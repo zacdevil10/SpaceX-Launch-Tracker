@@ -17,7 +17,7 @@ fun Long.formatDateMillisLong(tbd: Boolean = false): String =
 
 fun Long.formatDateMillisShort(tbd: Boolean = false): String =
     SimpleDateFormat(
-        if (!tbd) "dd MMM yy - HH:mm" else "MMM yyyy - HH:mm",
+        if (!tbd) "dd MMM yy - HH:mm" else "MMM yy - HH:mm",
         Locale.ENGLISH
     ).apply {
         timeZone = TimeZone.getDefault()
@@ -36,13 +36,12 @@ fun Long.formatDateMillisYYYY(): Int =
         timeZone = TimeZone.getDefault()
     }.format(Date(this.times(1000L))).toInt()
 
-fun String.formatDateString(): Date? {
-    val formatInput = SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy", Locale.ENGLISH)
-
-    return formatInput.parse(this)
-}
-
-fun String.dateStringToMillis(): Long = this.formatDateString()?.time ?: 0
+fun String.dateStringToMillis(): Long? =
+    try {
+        SimpleDateFormat("EEE MMM dd HH:mm:ss ZZZZZ yyyy", Locale.ENGLISH).parse(this)?.time
+    } catch (e: Exception) {
+        0
+    }
 
 fun Long.convertDate(): String {
     var dateMilli = this
@@ -59,27 +58,23 @@ fun Long.convertDate(): String {
     val date = Date(dateMilli)
     val currentDate = Date(currentTime)
 
-    val lessThanSevenDays = SimpleDateFormat("dd MMM", Locale.ENGLISH)
-    val moreThanSevenDays = SimpleDateFormat("dd MMM yy", Locale.ENGLISH)
-
     return getString(
         dateMilli,
         currentTime,
         date,
-        currentDate,
-        lessThanSevenDays,
-        moreThanSevenDays
+        currentDate
     )
 }
 
-private fun getString(
+fun getString(
     dateMilli: Long?,
     currentTime: Long,
     date: Date,
-    currentDate: Date,
-    lessThanSevenDays: SimpleDateFormat,
-    moreThanSevenDays: SimpleDateFormat
+    currentDate: Date
 ): String {
+    val lessThanSevenDays = SimpleDateFormat("dd MMM", Locale.ENGLISH)
+    val moreThanSevenDays = SimpleDateFormat("dd MMM yy", Locale.ENGLISH)
+
     val diff = currentTime - dateMilli!!
     when {
         diff < 50 * MINUTE_MILLIS -> return (diff / MINUTE_MILLIS).toString() + "m"
