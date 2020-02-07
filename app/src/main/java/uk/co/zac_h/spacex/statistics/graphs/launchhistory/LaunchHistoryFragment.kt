@@ -50,7 +50,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
 
         presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
 
-        launch_history_chip_group.setOnCheckedChangeListener { group, checkedId ->
+        launch_history_chip_group.setOnCheckedChangeListener { group, _ ->
             println(launchStats)
             presenter?.updateFilter(
                 launchStats,

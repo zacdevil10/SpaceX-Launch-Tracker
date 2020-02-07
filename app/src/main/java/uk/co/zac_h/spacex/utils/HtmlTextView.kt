@@ -10,9 +10,10 @@ import android.text.style.ClickableSpan
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.text.HtmlCompat
 
-class HtmlTextView : TextView {
+class HtmlTextView : AppCompatTextView {
 
     private var linkHit = false
     private var consumeNonUrlClicks = false
