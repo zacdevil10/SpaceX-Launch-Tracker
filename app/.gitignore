@@ -1,3 +1,4 @@
 /build
 
-google-services.json
+src/development/google-services.json
+src/production/google-services.json
