@@ -1,4 +1,7 @@
 /build
+/release
+/production
+/development
 
 src/development/google-services.json
 src/production/google-services.json
