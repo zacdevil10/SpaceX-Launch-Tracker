@@ -8,7 +8,7 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "",
+        "mobilesdk_app_id": "1:791749719326:android:5f7d800ff176538ac2c50f",
         "android_client_info": {
           "package_name": "uk.co.zac_h.spacex"
         }
@@ -36,5 +36,5 @@
       }
     }
   ],
-  "configuration_version": ""
+  "configuration_version": "1"
 }
