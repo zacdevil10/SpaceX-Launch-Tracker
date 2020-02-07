@@ -15,4 +15,4 @@
 /build
 /captures
 .externalNativeBuild
-secrets.properties
+/common/src/main/res/values/keys.xml

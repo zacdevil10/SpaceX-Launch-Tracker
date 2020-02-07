@@ -15,15 +15,6 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
-
-        def secretsFile = rootProject.file('secrets.properties')
-        def secrets = new Properties()
-        secrets.load(new FileInputStream(secretsFile))
-
-        buildConfigField "String", "CONSUMER_KEY", secrets['CONSUMER_KEY']
-        buildConfigField "String", "CONSUMER_SECRET", secrets['CONSUMER_SECRET']
-        buildConfigField "String", "ACCESS_TOKEN", secrets['ACCESS_TOKEN']
-        buildConfigField "String", "TOKEN_SECRET", secrets['TOKEN_SECRET']
     }
 
     buildTypes {
