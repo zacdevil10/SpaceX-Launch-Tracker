@@ -5,6 +5,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
+import uk.co.zac_h.BuildConfig
 import uk.co.zac_h.spacex.model.twitter.OAuthKeys
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.utils.OAuthSigningInterceptor
@@ -32,12 +33,19 @@ interface TwitterInterface {
 
     companion object RetrofitSetup {
 
-        fun create(oAuthKeys: OAuthKeys): TwitterInterface {
+        fun create(): TwitterInterface {
             val retrofit = Retrofit.Builder().apply {
                 baseUrl("https://api.twitter.com/1.1/")
                 addConverterFactory(MoshiConverterFactory.create())
                 client(
-                    OAuthSigningInterceptor.addKeys(oAuthKeys).build()
+                    OAuthSigningInterceptor.addKeys(
+                        OAuthKeys(
+                            BuildConfig.CONSUMER_KEY,
+                            BuildConfig.CONSUMER_SECRET,
+                            BuildConfig.ACCESS_TOKEN,
+                            BuildConfig.TOKEN_SECRET
+                        )
+                    ).build()
                 )
             }.build()
 

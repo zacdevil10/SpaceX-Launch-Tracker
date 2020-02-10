@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_twitter_feed.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.model.twitter.OAuthKeys
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.news.adapters.TwitterFeedAdapter
 import uk.co.zac_h.spacex.utils.PaginationScrollListener
@@ -31,13 +30,6 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
     private var isLastPage = false
     private var isLoading = false
     private var isFabVisible = false
-
-    private val oAuthKeys = OAuthKeys(
-        getString(uk.co.zac_h.R.string.CONSUMER_KEY),
-        getString(uk.co.zac_h.R.string.CONSUMER_SECRET),
-        getString(uk.co.zac_h.R.string.ACCESS_TOKEN),
-        getString(uk.co.zac_h.R.string.TOKEN_SECRET)
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,7 +69,7 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
                 override fun loadItems() {
                     isLoading = true
-                    presenter?.getTweets(tweetsList[tweetsList.size - 1].id, oAuthKeys)
+                    presenter?.getTweets(tweetsList[tweetsList.size - 1].id)
                 }
 
                 override fun onScrollTop() {
@@ -91,14 +83,14 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
         }
 
         twitter_feed_swipe_refresh.setOnRefreshListener {
-            presenter?.getTweets(oAuthKeys)
+            presenter?.getTweets()
         }
 
         twitter_feed_scroll_up.setOnClickListener {
             twitter_feed_recycler.smoothScrollToPosition(0)
         }
 
-        if (tweetsList.isEmpty()) presenter?.getTweets(oAuthKeys)
+        if (tweetsList.isEmpty()) presenter?.getTweets()
     }
 
     override fun onResume() {
@@ -184,10 +176,8 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (tweetsList.isEmpty() || twitter_feed_progress_bar.visibility == View.VISIBLE) presenter?.getTweets(
-                oAuthKeys
-            )
-            if (isLoading) presenter?.getTweets(tweetsList[tweetsList.size - 1].id, oAuthKeys)
+            if (tweetsList.isEmpty() || twitter_feed_progress_bar.visibility == View.VISIBLE) presenter?.getTweets()
+            if (isLoading) presenter?.getTweets(tweetsList[tweetsList.size - 1].id)
         }
     }
 }

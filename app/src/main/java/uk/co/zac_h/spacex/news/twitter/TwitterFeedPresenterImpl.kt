@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.news.twitter
 
-import uk.co.zac_h.spacex.model.twitter.OAuthKeys
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 
 class TwitterFeedPresenterImpl(
@@ -8,14 +7,14 @@ class TwitterFeedPresenterImpl(
     private val interactor: TwitterFeedInteractor
 ) : TwitterFeedPresenter, TwitterFeedInteractor.Callback {
 
-    override fun getTweets(oAuthKeys: OAuthKeys) {
+    override fun getTweets() {
         view.showProgress()
-        interactor.getTwitterTimeline(this, oAuthKeys)
+        interactor.getTwitterTimeline(this)
     }
 
-    override fun getTweets(maxId: Long, oAuthKeys: OAuthKeys) {
+    override fun getTweets(maxId: Long) {
         view.showPagingProgress()
-        interactor.getTwitterTimelineFromId(maxId, this, oAuthKeys)
+        interactor.getTwitterTimelineFromId(maxId, this)
     }
 
     override fun toggleScrollUp(visible: Boolean) {

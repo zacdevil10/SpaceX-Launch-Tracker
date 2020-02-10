@@ -3,7 +3,6 @@ package uk.co.zac_h.spacex.news.twitter
 import android.util.Log
 import kotlinx.coroutines.*
 import retrofit2.HttpException
-import uk.co.zac_h.spacex.model.twitter.OAuthKeys
 import uk.co.zac_h.spacex.rest.TwitterInterface
 import java.net.UnknownHostException
 import kotlin.coroutines.CoroutineContext
@@ -17,13 +16,10 @@ class TwitterFeedInteractorImpl :
 
     private val scope = CoroutineScope(coroutineContext)
 
-    override fun getTwitterTimeline(
-        listener: TwitterFeedInteractor.Callback,
-        oAuthKeys: OAuthKeys
-    ) {
+    override fun getTwitterTimeline(listener: TwitterFeedInteractor.Callback) {
         scope.launch {
             val response = async(SupervisorJob(parentJob)) {
-                TwitterInterface.create(oAuthKeys).getTweets(
+                TwitterInterface.create().getTweets(
                     screenName = "SpaceX",
                     rts = false,
                     trim = false,
@@ -55,14 +51,10 @@ class TwitterFeedInteractorImpl :
         }
     }
 
-    override fun getTwitterTimelineFromId(
-        id: Long,
-        listener: TwitterFeedInteractor.Callback,
-        oAuthKeys: OAuthKeys
-    ) {
+    override fun getTwitterTimelineFromId(id: Long, listener: TwitterFeedInteractor.Callback) {
         scope.launch {
             val response = async(SupervisorJob(parentJob)) {
-                TwitterInterface.create(oAuthKeys).getTweetsFromId(
+                TwitterInterface.create().getTweetsFromId(
                     screenName = "SpaceX",
                     rts = false,
                     trim = false,
