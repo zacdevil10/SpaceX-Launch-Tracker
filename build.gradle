@@ -32,6 +32,12 @@ allprojects {
     }
 }
 
+sonarqube {
+    properties {
+        property "sonar.projectKey", "zacdevil10_SpaceX-Launch-Tracker"
+    }
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
