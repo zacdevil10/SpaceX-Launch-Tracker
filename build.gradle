@@ -35,6 +35,10 @@ allprojects {
 sonarqube {
     properties {
         property "sonar.projectKey", "zacdevil10_SpaceX-Launch-Tracker"
+
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.jacoco.reportPath", "${buildDir}/reports/jacoco/jacocoTestDebugUnitTestReport"
+        property "sonar.junit.reportsPath", "${buildDir}/test-results/testDebugUnitTest"
     }
 }
 
