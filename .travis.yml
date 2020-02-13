@@ -8,6 +8,11 @@ env:
     - ANDROID_ABI=armeabi-v7a
 jdk:
   - openjdk8
+addons:
+  sonarcloud:
+    organization: "zacdevil10-github"
+    token:
+      secure: $SONAR_TOKEN
 android:
   components:
     - tools
@@ -37,6 +42,6 @@ before_script:
   - chmod +x gradle/wrapper/gradle-wrapper.jar
 script:
   - "./gradlew build test createDebugCoverageReport jacocoTestReport"
-
+  - sonar-scanner
 after_success:
   - bash <(curl -s https://codecov.io/bash)
