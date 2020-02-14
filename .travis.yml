@@ -37,5 +37,5 @@ before_script:
 script:
   - "./gradlew check createDebugCoverageReport jacocoTestReport"
 after_success:
-  - ./gradlew sonarqube
+  - "./gradlew sonarqube"
   - bash <(curl -s https://codecov.io/bash)
