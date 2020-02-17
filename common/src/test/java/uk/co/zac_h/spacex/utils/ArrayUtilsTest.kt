@@ -1,7 +1,6 @@
-package uk.co.zac_h.spacex
+package uk.co.zac_h.spacex.utils
 
 import org.junit.Test
-import uk.co.zac_h.spacex.utils.addAllExcludingPosition
 
 class ArrayUtilsTest {
 
@@ -15,7 +14,10 @@ class ArrayUtilsTest {
 
     @Test
     fun addItemsToArrayListExcludingASingleItem() {
-        excludedArray.addAllExcludingPosition(arrayList, EXCLUDED_POSITION)
+        excludedArray.addAllExcludingPosition(
+            arrayList,
+            EXCLUDED_POSITION
+        )
 
         assert(!excludedArray.contains(arrayList[EXCLUDED_POSITION]))
     }

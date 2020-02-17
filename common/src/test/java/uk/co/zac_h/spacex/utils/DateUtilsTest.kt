@@ -1,7 +1,6 @@
-package uk.co.zac_h.spacex
+package uk.co.zac_h.spacex.utils
 
 import org.junit.Test
-import uk.co.zac_h.spacex.utils.*
 import java.text.SimpleDateFormat
 import java.util.*
 

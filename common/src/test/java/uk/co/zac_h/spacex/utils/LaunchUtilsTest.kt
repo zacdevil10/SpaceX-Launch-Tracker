@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex
+package uk.co.zac_h.spacex.utils
 
 import org.junit.Before
 import org.junit.Test
@@ -6,8 +6,6 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import uk.co.zac_h.spacex.model.spacex.CoreSpecModel
-import uk.co.zac_h.spacex.utils.formatBlockNumber
-import uk.co.zac_h.spacex.utils.formatCustomers
 
 class LaunchUtilsTest {
 
@@ -18,10 +16,10 @@ class LaunchUtilsTest {
     @Mock
     private lateinit var mCoreSpecModel2: CoreSpecModel
 
-    private var coreSpecListAll = ArrayList<CoreSpecModel>()
-    private var coreSpecListSingle = ArrayList<CoreSpecModel>()
+    private val coreSpecListAll = ArrayList<CoreSpecModel>()
+    private val coreSpecListSingle = ArrayList<CoreSpecModel>()
 
-    private var customersArray = ArrayList<String>()
+    private val customersArray = ArrayList<String>()
 
     @Before
     fun setup() {
