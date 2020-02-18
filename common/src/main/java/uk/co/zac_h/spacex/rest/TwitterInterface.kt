@@ -33,24 +33,19 @@ interface TwitterInterface {
 
     companion object RetrofitSetup {
 
-        fun create(): TwitterInterface {
-            val retrofit = Retrofit.Builder().apply {
-                baseUrl("https://api.twitter.com/1.1/")
-                addConverterFactory(MoshiConverterFactory.create())
-                client(
-                    OAuthSigningInterceptor.addKeys(
-                        OAuthKeys(
-                            BuildConfig.CONSUMER_KEY,
-                            BuildConfig.CONSUMER_SECRET,
-                            BuildConfig.ACCESS_TOKEN,
-                            BuildConfig.TOKEN_SECRET
-                        )
-                    ).build()
-                )
-            }.build()
-
-            return retrofit.create(TwitterInterface::class.java)
-        }
+        fun create(): TwitterInterface = Retrofit.Builder().apply {
+            baseUrl("https://api.twitter.com/1.1/")
+            addConverterFactory(MoshiConverterFactory.create())
+            client(
+                OAuthSigningInterceptor.addKeys(
+                    OAuthKeys(
+                        BuildConfig.CONSUMER_KEY,
+                        BuildConfig.CONSUMER_SECRET,
+                        BuildConfig.ACCESS_TOKEN,
+                        BuildConfig.TOKEN_SECRET
+                    )
+                ).build()
+            )
+        }.build().create(TwitterInterface::class.java)
     }
-
 }

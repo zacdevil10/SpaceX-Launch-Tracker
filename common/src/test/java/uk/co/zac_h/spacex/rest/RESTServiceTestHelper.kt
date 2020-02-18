@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex
+package uk.co.zac_h.spacex.rest
 
 import java.io.File
 

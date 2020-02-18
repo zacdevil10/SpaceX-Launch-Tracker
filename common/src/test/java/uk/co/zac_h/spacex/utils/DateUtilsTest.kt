@@ -84,6 +84,7 @@ class DateUtilsTest {
         val fiveHoursAgo = System.currentTimeMillis() - 18000000
         val futureDate = System.currentTimeMillis() + 1000000
 
+        assert(fiveHoursAgo.div(1000).convertDate() == "5h")
         assert(fiveHoursAgo.convertDate() == "5h")
         assert(futureDate.convertDate() == "")
     }
@@ -105,6 +106,20 @@ class DateUtilsTest {
                 Date(1562676092358)
             ) == "20 Jan 19"
         )
+
+        assert(
+            getString(
+                200,
+                200 * HOUR_MILLIS,
+                Date(1562416892358),
+                Date(1562676092358)
+            ) == "06 Jul"
+        )
+    }
+
+    @Test
+    fun `When date is null return an empty string`() {
+        assert(getString(null, 0, Date(0), Date(0)) == "")
     }
 
     companion object {

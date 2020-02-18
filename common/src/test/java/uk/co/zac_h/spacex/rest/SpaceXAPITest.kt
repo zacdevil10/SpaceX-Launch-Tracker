@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex
+package uk.co.zac_h.spacex.rest
 
 import kotlinx.coroutines.runBlocking
 import okhttp3.mockwebserver.Dispatcher
@@ -10,10 +10,9 @@ import org.junit.Before
 import org.junit.Test
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import uk.co.zac_h.spacex.rest.SpaceXInterface
 import java.net.HttpURLConnection
 
-class APIServiceTest {
+class SpaceXAPITest {
 
     private var mWebServer = MockWebServer()
 
@@ -29,10 +28,11 @@ class APIServiceTest {
                         setResponseCode(HttpURLConnection.HTTP_OK)
                         setBody(RESTServiceTestHelper().getJSON("launch.json"))
                     }
-                    "/launches/0" -> MockResponse().apply {
-                        setResponseCode(HttpURLConnection.HTTP_NOT_FOUND)
-                    }
-                    else -> MockResponse().setResponseCode(404)
+                    else -> MockResponse().setResponseCode(404).setBody(
+                        RESTServiceTestHelper().getJSON(
+                            "error.json"
+                        )
+                    )
                 }
             }
         }
@@ -54,22 +54,33 @@ class APIServiceTest {
     }
 
     @Test
-    fun spacexServiceTest() {
+    fun getSingleLaunchFromSpaceXAPI() {
         runBlocking {
             val launch = spaceXInterface.getSingleLaunch("1")
-
-            assert(launch.body()?.flightNumber == 1)
-
-            assert(launch.isSuccessful)
-        }
-    }
-
-    @Test
-    fun invalidLaunchNumber() {
-        runBlocking {
             val invalidLaunch = spaceXInterface.getSingleLaunch("0")
 
-            assert(invalidLaunch.code() == 404)
+            assert(launch.isSuccessful)
+            assert(!invalidLaunch.isSuccessful)
+
+            launch.body()?.run {
+                assert(flightNumber == 1)
+                assert(missionName == "FalconSat")
+                assert(missionId.isEmpty())
+                assert(launchDateUnix == 1143239400L)
+                assert(tentative == false)
+                assert(tentativeMaxPrecision == "hour")
+                assert(tbd == false)
+                assert(launchWindow == 0)
+
+                assert(ships.isEmpty())
+
+                assert(success == false)
+
+                assert(details == "Details")
+                assert(!upcoming)
+                assert(staticFireDateUTC == "2006-03-17T00:00:00.000Z")
+                assert(staticFireDateUnix == 1142553600L)
+            }
         }
     }
 }

@@ -3,7 +3,6 @@
   "mission_name": "FalconSat",
   "mission_id": [],
   "upcoming": false,
-  "launch_year": "2006",
   "launch_date_unix": 1143239400,
   "launch_date_utc": "2006-03-24T22:30:00.000Z",
   "launch_date_local": "2006-03-25T10:30:00+12:00",
@@ -103,7 +102,7 @@
     "youtube_id": "0a_00nJ_Y88",
     "flickr_images": []
   },
-  "details": "Engine failure at 33 seconds and loss of vehicle",
+  "details": "Details",
   "static_fire_date_utc": "2006-03-17T00:00:00.000Z",
   "static_fire_date_unix": 1142553600,
   "timeline": {

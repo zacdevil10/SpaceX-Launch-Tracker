@@ -72,10 +72,12 @@ fun getString(
     date: Date,
     currentDate: Date
 ): String {
+    if (dateMilli == null) return ""
+
     val lessThanSevenDays = SimpleDateFormat("dd MMM", Locale.ENGLISH)
     val moreThanSevenDays = SimpleDateFormat("dd MMM yy", Locale.ENGLISH)
 
-    val diff = currentTime - dateMilli!!
+    val diff = currentTime - dateMilli
     when {
         diff < 50 * MINUTE_MILLIS -> return (diff / MINUTE_MILLIS).toString() + "m"
         diff < 24 * HOUR_MILLIS -> return (diff / HOUR_MILLIS).toString() + "h"

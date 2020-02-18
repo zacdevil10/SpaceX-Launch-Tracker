@@ -43,6 +43,13 @@ class StringUtilsTest {
         assert(INPUT.formatWithUrls(tweetUrlList, tweetMentionsList, tweetHashTagList) == OUTPUT)
     }
 
+    @Test
+    fun `Format numbers to two decimal places`() {
+        assert(1350.54.metricFormat() == "1,350.54")
+        assert(1350.54342342.metricFormat() == "1,350.54")
+        assert(1350.54742342.metricFormat() == "1,350.55")
+    }
+
     companion object {
         const val INPUT = "Testing " +
                 "#HashTagOne " +
