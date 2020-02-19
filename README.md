@@ -1,9 +1,15 @@
 <p align="center">
+  <a href="https://travis-ci.com/zacdevil10/SpaceX-Launch-Tracker">
+    <img src="https://img.shields.io/travis/com/zacdevil10/SpaceX-Launch-Tracker/master?style=for-the-badge">
+  </a>
+  <a href="https://codecov.io/gh/zacdevil10/SpaceX-Launch-Tracker">
+    <img src="https://img.shields.io/codecov/c/github/zacdevil10/SpaceX-Launch-Tracker/master?style=for-the-badge">
+  </a>
   <a href="https://github.com/zacdevil10/SpaceX-Launch-Tracker/releases">
     <img src="https://img.shields.io/github/v/release/zacdevil10/spacex-launch-tracker?style=for-the-badge">
   </a>
   <a href="https://play.google.com/store/apps/details?id=uk.co.zac_h.spacex">
-    <img src="https://img.shields.io/badge/Google-PlayStore-green.svg?style=for-the-badge">
+    <img src="https://img.shields.io/badge/Google-Play-green.svg?style=for-the-badge">
   </a>
   <a href="https://github.com/zacdevil10/SpaceX-Launch-Tracker/releases/latest">
     <img src="https://img.shields.io/badge/Direct-Download-red.svg?style=for-the-badge">
