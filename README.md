@@ -1,9 +1,9 @@
 <p align="center">
   <a href="https://travis-ci.com/zacdevil10/SpaceX-Launch-Tracker">
-    <img src="https://img.shields.io/travis/com/zacdevil10/SpaceX-Launch-Tracker/master?style=for-the-badge">
+    <img src="https://img.shields.io/travis/com/zacdevil10/SpaceX-Launch-Tracker/dev?style=for-the-badge">
   </a>
   <a href="https://codecov.io/gh/zacdevil10/SpaceX-Launch-Tracker">
-    <img src="https://img.shields.io/codecov/c/github/zacdevil10/SpaceX-Launch-Tracker/master?style=for-the-badge">
+    <img src="https://img.shields.io/codecov/c/github/zacdevil10/SpaceX-Launch-Tracker/dev?style=for-the-badge">
   </a>
   <a href="https://github.com/zacdevil10/SpaceX-Launch-Tracker/releases">
     <img src="https://img.shields.io/github/v/release/zacdevil10/spacex-launch-tracker?style=for-the-badge">
