@@ -47,7 +47,7 @@ class TwitterFeedAdapter(
 
             Picasso.get().load(tweet.user.profileUrl).transform(CircleImageTransform())
                 .into(profileImage)
-            date.text = tweet.created.dateStringToMillis().convertDate()
+            date.text = tweet.created.dateStringToMillis()?.convertDate()
             name.text = tweet.user.name
             screenName.text =
                 context?.getString(R.string.screen_name, tweet.user.screenName)

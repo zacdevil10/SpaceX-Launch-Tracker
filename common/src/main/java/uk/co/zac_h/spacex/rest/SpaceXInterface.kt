@@ -44,13 +44,9 @@ interface SpaceXInterface {
     suspend fun getCompanyInfo(): Response<CompanyModel>
 
     companion object RetrofitSetup {
-        fun create(): SpaceXInterface {
-            val retrofit = Retrofit.Builder().apply {
-                baseUrl("https://api.spacexdata.com/v3/")
-                addConverterFactory(MoshiConverterFactory.create())
-            }.build()
-
-            return retrofit.create(SpaceXInterface::class.java)
-        }
+        fun create(): SpaceXInterface = Retrofit.Builder().apply {
+            baseUrl("https://api.spacexdata.com/v3/")
+            addConverterFactory(MoshiConverterFactory.create())
+        }.build().create(SpaceXInterface::class.java)
     }
 }

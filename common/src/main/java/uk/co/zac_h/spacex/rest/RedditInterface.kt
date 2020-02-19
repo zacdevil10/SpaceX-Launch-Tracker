@@ -18,13 +18,9 @@ interface RedditInterface {
     ): Response<SubredditModel>
 
     companion object RetrofitSetup {
-        fun create(): RedditInterface {
-            val retrofit = Retrofit.Builder().apply {
-                baseUrl("https://reddit.com/")
-                addConverterFactory(MoshiConverterFactory.create())
-            }.build()
-
-            return retrofit.create(RedditInterface::class.java)
-        }
+        fun create(): RedditInterface = Retrofit.Builder().apply {
+            baseUrl("https://reddit.com/")
+            addConverterFactory(MoshiConverterFactory.create())
+        }.build().create(RedditInterface::class.java)
     }
 }

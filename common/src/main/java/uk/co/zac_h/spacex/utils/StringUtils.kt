@@ -21,7 +21,7 @@ fun String.generateCenterSpannableText(): SpannableString =
         setSpan(ForegroundColorSpan("29b6f6".rgb()), length - 11, length, 0)
     }
 
-private fun String.rgb(): Int {
+fun String.rgb(): Int {
     val color = java.lang.Long.parseLong(this.replace("#", ""), 16).toInt()
     val r = color shr 16 and 0xFF
     val g = color shr 8 and 0xFF
