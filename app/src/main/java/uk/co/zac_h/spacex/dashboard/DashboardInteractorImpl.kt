@@ -7,24 +7,29 @@ import uk.co.zac_h.spacex.rest.SpaceXInterface
 import java.net.UnknownHostException
 import kotlin.coroutines.CoroutineContext
 
-class DashboardInteractorImpl : DashboardInteractor {
+class DashboardInteractorImpl(private val uiContext: CoroutineContext = Dispatchers.Main) :
+    DashboardInteractor {
 
     private val parentJob = Job()
     private val coroutineContext: CoroutineContext
-        get() = parentJob + Dispatchers.Default
+        get() = parentJob + uiContext
 
     private val scope = CoroutineScope(coroutineContext)
 
     private val active = ArrayList<String>()
 
-    override fun getSingleLaunch(id: String, listener: DashboardInteractor.InteractorCallback) {
+    override fun getSingleLaunch(
+        id: String,
+        api: SpaceXInterface,
+        listener: DashboardInteractor.InteractorCallback
+    ) {
         active.add(id)
         scope.launch {
             val response = async(SupervisorJob(parentJob)) {
-                SpaceXInterface.create().getSingleLaunch(id)
+                api.getSingleLaunch(id)
             }
 
-            withContext(Dispatchers.Main) {
+            withContext(uiContext) {
                 active.remove(id)
                 try {
                     if (response.await().isSuccessful) {

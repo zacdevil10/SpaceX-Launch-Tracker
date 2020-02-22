@@ -25,6 +25,7 @@ import uk.co.zac_h.spacex.launches.adapters.LaunchLinksAdapter
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
+import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 import uk.co.zac_h.spacex.utils.models.LinksModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
@@ -64,7 +65,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        pinnedSharedPreferences = PinnedSharedPreferencesHelper(
+        pinnedSharedPreferences = PinnedSharedPreferencesHelperImpl(
             context?.getSharedPreferences(
                 "pinned",
                 Context.MODE_PRIVATE

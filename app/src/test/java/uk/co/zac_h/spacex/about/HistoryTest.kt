@@ -132,6 +132,15 @@ class HistoryTest {
         verifyBlocking(mListener) { onError("HTTP 500 Response.error()") }
     }
 
+    @Test(expected = Throwable::class)
+    fun `When job fails to execute`() {
+        val mockRepo = mock<SpaceXInterface> {
+            onBlocking { getHistory("desc") } doThrow Throwable()
+        }
+
+        interactor.getAllHistoricEvents(mockRepo, mListener)
+    }
+
     @Test
     fun `Cancel request`() {
         mPresenter.cancelRequest()

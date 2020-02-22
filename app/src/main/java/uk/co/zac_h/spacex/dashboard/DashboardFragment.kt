@@ -16,6 +16,7 @@ import uk.co.zac_h.spacex.dashboard.adapters.DashboardLaunchesAdapter
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardPinnedAdapter
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
+import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class DashboardFragment : Fragment(), DashboardView,
@@ -41,7 +42,7 @@ class DashboardFragment : Fragment(), DashboardView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        pinnedSharedPreferences = PinnedSharedPreferencesHelper(
+        pinnedSharedPreferences = PinnedSharedPreferencesHelperImpl(
             context?.getSharedPreferences(
                 "pinned",
                 Context.MODE_PRIVATE

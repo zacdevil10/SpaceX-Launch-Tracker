@@ -108,6 +108,15 @@ class CompanyTest {
         verifyBlocking(mListener) { onError("HTTP 500 Response.error()") }
     }
 
+    @Test(expected = Throwable::class)
+    fun `When job fails to execute`() {
+        val mockRepo = mock<SpaceXInterface> {
+            onBlocking { getCompanyInfo() } doThrow Throwable()
+        }
+
+        interactor.getCompanyInfo(mockRepo, mListener)
+    }
+
     @Test
     fun `Cancel request`() {
         mPresenter.cancelRequest()

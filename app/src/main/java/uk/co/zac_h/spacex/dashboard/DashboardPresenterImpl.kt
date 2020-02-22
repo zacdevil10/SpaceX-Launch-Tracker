@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.dashboard
 
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import java.util.concurrent.TimeUnit
 
@@ -14,7 +15,7 @@ class DashboardPresenterImpl(
     private val launchesMap = LinkedHashMap<String, LaunchesModel>()
     private val pinnedLaunches = LinkedHashMap<String, LaunchesModel>()
 
-    override fun getLatestLaunches() {
+    override fun getLatestLaunches(api: SpaceXInterface) {
         view.showProgress()
         view.showPinnedMessage()
 
@@ -23,8 +24,8 @@ class DashboardPresenterImpl(
 
         if (launchesMap.isEmpty()) {
             interactor.apply {
-                getSingleLaunch("next", this@DashboardPresenterImpl)
-                getSingleLaunch("latest", this@DashboardPresenterImpl)
+                getSingleLaunch("next", api, this@DashboardPresenterImpl)
+                getSingleLaunch("latest", api, this@DashboardPresenterImpl)
             }
 
             view.setLaunchesList(launchesMap)
@@ -35,6 +36,7 @@ class DashboardPresenterImpl(
                 prefs.getAllPinnedLaunches()?.forEach {
                     if (it.value as Boolean) getSingleLaunch(
                         it.key,
+                        api,
                         this@DashboardPresenterImpl
                     )
                 }
