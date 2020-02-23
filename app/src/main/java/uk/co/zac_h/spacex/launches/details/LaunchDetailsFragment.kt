@@ -74,16 +74,16 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
 
         presenter = LaunchDetailsPresenterImpl(
             this,
-            LaunchDetailsHelperImpl(pinnedSharedPreferences),
+            pinnedSharedPreferences,
             LaunchDetailsInteractorImpl()
         )
 
         launch?.let {
             presenter?.addLaunchModel(it)
-            pinned = presenter?.isPinned() ?: false
+            pinned = presenter?.isPinned(it.flightNumber.toString()) ?: false
         } ?: id?.let {
             presenter?.getLaunch(it)
-            pinned = presenter?.isPinned(it.toInt()) ?: false
+            pinned = presenter?.isPinned(it) ?: false
         }
 
         launch_details_first_stage_text.setOnClickListener {
@@ -154,7 +154,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
         menu.findItem(R.id.pin).icon = context?.let {
             ContextCompat.getDrawable(
                 it,
-                if (id?.let { id -> presenter?.isPinned(id.toInt()) } ?: presenter?.isPinned() == true) {
+                if (id?.let { id -> presenter?.isPinned(id) } ?: presenter?.isPinned(launch?.flightNumber.toString()) == true) {
                     R.drawable.ic_star_black_24dp
                 } else {
                     R.drawable.ic_star_border_black_24dp
@@ -167,7 +167,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.pin -> {
-            presenter?.pinLaunch(!pinned)
+            presenter?.pinLaunch(launch?.flightNumber?.toString() ?: id.toString(), !pinned)
 
             pinned = !pinned
 
@@ -206,6 +206,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
     override fun updateLaunchDataView(launch: LaunchesModel?) {
         launch?.let {
             this.launch = launch
+            if (id == null) id == launch.flightNumber.toString()
 
             launch_details_mission_patch_image.visibility =
                 launch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE

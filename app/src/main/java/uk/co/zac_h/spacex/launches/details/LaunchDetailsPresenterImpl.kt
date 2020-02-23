@@ -1,37 +1,33 @@
 package uk.co.zac_h.spacex.launches.details
 
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 
 class LaunchDetailsPresenterImpl(
     private val view: LaunchDetailsView,
-    private val helper: LaunchDetailsHelper,
+    private val helper: PinnedSharedPreferencesHelper,
     private val interactor: LaunchDetailsInteractor
 ) : LaunchDetailsPresenter,
     LaunchDetailsInteractor.InteractorCallback {
 
-    private var launchModel: LaunchesModel? = null
-
-    override fun getLaunch(id: String) {
+    override fun getLaunch(id: String, api: SpaceXInterface) {
         view.showProgress()
-        interactor.getSingleLaunch(id, this)
+        interactor.getSingleLaunch(id, api, this)
     }
 
     override fun addLaunchModel(launchModel: LaunchesModel?) {
-        this.launchModel = launchModel
         view.updateLaunchDataView(launchModel)
     }
 
-    override fun pinLaunch(pin: Boolean) {
+    override fun pinLaunch(id: String, pin: Boolean) {
         when (pin) {
-            true -> launchModel?.flightNumber?.let { helper.pinLaunch(it) }
-            false -> launchModel?.flightNumber?.let { helper.removePinnedLaunch(it) }
+            true -> helper.addPinnedLaunch(id)
+            false -> helper.removePinnedLaunch(id)
         }
     }
 
-    override fun isPinned(): Boolean =
-        launchModel?.flightNumber?.let { helper.isPinned(it) } ?: false
-
-    override fun isPinned(id: Int): Boolean = helper.isPinned(id)
+    override fun isPinned(id: String): Boolean = helper.isPinned(id)
 
     override fun createEvent() {
         view.newCalendarEvent()
@@ -42,7 +38,6 @@ class LaunchDetailsPresenterImpl(
     }
 
     override fun onSuccess(launchModel: LaunchesModel?) {
-        this.launchModel = launchModel
         view.apply {
             hideProgress()
             updateLaunchDataView(launchModel)
