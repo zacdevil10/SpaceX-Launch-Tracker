@@ -18,17 +18,8 @@ interface TwitterInterface {
         @Query("include_rts") rts: Boolean,
         @Query("trim_user") trim: Boolean,
         @Query("tweet_mode") mode: String,
-        @Query("count") count: Int
-    ): Response<List<TimelineTweetModel>>
-
-    @GET("statuses/user_timeline.json")
-    suspend fun getTweetsFromId(
-        @Query("screen_name") screenName: String,
-        @Query("include_rts") rts: Boolean,
-        @Query("trim_user") trim: Boolean,
-        @Query("tweet_mode") mode: String,
         @Query("count") count: Int,
-        @Query("max_id") maxId: Long
+        @Query("max_id") maxId: Long? = null
     ): Response<List<TimelineTweetModel>>
 
     companion object RetrofitSetup {

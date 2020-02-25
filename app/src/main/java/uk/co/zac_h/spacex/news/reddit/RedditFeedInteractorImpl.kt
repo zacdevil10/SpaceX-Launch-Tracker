@@ -7,28 +7,34 @@ import uk.co.zac_h.spacex.rest.RedditInterface
 import java.net.UnknownHostException
 import kotlin.coroutines.CoroutineContext
 
-class RedditFeedInteractorImpl : RedditFeedInteractor {
+class RedditFeedInteractorImpl(private val uiContext: CoroutineContext = Dispatchers.Main) :
+    RedditFeedInteractor {
 
     private val parentJob = Job()
     private val coroutineContext: CoroutineContext
-        get() = parentJob + Dispatchers.Default
+        get() = parentJob + uiContext
 
     private val scope = CoroutineScope(coroutineContext)
 
-    override fun getSubreddit(listener: RedditFeedInteractor.Callback, order: String, id: String?) {
+    override fun getSubreddit(
+        api: RedditInterface,
+        listener: RedditFeedInteractor.Callback,
+        order: String,
+        id: String?
+    ) {
         scope.launch {
             val response = async(SupervisorJob(parentJob)) {
-                RedditInterface.create().getRedditFeed(subreddit = "SpaceX", id = id, order = order)
+                api.getRedditFeed(subreddit = "SpaceX", id = id, order = order)
             }
 
-            withContext(Dispatchers.Main) {
+            withContext(uiContext) {
                 try {
                     if (response.await().isSuccessful) {
                         id?.let {
                             listener.onPagedSuccess(response.await().body())
                         } ?: listener.onSuccess(response.await().body())
                     } else {
-                        listener.onError(response.await().message())
+                        listener.onError("Error: ${response.await().code()}")
                     }
                 } catch (e: HttpException) {
                     listener.onError(
