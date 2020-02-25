@@ -206,7 +206,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
     override fun updateLaunchDataView(launch: LaunchesModel?) {
         launch?.let {
             this.launch = launch
-            if (id == null) id == launch.flightNumber.toString()
+            if (id == null) id = launch.flightNumber.toString()
 
             launch_details_mission_patch_image.visibility =
                 launch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
