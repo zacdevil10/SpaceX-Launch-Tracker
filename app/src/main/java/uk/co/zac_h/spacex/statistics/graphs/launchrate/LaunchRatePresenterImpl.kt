@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.RateStatsModel
 
@@ -9,14 +10,12 @@ class LaunchRatePresenterImpl(
     private val interactor: LaunchRateInteractor
 ) : LaunchRatePresenter, LaunchRateInteractor.InteractorCallback {
 
-    private var launchesList = ArrayList<RateStatsModel>()
-
-    override fun getLaunchList() {
+    override fun getLaunchList(api: SpaceXInterface) {
         view.showProgress()
-        interactor.getLaunches(this)
+        interactor.getLaunches(api, this)
     }
 
-    override fun addLaunchList(launches: ArrayList<RateStatsModel>) {
+    override fun addLaunchList(launches: List<RateStatsModel>) {
         view.updateBarChart(launches, false)
     }
 
@@ -26,16 +25,16 @@ class LaunchRatePresenterImpl(
 
     override fun onSuccess(launches: List<LaunchesModel>?, animate: Boolean) {
         launches?.let {
-            launchesList.clear()
+            val rateStatsList = ArrayList<RateStatsModel>()
 
             var year = 2005
             launches.forEach {
                 val newYear = it.launchDateUnix.formatDateMillisYYYY()
                 if (newYear > year) {
                     if (newYear != year++) {
-                        for (y in year until newYear) launchesList.add(RateStatsModel(y))
+                        for (y in year until newYear) rateStatsList.add(RateStatsModel(y))
                     }
-                    launchesList.add(RateStatsModel(newYear))
+                    rateStatsList.add(RateStatsModel(newYear))
                     year = newYear
                 }
                 if (!it.upcoming) {
@@ -43,30 +42,30 @@ class LaunchRatePresenterImpl(
                         if (success) {
                             when (it.rocket.id) {
                                 "falcon1" -> {
-                                    launchesList[launchesList.lastIndex].falconOne++
+                                    rateStatsList[rateStatsList.lastIndex].falconOne++
                                 }
                                 "falcon9" -> {
-                                    launchesList[launchesList.lastIndex].falconNine++
+                                    rateStatsList[rateStatsList.lastIndex].falconNine++
                                 }
                                 "falconheavy" -> {
-                                    launchesList[launchesList.lastIndex].falconHeavy++
+                                    rateStatsList[rateStatsList.lastIndex].falconHeavy++
                                 }
                                 else -> {
                                     return@forEach
                                 }
                             }
                         } else {
-                            launchesList[launchesList.lastIndex].failure++
+                            rateStatsList[rateStatsList.lastIndex].failure++
                         }
                     }
                 } else {
-                    launchesList[launchesList.lastIndex].planned++
+                    rateStatsList[rateStatsList.lastIndex].planned++
                 }
             }
 
             view.apply {
                 hideProgress()
-                updateBarChart(launchesList, animate)
+                updateBarChart(rateStatsList, animate)
             }
         }
     }

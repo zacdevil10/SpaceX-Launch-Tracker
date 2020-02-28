@@ -3,57 +3,43 @@ package uk.co.zac_h.spacex.statistics.graphs.padstats
 import android.util.Log
 import kotlinx.coroutines.*
 import retrofit2.HttpException
+import uk.co.zac_h.spacex.model.spacex.LandingPadModel
+import uk.co.zac_h.spacex.model.spacex.LaunchpadModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.utils.PadType
 import java.net.UnknownHostException
 import kotlin.coroutines.CoroutineContext
 
-class PadStatsInteractorImpl : PadStatsInteractor {
+class PadStatsInteractorImpl(private val uiContext: CoroutineContext = Dispatchers.Main) :
+    PadStatsInteractor {
 
     private val parentJob = Job()
     private val coroutineContext: CoroutineContext
-        get() = parentJob + Dispatchers.Default
+        get() = parentJob + uiContext
 
     private val scope = CoroutineScope(coroutineContext)
 
-    override fun getLaunchpads(listener: PadStatsInteractor.InteractorCallback) {
+    @Suppress("UNCHECKED_CAST")
+    override fun getPads(
+        type: PadType,
+        api: SpaceXInterface,
+        listener: PadStatsInteractor.InteractorCallback
+    ) {
         scope.launch {
             val response = async(SupervisorJob(parentJob)) {
-                SpaceXInterface.create().getLaunchpads()
-            }
-
-            withContext(Dispatchers.Main) {
-                try {
-                    if (response.await().isSuccessful) {
-                        listener.onGetLaunchpads(response.await().body())
-                    } else {
-                        listener.onError("Error: ${response.await().code()}")
-                    }
-                } catch (e: HttpException) {
-                    listener.onError(
-                        e.localizedMessage ?: "There was a network error! Please try refreshing."
-                    )
-                } catch (e: UnknownHostException) {
-                    listener.onError("Unable to resolve host! Check your network connection and try again.")
-                } catch (e: Throwable) {
-                    Log.e(
-                        this@PadStatsInteractorImpl.javaClass.name,
-                        e.localizedMessage ?: "Job failed to execute"
-                    )
+                when (type) {
+                    PadType.LAUNCH -> api.getLaunchpads()
+                    PadType.LANDING -> api.getLandingPads()
                 }
             }
-        }
-    }
 
-    override fun getLandingPads(listener: PadStatsInteractor.InteractorCallback) {
-        scope.launch {
-            val response = async(SupervisorJob(parentJob)) {
-                SpaceXInterface.create().getLandingPads()
-            }
-
-            withContext(Dispatchers.Main) {
+            withContext(uiContext) {
                 try {
                     if (response.await().isSuccessful) {
-                        listener.onGetLandingPads(response.await().body())
+                        when (type) {
+                            PadType.LAUNCH -> listener.onGetLaunchpads(response.await().body() as List<LaunchpadModel>?)
+                            PadType.LANDING -> listener.onGetLandingPads(response.await().body() as List<LandingPadModel>?)
+                        }
                     } else {
                         listener.onError("Error: ${response.await().code()}")
                     }

@@ -7,21 +7,25 @@ import uk.co.zac_h.spacex.rest.SpaceXInterface
 import java.net.UnknownHostException
 import kotlin.coroutines.CoroutineContext
 
-class LaunchHistoryInteractorImpl : LaunchHistoryInteractor {
+class LaunchHistoryInteractorImpl(private val uiContext: CoroutineContext = Dispatchers.Main) :
+    LaunchHistoryInteractor {
 
     private val parentJob = Job()
     private val coroutineContext: CoroutineContext
-        get() = parentJob + Dispatchers.Default
+        get() = parentJob + uiContext
 
     private val scope = CoroutineScope(coroutineContext)
 
-    override fun getLaunches(id: String, listener: LaunchHistoryInteractor.InteractorCallback) {
+    override fun getLaunches(
+        api: SpaceXInterface,
+        listener: LaunchHistoryInteractor.InteractorCallback
+    ) {
         scope.launch {
             val response = async(SupervisorJob(parentJob)) {
-                SpaceXInterface.create().getLaunches(id, "asc")
+                api.getLaunches("past", "asc")
             }
 
-            withContext(Dispatchers.Main) {
+            withContext(uiContext) {
                 try {
                     if (response.await().isSuccessful) {
                         listener.onSuccess(response.await().body(), true)

@@ -4,9 +4,9 @@ import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 
 interface LaunchHistoryView {
 
-    fun setSuccessRate(stats: ArrayList<HistoryStatsModel>)
+    fun setSuccessRate(stats: List<HistoryStatsModel>)
 
-    fun updatePieChart(stats: ArrayList<HistoryStatsModel>, animate: Boolean)
+    fun updatePieChart(stats: List<HistoryStatsModel>, animate: Boolean)
 
     fun showFilter(filterVisible: Boolean)
 

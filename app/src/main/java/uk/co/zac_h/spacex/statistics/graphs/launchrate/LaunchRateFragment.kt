@@ -161,7 +161,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updateBarChart(stats: ArrayList<RateStatsModel>, animate: Boolean) {
+    override fun updateBarChart(stats: List<RateStatsModel>, animate: Boolean) {
         if (statsList.isEmpty()) statsList.addAll(stats)
 
         val colors = ArrayList<Int>()

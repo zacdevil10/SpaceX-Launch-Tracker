@@ -4,7 +4,7 @@ import uk.co.zac_h.spacex.utils.models.RateStatsModel
 
 interface LaunchRateView {
 
-    fun updateBarChart(stats: ArrayList<RateStatsModel>, animate: Boolean)
+    fun updateBarChart(stats: List<RateStatsModel>, animate: Boolean)
 
     fun showProgress()
 

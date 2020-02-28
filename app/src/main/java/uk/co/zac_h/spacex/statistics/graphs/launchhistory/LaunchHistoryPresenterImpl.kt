@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 import kotlin.math.roundToInt
 
@@ -10,14 +11,14 @@ class LaunchHistoryPresenterImpl(
 ) : LaunchHistoryPresenter,
     LaunchHistoryInteractor.InteractorCallback {
 
-    private var launchesList = ArrayList<HistoryStatsModel>()
+    private lateinit var launchesList: List<HistoryStatsModel>
 
-    override fun getLaunchList() {
+    override fun getLaunchList(api: SpaceXInterface) {
         view.showProgress()
-        interactor.getLaunches("past", this)
+        interactor.getLaunches(api, this)
     }
 
-    override fun addLaunchList(stats: ArrayList<HistoryStatsModel>) {
+    override fun addLaunchList(stats: List<HistoryStatsModel>) {
         view.updatePieChart(stats, false)
         view.setSuccessRate(stats)
     }
@@ -27,7 +28,7 @@ class LaunchHistoryPresenterImpl(
     }
 
     override fun updateFilter(
-        launches: ArrayList<HistoryStatsModel>,
+        launches: List<HistoryStatsModel>,
         filter: String,
         isFiltered: Boolean
     ) {
@@ -73,11 +74,7 @@ class LaunchHistoryPresenterImpl(
                 falconHeavy.successes.toFloat().div(falconHeavy.successes + falconHeavy.failures)
                     .times(100).roundToInt()
 
-            launchesList.apply {
-                add(falconOne)
-                add(falconNine)
-                add(falconHeavy)
-            }
+            launchesList = listOf(falconOne, falconNine, falconHeavy)
 
             view.apply {
                 hideProgress()

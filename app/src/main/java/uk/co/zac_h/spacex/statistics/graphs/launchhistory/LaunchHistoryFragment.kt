@@ -51,7 +51,6 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
         presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
 
         launch_history_chip_group.setOnCheckedChangeListener { group, _ ->
-            println(launchStats)
             presenter?.updateFilter(
                 launchStats,
                 "success",
@@ -129,7 +128,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updatePieChart(stats: ArrayList<HistoryStatsModel>, animate: Boolean) {
+    override fun updatePieChart(stats: List<HistoryStatsModel>, animate: Boolean) {
         if (launchStats.isEmpty()) launchStats.addAll(stats)
 
         val colors = ArrayList<Int>()
@@ -164,9 +163,11 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
             }
         }
 
-        if (falconOne > 0) entries.add(PieEntry(falconOne.toFloat(), "Falcon 1"))
-        if (falconNine > 0) entries.add(PieEntry(falconNine.toFloat(), "Falcon 9"))
-        if (falconHeavy > 0) entries.add(PieEntry(falconHeavy.toFloat(), "Falcon Heavy"))
+        entries.apply {
+            if (falconOne > 0) add(PieEntry(falconOne.toFloat(), "Falcon 1"))
+            if (falconNine > 0) add(PieEntry(falconNine.toFloat(), "Falcon 9"))
+            if (falconHeavy > 0) add(PieEntry(falconHeavy.toFloat(), "Falcon Heavy"))
+        }
 
         val dataSet = PieDataSet(entries, "").apply {
             sliceSpace = 3f
@@ -192,7 +193,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
         }
     }
 
-    override fun setSuccessRate(stats: ArrayList<HistoryStatsModel>) {
+    override fun setSuccessRate(stats: List<HistoryStatsModel>) {
         stats.forEach {
             when (it.name) {
                 "falcon1" -> {
