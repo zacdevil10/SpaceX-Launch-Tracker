@@ -1,10 +1,11 @@
 package uk.co.zac_h.spacex.vehicles.cores
 
 import uk.co.zac_h.spacex.model.spacex.CoreModel
+import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 interface CoreInteractor {
 
-    fun getCores(listener: Callback)
+    fun getCores(api: SpaceXInterface, listener: Callback)
 
     fun cancelAllRequests()
 

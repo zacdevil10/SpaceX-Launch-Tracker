@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.vehicles.cores.details
 
 import uk.co.zac_h.spacex.model.spacex.CoreModel
+import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class CoreDetailsPresenterImpl(
     private val view: CoreDetailsView,
@@ -8,15 +9,12 @@ class CoreDetailsPresenterImpl(
 ) : CoreDetailsPresenter,
     CoreDetailsInteractor.InteractorCallback {
 
-    private var coreDetails: CoreModel? = null
-
-    override fun getCoreDetails(serial: String) {
+    override fun getCoreDetails(serial: String, api: SpaceXInterface) {
         view.showProgress()
-        interactor.getCoreDetails(serial, this)
+        interactor.getCoreDetails(serial, api, this)
     }
 
     override fun addCoreModel(coreModel: CoreModel) {
-        coreDetails = coreModel
         view.updateCoreDetails(coreModel)
     }
 
@@ -26,8 +24,6 @@ class CoreDetailsPresenterImpl(
 
     override fun onSuccess(coreModel: CoreModel?) {
         coreModel?.let {
-            coreDetails = coreModel
-
             view.apply {
                 hideProgress()
                 updateCoreDetails(coreModel)

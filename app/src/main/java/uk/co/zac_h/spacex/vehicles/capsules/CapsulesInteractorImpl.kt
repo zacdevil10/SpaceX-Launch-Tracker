@@ -7,21 +7,22 @@ import uk.co.zac_h.spacex.rest.SpaceXInterface
 import java.net.UnknownHostException
 import kotlin.coroutines.CoroutineContext
 
-class CapsulesInteractorImpl : CapsulesInteractor {
+class CapsulesInteractorImpl(private val uiContext: CoroutineContext = Dispatchers.Main) :
+    CapsulesInteractor {
 
     private val parentJob = Job()
     private val coroutineContext: CoroutineContext
-        get() = parentJob + Dispatchers.Default
+        get() = parentJob + uiContext
 
     private val scope = CoroutineScope(coroutineContext)
 
-    override fun getCapsules(listener: CapsulesInteractor.Callback) {
+    override fun getCapsules(api: SpaceXInterface, listener: CapsulesInteractor.Callback) {
         scope.launch {
             val response = async(SupervisorJob(parentJob)) {
-                SpaceXInterface.create().getCapsules()
+                api.getCapsules()
             }
 
-            withContext(Dispatchers.Main) {
+            withContext(uiContext) {
                 try {
                     if (response.await().isSuccessful) {
                         listener.onSuccess(response.await().body())

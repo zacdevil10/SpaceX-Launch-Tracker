@@ -1,13 +1,14 @@
 package uk.co.zac_h.spacex.vehicles.rockets
 
 import uk.co.zac_h.spacex.model.spacex.RocketsModel
+import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class RocketPresenterImpl(private val view: RocketView, private val interactor: RocketInteractor) :
     RocketPresenter, RocketInteractor.Callback {
 
-    override fun getRockets() {
+    override fun getRockets(api: SpaceXInterface) {
         view.showProgress()
-        interactor.getRockets(this)
+        interactor.getRockets(api, this)
     }
 
     override fun cancelRequest() {
@@ -15,10 +16,10 @@ class RocketPresenterImpl(private val view: RocketView, private val interactor: 
     }
 
     override fun onSuccess(rockets: List<RocketsModel>?) {
-        rockets?.let { view.updateRockets(it.reversed()) }
         view.apply {
             hideProgress()
             toggleSwipeRefresh(false)
+            rockets?.let { updateRockets(it.reversed()) }
         }
     }
 

@@ -1,15 +1,16 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
 import uk.co.zac_h.spacex.model.spacex.CapsulesModel
+import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class CapsulesPresenterImpl(
     private val view: CapsulesView,
     private val interactor: CapsulesInteractor
 ) : CapsulesPresenter, CapsulesInteractor.Callback {
 
-    override fun getCapsules() {
+    override fun getCapsules(api: SpaceXInterface) {
         view.showProgress()
-        interactor.getCapsules(this)
+        interactor.getCapsules(api, this)
     }
 
     override fun cancelRequests() {
@@ -20,8 +21,8 @@ class CapsulesPresenterImpl(
         view.apply {
             hideProgress()
             toggleSwipeRefresh(false)
+            capsules?.let { updateCapsules(it) }
         }
-        capsules?.let { view.updateCapsules(it) }
     }
 
     override fun onError(error: String) {
