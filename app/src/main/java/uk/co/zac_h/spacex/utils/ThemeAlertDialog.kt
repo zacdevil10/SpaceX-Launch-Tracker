@@ -12,7 +12,7 @@ class ThemeAlertDialog : DialogFragment() {
 
 
     private val itemsP = arrayOf("Always", "Battery Saver only", "Never")
-    private val itemsQ = arrayOf("Always", "Automatically", "Never")
+    private val itemsQ = arrayOf("Always", "System theme", "Never")
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val preferenceRepository = (requireActivity().application as App).preferencesRepo

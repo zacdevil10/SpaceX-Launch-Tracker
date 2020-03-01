@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import uk.co.zac_h.spacex.R
@@ -44,6 +45,8 @@ class LaunchesAdapter(
         val launch = filteredLaunches[position]
 
         holder.apply {
+            itemView.transitionName = launch.flightNumber.toString()
+
             flightNumber.text = context?.getString(R.string.flight_number, launch.flightNumber)
 
             missionPatch.visibility =
@@ -80,7 +83,9 @@ class LaunchesAdapter(
                 itemView.findNavController()
                     .navigate(
                         R.id.action_launches_page_fragment_to_launch_details_fragment,
-                        bundleOf("launch" to launch, "title" to launch.missionName)
+                        bundleOf("launch" to launch, "title" to launch.missionName),
+                        null,
+                        FragmentNavigatorExtras(itemView to launch.flightNumber.toString())
                     )
             }
         }

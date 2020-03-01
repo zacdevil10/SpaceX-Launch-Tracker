@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import uk.co.zac_h.spacex.R
@@ -34,6 +35,7 @@ class DashboardPinnedAdapter(
         val launch = launches[position]
 
         holder.apply {
+            itemView.transitionName = launch.flightNumber.toString()
 
             heading.visibility = View.GONE
 
@@ -59,7 +61,9 @@ class DashboardPinnedAdapter(
                 launchesCard.setOnClickListener { _ ->
                     itemView.findNavController().navigate(
                         R.id.action_dashboard_page_fragment_to_launch_details_fragment,
-                        bundleOf("launch" to it, "title" to it.missionName)
+                        bundleOf("launch" to it, "title" to it.missionName),
+                        null,
+                        FragmentNavigatorExtras(itemView to launch.flightNumber.toString())
                     )
                 }
             }

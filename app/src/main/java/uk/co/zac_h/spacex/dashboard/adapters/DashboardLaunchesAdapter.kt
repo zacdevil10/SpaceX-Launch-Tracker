@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import uk.co.zac_h.spacex.R
@@ -46,6 +47,10 @@ class DashboardLaunchesAdapter(
             }
 
             launch?.let {
+                launchesCard.visibility = View.VISIBLE
+
+                itemView.transitionName = launch.flightNumber.toString()
+
                 missionPatch.visibility =
                     launch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
 
@@ -67,14 +72,18 @@ class DashboardLaunchesAdapter(
                 launchesCard.setOnClickListener { _ ->
                     itemView.findNavController().navigate(
                         R.id.action_dashboard_page_fragment_to_launch_details_fragment,
-                        bundleOf("launch" to it, "title" to it.missionName)
+                        bundleOf("launch" to it, "title" to it.missionName),
+                        null,
+                        FragmentNavigatorExtras(itemView to launch.flightNumber.toString())
                     )
                 }
+            } ?: launchesCard.run {
+                visibility = View.INVISIBLE
             }
         }
     }
 
-    override fun getItemCount(): Int = launches.size
+    override fun getItemCount(): Int = 2
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val launchesCard: CardView = itemView.findViewById(R.id.launches_card_view)

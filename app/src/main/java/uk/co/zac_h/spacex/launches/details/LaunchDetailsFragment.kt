@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.*
+import com.google.android.material.transition.MaterialContainerTransform
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_launch_details.*
 import uk.co.zac_h.spacex.R
@@ -46,6 +47,9 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        sharedElementEnterTransition = context?.let { MaterialContainerTransform(it) }
+        sharedElementReturnTransition = context?.let { MaterialContainerTransform(it) }
 
         launch = if (savedInstanceState != null) {
             savedInstanceState.getParcelable("launch")
@@ -80,6 +84,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
 
         launch?.let {
             presenter?.addLaunchModel(it)
+            launch_details_scroll_view.transitionName = it.flightNumber.toString()
             pinned = presenter?.isPinned(it.flightNumber.toString()) ?: false
         } ?: id?.let {
             presenter?.getLaunch(it)
@@ -206,6 +211,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
     override fun updateLaunchDataView(launch: LaunchesModel?) {
         launch?.let {
             this.launch = launch
+            launch_details_scroll_view.transitionName = it.flightNumber.toString()
             if (id == null) id = launch.flightNumber.toString()
 
             launch_details_mission_patch_image.visibility =

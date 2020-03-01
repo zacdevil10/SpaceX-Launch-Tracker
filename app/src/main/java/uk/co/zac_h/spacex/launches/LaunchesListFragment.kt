@@ -2,6 +2,7 @@ package uk.co.zac_h.spacex.launches
 
 import android.os.Bundle
 import android.view.*
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -132,7 +133,10 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
             launchesList.addAll(it)
         }
 
+        launches_recycler.layoutAnimation =
+            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
         launchesAdapter.notifyDataSetChanged()
+        launches_recycler.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
