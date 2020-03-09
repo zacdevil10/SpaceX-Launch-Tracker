@@ -28,7 +28,7 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        coresArray = savedInstanceState?.getParcelableArrayList<CoreModel>("cores") ?: ArrayList()
+        coresArray = savedInstanceState?.getParcelableArrayList("cores") ?: ArrayList()
         sortNew = savedInstanceState?.getBoolean("sort") ?: false
     }
 
@@ -120,7 +120,7 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
 
     override fun updateCores(cores: List<CoreModel>) {
         coresArray.clear()
-        coresArray.addAll(cores)
+        coresArray.addAll(if (sortNew) cores.reversed() else cores)
 
         coreAdapter.notifyDataSetChanged()
     }

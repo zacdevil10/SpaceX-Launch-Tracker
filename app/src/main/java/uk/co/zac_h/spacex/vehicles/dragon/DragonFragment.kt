@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.vehicles.rockets
+package uk.co.zac_h.spacex.vehicles.dragon
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,50 +8,50 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_rocket.*
+import kotlinx.android.synthetic.main.fragment_dragon.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.model.spacex.RocketsModel
+import uk.co.zac_h.spacex.model.spacex.DragonModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
+import uk.co.zac_h.spacex.vehicles.adapters.DragonAdapter
 
-class RocketFragment : Fragment(), RocketView,
+class DragonFragment : Fragment(), DragonView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: RocketPresenter? = null
+    private var presenter: DragonPresenter? = null
 
-    private lateinit var rocketsAdapter: RocketsAdapter
-    private lateinit var rocketsArray: ArrayList<RocketsModel>
+    private lateinit var dragonAdapter: DragonAdapter
+    private lateinit var dragonArray: ArrayList<DragonModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        rocketsArray = savedInstanceState?.getParcelableArrayList("rockets") ?: ArrayList()
+        dragonArray = savedInstanceState?.getParcelableArrayList("dragon") ?: ArrayList()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_rocket, container, false)
+    ): View? = inflater.inflate(R.layout.fragment_dragon, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = RocketPresenterImpl(this, RocketInteractorImpl())
+        presenter = DragonPresenterImpl(this, DragonInteractorImpl())
 
-        rocketsAdapter = RocketsAdapter(rocketsArray)
+        dragonAdapter = DragonAdapter(dragonArray)
 
-        rocket_recycler.apply {
-            layoutManager = LinearLayoutManager(this@RocketFragment.context)
+        dragon_recycler.apply {
+            layoutManager = LinearLayoutManager(this@DragonFragment.context)
             setHasFixedSize(true)
-            adapter = rocketsAdapter
+            adapter = dragonAdapter
         }
 
-        rocket_swipe_refresh.setOnRefreshListener {
-            presenter?.getRockets()
+        dragon_swipe_refresh.setOnRefreshListener {
+            presenter?.getDragon()
         }
 
-        if (rocketsArray.isEmpty()) presenter?.getRockets()
+        if (dragonArray.isEmpty()) presenter?.getDragon()
     }
 
     override fun onStart() {
@@ -65,7 +65,7 @@ class RocketFragment : Fragment(), RocketView,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("rockets", rocketsArray)
+        outState.putParcelableArrayList("dragon", dragonArray)
         super.onSaveInstanceState(outState)
     }
 
@@ -74,26 +74,26 @@ class RocketFragment : Fragment(), RocketView,
         presenter?.cancelRequest()
     }
 
-    override fun updateRockets(rockets: List<RocketsModel>) {
-        rocketsArray.clear()
-        rocketsArray.addAll(rockets)
+    override fun updateDragon(dragon: List<DragonModel>) {
+        dragonArray.clear()
+        dragonArray.addAll(dragon)
 
-        rocket_recycler.layoutAnimation =
+        dragon_recycler.layoutAnimation =
             AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
-        rocketsAdapter.notifyDataSetChanged()
-        rocket_recycler.scheduleLayoutAnimation()
+        dragonAdapter.notifyDataSetChanged()
+        dragon_recycler.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        rocket_progress_bar.visibility = View.VISIBLE
+        dragon_progress_bar.visibility = View.VISIBLE
     }
 
     override fun hideProgress() {
-        rocket_progress_bar.visibility = View.GONE
+        dragon_progress_bar.visibility = View.GONE
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
-        rocket_swipe_refresh.isRefreshing = refreshing
+        dragon_swipe_refresh.isRefreshing = refreshing
     }
 
     override fun showError(error: String) {
@@ -102,7 +102,8 @@ class RocketFragment : Fragment(), RocketView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (rocketsArray.isEmpty() || rocket_progress_bar.visibility == View.VISIBLE) presenter?.getRockets()
+            if (dragonArray.isEmpty() || dragon_progress_bar.visibility == View.VISIBLE) presenter?.getDragon()
         }
     }
+
 }

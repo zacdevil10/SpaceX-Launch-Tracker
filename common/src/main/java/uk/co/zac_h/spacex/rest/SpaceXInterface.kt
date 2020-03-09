@@ -22,6 +22,9 @@ interface SpaceXInterface {
     @GET("rockets")
     suspend fun getRockets(): Response<List<RocketsModel>>
 
+    @GET("dragons")
+    suspend fun getDragons(): Response<List<DragonModel>>
+
     @GET("capsules")
     suspend fun getCapsules(): Response<List<CapsulesModel>>
 

@@ -226,7 +226,9 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
             )
             launch_details_rocket_type_text.text = launch.rocket.name
             launch_details_mission_name_text.text = launch.missionName
+
             launch_details_site_name_text.text = launch.launchSite.name
+
             launch_details_date_text.text = launch.tbd?.let { tbd ->
                 launch.launchDateUnix.formatDateMillisLong(tbd)
             } ?: launch.launchDateUnix.formatDateMillisLong()
@@ -234,8 +236,12 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
             launch.staticFireDateUnix?.let {
                 launch_details_static_fire_date_label.visibility = View.VISIBLE
                 launch_details_static_fire_date_text.text = it.formatDateMillisLong()
+            } ?: run {
+                launch_details_static_fire_date_text.visibility = View.GONE
             }
 
+            launch_details_details_text.visibility =
+                if (launch.details.isNullOrEmpty()) View.GONE else View.VISIBLE
             launch_details_details_text.text = launch.details
 
             launch.rocket.firstStage?.cores?.forEach {
@@ -326,7 +332,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
             if (links.isEmpty()) launch_details_links_text.visibility = View.GONE
 
             launch_details_links_recycler.apply {
-                layoutManager = GridLayoutManager(this@LaunchDetailsFragment.context, 2)
+                layoutManager = GridLayoutManager(this@LaunchDetailsFragment.context, 3)
                 setHasFixedSize(true)
                 adapter = LaunchLinksAdapter(links, this@LaunchDetailsFragment)
             }

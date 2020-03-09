@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp">
+
+    <TextView
+        android:id="@+id/list_item_dragon_thruster_type_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?textAppearanceSubtitle1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Draco" />
+
+    <TextView
+        android:id="@+id/list_item_dragon_thruster_amount_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/amount_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/list_item_dragon_thruster_type_text" />
+
+    <TextView
+        android:id="@+id/list_item_dragon_thruster_amount_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textAlignment="textEnd"
+        app:layout_constraintBottom_toBottomOf="@id/list_item_dragon_thruster_amount_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/list_item_dragon_thruster_amount_label"
+        app:layout_constraintTop_toTopOf="@id/list_item_dragon_thruster_amount_label"
+        tools:text="15" />
+
+    <TextView
+        android:id="@+id/list_item_dragon_thruster_pods_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/pods_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/list_item_dragon_thruster_amount_label" />
+
+    <TextView
+        android:id="@+id/list_item_dragon_thruster_pods_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textAlignment="textEnd"
+        app:layout_constraintBottom_toBottomOf="@id/list_item_dragon_thruster_pods_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/list_item_dragon_thruster_pods_label"
+        app:layout_constraintTop_toTopOf="@id/list_item_dragon_thruster_pods_label"
+        tools:text="5" />
+
+    <TextView
+        android:id="@+id/list_item_dragon_thruster_fuel_one_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/fuel_1_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/list_item_dragon_thruster_pods_label" />
+
+    <TextView
+        android:id="@+id/list_item_dragon_thruster_fuel_one_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textAlignment="textEnd"
+        app:layout_constraintBottom_toBottomOf="@id/list_item_dragon_thruster_fuel_one_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/list_item_dragon_thruster_fuel_one_label"
+        app:layout_constraintTop_toTopOf="@id/list_item_dragon_thruster_fuel_one_label"
+        tools:text="Lorem Ipsum Dolor" />
+
+    <TextView
+        android:id="@+id/list_item_dragon_thruster_fuel_two_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/fuel_2_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/list_item_dragon_thruster_fuel_one_label" />
+
+    <TextView
+        android:id="@+id/list_item_dragon_thruster_fuel_two_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textAlignment="textEnd"
+        app:layout_constraintBottom_toBottomOf="@id/list_item_dragon_thruster_fuel_two_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/list_item_dragon_thruster_fuel_two_label"
+        app:layout_constraintTop_toTopOf="@id/list_item_dragon_thruster_fuel_two_label"
+        tools:text="Lorem Ipsum Dolor" />
+
+    <TextView
+        android:id="@+id/list_item_dragon_thruster_thrust_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/thrust_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/list_item_dragon_thruster_fuel_two_label" />
+
+    <TextView
+        android:id="@+id/list_item_dragon_thruster_thrust_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:textAlignment="textEnd"
+        app:layout_constraintBottom_toBottomOf="@id/list_item_dragon_thruster_thrust_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/list_item_dragon_thruster_thrust_label"
+        app:layout_constraintTop_toTopOf="@id/list_item_dragon_thruster_thrust_label"
+        tools:text="0.1kN / 100lbf" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

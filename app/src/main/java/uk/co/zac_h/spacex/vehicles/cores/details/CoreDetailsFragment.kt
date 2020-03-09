@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.android.synthetic.main.fragment_core_details.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
@@ -25,6 +26,8 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sharedElementEnterTransition = context?.let { MaterialContainerTransform(it) }
 
         core = if (savedInstanceState != null) {
             savedInstanceState.getParcelable("core")
@@ -75,6 +78,9 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView,
     override fun updateCoreDetails(coreModel: CoreModel) {
         coreModel.apply {
             core = coreModel
+
+            core_details_scrollview.transitionName = serial
+
             core_details_serial_text.text = serial
             core_details_block_text.text = block ?: "TBD"
             core_details_details_text.text = details

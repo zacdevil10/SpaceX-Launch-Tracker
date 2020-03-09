@@ -52,6 +52,13 @@
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out" />
         <action
+            android:id="@+id/action_vehicles_page_fragment_to_dragon_details_fragment"
+            app:destination="@id/dragon_details_fragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out"
+            app:popEnterAnim="@android:anim/fade_in"
+            app:popExitAnim="@android:anim/fade_out" />
+        <action
             android:id="@+id/action_vehicles_page_fragment_to_capsule_details_fragment"
             app:destination="@id/capsule_details_fragment"
             app:enterAnim="@android:anim/fade_in"
@@ -143,6 +150,17 @@
         <argument
             android:name="title"
             android:defaultValue="Rocket Details"
+            app:argType="string" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dragon_details_fragment"
+        android:name="uk.co.zac_h.spacex.vehicles.dragon.details.DragonDetailsFragment"
+        android:label="{title}"
+        tools:layout="@layout/fragment_dragon_details">
+        <argument
+            android:name="title"
+            android:defaultValue="Dragon Details"
             app:argType="string" />
     </fragment>
 

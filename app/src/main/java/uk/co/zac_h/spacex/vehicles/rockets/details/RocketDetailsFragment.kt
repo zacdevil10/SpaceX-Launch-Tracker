@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.android.synthetic.main.fragment_rocket_details.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.RocketsModel
@@ -21,6 +22,8 @@ class RocketDetailsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        sharedElementEnterTransition = context?.let { MaterialContainerTransform(it) }
+
         rocket = arguments?.getParcelable("rocket") as RocketsModel?
     }
 
@@ -33,6 +36,18 @@ class RocketDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         rocket?.let {
+            rocket_details_coordinator.transitionName = it.rocketId
+
+            rocket_details_appbar_image.setImageResource(
+                when (it.rocketId) {
+                    "falcon1" -> R.drawable.falcon1
+                    "falcon9" -> R.drawable.falcon9
+                    "falconheavy" -> R.drawable.falconheavy
+                    "starship" -> R.drawable.starship
+                    else -> R.drawable.starship //TODO: Add error image.
+                }
+            )
+
             rocket_details_name_text.text = it.rocketName
             rocket_details_text.text = it.description
 

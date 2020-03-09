@@ -12,10 +12,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.RocketsModel
+import uk.co.zac_h.spacex.model.spacex.DragonModel
 
-class RocketsAdapter(private val rockets: List<RocketsModel>) :
-    RecyclerView.Adapter<RocketsAdapter.ViewHolder>() {
+class DragonAdapter(private val dragonList: List<DragonModel>) :
+    RecyclerView.Adapter<DragonAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
@@ -27,27 +27,25 @@ class RocketsAdapter(private val rockets: List<RocketsModel>) :
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val rocket = rockets[position]
+        val dragon = dragonList[position]
 
         holder.apply {
-            itemView.transitionName = rocket.rocketId
+            itemView.transitionName = dragon.id
 
-            when (rocket.rocketId) {
-                "falcon1" -> image.setImageResource(R.drawable.falcon1)
-                "falcon9" -> image.setImageResource(R.drawable.falcon9)
-                "falconheavy" -> image.setImageResource(R.drawable.falconheavy)
-                "starship" -> image.setImageResource(R.drawable.starship)
+            when (dragon.id) {
+                "dragon1" -> image.setImageResource(R.drawable.dragon1)
+                "dragon2" -> image.setImageResource(R.drawable.dragon2)
             }
 
-            title.text = rocket.rocketName
-            details.text = rocket.description
+            title.text = dragon.name
+            details.text = dragon.description
 
-            card.setOnClickListener { bind(rocket) }
-            specs.setOnClickListener { bind(rocket) }
+            card.setOnClickListener { bind(dragon) }
+            specs.setOnClickListener { bind(dragon) }
         }
     }
 
-    override fun getItemCount(): Int = rockets.size
+    override fun getItemCount(): Int = dragonList.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val card: CardView = itemView.findViewById(R.id.list_item_vehicle_card)
@@ -56,12 +54,12 @@ class RocketsAdapter(private val rockets: List<RocketsModel>) :
         val details: TextView = itemView.findViewById(R.id.list_item_vehicle_details)
         val specs: Button = itemView.findViewById(R.id.list_item_vehicle_specs_button)
 
-        fun bind(rocket: RocketsModel) {
+        fun bind(dragon: DragonModel) {
             itemView.findNavController().navigate(
-                R.id.action_vehicles_page_fragment_to_rocket_details_fragment,
-                bundleOf("rocket" to rocket, "title" to rocket.rocketName),
+                R.id.action_vehicles_page_fragment_to_dragon_details_fragment,
+                bundleOf("dragon" to dragon, "title" to dragon.name),
                 null,
-                FragmentNavigatorExtras(itemView to rocket.rocketId)
+                FragmentNavigatorExtras(itemView to dragon.id)
             )
         }
     }

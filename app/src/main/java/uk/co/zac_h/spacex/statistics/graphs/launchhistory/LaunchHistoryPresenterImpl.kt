@@ -20,7 +20,7 @@ class LaunchHistoryPresenterImpl(
 
     override fun addLaunchList(stats: List<HistoryStatsModel>) {
         view.updatePieChart(stats, false)
-        view.setSuccessRate(stats)
+        view.setSuccessRate(stats, false)
     }
 
     override fun showFilter(filterVisible: Boolean) {
@@ -79,7 +79,7 @@ class LaunchHistoryPresenterImpl(
             view.apply {
                 hideProgress()
                 updatePieChart(launchesList, animate)
-                setSuccessRate(launchesList)
+                setSuccessRate(launchesList, animate)
             }
         }
     }

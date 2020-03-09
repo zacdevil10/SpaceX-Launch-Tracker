@@ -88,7 +88,7 @@ class LaunchHistoryTest {
             showProgress()
             hideProgress()
             updatePieChart(historyList, false)
-            setSuccessRate(historyList)
+            setSuccessRate(historyList, false)
         }
     }
 
@@ -104,7 +104,7 @@ class LaunchHistoryTest {
         mPresenter.addLaunchList(historyList)
 
         verify(mView).updatePieChart(historyList, false)
-        verify(mView).setSuccessRate(historyList)
+        verify(mView).setSuccessRate(historyList, false)
     }
 
     @Test

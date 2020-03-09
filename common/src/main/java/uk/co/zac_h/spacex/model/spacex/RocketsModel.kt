@@ -15,9 +15,9 @@ data class RocketsModel(
     @field:Json(name = "first_flight") var firstFlight: String,
     @field:Json(name = "country") var country: String,
     @field:Json(name = "company") var company: String,
-    @field:Json(name = "height") var height: RocketDimensModel,
-    @field:Json(name = "diameter") var diameter: RocketDimensModel,
-    @field:Json(name = "mass") var mass: RocketMassModel,
+    @field:Json(name = "height") var height: DimensModel,
+    @field:Json(name = "diameter") var diameter: DimensModel,
+    @field:Json(name = "mass") var mass: MassModel,
     @field:Json(name = "payload_weights") var payloadWeightsList: List<PayloadWeightsModel>,
     @field:Json(name = "first_stage") var firstStage: FirstStageModel,
     @field:Json(name = "second_stage") var secondStage: SecondStageModel,
@@ -28,18 +28,6 @@ data class RocketsModel(
     @field:Json(name = "rocket_id") var rocketId: String,
     @field:Json(name = "rocket_name") var rocketName: String,
     @field:Json(name = "rocket_type") var rocketType: String
-) : Parcelable
-
-@Parcelize
-data class RocketDimensModel(
-    @field:Json(name = "meters") var meters: Double,
-    @field:Json(name = "feet") var feet: Double
-) : Parcelable
-
-@Parcelize
-data class RocketMassModel(
-    @field:Json(name = "kg") var kg: Int,
-    @field:Json(name = "lb") var lb: Int
 ) : Parcelable
 
 @Parcelize
@@ -66,12 +54,6 @@ data class SecondStageModel(
     @field:Json(name = "fuel_amount_tons") var fuelAmountTons: Double,
     @field:Json(name = "burn_time_sec") var burnTimeSec: Int?,
     @field:Json(name = "thrust") var thrust: ThrustModel
-) : Parcelable
-
-@Parcelize
-data class ThrustModel(
-    @field:Json(name = "kN") var kN: Int,
-    @field:Json(name = "lbf") var lbf: Int
 ) : Parcelable
 
 @Parcelize

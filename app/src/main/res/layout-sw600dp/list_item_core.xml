@@ -15,11 +15,11 @@
         android:layout_marginBottom="8dp"
         android:clickable="true"
         android:focusable="true"
+        app:cardElevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:cardElevation="4dp">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -27,26 +27,49 @@
 
             <TextView
                 android:id="@+id/list_item_core_serial"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:gravity="bottom"
                 android:textAppearance="?textAppearanceHeadline6"
-                app:layout_constraintEnd_toEndOf="@id/list_item_core_block_text"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Merlin1A" />
+
+            <View
+                android:id="@+id/list_item_core_title_separator"
+                android:layout_width="2dp"
+                android:layout_height="2dp"
+                android:layout_marginStart="8dp"
+                android:background="@color/color_on_background"
+                app:layout_constraintBottom_toBottomOf="@id/list_item_core_serial"
+                app:layout_constraintStart_toEndOf="@id/list_item_core_serial"
+                app:layout_constraintTop_toTopOf="@id/list_item_core_serial" />
 
             <TextView
                 android:id="@+id/list_item_core_block_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="24dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/list_item_core_serial"
+                app:layout_constraintStart_toEndOf="@id/list_item_core_title_separator"
+                app:layout_constraintTop_toTopOf="@id/list_item_core_serial"
                 tools:text="Block 5" />
+
+            <TextView
+                android:id="@+id/list_item_core_status_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="24dp"
+                android:textAlignment="textEnd"
+                app:layout_constraintBottom_toBottomOf="@id/list_item_core_block_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/list_item_core_block_text"
+                app:layout_constraintTop_toTopOf="@id/list_item_core_block_text"
+                tools:text="Retired" />
 
             <TextView
                 android:id="@+id/list_item_core_details"
@@ -61,27 +84,27 @@
                 tools:text="Engine failure at T+33 seconds resulted in loss of vehicle" />
 
             <TextView
-                android:id="@+id/list_item_core_status_label"
+                android:id="@+id/list_item_core_flights_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
-                android:text="@string/status_label"
+                android:text="@string/flights_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_core_details" />
 
             <TextView
-                android:id="@+id/list_item_core_status_text"
+                android:id="@+id/list_item_core_flights_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="24dp"
                 android:textAlignment="textEnd"
-                app:layout_constraintBottom_toBottomOf="@id/list_item_core_status_label"
+                app:layout_constraintBottom_toBottomOf="@id/list_item_core_flights_label"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/list_item_core_status_label"
-                app:layout_constraintTop_toTopOf="@id/list_item_core_status_label"
-                tools:text="Retired" />
+                app:layout_constraintStart_toEndOf="@id/list_item_core_flights_label"
+                app:layout_constraintTop_toTopOf="@id/list_item_core_flights_label"
+                tools:text="4" />
 
             <TextView
                 android:id="@+id/list_item_core_date_label"
@@ -91,14 +114,14 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/first_flight_label"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/list_item_core_status_label" />
+                app:layout_constraintTop_toBottomOf="@id/list_item_core_flights_label" />
 
             <TextView
                 android:id="@+id/list_item_core_date_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="24dp"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/list_item_core_date_label"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -106,29 +129,18 @@
                 app:layout_constraintTop_toTopOf="@id/list_item_core_date_label"
                 tools:text="23 Nov 19 - 23:00" />
 
-            <View
-                android:id="@+id/list_item_separator"
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="8dp"
-                android:background="#1FFFFFFF"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/list_item_core_date_label" />
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/list_item_core_specs_button"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="@string/details_label"
+                android:text="@string/core_specs_label"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/list_item_separator" />
+                app:layout_constraintTop_toBottomOf="@id/list_item_core_date_label" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

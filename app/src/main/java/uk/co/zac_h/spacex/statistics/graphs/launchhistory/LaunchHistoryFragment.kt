@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
+import android.animation.ValueAnimator
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
@@ -193,21 +194,44 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
         }
     }
 
-    override fun setSuccessRate(stats: List<HistoryStatsModel>) {
+    override fun setSuccessRate(stats: List<HistoryStatsModel>, animate: Boolean) {
         stats.forEach {
             when (it.name) {
                 "falcon1" -> {
-                    launch_history_falcon_one_rate_progress.progress = it.successRate
+                    if (animate) ValueAnimator.ofInt(0, it.successRate).apply {
+                        duration = 1000
+                        addUpdateListener { valueAnim ->
+                            launch_history_falcon_one_rate_progress.progress =
+                                valueAnim.animatedValue as Int
+                        }
+                    }.start() else launch_history_falcon_one_rate_progress.progress = it.successRate
+
                     launch_history_falcon_one_percent_text.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }
                 "falcon9" -> {
-                    launch_history_falcon_nine_rate_progress.progress = it.successRate
+                    if (animate) ValueAnimator.ofInt(0, it.successRate).apply {
+                        duration = 1000
+                        addUpdateListener { valueAnim ->
+                            launch_history_falcon_nine_rate_progress.progress =
+                                valueAnim.animatedValue as Int
+                        }
+                    }.start() else launch_history_falcon_nine_rate_progress.progress =
+                        it.successRate
+
                     launch_history_falcon_nine_percent_text.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }
                 "falconheavy" -> {
-                    launch_history_falcon_heavy_rate_progress.progress = it.successRate
+                    if (animate) ValueAnimator.ofInt(0, it.successRate).apply {
+                        duration = 1000
+                        addUpdateListener { valueAnim ->
+                            launch_history_falcon_heavy_rate_progress.progress =
+                                valueAnim.animatedValue as Int
+                        }
+                    }.start() else launch_history_falcon_nine_rate_progress.progress =
+                        it.successRate
+
                     launch_history_falcon_heavy_percent_text.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }

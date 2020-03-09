@@ -21,7 +21,7 @@ class VehiclesFragment : Fragment() {
 
         vehicles_view_pager.apply {
             adapter = VehiclesPagerAdapter(childFragmentManager)
-            offscreenPageLimit = 2
+            offscreenPageLimit = 3
         }
         vehicles_tab_layout.setupWithViewPager(vehicles_view_pager)
     }

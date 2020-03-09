@@ -137,6 +137,7 @@
     <string name="rocket_image_desc">Rocket Image</string>
     <string name="measurements">%1$s m / %2$s ft</string>
     <string name="mass_formatted">%1$s kg / %2$s lbs</string>
+    <string name="volume_formatted">%1$s m\u00B3 / %2$s ft\u00B3</string>
     <string name="ton_format">%1$s t</string>
     <string name="thrust">%1$s kN / %2$s lbf</string>
     <string name="seconds_format">%1$d s</string>
@@ -165,6 +166,27 @@
     <string name="oldest_first_label">Oldest first</string>
     <string name="filter_label">Filter</string>
     <string name="reload_label">Reload</string>
+    <string name="specs_label">Specs</string>
+    <string name="amount_label">Amount</string>
+    <string name="pods_label">Pods</string>
+    <string name="fuel_1_label">Fuel 1</string>
+    <string name="fuel_2_label">Fuel 2</string>
+    <string name="core_specs_label">Core Specs</string>
+    <string name="crew_capacity_label">Crew Capacity</string>
+    <string name="dry_mass_label">Dry Mass</string>
+    <string name="heat_shield_label">Heat Shield</string>
+    <string name="material_label">Material</string>
+    <string name="size_label">Size</string>
+    <string name="temperature_label">Temperature</string>
+    <string name="thrusters_label">Thrusters</string>
+    <string name="launch_mass_label">Launch Mass</string>
+    <string name="return_mass_label">Return Mass</string>
+    <string name="launch_volume_label">Launch Volume</string>
+    <string name="return_volume_label">Return Volume</string>
+    <string name="pressurized_volume_label">Pressurized Volume</string>
+    <string name="trunk_volume_label">Trunk Volume</string>
+    <string name="solar_array_label">Solar Array</string>
+    <string name="unpressurized_cargo_label">Unpressurized Cargo</string>
 
     <!-- Network -->
     <string name="network_connection">No network connection detected!</string>
@@ -172,7 +194,6 @@
 
     <!-- Theme -->
     <string name="dark_theme_label">Dark theme</string>
-
 
     <string-array name="order">
         <item>Hot</item>

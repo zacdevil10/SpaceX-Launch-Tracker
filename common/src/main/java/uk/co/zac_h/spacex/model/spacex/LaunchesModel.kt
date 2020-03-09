@@ -20,7 +20,7 @@ data class LaunchesModel(
     @field:Json(name = "launch_site") var launchSite: LaunchSiteModel,
     @field:Json(name = "launch_success") var success: Boolean?,
     @field:Json(name = "links") var links: LaunchLinksModel,
-    @field:Json(name = "details") var details: String,
+    @field:Json(name = "details") var details: String?,
     @field:Json(name = "upcoming") var upcoming: Boolean,
     @field:Json(name = "static_fire_date_utc") var staticFireDateUTC: String?,
     @field:Json(name = "static_fire_date_unix") var staticFireDateUnix: Long?

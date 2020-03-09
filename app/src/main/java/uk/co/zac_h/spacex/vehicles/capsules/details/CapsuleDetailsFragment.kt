@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.android.synthetic.main.fragment_capsule_details.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.CapsulesModel
@@ -19,6 +20,8 @@ class CapsuleDetailsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sharedElementEnterTransition = context?.let { MaterialContainerTransform(it) }
 
         capsule = arguments?.getParcelable("capsule") as CapsulesModel?
     }
@@ -33,6 +36,8 @@ class CapsuleDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         capsule?.let {
+            capsule_details_scrollview.transitionName = it.serial
+
             capsule_details_type_text.text = it.type
             capsule_details_text.text = it.details
             capsule_details_status_text.text = it.status.capitalize()
