@@ -17,6 +17,9 @@
             app:exitAnim="@android:anim/fade_out"
             app:popEnterAnim="@android:anim/fade_in"
             app:popExitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_dashboard_page_fragment_to_dashboard_edit_dialog"
+            app:destination="@id/dashboard_edit_dialog" />
     </fragment>
 
     <fragment
@@ -185,5 +188,9 @@
     <dialog
         android:id="@+id/theme_alert_dialog"
         android:name="uk.co.zac_h.spacex.utils.ThemeAlertDialog" />
+
+    <dialog
+        android:id="@+id/dashboard_edit_dialog"
+        android:name="uk.co.zac_h.spacex.utils.DashboardEditDialog" />
 
 </navigation>

@@ -10,4 +10,10 @@ interface DashboardPresenter {
 
     fun cancelRequests()
 
+    fun toggleNextLaunchVisibility(visible: Boolean)
+
+    fun toggleLatestLaunchVisibility(visible: Boolean)
+
+    fun togglePinnedList(visible: Boolean)
+
 }

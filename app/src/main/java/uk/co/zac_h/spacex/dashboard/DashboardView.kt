@@ -4,9 +4,9 @@ import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 
 interface DashboardView {
 
-    fun setLaunchesList(launches: LinkedHashMap<String, LaunchesModel>)
+    fun updateNextLaunch(nextLaunch: LaunchesModel)
 
-    fun updateLaunchesList()
+    fun updateLatestLaunch(latestLaunch: LaunchesModel)
 
     fun updatePinnedList(pinned: LinkedHashMap<String, LaunchesModel>)
 
@@ -25,6 +25,18 @@ interface DashboardView {
     fun showCountdown()
 
     fun hideCountdown()
+
+    fun showNextLaunch()
+
+    fun hideNextLaunch()
+
+    fun showLatestLaunch()
+
+    fun hideLatestLaunch()
+
+    fun showPinnedList()
+
+    fun hidePinnedList()
 
     fun toggleSwipeProgress(isRefreshing: Boolean)
 

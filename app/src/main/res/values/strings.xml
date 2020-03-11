@@ -195,6 +195,8 @@
     <!-- Theme -->
     <string name="dark_theme_label">Dark theme</string>
 
+    <string name="edit_label">Edit</string>
+
     <string-array name="order">
         <item>Hot</item>
         <item>New</item>

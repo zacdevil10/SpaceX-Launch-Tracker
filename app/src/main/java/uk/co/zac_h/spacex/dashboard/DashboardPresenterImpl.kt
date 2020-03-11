@@ -12,23 +12,17 @@ class DashboardPresenterImpl(
 ) : DashboardPresenter,
     DashboardInteractor.InteractorCallback {
 
-    private val launchesMap = LinkedHashMap<String, LaunchesModel>()
     private val pinnedLaunches = LinkedHashMap<String, LaunchesModel>()
 
     override fun getLatestLaunches(api: SpaceXInterface) {
         view.showProgress()
         view.showPinnedMessage()
 
-        launchesMap.clear()
         pinnedLaunches.clear()
 
-        if (launchesMap.isEmpty()) {
-            interactor.apply {
-                getSingleLaunch("next", api, this@DashboardPresenterImpl)
-                getSingleLaunch("latest", api, this@DashboardPresenterImpl)
-            }
-
-            view.setLaunchesList(launchesMap)
+        interactor.apply {
+            getSingleLaunch("next", api, this@DashboardPresenterImpl)
+            getSingleLaunch("latest", api, this@DashboardPresenterImpl)
         }
 
         if (pinnedLaunches.isEmpty()) {
@@ -72,35 +66,51 @@ class DashboardPresenterImpl(
         interactor.cancelAllRequests()
     }
 
+    override fun toggleNextLaunchVisibility(visible: Boolean) {
+        view.apply {
+            if (visible) showNextLaunch() else hideNextLaunch()
+        }
+    }
+
+    override fun toggleLatestLaunchVisibility(visible: Boolean) {
+        view.apply {
+            if (visible) showLatestLaunch() else hideLatestLaunch()
+        }
+    }
+
+    override fun togglePinnedList(visible: Boolean) {
+        view.apply {
+            if (visible) showPinnedList() else hidePinnedList()
+        }
+    }
+
     override fun onSuccess(id: String, launchesModel: LaunchesModel?) {
-        launchesModel?.let {
+        launchesModel?.let { launchModel ->
             when (id) {
-                "next", "latest" -> {
-                    launchesMap[id] = it
+                "next" -> {
+                    view.updateNextLaunch(launchModel)
+                    launchModel.let { launch ->
+                        launch.tbd?.let {
+                            if (!it) {
+                                view.apply {
+                                    setCountdown(launch.launchDateUnix)
+                                    showCountdown()
+                                }
+                            } else {
+                                view.hideCountdown()
+                            }
+                        }
+                    }
                 }
+                "latest" -> view.updateLatestLaunch(launchModel)
                 else -> {
-                    pinnedLaunches[id] = it
+                    pinnedLaunches[id] = launchModel
                     view.hidePinnedMessage()
                     view.updatePinnedList(pinnedLaunches)
                 }
             }
         }
 
-        if (launchesMap.size == 2) {
-            launchesMap["next"]?.let { launch ->
-                launch.tbd?.let {
-                    if (!it) {
-                        view.apply {
-                            setCountdown(launch.launchDateUnix)
-                            showCountdown()
-                        }
-                    } else {
-                        view.hideCountdown()
-                    }
-                }
-            }
-            view.updateLaunchesList()
-        }
         if (!interactor.hasActiveRequest()) view.hideProgress()
         view.toggleSwipeProgress(false)
     }
