@@ -122,6 +122,7 @@ class DashboardFragment : Fragment(), DashboardView,
     override fun onResume() {
         super.onResume()
         dashboard_swipe_refresh.isEnabled = true
+        presenter?.getLatestLaunches(nextLaunchModel, latestLaunchModel)
     }
 
     override fun onPause() {
@@ -199,6 +200,10 @@ class DashboardFragment : Fragment(), DashboardView,
                 FragmentNavigatorExtras(dashboard_next_card_view to nextLaunch.flightNumber.toString())
             )
         }
+
+        pinnedArray.forEach {
+            if (it.flightNumber == nextLaunch.flightNumber) pinnedArray.remove(it)
+        }
     }
 
     override fun updateLatestLaunch(latestLaunch: LaunchesModel) {
@@ -237,6 +242,10 @@ class DashboardFragment : Fragment(), DashboardView,
                 null,
                 FragmentNavigatorExtras(dashboard_latest_card_view to latestLaunch.flightNumber.toString())
             )
+        }
+
+        pinnedArray.forEach {
+            if (it.flightNumber == latestLaunch.flightNumber) pinnedArray.remove(it)
         }
     }
 
