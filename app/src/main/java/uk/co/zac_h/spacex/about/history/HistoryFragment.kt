@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,7 +43,7 @@ class HistoryFragment : Fragment(), HistoryView,
 
         presenter = HistoryPresenterImpl(this, HistoryInteractorImpl())
 
-        historyAdapter = HistoryAdapter(history, this)
+        historyAdapter = HistoryAdapter(requireContext(), history, this)
 
         val isTabletLand = context?.resources?.getBoolean(R.bool.isTabletLand)
 
@@ -104,9 +103,8 @@ class HistoryFragment : Fragment(), HistoryView,
         this.history.clear()
         this.history.addAll(history)
 
-        history_recycler.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_right)
         historyAdapter.notifyDataSetChanged()
+
         history_recycler.scheduleLayoutAnimation()
     }
 
