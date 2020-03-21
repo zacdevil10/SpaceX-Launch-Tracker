@@ -35,7 +35,7 @@ class DashboardPinnedAdapter(
         val launch = launches[position]
 
         holder.apply {
-            itemView.transitionName = launch.flightNumber.toString()
+            launchesCard.transitionName = launch.flightNumber.toString()
 
             launch.let {
                 missionPatch.visibility =
@@ -61,7 +61,7 @@ class DashboardPinnedAdapter(
                         R.id.action_dashboard_page_fragment_to_launch_details_fragment,
                         bundleOf("launch" to it, "title" to it.missionName),
                         null,
-                        FragmentNavigatorExtras(itemView to launch.flightNumber.toString())
+                        FragmentNavigatorExtras(launchesCard to launch.flightNumber.toString())
                     )
                 }
             }
@@ -70,7 +70,7 @@ class DashboardPinnedAdapter(
 
     override fun getItemCount(): Int = launches.size
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val launchesCard: CardView = itemView.findViewById(R.id.launches_card_view)
         val missionPatch: ImageView = itemView.findViewById(R.id.launches_mission_patch_image)
         val flightNumber: TextView = itemView.findViewById(R.id.launches_flight_no_text)

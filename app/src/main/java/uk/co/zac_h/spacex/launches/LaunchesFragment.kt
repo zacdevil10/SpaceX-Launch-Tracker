@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_launches.*
 import uk.co.zac_h.spacex.R
@@ -19,6 +20,9 @@ class LaunchesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
 
         launches_view_pager.adapter = LaunchesPagerAdapter(childFragmentManager)
         launches_tab_layout.setupWithViewPager(launches_view_pager)

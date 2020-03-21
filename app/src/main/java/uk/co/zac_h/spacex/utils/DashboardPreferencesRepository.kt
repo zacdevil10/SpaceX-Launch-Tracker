@@ -3,15 +3,18 @@ package uk.co.zac_h.spacex.utils
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_SECTION
 
-class DashboardPreferencesRepository(private val sharedPreferences: SharedPreferences) {
-
+object DashboardObj {
     var PREFERENCES_SECTION = ""
 
-    val PREFERENCES_NEXT_LAUNCH = "next_launch"
-    val PREFERENCES_LATEST_LAUNCH = "latest_launch"
-    val PREFERENCES_PINNED_LAUNCH = "pinned_launch"
-    val PREFERENCES_LATEST_NEWS = "latest_news"
+    const val PREFERENCES_NEXT_LAUNCH = "next_launch"
+    const val PREFERENCES_LATEST_LAUNCH = "latest_launch"
+    const val PREFERENCES_PINNED_LAUNCH = "pinned_launch"
+    const val PREFERENCES_LATEST_NEWS = "latest_news"
+}
+
+class DashboardPreferencesRepository(private val sharedPreferences: SharedPreferences) {
 
     fun visible(section: String): MutableMap<String, *> = mutableMapOf(
         section to sharedPreferences.getBoolean(
@@ -37,24 +40,7 @@ class DashboardPreferencesRepository(private val sharedPreferences: SharedPrefer
 
     private val preferenceChangedListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-            when (key) {
-                PREFERENCES_NEXT_LAUNCH -> {
-                    PREFERENCES_SECTION = PREFERENCES_NEXT_LAUNCH
-                    visibleLiveData.value = visible(PREFERENCES_SECTION)
-                }
-                PREFERENCES_LATEST_LAUNCH -> {
-                    PREFERENCES_SECTION = PREFERENCES_LATEST_LAUNCH
-                    visibleLiveData.value = visible(PREFERENCES_SECTION)
-                }
-                PREFERENCES_PINNED_LAUNCH -> {
-                    PREFERENCES_SECTION = PREFERENCES_PINNED_LAUNCH
-                    visibleLiveData.value = visible(PREFERENCES_SECTION)
-                }
-                PREFERENCES_LATEST_NEWS -> {
-                    PREFERENCES_SECTION = PREFERENCES_LATEST_NEWS
-                    visibleLiveData.value = visible(PREFERENCES_SECTION)
-                }
-            }
+            visibleLiveData.value = allVisible
         }
 
     init {

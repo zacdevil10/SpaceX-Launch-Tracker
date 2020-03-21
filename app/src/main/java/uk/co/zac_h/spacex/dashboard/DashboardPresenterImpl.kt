@@ -14,26 +14,32 @@ class DashboardPresenterImpl(
 
     private val pinnedLaunches = LinkedHashMap<String, LaunchesModel>()
 
-    override fun getLatestLaunches(api: SpaceXInterface) {
+    override fun getLatestLaunches(
+        next: LaunchesModel?,
+        latest: LaunchesModel?,
+        pinned: List<LaunchesModel>?,
+        api: SpaceXInterface
+    ) {
         view.showProgress()
         view.showPinnedMessage()
 
-        pinnedLaunches.clear()
-
         interactor.apply {
-            getSingleLaunch("next", api, this@DashboardPresenterImpl)
-            getSingleLaunch("latest", api, this@DashboardPresenterImpl)
-        }
+            if (next == null)
+                getSingleLaunch("next", api, this@DashboardPresenterImpl)
+            else
+                onSuccess("next", next)
 
-        if (pinnedLaunches.isEmpty()) {
-            interactor.apply {
-                prefs.getAllPinnedLaunches()?.forEach {
-                    if (it.value as Boolean) getSingleLaunch(
-                        it.key,
-                        api,
-                        this@DashboardPresenterImpl
-                    )
-                }
+            if (latest == null)
+                getSingleLaunch("latest", api, this@DashboardPresenterImpl)
+            else
+                onSuccess("latest", latest)
+
+            if (pinned.isNullOrEmpty()) prefs.getAllPinnedLaunches()?.forEach {
+                if (it.value as Boolean) getSingleLaunch(
+                    it.key,
+                    api,
+                    this@DashboardPresenterImpl
+                )
             }
         }
     }
@@ -91,9 +97,11 @@ class DashboardPresenterImpl(
                     view.updateNextLaunch(launchModel)
                     launchModel.let { launch ->
                         launch.tbd?.let {
-                            if (!it) {
+                            val time =
+                                launch.launchDateUnix.times(1000) - System.currentTimeMillis()
+                            if (!it && time >= 0) {
                                 view.apply {
-                                    setCountdown(launch.launchDateUnix)
+                                    setCountdown(time)
                                     showCountdown()
                                 }
                             } else {
@@ -106,7 +114,7 @@ class DashboardPresenterImpl(
                 else -> {
                     pinnedLaunches[id] = launchModel
                     view.hidePinnedMessage()
-                    view.updatePinnedList(pinnedLaunches)
+                    view.updatePinnedList(pinnedLaunches.values)
                 }
             }
         }

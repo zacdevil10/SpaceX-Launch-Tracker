@@ -6,6 +6,7 @@ import android.os.CountDownTimer
 import android.view.*
 import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -17,9 +18,12 @@ import kotlinx.android.synthetic.main.list_item_latest_launch.*
 import kotlinx.android.synthetic.main.list_item_next_launch.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.dashboard.adapters.DashboardLaunchesAdapter
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardPinnedAdapter
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_LATEST_LAUNCH
+import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_LATEST_NEWS
+import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_NEXT_LAUNCH
+import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_PINNED_LAUNCH
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.formatBlockNumber
@@ -32,10 +36,12 @@ class DashboardFragment : Fragment(), DashboardView,
     private var presenter: DashboardPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
-    private lateinit var dashboardLaunchesAdapter: DashboardLaunchesAdapter
+    private var nextLaunchModel: LaunchesModel? = null
+    private var latestLaunchModel: LaunchesModel? = null
+
     private lateinit var pinnedAdapter: DashboardPinnedAdapter
 
-    private val pinnedArray = ArrayList<LaunchesModel>()
+    private lateinit var pinnedArray: ArrayList<LaunchesModel>
 
     private var countdownTimer: CountDownTimer? = null
 
@@ -43,17 +49,28 @@ class DashboardFragment : Fragment(), DashboardView,
         super.onCreate(savedInstanceState)
 
         setHasOptionsMenu(true)
+
+        savedInstanceState?.let {
+            nextLaunchModel = it.getParcelable("next")
+            latestLaunchModel = it.getParcelable("latest")
+        }
+
+        pinnedArray = savedInstanceState?.let {
+            it.getParcelableArrayList<LaunchesModel>("pinned") as ArrayList<LaunchesModel>
+        } ?: ArrayList()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
-        inflater.inflate(R.layout.fragment_dashboard, container, false)
+    ): View? = inflater.inflate(R.layout.fragment_dashboard, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
 
         pinnedSharedPreferences = PinnedSharedPreferencesHelperImpl(
             context?.getSharedPreferences(
@@ -68,7 +85,6 @@ class DashboardFragment : Fragment(), DashboardView,
 
         dashboard_pinned_launches_recycler.apply {
             layoutManager = LinearLayoutManager(this@DashboardFragment.context)
-            setHasFixedSize(true)
             adapter = pinnedAdapter
         }
 
@@ -78,13 +94,13 @@ class DashboardFragment : Fragment(), DashboardView,
             mode?.let {
                 it.forEach { elements ->
                     when (elements.key) {
-                        prefs.PREFERENCES_NEXT_LAUNCH ->
+                        PREFERENCES_NEXT_LAUNCH ->
                             presenter?.toggleNextLaunchVisibility(elements.value as Boolean)
-                        prefs.PREFERENCES_LATEST_LAUNCH ->
+                        PREFERENCES_LATEST_LAUNCH ->
                             presenter?.toggleLatestLaunchVisibility(elements.value as Boolean)
-                        prefs.PREFERENCES_PINNED_LAUNCH ->
+                        PREFERENCES_PINNED_LAUNCH ->
                             presenter?.togglePinnedList(elements.value as Boolean)
-                        prefs.PREFERENCES_LATEST_NEWS -> {
+                        PREFERENCES_LATEST_NEWS -> {
                         }
                     }
                 }
@@ -95,7 +111,7 @@ class DashboardFragment : Fragment(), DashboardView,
             presenter?.getLatestLaunches()
         }
 
-        presenter?.getLatestLaunches()
+        presenter?.getLatestLaunches(nextLaunchModel, latestLaunchModel, pinnedArray)
     }
 
     override fun onStart() {
@@ -103,15 +119,26 @@ class DashboardFragment : Fragment(), DashboardView,
         (context?.applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
+    override fun onResume() {
+        super.onResume()
+        dashboard_swipe_refresh.isEnabled = true
+    }
+
     override fun onPause() {
         super.onPause()
-        pinnedArray.clear()
         dashboard_swipe_refresh.isEnabled = false
     }
 
     override fun onStop() {
         super.onStop()
         (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        nextLaunchModel?.let { outState.putParcelable("next", it) }
+        latestLaunchModel?.let { outState.putParcelable("latest", it) }
+        outState.putParcelableArrayList("pinned", pinnedArray)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
@@ -136,6 +163,8 @@ class DashboardFragment : Fragment(), DashboardView,
     }
 
     override fun updateNextLaunch(nextLaunch: LaunchesModel) {
+        nextLaunchModel = nextLaunch
+
         dashboard_next_card_view.visibility = View.VISIBLE
 
         dashboard_next_card_view.transitionName = nextLaunch.flightNumber.toString()
@@ -162,7 +191,10 @@ class DashboardFragment : Fragment(), DashboardView,
         dashboard_next_card_view.setOnClickListener { _ ->
             findNavController().navigate(
                 R.id.action_dashboard_page_fragment_to_launch_details_fragment,
-                bundleOf("launch" to nextLaunch, "title" to nextLaunch.missionName),
+                bundleOf(
+                    "launch" to nextLaunch,
+                    "title" to nextLaunch.missionName
+                ),
                 null,
                 FragmentNavigatorExtras(dashboard_next_card_view to nextLaunch.flightNumber.toString())
             )
@@ -170,6 +202,8 @@ class DashboardFragment : Fragment(), DashboardView,
     }
 
     override fun updateLatestLaunch(latestLaunch: LaunchesModel) {
+        latestLaunchModel = latestLaunch
+
         dashboard_latest_card_view.visibility = View.VISIBLE
 
         dashboard_latest_card_view.transitionName = latestLaunch.flightNumber.toString()
@@ -196,23 +230,33 @@ class DashboardFragment : Fragment(), DashboardView,
         dashboard_latest_card_view.setOnClickListener { _ ->
             findNavController().navigate(
                 R.id.action_dashboard_page_fragment_to_launch_details_fragment,
-                bundleOf("launch" to latestLaunch, "title" to latestLaunch.missionName),
+                bundleOf(
+                    "launch" to latestLaunch,
+                    "title" to latestLaunch.missionName
+                ),
                 null,
                 FragmentNavigatorExtras(dashboard_latest_card_view to latestLaunch.flightNumber.toString())
             )
         }
     }
 
-    override fun updatePinnedList(pinned: LinkedHashMap<String, LaunchesModel>) {
+    override fun updatePinnedList(pinned: MutableCollection<LaunchesModel>) {
         pinnedArray.clear()
-        pinnedArray.addAll(pinned.values)
+
+        pinned.forEach {
+            if (it.flightNumber == nextLaunchModel?.flightNumber ?: -1
+                || it.flightNumber == latestLaunchModel?.flightNumber ?: -1
+            ) {
+                return@forEach
+            } else {
+                pinnedArray.add(it)
+            }
+        }
 
         pinnedAdapter.notifyDataSetChanged()
     }
 
-    override fun setCountdown(launchDateUnix: Long) {
-        val time = launchDateUnix.times(1000) - System.currentTimeMillis()
-
+    override fun setCountdown(time: Long) {
         countdownTimer?.cancel()
         countdownTimer = object : CountDownTimer(time, 1000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -289,7 +333,11 @@ class DashboardFragment : Fragment(), DashboardView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            presenter?.getLatestLaunches()
+            if (nextLaunchModel == null
+                || latestLaunchModel == null
+                || pinnedArray.isEmpty()
+                || dashboard_progress_bar.visibility == View.VISIBLE
+            ) presenter?.getLatestLaunches()
         }
     }
 }

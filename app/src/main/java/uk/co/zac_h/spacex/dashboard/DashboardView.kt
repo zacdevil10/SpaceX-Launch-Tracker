@@ -8,11 +8,11 @@ interface DashboardView {
 
     fun updateLatestLaunch(latestLaunch: LaunchesModel)
 
-    fun updatePinnedList(pinned: LinkedHashMap<String, LaunchesModel>)
+    fun updatePinnedList(pinned: MutableCollection<LaunchesModel>)
 
     fun updateCountdown(countdown: String)
 
-    fun setCountdown(launchDateUnix: Long)
+    fun setCountdown(time: Long)
 
     fun showPinnedMessage()
 

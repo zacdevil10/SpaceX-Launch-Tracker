@@ -48,8 +48,9 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        sharedElementEnterTransition = context?.let { MaterialContainerTransform(it) }
-        sharedElementReturnTransition = context?.let { MaterialContainerTransform(it) }
+        postponeEnterTransition()
+
+        sharedElementEnterTransition = MaterialContainerTransform(requireContext())
 
         launch = if (savedInstanceState != null) {
             savedInstanceState.getParcelable("launch")
@@ -124,6 +125,8 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
         launch_details_payload_collapse_toggle.setOnCheckedChangeListener { compoundButton, _ ->
             compoundButton.startAnimation(rotation)
         }
+
+        startPostponedEnterTransition()
     }
 
     override fun onResume() {
@@ -211,7 +214,9 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
     override fun updateLaunchDataView(launch: LaunchesModel?) {
         launch?.let {
             this.launch = launch
+
             launch_details_scroll_view.transitionName = it.flightNumber.toString()
+
             if (id == null) id = launch.flightNumber.toString()
 
             launch_details_mission_patch_image.visibility =
