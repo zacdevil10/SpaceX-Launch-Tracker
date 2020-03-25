@@ -2,22 +2,17 @@ package uk.co.zac_h.spacex.dashboard
 
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
-import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import java.util.concurrent.TimeUnit
 
 class DashboardPresenterImpl(
     private val view: DashboardView,
-    private val prefs: PinnedSharedPreferencesHelper,
     private val interactor: DashboardInteractor
 ) : DashboardPresenter,
     DashboardInteractor.InteractorCallback {
 
-    private val pinnedLaunches = LinkedHashMap<String, LaunchesModel>()
-
     override fun getLatestLaunches(
         next: LaunchesModel?,
         latest: LaunchesModel?,
-        pinned: List<LaunchesModel>?,
         api: SpaceXInterface
     ) {
         view.showProgress()
@@ -33,15 +28,12 @@ class DashboardPresenterImpl(
                 getSingleLaunch("latest", api, this@DashboardPresenterImpl)
             else
                 onSuccess("latest", latest)
-
-            if (pinned.isNullOrEmpty()) prefs.getAllPinnedLaunches()?.forEach {
-                if (it.value as Boolean) getSingleLaunch(
-                    it.key,
-                    api,
-                    this@DashboardPresenterImpl
-                )
-            }
         }
+    }
+
+    override fun getSingleLaunch(flight: String, api: SpaceXInterface) {
+        view.showProgress()
+        interactor.getSingleLaunch(flight, api, this)
     }
 
     override fun updateCountdown(time: Long) {
@@ -112,9 +104,8 @@ class DashboardPresenterImpl(
                 }
                 "latest" -> view.updateLatestLaunch(launchModel)
                 else -> {
-                    pinnedLaunches[id] = launchModel
                     view.hidePinnedMessage()
-                    view.updatePinnedList(pinnedLaunches.values)
+                    view.updatePinnedList(id, launchModel)
                 }
             }
         }

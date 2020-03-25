@@ -2,7 +2,7 @@ package uk.co.zac_h.spacex.utils
 
 interface PinnedSharedPreferencesHelper {
 
-    fun addPinnedLaunch(id: String)
+    fun setPinnedLaunch(id: String, pinned: Boolean)
 
     fun getAllPinnedLaunches(): MutableMap<String, *>?
 

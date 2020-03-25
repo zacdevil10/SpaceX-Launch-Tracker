@@ -8,7 +8,11 @@ interface DashboardPresenter {
     fun getLatestLaunches(
         next: LaunchesModel? = null,
         latest: LaunchesModel? = null,
-        pinned: List<LaunchesModel>? = null,
+        api: SpaceXInterface = SpaceXInterface.create()
+    )
+
+    fun getSingleLaunch(
+        flight: String,
         api: SpaceXInterface = SpaceXInterface.create()
     )
 

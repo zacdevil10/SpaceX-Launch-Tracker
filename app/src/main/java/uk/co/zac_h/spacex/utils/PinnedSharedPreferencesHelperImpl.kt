@@ -5,8 +5,8 @@ import android.content.SharedPreferences
 class PinnedSharedPreferencesHelperImpl(private val preferences: SharedPreferences?) :
     PinnedSharedPreferencesHelper {
 
-    override fun addPinnedLaunch(id: String) {
-        preferences?.edit()?.putBoolean(id, true)?.apply()
+    override fun setPinnedLaunch(id: String, pinned: Boolean) {
+        preferences?.edit()?.putBoolean(id, pinned)?.apply()
     }
 
     override fun getAllPinnedLaunches(): MutableMap<String, *>? = preferences?.all

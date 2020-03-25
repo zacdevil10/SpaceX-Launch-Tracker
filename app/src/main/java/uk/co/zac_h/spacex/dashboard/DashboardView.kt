@@ -8,7 +8,7 @@ interface DashboardView {
 
     fun updateLatestLaunch(latestLaunch: LaunchesModel)
 
-    fun updatePinnedList(pinned: MutableCollection<LaunchesModel>)
+    fun updatePinnedList(id: String, pinnedLaunch: LaunchesModel)
 
     fun updateCountdown(countdown: String)
 

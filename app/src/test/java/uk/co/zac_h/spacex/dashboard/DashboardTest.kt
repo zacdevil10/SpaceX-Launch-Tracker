@@ -17,7 +17,6 @@ import retrofit2.HttpException
 import retrofit2.Response
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
-import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 
 @ExperimentalCoroutinesApi
 class DashboardTest {
@@ -32,9 +31,6 @@ class DashboardTest {
     @Mock
     val mListener: DashboardInteractor.InteractorCallback =
         mock(DashboardInteractor.InteractorCallback::class.java)
-    @Mock
-    val mPinnedSharedPreferencesHelper: PinnedSharedPreferencesHelper =
-        mock(PinnedSharedPreferencesHelper::class.java)
 
     @Mock
     val mLaunchModel: LaunchesModel = mock(LaunchesModel::class.java)
@@ -46,8 +42,8 @@ class DashboardTest {
         MockitoAnnotations.initMocks(this)
 
         interactor = DashboardInteractorImpl(Dispatchers.Unconfined)
-        mPresenter = DashboardPresenterImpl(mView, mPinnedSharedPreferencesHelper, mInteractor)
-        presenter = DashboardPresenterImpl(mView, mPinnedSharedPreferencesHelper, interactor)
+        mPresenter = DashboardPresenterImpl(mView, mInteractor)
+        presenter = DashboardPresenterImpl(mView, interactor)
 
         prefsMap?.set("1", true)
     }
@@ -60,7 +56,7 @@ class DashboardTest {
     }
 
     @Test
-    fun `When next and latest launch are added then add to view`() {
+    fun `When next and latest launch are requested then add to view`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking { getSingleLaunch("next") } doReturn Response.success(mLaunchModel)
             onBlocking { getSingleLaunch("latest") } doReturn Response.success(mLaunchModel)
@@ -68,12 +64,26 @@ class DashboardTest {
 
         `when`(mLaunchModel.launchDateUnix).thenReturn(1584793994000)
 
-        presenter.getLatestLaunches(mockRepo)
+        presenter.getLatestLaunches(api = mockRepo)
 
-        verifyBlocking(mView) { setCountdown(1584793994000) }
-        verifyBlocking(mView) { showCountdown() }
-        verifyBlocking(mView) { updateLaunchesList() }
+        verifyBlocking(mView) {
+            //setCountdown(1584793994000)
+            showCountdown()
+            updateNextLaunch(mLaunchModel)
+            updateLatestLaunch(mLaunchModel)
+        }
+
         verifyBlocking(mView, times(2)) { toggleSwipeProgress(false) }
+    }
+
+    @Test
+    fun `When next and latest launches are not null then add to view`() {
+        mPresenter.getLatestLaunches(mLaunchModel, mLaunchModel)
+
+        verify(mView).apply {
+            updateNextLaunch(mLaunchModel)
+            updateLatestLaunch(mLaunchModel)
+        }
     }
 
     @Test
@@ -85,7 +95,7 @@ class DashboardTest {
 
         `when`(mLaunchModel.tbd).thenReturn(true)
 
-        presenter.getLatestLaunches(mockRepo)
+        presenter.getLatestLaunches(api = mockRepo)
 
         verifyBlocking(mView) { hideCountdown() }
     }
@@ -96,9 +106,7 @@ class DashboardTest {
             onBlocking { getSingleLaunch("1") } doReturn Response.success(mLaunchModel)
         }
 
-        `when`(mPinnedSharedPreferencesHelper.getAllPinnedLaunches()).thenReturn(prefsMap)
-
-        presenter.getLatestLaunches(mockRepo)
+        presenter.getSingleLaunch("1", api = mockRepo)
 
         verifyBlocking(mView) { hidePinnedMessage() }
     }
@@ -112,7 +120,7 @@ class DashboardTest {
             )
         }
 
-        presenter.getLatestLaunches(mockRepo)
+        presenter.getLatestLaunches(api = mockRepo)
 
         verifyBlocking(mView) { showProgress() }
         verifyBlocking(mView) { showError("Error: 404") }
@@ -149,5 +157,47 @@ class DashboardTest {
         mPresenter.cancelRequests()
 
         verify(mInteractor).cancelAllRequests()
+    }
+
+    @Test
+    fun `Show next launch`() {
+        mPresenter.toggleNextLaunchVisibility(true)
+
+        verify(mView).showNextLaunch()
+    }
+
+    @Test
+    fun `Hide next launch`() {
+        mPresenter.toggleNextLaunchVisibility(false)
+
+        verify(mView).hideNextLaunch()
+    }
+
+    @Test
+    fun `Show latest launch`() {
+        mPresenter.toggleLatestLaunchVisibility(true)
+
+        verify(mView).showLatestLaunch()
+    }
+
+    @Test
+    fun `Hide latest launch`() {
+        mPresenter.toggleLatestLaunchVisibility(false)
+
+        verify(mView).hideLatestLaunch()
+    }
+
+    @Test
+    fun `Show pinned launch list`() {
+        mPresenter.togglePinnedList(true)
+
+        verify(mView).showPinnedList()
+    }
+
+    @Test
+    fun `Hide pinned launch list`() {
+        mPresenter.togglePinnedList(false)
+
+        verify(mView).hidePinnedList()
     }
 }

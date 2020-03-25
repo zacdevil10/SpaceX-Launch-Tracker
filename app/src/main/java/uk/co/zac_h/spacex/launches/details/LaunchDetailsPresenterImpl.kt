@@ -21,10 +21,7 @@ class LaunchDetailsPresenterImpl(
     }
 
     override fun pinLaunch(id: String, pin: Boolean) {
-        when (pin) {
-            true -> helper.addPinnedLaunch(id)
-            false -> helper.removePinnedLaunch(id)
-        }
+        helper.setPinnedLaunch(id, pin)
     }
 
     override fun isPinned(id: String): Boolean = helper.isPinned(id)

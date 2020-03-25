@@ -42,6 +42,7 @@ class DashboardFragment : Fragment(), DashboardView,
     private lateinit var pinnedAdapter: DashboardPinnedAdapter
 
     private lateinit var pinnedArray: ArrayList<LaunchesModel>
+    private lateinit var pinnedKeysArray: ArrayList<String>
 
     private var countdownTimer: CountDownTimer? = null
 
@@ -58,6 +59,8 @@ class DashboardFragment : Fragment(), DashboardView,
         pinnedArray = savedInstanceState?.let {
             it.getParcelableArrayList<LaunchesModel>("pinned") as ArrayList<LaunchesModel>
         } ?: ArrayList()
+
+        pinnedKeysArray = savedInstanceState?.getStringArrayList("pinned_keys") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -72,14 +75,13 @@ class DashboardFragment : Fragment(), DashboardView,
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
+        val pinnedPrefs = (context?.applicationContext as App).pinnedPreferencesRepo
+
         pinnedSharedPreferences = PinnedSharedPreferencesHelperImpl(
-            context?.getSharedPreferences(
-                "pinned",
-                Context.MODE_PRIVATE
-            )
+            context?.getSharedPreferences("pinned", Context.MODE_PRIVATE)
         )
 
-        presenter = DashboardPresenterImpl(this, pinnedSharedPreferences, DashboardInteractorImpl())
+        presenter = DashboardPresenterImpl(this, DashboardInteractorImpl())
 
         pinnedAdapter = DashboardPinnedAdapter(context, pinnedArray)
 
@@ -107,11 +109,28 @@ class DashboardFragment : Fragment(), DashboardView,
             }
         })
 
+        pinnedPrefs.pinnedLive.observe(viewLifecycleOwner, Observer { mode ->
+            mode?.let {
+                it.forEach { element ->
+                    if (element.value as Boolean) {
+                        if (!pinnedKeysArray.contains(element.key)) presenter?.getSingleLaunch(
+                            element.key
+                        )
+                    } else {
+                        pinnedArray.removeAt(pinnedKeysArray.indexOf(element.key))
+                        pinnedAdapter.notifyItemRemoved(pinnedKeysArray.indexOf(element.key))
+                        pinnedKeysArray.remove(element.key)
+                        pinnedSharedPreferences.removePinnedLaunch(element.key)
+                    }
+                }
+            }
+        })
+
         dashboard_swipe_refresh.setOnRefreshListener {
             presenter?.getLatestLaunches()
         }
 
-        presenter?.getLatestLaunches(nextLaunchModel, latestLaunchModel, pinnedArray)
+        presenter?.getLatestLaunches(nextLaunchModel, latestLaunchModel)
     }
 
     override fun onStart() {
@@ -122,7 +141,6 @@ class DashboardFragment : Fragment(), DashboardView,
     override fun onResume() {
         super.onResume()
         dashboard_swipe_refresh.isEnabled = true
-        presenter?.getLatestLaunches(nextLaunchModel, latestLaunchModel)
     }
 
     override fun onPause() {
@@ -139,6 +157,7 @@ class DashboardFragment : Fragment(), DashboardView,
         nextLaunchModel?.let { outState.putParcelable("next", it) }
         latestLaunchModel?.let { outState.putParcelable("latest", it) }
         outState.putParcelableArrayList("pinned", pinnedArray)
+        outState.putStringArrayList("pinned_keys", pinnedKeysArray)
         super.onSaveInstanceState(outState)
     }
 
@@ -192,17 +211,10 @@ class DashboardFragment : Fragment(), DashboardView,
         dashboard_next_card_view.setOnClickListener { _ ->
             findNavController().navigate(
                 R.id.action_dashboard_page_fragment_to_launch_details_fragment,
-                bundleOf(
-                    "launch" to nextLaunch,
-                    "title" to nextLaunch.missionName
-                ),
+                bundleOf("launch" to nextLaunch, "title" to nextLaunch.missionName),
                 null,
                 FragmentNavigatorExtras(dashboard_next_card_view to nextLaunch.flightNumber.toString())
             )
-        }
-
-        pinnedArray.forEach {
-            if (it.flightNumber == nextLaunch.flightNumber) pinnedArray.remove(it)
         }
     }
 
@@ -243,25 +255,13 @@ class DashboardFragment : Fragment(), DashboardView,
                 FragmentNavigatorExtras(dashboard_latest_card_view to latestLaunch.flightNumber.toString())
             )
         }
-
-        pinnedArray.forEach {
-            if (it.flightNumber == latestLaunch.flightNumber) pinnedArray.remove(it)
-        }
     }
 
-    override fun updatePinnedList(pinned: MutableCollection<LaunchesModel>) {
-        pinnedArray.clear()
-
-        pinned.forEach {
-            if (it.flightNumber == nextLaunchModel?.flightNumber ?: -1
-                || it.flightNumber == latestLaunchModel?.flightNumber ?: -1
-            ) {
-                return@forEach
-            } else {
-                pinnedArray.add(it)
-            }
+    override fun updatePinnedList(id: String, pinnedLaunch: LaunchesModel) {
+        if (!pinnedKeysArray.contains(id)) {
+            pinnedArray.add(pinnedLaunch)
+            pinnedKeysArray.add(id)
         }
-
         pinnedAdapter.notifyDataSetChanged()
     }
 

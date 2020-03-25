@@ -91,14 +91,14 @@ class LaunchDetailsTest {
     fun `When pinning a launch then add to shared preferences`() {
         mPresenter.pinLaunch("1", true)
 
-        verify(mPinnedSharedPreferencesHelper).addPinnedLaunch("1")
+        verify(mPinnedSharedPreferencesHelper).setPinnedLaunch("1", true)
     }
 
     @Test
     fun `When unpinning a launch then remove from shared preferences`() {
         mPresenter.pinLaunch("1", false)
 
-        verify(mPinnedSharedPreferencesHelper).removePinnedLaunch("1")
+        verify(mPinnedSharedPreferencesHelper).setPinnedLaunch("1", false)
     }
 
     @Test
