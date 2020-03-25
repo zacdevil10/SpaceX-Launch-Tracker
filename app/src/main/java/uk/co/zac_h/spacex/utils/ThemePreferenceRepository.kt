@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
-class PreferenceRepository(private val sharedPreferences: SharedPreferences) {
+class ThemePreferenceRepository(private val sharedPreferences: SharedPreferences) {
 
     val themeMode: Int
         get() = sharedPreferences.getInt(

@@ -43,7 +43,7 @@ class HistoryFragment : Fragment(), HistoryView,
 
         presenter = HistoryPresenterImpl(this, HistoryInteractorImpl())
 
-        historyAdapter = HistoryAdapter(history, this)
+        historyAdapter = HistoryAdapter(requireContext(), history, this)
 
         val isTabletLand = context?.resources?.getBoolean(R.bool.isTabletLand)
 
@@ -104,6 +104,8 @@ class HistoryFragment : Fragment(), HistoryView,
         this.history.addAll(history)
 
         historyAdapter.notifyDataSetChanged()
+
+        history_recycler.scheduleLayoutAnimation()
     }
 
     override fun openWebLink(link: String) {

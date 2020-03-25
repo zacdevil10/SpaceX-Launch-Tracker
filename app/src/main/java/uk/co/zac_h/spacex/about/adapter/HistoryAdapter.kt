@@ -1,8 +1,10 @@
 package uk.co.zac_h.spacex.about.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
@@ -14,6 +16,7 @@ import uk.co.zac_h.spacex.utils.formatDateMillisDDMMM
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 
 class HistoryAdapter(
+    private var context: Context,
     private var events: ArrayList<HistoryHeaderModel>,
     private var view: HistoryView
 ) :
@@ -50,8 +53,26 @@ class HistoryAdapter(
                     if (position == events.size - 1) View.INVISIBLE else View.VISIBLE
 
                 date.text = event.historyModel?.dateUnix?.formatDateMillisDDMMM()
+                date.startAnimation(
+                    AnimationUtils.loadAnimation(
+                        context,
+                        R.anim.item_animation_from_right
+                    )
+                )
+
                 title.text = event.historyModel?.title
+                title.startAnimation(
+                    AnimationUtils.loadAnimation(
+                        context,
+                        R.anim.item_animation_from_right
+                    ).apply { startOffset = 40 })
+
                 details.text = event.historyModel?.details
+                details.startAnimation(
+                    AnimationUtils.loadAnimation(
+                        context,
+                        R.anim.item_animation_from_right
+                    ).apply { startOffset = 80 })
 
                 event.historyModel?.flightNumber?.let { flight ->
                     launchDetailsButton.setOnClickListener {
@@ -67,12 +88,35 @@ class HistoryAdapter(
 
                 launchDetailsButton.visibility =
                     event.historyModel?.flightNumber?.let { View.VISIBLE } ?: View.GONE
+                launchDetailsButton.startAnimation(
+                    AnimationUtils.loadAnimation(
+                        context,
+                        R.anim.item_animation_from_right
+                    ).apply { startOffset = 120 })
+
                 redditButton.visibility =
                     event.historyModel?.links?.reddit?.let { View.VISIBLE } ?: View.GONE
+                redditButton.startAnimation(
+                    AnimationUtils.loadAnimation(
+                        context,
+                        R.anim.item_animation_from_right
+                    ).apply { startOffset = 160 })
+
                 wikiButton.visibility =
                     event.historyModel?.links?.wikipedia?.let { View.VISIBLE } ?: View.GONE
+                wikiButton.startAnimation(
+                    AnimationUtils.loadAnimation(
+                        context,
+                        R.anim.item_animation_from_right
+                    ).apply { startOffset = 200 })
+
                 articleButton.visibility =
                     event.historyModel?.links?.article?.let { View.VISIBLE } ?: View.GONE
+                articleButton.startAnimation(
+                    AnimationUtils.loadAnimation(
+                        context,
+                        R.anim.item_animation_from_right
+                    ).apply { startOffset = 240 })
 
                 redditButton.setOnClickListener {
                     event.historyModel?.links?.reddit?.let { link -> view.openWebLink(link) }

@@ -13,10 +13,10 @@
         <action
             android:id="@+id/action_dashboard_page_fragment_to_launch_details_fragment"
             app:destination="@id/launch_details_fragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
+            app:exitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_dashboard_page_fragment_to_dashboard_edit_dialog"
+            app:destination="@id/dashboard_edit_dialog" />
     </fragment>
 
     <fragment
@@ -33,45 +33,30 @@
         <action
             android:id="@+id/action_launches_page_fragment_to_launch_details_fragment"
             app:destination="@id/launch_details_fragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
+            app:exitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment
         android:id="@+id/vehicles_page_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.VehiclesFragment"
         android:label="@string/menu_vehicles"
+        app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_vehicles">
         <action
             android:id="@+id/action_vehicles_page_fragment_to_rocket_details_fragment"
-            app:destination="@id/rocket_details_fragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
+            app:destination="@id/rocket_details_fragment" />
         <action
             android:id="@+id/action_vehicles_page_fragment_to_dragon_details_fragment"
             app:destination="@id/dragon_details_fragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
+            app:exitAnim="@android:anim/fade_out" />
         <action
             android:id="@+id/action_vehicles_page_fragment_to_capsule_details_fragment"
             app:destination="@id/capsule_details_fragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
+            app:exitAnim="@android:anim/fade_out" />
         <action
             android:id="@+id/action_vehicles_page_fragment_to_core_details_fragment"
             app:destination="@id/core_details_fragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
+            app:exitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment
@@ -185,5 +170,9 @@
     <dialog
         android:id="@+id/theme_alert_dialog"
         android:name="uk.co.zac_h.spacex.utils.ThemeAlertDialog" />
+
+    <dialog
+        android:id="@+id/dashboard_edit_dialog"
+        android:name="uk.co.zac_h.spacex.utils.DashboardEditDialog" />
 
 </navigation>

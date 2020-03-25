@@ -25,7 +25,7 @@ class DashboardPinnedAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_dashboard_launches,
+                R.layout.list_item_launches,
                 parent,
                 false
             )
@@ -35,9 +35,7 @@ class DashboardPinnedAdapter(
         val launch = launches[position]
 
         holder.apply {
-            itemView.transitionName = launch.flightNumber.toString()
-
-            heading.visibility = View.GONE
+            launchesCard.transitionName = launch.flightNumber.toString()
 
             launch.let {
                 missionPatch.visibility =
@@ -63,7 +61,7 @@ class DashboardPinnedAdapter(
                         R.id.action_dashboard_page_fragment_to_launch_details_fragment,
                         bundleOf("launch" to it, "title" to it.missionName),
                         null,
-                        FragmentNavigatorExtras(itemView to launch.flightNumber.toString())
+                        FragmentNavigatorExtras(launchesCard to launch.flightNumber.toString())
                     )
                 }
             }
@@ -72,10 +70,9 @@ class DashboardPinnedAdapter(
 
     override fun getItemCount(): Int = launches.size
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val launchesCard: CardView = itemView.findViewById(R.id.launches_card_view)
         val missionPatch: ImageView = itemView.findViewById(R.id.launches_mission_patch_image)
-        val heading: TextView = itemView.findViewById(R.id.dashboard_heading_text)
         val flightNumber: TextView = itemView.findViewById(R.id.launches_flight_no_text)
         val blockNumber: TextView = itemView.findViewById(R.id.launches_block_text)
         val missionName: TextView = itemView.findViewById(R.id.launches_mission_name_text)
