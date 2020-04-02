@@ -2,6 +2,7 @@ package uk.co.zac_h.spacex.vehicles.capsules
 
 import android.os.Bundle
 import android.view.*
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -123,7 +124,10 @@ class CapsulesFragment : Fragment(), CapsulesView, SearchView.OnQueryTextListene
         capsulesArray.clear()
         capsulesArray.addAll(if (sortNew) capsules.reversed() else capsules)
 
+        capsules_recycler.layoutAnimation =
+            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
         capsulesAdapter.notifyDataSetChanged()
+        capsules_recycler.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {

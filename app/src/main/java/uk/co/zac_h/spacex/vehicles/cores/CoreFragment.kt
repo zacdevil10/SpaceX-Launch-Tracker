@@ -2,6 +2,7 @@ package uk.co.zac_h.spacex.vehicles.cores
 
 import android.os.Bundle
 import android.view.*
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -122,7 +123,10 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
         coresArray.clear()
         coresArray.addAll(if (sortNew) cores.reversed() else cores)
 
+        core_recycler.layoutAnimation =
+            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
         coreAdapter.notifyDataSetChanged()
+        core_recycler.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
