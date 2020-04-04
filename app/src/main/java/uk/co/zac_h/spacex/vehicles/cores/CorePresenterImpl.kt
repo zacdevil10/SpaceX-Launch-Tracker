@@ -1,14 +1,13 @@
 package uk.co.zac_h.spacex.vehicles.cores
 
 import uk.co.zac_h.spacex.model.spacex.CoreModel
-import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class CorePresenterImpl(private val view: CoreView, private val interactor: CoreInteractor) :
     CorePresenter, CoreInteractor.Callback {
 
-    override fun getCores(api: SpaceXInterface) {
+    override fun getCores() {
         view.showProgress()
-        interactor.getCores(api, this)
+        interactor.getCores(this)
     }
 
     override fun cancelRequest() {

@@ -19,7 +19,6 @@ import uk.co.zac_h.spacex.model.spacex.LandingPadModel
 import uk.co.zac_h.spacex.model.spacex.LaunchpadModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.statistics.graphs.padstats.*
-import uk.co.zac_h.spacex.utils.PadType
 
 class PadStatsTest {
 
@@ -123,7 +122,7 @@ class PadStatsTest {
             )
         }
 
-        interactor.getPads(type = PadType.LAUNCH, api = mockRepo, listener = mListener)
+        interactor.getPads(listener = mListener)
 
         verifyBlocking(mListener) { onError("HTTP 500 Response.error()") }
     }
@@ -136,7 +135,7 @@ class PadStatsTest {
             } doThrow Throwable()
         }
 
-        interactor.getPads(type = PadType.LAUNCH, api = mockRepo, listener = mListener)
+        interactor.getPads(listener = mListener)
     }
 
     @Test

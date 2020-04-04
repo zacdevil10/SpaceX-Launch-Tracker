@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.rest
 
-import retrofit2.Response
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
@@ -13,14 +13,14 @@ import uk.co.zac_h.spacex.utils.OAuthSigningInterceptor
 interface TwitterInterface {
 
     @GET("statuses/user_timeline.json")
-    suspend fun getTweets(
+    fun getTweets(
         @Query("screen_name") screenName: String,
         @Query("include_rts") rts: Boolean,
         @Query("trim_user") trim: Boolean,
         @Query("tweet_mode") mode: String,
         @Query("count") count: Int,
         @Query("max_id") maxId: Long? = null
-    ): Response<List<TimelineTweetModel>>
+    ): Call<List<TimelineTweetModel>>
 
     companion object RetrofitSetup {
 

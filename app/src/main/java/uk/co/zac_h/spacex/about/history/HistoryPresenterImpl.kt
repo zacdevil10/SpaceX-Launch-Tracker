@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.about.history
 
 import uk.co.zac_h.spacex.model.spacex.HistoryModel
-import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.splitHistoryListByDate
 
@@ -12,9 +11,9 @@ class HistoryPresenterImpl(
 
     private val historyHeaders = ArrayList<HistoryHeaderModel>()
 
-    override fun getHistory(api: SpaceXInterface) {
+    override fun getHistory() {
         view.showProgress()
-        interactor.getAllHistoricEvents(api, this)
+        interactor.getAllHistoricEvents(this)
     }
 
     override fun cancelRequest() {

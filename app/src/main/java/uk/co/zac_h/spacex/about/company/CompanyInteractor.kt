@@ -1,11 +1,10 @@
 package uk.co.zac_h.spacex.about.company
 
 import uk.co.zac_h.spacex.model.spacex.CompanyModel
-import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 interface CompanyInteractor {
 
-    fun getCompanyInfo(api: SpaceXInterface, listener: Callback)
+    fun getCompanyInfo(listener: Callback)
 
     fun cancelAllRequests()
 

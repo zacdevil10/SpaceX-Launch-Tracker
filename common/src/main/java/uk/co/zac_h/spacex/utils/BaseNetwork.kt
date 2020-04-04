@@ -33,7 +33,7 @@ open class BaseNetwork {
         }
 
         override fun onFailure(call: Call<T>, t: Throwable) {
-            if (!canceled) when (t) {
+            when (t) {
                 is HttpException ->
                     onResponseFailure?.invoke(
                         t.localizedMessage ?: "There was a network error! Please try refreshing."

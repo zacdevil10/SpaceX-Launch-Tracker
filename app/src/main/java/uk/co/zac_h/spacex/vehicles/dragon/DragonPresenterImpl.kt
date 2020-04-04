@@ -1,14 +1,13 @@
 package uk.co.zac_h.spacex.vehicles.dragon
 
 import uk.co.zac_h.spacex.model.spacex.DragonModel
-import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class DragonPresenterImpl(private val view: DragonView, private val interactor: DragonInteractor) :
     DragonPresenter, DragonInteractor.Callback {
 
-    override fun getDragon(api: SpaceXInterface) {
+    override fun getDragon() {
         view.showProgress()
-        interactor.getDragon(api, this)
+        interactor.getDragon(this)
     }
 
     override fun cancelRequest() {

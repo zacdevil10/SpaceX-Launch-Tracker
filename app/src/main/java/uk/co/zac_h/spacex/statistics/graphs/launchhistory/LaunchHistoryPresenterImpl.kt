@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
-import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 import kotlin.math.roundToInt
 
@@ -13,9 +12,9 @@ class LaunchHistoryPresenterImpl(
 
     private lateinit var launchesList: List<HistoryStatsModel>
 
-    override fun getLaunchList(api: SpaceXInterface) {
+    override fun getLaunchList() {
         view.showProgress()
-        interactor.getLaunches(api, this)
+        interactor.getLaunches(this)
     }
 
     override fun addLaunchList(stats: List<HistoryStatsModel>) {
