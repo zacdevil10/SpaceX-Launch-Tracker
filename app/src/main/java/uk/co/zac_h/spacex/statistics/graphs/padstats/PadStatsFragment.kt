@@ -13,10 +13,10 @@ import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
 import uk.co.zac_h.spacex.utils.HeaderItemDecoration
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class PadStatsFragment : Fragment(), PadStatsView,
+class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: PadStatsPresenter? = null
+    private var presenter: PadStatsContract.PadStatsPresenter? = null
 
     private lateinit var padsAdapter: PadStatsSitesAdapter
 

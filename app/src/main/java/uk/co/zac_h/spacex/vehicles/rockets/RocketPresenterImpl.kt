@@ -1,13 +1,16 @@
 package uk.co.zac_h.spacex.vehicles.rockets
 
 import uk.co.zac_h.spacex.model.spacex.RocketsModel
+import uk.co.zac_h.spacex.rest.SpaceXInterface
 
-class RocketPresenterImpl(private val view: RocketView, private val interactor: RocketInteractor) :
-    RocketPresenter, RocketInteractor.Callback {
+class RocketPresenterImpl(
+    private val view: RocketContract.RocketView,
+    private val interactor: RocketContract.RocketInteractor
+) : RocketContract.RocketPresenter, RocketContract.InteractorCallback {
 
-    override fun getRockets() {
+    override fun getRockets(api: SpaceXInterface) {
         view.showProgress()
-        interactor.getRockets(this)
+        interactor.getRockets(api, this)
     }
 
     override fun cancelRequest() {

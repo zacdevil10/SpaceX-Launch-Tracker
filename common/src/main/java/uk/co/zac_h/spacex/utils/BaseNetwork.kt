@@ -9,13 +9,13 @@ import java.net.UnknownHostException
 
 open class BaseNetwork {
 
-    fun <T> Call<T>.makeCall(callback: CallBackKt<T>.() -> Unit) {
-        val callBackKt = CallBackKt<T>()
-        callback.invoke(callBackKt)
-        this.enqueue(callBackKt)
+    fun <T> Call<T>.makeCall(callback: BaseCallback<T>.() -> Unit) {
+        val baseCallback = BaseCallback<T>()
+        callback.invoke(baseCallback)
+        this.clone().enqueue(baseCallback)
     }
 
-    class CallBackKt<T> : Callback<T> {
+    class BaseCallback<T> : Callback<T> {
 
         var onResponseSuccess: ((Response<T>) -> Unit)? = null
         var onResponseFailure: ((error: String) -> Unit)? = null
@@ -54,5 +54,4 @@ open class BaseNetwork {
             canceled = true
         }
     }
-
 }

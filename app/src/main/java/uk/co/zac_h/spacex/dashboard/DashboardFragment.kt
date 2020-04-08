@@ -30,10 +30,10 @@ import uk.co.zac_h.spacex.utils.formatBlockNumber
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class DashboardFragment : Fragment(), DashboardView,
+class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: DashboardPresenter? = null
+    private var presenter: DashboardContract.DashboardPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
     private var nextLaunchModel: LaunchesModel? = null

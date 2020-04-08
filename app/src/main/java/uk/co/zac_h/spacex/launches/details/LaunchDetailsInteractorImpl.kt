@@ -5,14 +5,14 @@ import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class LaunchDetailsInteractorImpl : BaseNetwork(), LaunchDetailsInteractor {
+class LaunchDetailsInteractorImpl : BaseNetwork(), LaunchDetailsContract.LaunchDetailsInteractor {
 
-    private lateinit var call: Call<LaunchesModel>
+    private var call: Call<LaunchesModel>? = null
 
     override fun getSingleLaunch(
         id: String,
         api: SpaceXInterface,
-        listener: LaunchDetailsInteractor.InteractorCallback
+        listener: LaunchDetailsContract.InteractorCallback
     ) {
         call = api.getSingleLaunch(id).apply {
             makeCall {
@@ -22,7 +22,5 @@ class LaunchDetailsInteractorImpl : BaseNetwork(), LaunchDetailsInteractor {
         }
     }
 
-    override fun cancelRequest() {
-        if (::call.isInitialized) call.cancel()
-    }
+    override fun cancelRequest() = call?.cancel()
 }

@@ -4,7 +4,6 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verifyBlocking
-import kotlinx.coroutines.Dispatchers
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Before
@@ -15,21 +14,25 @@ import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import retrofit2.HttpException
 import retrofit2.Response
+import retrofit2.mock.Calls
 import uk.co.zac_h.spacex.model.spacex.CoreModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
-import uk.co.zac_h.spacex.vehicles.cores.*
+import uk.co.zac_h.spacex.vehicles.cores.CoreContract
+import uk.co.zac_h.spacex.vehicles.cores.CoreInteractorImpl
+import uk.co.zac_h.spacex.vehicles.cores.CorePresenterImpl
 
 class CoreTest {
 
-    private lateinit var mPresenter: CorePresenter
-    private lateinit var presenter: CorePresenter
-    private lateinit var interactor: CoreInteractor
+    private lateinit var mPresenter: CoreContract.CorePresenter
+    private lateinit var presenter: CoreContract.CorePresenter
+    private lateinit var interactor: CoreContract.CoreInteractor
     @Mock
-    val mInteractor: CoreInteractor = mock(CoreInteractor::class.java)
+    val mInteractor: CoreContract.CoreInteractor = mock(CoreContract.CoreInteractor::class.java)
     @Mock
-    val mView: CoreView = mock(CoreView::class.java)
+    val mView: CoreContract.CoreView = mock(CoreContract.CoreView::class.java)
     @Mock
-    val mListener: CoreInteractor.Callback = mock(CoreInteractor.Callback::class.java)
+    val mListener: CoreContract.InteractorCallback =
+        mock(CoreContract.InteractorCallback::class.java)
     @Mock
     val mCoreModel: CoreModel = mock(CoreModel::class.java)
 
@@ -39,7 +42,7 @@ class CoreTest {
     fun setup() {
         MockitoAnnotations.initMocks(this)
 
-        interactor = CoreInteractorImpl(Dispatchers.Unconfined)
+        interactor = CoreInteractorImpl()
         mPresenter = CorePresenterImpl(mView, mInteractor)
         presenter = CorePresenterImpl(mView, interactor)
 
@@ -49,7 +52,7 @@ class CoreTest {
     @Test
     fun `When response from API is successful then add cores to view`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getCores() } doReturn Response.success(coreList)
+            onBlocking { getCores() } doReturn Calls.response(Response.success(coreList))
         }
 
         presenter.getCores(mockRepo)
@@ -67,9 +70,11 @@ class CoreTest {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
                 getCores()
-            } doReturn Response.error(
+            } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
             )
         }
 
@@ -83,9 +88,11 @@ class CoreTest {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
                 getCores()
-            } doReturn Response.error(
+            } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
             )
         }
 

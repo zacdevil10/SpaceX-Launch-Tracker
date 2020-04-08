@@ -19,10 +19,10 @@ import uk.co.zac_h.spacex.news.adapters.RedditAdapter
 import uk.co.zac_h.spacex.utils.PaginationScrollListener
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class RedditFeedFragment : Fragment(), RedditFeedView,
+class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: RedditFeedPresenter? = null
+    private var presenter: RedditFeedContract.RedditFeedPresenter? = null
 
     private lateinit var redditAdapter: RedditAdapter
     private lateinit var posts: ArrayList<SubredditPostModel>

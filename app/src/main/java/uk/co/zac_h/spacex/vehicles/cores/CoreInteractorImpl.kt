@@ -1,18 +1,22 @@
 package uk.co.zac_h.spacex.vehicles.cores
 
+import retrofit2.Call
+import uk.co.zac_h.spacex.model.spacex.CoreModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class CoreInteractorImpl(api: SpaceXInterface = SpaceXInterface.create()) : BaseNetwork(),
-    CoreInteractor {
+class CoreInteractorImpl : BaseNetwork(), CoreContract.CoreInteractor {
 
-    private val call = api.getCores()
+    private var call: Call<List<CoreModel>>? = null
 
-    override fun getCores(listener: CoreInteractor.Callback) =
-        call.makeCall {
-            onResponseSuccess = { listener.onSuccess(it.body()) }
-            onResponseFailure = { listener.onError(it) }
+    override fun getCores(api: SpaceXInterface, listener: CoreContract.InteractorCallback) {
+        call = api.getCores().apply {
+            makeCall {
+                onResponseSuccess = { listener.onSuccess(it.body()) }
+                onResponseFailure = { listener.onError(it) }
+            }
         }
+    }
 
-    override fun cancelAllRequests() = call.cancel()
+    override fun cancelAllRequests() = call?.cancel()
 }

@@ -31,10 +31,10 @@ import uk.co.zac_h.spacex.utils.formatDateMillisLong
 import uk.co.zac_h.spacex.utils.models.LinksModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchDetailsFragment : Fragment(), LaunchDetailsView,
+class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: LaunchDetailsPresenter? = null
+    private var presenter: LaunchDetailsContract.LaunchDetailsPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
     private var launch: LaunchesModel? = null

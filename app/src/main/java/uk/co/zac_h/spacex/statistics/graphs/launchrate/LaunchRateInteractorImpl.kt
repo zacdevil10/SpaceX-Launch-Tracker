@@ -1,18 +1,25 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
+import retrofit2.Call
+import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class LaunchRateInteractorImpl(api: SpaceXInterface = SpaceXInterface.create()) : BaseNetwork(),
-    LaunchRateInteractor {
+class LaunchRateInteractorImpl : BaseNetwork(), LaunchRateContract.LaunchRateInteractor {
 
-    private var call = api.getLaunches()
+    private var call: Call<List<LaunchesModel>>? = null
 
-    override fun getLaunches(listener: LaunchRateInteractor.InteractorCallback) =
-        call.makeCall {
-            onResponseSuccess = { listener.onSuccess(it.body(), true) }
-            onResponseFailure = { listener.onError(it) }
+    override fun getLaunches(
+        api: SpaceXInterface,
+        listener: LaunchRateContract.InteractorCallback
+    ) {
+        call = api.getLaunches().apply {
+            makeCall {
+                onResponseSuccess = { listener.onSuccess(it.body(), true) }
+                onResponseFailure = { listener.onError(it) }
+            }
         }
+    }
 
-    override fun cancelAllRequests() = call.cancel()
+    override fun cancelAllRequests() = call?.cancel()
 }

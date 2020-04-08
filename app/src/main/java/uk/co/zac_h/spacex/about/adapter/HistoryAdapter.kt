@@ -11,14 +11,14 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.about.history.HistoryView
+import uk.co.zac_h.spacex.about.history.HistoryContract
 import uk.co.zac_h.spacex.utils.formatDateMillisDDMMM
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 
 class HistoryAdapter(
     private var context: Context,
     private var events: ArrayList<HistoryHeaderModel>,
-    private var view: HistoryView
+    private var view: HistoryContract.HistoryView
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

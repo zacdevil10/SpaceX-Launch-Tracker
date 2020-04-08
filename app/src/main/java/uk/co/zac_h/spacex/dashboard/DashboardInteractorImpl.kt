@@ -5,16 +5,16 @@ import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class DashboardInteractorImpl : BaseNetwork(), DashboardInteractor {
+class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardInteractor {
 
-    private lateinit var call: Call<LaunchesModel>
+    private var call: Call<LaunchesModel>? = null
 
     private val active = ArrayList<String>()
 
     override fun getSingleLaunch(
         id: String,
         api: SpaceXInterface,
-        listener: DashboardInteractor.InteractorCallback
+        listener: DashboardContract.InteractorCallback
     ) {
         call = api.getSingleLaunch(id).apply {
             makeCall {
@@ -26,7 +26,5 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardInteractor {
 
     override fun hasActiveRequest(): Boolean = active.isNotEmpty()
 
-    override fun cancelAllRequests() {
-        if (::call.isInitialized) call.cancel()
-    }
+    override fun cancelAllRequests() = call?.cancel()
 }

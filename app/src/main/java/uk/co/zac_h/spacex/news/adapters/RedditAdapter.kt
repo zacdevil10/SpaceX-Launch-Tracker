@@ -12,12 +12,12 @@ import com.google.android.material.card.MaterialCardView
 import com.squareup.picasso.Picasso
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.reddit.SubredditPostModel
-import uk.co.zac_h.spacex.news.reddit.RedditFeedView
+import uk.co.zac_h.spacex.news.reddit.RedditFeedContract
 import uk.co.zac_h.spacex.utils.HtmlTextView
 import uk.co.zac_h.spacex.utils.convertDate
 
 class RedditAdapter(
-    private val view: RedditFeedView,
+    private val view: RedditFeedContract.RedditFeedView,
     private val posts: List<SubredditPostModel>
 ) :
     RecyclerView.Adapter<RedditAdapter.ViewHolder>() {

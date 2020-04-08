@@ -15,10 +15,10 @@ import uk.co.zac_h.spacex.model.spacex.DragonModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.adapters.DragonAdapter
 
-class DragonFragment : Fragment(), DragonView,
+class DragonFragment : Fragment(), DragonContract.DragonView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: DragonPresenter? = null
+    private var presenter: DragonContract.DragonPresenter? = null
 
     private lateinit var dragonAdapter: DragonAdapter
     private lateinit var dragonArray: ArrayList<DragonModel>

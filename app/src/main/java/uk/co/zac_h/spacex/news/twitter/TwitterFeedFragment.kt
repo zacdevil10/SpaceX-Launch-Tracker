@@ -19,10 +19,10 @@ import uk.co.zac_h.spacex.utils.PaginationScrollListener
 import uk.co.zac_h.spacex.utils.addAllExcludingPosition
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class TwitterFeedFragment : Fragment(), TwitterFeedView,
+class TwitterFeedFragment : Fragment(), TwitterFeedContract.TwitterFeedView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: TwitterFeedPresenter? = null
+    private var presenter: TwitterFeedContract.TwitterFeedPresenter? = null
 
     private lateinit var twitterAdapter: TwitterFeedAdapter
     private lateinit var tweetsList: ArrayList<TimelineTweetModel>

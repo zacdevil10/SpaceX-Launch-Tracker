@@ -4,9 +4,9 @@ import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.rest.TwitterInterface
 
 class TwitterFeedPresenterImpl(
-    private val view: TwitterFeedView,
-    private val interactor: TwitterFeedInteractor
-) : TwitterFeedPresenter, TwitterFeedInteractor.Callback {
+    private val view: TwitterFeedContract.TwitterFeedView,
+    private val interactor: TwitterFeedContract.TwitterFeedInteractor
+) : TwitterFeedContract.TwitterFeedPresenter, TwitterFeedContract.InteractorCallback {
 
     override fun getTweets(api: TwitterInterface) {
         view.showProgress()

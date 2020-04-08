@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.vehicles
 
 import com.nhaarman.mockitokotlin2.*
-import kotlinx.coroutines.Dispatchers
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Before
@@ -12,22 +11,31 @@ import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import retrofit2.HttpException
 import retrofit2.Response
+import retrofit2.mock.Calls
 import uk.co.zac_h.spacex.model.spacex.CoreModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
-import uk.co.zac_h.spacex.vehicles.cores.details.*
+import uk.co.zac_h.spacex.vehicles.cores.details.CoreDetailsContract
+import uk.co.zac_h.spacex.vehicles.cores.details.CoreDetailsInteractorImpl
+import uk.co.zac_h.spacex.vehicles.cores.details.CoreDetailsPresenterImpl
 
 class CoreDetailsTest {
 
-    private lateinit var mPresenter: CoreDetailsPresenter
-    private lateinit var presenter: CoreDetailsPresenter
-    private lateinit var interactor: CoreDetailsInteractor
+    private lateinit var mPresenter: CoreDetailsContract.CoreDetailsPresenter
+    private lateinit var presenter: CoreDetailsContract.CoreDetailsPresenter
+    private lateinit var interactor: CoreDetailsContract.CoreDetailsInteractor
+
     @Mock
-    val mInteractor: CoreDetailsInteractor = mock(CoreDetailsInteractor::class.java)
+    val mInteractor: CoreDetailsContract.CoreDetailsInteractor =
+        mock(CoreDetailsContract.CoreDetailsInteractor::class.java)
+
     @Mock
-    val mView: CoreDetailsView = mock(CoreDetailsView::class.java)
+    val mView: CoreDetailsContract.CoreDetailsView =
+        mock(CoreDetailsContract.CoreDetailsView::class.java)
+
     @Mock
-    val mListener: CoreDetailsInteractor.InteractorCallback =
-        mock(CoreDetailsInteractor.InteractorCallback::class.java)
+    val mListener: CoreDetailsContract.InteractorCallback =
+        mock(CoreDetailsContract.InteractorCallback::class.java)
+
     @Mock
     val mCoreModel: CoreModel = mock(CoreModel::class.java)
 
@@ -35,7 +43,7 @@ class CoreDetailsTest {
     fun setup() {
         MockitoAnnotations.initMocks(this)
 
-        interactor = CoreDetailsInteractorImpl(Dispatchers.Unconfined)
+        interactor = CoreDetailsInteractorImpl()
         mPresenter = CoreDetailsPresenterImpl(mView, mInteractor)
         presenter = CoreDetailsPresenterImpl(mView, interactor)
     }
@@ -43,7 +51,7 @@ class CoreDetailsTest {
     @Test
     fun `When response from API is successful then add core to view`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getSingleCore("test") } doReturn Response.success(mCoreModel)
+            onBlocking { getSingleCore("test") } doReturn Calls.response(Response.success(mCoreModel))
         }
 
         presenter.getCoreDetails("test", mockRepo)
@@ -67,9 +75,11 @@ class CoreDetailsTest {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
                 getSingleCore("")
-            } doReturn Response.error(
+            } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
             )
         }
 
@@ -83,9 +93,11 @@ class CoreDetailsTest {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
                 getSingleCore("")
-            } doReturn Response.error(
+            } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
             )
         }
 

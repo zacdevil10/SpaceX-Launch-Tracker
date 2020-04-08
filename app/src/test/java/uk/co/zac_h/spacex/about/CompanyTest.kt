@@ -4,7 +4,6 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verifyBlocking
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -16,22 +15,27 @@ import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
 import retrofit2.HttpException
 import retrofit2.Response
-import uk.co.zac_h.spacex.about.company.*
+import retrofit2.mock.Calls
+import uk.co.zac_h.spacex.about.company.CompanyContract
+import uk.co.zac_h.spacex.about.company.CompanyInteractorImpl
+import uk.co.zac_h.spacex.about.company.CompanyPresenterImpl
 import uk.co.zac_h.spacex.model.spacex.CompanyModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 @ExperimentalCoroutinesApi
 class CompanyTest {
 
-    private lateinit var mPresenter: CompanyPresenter
-    private lateinit var presenter: CompanyPresenter
-    private lateinit var interactor: CompanyInteractor
+    private lateinit var mPresenter: CompanyContract.CompanyPresenter
+    private lateinit var presenter: CompanyContract.CompanyPresenter
+    private lateinit var interactor: CompanyContract.CompanyInteractor
     @Mock
-    val mInteractor: CompanyInteractor = mock(CompanyInteractor::class.java)
+    val mInteractor: CompanyContract.CompanyInteractor =
+        mock(CompanyContract.CompanyInteractor::class.java)
     @Mock
-    val mView: CompanyView = mock(CompanyView::class.java)
+    val mView: CompanyContract.CompanyView = mock(CompanyContract.CompanyView::class.java)
     @Mock
-    val mListener: CompanyInteractor.Callback = mock(CompanyInteractor.Callback::class.java)
+    val mListener: CompanyContract.InteractorCallback =
+        mock(CompanyContract.InteractorCallback::class.java)
     @Mock
     val mCompanyModel: CompanyModel = mock(CompanyModel::class.java)
 
@@ -39,7 +43,7 @@ class CompanyTest {
     fun setup() {
         MockitoAnnotations.initMocks(this)
 
-        interactor = CompanyInteractorImpl(Dispatchers.Unconfined)
+        interactor = CompanyInteractorImpl()
         mPresenter = CompanyPresenterImpl(mView, mInteractor)
         presenter = CompanyPresenterImpl(mView, interactor)
     }
@@ -55,7 +59,7 @@ class CompanyTest {
     @Test
     fun `When mCompanyModel is null then get data from API`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getCompanyInfo() } doReturn Response.success(mCompanyModel)
+            onBlocking { getCompanyInfo() } doReturn Calls.response(Response.success(mCompanyModel))
         }
 
         interactor.getCompanyInfo(mockRepo, mListener)
@@ -66,9 +70,11 @@ class CompanyTest {
     @Test
     fun `When response from API is unsuccessful`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getCompanyInfo() } doReturn Response.error(
+            onBlocking { getCompanyInfo() } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
             )
         }
 
@@ -80,9 +86,11 @@ class CompanyTest {
     @Test
     fun `Show error in view when response from API fails`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getCompanyInfo() } doReturn Response.error(
+            onBlocking { getCompanyInfo() } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
             )
         }
 

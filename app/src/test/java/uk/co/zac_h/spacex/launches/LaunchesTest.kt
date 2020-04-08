@@ -4,7 +4,6 @@ import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verifyBlocking
-import kotlinx.coroutines.Dispatchers
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Before
@@ -15,21 +14,27 @@ import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import retrofit2.HttpException
 import retrofit2.Response
+import retrofit2.mock.Calls
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class LaunchesTest {
 
-    private lateinit var mPresenter: LaunchesPresenter
-    private lateinit var presenter: LaunchesPresenter
-    private lateinit var interactor: LaunchesInteractor
+    private lateinit var mPresenter: LaunchesContract.LaunchesPresenter
+    private lateinit var presenter: LaunchesContract.LaunchesPresenter
+    private lateinit var interactor: LaunchesContract.LaunchesInteractor
+
     @Mock
-    val mInteractor: LaunchesInteractor = mock(LaunchesInteractor::class.java)
+    val mInteractor: LaunchesContract.LaunchesInteractor =
+        mock(LaunchesContract.LaunchesInteractor::class.java)
+
     @Mock
-    val mView: LaunchesView = mock(LaunchesView::class.java)
+    val mView: LaunchesContract.LaunchesView = mock(LaunchesContract.LaunchesView::class.java)
+
     @Mock
-    val mListener: LaunchesInteractor.InteractorCallback =
-        mock(LaunchesInteractor.InteractorCallback::class.java)
+    val mListener: LaunchesContract.InteractorCallback =
+        mock(LaunchesContract.InteractorCallback::class.java)
+
     @Mock
     val mLaunchesModel: LaunchesModel = mock(LaunchesModel::class.java)
 
@@ -39,7 +44,7 @@ class LaunchesTest {
     fun setup() {
         MockitoAnnotations.initMocks(this)
 
-        interactor = LaunchesInteractorImpl(Dispatchers.Unconfined)
+        interactor = LaunchesInteractorImpl()
         mPresenter = LaunchesPresenterImpl(mView, mInteractor)
         presenter = LaunchesPresenterImpl(mView, interactor)
 
@@ -49,7 +54,11 @@ class LaunchesTest {
     @Test
     fun `When get future launches then add ascending to view`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getLaunches("upcoming", "asc") } doReturn Response.success(launchesList)
+            onBlocking { getLaunches("upcoming", "asc") } doReturn Calls.response(
+                Response.success(
+                    launchesList
+                )
+            )
         }
 
         presenter.getLaunchList("upcoming", mockRepo)
@@ -64,7 +73,11 @@ class LaunchesTest {
     @Test
     fun `When get past launches then add descending to view`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getLaunches("past", "desc") } doReturn Response.success(launchesList)
+            onBlocking { getLaunches("past", "desc") } doReturn Calls.response(
+                Response.success(
+                    launchesList
+                )
+            )
         }
 
         presenter.getLaunchList("past", mockRepo)
@@ -79,9 +92,11 @@ class LaunchesTest {
     @Test
     fun `When response from API is unsuccessful`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getLaunches("past", "desc") } doReturn Response.error(
+            onBlocking { getLaunches("past", "desc") } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
             )
         }
 
@@ -93,9 +108,11 @@ class LaunchesTest {
     @Test
     fun `Show error in view when response from API fails`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getLaunches("past", "desc") } doReturn Response.error(
+            onBlocking { getLaunches("past", "desc") } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
             )
         }
 

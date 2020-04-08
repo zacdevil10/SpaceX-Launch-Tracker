@@ -5,13 +5,13 @@ import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.rest.TwitterInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class TwitterFeedInteractorImpl : BaseNetwork(), TwitterFeedInteractor {
+class TwitterFeedInteractorImpl : BaseNetwork(), TwitterFeedContract.TwitterFeedInteractor {
 
-    private lateinit var call: Call<List<TimelineTweetModel>>
+    private var call: Call<List<TimelineTweetModel>>? = null
 
     override fun getTwitterTimeline(
         id: Long?,
-        listener: TwitterFeedInteractor.Callback,
+        listener: TwitterFeedContract.InteractorCallback,
         api: TwitterInterface
     ) {
         call = api.getTweets(
@@ -33,5 +33,5 @@ class TwitterFeedInteractorImpl : BaseNetwork(), TwitterFeedInteractor {
         }
     }
 
-    override fun cancelAllRequests() = call.cancel()
+    override fun cancelAllRequests() = call?.cancel()
 }

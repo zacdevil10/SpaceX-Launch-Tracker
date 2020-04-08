@@ -21,10 +21,10 @@ import uk.co.zac_h.spacex.utils.generateCenterSpannableText
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchHistoryFragment : Fragment(), LaunchHistoryView,
+class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: LaunchHistoryPresenter? = null
+    private var presenter: LaunchHistoryContract.LaunchHistoryPresenter? = null
 
     private var filterVisible = false
     private var filterSuccessful = false

@@ -6,16 +6,16 @@ import uk.co.zac_h.spacex.model.spacex.StatsPadModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class PadStatsPresenterImpl(
-    private val view: PadStatsView,
-    private val interactor: PadStatsInteractor
-) : PadStatsPresenter, PadStatsInteractor.InteractorCallback {
+    private val view: PadStatsContract.PadStatsView,
+    private val interactor: PadStatsContract.PadStatsInteractor
+) : PadStatsContract.PadStatsPresenter, PadStatsContract.InteractorCallback {
 
     private var padList = ArrayList<StatsPadModel>()
 
     override fun getPads(api: SpaceXInterface) {
         padList.clear()
         view.showProgress()
-        interactor.getPads(this@PadStatsPresenterImpl)
+        interactor.getPads(api, this)
     }
 
     override fun cancelRequests() {

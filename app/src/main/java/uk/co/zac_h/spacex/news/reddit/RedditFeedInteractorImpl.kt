@@ -5,13 +5,13 @@ import uk.co.zac_h.spacex.model.reddit.SubredditModel
 import uk.co.zac_h.spacex.rest.RedditInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class RedditFeedInteractorImpl : BaseNetwork(), RedditFeedInteractor {
+class RedditFeedInteractorImpl : BaseNetwork(), RedditFeedContract.RedditFeedInteractor {
 
-    private lateinit var call: Call<SubredditModel>
+    private var call: Call<SubredditModel>? = null
 
     override fun getSubreddit(
         api: RedditInterface,
-        listener: RedditFeedInteractor.Callback,
+        listener: RedditFeedContract.InteractorCallback,
         order: String,
         id: String?
     ) {
@@ -27,5 +27,5 @@ class RedditFeedInteractorImpl : BaseNetwork(), RedditFeedInteractor {
         }
     }
 
-    override fun cancelAllRequests() = call.cancel()
+    override fun cancelAllRequests() = call?.cancel()
 }

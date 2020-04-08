@@ -4,10 +4,10 @@ import uk.co.zac_h.spacex.model.spacex.CoreModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class CoreDetailsPresenterImpl(
-    private val view: CoreDetailsView,
-    private val interactor: CoreDetailsInteractor
-) : CoreDetailsPresenter,
-    CoreDetailsInteractor.InteractorCallback {
+    private val view: CoreDetailsContract.CoreDetailsView,
+    private val interactor: CoreDetailsContract.CoreDetailsInteractor
+) : CoreDetailsContract.CoreDetailsPresenter,
+    CoreDetailsContract.InteractorCallback {
 
     override fun getCoreDetails(serial: String, api: SpaceXInterface) {
         view.showProgress()

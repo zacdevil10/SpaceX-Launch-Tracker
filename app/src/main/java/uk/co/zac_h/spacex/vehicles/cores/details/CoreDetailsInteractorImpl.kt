@@ -5,14 +5,14 @@ import uk.co.zac_h.spacex.model.spacex.CoreModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class CoreDetailsInteractorImpl : BaseNetwork(), CoreDetailsInteractor {
+class CoreDetailsInteractorImpl : BaseNetwork(), CoreDetailsContract.CoreDetailsInteractor {
 
-    private lateinit var call: Call<CoreModel>
+    private var call: Call<CoreModel>? = null
 
     override fun getCoreDetails(
         serial: String,
         api: SpaceXInterface,
-        listener: CoreDetailsInteractor.InteractorCallback
+        listener: CoreDetailsContract.InteractorCallback
     ) {
         call = api.getSingleCore(serial).apply {
             makeCall {
@@ -22,7 +22,5 @@ class CoreDetailsInteractorImpl : BaseNetwork(), CoreDetailsInteractor {
         }
     }
 
-    override fun cancelAllRequests() {
-        if (::call.isInitialized) call.cancel()
-    }
+    override fun cancelAllRequests() = call?.cancel()
 }

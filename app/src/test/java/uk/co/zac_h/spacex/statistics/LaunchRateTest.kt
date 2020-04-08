@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.statistics
 
 import com.nhaarman.mockitokotlin2.*
-import kotlinx.coroutines.Dispatchers
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Before
@@ -13,38 +12,54 @@ import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import retrofit2.HttpException
 import retrofit2.Response
+import retrofit2.mock.Calls
 import uk.co.zac_h.spacex.model.spacex.LaunchConfigModel
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
-import uk.co.zac_h.spacex.statistics.graphs.launchrate.*
+import uk.co.zac_h.spacex.statistics.graphs.launchrate.LaunchRateContract
+import uk.co.zac_h.spacex.statistics.graphs.launchrate.LaunchRateInteractorImpl
+import uk.co.zac_h.spacex.statistics.graphs.launchrate.LaunchRatePresenterImpl
 import uk.co.zac_h.spacex.utils.models.RateStatsModel
 
 class LaunchRateTest {
 
-    private lateinit var mPresenter: LaunchRatePresenter
-    private lateinit var presenter: LaunchRatePresenter
-    private lateinit var interactor: LaunchRateInteractor
+    private lateinit var mPresenter: LaunchRateContract.LaunchRatePresenter
+    private lateinit var presenter: LaunchRateContract.LaunchRatePresenter
+    private lateinit var interactor: LaunchRateContract.LaunchRateInteractor
+
     @Mock
-    val mInteractor: LaunchRateInteractor = mock(LaunchRateInteractor::class.java)
+    val mInteractor: LaunchRateContract.LaunchRateInteractor =
+        mock(LaunchRateContract.LaunchRateInteractor::class.java)
+
     @Mock
-    val mView: LaunchRateView = mock(LaunchRateView::class.java)
+    val mView: LaunchRateContract.LaunchRateView =
+        mock(LaunchRateContract.LaunchRateView::class.java)
+
     @Mock
-    val mListener: LaunchRateInteractor.InteractorCallback =
-        mock(LaunchRateInteractor.InteractorCallback::class.java)
+    val mListener: LaunchRateContract.InteractorCallback =
+        mock(LaunchRateContract.InteractorCallback::class.java)
+
     @Mock
     val mLaunchModelF1: LaunchesModel = mock(LaunchesModel::class.java)
+
     @Mock
     val mLaunchConfigModelF1: LaunchConfigModel = mock(LaunchConfigModel::class.java)
+
     @Mock
     val mLaunchModelF9: LaunchesModel = mock(LaunchesModel::class.java)
+
     @Mock
     val mLaunchConfigModelF9: LaunchConfigModel = mock(LaunchConfigModel::class.java)
+
     @Mock
     val mLaunchModelFailed: LaunchesModel = mock(LaunchesModel::class.java)
+
     @Mock
     val mLaunchModelFH: LaunchesModel = mock(LaunchesModel::class.java)
+
     @Mock
     val mLaunchConfigModelFH: LaunchConfigModel = mock(LaunchConfigModel::class.java)
+
     @Mock
     val mLaunchModelUpcoming: LaunchesModel = mock(LaunchesModel::class.java)
 
@@ -58,7 +73,7 @@ class LaunchRateTest {
     fun setup() {
         MockitoAnnotations.initMocks(this)
 
-        interactor = LaunchRateInteractorImpl(Dispatchers.Unconfined)
+        interactor = LaunchRateInteractorImpl()
         mPresenter = LaunchRatePresenterImpl(mView, mInteractor)
         presenter = LaunchRatePresenterImpl(mView, interactor)
 
@@ -99,7 +114,7 @@ class LaunchRateTest {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
                 getLaunches()
-            } doReturn Response.success(launchesList)
+            } doReturn Calls.response(Response.success(launchesList))
         }
 
         presenter.getLaunchList(mockRepo)
@@ -122,9 +137,11 @@ class LaunchRateTest {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
                 getLaunches()
-            } doReturn Response.error(
+            } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
             )
         }
 
@@ -138,9 +155,11 @@ class LaunchRateTest {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
                 getLaunches()
-            } doReturn Response.error(
+            } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
             )
         }
 

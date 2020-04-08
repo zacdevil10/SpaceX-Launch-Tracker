@@ -14,10 +14,10 @@ import uk.co.zac_h.spacex.model.spacex.CapsulesModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
 
-class CapsulesFragment : Fragment(), CapsulesView, SearchView.OnQueryTextListener,
+class CapsulesFragment : Fragment(), CapsulesContract.CapsulesView, SearchView.OnQueryTextListener,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: CapsulesPresenter? = null
+    private var presenter: CapsulesContract.CapsulesPresenter? = null
 
     private lateinit var capsulesAdapter: CapsulesAdapter
     private lateinit var capsulesArray: ArrayList<CapsulesModel>

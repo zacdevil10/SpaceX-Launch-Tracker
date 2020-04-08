@@ -15,10 +15,10 @@ import uk.co.zac_h.spacex.model.spacex.RocketsModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 
-class RocketFragment : Fragment(), RocketView,
+class RocketFragment : Fragment(), RocketContract.RocketView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: RocketPresenter? = null
+    private var presenter: RocketContract.RocketPresenter? = null
 
     private lateinit var rocketsAdapter: RocketsAdapter
     private lateinit var rocketsArray: ArrayList<RocketsModel>

@@ -1,17 +1,18 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.RateStatsModel
 
 class LaunchRatePresenterImpl(
-    private val view: LaunchRateView,
-    private val interactor: LaunchRateInteractor
-) : LaunchRatePresenter, LaunchRateInteractor.InteractorCallback {
+    private val view: LaunchRateContract.LaunchRateView,
+    private val interactor: LaunchRateContract.LaunchRateInteractor
+) : LaunchRateContract.LaunchRatePresenter, LaunchRateContract.InteractorCallback {
 
-    override fun getLaunchList() {
+    override fun getLaunchList(api: SpaceXInterface) {
         view.showProgress()
-        interactor.getLaunches(this)
+        interactor.getLaunches(api, this)
     }
 
     override fun addLaunchList(launches: List<RateStatsModel>) {

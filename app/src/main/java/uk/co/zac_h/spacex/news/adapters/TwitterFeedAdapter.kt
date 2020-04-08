@@ -17,13 +17,13 @@ import uk.co.zac_h.mediarecyclerview.utils.MediaType
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.twitter.TimelineExtendedEntityModel
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
-import uk.co.zac_h.spacex.news.twitter.TwitterFeedView
+import uk.co.zac_h.spacex.news.twitter.TwitterFeedContract
 import uk.co.zac_h.spacex.utils.*
 
 class TwitterFeedAdapter(
     private val context: Context?,
     private val twitterFeed: ArrayList<TimelineTweetModel>,
-    private val view: TwitterFeedView
+    private val view: TwitterFeedContract.TwitterFeedView
 ) :
     RecyclerView.Adapter<TwitterFeedAdapter.ViewHolder>() {
 
