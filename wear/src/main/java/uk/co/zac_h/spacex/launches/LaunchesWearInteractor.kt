@@ -6,7 +6,7 @@ interface LaunchesWearInteractor {
 
     fun getAllLaunches(id: String, order: String, listener: Callback)
 
-    fun cancelRequest()
+    fun cancelRequest(): Unit?
 
     interface Callback {
         fun onSuccess(launches: List<LaunchesModel>?)
