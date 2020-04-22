@@ -23,7 +23,7 @@ class DashboardPreferencesRepository(private val sharedPreferences: SharedPrefer
         )
     )
 
-    val allVisible: MutableMap<String, *>
+    private val allVisible: MutableMap<String, *>
         get() = sharedPreferences.all
 
     private val visibleLiveData: MutableLiveData<MutableMap<String, *>> = MutableLiveData()

@@ -238,9 +238,9 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 launch.launchDateUnix.formatDateMillisLong(tbd)
             } ?: launch.launchDateUnix.formatDateMillisLong()
 
-            launch.staticFireDateUnix?.let {
+            launch.staticFireDateUnix?.let { date ->
                 launch_details_static_fire_date_label.visibility = View.VISIBLE
-                launch_details_static_fire_date_text.text = it.formatDateMillisLong()
+                launch_details_static_fire_date_text.text = date.formatDateMillisLong()
             } ?: run {
                 launch_details_static_fire_date_text.visibility = View.GONE
             }
@@ -249,9 +249,9 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 if (launch.details.isNullOrEmpty()) View.GONE else View.VISIBLE
             launch_details_details_text.text = launch.details
 
-            launch.rocket.firstStage?.cores?.forEach {
+            launch.rocket.firstStage?.cores?.forEach { core ->
                 if (coreAssigned) return@forEach
-                coreAssigned = it.serial != null
+                coreAssigned = core.serial != null
             }
 
             if (coreAssigned) launch.rocket.firstStage?.cores?.let {
@@ -285,51 +285,51 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
             val links = ArrayList<LinksModel>()
 
-            launch.links.videoLink?.let {
+            launch.links.videoLink?.let { link ->
                 links.add(
                     LinksModel(
                         "Watch",
-                        it
+                        link
                     )
                 )
             }
-            launch.links.redditCampaign?.let {
+            launch.links.redditCampaign?.let { link ->
                 links.add(
                     LinksModel(
                         "Reddit Campaign",
-                        it
+                        link
                     )
                 )
             }
-            launch.links.redditLaunch?.let {
+            launch.links.redditLaunch?.let { link ->
                 links.add(
                     LinksModel(
                         "Reddit Launch",
-                        it
+                        link
                     )
                 )
             }
-            launch.links.redditMedia?.let {
+            launch.links.redditMedia?.let { link ->
                 links.add(
                     LinksModel(
                         "Reddit Media",
-                        it
+                        link
                     )
                 )
             }
-            launch.links.presskit?.let {
+            launch.links.presskit?.let { link ->
                 links.add(
                     LinksModel(
                         "Press Kit",
-                        it
+                        link
                     )
                 )
             }
-            launch.links.wikipedia?.let {
+            launch.links.wikipedia?.let { link ->
                 links.add(
                     LinksModel(
                         "Wikipedia Article",
-                        it
+                        link
                     )
                 )
             }

@@ -37,7 +37,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
         setHasOptionsMenu(true)
 
         launchStats =
-            savedInstanceState?.getParcelableArrayList<HistoryStatsModel>("launches") ?: ArrayList()
+            savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
     }
 
     override fun onCreateView(

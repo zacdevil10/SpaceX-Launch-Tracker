@@ -26,7 +26,7 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        pads = savedInstanceState?.getParcelableArrayList<StatsPadModel>("pads") ?: ArrayList()
+        pads = savedInstanceState?.getParcelableArrayList("pads") ?: ArrayList()
     }
 
     override fun onCreateView(

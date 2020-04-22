@@ -5,7 +5,7 @@ import uk.co.zac_h.spacex.model.spacex.HistoryModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class HistoryInteractorImpl() : BaseNetwork(), HistoryContract.HistoryInteractor {
+class HistoryInteractorImpl : BaseNetwork(), HistoryContract.HistoryInteractor {
 
     private var call: Call<List<HistoryModel>>? = null
 

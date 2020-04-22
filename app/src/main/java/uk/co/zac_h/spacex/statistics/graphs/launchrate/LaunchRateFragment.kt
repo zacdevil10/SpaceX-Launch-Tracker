@@ -34,7 +34,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
         setHasOptionsMenu(true)
 
         statsList =
-            savedInstanceState?.getParcelableArrayList<RateStatsModel>("launches") ?: ArrayList()
+            savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
     }
 
     override fun onCreateView(
