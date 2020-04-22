@@ -1,11 +1,8 @@
 package uk.co.zac_h.spacex.about
 
 import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verifyBlocking
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Before
@@ -14,27 +11,33 @@ import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
-import retrofit2.HttpException
 import retrofit2.Response
-import uk.co.zac_h.spacex.about.history.*
+import retrofit2.mock.Calls
+import uk.co.zac_h.spacex.about.history.HistoryContract
+import uk.co.zac_h.spacex.about.history.HistoryInteractorImpl
+import uk.co.zac_h.spacex.about.history.HistoryPresenterImpl
 import uk.co.zac_h.spacex.model.spacex.HistoryLinksModel
 import uk.co.zac_h.spacex.model.spacex.HistoryModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.splitHistoryListByDate
 
-@ExperimentalCoroutinesApi
 class HistoryTest {
 
-    private lateinit var mPresenter: HistoryPresenter
-    private lateinit var presenter: HistoryPresenter
-    private lateinit var interactor: HistoryInteractor
+    private lateinit var mPresenter: HistoryContract.HistoryPresenter
+    private lateinit var presenter: HistoryContract.HistoryPresenter
+    private lateinit var interactor: HistoryContract.HistoryInteractor
+
     @Mock
-    val mInteractor: HistoryInteractor = mock(HistoryInteractor::class.java)
+    val mInteractor: HistoryContract.HistoryInteractor =
+        mock(HistoryContract.HistoryInteractor::class.java)
+
     @Mock
-    val mView: HistoryView = mock(HistoryView::class.java)
+    val mView: HistoryContract.HistoryView = mock(HistoryContract.HistoryView::class.java)
+
     @Mock
-    val mListener: HistoryInteractor.Callback = mock(HistoryInteractor.Callback::class.java)
+    val mListener: HistoryContract.InteractorCallback =
+        mock(HistoryContract.InteractorCallback::class.java)
 
     private val historyModel = HistoryModel(
         1,
@@ -52,7 +55,7 @@ class HistoryTest {
     fun setup() {
         MockitoAnnotations.initMocks(this)
 
-        interactor = HistoryInteractorImpl(Dispatchers.Unconfined)
+        interactor = HistoryInteractorImpl()
         mPresenter = HistoryPresenterImpl(mView, mInteractor)
         presenter = HistoryPresenterImpl(mView, interactor)
 
@@ -64,7 +67,7 @@ class HistoryTest {
     @Test
     fun `When getHistory is called verify show progress`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getHistory("desc") } doReturn Response.success(historyArray)
+            onBlocking { getHistory("desc") } doReturn Calls.response(Response.success(historyArray))
         }
 
         presenter.getHistory(mockRepo)
@@ -78,7 +81,7 @@ class HistoryTest {
     @Test
     fun `Get data from API and return to presenter`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getHistory("desc") } doReturn Response.success(historyArray)
+            onBlocking { getHistory("desc") } doReturn Calls.response(Response.success(historyArray))
         }
 
         interactor.getAllHistoricEvents(mockRepo, mListener)
@@ -89,9 +92,11 @@ class HistoryTest {
     @Test
     fun `When response from API is unsuccessful`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getHistory("desc") } doReturn Response.error(
+            onBlocking { getHistory("desc") } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
             )
         }
 
@@ -103,9 +108,11 @@ class HistoryTest {
     @Test
     fun `When response from API fails then show error`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getHistory("desc") } doReturn Response.error(
+            onBlocking { getHistory("desc") } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
             )
         }
 
@@ -114,31 +121,6 @@ class HistoryTest {
         verifyBlocking(mView) { showProgress() }
         verifyBlocking(mView) { showError("Error: 404") }
         verifyBlocking(mView) { toggleSwipeProgress(false) }
-    }
-
-    @Test
-    fun `When HttpException occurs`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getHistory("desc") } doThrow HttpException(
-                Response.error<Any>(
-                    500,
-                    "Test server error".toResponseBody("text/plain".toMediaTypeOrNull())
-                )
-            )
-        }
-
-        interactor.getAllHistoricEvents(mockRepo, mListener)
-
-        verifyBlocking(mListener) { onError("HTTP 500 Response.error()") }
-    }
-
-    @Test(expected = Throwable::class)
-    fun `When job fails to execute`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getHistory("desc") } doThrow Throwable()
-        }
-
-        interactor.getAllHistoricEvents(mockRepo, mListener)
     }
 
     @Test

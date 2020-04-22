@@ -10,9 +10,10 @@ import org.junit.Before
 import org.junit.Test
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import uk.co.zac_h.spacex.utils.BaseNetwork
 import java.net.HttpURLConnection
 
-class SpaceXAPITest {
+class SpaceXAPITest : BaseNetwork() {
 
     private var mWebServer = MockWebServer()
 
@@ -56,30 +57,36 @@ class SpaceXAPITest {
     @Test
     fun getSingleLaunchFromSpaceXAPI() {
         runBlocking {
-            val launch = spaceXInterface.getSingleLaunch("1")
-            val invalidLaunch = spaceXInterface.getSingleLaunch("0")
+            spaceXInterface.getSingleLaunch("1").makeCall {
+                onResponseSuccess = {
+                    assert(it.isSuccessful)
 
-            assert(launch.isSuccessful)
-            assert(!invalidLaunch.isSuccessful)
+                    it.body()?.run {
+                        assert(flightNumber == 1)
+                        assert(missionName == "FalconSat")
+                        assert(missionId.isEmpty())
+                        assert(launchDateUnix == 1143239400L)
+                        assert(tentative == false)
+                        assert(tentativeMaxPrecision == "hour")
+                        assert(tbd == false)
+                        assert(launchWindow == 0)
 
-            launch.body()?.run {
-                assert(flightNumber == 1)
-                assert(missionName == "FalconSat")
-                assert(missionId.isEmpty())
-                assert(launchDateUnix == 1143239400L)
-                assert(tentative == false)
-                assert(tentativeMaxPrecision == "hour")
-                assert(tbd == false)
-                assert(launchWindow == 0)
+                        assert(ships.isEmpty())
 
-                assert(ships.isEmpty())
+                        assert(success == false)
 
-                assert(success == false)
+                        assert(details == "Details")
+                        assert(!upcoming)
+                        assert(staticFireDateUTC == "2006-03-17T00:00:00.000Z")
+                        assert(staticFireDateUnix == 1142553600L)
+                    }
+                }
+            }
 
-                assert(details == "Details")
-                assert(!upcoming)
-                assert(staticFireDateUTC == "2006-03-17T00:00:00.000Z")
-                assert(staticFireDateUnix == 1142553600L)
+            spaceXInterface.getSingleLaunch("0").makeCall {
+                onResponseFailure = {
+                    assert(it == "Error: 404")
+                }
             }
         }
     }

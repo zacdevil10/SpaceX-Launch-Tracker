@@ -16,10 +16,10 @@ import uk.co.zac_h.spacex.model.spacex.CoreModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
-class CoreDetailsFragment : Fragment(), CoreDetailsView,
+class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: CoreDetailsPresenter? = null
+    private var presenter: CoreDetailsContract.CoreDetailsPresenter? = null
 
     private var core: CoreModel? = null
     private var id: String? = null

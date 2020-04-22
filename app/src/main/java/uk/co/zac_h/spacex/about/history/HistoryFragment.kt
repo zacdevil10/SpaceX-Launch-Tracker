@@ -17,10 +17,10 @@ import uk.co.zac_h.spacex.utils.HeaderItemDecoration
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class HistoryFragment : Fragment(), HistoryView,
+class HistoryFragment : Fragment(), HistoryContract.HistoryView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: HistoryPresenter? = null
+    private var presenter: HistoryContract.HistoryPresenter? = null
 
     private lateinit var history: ArrayList<HistoryHeaderModel>
     private lateinit var historyAdapter: HistoryAdapter

@@ -5,11 +5,11 @@ import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 
 class LaunchDetailsPresenterImpl(
-    private val view: LaunchDetailsView,
+    private val view: LaunchDetailsContract.LaunchDetailsView,
     private val helper: PinnedSharedPreferencesHelper,
-    private val interactor: LaunchDetailsInteractor
-) : LaunchDetailsPresenter,
-    LaunchDetailsInteractor.InteractorCallback {
+    private val interactor: LaunchDetailsContract.LaunchDetailsInteractor
+) : LaunchDetailsContract.LaunchDetailsPresenter,
+    LaunchDetailsContract.InteractorCallback {
 
     override fun getLaunch(id: String, api: SpaceXInterface) {
         view.showProgress()

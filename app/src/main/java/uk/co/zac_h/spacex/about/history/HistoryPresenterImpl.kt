@@ -6,9 +6,9 @@ import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.splitHistoryListByDate
 
 class HistoryPresenterImpl(
-    private val view: HistoryView,
-    private val interactor: HistoryInteractor
-) : HistoryPresenter, HistoryInteractor.Callback {
+    private val view: HistoryContract.HistoryView,
+    private val interactor: HistoryContract.HistoryInteractor
+) : HistoryContract.HistoryPresenter, HistoryContract.InteractorCallback {
 
     private val historyHeaders = ArrayList<HistoryHeaderModel>()
 

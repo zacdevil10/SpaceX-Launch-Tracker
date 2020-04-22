@@ -1,7 +1,9 @@
 package uk.co.zac_h.spacex.statistics
 
-import com.nhaarman.mockitokotlin2.*
-import kotlinx.coroutines.Dispatchers
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyBlocking
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Before
@@ -11,36 +13,49 @@ import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
-import retrofit2.HttpException
 import retrofit2.Response
+import retrofit2.mock.Calls
 import uk.co.zac_h.spacex.model.spacex.LaunchConfigModel
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
-import uk.co.zac_h.spacex.statistics.graphs.launchhistory.*
+import uk.co.zac_h.spacex.statistics.graphs.launchhistory.LaunchHistoryContract
+import uk.co.zac_h.spacex.statistics.graphs.launchhistory.LaunchHistoryInteractorImpl
+import uk.co.zac_h.spacex.statistics.graphs.launchhistory.LaunchHistoryPresenterImpl
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 
 class LaunchHistoryTest {
 
-    private lateinit var mPresenter: LaunchHistoryPresenter
-    private lateinit var presenter: LaunchHistoryPresenter
-    private lateinit var interactor: LaunchHistoryInteractor
+    private lateinit var mPresenter: LaunchHistoryContract.LaunchHistoryPresenter
+    private lateinit var presenter: LaunchHistoryContract.LaunchHistoryPresenter
+    private lateinit var interactor: LaunchHistoryContract.LaunchHistoryInteractor
+
     @Mock
-    val mInteractor: LaunchHistoryInteractor = mock(LaunchHistoryInteractor::class.java)
+    val mInteractor: LaunchHistoryContract.LaunchHistoryInteractor =
+        mock(LaunchHistoryContract.LaunchHistoryInteractor::class.java)
+
     @Mock
-    val mView: LaunchHistoryView = mock(LaunchHistoryView::class.java)
+    val mView: LaunchHistoryContract.LaunchHistoryView =
+        mock(LaunchHistoryContract.LaunchHistoryView::class.java)
+
     @Mock
-    val mListener: LaunchHistoryInteractor.InteractorCallback =
-        mock(LaunchHistoryInteractor.InteractorCallback::class.java)
+    val mListener: LaunchHistoryContract.InteractorCallback =
+        mock(LaunchHistoryContract.InteractorCallback::class.java)
+
     @Mock
     val mLaunchModelF1: LaunchesModel = mock(LaunchesModel::class.java)
+
     @Mock
     val mLaunchConfigModelF1: LaunchConfigModel = mock(LaunchConfigModel::class.java)
+
     @Mock
     val mLaunchModelF9: LaunchesModel = mock(LaunchesModel::class.java)
+
     @Mock
     val mLaunchConfigModelF9: LaunchConfigModel = mock(LaunchConfigModel::class.java)
+
     @Mock
     val mLaunchModelFH: LaunchesModel = mock(LaunchesModel::class.java)
+
     @Mock
     val mLaunchConfigModelFH: LaunchConfigModel = mock(LaunchConfigModel::class.java)
 
@@ -55,7 +70,7 @@ class LaunchHistoryTest {
     fun setup() {
         MockitoAnnotations.initMocks(this)
 
-        interactor = LaunchHistoryInteractorImpl(Dispatchers.Unconfined)
+        interactor = LaunchHistoryInteractorImpl()
         mPresenter = LaunchHistoryPresenterImpl(mView, mInteractor)
         presenter = LaunchHistoryPresenterImpl(mView, interactor)
 
@@ -72,7 +87,7 @@ class LaunchHistoryTest {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
                 getLaunches("past", "asc")
-            } doReturn Response.success(launchesList)
+            } doReturn Calls.response(Response.success(launchesList))
         }
 
         `when`(mLaunchModelF1.rocket.id).thenReturn("falcon1")
@@ -128,9 +143,11 @@ class LaunchHistoryTest {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
                 getLaunches("past", "asc")
-            } doReturn Response.error(
+            } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
             )
         }
 
@@ -144,9 +161,11 @@ class LaunchHistoryTest {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
                 getLaunches("past", "asc")
-            } doReturn Response.error(
+            } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
             )
         }
 
@@ -156,35 +175,6 @@ class LaunchHistoryTest {
             showProgress()
             showError("Error: 404")
         }
-    }
-
-    @Test
-    fun `When HttpException occurs`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking {
-                getLaunches("past", "asc")
-            } doThrow HttpException(
-                Response.error<Any>(
-                    500,
-                    "Test server error".toResponseBody("text/plain".toMediaTypeOrNull())
-                )
-            )
-        }
-
-        interactor.getLaunches(api = mockRepo, listener = mListener)
-
-        verifyBlocking(mListener) { onError("HTTP 500 Response.error()") }
-    }
-
-    @Test(expected = Throwable::class)
-    fun `When job fails to execute`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking {
-                getLaunches("past", "asc")
-            } doThrow Throwable()
-        }
-
-        interactor.getLaunches(api = mockRepo, listener = mListener)
     }
 
     @Test

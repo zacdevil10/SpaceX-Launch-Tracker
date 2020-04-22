@@ -1,8 +1,9 @@
 package uk.co.zac_h.spacex.launches
 
-import com.nhaarman.mockitokotlin2.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyBlocking
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Before
@@ -12,26 +13,29 @@ import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
-import retrofit2.HttpException
 import retrofit2.Response
-import uk.co.zac_h.spacex.launches.details.*
+import retrofit2.mock.Calls
+import uk.co.zac_h.spacex.launches.details.LaunchDetailsContract
+import uk.co.zac_h.spacex.launches.details.LaunchDetailsInteractorImpl
+import uk.co.zac_h.spacex.launches.details.LaunchDetailsPresenterImpl
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 
-@ExperimentalCoroutinesApi
 class LaunchDetailsTest {
 
-    private lateinit var mPresenter: LaunchDetailsPresenter
-    private lateinit var presenter: LaunchDetailsPresenter
-    private lateinit var interactor: LaunchDetailsInteractor
+    private lateinit var mPresenter: LaunchDetailsContract.LaunchDetailsPresenter
+    private lateinit var presenter: LaunchDetailsContract.LaunchDetailsPresenter
+    private lateinit var interactor: LaunchDetailsContract.LaunchDetailsInteractor
     @Mock
-    val mInteractor: LaunchDetailsInteractor = mock(LaunchDetailsInteractor::class.java)
+    val mInteractor: LaunchDetailsContract.LaunchDetailsInteractor =
+        mock(LaunchDetailsContract.LaunchDetailsInteractor::class.java)
     @Mock
-    val mView: LaunchDetailsView = mock(LaunchDetailsView::class.java)
+    val mView: LaunchDetailsContract.LaunchDetailsView =
+        mock(LaunchDetailsContract.LaunchDetailsView::class.java)
     @Mock
-    val mListener: LaunchDetailsInteractor.InteractorCallback =
-        mock(LaunchDetailsInteractor.InteractorCallback::class.java)
+    val mListener: LaunchDetailsContract.InteractorCallback =
+        mock(LaunchDetailsContract.InteractorCallback::class.java)
     @Mock
     val mPinnedSharedPreferencesHelper: PinnedSharedPreferencesHelper =
         mock(PinnedSharedPreferencesHelper::class.java)
@@ -42,7 +46,7 @@ class LaunchDetailsTest {
     fun setup() {
         MockitoAnnotations.initMocks(this)
 
-        interactor = LaunchDetailsInteractorImpl(Dispatchers.Unconfined)
+        interactor = LaunchDetailsInteractorImpl()
         mPresenter = LaunchDetailsPresenterImpl(mView, mPinnedSharedPreferencesHelper, mInteractor)
         presenter = LaunchDetailsPresenterImpl(mView, mPinnedSharedPreferencesHelper, interactor)
     }
@@ -50,7 +54,11 @@ class LaunchDetailsTest {
     @Test
     fun `When launch id is provided then get launch data`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getSingleLaunch("1") } doReturn Response.success(mLaunchesModel)
+            onBlocking { getSingleLaunch("1") } doReturn Calls.response(
+                Response.success(
+                    mLaunchesModel
+                )
+            )
         }
 
         interactor.getSingleLaunch("1", mockRepo, mListener)
@@ -68,7 +76,11 @@ class LaunchDetailsTest {
     @Test
     fun `When get launch data then add to view`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getSingleLaunch("1") } doReturn Response.success(mLaunchesModel)
+            onBlocking { getSingleLaunch("1") } doReturn Calls.response(
+                Response.success(
+                    mLaunchesModel
+                )
+            )
         }
 
         presenter.getLaunch("1", mockRepo)
@@ -111,9 +123,11 @@ class LaunchDetailsTest {
     @Test
     fun `When response from API is unsuccessful`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getSingleLaunch("1") } doReturn Response.error(
+            onBlocking { getSingleLaunch("1") } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
             )
         }
 
@@ -125,9 +139,11 @@ class LaunchDetailsTest {
     @Test
     fun `Show error in view when response from API fails`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getSingleLaunch("1") } doReturn Response.error(
+            onBlocking { getSingleLaunch("1") } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
             )
         }
 
@@ -137,31 +153,6 @@ class LaunchDetailsTest {
             showProgress()
             showError("Error: 404")
         }
-    }
-
-    @Test
-    fun `When HttpException occurs`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getSingleLaunch("1") } doThrow HttpException(
-                Response.error<Any>(
-                    500,
-                    "Test server error".toResponseBody("text/plain".toMediaTypeOrNull())
-                )
-            )
-        }
-
-        interactor.getSingleLaunch("1", mockRepo, mListener)
-
-        verifyBlocking(mListener) { onError("HTTP 500 Response.error()") }
-    }
-
-    @Test(expected = Throwable::class)
-    fun `When job fails to execute`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getSingleLaunch("1") } doThrow Throwable()
-        }
-
-        interactor.getSingleLaunch("1", mockRepo, mListener)
     }
 
     @Test

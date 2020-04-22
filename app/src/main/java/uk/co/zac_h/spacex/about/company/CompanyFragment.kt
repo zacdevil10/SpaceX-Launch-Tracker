@@ -13,10 +13,10 @@ import uk.co.zac_h.spacex.model.spacex.CompanyModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import java.text.DecimalFormat
 
-class CompanyFragment : Fragment(), CompanyView,
+class CompanyFragment : Fragment(), CompanyContract.CompanyView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: CompanyPresenter? = null
+    private var presenter: CompanyContract.CompanyPresenter? = null
 
     private var companyInfo: CompanyModel? = null
 

@@ -4,9 +4,9 @@ import uk.co.zac_h.spacex.model.reddit.SubredditModel
 import uk.co.zac_h.spacex.rest.RedditInterface
 
 class RedditFeedPresenterImpl(
-    private val view: RedditFeedView,
-    private val interactor: RedditFeedInteractor
-) : RedditFeedPresenter, RedditFeedInteractor.Callback {
+    private val view: RedditFeedContract.RedditFeedView,
+    private val interactor: RedditFeedContract.RedditFeedInteractor
+) : RedditFeedContract.RedditFeedPresenter, RedditFeedContract.InteractorCallback {
 
     override fun getSub(order: String, api: RedditInterface) {
         view.showProgress()

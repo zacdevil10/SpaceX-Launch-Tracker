@@ -14,10 +14,10 @@ import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextListener,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
+    SearchView.OnQueryTextListener, OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: LaunchesPresenter? = null
+    private var presenter: LaunchesContract.LaunchesPresenter? = null
     private lateinit var launchesAdapter: LaunchesAdapter
     private lateinit var launchesList: ArrayList<LaunchesModel>
 

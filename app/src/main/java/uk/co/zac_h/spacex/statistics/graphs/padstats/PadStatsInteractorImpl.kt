@@ -1,63 +1,34 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
-import android.util.Log
-import kotlinx.coroutines.*
-import retrofit2.HttpException
+import retrofit2.Call
 import uk.co.zac_h.spacex.model.spacex.LandingPadModel
 import uk.co.zac_h.spacex.model.spacex.LaunchpadModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
-import uk.co.zac_h.spacex.utils.PadType
-import java.net.UnknownHostException
-import kotlin.coroutines.CoroutineContext
+import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class PadStatsInteractorImpl(private val uiContext: CoroutineContext = Dispatchers.Main) :
-    PadStatsInteractor {
+class PadStatsInteractorImpl : BaseNetwork(), PadStatsContract.PadStatsInteractor {
 
-    private val parentJob = Job()
-    private val coroutineContext: CoroutineContext
-        get() = parentJob + uiContext
+    private var launchCall: Call<List<LaunchpadModel>>? = null
+    private var landingCall: Call<List<LandingPadModel>>? = null
 
-    private val scope = CoroutineScope(coroutineContext)
-
-    @Suppress("UNCHECKED_CAST")
-    override fun getPads(
-        type: PadType,
-        api: SpaceXInterface,
-        listener: PadStatsInteractor.InteractorCallback
-    ) {
-        scope.launch {
-            val response = async(SupervisorJob(parentJob)) {
-                when (type) {
-                    PadType.LAUNCH -> api.getLaunchpads()
-                    PadType.LANDING -> api.getLandingPads()
-                }
+    override fun getPads(api: SpaceXInterface, listener: PadStatsContract.InteractorCallback) {
+        launchCall = api.getLaunchpads().apply {
+            makeCall {
+                onResponseSuccess = { listener.onGetLaunchpads(it.body()) }
+                onResponseFailure = { listener.onError(it) }
             }
+        }
 
-            withContext(uiContext) {
-                try {
-                    if (response.await().isSuccessful) {
-                        when (type) {
-                            PadType.LAUNCH -> listener.onGetLaunchpads(response.await().body() as List<LaunchpadModel>?)
-                            PadType.LANDING -> listener.onGetLandingPads(response.await().body() as List<LandingPadModel>?)
-                        }
-                    } else {
-                        listener.onError("Error: ${response.await().code()}")
-                    }
-                } catch (e: HttpException) {
-                    listener.onError(
-                        e.localizedMessage ?: "There was a network error! Please try refreshing."
-                    )
-                } catch (e: UnknownHostException) {
-                    listener.onError("Unable to resolve host! Check your network connection and try again.")
-                } catch (e: Throwable) {
-                    Log.e(
-                        this@PadStatsInteractorImpl.javaClass.name,
-                        e.localizedMessage ?: "Job failed to execute"
-                    )
-                }
+        landingCall = api.getLandingPads().apply {
+            makeCall {
+                onResponseSuccess = { listener.onGetLandingPads(it.body()) }
+                onResponseFailure = { listener.onError(it) }
             }
         }
     }
 
-    override fun cancelAllRequests() = coroutineContext.cancel()
+    override fun cancelAllRequests() {
+        landingCall?.cancel()
+        launchCall?.cancel()
+    }
 }

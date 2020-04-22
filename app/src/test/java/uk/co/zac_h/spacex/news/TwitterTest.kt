@@ -1,10 +1,8 @@
 package uk.co.zac_h.spacex.news
 
 import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verifyBlocking
-import kotlinx.coroutines.Dispatchers
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Before
@@ -13,23 +11,28 @@ import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.MockitoAnnotations
-import retrofit2.HttpException
 import retrofit2.Response
+import retrofit2.mock.Calls
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
-import uk.co.zac_h.spacex.news.twitter.*
+import uk.co.zac_h.spacex.news.twitter.TwitterFeedContract
+import uk.co.zac_h.spacex.news.twitter.TwitterFeedInteractorImpl
+import uk.co.zac_h.spacex.news.twitter.TwitterFeedPresenterImpl
 import uk.co.zac_h.spacex.rest.TwitterInterface
 
 class TwitterTest {
 
-    private lateinit var mPresenter: TwitterFeedPresenter
-    private lateinit var presenter: TwitterFeedPresenter
-    private lateinit var interactor: TwitterFeedInteractor
+    private lateinit var mPresenter: TwitterFeedContract.TwitterFeedPresenter
+    private lateinit var presenter: TwitterFeedContract.TwitterFeedPresenter
+    private lateinit var interactor: TwitterFeedContract.TwitterFeedInteractor
     @Mock
-    val mInteractor: TwitterFeedInteractor = mock(TwitterFeedInteractor::class.java)
+    val mInteractor: TwitterFeedContract.TwitterFeedInteractor =
+        mock(TwitterFeedContract.TwitterFeedInteractor::class.java)
     @Mock
-    val mView: TwitterFeedView = mock(TwitterFeedView::class.java)
+    val mView: TwitterFeedContract.TwitterFeedView =
+        mock(TwitterFeedContract.TwitterFeedView::class.java)
     @Mock
-    val mListener: TwitterFeedInteractor.Callback = mock(TwitterFeedInteractor.Callback::class.java)
+    val mListener: TwitterFeedContract.InteractorCallback =
+        mock(TwitterFeedContract.InteractorCallback::class.java)
     @Mock
     val mTwitterModel: TimelineTweetModel = mock(TimelineTweetModel::class.java)
 
@@ -39,7 +42,7 @@ class TwitterTest {
     fun setup() {
         MockitoAnnotations.initMocks(this)
 
-        interactor = TwitterFeedInteractorImpl(Dispatchers.Unconfined)
+        interactor = TwitterFeedInteractorImpl()
         mPresenter = TwitterFeedPresenterImpl(mView, mInteractor)
         presenter = TwitterFeedPresenterImpl(mView, interactor)
 
@@ -57,7 +60,7 @@ class TwitterTest {
                     mode = "extended",
                     count = 15
                 )
-            } doReturn Response.success(twitterList)
+            } doReturn Calls.response(Response.success(twitterList))
         }
 
         presenter.getTweets(mockRepo)
@@ -81,7 +84,7 @@ class TwitterTest {
                     count = 15,
                     maxId = 1L
                 )
-            } doReturn Response.success(twitterList)
+            } doReturn Calls.response(Response.success(twitterList))
         }
 
         presenter.getTweets(1L, mockRepo)
@@ -104,9 +107,11 @@ class TwitterTest {
                     mode = "extended",
                     count = 15
                 )
-            } doReturn Response.error(
+            } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
             )
         }
 
@@ -126,9 +131,11 @@ class TwitterTest {
                     mode = "extended",
                     count = 15
                 )
-            } doReturn Response.error(
+            } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
             )
         }
 
@@ -139,47 +146,6 @@ class TwitterTest {
             showError("Error: 404")
             toggleSwipeProgress(false)
         }
-    }
-
-    @Test
-    fun `When HttpException occurs`() {
-        val mockRepo = mock<TwitterInterface> {
-            onBlocking {
-                getTweets(
-                    "SpaceX",
-                    rts = false,
-                    trim = false,
-                    mode = "extended",
-                    count = 15
-                )
-            } doThrow HttpException(
-                Response.error<Any>(
-                    500,
-                    "Test server error".toResponseBody("text/plain".toMediaTypeOrNull())
-                )
-            )
-        }
-
-        interactor.getTwitterTimeline(api = mockRepo, listener = mListener)
-
-        verifyBlocking(mListener) { onError("HTTP 500 Response.error()") }
-    }
-
-    @Test(expected = Throwable::class)
-    fun `When job fails to execute`() {
-        val mockRepo = mock<TwitterInterface> {
-            onBlocking {
-                getTweets(
-                    "SpaceX",
-                    rts = false,
-                    trim = false,
-                    mode = "extended",
-                    count = 15
-                )
-            } doThrow Throwable()
-        }
-
-        interactor.getTwitterTimeline(api = mockRepo, listener = mListener)
     }
 
     @Test

@@ -56,14 +56,14 @@ class OAuthSigningInterceptor(private val keys: OAuthKeys) : Interceptor {
         return ByteString.of(*result).base64()
     }
 
-    private fun HashMap<String, Any>.encodeForSignature() =
+    private fun <T> HashMap<String, T>.encodeForSignature() =
         toList()
             .sortedBy { (key, _) -> key }
             .toMap().map { "${it.key}=${it.value}" }
             .joinToString("&")
             .encodeUtf8()
 
-    private fun HashMap<String, Any>.toHeaderFormat() =
+    private fun <T> HashMap<String, T>.toHeaderFormat() =
         filter { it.key in baseKeys }
             .toList()
             .sortedBy { (key, _) -> key }

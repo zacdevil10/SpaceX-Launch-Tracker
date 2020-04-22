@@ -6,10 +6,10 @@ import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 import kotlin.math.roundToInt
 
 class LaunchHistoryPresenterImpl(
-    private val view: LaunchHistoryView,
-    private val interactor: LaunchHistoryInteractor
-) : LaunchHistoryPresenter,
-    LaunchHistoryInteractor.InteractorCallback {
+    private val view: LaunchHistoryContract.LaunchHistoryView,
+    private val interactor: LaunchHistoryContract.LaunchHistoryInteractor
+) : LaunchHistoryContract.LaunchHistoryPresenter,
+    LaunchHistoryContract.InteractorCallback {
 
     private lateinit var launchesList: List<HistoryStatsModel>
 

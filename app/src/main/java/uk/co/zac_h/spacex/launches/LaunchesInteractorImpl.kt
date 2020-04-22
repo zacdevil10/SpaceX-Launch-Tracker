@@ -1,54 +1,27 @@
 package uk.co.zac_h.spacex.launches
 
-import android.util.Log
-import kotlinx.coroutines.*
-import retrofit2.HttpException
+import retrofit2.Call
+import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
-import java.net.UnknownHostException
-import kotlin.coroutines.CoroutineContext
+import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class LaunchesInteractorImpl(private val uiContext: CoroutineContext = Dispatchers.Main) :
-    LaunchesInteractor {
+class LaunchesInteractorImpl : BaseNetwork(), LaunchesContract.LaunchesInteractor {
 
-    private val parentJob = Job()
-    private val coroutineContext: CoroutineContext
-        get() = parentJob + uiContext
-
-    private val scope = CoroutineScope(coroutineContext)
+    private var call: Call<List<LaunchesModel>>? = null
 
     override fun getLaunches(
         id: String,
         order: String,
         api: SpaceXInterface,
-        listener: LaunchesInteractor.InteractorCallback
+        listener: LaunchesContract.InteractorCallback
     ) {
-        scope.launch {
-            val response = async(SupervisorJob(parentJob)) {
-                api.getLaunches(id, order)
-            }
-
-            withContext(uiContext) {
-                try {
-                    if (response.await().isSuccessful) {
-                        listener.onSuccess(response.await().body())
-                    } else {
-                        listener.onError("Error: ${response.await().code()}")
-                    }
-                } catch (e: HttpException) {
-                    listener.onError(
-                        e.localizedMessage ?: "There was a network error! Please try refreshing."
-                    )
-                } catch (e: UnknownHostException) {
-                    listener.onError("Unable to resolve host! Check your network connection and try again.")
-                } catch (e: Throwable) {
-                    Log.e(
-                        this@LaunchesInteractorImpl.javaClass.name,
-                        e.localizedMessage ?: "Job failed to execute"
-                    )
-                }
+        call = api.getLaunches(id, order).apply {
+            makeCall {
+                onResponseSuccess = { listener.onSuccess(it.body()) }
+                onResponseFailure = { listener.onError(it) }
             }
         }
     }
 
-    override fun cancelAllRequests() = coroutineContext.cancel()
+    override fun cancelAllRequests() = call?.cancel()
 }

@@ -30,10 +30,10 @@ import uk.co.zac_h.spacex.utils.formatBlockNumber
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class DashboardFragment : Fragment(), DashboardView,
+class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: DashboardPresenter? = null
+    private var presenter: DashboardContract.DashboardPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
     private var nextLaunchModel: LaunchesModel? = null
@@ -208,7 +208,7 @@ class DashboardFragment : Fragment(), DashboardView,
             nextLaunch.launchDateUnix.formatDateMillisLong(tbd)
         } ?: nextLaunch.launchDateUnix.formatDateMillisLong()
 
-        dashboard_next_card_view.setOnClickListener { _ ->
+        dashboard_next_card_view.setOnClickListener {
             findNavController().navigate(
                 R.id.action_dashboard_page_fragment_to_launch_details_fragment,
                 bundleOf("launch" to nextLaunch, "title" to nextLaunch.missionName),
@@ -244,7 +244,7 @@ class DashboardFragment : Fragment(), DashboardView,
             latestLaunch.launchDateUnix.formatDateMillisLong(tbd)
         } ?: latestLaunch.launchDateUnix.formatDateMillisLong()
 
-        dashboard_latest_card_view.setOnClickListener { _ ->
+        dashboard_latest_card_view.setOnClickListener {
             findNavController().navigate(
                 R.id.action_dashboard_page_fragment_to_launch_details_fragment,
                 bundleOf(

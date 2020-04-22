@@ -4,10 +4,9 @@ import uk.co.zac_h.spacex.model.spacex.CompanyModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class CompanyPresenterImpl(
-    private val view: CompanyView,
-    private val interactor: CompanyInteractor
-) : CompanyPresenter,
-    CompanyInteractor.Callback {
+    private val view: CompanyContract.CompanyView,
+    private val interactor: CompanyContract.CompanyInteractor
+) : CompanyContract.CompanyPresenter, CompanyContract.InteractorCallback {
 
     override fun getCompanyInfo(companyInfo: CompanyModel?, api: SpaceXInterface) {
         view.showProgress()

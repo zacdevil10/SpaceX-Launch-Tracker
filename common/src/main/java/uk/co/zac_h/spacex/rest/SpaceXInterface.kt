@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.rest
 
-import retrofit2.Response
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
@@ -11,40 +11,43 @@ import uk.co.zac_h.spacex.model.spacex.*
 interface SpaceXInterface {
 
     @GET("launches/{flight}")
-    suspend fun getSingleLaunch(@Path("flight") flight: String): Response<LaunchesModel>
+    fun getSingleLaunch(@Path("flight") flight: String): Call<LaunchesModel>
 
     @GET("launches/{launches}")
-    suspend fun getLaunches(@Path("launches") launches: String, @Query("order") order: String): Response<List<LaunchesModel>>
+    fun getLaunches(
+        @Path("launches") launches: String,
+        @Query("order") order: String
+    ): Call<List<LaunchesModel>>
 
     @GET("launches")
-    suspend fun getLaunches(): Response<List<LaunchesModel>>
+    fun getLaunches(): Call<List<LaunchesModel>>
 
     @GET("rockets")
-    suspend fun getRockets(): Response<List<RocketsModel>>
+    fun getRockets(): Call<List<RocketsModel>>
 
     @GET("dragons")
-    suspend fun getDragons(): Response<List<DragonModel>>
+    fun getDragons(): Call<List<DragonModel>>
 
     @GET("capsules")
-    suspend fun getCapsules(): Response<List<CapsulesModel>>
+    fun getCapsules(): Call<List<CapsulesModel>>
 
     @GET("cores")
-    suspend fun getCores(): Response<List<CoreModel>>
+    fun getCores(): Call<List<CoreModel>>
 
     @GET("cores/{serial}")
-    suspend fun getSingleCore(@Path("serial") serial: String): Response<CoreModel>
+    fun getSingleCore(@Path("serial") serial: String): Call<CoreModel>
 
     @GET("launchpads")
-    suspend fun getLaunchpads(): Response<List<LaunchpadModel>>
+    fun getLaunchpads(): Call<List<LaunchpadModel>>
 
     @GET("landpads")
-    suspend fun getLandingPads(): Response<List<LandingPadModel>>
+    fun getLandingPads(): Call<List<LandingPadModel>>
 
     @GET("history")
-    suspend fun getHistory(@Query("order") order: String): Response<List<HistoryModel>>
+    fun getHistory(@Query("order") order: String): Call<List<HistoryModel>>
 
     @GET("info")
-    suspend fun getCompanyInfo(): Response<CompanyModel>
+    fun getCompanyInfo(): Call<CompanyModel>
 
     companion object RetrofitSetup {
         fun create(): SpaceXInterface = Retrofit.Builder().apply {

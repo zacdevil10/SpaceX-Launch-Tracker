@@ -1,47 +1,26 @@
 package uk.co.zac_h.spacex.launches
 
-import android.util.Log
-import kotlinx.coroutines.*
-import retrofit2.HttpException
+import retrofit2.Call
+import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
-import kotlin.coroutines.CoroutineContext
+import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class LaunchesWearInteractorImpl : LaunchesWearInteractor {
+class LaunchesWearInteractorImpl : BaseNetwork(), LaunchesWearInteractor {
 
-    private val parentJob = Job()
-    private val coroutineContext: CoroutineContext
-        get() = parentJob + Dispatchers.Default
-
-    private val scope = CoroutineScope(coroutineContext)
+    private var call: Call<List<LaunchesModel>>? = null
 
     override fun getAllLaunches(
         id: String,
         order: String,
         listener: LaunchesWearInteractor.Callback
     ) {
-        scope.launch {
-            val response = async(SupervisorJob(parentJob)) {
-                SpaceXInterface.create().getLaunches(id, order)
-            }
-
-            withContext(Dispatchers.Main) {
-                try {
-                    if (response.await().isSuccessful) {
-                        listener.onSuccess(response.await().body())
-                    } else {
-                        listener.onError("Error: ${response.await().code()}")
-                    }
-                } catch (e: HttpException) {
-                    listener.onError("Error: ${e.localizedMessage}")
-                } catch (e: Throwable) {
-                    Log.e(
-                        this@LaunchesWearInteractorImpl.javaClass.name,
-                        e.localizedMessage ?: "Job failed to execute"
-                    )
-                }
+        call = SpaceXInterface.create().getLaunches(id, order).apply {
+            makeCall {
+                onResponseSuccess = { listener.onSuccess(it.body()) }
+                onResponseFailure = { listener.onError(it) }
             }
         }
     }
 
-    override fun cancelRequest() = coroutineContext.cancel()
+    override fun cancelRequest() = call?.cancel()
 }

@@ -22,10 +22,10 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.utils.models.RateStatsModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchRateFragment : Fragment(), LaunchRateView,
+class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: LaunchRatePresenter? = null
+    private var presenter: LaunchRateContract.LaunchRatePresenter? = null
 
     private lateinit var statsList: ArrayList<RateStatsModel>
 
@@ -34,7 +34,7 @@ class LaunchRateFragment : Fragment(), LaunchRateView,
         setHasOptionsMenu(true)
 
         statsList =
-            savedInstanceState?.getParcelableArrayList<RateStatsModel>("launches") ?: ArrayList()
+            savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
     }
 
     override fun onCreateView(

@@ -6,9 +6,9 @@ import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.RateStatsModel
 
 class LaunchRatePresenterImpl(
-    private val view: LaunchRateView,
-    private val interactor: LaunchRateInteractor
-) : LaunchRatePresenter, LaunchRateInteractor.InteractorCallback {
+    private val view: LaunchRateContract.LaunchRateView,
+    private val interactor: LaunchRateContract.LaunchRateInteractor
+) : LaunchRateContract.LaunchRatePresenter, LaunchRateContract.InteractorCallback {
 
     override fun getLaunchList(api: SpaceXInterface) {
         view.showProgress()

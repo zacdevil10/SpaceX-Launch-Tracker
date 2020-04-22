@@ -4,9 +4,9 @@ import uk.co.zac_h.spacex.model.spacex.CapsulesModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class CapsulesPresenterImpl(
-    private val view: CapsulesView,
-    private val interactor: CapsulesInteractor
-) : CapsulesPresenter, CapsulesInteractor.Callback {
+    private val view: CapsulesContract.CapsulesView,
+    private val interactor: CapsulesContract.CapsulesInteractor
+) : CapsulesContract.CapsulesPresenter, CapsulesContract.InteractorCallback {
 
     override fun getCapsules(api: SpaceXInterface) {
         view.showProgress()

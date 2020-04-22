@@ -5,10 +5,10 @@ import uk.co.zac_h.spacex.rest.SpaceXInterface
 import java.util.concurrent.TimeUnit
 
 class DashboardPresenterImpl(
-    private val view: DashboardView,
-    private val interactor: DashboardInteractor
-) : DashboardPresenter,
-    DashboardInteractor.InteractorCallback {
+    private val view: DashboardContract.DashboardView,
+    private val interactor: DashboardContract.DashboardInteractor
+) : DashboardContract.DashboardPresenter,
+    DashboardContract.InteractorCallback {
 
     override fun getLatestLaunches(
         next: LaunchesModel?,

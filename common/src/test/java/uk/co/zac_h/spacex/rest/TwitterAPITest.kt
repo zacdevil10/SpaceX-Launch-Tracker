@@ -12,10 +12,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import uk.co.zac_h.BuildConfig
 import uk.co.zac_h.spacex.model.twitter.OAuthKeys
+import uk.co.zac_h.spacex.utils.BaseNetwork
 import uk.co.zac_h.spacex.utils.OAuthSigningInterceptor
 import java.net.HttpURLConnection
 
-class TwitterAPITest {
+class TwitterAPITest : BaseNetwork() {
 
     private var mWebServer = MockWebServer()
 
@@ -68,42 +69,44 @@ class TwitterAPITest {
     @Test
     fun `Get Tweet with all possible data attached`() {
         runBlocking {
-            val tweets = twitterInterface.getTweets(
+            twitterInterface.getTweets(
                 "spacex",
                 rts = false,
                 trim = false,
                 mode = "extended",
                 count = 1
-            )
+            ).makeCall {
+                onResponseSuccess = {
+                    assert(it.isSuccessful)
 
-            assert(tweets.isSuccessful)
+                    it.body()?.get(0)?.run {
+                        assert(created == "Mon Feb 17 15:23:23 +0000 2020")
+                        assert(id == 1229426122720346113L)
+                        assert(text == "Sample Text")
 
-            tweets.body()?.get(0)?.run {
-                assert(created == "Mon Feb 17 15:23:23 +0000 2020")
-                assert(id == 1229426122720346113L)
-                assert(text == "Sample Text")
+                        assert(entities.hashtags[0].tag == "HashTag")
+                        assert(entities.mentions[0].id == 1451773004L)
+                        assert(entities.mentions[0].screenName == "Test")
+                        assert(entities.mentions[0].name == "Testing Name")
+                        assert(entities.urls[0].url == "https://t.co/test")
+                        assert(entities.urls[0].expandedUrl == "https://twitter.com/i/test")
+                        assert(entities.urls[0].displayUrl == "twitter.com/i/t...")
 
-                assert(entities.hashtags[0].tag == "HashTag")
-                assert(entities.mentions[0].id == 1451773004L)
-                assert(entities.mentions[0].screenName == "Test")
-                assert(entities.mentions[0].name == "Testing Name")
-                assert(entities.urls[0].url == "https://t.co/test")
-                assert(entities.urls[0].expandedUrl == "https://twitter.com/i/test")
-                assert(entities.urls[0].displayUrl == "twitter.com/i/t...")
+                        extendedEntities!!.media!![0].run {
+                            assert(url == "media url https")
+                            assert(type == "video")
+                            info!!.run {
+                                assert(aspectRatio!![0] == 16)
+                                assert(aspectRatio!![1] == 9)
+                                assert(duration == 6540)
+                                assert(variants!!.size == 2)
+                            }
+                        }
 
-                extendedEntities!!.media!![0].run {
-                    assert(url == "media url https")
-                    assert(type == "video")
-                    info!!.run {
-                        assert(aspectRatio!![0] == 16)
-                        assert(aspectRatio!![1] == 9)
-                        assert(duration == 6540)
-                        assert(variants!!.size == 2)
+                        assert(replyStatusId == null)
+                        assert(!isQuote)
                     }
                 }
-
-                assert(replyStatusId == null)
-                assert(!isQuote)
             }
         }
     }

@@ -14,10 +14,10 @@ import uk.co.zac_h.spacex.model.spacex.CoreModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
 
-class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
+class CoreFragment : Fragment(), CoreContract.CoreView, SearchView.OnQueryTextListener,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: CorePresenter? = null
+    private var presenter: CoreContract.CorePresenter? = null
 
     private lateinit var coreAdapter: CoreAdapter
     private lateinit var coresArray: ArrayList<CoreModel>

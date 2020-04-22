@@ -4,9 +4,9 @@ import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class LaunchesPresenterImpl(
-    private val view: LaunchesView,
-    private val interactor: LaunchesInteractor
-) : LaunchesPresenter, LaunchesInteractor.InteractorCallback {
+    private val view: LaunchesContract.LaunchesView,
+    private val interactor: LaunchesContract.LaunchesInteractor
+) : LaunchesContract.LaunchesPresenter, LaunchesContract.InteractorCallback {
 
     override fun getLaunchList(id: String, api: SpaceXInterface) {
         view.showProgress()

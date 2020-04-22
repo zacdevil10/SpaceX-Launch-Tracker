@@ -1,10 +1,8 @@
 package uk.co.zac_h.spacex.news
 
 import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verifyBlocking
-import kotlinx.coroutines.Dispatchers
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Before
@@ -13,23 +11,32 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
-import retrofit2.HttpException
 import retrofit2.Response
+import retrofit2.mock.Calls
 import uk.co.zac_h.spacex.model.reddit.SubredditModel
-import uk.co.zac_h.spacex.news.reddit.*
+import uk.co.zac_h.spacex.news.reddit.RedditFeedContract
+import uk.co.zac_h.spacex.news.reddit.RedditFeedInteractorImpl
+import uk.co.zac_h.spacex.news.reddit.RedditFeedPresenterImpl
 import uk.co.zac_h.spacex.rest.RedditInterface
 
 class RedditTest {
 
-    private lateinit var mPresenter: RedditFeedPresenter
-    private lateinit var presenter: RedditFeedPresenter
-    private lateinit var interactor: RedditFeedInteractor
+    private lateinit var mPresenter: RedditFeedContract.RedditFeedPresenter
+    private lateinit var presenter: RedditFeedContract.RedditFeedPresenter
+    private lateinit var interactor: RedditFeedContract.RedditFeedInteractor
+
     @Mock
-    val mInteractor: RedditFeedInteractor = mock(RedditFeedInteractor::class.java)
+    val mInteractor: RedditFeedContract.RedditFeedInteractor =
+        mock(RedditFeedContract.RedditFeedInteractor::class.java)
+
     @Mock
-    val mView: RedditFeedView = mock(RedditFeedView::class.java)
+    val mView: RedditFeedContract.RedditFeedView =
+        mock(RedditFeedContract.RedditFeedView::class.java)
+
     @Mock
-    val mListener: RedditFeedInteractor.Callback = mock(RedditFeedInteractor.Callback::class.java)
+    val mListener: RedditFeedContract.InteractorCallback =
+        mock(RedditFeedContract.InteractorCallback::class.java)
+
     @Mock
     val mRedditModel: SubredditModel = mock(SubredditModel::class.java)
 
@@ -37,7 +44,7 @@ class RedditTest {
     fun setup() {
         MockitoAnnotations.initMocks(this)
 
-        interactor = RedditFeedInteractorImpl(Dispatchers.Unconfined)
+        interactor = RedditFeedInteractorImpl()
         mPresenter = RedditFeedPresenterImpl(mView, mInteractor)
         presenter = RedditFeedPresenterImpl(mView, interactor)
     }
@@ -45,7 +52,11 @@ class RedditTest {
     @Test
     fun `When get reddit feed then add to view`() {
         val mockRepo = mock<RedditInterface> {
-            onBlocking { getRedditFeed("SpaceX", "asc") } doReturn Response.success(mRedditModel)
+            onBlocking { getRedditFeed("SpaceX", "asc") } doReturn Calls.response(
+                Response.success(
+                    mRedditModel
+                )
+            )
         }
 
         presenter.getSub("asc", mockRepo)
@@ -60,9 +71,9 @@ class RedditTest {
     @Test
     fun `When getting next page then add to existing adapter`() {
         val mockRepo = mock<RedditInterface> {
-            onBlocking { getRedditFeed("SpaceX", "asc", "id") } doReturn Response.success(
-                mRedditModel
-            )
+            onBlocking {
+                getRedditFeed("SpaceX", "asc", "id")
+            } doReturn Calls.response(Response.success(mRedditModel))
         }
 
         presenter.getNextPage("id", "asc", mockRepo)
@@ -77,58 +88,17 @@ class RedditTest {
     @Test
     fun `When response from API is unsuccessful`() {
         val mockRepo = mock<RedditInterface> {
-            onBlocking { getRedditFeed("SpaceX", "asc") } doReturn Response.error(
+            onBlocking { getRedditFeed("SpaceX", "asc") } doReturn Calls.response(
+                Response.error(
                 404,
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
-            )
-        }
-
-        interactor.getSubreddit(mockRepo, mListener, "asc")
-
-        verifyBlocking(mListener) { onError("Error: 404") }
-    }
-
-    @Test
-    fun `Show error in view when response from API fails`() {
-        val mockRepo = mock<RedditInterface> {
-            onBlocking { getRedditFeed("SpaceX", "asc") } doReturn Response.error(
-                404,
-                "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
-            )
-        }
-
-        presenter.getSub("asc", mockRepo)
-
-        verifyBlocking(mView) {
-            showProgress()
-            showError("Error: 404")
-            toggleSwipeRefresh(false)
-        }
-    }
-
-    @Test
-    fun `When HttpException occurs`() {
-        val mockRepo = mock<RedditInterface> {
-            onBlocking { getRedditFeed("SpaceX", "asc") } doThrow HttpException(
-                Response.error<Any>(
-                    500,
-                    "Test server error".toResponseBody("text/plain".toMediaTypeOrNull())
                 )
             )
         }
 
         interactor.getSubreddit(mockRepo, mListener, "asc")
 
-        verifyBlocking(mListener) { onError("HTTP 500 Response.error()") }
-    }
-
-    @Test(expected = Throwable::class)
-    fun `When job fails to execute`() {
-        val mockRepo = mock<RedditInterface> {
-            onBlocking { getRedditFeed("SpaceX") } doThrow Throwable()
-        }
-
-        interactor.getSubreddit(mockRepo, mListener, "asc")
+        verifyBlocking(mListener) { onError("Error: 404") }
     }
 
     @Test
