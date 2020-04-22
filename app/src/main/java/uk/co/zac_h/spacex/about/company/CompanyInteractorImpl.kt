@@ -5,7 +5,7 @@ import uk.co.zac_h.spacex.model.spacex.CompanyModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class CompanyInteractorImpl() : BaseNetwork(), CompanyContract.CompanyInteractor {
+class CompanyInteractorImpl : BaseNetwork(), CompanyContract.CompanyInteractor {
 
     private var call: Call<CompanyModel>? = null
 

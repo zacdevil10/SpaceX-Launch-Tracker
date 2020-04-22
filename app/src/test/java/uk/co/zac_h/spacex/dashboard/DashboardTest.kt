@@ -1,10 +1,8 @@
 package uk.co.zac_h.spacex.dashboard
 
 import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verifyBlocking
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Before
@@ -12,13 +10,11 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
-import retrofit2.HttpException
 import retrofit2.Response
 import retrofit2.mock.Calls
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
-@ExperimentalCoroutinesApi
 class DashboardTest {
 
     private lateinit var mPresenter: DashboardContract.DashboardPresenter
@@ -141,38 +137,23 @@ class DashboardTest {
                 "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
                 )
             )
-        }
 
-        presenter.getLatestLaunches(api = mockRepo)
-
-        verifyBlocking(mView) { showProgress() }
-        verifyBlocking(mView) { showError("Error: 404") }
-        verifyBlocking(mView) { toggleSwipeProgress(false) }
-    }
-
-    @Test
-    fun `When HttpException occurs`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getSingleLaunch("next") } doThrow HttpException(
-                Response.error<Any>(
-                    500,
-                    "Test server error".toResponseBody("text/plain".toMediaTypeOrNull())
+            onBlocking { getSingleLaunch("latest") } doReturn Calls.response(
+                Response.error(
+                    404,
+                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
                 )
             )
         }
 
-        interactor.getSingleLaunch("next", mockRepo, mListener)
+        presenter.getLatestLaunches(api = mockRepo)
 
-        verifyBlocking(mListener) { onError("HTTP 500 Response.error()") }
-    }
-
-    @Test(expected = Throwable::class)
-    fun `When job fails to execute`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getSingleLaunch("next") } doThrow Throwable()
+        verifyBlocking(mView) {
+            showProgress()
+            showError("Error: 404")
+            showError("Error: 404")
+            toggleSwipeProgress(false)
         }
-
-        interactor.getSingleLaunch("next", mockRepo, mListener)
     }
 
     @Test

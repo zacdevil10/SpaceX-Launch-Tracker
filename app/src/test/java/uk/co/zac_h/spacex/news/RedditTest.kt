@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.news
 
 import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.doThrow
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verifyBlocking
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -100,46 +99,6 @@ class RedditTest {
         interactor.getSubreddit(mockRepo, mListener, "asc")
 
         verifyBlocking(mListener) { onError("Error: 404") }
-    }
-
-    @Test
-    fun `Show error in view when response from API fails`() {
-        val mockRepo = mock<RedditInterface> {
-            onBlocking { getRedditFeed("SpaceX", "asc") } doReturn Calls.response(
-                Response.error(
-                404,
-                "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
-                )
-            )
-        }
-
-        presenter.getSub("asc", mockRepo)
-
-        verifyBlocking(mView) {
-            showProgress()
-            showError("Error: 404")
-            toggleSwipeRefresh(false)
-        }
-    }
-
-    @Test
-    fun `When HttpException occurs`() {
-        /*val mockRepo = mock<RedditInterface> {
-            onBlocking { getRedditFeed("SpaceX", "asc") } doReturn Calls.failure<HttpException>(HttpException())
-        }
-
-        interactor.getSubreddit(mockRepo, mListener, "asc")
-
-        verifyBlocking(mListener) { onError("HTTP 500 Response.error()") }*/
-    }
-
-    @Test(expected = Throwable::class)
-    fun `When job fails to execute`() {
-        val mockRepo = mock<RedditInterface> {
-            onBlocking { getRedditFeed("SpaceX") } doThrow Throwable()
-        }
-
-        interactor.getSubreddit(mockRepo, mListener, "asc")
     }
 
     @Test

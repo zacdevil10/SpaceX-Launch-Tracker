@@ -10,9 +10,10 @@ import org.junit.Before
 import org.junit.Test
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import uk.co.zac_h.spacex.utils.BaseNetwork
 import java.net.HttpURLConnection
 
-class RedditAPITest {
+class RedditAPITest : BaseNetwork() {
 
     private var mWebServer = MockWebServer()
 
@@ -51,33 +52,35 @@ class RedditAPITest {
     @Test
     fun `Get reddit post`() {
         runBlocking {
-            val reddit = redditInterface.getRedditFeed("spacex")
+            redditInterface.getRedditFeed("spacex").makeCall {
+                onResponseSuccess = {
+                    assert(it.isSuccessful)
 
-            assert(reddit.isSuccessful)
+                    it.body()?.data?.children?.get(0)?.data?.run {
+                        assert(textHtml == "Test self text html")
+                        assert(title == "Test Title")
+                        assert(name == "name")
+                        assert(author == "Author")
+                        assert(created == 1578447831.0f)
+                        assert(thumbnail == "self")
+                        assert(score == 421)
+                        assert(commentsCount == 1581)
+                        assert(domain == "self.spacex")
+                        assert(stickied)
+                        assert(isSelf)
+                        assert(!redditDomain)
+                        assert(permalink == "permalink")
 
-            reddit.body()!!.data.children[0].data.run {
-                assert(textHtml == "Test self text html")
-                assert(title == "Test Title")
-                assert(name == "name")
-                assert(author == "Author")
-                assert(created == 1578447831.0f)
-                assert(thumbnail == "self")
-                assert(score == 421)
-                assert(commentsCount == 1581)
-                assert(domain == "self.spacex")
-                assert(stickied)
-                assert(isSelf)
-                assert(!redditDomain)
-                assert(permalink == "permalink")
+                        preview!!.images[0].run {
+                            assert(source.url == "source url")
+                            assert(source.width == 898)
+                            assert(source.height == 1200)
 
-                preview!!.images[0].run {
-                    assert(source.url == "source url")
-                    assert(source.width == 898)
-                    assert(source.height == 1200)
-
-                    assert(resolutions[0].url == "resolution url")
-                    assert(resolutions[0].width == 108)
-                    assert(resolutions[0].height == 144)
+                            assert(resolutions[0].url == "resolution url")
+                            assert(resolutions[0].width == 108)
+                            assert(resolutions[0].height == 144)
+                        }
+                    }
                 }
             }
         }
