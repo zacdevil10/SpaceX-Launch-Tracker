@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.provider.CalendarContract
 import android.view.*
 import android.view.animation.Animation
@@ -43,6 +44,8 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     private var pinned: Boolean = false
 
     private var coreAssigned: Boolean = false
+
+    private var countdownTimer: CountDownTimer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,7 +88,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
         launch?.let {
             presenter?.addLaunchModel(it)
-            launch_details_scroll_view.transitionName = it.flightNumber.toString()
+            launch_details_container.transitionName = it.flightNumber.toString()
             pinned = presenter?.isPinned(it.flightNumber.toString()) ?: false
         } ?: id?.let {
             presenter?.getLaunch(it)
@@ -154,6 +157,8 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
     override fun onDestroyView() {
         super.onDestroyView()
+        countdownTimer?.cancel()
+        countdownTimer = null
         presenter?.cancelRequest()
     }
 
@@ -215,7 +220,17 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         launch?.let {
             this.launch = launch
 
-            launch_details_scroll_view.transitionName = it.flightNumber.toString()
+            launch_details_container.transitionName = it.flightNumber.toString()
+
+            it.tbd?.let { tbd ->
+                val time = launch.launchDateUnix.times(1000) - System.currentTimeMillis()
+                if (!tbd && time >= 0) {
+                    setCountdown(time)
+                    showCountdown()
+                } else {
+                    hideCountdown()
+                }
+            }
 
             if (id == null) id = launch.flightNumber.toString()
 
@@ -403,12 +418,39 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 
+    override fun setCountdown(time: Long) {
+        countdownTimer?.cancel()
+        countdownTimer = object : CountDownTimer(time, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                presenter?.updateCountdown(millisUntilFinished)
+            }
+
+            override fun onFinish() {
+
+            }
+        }
+
+        countdownTimer?.start()
+    }
+
+    override fun updateCountdown(countdown: String) {
+        launch_details_countdown_text?.text = countdown
+    }
+
     override fun showProgress() {
         launch_details_progress.visibility = View.VISIBLE
     }
 
     override fun hideProgress() {
         launch_details_progress.visibility = View.GONE
+    }
+
+    override fun showCountdown() {
+        launch_details_countdown_text.visibility = View.VISIBLE
+    }
+
+    override fun hideCountdown() {
+        launch_details_countdown_text.visibility = View.GONE
     }
 
     override fun showError(error: String) {

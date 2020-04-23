@@ -11,6 +11,10 @@ interface LaunchDetailsContract {
         fun openWebLink(link: String)
         fun showProgress()
         fun hideProgress()
+        fun updateCountdown(countdown: String)
+        fun setCountdown(time: Long)
+        fun showCountdown()
+        fun hideCountdown()
         fun showError(error: String)
     }
 
@@ -20,6 +24,7 @@ interface LaunchDetailsContract {
         fun pinLaunch(id: String, pin: Boolean)
         fun isPinned(id: String): Boolean
         fun createEvent()
+        fun updateCountdown(time: Long)
         fun cancelRequest()
     }
 

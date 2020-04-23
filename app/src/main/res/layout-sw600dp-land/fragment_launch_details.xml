@@ -1,247 +1,272 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/launch_details_scroll_view"
+    android:id="@+id/launch_details_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_background"
     tools:context=".launches.details.LaunchDetailsFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="600dp"
+    <TextView
+        android:id="@+id/launch_details_countdown_text"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:animateLayoutChanges="true">
+        android:background="@color/color_secondary"
+        android:letterSpacing="0.1"
+        android:textAlignment="center"
+        android:textAppearance="?textAppearanceHeadline5"
+        android:textColor="@android:color/white"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="43:13:23:55" />
 
-        <ProgressBar
-            android:id="@+id/launch_details_progress"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/launch_details_first_stage_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="16dp"
-            android:text="@string/first_stage"
-            android:textAppearance="?textAppearanceHeadline5"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/launch_details_card" />
-
-        <TextView
-            android:id="@+id/launch_details_payload_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="16dp"
-            android:text="@string/payload_label"
-            android:textAppearance="?textAppearanceHeadline5"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/launch_details_cores_recycler" />
-
-        <TextView
-            android:id="@+id/launch_details_links_text"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="16dp"
-            android:text="@string/links_label"
-            android:textAppearance="?textAppearanceHeadline5"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/launch_details_payload_recycler" />
-
-        <ToggleButton
-            android:id="@+id/launch_details_first_stage_collapse_toggle"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/expand_collapse_toggle"
-            android:backgroundTint="?colorOnBackground"
-            android:checked="true"
-            android:clickable="false"
-            android:text=""
-            android:textOff=""
-            android:textOn=""
-            app:layout_constraintBottom_toBottomOf="@id/launch_details_first_stage_text"
-            app:layout_constraintEnd_toEndOf="@id/launch_details_first_stage_text"
-            app:layout_constraintTop_toTopOf="@id/launch_details_first_stage_text" />
-
-        <ToggleButton
-            android:id="@+id/launch_details_payload_collapse_toggle"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/expand_collapse_toggle"
-            android:backgroundTint="?colorOnBackground"
-            android:checked="true"
-            android:clickable="false"
-            android:text=""
-            android:textOff=""
-            android:textOn=""
-            app:layout_constraintBottom_toBottomOf="@id/launch_details_payload_text"
-            app:layout_constraintEnd_toEndOf="@id/launch_details_payload_text"
-            app:layout_constraintTop_toTopOf="@id/launch_details_payload_text" />
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/launch_details_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/launch_details_countdown_text">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/launch_details_card"
-            android:layout_width="match_parent"
+            android:layout_width="600dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_gravity="center_horizontal"
+            android:animateLayoutChanges="true">
 
-            <ImageView
-                android:id="@+id/launch_details_mission_patch_image"
-                android:layout_width="72dp"
-                android:layout_height="64dp"
-                android:contentDescription="@string/mission_patch"
-                android:paddingEnd="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="RtlSymmetry"
-                tools:src="@drawable/ic_check_circle_black_24dp" />
-
-            <TextView
-                android:id="@+id/launch_details_number_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toEndOf="@id/launch_details_mission_patch_image"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Flight 84" />
-
-            <TextView
-                android:id="@+id/launch_details_rocket_type_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Falcon Heavy" />
-
-            <TextView
-                android:id="@+id/launch_details_mission_name_text"
+            <ProgressBar
+                android:id="@+id/launch_details_progress"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textAppearance="?textAppearanceHeadline5"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/launch_details_mission_patch_image"
-                app:layout_constraintTop_toBottomOf="@id/launch_details_number_text"
-                tools:text="Crew Dragon In Flight Abort Test" />
-
-            <TextView
-                android:id="@+id/launch_details_date_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/launch_details_mission_name_text"
-                app:layout_constraintTop_toBottomOf="@id/launch_details_mission_name_text"
-                tools:text="04 Nov 19 - 00:00 BST" />
-
-            <TextView
-                android:id="@+id/launch_details_static_fire_date_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:text="@string/static_fire_label"
-                android:textStyle="italic"
+                android:indeterminate="true"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/launch_details_static_fire_date_text"
-                app:layout_constraintEnd_toStartOf="@id/launch_details_static_fire_date_text"
-                app:layout_constraintStart_toStartOf="@id/launch_details_date_text"
-                app:layout_constraintTop_toTopOf="@id/launch_details_static_fire_date_text" />
-
-            <TextView
-                android:id="@+id/launch_details_static_fire_date_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/launch_details_static_fire_date_label"
-                app:layout_constraintTop_toBottomOf="@id/launch_details_date_text"
-                tools:text="04 Nov 19 - 00:00 BST" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/launch_details_details_text"
-                android:layout_width="match_parent"
+                android:id="@+id/launch_details_first_stage_text"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="16dp"
+                android:text="@string/first_stage"
+                android:textAppearance="?textAppearanceHeadline5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/launch_details_static_fire_date_text"
-                tools:text="SpaceX's first flight of 2019 will be the eighth and final launch of its planned Iridium flights. Delivering 10 satellites to low earth orbit, this brings the total up to 75 and completes the Iridium NEXT constellation. This mission launches from SLC-4E at Vandenberg AFB. The booster is expected to land on JRTI." />
+                app:layout_constraintTop_toBottomOf="@id/launch_details_card" />
 
             <TextView
-                android:id="@+id/launch_details_site_name_label"
-                android:layout_width="wrap_content"
+                android:id="@+id/launch_details_payload_text"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="Launch site:"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="16dp"
+                android:text="@string/payload_label"
+                android:textAppearance="?textAppearanceHeadline5"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/launch_details_details_text" />
+                app:layout_constraintTop_toBottomOf="@id/launch_details_cores_recycler" />
 
             <TextView
-                android:id="@+id/launch_details_site_name_text"
-                android:layout_width="wrap_content"
+                android:id="@+id/launch_details_links_text"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                app:layout_constraintBottom_toBottomOf="@id/launch_details_site_name_label"
-                app:layout_constraintStart_toEndOf="@id/launch_details_site_name_label"
-                app:layout_constraintTop_toTopOf="@id/launch_details_site_name_label"
-                tools:text="CCAFS SLC 40" />
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="16dp"
+                android:text="@string/links_label"
+                android:textAppearance="?textAppearanceHeadline5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/launch_details_payload_recycler" />
+
+            <ToggleButton
+                android:id="@+id/launch_details_first_stage_collapse_toggle"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/expand_collapse_toggle"
+                android:backgroundTint="?colorOnBackground"
+                android:checked="true"
+                android:clickable="false"
+                android:text=""
+                android:textOff=""
+                android:textOn=""
+                app:layout_constraintBottom_toBottomOf="@id/launch_details_first_stage_text"
+                app:layout_constraintEnd_toEndOf="@id/launch_details_first_stage_text"
+                app:layout_constraintTop_toTopOf="@id/launch_details_first_stage_text" />
+
+            <ToggleButton
+                android:id="@+id/launch_details_payload_collapse_toggle"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/expand_collapse_toggle"
+                android:backgroundTint="?colorOnBackground"
+                android:checked="true"
+                android:clickable="false"
+                android:text=""
+                android:textOff=""
+                android:textOn=""
+                app:layout_constraintBottom_toBottomOf="@id/launch_details_payload_text"
+                app:layout_constraintEnd_toEndOf="@id/launch_details_payload_text"
+                app:layout_constraintTop_toTopOf="@id/launch_details_payload_text" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/launch_details_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/launch_details_mission_patch_image"
+                    android:layout_width="72dp"
+                    android:layout_height="64dp"
+                    android:contentDescription="@string/mission_patch"
+                    android:paddingEnd="8dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="RtlSymmetry"
+                    tools:src="@drawable/ic_check_circle_black_24dp" />
+
+                <TextView
+                    android:id="@+id/launch_details_number_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toEndOf="@id/launch_details_mission_patch_image"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Flight 84" />
+
+                <TextView
+                    android:id="@+id/launch_details_rocket_type_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Falcon Heavy" />
+
+                <TextView
+                    android:id="@+id/launch_details_mission_name_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?textAppearanceHeadline5"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/launch_details_mission_patch_image"
+                    app:layout_constraintTop_toBottomOf="@id/launch_details_number_text"
+                    tools:text="Crew Dragon In Flight Abort Test" />
+
+                <TextView
+                    android:id="@+id/launch_details_date_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/launch_details_mission_name_text"
+                    app:layout_constraintTop_toBottomOf="@id/launch_details_mission_name_text"
+                    tools:text="04 Nov 19 - 00:00 BST" />
+
+                <TextView
+                    android:id="@+id/launch_details_static_fire_date_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:text="@string/static_fire_label"
+                    android:textStyle="italic"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@id/launch_details_static_fire_date_text"
+                    app:layout_constraintEnd_toStartOf="@id/launch_details_static_fire_date_text"
+                    app:layout_constraintStart_toStartOf="@id/launch_details_date_text"
+                    app:layout_constraintTop_toTopOf="@id/launch_details_static_fire_date_text" />
+
+                <TextView
+                    android:id="@+id/launch_details_static_fire_date_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/launch_details_static_fire_date_label"
+                    app:layout_constraintTop_toBottomOf="@id/launch_details_date_text"
+                    tools:text="04 Nov 19 - 00:00 BST" />
+
+                <TextView
+                    android:id="@+id/launch_details_details_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/launch_details_static_fire_date_text"
+                    tools:text="SpaceX's first flight of 2019 will be the eighth and final launch of its planned Iridium flights. Delivering 10 satellites to low earth orbit, this brings the total up to 75 and completes the Iridium NEXT constellation. This mission launches from SLC-4E at Vandenberg AFB. The booster is expected to land on JRTI." />
+
+                <TextView
+                    android:id="@+id/launch_details_site_name_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Launch site:"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/launch_details_details_text" />
+
+                <TextView
+                    android:id="@+id/launch_details_site_name_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintBottom_toBottomOf="@id/launch_details_site_name_label"
+                    app:layout_constraintStart_toEndOf="@id/launch_details_site_name_label"
+                    app:layout_constraintTop_toTopOf="@id/launch_details_site_name_label"
+                    tools:text="CCAFS SLC 40" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/launch_details_cores_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/launch_details_first_stage_text"
+                tools:itemCount="1"
+                tools:listitem="@layout/list_item_first_stage" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/launch_details_payload_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/launch_details_payload_text"
+                tools:itemCount="1"
+                tools:listitem="@layout/list_item_payload" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/launch_details_links_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
+                android:paddingStart="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/launch_details_links_text"
+                tools:ignore="RtlSymmetry" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/launch_details_cores_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:overScrollMode="never"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/launch_details_first_stage_text"
-            tools:itemCount="1"
-            tools:listitem="@layout/list_item_first_stage" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/launch_details_payload_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:overScrollMode="never"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/launch_details_payload_text"
-            tools:itemCount="1"
-            tools:listitem="@layout/list_item_payload" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/launch_details_links_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:overScrollMode="never"
-            android:paddingStart="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/launch_details_links_text"
-            tools:ignore="RtlSymmetry" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
 
-</androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

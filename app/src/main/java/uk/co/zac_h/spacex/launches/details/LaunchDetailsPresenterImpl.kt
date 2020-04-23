@@ -3,6 +3,7 @@ package uk.co.zac_h.spacex.launches.details
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
+import java.util.concurrent.TimeUnit
 
 class LaunchDetailsPresenterImpl(
     private val view: LaunchDetailsContract.LaunchDetailsView,
@@ -30,6 +31,30 @@ class LaunchDetailsPresenterImpl(
         view.newCalendarEvent()
     }
 
+    override fun updateCountdown(time: Long) {
+        val remaining = String.format(
+            "T-%02d:%02d:%02d:%02d",
+            TimeUnit.MILLISECONDS.toDays(time),
+            TimeUnit.MILLISECONDS.toHours(time) - TimeUnit.DAYS.toHours(
+                TimeUnit.MILLISECONDS.toDays(
+                    time
+                )
+            ),
+            TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(
+                TimeUnit.MILLISECONDS.toHours(
+                    time
+                )
+            ),
+            TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(
+                TimeUnit.MILLISECONDS.toMinutes(
+                    time
+                )
+            )
+        )
+
+        view.updateCountdown(remaining)
+    }
+
     override fun cancelRequest() {
         interactor.cancelRequest()
     }
@@ -38,6 +63,17 @@ class LaunchDetailsPresenterImpl(
         view.apply {
             hideProgress()
             updateLaunchDataView(launchModel)
+            launchModel?.let { launch ->
+                launch.tbd?.let {
+                    val time = launch.launchDateUnix.times(1000) - System.currentTimeMillis()
+                    if (!it && time >= 0) {
+                        setCountdown(time)
+                        showCountdown()
+                    } else {
+                        hideCountdown()
+                    }
+                }
+            }
         }
     }
 
