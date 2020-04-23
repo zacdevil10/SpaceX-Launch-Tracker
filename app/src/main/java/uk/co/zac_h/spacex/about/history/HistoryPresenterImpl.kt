@@ -12,9 +12,9 @@ class HistoryPresenterImpl(
 
     private val historyHeaders = ArrayList<HistoryHeaderModel>()
 
-    override fun getHistory(api: SpaceXInterface) {
+    override fun getHistory(sortNew: Boolean, api: SpaceXInterface) {
         view.showProgress()
-        interactor.getAllHistoricEvents(api, this)
+        interactor.getAllHistoricEvents(if (sortNew) "desc" else "asc", api, this)
     }
 
     override fun cancelRequest() {

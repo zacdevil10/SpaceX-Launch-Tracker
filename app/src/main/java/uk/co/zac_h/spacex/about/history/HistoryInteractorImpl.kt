@@ -10,10 +10,11 @@ class HistoryInteractorImpl : BaseNetwork(), HistoryContract.HistoryInteractor {
     private var call: Call<List<HistoryModel>>? = null
 
     override fun getAllHistoricEvents(
+        order: String,
         api: SpaceXInterface,
         listener: HistoryContract.InteractorCallback
     ) {
-        call = api.getHistory("desc").apply {
+        call = api.getHistory(order).apply {
             makeCall {
                 onResponseSuccess = { listener.onSuccess(it.body()) }
                 onResponseFailure = { listener.onError(it) }

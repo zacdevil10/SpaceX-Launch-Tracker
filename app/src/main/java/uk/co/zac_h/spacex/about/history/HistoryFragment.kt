@@ -3,9 +3,7 @@ package uk.co.zac_h.spacex.about.history
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,8 +23,11 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
     private lateinit var history: ArrayList<HistoryHeaderModel>
     private lateinit var historyAdapter: HistoryAdapter
 
+    private var sortNew = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
 
         history = savedInstanceState?.let {
             it.getParcelableArrayList<HistoryHeaderModel>("history") as ArrayList<HistoryHeaderModel>
@@ -71,11 +72,11 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
         }
 
         history_swipe_refresh.setOnRefreshListener {
-            presenter?.getHistory()
+            presenter?.getHistory(sortNew)
         }
 
         if (history.isEmpty()) {
-            presenter?.getHistory()
+            presenter?.getHistory(sortNew)
         }
     }
 
@@ -98,6 +99,31 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
         super.onDestroyView()
         presenter?.cancelRequest()
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_history, menu)
+
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        when (item.itemId) {
+            R.id.sort_new -> {
+                if (!sortNew) {
+                    sortNew = true
+                    presenter?.getHistory(sortNew)
+                }
+                true
+            }
+            R.id.sort_old -> {
+                if (sortNew) {
+                    sortNew = false
+                    presenter?.getHistory(sortNew)
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
 
     override fun addHistory(history: ArrayList<HistoryHeaderModel>) {
         this.history.clear()
@@ -130,7 +156,8 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (history.isEmpty() || history_progress_bar.visibility == View.VISIBLE) presenter?.getHistory()
+            if (history.isEmpty() || history_progress_bar.visibility == View.VISIBLE)
+                presenter?.getHistory(sortNew)
         }
     }
 

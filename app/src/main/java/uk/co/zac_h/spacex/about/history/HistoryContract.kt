@@ -16,12 +16,12 @@ interface HistoryContract {
     }
 
     interface HistoryPresenter {
-        fun getHistory(api: SpaceXInterface = SpaceXInterface.create())
+        fun getHistory(sortNew: Boolean, api: SpaceXInterface = SpaceXInterface.create())
         fun cancelRequest()
     }
 
     interface HistoryInteractor {
-        fun getAllHistoricEvents(api: SpaceXInterface, listener: InteractorCallback)
+        fun getAllHistoricEvents(order: String, api: SpaceXInterface, listener: InteractorCallback)
         fun cancelAllRequests(): Unit?
     }
 
