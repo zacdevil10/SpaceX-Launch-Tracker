@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
-import kotlinx.android.synthetic.main.fragment_rocket_details.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.databinding.FragmentRocketDetailsBinding
 import uk.co.zac_h.spacex.model.spacex.RocketsModel
 import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.setImageAndTint
@@ -16,6 +16,9 @@ import uk.co.zac_h.spacex.vehicles.adapters.RocketPayloadAdapter
 import java.text.DecimalFormat
 
 class RocketDetailsFragment : Fragment() {
+
+    private var _binding: FragmentRocketDetailsBinding? = null
+    private val binding get() = _binding!!
 
     private var rocket: RocketsModel? = null
 
@@ -30,15 +33,18 @@ class RocketDetailsFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_rocket_details, container, false)
+    ): View? {
+        _binding = FragmentRocketDetailsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         rocket?.let {
-            rocket_details_coordinator.transitionName = it.rocketId
+            binding.rocketDetailsCoordinator.transitionName = it.rocketId
 
-            rocket_details_appbar_image.setImageResource(
+            binding.rocketDetailsAppbarImage.setImageResource(
                 when (it.rocketId) {
                     "falcon1" -> R.drawable.falcon1
                     "falcon9" -> R.drawable.falcon9
@@ -48,38 +54,38 @@ class RocketDetailsFragment : Fragment() {
                 }
             )
 
-            rocket_details_name_text.text = it.rocketName
-            rocket_details_text.text = it.description
+            binding.rocketDetailsNameText.text = it.rocketName
+            binding.rocketDetailsText.text = it.description
 
             when (it.active) {
-                true -> rocket_details_status_image.setImageAndTint(
+                true -> binding.rocketDetailsStatusImage.setImageAndTint(
                     R.drawable.ic_check_circle_black_24dp,
                     R.color.success
                 )
-                false -> rocket_details_status_image.setImageAndTint(
+                false -> binding.rocketDetailsStatusImage.setImageAndTint(
                     R.drawable.ic_remove_circle_black_24dp,
                     R.color.failed
                 )
             }
 
-            rocket_details_cost_text.text =
+            binding.rocketDetailsCostText.text =
                 DecimalFormat("$#,###.00").format(it.costPerLaunch).toString()
-            rocket_details_success_text.text =
+            binding.rocketDetailsSuccessText.text =
                 context?.getString(R.string.percentage, it.successRate)
-            rocket_details_first_flight_text.text = it.firstFlight
-            rocket_details_stages_text.text = it.stages.toString()
+            binding.rocketDetailsFirstFlightText.text = it.firstFlight
+            binding.rocketDetailsStagesText.text = it.stages.toString()
 
-            rocket_details_height_text.text = context?.getString(
+            binding.rocketDetailsHeightText.text = context?.getString(
                 R.string.measurements,
                 it.height.meters.metricFormat(),
                 it.height.feet.metricFormat()
             )
-            rocket_details_diameter_text.text = context?.getString(
+            binding.rocketDetailsDiameterText.text = context?.getString(
                 R.string.measurements,
                 it.diameter.meters.metricFormat(),
                 it.diameter.feet.metricFormat()
             )
-            rocket_details_mass_text.text =
+            binding.rocketDetailsMassText.text =
                 context?.getString(
                     R.string.mass_formatted,
                     it.mass.kg.metricFormat(),
@@ -88,29 +94,29 @@ class RocketDetailsFragment : Fragment() {
 
             with(it.firstStage) {
                 when (reusable) {
-                    true -> rocket_details_reusable_image.setImageAndTint(
+                    true -> binding.rocketDetailsReusableImage.setImageAndTint(
                         R.drawable.ic_check_circle_black_24dp,
                         R.color.success
                     )
-                    false -> rocket_details_reusable_image.setImageAndTint(
+                    false -> binding.rocketDetailsReusableImage.setImageAndTint(
                         R.drawable.ic_remove_circle_black_24dp,
                         R.color.failed
                     )
                 }
 
-                rocket_details_engines_first_text.text = engines.toString()
-                rocket_details_fuel_first_text.text = context?.getString(
+                binding.rocketDetailsEnginesFirstText.text = engines.toString()
+                binding.rocketDetailsFuelFirstText.text = context?.getString(
                     R.string.ton_format,
                     fuelAmountTons.metricFormat()
                 )
-                rocket_details_burn_first_text.text =
+                binding.rocketDetailsBurnFirstText.text =
                     context?.getString(R.string.seconds_format, burnTimeSec ?: 0)
-                rocket_details_thrust_sea_text.text = context?.getString(
+                binding.rocketDetailsThrustSeaText.text = context?.getString(
                     R.string.thrust,
                     thrustSeaLevel.kN.metricFormat(),
                     thrustSeaLevel.lbf.metricFormat()
                 )
-                rocket_details_thrust_vac_text.text = context?.getString(
+                binding.rocketDetailsThrustVacText.text = context?.getString(
                     R.string.thrust,
                     thrustVacuum.kN.metricFormat(),
                     thrustVacuum.lbf.metricFormat()
@@ -118,24 +124,29 @@ class RocketDetailsFragment : Fragment() {
             }
 
             with(it.secondStage) {
-                rocket_details_engines_second_text.text = engines.toString()
-                rocket_details_fuel_second_text.text =
+                binding.rocketDetailsEnginesSecondText.text = engines.toString()
+                binding.rocketDetailsFuelSecondText.text =
                     context?.getString(R.string.ton_format, fuelAmountTons.metricFormat())
-                rocket_details_burn_second_text.text =
+                binding.rocketDetailsBurnSecondText.text =
                     context?.getString(R.string.seconds_format, burnTimeSec ?: 0)
-                rocket_details_thrust_second_text.text = context?.getString(
+                binding.rocketDetailsThrustSecondText.text = context?.getString(
                     R.string.thrust,
                     thrust.kN.metricFormat(),
                     thrust.lbf.metricFormat()
                 )
             }
 
-            rocket_details_payload_recycler.apply {
+            binding.rocketDetailsPayloadRecycler.apply {
                 layoutManager = LinearLayoutManager(this@RocketDetailsFragment.context)
                 setHasFixedSize(true)
                 adapter =
                     RocketPayloadAdapter(this@RocketDetailsFragment.context, it.payloadWeightsList)
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

@@ -8,15 +8,18 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_dragon.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.databinding.FragmentDragonBinding
 import uk.co.zac_h.spacex.model.spacex.DragonModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.adapters.DragonAdapter
 
 class DragonFragment : Fragment(), DragonContract.DragonView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
+
+    private var _binding: FragmentDragonBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: DragonContract.DragonPresenter? = null
 
@@ -32,7 +35,10 @@ class DragonFragment : Fragment(), DragonContract.DragonView,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_dragon, container, false)
+    ): View? {
+        _binding = FragmentDragonBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,13 +47,13 @@ class DragonFragment : Fragment(), DragonContract.DragonView,
 
         dragonAdapter = DragonAdapter(dragonArray)
 
-        dragon_recycler.apply {
+        binding.dragonRecycler.apply {
             layoutManager = LinearLayoutManager(this@DragonFragment.context)
             setHasFixedSize(true)
             adapter = dragonAdapter
         }
 
-        dragon_swipe_refresh.setOnRefreshListener {
+        binding.dragonSwipeRefresh.setOnRefreshListener {
             presenter?.getDragon()
         }
 
@@ -72,28 +78,29 @@ class DragonFragment : Fragment(), DragonContract.DragonView,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
+        _binding = null
     }
 
     override fun updateDragon(dragon: List<DragonModel>) {
         dragonArray.clear()
         dragonArray.addAll(dragon)
 
-        dragon_recycler.layoutAnimation =
+        binding.dragonRecycler.layoutAnimation =
             AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
         dragonAdapter.notifyDataSetChanged()
-        dragon_recycler.scheduleLayoutAnimation()
+        binding.dragonRecycler.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        dragon_progress_bar.visibility = View.VISIBLE
+        binding.dragonProgressBar.visibility = View.VISIBLE
     }
 
     override fun hideProgress() {
-        dragon_progress_bar.visibility = View.GONE
+        binding.dragonProgressBar.visibility = View.GONE
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
-        dragon_swipe_refresh.isRefreshing = refreshing
+        binding.dragonSwipeRefresh.isRefreshing = refreshing
     }
 
     override fun showError(error: String) {
@@ -102,7 +109,7 @@ class DragonFragment : Fragment(), DragonContract.DragonView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (dragonArray.isEmpty() || dragon_progress_bar.visibility == View.VISIBLE) presenter?.getDragon()
+            if (dragonArray.isEmpty() || binding.dragonProgressBar.visibility == View.VISIBLE) presenter?.getDragon()
         }
     }
 

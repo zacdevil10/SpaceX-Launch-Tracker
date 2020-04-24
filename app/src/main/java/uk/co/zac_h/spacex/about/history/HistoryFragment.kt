@@ -7,16 +7,19 @@ import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_history.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.databinding.FragmentHistoryBinding
 import uk.co.zac_h.spacex.utils.HeaderItemDecoration
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class HistoryFragment : Fragment(), HistoryContract.HistoryView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
+
+    private var _binding: FragmentHistoryBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: HistoryContract.HistoryPresenter? = null
 
@@ -37,7 +40,10 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_history, container, false)
+    ): View? {
+        _binding = FragmentHistoryBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -48,7 +54,7 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
 
         val isTabletLand = context?.resources?.getBoolean(R.bool.isTabletLand)
 
-        history_recycler.apply {
+        binding.historyRecycler.apply {
             layoutManager = isTabletLand?.let {
                 if (isTabletLand) {
                     LinearLayoutManager(
@@ -71,7 +77,7 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
             )
         }
 
-        history_swipe_refresh.setOnRefreshListener {
+        binding.historySwipeRefresh.setOnRefreshListener {
             presenter?.getHistory(sortNew)
         }
 
@@ -98,6 +104,7 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
+        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -131,7 +138,7 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
 
         historyAdapter.notifyDataSetChanged()
 
-        history_recycler.scheduleLayoutAnimation()
+        binding.historyRecycler.scheduleLayoutAnimation()
     }
 
     override fun openWebLink(link: String) {
@@ -139,15 +146,15 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
     }
 
     override fun showProgress() {
-        history_progress_bar.visibility = View.VISIBLE
+        binding.historyProgressBar.visibility = View.VISIBLE
     }
 
     override fun hideProgress() {
-        history_progress_bar.visibility = View.GONE
+        binding.historyProgressBar.visibility = View.GONE
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {
-        history_swipe_refresh?.isRefreshing = isRefreshing
+        binding.historySwipeRefresh.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {
@@ -156,7 +163,7 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (history.isEmpty() || history_progress_bar.visibility == View.VISIBLE)
+            if (history.isEmpty() || binding.historyProgressBar.visibility == View.VISIBLE)
                 presenter?.getHistory(sortNew)
         }
     }
