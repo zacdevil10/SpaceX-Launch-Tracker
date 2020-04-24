@@ -18,6 +18,6 @@ class DragonInteractorImpl : BaseNetwork(), DragonContract.DragonInteractor {
         }
     }
 
-    override fun cancelRequest() = call?.cancel()
+    override fun cancelRequest() = terminateAll()
 
 }

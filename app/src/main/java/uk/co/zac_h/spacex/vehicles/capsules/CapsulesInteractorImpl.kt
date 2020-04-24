@@ -18,5 +18,5 @@ class CapsulesInteractorImpl : BaseNetwork(), CapsulesContract.CapsulesInteracto
         }
     }
 
-    override fun cancelAllRequests() = call?.cancel()
+    override fun cancelAllRequests() = terminateAll()
 }

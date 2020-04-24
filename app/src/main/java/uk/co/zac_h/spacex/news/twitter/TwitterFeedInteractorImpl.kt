@@ -33,5 +33,5 @@ class TwitterFeedInteractorImpl : BaseNetwork(), TwitterFeedContract.TwitterFeed
         }
     }
 
-    override fun cancelAllRequests() = call?.cancel()
+    override fun cancelAllRequests() = terminateAll()
 }

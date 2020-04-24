@@ -21,5 +21,5 @@ class LaunchRateInteractorImpl : BaseNetwork(), LaunchRateContract.LaunchRateInt
         }
     }
 
-    override fun cancelAllRequests() = call?.cancel()
+    override fun cancelAllRequests() = terminateAll()
 }

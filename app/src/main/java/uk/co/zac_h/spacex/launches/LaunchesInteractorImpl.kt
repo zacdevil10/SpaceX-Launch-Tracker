@@ -23,5 +23,5 @@ class LaunchesInteractorImpl : BaseNetwork(), LaunchesContract.LaunchesInteracto
         }
     }
 
-    override fun cancelAllRequests() = call?.cancel()
+    override fun cancelAllRequests() = terminateAll()
 }

@@ -18,5 +18,5 @@ class CoreInteractorImpl : BaseNetwork(), CoreContract.CoreInteractor {
         }
     }
 
-    override fun cancelAllRequests() = call?.cancel()
+    override fun cancelAllRequests() = terminateAll()
 }

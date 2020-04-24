@@ -22,5 +22,5 @@ class LaunchDetailsInteractorImpl : BaseNetwork(), LaunchDetailsContract.LaunchD
         }
     }
 
-    override fun cancelRequest() = call?.cancel()
+    override fun cancelRequest() = terminateAll()
 }

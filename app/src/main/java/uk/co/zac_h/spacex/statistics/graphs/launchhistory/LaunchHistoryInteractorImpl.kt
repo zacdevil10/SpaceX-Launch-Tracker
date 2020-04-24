@@ -21,5 +21,5 @@ class LaunchHistoryInteractorImpl : BaseNetwork(), LaunchHistoryContract.LaunchH
         }
     }
 
-    override fun cancelAllRequests() = call?.cancel()
+    override fun cancelAllRequests() = terminateAll()
 }
