@@ -8,15 +8,18 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_rocket.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.databinding.FragmentRocketBinding
 import uk.co.zac_h.spacex.model.spacex.RocketsModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 
 class RocketFragment : Fragment(), RocketContract.RocketView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
+
+    private var _binding: FragmentRocketBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: RocketContract.RocketPresenter? = null
 
@@ -32,7 +35,10 @@ class RocketFragment : Fragment(), RocketContract.RocketView,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_rocket, container, false)
+    ): View? {
+        _binding = FragmentRocketBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -41,13 +47,13 @@ class RocketFragment : Fragment(), RocketContract.RocketView,
 
         rocketsAdapter = RocketsAdapter(rocketsArray)
 
-        rocket_recycler.apply {
+        binding.rocketRecycler.apply {
             layoutManager = LinearLayoutManager(this@RocketFragment.context)
             setHasFixedSize(true)
             adapter = rocketsAdapter
         }
 
-        rocket_swipe_refresh.setOnRefreshListener {
+        binding.rocketSwipeRefresh.setOnRefreshListener {
             presenter?.getRockets()
         }
 
@@ -72,28 +78,29 @@ class RocketFragment : Fragment(), RocketContract.RocketView,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
+        _binding = null
     }
 
     override fun updateRockets(rockets: List<RocketsModel>) {
         rocketsArray.clear()
         rocketsArray.addAll(rockets)
 
-        rocket_recycler.layoutAnimation =
+        binding.rocketRecycler.layoutAnimation =
             AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
         rocketsAdapter.notifyDataSetChanged()
-        rocket_recycler.scheduleLayoutAnimation()
+        binding.rocketRecycler.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        rocket_progress_bar.visibility = View.VISIBLE
+        binding.rocketProgressBar.visibility = View.VISIBLE
     }
 
     override fun hideProgress() {
-        rocket_progress_bar.visibility = View.GONE
+        binding.rocketProgressBar.visibility = View.GONE
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
-        rocket_swipe_refresh.isRefreshing = refreshing
+        binding.rocketSwipeRefresh.isRefreshing = refreshing
     }
 
     override fun showError(error: String) {
@@ -102,7 +109,8 @@ class RocketFragment : Fragment(), RocketContract.RocketView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (rocketsArray.isEmpty() || rocket_progress_bar.visibility == View.VISIBLE) presenter?.getRockets()
+            if (rocketsArray.isEmpty() || binding.rocketProgressBar.visibility == View.VISIBLE)
+                presenter?.getRockets()
         }
     }
 }

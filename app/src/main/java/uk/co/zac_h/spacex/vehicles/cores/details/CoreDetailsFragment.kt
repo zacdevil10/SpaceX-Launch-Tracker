@@ -8,9 +8,9 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
-import kotlinx.android.synthetic.main.fragment_core_details.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.CoreMissionsAdapter
 import uk.co.zac_h.spacex.model.spacex.CoreModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
@@ -18,6 +18,9 @@ import uk.co.zac_h.spacex.utils.setImageAndTint
 
 class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
+
+    private var _binding: FragmentCoreDetailsBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: CoreDetailsContract.CoreDetailsPresenter? = null
 
@@ -41,7 +44,10 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_core_details, container, false)
+    ): View? {
+        _binding = FragmentCoreDetailsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -73,24 +79,25 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
+        _binding = null
     }
 
     override fun updateCoreDetails(coreModel: CoreModel) {
         coreModel.apply {
             core = coreModel
 
-            core_details_scrollview.transitionName = serial
+            binding.coreDetailsScrollview.transitionName = serial
 
-            core_details_serial_text.text = serial
-            core_details_block_text.text = block ?: "TBD"
-            core_details_details_text.text = details
-            core_details_status_text.text = status
-            core_details_reuse_text.text = reuseCount.toString()
-            core_details_rtls_attempts_text.text = attemptsRtls.toString()
-            core_details_rtls_landings_text.text = landingsRtls.toString()
-            core_details_asds_attempts_text.text = attemptsAsds.toString()
-            core_details_asds_landings_text.text = landingsAsds.toString()
-            core_details_water_landing_image.apply {
+            binding.coreDetailsSerialText.text = serial
+            binding.coreDetailsBlockText.text = block ?: "TBD"
+            binding.coreDetailsDetailsText.text = details
+            binding.coreDetailsStatusText.text = status
+            binding.coreDetailsReuseText.text = reuseCount.toString()
+            binding.coreDetailsRtlsAttemptsText.text = attemptsRtls.toString()
+            binding.coreDetailsRtlsLandingsText.text = landingsRtls.toString()
+            binding.coreDetailsAsdsAttemptsText.text = attemptsAsds.toString()
+            binding.coreDetailsAsdsLandingsText.text = landingsAsds.toString()
+            binding.coreDetailsWaterLandingImage.apply {
                 landingWater?.let { waterLanding ->
                     if (waterLanding) setImageAndTint(
                         R.drawable.ic_check_circle_black_24dp,
@@ -102,7 +109,7 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
         }
 
         coreModel.missions?.let {
-            core_details_mission_recycler.apply {
+            binding.coreDetailsMissionRecycler.apply {
                 layoutManager = LinearLayoutManager(this@CoreDetailsFragment.context)
                 setHasFixedSize(true)
                 adapter = CoreMissionsAdapter(context, it)
@@ -111,11 +118,11 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
     }
 
     override fun showProgress() {
-        core_details_progress_bar.visibility = View.VISIBLE
+        binding.coreDetailsProgressBar.visibility = View.VISIBLE
     }
 
     override fun hideProgress() {
-        core_details_progress_bar.visibility = View.INVISIBLE
+        binding.coreDetailsProgressBar.visibility = View.INVISIBLE
     }
 
     override fun showError(error: String) {

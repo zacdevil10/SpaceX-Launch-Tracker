@@ -45,9 +45,13 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="43:13:23:55" />
 
-                <include layout="@layout/list_item_next_launch" />
+                <include
+                    android:id="@+id/dashboard_next_layout"
+                    layout="@layout/list_item_next_launch" />
 
-                <include layout="@layout/list_item_latest_launch" />
+                <include
+                    android:id="@+id/dashboard_latest_layout"
+                    layout="@layout/list_item_latest_launch" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/dashboard_pinned_layout"
@@ -79,8 +83,8 @@
                         android:id="@+id/dashboard_pinned_message_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="gone"
                         android:text="@string/no_pinned_launches_found_label"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="@id/dashboard_pinned_launches_recycler" />

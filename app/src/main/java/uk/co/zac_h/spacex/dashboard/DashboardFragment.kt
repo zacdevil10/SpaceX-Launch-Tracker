@@ -13,12 +13,10 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_dashboard.*
-import kotlinx.android.synthetic.main.list_item_latest_launch.*
-import kotlinx.android.synthetic.main.list_item_next_launch.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardPinnedAdapter
+import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_LATEST_LAUNCH
 import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_LATEST_NEWS
@@ -32,6 +30,9 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
+
+    private var _binding: FragmentDashboardBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: DashboardContract.DashboardPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
@@ -67,7 +68,10 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_dashboard, container, false)
+    ): View? {
+        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -85,7 +89,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         pinnedAdapter = DashboardPinnedAdapter(context, pinnedArray)
 
-        dashboard_pinned_launches_recycler.apply {
+        binding.dashboardPinnedLaunchesRecycler.apply {
             layoutManager = LinearLayoutManager(this@DashboardFragment.context)
             adapter = pinnedAdapter
         }
@@ -126,7 +130,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
             }
         })
 
-        dashboard_swipe_refresh.setOnRefreshListener {
+        binding.dashboardSwipeRefresh.setOnRefreshListener {
             presenter?.getLatestLaunches()
         }
 
@@ -140,12 +144,12 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
     override fun onResume() {
         super.onResume()
-        dashboard_swipe_refresh.isEnabled = true
+        binding.dashboardSwipeRefresh.isEnabled = true
     }
 
     override fun onPause() {
         super.onPause()
-        dashboard_swipe_refresh.isEnabled = false
+        binding.dashboardSwipeRefresh.isEnabled = false
     }
 
     override fun onStop() {
@@ -166,6 +170,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         countdownTimer?.cancel()
         countdownTimer = null
         presenter?.cancelRequests()
+        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -185,35 +190,36 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     override fun updateNextLaunch(nextLaunch: LaunchesModel) {
         nextLaunchModel = nextLaunch
 
-        dashboard_next_card_view.visibility = View.VISIBLE
+        binding.dashboardNextLayout.dashboardNextCardView.visibility = View.VISIBLE
 
-        dashboard_next_card_view.transitionName = nextLaunch.flightNumber.toString()
+        binding.dashboardNextLayout.dashboardNextCardView.transitionName =
+            nextLaunch.flightNumber.toString()
 
-        dashboard_next_mission_patch_image.visibility =
+        binding.dashboardNextLayout.dashboardNextMissionPatchImage.visibility =
             nextLaunch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
 
         Picasso.get().load(nextLaunch.links.missionPatchSmall)
-            .into(dashboard_next_mission_patch_image)
+            .into(binding.dashboardNextLayout.dashboardNextMissionPatchImage)
 
-        dashboard_next_flight_no_text.text =
+        binding.dashboardNextLayout.dashboardNextFlightNoText.text =
             context?.getString(R.string.flight_number, nextLaunch.flightNumber)
 
-        dashboard_next_block_text.text = context?.getString(
+        binding.dashboardNextLayout.dashboardNextBlockText.text = context?.getString(
             R.string.vehicle_block_type,
             nextLaunch.rocket.name,
             nextLaunch.rocket.firstStage?.cores?.formatBlockNumber()
         )
-        dashboard_next_mission_name_text.text = nextLaunch.missionName
-        dashboard_next_date_text.text = nextLaunch.tbd?.let { tbd ->
+        binding.dashboardNextLayout.dashboardNextMissionNameText.text = nextLaunch.missionName
+        binding.dashboardNextLayout.dashboardNextDateText.text = nextLaunch.tbd?.let { tbd ->
             nextLaunch.launchDateUnix.formatDateMillisLong(tbd)
         } ?: nextLaunch.launchDateUnix.formatDateMillisLong()
 
-        dashboard_next_card_view.setOnClickListener {
+        binding.dashboardNextLayout.dashboardNextCardView.setOnClickListener {
             findNavController().navigate(
                 R.id.action_dashboard_page_fragment_to_launch_details_fragment,
                 bundleOf("launch" to nextLaunch, "title" to nextLaunch.missionName),
                 null,
-                FragmentNavigatorExtras(dashboard_next_card_view to nextLaunch.flightNumber.toString())
+                FragmentNavigatorExtras(binding.dashboardNextLayout.dashboardNextCardView to nextLaunch.flightNumber.toString())
             )
         }
     }
@@ -221,30 +227,32 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     override fun updateLatestLaunch(latestLaunch: LaunchesModel) {
         latestLaunchModel = latestLaunch
 
-        dashboard_latest_card_view.visibility = View.VISIBLE
+        binding.dashboardLatestLayout.dashboardLatestCardView.visibility = View.VISIBLE
 
-        dashboard_latest_card_view.transitionName = latestLaunch.flightNumber.toString()
+        binding.dashboardLatestLayout.dashboardLatestCardView.transitionName =
+            latestLaunch.flightNumber.toString()
 
-        dashboard_latest_mission_patch_image.visibility =
+        binding.dashboardLatestLayout.dashboardLatestMissionPatchImage.visibility =
             latestLaunch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
 
         Picasso.get().load(latestLaunch.links.missionPatchSmall)
-            .into(dashboard_latest_mission_patch_image)
+            .into(binding.dashboardLatestLayout.dashboardLatestMissionPatchImage)
 
-        dashboard_latest_flight_no_text.text =
+        binding.dashboardLatestLayout.dashboardLatestFlightNoText.text =
             context?.getString(R.string.flight_number, latestLaunch.flightNumber)
 
-        dashboard_latest_block_text.text = context?.getString(
+        binding.dashboardLatestLayout.dashboardLatestBlockText.text = context?.getString(
             R.string.vehicle_block_type,
             latestLaunch.rocket.name,
             latestLaunch.rocket.firstStage?.cores?.formatBlockNumber()
         )
-        dashboard_latest_mission_name_text.text = latestLaunch.missionName
-        dashboard_latest_date_text.text = latestLaunch.tbd?.let { tbd ->
+        binding.dashboardLatestLayout.dashboardLatestMissionNameText.text =
+            latestLaunch.missionName
+        binding.dashboardLatestLayout.dashboardLatestDateText.text = latestLaunch.tbd?.let { tbd ->
             latestLaunch.launchDateUnix.formatDateMillisLong(tbd)
         } ?: latestLaunch.launchDateUnix.formatDateMillisLong()
 
-        dashboard_latest_card_view.setOnClickListener {
+        binding.dashboardLatestLayout.dashboardLatestCardView.setOnClickListener {
             findNavController().navigate(
                 R.id.action_dashboard_page_fragment_to_launch_details_fragment,
                 bundleOf(
@@ -252,7 +260,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
                     "title" to latestLaunch.missionName
                 ),
                 null,
-                FragmentNavigatorExtras(dashboard_latest_card_view to latestLaunch.flightNumber.toString())
+                FragmentNavigatorExtras(binding.dashboardLatestLayout.dashboardLatestCardView to latestLaunch.flightNumber.toString())
             )
         }
     }
@@ -281,59 +289,59 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     }
 
     override fun updateCountdown(countdown: String) {
-        dashboard_countdown_text?.text = countdown
+        binding.dashboardCountdownText.text = countdown
     }
 
     override fun showPinnedMessage() {
-        if (pinnedArray.isEmpty()) dashboard_pinned_message_text.visibility = View.VISIBLE
+        if (pinnedArray.isEmpty()) binding.dashboardPinnedMessageText.visibility = View.VISIBLE
     }
 
     override fun hidePinnedMessage() {
-        dashboard_pinned_message_text.visibility = View.GONE
+        binding.dashboardPinnedMessageText.visibility = View.GONE
     }
 
     override fun showProgress() {
-        dashboard_progress_bar.visibility = View.VISIBLE
+        binding.dashboardProgressBar.visibility = View.VISIBLE
     }
 
     override fun hideProgress() {
-        dashboard_progress_bar.visibility = View.GONE
+        binding.dashboardProgressBar.visibility = View.GONE
     }
 
     override fun showCountdown() {
-        dashboard_countdown_text.visibility = View.VISIBLE
+        binding.dashboardCountdownText.visibility = View.VISIBLE
     }
 
     override fun hideCountdown() {
-        dashboard_countdown_text.visibility = View.GONE
+        binding.dashboardCountdownText.visibility = View.GONE
     }
 
     override fun showNextLaunch() {
-        dashboard_next_layout.visibility = View.VISIBLE
+        binding.dashboardNextLayout.dashboardNextLayout.visibility = View.VISIBLE
     }
 
     override fun hideNextLaunch() {
-        dashboard_next_layout.visibility = View.GONE
+        binding.dashboardNextLayout.dashboardNextLayout.visibility = View.GONE
     }
 
     override fun showLatestLaunch() {
-        dashboard_latest_layout.visibility = View.VISIBLE
+        binding.dashboardLatestLayout.dashboardLatestLayout.visibility = View.VISIBLE
     }
 
     override fun hideLatestLaunch() {
-        dashboard_latest_layout.visibility = View.GONE
+        binding.dashboardLatestLayout.dashboardLatestLayout.visibility = View.GONE
     }
 
     override fun showPinnedList() {
-        dashboard_pinned_layout.visibility = View.VISIBLE
+        binding.dashboardPinnedLayout.visibility = View.VISIBLE
     }
 
     override fun hidePinnedList() {
-        dashboard_pinned_layout.visibility = View.GONE
+        binding.dashboardPinnedLayout.visibility = View.GONE
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {
-        dashboard_swipe_refresh.isRefreshing = isRefreshing
+        binding.dashboardSwipeRefresh.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {
@@ -345,7 +353,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
             if (nextLaunchModel == null
                 || latestLaunchModel == null
                 || pinnedArray.isEmpty()
-                || dashboard_progress_bar.visibility == View.VISIBLE
+                || binding.dashboardProgressBar.visibility == View.VISIBLE
             ) presenter?.getLatestLaunches()
         }
     }

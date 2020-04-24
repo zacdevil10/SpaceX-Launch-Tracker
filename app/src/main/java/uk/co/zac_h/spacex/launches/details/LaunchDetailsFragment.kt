@@ -19,9 +19,9 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.*
 import com.google.android.material.transition.MaterialContainerTransform
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.fragment_launch_details.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.launches.adapters.LaunchLinksAdapter
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
@@ -34,6 +34,9 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
+
+    private var _binding: FragmentLaunchDetailsBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: LaunchDetailsContract.LaunchDetailsPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
@@ -67,8 +70,10 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
-        inflater.inflate(R.layout.fragment_launch_details, container, false)
+    ): View? {
+        _binding = FragmentLaunchDetailsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -88,24 +93,24 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
         launch?.let {
             presenter?.addLaunchModel(it)
-            launch_details_container.transitionName = it.flightNumber.toString()
+            binding.launchDetailsContainer.transitionName = it.flightNumber.toString()
             pinned = presenter?.isPinned(it.flightNumber.toString()) ?: false
         } ?: id?.let {
             presenter?.getLaunch(it)
             pinned = presenter?.isPinned(it) ?: false
         }
 
-        launch_details_first_stage_text.setOnClickListener {
+        binding.launchDetailsFirstStageText.setOnClickListener {
             expandCollapse(
-                launch_details_cores_recycler,
-                launch_details_first_stage_collapse_toggle
+                binding.launchDetailsCoresRecycler,
+                binding.launchDetailsFirstStageCollapseToggle
             )
         }
 
-        launch_details_payload_text.setOnClickListener {
+        binding.launchDetailsPayloadText.setOnClickListener {
             expandCollapse(
-                launch_details_payload_recycler,
-                launch_details_payload_collapse_toggle
+                binding.launchDetailsPayloadRecycler,
+                binding.launchDetailsPayloadCollapseToggle
             )
         }
 
@@ -121,11 +126,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
             duration = 500
         }
 
-        launch_details_first_stage_collapse_toggle.setOnCheckedChangeListener { compoundButton, _ ->
+        binding.launchDetailsFirstStageCollapseToggle.setOnCheckedChangeListener { compoundButton, _ ->
             compoundButton.startAnimation(rotation)
         }
 
-        launch_details_payload_collapse_toggle.setOnCheckedChangeListener { compoundButton, _ ->
+        binding.launchDetailsPayloadCollapseToggle.setOnCheckedChangeListener { compoundButton, _ ->
             compoundButton.startAnimation(rotation)
         }
 
@@ -139,10 +144,13 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
          * Set and restore Expand/Collapse state of recycler view when returning to fragment
          */
         setupExpandCollapse(
-            launch_details_cores_recycler,
-            launch_details_first_stage_collapse_toggle
+            binding.launchDetailsCoresRecycler,
+            binding.launchDetailsFirstStageCollapseToggle
         )
-        setupExpandCollapse(launch_details_payload_recycler, launch_details_payload_collapse_toggle)
+        setupExpandCollapse(
+            binding.launchDetailsPayloadRecycler,
+            binding.launchDetailsPayloadCollapseToggle
+        )
     }
 
     override fun onPause() {
@@ -160,6 +168,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         countdownTimer?.cancel()
         countdownTimer = null
         presenter?.cancelRequest()
+        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -220,141 +229,143 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         launch?.let {
             this.launch = launch
 
-            launch_details_container.transitionName = it.flightNumber.toString()
+            binding.apply {
+                launchDetailsContainer.transitionName = it.flightNumber.toString()
 
-            it.tbd?.let { tbd ->
-                val time = launch.launchDateUnix.times(1000) - System.currentTimeMillis()
-                if (!tbd && time >= 0) {
-                    setCountdown(time)
-                    showCountdown()
+                it.tbd?.let { tbd ->
+                    val time = launch.launchDateUnix.times(1000) - System.currentTimeMillis()
+                    if (!tbd && time >= 0) {
+                        setCountdown(time)
+                        showCountdown()
+                    } else {
+                        hideCountdown()
+                    }
+                }
+
+                if (id == null) id = launch.flightNumber.toString()
+
+                launchDetailsMissionPatchImage.visibility =
+                    launch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
+
+                Picasso.get().load(launch.links.missionPatchSmall)
+                    .into(launchDetailsMissionPatchImage)
+
+                launchDetailsNumberText.text = context?.getString(
+                    R.string.flight_number,
+                    launch.flightNumber
+                )
+                launchDetailsRocketTypeText.text = launch.rocket.name
+                launchDetailsMissionNameText.text = launch.missionName
+
+                launchDetailsSiteNameText.text = launch.launchSite.name
+
+                launchDetailsDateText.text = launch.tbd?.let { tbd ->
+                    launch.launchDateUnix.formatDateMillisLong(tbd)
+                } ?: launch.launchDateUnix.formatDateMillisLong()
+
+                launch.staticFireDateUnix?.let { date ->
+                    launchDetailsStaticFireDateLabel.visibility = View.VISIBLE
+                    launchDetailsStaticFireDateText.text = date.formatDateMillisLong()
+                } ?: run {
+                    launchDetailsStaticFireDateText.visibility = View.GONE
+                }
+
+                launchDetailsDetailsText.visibility =
+                    if (launch.details.isNullOrEmpty()) View.GONE else View.VISIBLE
+                launchDetailsDetailsText.text = launch.details
+
+                launch.rocket.firstStage?.cores?.forEach { core ->
+                    if (coreAssigned) return@forEach
+                    coreAssigned = core.serial != null
+                }
+
+                if (coreAssigned) launch.rocket.firstStage?.cores?.let {
+                    //If a core has been assigned to a launch then add the adapter to the RecyclerView
+                    launchDetailsCoresRecycler.apply {
+                        layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
+                        setHasFixedSize(true)
+                        adapter = FirstStageAdapter(it)
+                    }
                 } else {
-                    hideCountdown()
+                    //If no core has been assigned yet then hide the RecyclerView and related heading
+                    launchDetailsFirstStageText.visibility = View.GONE
+                    launchDetailsFirstStageCollapseToggle.visibility = View.GONE
                 }
-            }
 
-            if (id == null) id = launch.flightNumber.toString()
-
-            launch_details_mission_patch_image.visibility =
-                launch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
-
-            Picasso.get().load(launch.links.missionPatchSmall)
-                .into(launch_details_mission_patch_image)
-
-            launch_details_number_text.text = context?.getString(
-                R.string.flight_number,
-                launch.flightNumber
-            )
-            launch_details_rocket_type_text.text = launch.rocket.name
-            launch_details_mission_name_text.text = launch.missionName
-
-            launch_details_site_name_text.text = launch.launchSite.name
-
-            launch_details_date_text.text = launch.tbd?.let { tbd ->
-                launch.launchDateUnix.formatDateMillisLong(tbd)
-            } ?: launch.launchDateUnix.formatDateMillisLong()
-
-            launch.staticFireDateUnix?.let { date ->
-                launch_details_static_fire_date_label.visibility = View.VISIBLE
-                launch_details_static_fire_date_text.text = date.formatDateMillisLong()
-            } ?: run {
-                launch_details_static_fire_date_text.visibility = View.GONE
-            }
-
-            launch_details_details_text.visibility =
-                if (launch.details.isNullOrEmpty()) View.GONE else View.VISIBLE
-            launch_details_details_text.text = launch.details
-
-            launch.rocket.firstStage?.cores?.forEach { core ->
-                if (coreAssigned) return@forEach
-                coreAssigned = core.serial != null
-            }
-
-            if (coreAssigned) launch.rocket.firstStage?.cores?.let {
-                //If a core has been assigned to a launch then add the adapter to the RecyclerView
-                launch_details_cores_recycler.apply {
+                launchDetailsPayloadRecycler.apply {
                     layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
-                    setHasFixedSize(true)
-                    adapter = FirstStageAdapter(it)
+                    setHasFixedSize(false)
+                    addItemDecoration(
+                        DividerItemDecoration(
+                            this.context,
+                            DividerItemDecoration.VERTICAL
+                        )
+                    )
+                    adapter = PayloadAdapter(
+                        this@LaunchDetailsFragment.context,
+                        launch.rocket.secondStage?.payloads
+                    )
+                    (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
                 }
-            } else {
-                //If no core has been assigned yet then hide the RecyclerView and related heading
-                launch_details_first_stage_text.visibility = View.GONE
-                launch_details_first_stage_collapse_toggle.visibility = View.GONE
-            }
 
-            launch_details_payload_recycler.apply {
-                layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
-                setHasFixedSize(false)
-                addItemDecoration(
-                    DividerItemDecoration(
-                        this.context,
-                        DividerItemDecoration.VERTICAL
-                    )
-                )
-                adapter = PayloadAdapter(
-                    this@LaunchDetailsFragment.context,
-                    launch.rocket.secondStage?.payloads
-                )
-                (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-            }
+                val links = ArrayList<LinksModel>()
 
-            val links = ArrayList<LinksModel>()
+                launch.links.videoLink?.let { link ->
+                    links.add(
+                        LinksModel(
+                            "Watch",
+                            link
+                        )
+                    )
+                }
+                launch.links.redditCampaign?.let { link ->
+                    links.add(
+                        LinksModel(
+                            "Reddit Campaign",
+                            link
+                        )
+                    )
+                }
+                launch.links.redditLaunch?.let { link ->
+                    links.add(
+                        LinksModel(
+                            "Reddit Launch",
+                            link
+                        )
+                    )
+                }
+                launch.links.redditMedia?.let { link ->
+                    links.add(
+                        LinksModel(
+                            "Reddit Media",
+                            link
+                        )
+                    )
+                }
+                launch.links.presskit?.let { link ->
+                    links.add(
+                        LinksModel(
+                            "Press Kit",
+                            link
+                        )
+                    )
+                }
+                launch.links.wikipedia?.let { link ->
+                    links.add(
+                        LinksModel(
+                            "Wikipedia Article",
+                            link
+                        )
+                    )
+                }
 
-            launch.links.videoLink?.let { link ->
-                links.add(
-                    LinksModel(
-                        "Watch",
-                        link
-                    )
-                )
-            }
-            launch.links.redditCampaign?.let { link ->
-                links.add(
-                    LinksModel(
-                        "Reddit Campaign",
-                        link
-                    )
-                )
-            }
-            launch.links.redditLaunch?.let { link ->
-                links.add(
-                    LinksModel(
-                        "Reddit Launch",
-                        link
-                    )
-                )
-            }
-            launch.links.redditMedia?.let { link ->
-                links.add(
-                    LinksModel(
-                        "Reddit Media",
-                        link
-                    )
-                )
-            }
-            launch.links.presskit?.let { link ->
-                links.add(
-                    LinksModel(
-                        "Press Kit",
-                        link
-                    )
-                )
-            }
-            launch.links.wikipedia?.let { link ->
-                links.add(
-                    LinksModel(
-                        "Wikipedia Article",
-                        link
-                    )
-                )
-            }
+                if (links.isEmpty()) launchDetailsLinksText.visibility = View.GONE
 
-            if (links.isEmpty()) launch_details_links_text.visibility = View.GONE
-
-            launch_details_links_recycler.apply {
-                layoutManager = GridLayoutManager(this@LaunchDetailsFragment.context, 3)
-                setHasFixedSize(true)
-                adapter = LaunchLinksAdapter(links, this@LaunchDetailsFragment)
+                launchDetailsLinksRecycler.apply {
+                    layoutManager = GridLayoutManager(this@LaunchDetailsFragment.context, 3)
+                    setHasFixedSize(true)
+                    adapter = LaunchLinksAdapter(links, this@LaunchDetailsFragment)
+                }
             }
         }
     }
@@ -434,23 +445,23 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     }
 
     override fun updateCountdown(countdown: String) {
-        launch_details_countdown_text?.text = countdown
+        binding.launchDetailsCountdownText.text = countdown
     }
 
     override fun showProgress() {
-        launch_details_progress.visibility = View.VISIBLE
+        binding.launchDetailsProgress.visibility = View.VISIBLE
     }
 
     override fun hideProgress() {
-        launch_details_progress.visibility = View.GONE
+        binding.launchDetailsProgress.visibility = View.GONE
     }
 
     override fun showCountdown() {
-        launch_details_countdown_text.visibility = View.VISIBLE
+        binding.launchDetailsCountdownText.visibility = View.VISIBLE
     }
 
     override fun hideCountdown() {
-        launch_details_countdown_text.visibility = View.GONE
+        binding.launchDetailsCountdownText.visibility = View.GONE
     }
 
     override fun showError(error: String) {

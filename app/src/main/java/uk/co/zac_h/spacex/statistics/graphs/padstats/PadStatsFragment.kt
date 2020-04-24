@@ -5,9 +5,9 @@ import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_pad_stats.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.databinding.FragmentPadStatsBinding
 import uk.co.zac_h.spacex.model.spacex.StatsPadModel
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
 import uk.co.zac_h.spacex.utils.HeaderItemDecoration
@@ -15,6 +15,9 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
+
+    private var _binding: FragmentPadStatsBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: PadStatsContract.PadStatsPresenter? = null
 
@@ -33,7 +36,10 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_pad_stats, container, false)
+    ): View? {
+        _binding = FragmentPadStatsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -42,7 +48,7 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
 
         padsAdapter = PadStatsSitesAdapter(pads)
 
-        pad_stats_launch_sites_recycler.apply {
+        binding.padStatsLaunchSitesRecycler.apply {
             layoutManager = LinearLayoutManager(this@PadStatsFragment.context)
             setHasFixedSize(true)
             adapter = padsAdapter
@@ -70,6 +76,7 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequests()
+        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -93,11 +100,11 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
     }
 
     override fun showProgress() {
-        pad_stats_sites_progress_bar.visibility = View.VISIBLE
+        binding.padStatsSitesProgressBar.visibility = View.VISIBLE
     }
 
     override fun hideProgress() {
-        pad_stats_sites_progress_bar.visibility = View.GONE
+        binding.padStatsSitesProgressBar.visibility = View.GONE
     }
 
     override fun showError(error: String) {
@@ -106,7 +113,7 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (pads.isEmpty() || pad_stats_sites_progress_bar.visibility == View.VISIBLE) presenter?.getPads()
+            if (pads.isEmpty() || binding.padStatsSitesProgressBar.visibility == View.VISIBLE) presenter?.getPads()
         }
     }
 }

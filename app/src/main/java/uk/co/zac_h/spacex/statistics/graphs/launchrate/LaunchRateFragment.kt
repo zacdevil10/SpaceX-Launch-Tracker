@@ -16,14 +16,17 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
-import kotlinx.android.synthetic.main.fragment_launch_rate.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.databinding.FragmentLaunchRateBinding
 import uk.co.zac_h.spacex.utils.models.RateStatsModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
+
+    private var _binding: FragmentLaunchRateBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: LaunchRateContract.LaunchRatePresenter? = null
 
@@ -33,15 +36,17 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        statsList =
-            savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
+        statsList = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_launch_rate, container, false)
+    ): View? {
+        _binding = FragmentLaunchRateBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -51,7 +56,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
         if (statsList.isEmpty()) presenter?.getLaunchList()
         else presenter?.addLaunchList(statsList)
 
-        launch_rate_bar_chart.apply {
+        binding.launchRateBarChart.apply {
             xAxis.apply {
                 position = XAxis.XAxisPosition.BOTTOM
                 textColor = ContextCompat.getColor(context, R.color.color_on_background)
@@ -82,46 +87,47 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
                     e?.let {
                         val stats = statsList[(e.x - 2006).toInt()]
 
-                        launch_rate_key.visibility = View.VISIBLE
+                        binding.launchRateKey.visibility = View.VISIBLE
 
-                        launch_rate_year.text = stats.year.toString()
+                        binding.launchRateYear.text = stats.year.toString()
 
-                        launch_rate_falcon_one_label.visibility =
+                        binding.launchRateFalconOneLabel.visibility =
                             if (stats.falconOne == 0f) View.GONE else View.VISIBLE
-                        launch_rate_falcon_one_value.visibility =
+                        binding.launchRateFalconOneValue.visibility =
                             if (stats.falconOne == 0f) View.GONE else View.VISIBLE
-                        launch_rate_falcon_one_value.text = stats.falconOne.toInt().toString()
+                        binding.launchRateFalconOneValue.text = stats.falconOne.toInt().toString()
 
-                        launch_rate_falcon_nine_label.visibility =
+                        binding.launchRateFalconNineLabel.visibility =
                             if (stats.falconNine == 0f) View.GONE else View.VISIBLE
-                        launch_rate_falcon_nine_value.visibility =
+                        binding.launchRateFalconNineValue.visibility =
                             if (stats.falconNine == 0f) View.GONE else View.VISIBLE
-                        launch_rate_falcon_nine_value.text = stats.falconNine.toInt().toString()
+                        binding.launchRateFalconNineValue.text = stats.falconNine.toInt().toString()
 
-                        launch_rate_falcon_heavy_label.visibility =
+                        binding.launchRateFalconHeavyLabel.visibility =
                             if (stats.falconHeavy == 0f) View.GONE else View.VISIBLE
-                        launch_rate_falcon_heavy_value.visibility =
+                        binding.launchRateFalconHeavyValue.visibility =
                             if (stats.falconHeavy == 0f) View.GONE else View.VISIBLE
-                        launch_rate_falcon_heavy_value.text = stats.falconHeavy.toInt().toString()
+                        binding.launchRateFalconHeavyValue.text =
+                            stats.falconHeavy.toInt().toString()
 
-                        launch_rate_failures_label.visibility =
+                        binding.launchRateFailuresLabel.visibility =
                             if (stats.failure == 0f) View.GONE else View.VISIBLE
-                        launch_rate_failures_value.visibility =
+                        binding.launchRateFailuresValue.visibility =
                             if (stats.failure == 0f) View.GONE else View.VISIBLE
-                        launch_rate_failures_value.text = stats.failure.toInt().toString()
+                        binding.launchRateFailuresValue.text = stats.failure.toInt().toString()
 
-                        launch_rate_future_label.visibility =
+                        binding.launchRateFutureLabel.visibility =
                             if (stats.planned == 0f) View.GONE else View.VISIBLE
-                        launch_rate_future_value.visibility =
+                        binding.launchRateFutureValue.visibility =
                             if (stats.planned == 0f) View.GONE else View.VISIBLE
-                        launch_rate_future_value.text = stats.planned.toInt().toString()
+                        binding.launchRateFutureValue.text = stats.planned.toInt().toString()
 
-                        launch_rate_total_value.text = e.y.toInt().toString()
+                        binding.launchRateTotalValue.text = e.y.toInt().toString()
                     }
                 }
 
                 override fun onNothingSelected() {
-                    launch_rate_key.visibility = View.GONE
+                    binding.launchRateKey.visibility = View.GONE
                 }
             })
         }
@@ -145,6 +151,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequests()
+        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -203,7 +210,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
         val dataSets = ArrayList<IBarDataSet>()
         dataSets.add(set)
 
-        launch_rate_bar_chart.apply {
+        binding.launchRateBarChart.apply {
             if (animate) animateY(400, Easing.Linear)
             xAxis.labelCount = stats.size
             axisLeft.apply {
@@ -218,11 +225,11 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
     }
 
     override fun showProgress() {
-        launch_rate_progress_bar.visibility = View.VISIBLE
+        binding.launchRateProgressBar.visibility = View.VISIBLE
     }
 
     override fun hideProgress() {
-        launch_rate_progress_bar.visibility = View.GONE
+        binding.launchRateProgressBar.visibility = View.GONE
     }
 
     override fun showError(error: String) {
@@ -231,7 +238,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (statsList.isEmpty() || launch_rate_progress_bar.visibility == View.VISIBLE) presenter?.getLaunchList()
+            if (statsList.isEmpty() || binding.launchRateProgressBar.visibility == View.VISIBLE) presenter?.getLaunchList()
         }
     }
 }

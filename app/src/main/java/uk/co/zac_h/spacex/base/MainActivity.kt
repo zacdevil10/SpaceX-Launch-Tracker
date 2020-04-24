@@ -10,12 +10,14 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_main.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.databinding.ActivityMainBinding
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class MainActivity : AppCompatActivity(),
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
+
+    private lateinit var binding: ActivityMainBinding
 
     private val startDestinations = mutableSetOf(
         R.id.dashboard_page_fragment,
@@ -29,9 +31,10 @@ class MainActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        setSupportActionBar(toolbar)
+        setSupportActionBar(binding.toolbar)
 
         (application as App).networkStateChangeListener.apply {
             addListener(this@MainActivity)
@@ -39,7 +42,7 @@ class MainActivity : AppCompatActivity(),
         }
 
         snackbar = Snackbar.make(
-            drawer_layout,
+            binding.drawerLayout,
             R.string.network_connection,
             Snackbar.LENGTH_INDEFINITE
         ).apply {
