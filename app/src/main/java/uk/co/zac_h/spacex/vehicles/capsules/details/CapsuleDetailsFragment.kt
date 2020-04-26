@@ -23,7 +23,7 @@ class CapsuleDetailsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition = context?.let { MaterialContainerTransform(it) }
+        sharedElementEnterTransition = MaterialContainerTransform()
 
         capsule = arguments?.getParcelable("capsule") as CapsulesModel?
     }

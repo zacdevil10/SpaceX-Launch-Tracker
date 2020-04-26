@@ -25,7 +25,7 @@ class RocketDetailsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition = context?.let { MaterialContainerTransform(it) }
+        sharedElementEnterTransition = MaterialContainerTransform()
 
         rocket = arguments?.getParcelable("rocket") as RocketsModel?
     }

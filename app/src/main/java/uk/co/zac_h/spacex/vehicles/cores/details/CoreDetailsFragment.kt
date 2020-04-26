@@ -30,7 +30,7 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition = context?.let { MaterialContainerTransform(it) }
+        sharedElementEnterTransition = MaterialContainerTransform()
 
         core = if (savedInstanceState != null) {
             savedInstanceState.getParcelable("core")

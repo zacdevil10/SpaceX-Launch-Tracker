@@ -24,7 +24,7 @@ class DragonDetailsFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition = context?.let { MaterialContainerTransform(it) }
+        sharedElementEnterTransition = MaterialContainerTransform()
 
         dragon = arguments?.getParcelable("dragon") as DragonModel?
     }
