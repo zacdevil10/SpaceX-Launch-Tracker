@@ -22,5 +22,5 @@ class CoreDetailsInteractorImpl : BaseNetwork(), CoreDetailsContract.CoreDetails
         }
     }
 
-    override fun cancelAllRequests() = call?.cancel()
+    override fun cancelAllRequests() = terminateAll()
 }

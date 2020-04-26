@@ -56,7 +56,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
         postponeEnterTransition()
 
-        sharedElementEnterTransition = MaterialContainerTransform(requireContext())
+        sharedElementEnterTransition = MaterialContainerTransform()
 
         launch = if (savedInstanceState != null) {
             savedInstanceState.getParcelable("launch")

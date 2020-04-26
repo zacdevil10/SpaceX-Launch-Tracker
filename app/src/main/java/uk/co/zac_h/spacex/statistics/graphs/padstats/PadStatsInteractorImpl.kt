@@ -27,8 +27,5 @@ class PadStatsInteractorImpl : BaseNetwork(), PadStatsContract.PadStatsInteracto
         }
     }
 
-    override fun cancelAllRequests() {
-        landingCall?.cancel()
-        launchCall?.cancel()
-    }
+    override fun cancelAllRequests() = terminateAll()
 }

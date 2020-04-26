@@ -70,7 +70,7 @@ class HistoryTest {
             onBlocking { getHistory("desc") } doReturn Calls.response(Response.success(historyArray))
         }
 
-        presenter.getHistory(mockRepo)
+        presenter.getHistory(true, mockRepo)
 
         verifyBlocking(mView) { showProgress() }
         verifyBlocking(mView) { hideProgress() }
@@ -84,7 +84,7 @@ class HistoryTest {
             onBlocking { getHistory("desc") } doReturn Calls.response(Response.success(historyArray))
         }
 
-        interactor.getAllHistoricEvents(mockRepo, mListener)
+        interactor.getAllHistoricEvents("desc", mockRepo, mListener)
 
         verifyBlocking(mListener) { onSuccess(historyArray) }
     }
@@ -100,7 +100,7 @@ class HistoryTest {
             )
         }
 
-        interactor.getAllHistoricEvents(mockRepo, mListener)
+        interactor.getAllHistoricEvents("desc", mockRepo, mListener)
 
         verifyBlocking(mListener) { onError("Error: 404") }
     }
@@ -116,7 +116,7 @@ class HistoryTest {
             )
         }
 
-        presenter.getHistory(mockRepo)
+        presenter.getHistory(true, mockRepo)
 
         verifyBlocking(mView) { showProgress() }
         verifyBlocking(mView) { showError("Error: 404") }

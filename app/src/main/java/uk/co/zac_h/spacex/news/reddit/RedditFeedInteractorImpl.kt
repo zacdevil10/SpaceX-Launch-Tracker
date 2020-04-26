@@ -27,5 +27,5 @@ class RedditFeedInteractorImpl : BaseNetwork(), RedditFeedContract.RedditFeedInt
         }
     }
 
-    override fun cancelAllRequests() = call?.cancel()
+    override fun cancelAllRequests() = terminateAll()
 }

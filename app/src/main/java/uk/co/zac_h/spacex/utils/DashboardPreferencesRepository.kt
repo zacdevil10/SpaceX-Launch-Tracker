@@ -39,7 +39,7 @@ class DashboardPreferencesRepository(private val sharedPreferences: SharedPrefer
         }
 
     private val preferenceChangedListener =
-        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
             visibleLiveData.value = allVisible
         }
 

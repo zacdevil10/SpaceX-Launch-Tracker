@@ -26,5 +26,5 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardIntera
 
     override fun hasActiveRequest(): Boolean = active.isNotEmpty()
 
-    override fun cancelAllRequests() = call?.cancel()
+    override fun cancelAllRequests() = terminateAll()
 }

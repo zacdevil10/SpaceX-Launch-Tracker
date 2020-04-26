@@ -9,10 +9,28 @@ import java.net.UnknownHostException
 
 open class BaseNetwork {
 
+    private val listeners: MutableSet<BaseNetworkListener> = HashSet()
+
+    interface BaseNetworkListener {
+        fun terminate()
+    }
+
     fun <T> Call<T>.makeCall(callback: BaseCallback<T>.() -> Unit) {
         val baseCallback = BaseCallback<T>()
         callback.invoke(baseCallback)
         this.clone().enqueue(baseCallback)
+
+        listeners.add(object : BaseNetworkListener {
+            override fun terminate() {
+                baseCallback.onTerminate()
+            }
+        })
+    }
+
+    fun terminateAll() {
+        for (listener in listeners) {
+            listener.terminate()
+        }
     }
 
     class BaseCallback<T> : Callback<T> {
@@ -50,7 +68,7 @@ open class BaseNetwork {
             }
         }
 
-        fun cancel() {
+        fun onTerminate() {
             canceled = true
         }
     }

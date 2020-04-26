@@ -13,7 +13,7 @@ class PinnedPreferencesRepository(private val sharedPreferences: SharedPreferenc
     val pinnedLive: LiveData<MutableMap<String, *>> get() = pinnedLiveData
 
     private val preferencesChangedListener =
-        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
             pinnedLiveData.value = allPinned
         }
 

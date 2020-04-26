@@ -19,5 +19,5 @@ class RocketInteractorImpl : BaseNetwork(),
         }
     }
 
-    override fun cancelAllRequests() = call?.cancel()
+    override fun cancelAllRequests() = terminateAll()
 }

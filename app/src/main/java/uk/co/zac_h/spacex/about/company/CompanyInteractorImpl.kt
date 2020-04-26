@@ -21,5 +21,5 @@ class CompanyInteractorImpl : BaseNetwork(), CompanyContract.CompanyInteractor {
         }
     }
 
-    override fun cancelAllRequests() = call?.cancel()
+    override fun cancelAllRequests() = terminateAll()
 }

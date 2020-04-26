@@ -22,5 +22,5 @@ class HistoryInteractorImpl : BaseNetwork(), HistoryContract.HistoryInteractor {
         }
     }
 
-    override fun cancelAllRequests() = call?.cancel()
+    override fun cancelAllRequests() = terminateAll()
 }
