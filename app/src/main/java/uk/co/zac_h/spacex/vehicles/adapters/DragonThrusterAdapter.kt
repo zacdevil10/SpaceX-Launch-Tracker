@@ -9,7 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.ThrusterConfigModel
 import uk.co.zac_h.spacex.utils.metricFormat
+import java.util.*
 
+@ExperimentalStdlibApi
 class DragonThrusterAdapter(
     private val context: Context?,
     private val thrusters: List<ThrusterConfigModel>
@@ -31,8 +33,8 @@ class DragonThrusterAdapter(
             type.text = thruster.type
             amount.text = thruster.amount.toString()
             pods.text = thruster.pods.toString()
-            fuel1.text = thruster.fuelType1.capitalize()
-            fuel2.text = thruster.fuelType2.capitalize()
+            fuel1.text = thruster.fuelType1.capitalize(Locale.ENGLISH)
+            fuel2.text = thruster.fuelType2.capitalize(Locale.ENGLISH)
             thrust.text = context?.getString(
                 R.string.thrust,
                 thruster.thrust.kN.metricFormat(),

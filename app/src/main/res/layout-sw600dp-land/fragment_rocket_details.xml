@@ -483,7 +483,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Mass to Orbit"
+                android:text="@string/mass_to_orbit_label"
                 android:textAppearance="?textAppearanceHeadline6"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
