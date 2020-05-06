@@ -196,6 +196,7 @@
     <string name="dark_theme_label">Dark theme</string>
 
     <string name="edit_label">Edit</string>
+    <string name="launch_site_label">Launch site:</string>
 
     <string-array name="order">
         <item>Hot</item>

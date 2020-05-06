@@ -19,7 +19,7 @@
         android:textColor="@android:color/white"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="43:13:23:55" />
 
@@ -213,7 +213,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Launch site:"
+                    android:text="@string/launch_site_label"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/launch_details_details_text" />
 
