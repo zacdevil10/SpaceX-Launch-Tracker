@@ -11,7 +11,6 @@ import uk.co.zac_h.spacex.model.spacex.ThrusterConfigModel
 import uk.co.zac_h.spacex.utils.metricFormat
 import java.util.*
 
-@ExperimentalStdlibApi
 class DragonThrusterAdapter(
     private val context: Context?,
     private val thrusters: List<ThrusterConfigModel>
@@ -26,6 +25,7 @@ class DragonThrusterAdapter(
             )
         )
 
+    @ExperimentalStdlibApi
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val thruster = thrusters[position]
 
