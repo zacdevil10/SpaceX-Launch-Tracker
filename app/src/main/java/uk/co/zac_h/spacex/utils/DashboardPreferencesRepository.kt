@@ -9,7 +9,7 @@ object DashboardObj {
     var PREFERENCES_SECTION = ""
 
     const val PREFERENCES_NEXT_LAUNCH = "next_launch"
-    const val PREFERENCES_LATEST_LAUNCH = "latest_launch"
+    const val PREFERENCES_PREVIOUS_LAUNCH = "previous_launch"
     const val PREFERENCES_PINNED_LAUNCH = "pinned_launch"
     const val PREFERENCES_LATEST_NEWS = "latest_news"
 }

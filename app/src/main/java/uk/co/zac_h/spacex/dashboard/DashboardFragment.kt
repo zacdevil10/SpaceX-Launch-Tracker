@@ -18,10 +18,10 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardPinnedAdapter
 import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
-import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_LATEST_LAUNCH
 import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_LATEST_NEWS
 import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_NEXT_LAUNCH
 import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_PINNED_LAUNCH
+import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_PREVIOUS_LAUNCH
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.formatBlockNumber
@@ -102,7 +102,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
                     when (elements.key) {
                         PREFERENCES_NEXT_LAUNCH ->
                             presenter?.toggleNextLaunchVisibility(elements.value as Boolean)
-                        PREFERENCES_LATEST_LAUNCH ->
+                        PREFERENCES_PREVIOUS_LAUNCH ->
                             presenter?.toggleLatestLaunchVisibility(elements.value as Boolean)
                         PREFERENCES_PINNED_LAUNCH ->
                             presenter?.togglePinnedList(elements.value as Boolean)

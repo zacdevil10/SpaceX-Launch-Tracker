@@ -21,8 +21,8 @@
 
     <!-- Dashboard -->
     <string name="no_pinned_launches_found_label">No pinned launches found.</string>
-    <string name="next_launch">Next Launch</string>
-    <string name="latest_launch">Latest Launch</string>
+    <string name="next_launch">Next</string>
+    <string name="latest_launch">Previous</string>
 
     <!--Filter labels-->
     <string name="filter_successes">Successes</string>
@@ -101,7 +101,7 @@
 
     <!--Menu-->
     <string name="search">Search</string>
-    <string name="pinned_launches">Pinned Launches</string>
+    <string name="pinned_launches">Pinned</string>
     <string name="pin">Pin</string>
 
     <!--About SpaceX-->
