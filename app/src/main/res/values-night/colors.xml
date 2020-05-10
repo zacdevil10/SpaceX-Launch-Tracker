@@ -19,6 +19,8 @@
     <color name="color_on_surface">#ffffff</color>
     <color name="color_on_error">#000000</color>
 
+    <color name="divider">#1FFFFFFF</color>
+
     <color name="color_timeline">#ffffff</color>
 
     <color name="color_rate_key">#FFFFFF</color>

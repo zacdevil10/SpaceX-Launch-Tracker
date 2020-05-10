@@ -3,7 +3,6 @@ package uk.co.zac_h.spacex.launches.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
@@ -64,10 +63,6 @@ class FirstStageAdapter(private val cores: List<CoreSpecModel>) :
                 }
             }
 
-            detailsButton.setOnClickListener {
-                bind(core)
-            }
-
             itemView.setOnClickListener {
                 bind(core)
             }
@@ -83,8 +78,6 @@ class FirstStageAdapter(private val cores: List<CoreSpecModel>) :
         val landedImage: ImageView = itemView.findViewById(R.id.list_item_first_stage_landed_image)
         val landingImage: ImageView =
             itemView.findViewById(R.id.list_item_first_stage_landing_image)
-        val detailsButton: Button =
-            itemView.findViewById(R.id.list_item_first_stage_details_button)
 
         fun bind(core: CoreSpecModel) {
             itemView.findNavController()
