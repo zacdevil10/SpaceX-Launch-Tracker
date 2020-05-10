@@ -4,7 +4,6 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.provider.CalendarContract
@@ -13,8 +12,6 @@ import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.Toast
 import android.widget.ToggleButton
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.*
 import com.google.android.material.transition.MaterialContainerTransform
@@ -172,35 +169,27 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_details, menu)
-        menu.findItem(R.id.pin).icon = context?.let {
-            ContextCompat.getDrawable(
-                it,
-                if (id?.let { id -> presenter?.isPinned(id) } ?: presenter?.isPinned(launch?.flightNumber.toString()) == true) {
-                    R.drawable.ic_star_black_24dp
-                } else {
-                    R.drawable.ic_star_border_black_24dp
-                })
-        }
+        inflater.inflate(
+            if (id?.let { id -> presenter?.isPinned(id) } ?: presenter?.isPinned(launch?.flightNumber.toString()) == true) {
+                R.menu.menu_details_alternate
+            } else {
+                R.menu.menu_details
+            }, menu)
 
-        setIconTint(menu.findItem(R.id.pin))
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.pin -> {
-            presenter?.pinLaunch(launch?.flightNumber?.toString() ?: id.toString(), !pinned)
-
-            pinned = !pinned
-
-            item.icon = context?.let {
-                ContextCompat.getDrawable(
-                    it,
-                    if (pinned) R.drawable.ic_star_black_24dp else R.drawable.ic_star_border_black_24dp
-                )
-            }
-
-            setIconTint(item)
+            presenter?.pinLaunch(launch?.flightNumber?.toString() ?: id.toString(), true)
+            pinned = true
+            activity?.invalidateOptionsMenu()
+            true
+        }
+        R.id.unpin -> {
+            presenter?.pinLaunch(launch?.flightNumber?.toString() ?: id.toString(), false)
+            pinned = false
+            activity?.invalidateOptionsMenu()
             true
         }
         R.id.create_event -> {
@@ -208,21 +197,6 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
             true
         }
         else -> super.onOptionsItemSelected(item)
-    }
-
-    private fun setIconTint(item: MenuItem) {
-        var drawable = item.icon
-        drawable = DrawableCompat.wrap(drawable)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            DrawableCompat.setTint(
-                drawable.mutate(),
-                resources.getColor(android.R.color.white, null)
-            )
-        } else {
-            @Suppress("DEPRECATION")
-            DrawableCompat.setTint(drawable.mutate(), resources.getColor(android.R.color.white))
-        }
-        item.icon = drawable
     }
 
     override fun updateLaunchDataView(launch: LaunchesModel?) {

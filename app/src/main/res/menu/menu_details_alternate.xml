@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/pin"
-        android:icon="@drawable/ic_pin_outline"
+        android:id="@+id/unpin"
+        android:icon="@drawable/ic_pin"
         android:title="@string/pin"
         app:showAsAction="ifRoom" />
 
