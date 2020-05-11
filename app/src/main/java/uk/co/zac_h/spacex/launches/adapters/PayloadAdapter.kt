@@ -46,22 +46,90 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
             //Payload specs
             payloadCustomer.text = payload?.customers?.formatCustomers()
             payloadOrbit.text = payload?.orbit
-            payloadLifespan.text = payload?.orbitParams?.lifespanYears?.toInt()?.toString() ?: "0"
+
+            payload?.orbitParams?.lifespanYears?.let {
+                payloadLifespan.text = it.toInt().toString()
+            } ?: run {
+                payloadLifespanLabel.visibility = View.GONE
+                payloadLifespan.visibility = View.GONE
+            }
+
             payloadMass.text = context?.getString(
                 R.string.mass,
                 payload?.massKg?.metricFormat() ?: 0,
                 payload?.massLbs?.metricFormat() ?: 0
             )
-            payloadType.text = payload?.type ?: "Unknown"
-            payloadRefSystem.text = payload?.orbitParams?.referenceSystem ?: "Unknown"
-            payloadRegime.text = payload?.orbitParams?.regime ?: "Unknown"
-            payloadLong.text = payload?.orbitParams?.lng?.toString() ?: "0"
-            payloadSemiMajor.text = payload?.orbitParams?.semiMajorAxisKm?.toString() ?: "0"
+
+            payload?.type?.let {
+                payloadType.text = it
+            } ?: run {
+                payloadType.visibility = View.GONE
+                payloadTypeLabel.visibility = View.GONE
+            }
+
+            payload?.orbitParams?.referenceSystem?.let {
+                payloadRefSystem.text = it
+            } ?: run {
+                payloadRefSystem.visibility = View.GONE
+                payloadRefSystemLabel.visibility = View.GONE
+            }
+
+            payload?.orbitParams?.regime?.let {
+                payloadRegime.text = it
+            } ?: run {
+                payloadRegime.visibility = View.GONE
+                payloadRegimeLabel.visibility = View.GONE
+            }
+
+            payload?.orbitParams?.lng?.let {
+                payloadLong.text = it.toString()
+            } ?: run {
+                payloadLong.visibility = View.GONE
+                payloadLongLabel.visibility = View.GONE
+            }
+
+            payload?.orbitParams?.semiMajorAxisKm?.let {
+                payloadSemiMajor.text = it.toString()
+            } ?: run {
+                payloadSemiMajor.visibility = View.GONE
+                payloadSemiMajorLabel.visibility = View.GONE
+            }
+
             payloadEccentricity.text = payload?.orbitParams?.eccentricity?.toString() ?: "0"
-            payloadPeriapsis.text = payload?.orbitParams?.periapsisKm?.toString() ?: "0"
-            payloadApoapsis.text = payload?.orbitParams?.apoapsisKm?.toString() ?: "0"
-            payloadInclination.text = payload?.orbitParams?.inclination?.toString() ?: "0"
-            payloadPeriod.text = payload?.orbitParams?.periodMins?.toString() ?: "0"
+            payload?.orbitParams?.eccentricity?.let {
+                payloadEccentricity.text = it.toString()
+            } ?: run {
+                payloadEccentricity.visibility = View.GONE
+                payloadEccentricityLabel.visibility = View.GONE
+            }
+
+            payload?.orbitParams?.periapsisKm?.let {
+                payloadPeriapsis.text = it.toString()
+            } ?: run {
+                payloadPeriapsis.visibility = View.GONE
+                payloadPeriapsisLabel.visibility = View.GONE
+            }
+
+            payload?.orbitParams?.apoapsisKm?.let {
+                payloadApoapsis.text = it.toString()
+            } ?: run {
+                payloadApoapsis.visibility = View.GONE
+                payloadApoapsisLabel.visibility = View.GONE
+            }
+
+            payload?.orbitParams?.inclination?.let {
+                payloadInclination.text = it.toString()
+            } ?: run {
+                payloadInclination.visibility = View.GONE
+                payloadInclinationLabel.visibility = View.GONE
+            }
+
+            payload?.orbitParams?.periodMins?.let {
+                payloadPeriod.text = it.toString()
+            } ?: run {
+                payloadPeriod.visibility = View.GONE
+                payloadPeriodLabel.visibility = View.GONE
+            }
 
             itemView.setOnClickListener {
                 expandedPosition = if (isExpanded) -1 else position
@@ -103,5 +171,27 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
         val payloadInclination: TextView =
             itemView.findViewById(R.id.list_item_payload_inclination_text)
         val payloadPeriod: TextView = itemView.findViewById(R.id.list_item_payload_period_text)
+
+        //Payload labels
+        val payloadLifespanLabel: TextView =
+            itemView.findViewById(R.id.list_item_payload_lifespan_label)
+        val payloadTypeLabel: TextView = itemView.findViewById(R.id.list_item_payload_type_label)
+        val payloadRefSystemLabel: TextView =
+            itemView.findViewById(R.id.list_item_payload_refsystem_label)
+        val payloadRegimeLabel: TextView =
+            itemView.findViewById(R.id.list_item_payload_regime_label)
+        val payloadLongLabel: TextView = itemView.findViewById(R.id.list_item_payload_long_label)
+        val payloadSemiMajorLabel: TextView =
+            itemView.findViewById(R.id.list_item_payload_semimajor_label)
+        val payloadEccentricityLabel: TextView =
+            itemView.findViewById(R.id.list_item_payload_eccentricity_label)
+        val payloadPeriapsisLabel: TextView =
+            itemView.findViewById(R.id.list_item_payload_periapsis_label)
+        val payloadApoapsisLabel: TextView =
+            itemView.findViewById(R.id.list_item_payload_apoapsis_label)
+        val payloadInclinationLabel: TextView =
+            itemView.findViewById(R.id.list_item_payload_inclination_label)
+        val payloadPeriodLabel: TextView =
+            itemView.findViewById(R.id.list_item_payload_period_label)
     }
 }
