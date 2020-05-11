@@ -52,6 +52,13 @@ class HistoryAdapter(
                 lineBottom.visibility =
                     if (position == events.size - 1) View.INVISIBLE else View.VISIBLE
 
+                marker.startAnimation(
+                    AnimationUtils.loadAnimation(
+                        context,
+                        R.anim.scale_up
+                    )
+                )
+
                 date.text = event.historyModel?.dateUnix?.formatDateMillisDDMMM()
                 date.startAnimation(
                     AnimationUtils.loadAnimation(
@@ -151,6 +158,7 @@ class HistoryAdapter(
     override fun getItemViewType(position: Int): Int = if (events[position].isHeader) 0 else 1
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val marker: View = itemView.findViewById(R.id.list_item_history_marker)
         val date: TextView = itemView.findViewById(R.id.list_item_history_date)
         val title: TextView = itemView.findViewById(R.id.list_item_history_title)
         val details: TextView = itemView.findViewById(R.id.list_item_history_details)
