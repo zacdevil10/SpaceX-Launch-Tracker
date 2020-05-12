@@ -27,6 +27,7 @@
     <color name="color_on_error">#ffffff</color>
 
     <color name="divider">#1F000000</color>
+    <color name="patch">#1F000000</color>
 
     <color name="color_rate_key">#99000000</color>
 

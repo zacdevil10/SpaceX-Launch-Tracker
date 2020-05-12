@@ -218,11 +218,9 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
                 if (id == null) id = launch.flightNumber.toString()
 
-                launchDetailsMissionPatchImage.visibility =
-                    launch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
-
-                Picasso.get().load(launch.links.missionPatchSmall)
-                    .into(launchDetailsMissionPatchImage)
+                launch.links.missionPatchSmall?.let {
+                    Picasso.get().load(it).into(launchDetailsMissionPatchImage)
+                }
 
                 launchDetailsNumberText.text = context?.getString(
                     R.string.flight_number,

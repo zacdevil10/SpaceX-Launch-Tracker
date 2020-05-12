@@ -20,6 +20,7 @@
     <color name="color_on_error">#000000</color>
 
     <color name="divider">#1FFFFFFF</color>
+    <color name="patch">#1FFFFFFF</color>
 
     <color name="color_timeline">#ffffff</color>
 
