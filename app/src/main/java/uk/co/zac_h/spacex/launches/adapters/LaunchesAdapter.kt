@@ -49,9 +49,10 @@ class LaunchesAdapter(
 
             flightNumber.text = context?.getString(R.string.flight_number, launch.flightNumber)
 
-            launch.links.missionPatchSmall?.let {
-                Picasso.get().load(it).into(missionPatch)
-            }
+            Picasso.get()
+                .load(launch.links.missionPatchSmall)
+                //.placeholder(ContextCompat.getDrawable(context, R.drawable.ic_mission_patch))
+                .into(missionPatch)
 
             if (launch.rocket.id == "falcon9") {
                 reusedTag.visibility = launch.rocket.firstStage?.cores?.get(0)?.reused?.let {
