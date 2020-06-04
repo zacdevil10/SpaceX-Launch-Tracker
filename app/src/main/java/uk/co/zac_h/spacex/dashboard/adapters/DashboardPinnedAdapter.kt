@@ -11,7 +11,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.utils.formatBlockNumber
@@ -41,7 +41,7 @@ class DashboardPinnedAdapter(
                 missionPatch.visibility =
                     launch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
 
-                Picasso.get().load(launch.links.missionPatchSmall)
+                Glide.with(itemView).load(launch.links.missionPatchSmall)
                     .into(missionPatch)
 
                 flightNumber.text = context?.getString(R.string.flight_number, it.flightNumber)

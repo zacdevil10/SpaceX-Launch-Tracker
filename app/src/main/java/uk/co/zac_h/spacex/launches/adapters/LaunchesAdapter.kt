@@ -8,11 +8,12 @@ import android.widget.Filter
 import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.utils.formatBlockNumber
@@ -49,9 +50,21 @@ class LaunchesAdapter(
 
             flightNumber.text = context?.getString(R.string.flight_number, launch.flightNumber)
 
-            Picasso.get()
+            Glide.with(itemView)
                 .load(launch.links.missionPatchSmall)
-                //.placeholder(ContextCompat.getDrawable(context, R.drawable.ic_mission_patch))
+                .error(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_mission_patch) })
+                .fallback(context?.let {
+                    ContextCompat.getDrawable(
+                        it,
+                        R.drawable.ic_mission_patch
+                    )
+                })
+                .placeholder(context?.let {
+                    ContextCompat.getDrawable(
+                        it,
+                        R.drawable.ic_mission_patch
+                    )
+                })
                 .into(missionPatch)
 
             if (launch.rocket.id == "falcon9") {

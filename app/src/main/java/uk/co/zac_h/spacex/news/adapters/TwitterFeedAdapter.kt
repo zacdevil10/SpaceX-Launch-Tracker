@@ -10,7 +10,8 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import uk.co.zac_h.mediarecyclerview.models.MediaModel
 import uk.co.zac_h.mediarecyclerview.ui.MediaRecyclerView
 import uk.co.zac_h.mediarecyclerview.utils.MediaType
@@ -18,7 +19,10 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.twitter.TimelineExtendedEntityModel
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.news.twitter.TwitterFeedContract
-import uk.co.zac_h.spacex.utils.*
+import uk.co.zac_h.spacex.utils.HtmlTextView
+import uk.co.zac_h.spacex.utils.convertDate
+import uk.co.zac_h.spacex.utils.dateStringToMillis
+import uk.co.zac_h.spacex.utils.formatWithUrls
 
 class TwitterFeedAdapter(
     private val context: Context?,
@@ -45,7 +49,8 @@ class TwitterFeedAdapter(
                 view.openWebLink("https://twitter.com/SpaceX/status/${tweet.id}")
             }
 
-            Picasso.get().load(tweet.user.profileUrl).transform(CircleImageTransform())
+            Glide.with(itemView).load(tweet.user.profileUrl)
+                .apply(RequestOptions.circleCropTransform())
                 .into(profileImage)
             date.text = tweet.created.dateStringToMillis()?.convertDate()
             name.text = tweet.user.name

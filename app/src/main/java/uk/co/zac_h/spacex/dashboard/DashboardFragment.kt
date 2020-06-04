@@ -12,7 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.squareup.picasso.Picasso
+import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardPinnedAdapter
@@ -198,7 +198,8 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         binding.dashboardNextLayout.dashboardNextMissionPatchImage.visibility =
             nextLaunch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
 
-        Picasso.get().load(nextLaunch.links.missionPatchSmall)
+        Glide.with(this)
+            .load(nextLaunch.links.missionPatchSmall)
             .into(binding.dashboardNextLayout.dashboardNextMissionPatchImage)
 
         binding.dashboardNextLayout.dashboardNextFlightNoText.text =
@@ -235,7 +236,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         binding.dashboardLatestLayout.dashboardLatestMissionPatchImage.visibility =
             latestLaunch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
 
-        Picasso.get().load(latestLaunch.links.missionPatchSmall)
+        Glide.with(this).load(latestLaunch.links.missionPatchSmall)
             .into(binding.dashboardLatestLayout.dashboardLatestMissionPatchImage)
 
         binding.dashboardLatestLayout.dashboardLatestFlightNoText.text =

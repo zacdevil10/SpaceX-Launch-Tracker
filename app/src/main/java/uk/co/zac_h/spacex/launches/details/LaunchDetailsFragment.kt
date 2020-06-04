@@ -14,8 +14,8 @@ import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.*
+import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
-import com.squareup.picasso.Picasso
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
@@ -219,7 +219,9 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 if (id == null) id = launch.flightNumber.toString()
 
                 launch.links.missionPatchSmall?.let {
-                    Picasso.get().load(it).into(launchDetailsMissionPatchImage)
+                    Glide.with(this@LaunchDetailsFragment)
+                        .load(it)
+                        .into(launchDetailsMissionPatchImage)
                 }
 
                 launchDetailsNumberText.text = context?.getString(
