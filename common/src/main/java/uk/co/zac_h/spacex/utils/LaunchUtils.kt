@@ -1,8 +1,8 @@
 package uk.co.zac_h.spacex.utils
 
-import uk.co.zac_h.spacex.model.spacex.CoreSpecModel
+import uk.co.zac_h.spacex.model.spacex.LaunchCoreModel
 
-fun List<CoreSpecModel>.formatBlockNumber(): String {
+fun List<LaunchCoreModel>.formatBlockNumber(): String {
     var blockText = ""
 
     for (i in 0..this.size.minus(1)) {

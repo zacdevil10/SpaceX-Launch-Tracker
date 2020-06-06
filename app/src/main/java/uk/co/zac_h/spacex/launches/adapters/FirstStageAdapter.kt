@@ -9,10 +9,10 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.CoreSpecModel
+import uk.co.zac_h.spacex.model.spacex.LaunchCoreModel
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
-class FirstStageAdapter(private val cores: List<CoreSpecModel>) :
+class FirstStageAdapter(private val cores: List<LaunchCoreModel>) :
     RecyclerView.Adapter<FirstStageAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -79,7 +79,7 @@ class FirstStageAdapter(private val cores: List<CoreSpecModel>) :
         val landingImage: ImageView =
             itemView.findViewById(R.id.list_item_first_stage_landing_image)
 
-        fun bind(core: CoreSpecModel) {
+        fun bind(core: LaunchCoreModel) {
             itemView.findNavController()
                 .navigate(
                     R.id.action_launch_details_fragment_to_core_details_fragment,

@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
-import uk.co.zac_h.spacex.utils.formatBlockNumber
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import java.util.*
@@ -51,7 +50,7 @@ class LaunchesAdapter(
             flightNumber.text = context?.getString(R.string.flight_number, launch.flightNumber)
 
             Glide.with(itemView)
-                .load(launch.links.missionPatchSmall)
+                .load(launch.links?.missionPatch?.patchSmall)
                 .error(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_mission_patch) })
                 .fallback(context?.let {
                     ContextCompat.getDrawable(
@@ -67,7 +66,7 @@ class LaunchesAdapter(
                 })
                 .into(missionPatch)
 
-            if (launch.rocket.id == "falcon9") {
+            /*if (launch.rocket.id == "falcon9") {
                 reusedTag.visibility = launch.rocket.firstStage?.cores?.get(0)?.reused?.let {
                     if (it) View.VISIBLE else View.GONE
                 } ?: View.GONE
@@ -87,7 +86,8 @@ class LaunchesAdapter(
                 R.string.vehicle_block_type,
                 launch.rocket.name,
                 launch.rocket.firstStage?.cores?.formatBlockNumber()
-            )
+            )*/
+
             missionName.text = launch.missionName
             date.text = launch.launchDateUnix.formatDateMillisLong(launch.tbd?.let { it } ?: false)
 
@@ -129,11 +129,11 @@ class LaunchesAdapter(
                                     return@forEach
                                 }
 
-                                launch.rocket.name?.let { rocketName ->
+                                /*launch.rocket.name?.let { rocketName ->
                                     if (rocketName.toLowerCase(Locale.getDefault()).contains(search)) filteredList.add(
                                         launch
                                     )
-                                }
+                                }*/
                             }
 
                             filteredList

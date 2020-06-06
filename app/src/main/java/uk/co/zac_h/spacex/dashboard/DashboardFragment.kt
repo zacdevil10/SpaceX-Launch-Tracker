@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
@@ -24,7 +25,6 @@ import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_PINNED_LAUNCH
 import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_PREVIOUS_LAUNCH
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
-import uk.co.zac_h.spacex.utils.formatBlockNumber
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
@@ -195,25 +195,35 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         binding.dashboardNextLayout.dashboardNextCardView.transitionName =
             nextLaunch.flightNumber.toString()
 
-        binding.dashboardNextLayout.dashboardNextMissionPatchImage.visibility =
-            nextLaunch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
-
         Glide.with(this)
-            .load(nextLaunch.links.missionPatchSmall)
+            .load(nextLaunch.links?.missionPatch?.patchSmall)
+            .error(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_mission_patch) })
+            .fallback(context?.let {
+                ContextCompat.getDrawable(
+                    it,
+                    R.drawable.ic_mission_patch
+                )
+            })
+            .placeholder(context?.let {
+                ContextCompat.getDrawable(
+                    it,
+                    R.drawable.ic_mission_patch
+                )
+            })
             .into(binding.dashboardNextLayout.dashboardNextMissionPatchImage)
 
         binding.dashboardNextLayout.dashboardNextFlightNoText.text =
             context?.getString(R.string.flight_number, nextLaunch.flightNumber)
 
-        binding.dashboardNextLayout.dashboardNextBlockText.text = context?.getString(
+        /*binding.dashboardNextLayout.dashboardNextBlockText.text = context?.getString(
             R.string.vehicle_block_type,
             nextLaunch.rocket.name,
             nextLaunch.rocket.firstStage?.cores?.formatBlockNumber()
-        )
+        )*/
+
         binding.dashboardNextLayout.dashboardNextMissionNameText.text = nextLaunch.missionName
-        binding.dashboardNextLayout.dashboardNextDateText.text = nextLaunch.tbd?.let { tbd ->
-            nextLaunch.launchDateUnix.formatDateMillisLong(tbd)
-        } ?: nextLaunch.launchDateUnix.formatDateMillisLong()
+        binding.dashboardNextLayout.dashboardNextDateText.text =
+            nextLaunch.launchDateUnix.formatDateMillisLong(nextLaunch.tbd)
 
         binding.dashboardNextLayout.dashboardNextCardView.setOnClickListener {
             findNavController().navigate(
@@ -233,25 +243,37 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         binding.dashboardLatestLayout.dashboardLatestCardView.transitionName =
             latestLaunch.flightNumber.toString()
 
-        binding.dashboardLatestLayout.dashboardLatestMissionPatchImage.visibility =
-            latestLaunch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
-
-        Glide.with(this).load(latestLaunch.links.missionPatchSmall)
+        Glide.with(this)
+            .load(latestLaunch.links?.missionPatch?.patchSmall)
+            .error(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_mission_patch) })
+            .fallback(context?.let {
+                ContextCompat.getDrawable(
+                    it,
+                    R.drawable.ic_mission_patch
+                )
+            })
+            .placeholder(context?.let {
+                ContextCompat.getDrawable(
+                    it,
+                    R.drawable.ic_mission_patch
+                )
+            })
             .into(binding.dashboardLatestLayout.dashboardLatestMissionPatchImage)
 
         binding.dashboardLatestLayout.dashboardLatestFlightNoText.text =
             context?.getString(R.string.flight_number, latestLaunch.flightNumber)
 
-        binding.dashboardLatestLayout.dashboardLatestBlockText.text = context?.getString(
+        /*binding.dashboardLatestLayout.dashboardLatestBlockText.text = context?.getString(
             R.string.vehicle_block_type,
             latestLaunch.rocket.name,
             latestLaunch.rocket.firstStage?.cores?.formatBlockNumber()
-        )
+        )*/
+
         binding.dashboardLatestLayout.dashboardLatestMissionNameText.text =
             latestLaunch.missionName
-        binding.dashboardLatestLayout.dashboardLatestDateText.text = latestLaunch.tbd?.let { tbd ->
-            latestLaunch.launchDateUnix.formatDateMillisLong(tbd)
-        } ?: latestLaunch.launchDateUnix.formatDateMillisLong()
+
+        binding.dashboardLatestLayout.dashboardLatestDateText.text =
+            latestLaunch.launchDateUnix.formatDateMillisLong(latestLaunch.tbd)
 
         binding.dashboardLatestLayout.dashboardLatestCardView.setOnClickListener {
             findNavController().navigate(

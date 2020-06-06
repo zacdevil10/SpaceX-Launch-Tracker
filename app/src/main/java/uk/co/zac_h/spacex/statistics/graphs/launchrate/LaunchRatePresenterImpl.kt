@@ -40,7 +40,7 @@ class LaunchRatePresenterImpl(
                 if (!it.upcoming) {
                     it.success?.let { success ->
                         if (success) {
-                            when (it.rocket.id) {
+                            /*when (it.rocket.id) {
                                 "falcon1" -> {
                                     rateStatsList[rateStatsList.lastIndex].falconOne++
                                 }
@@ -53,7 +53,7 @@ class LaunchRatePresenterImpl(
                                 else -> {
                                     return@forEach
                                 }
-                            }
+                            }*/
                         } else {
                             rateStatsList[rateStatsList.lastIndex].failure++
                         }

@@ -51,7 +51,7 @@ class LaunchHistoryPresenterImpl(
 
         launches?.let {
             launches.forEach {
-                when (it.rocket.id) {
+                /*when (it.rocket.id) {
                     "falcon1" -> it.success?.let { success ->
                         if (success) falconOne.successes++ else falconOne.failures++
                     }
@@ -61,7 +61,7 @@ class LaunchHistoryPresenterImpl(
                     "falconheavy" -> it.success?.let { success ->
                         if (success) falconHeavy.successes++ else falconHeavy.failures++
                     }
-                }
+                }*/
             }
 
             falconOne.successRate =

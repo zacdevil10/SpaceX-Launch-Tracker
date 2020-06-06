@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
-import uk.co.zac_h.spacex.utils.formatBlockNumber
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 
 class DashboardPinnedAdapter(
@@ -38,23 +37,19 @@ class DashboardPinnedAdapter(
             launchesCard.transitionName = launch.flightNumber.toString()
 
             launch.let {
-                missionPatch.visibility =
-                    launch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
-
-                Glide.with(itemView).load(launch.links.missionPatchSmall)
+                Glide.with(itemView).load(launch.links?.missionPatch?.patchSmall)
                     .into(missionPatch)
 
                 flightNumber.text = context?.getString(R.string.flight_number, it.flightNumber)
 
-                blockNumber.text = context?.getString(
+                /*blockNumber.text = context?.getString(
                     R.string.vehicle_block_type,
                     it.rocket.name,
                     it.rocket.firstStage?.cores?.formatBlockNumber()
-                )
+                )*/
+
                 missionName.text = it.missionName
-                date.text = it.tbd?.let { tbd ->
-                    it.launchDateUnix.formatDateMillisLong(tbd)
-                } ?: it.launchDateUnix.formatDateMillisLong()
+                date.text = it.launchDateUnix.formatDateMillisLong(it.tbd)
 
                 launchesCard.setOnClickListener { _ ->
                     itemView.findNavController().navigate(

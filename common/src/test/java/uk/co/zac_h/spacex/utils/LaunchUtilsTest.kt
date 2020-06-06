@@ -5,27 +5,29 @@ import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.Mockito.mock
-import uk.co.zac_h.spacex.model.spacex.CoreSpecModel
+import uk.co.zac_h.spacex.model.spacex.LaunchCoreModel
 
 class LaunchUtilsTest {
 
     @Mock
-    private lateinit var mCoreSpecModel0: CoreSpecModel
-    @Mock
-    private lateinit var mCoreSpecModel1: CoreSpecModel
-    @Mock
-    private lateinit var mCoreSpecModel2: CoreSpecModel
+    private lateinit var mCoreSpecModel0: LaunchCoreModel
 
-    private val coreSpecListAll = ArrayList<CoreSpecModel>()
-    private val coreSpecListSingle = ArrayList<CoreSpecModel>()
+    @Mock
+    private lateinit var mCoreSpecModel1: LaunchCoreModel
+
+    @Mock
+    private lateinit var mCoreSpecModel2: LaunchCoreModel
+
+    private val coreSpecListAll = ArrayList<LaunchCoreModel>()
+    private val coreSpecListSingle = ArrayList<LaunchCoreModel>()
 
     private val customersArray = ArrayList<String>()
 
     @Before
     fun setup() {
-        mCoreSpecModel0 = mock(CoreSpecModel::class.java)
-        mCoreSpecModel1 = mock(CoreSpecModel::class.java)
-        mCoreSpecModel2 = mock(CoreSpecModel::class.java)
+        mCoreSpecModel0 = mock(LaunchCoreModel::class.java)
+        mCoreSpecModel1 = mock(LaunchCoreModel::class.java)
+        mCoreSpecModel2 = mock(LaunchCoreModel::class.java)
 
         coreSpecListAll.apply {
             add(mCoreSpecModel0)

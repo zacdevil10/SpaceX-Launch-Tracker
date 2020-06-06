@@ -16,21 +16,7 @@ data class LaunchConfigModel(
 
 @Parcelize
 data class CoresListModel(
-    @field:Json(name = "cores") var cores: List<CoreSpecModel>?
-) : Parcelable
-
-@Parcelize
-data class CoreSpecModel(
-    @field:Json(name = "core_serial") var serial: String?,
-    @field:Json(name = "flight") var flight: Int?,
-    @field:Json(name = "block") var block: Int?,
-    @field:Json(name = "gridfins") var gridfins: Boolean?,
-    @field:Json(name = "legs") var legs: Boolean?,
-    @field:Json(name = "reused") var reused: Boolean?,
-    @field:Json(name = "land_success") var landingSuccess: Boolean?,
-    @field:Json(name = "landing_intent") var landingIntent: Boolean?,
-    @field:Json(name = "landing_type") var landingType: String?,
-    @field:Json(name = "landing_vehicle") var landingVehicle: String?
+    @field:Json(name = "cores") var cores: List<LaunchCoreModel>?
 ) : Parcelable
 
 @Parcelize
@@ -71,12 +57,4 @@ data class OrbitParamsModel(
     @field:Json(name = "raan") var raan: Float?,
     @field:Json(name = "arg_of_pericenter") var pericenterArg: Float?,
     @field:Json(name = "mean_anomaly") var anomalyMean: Float?
-) : Parcelable
-
-@Parcelize
-data class FairingsModel(
-    @field:Json(name = "reused") var reused: Boolean?,
-    @field:Json(name = "recovery_attempt") var recoveryAttempt: Boolean?,
-    @field:Json(name = "recovered") var isRecovered: Boolean?,
-    @field:Json(name = "ship") var ship: String?
 ) : Parcelable

@@ -13,15 +13,14 @@ import android.view.animation.RotateAnimation
 import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
-import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.launches.adapters.LaunchLinksAdapter
-import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
@@ -218,20 +217,18 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
                 if (id == null) id = launch.flightNumber.toString()
 
-                launch.links.missionPatchSmall?.let {
-                    Glide.with(this@LaunchDetailsFragment)
-                        .load(it)
-                        .into(launchDetailsMissionPatchImage)
-                }
+                Glide.with(this@LaunchDetailsFragment)
+                    .load(launch.links?.missionPatch?.patchSmall)
+                    .into(launchDetailsMissionPatchImage)
 
                 launchDetailsNumberText.text = context?.getString(
                     R.string.flight_number,
                     launch.flightNumber
                 )
-                launchDetailsRocketTypeText.text = launch.rocket.name
+                //launchDetailsRocketTypeText.text = launch.rocket.name
                 launchDetailsMissionNameText.text = launch.missionName
 
-                launchDetailsSiteNameText.text = launch.launchSite.name
+                //launchDetailsSiteNameText.text = launch.launchSite.name
 
                 launchDetailsDateText.text = launch.tbd?.let { tbd ->
                     launch.launchDateUnix.formatDateMillisLong(tbd)
@@ -248,12 +245,12 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                     if (launch.details.isNullOrEmpty()) View.GONE else View.VISIBLE
                 launchDetailsDetailsText.text = launch.details
 
-                launch.rocket.firstStage?.cores?.forEach { core ->
+                /*launch.rocket.firstStage?.cores?.forEach { core ->
                     if (coreAssigned) return@forEach
                     coreAssigned = core.serial != null
-                }
+                }*/
 
-                if (coreAssigned) launch.rocket.firstStage?.cores?.let {
+                /*if (coreAssigned) launch.rocket.firstStage?.cores?.let {
                     //If a core has been assigned to a launch then add the adapter to the RecyclerView
                     launchDetailsCoresRecycler.apply {
                         layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
@@ -264,9 +261,9 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                     //If no core has been assigned yet then hide the RecyclerView and related heading
                     launchDetailsFirstStageText.visibility = View.GONE
                     launchDetailsFirstStageCollapseToggle.visibility = View.GONE
-                }
+                }*/
 
-                launchDetailsPayloadRecycler.apply {
+                /*launchDetailsPayloadRecycler.apply {
                     layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
                     setHasFixedSize(false)
                     addItemDecoration(
@@ -280,11 +277,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                         launch.rocket.secondStage?.payloads
                     )
                     (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-                }
+                }*/
 
                 val links = ArrayList<LinksModel>()
 
-                launch.links.videoLink?.let { link ->
+                launch.links?.webcast?.let { link ->
                     links.add(
                         LinksModel(
                             "Watch",
@@ -292,7 +289,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                         )
                     )
                 }
-                launch.links.redditCampaign?.let { link ->
+                launch.links?.redditLinks?.campaign?.let { link ->
                     links.add(
                         LinksModel(
                             "Reddit Campaign",
@@ -300,7 +297,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                         )
                     )
                 }
-                launch.links.redditLaunch?.let { link ->
+                launch.links?.redditLinks?.launch?.let { link ->
                     links.add(
                         LinksModel(
                             "Reddit Launch",
@@ -308,7 +305,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                         )
                     )
                 }
-                launch.links.redditMedia?.let { link ->
+                launch.links?.redditLinks?.media?.let { link ->
                     links.add(
                         LinksModel(
                             "Reddit Media",
@@ -316,7 +313,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                         )
                     )
                 }
-                launch.links.presskit?.let { link ->
+                launch.links?.presskit?.let { link ->
                     links.add(
                         LinksModel(
                             "Press Kit",
@@ -324,7 +321,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                         )
                     )
                 }
-                launch.links.wikipedia?.let { link ->
+                launch.links?.wikipedia?.let { link ->
                     links.add(
                         LinksModel(
                             "Wikipedia Article",

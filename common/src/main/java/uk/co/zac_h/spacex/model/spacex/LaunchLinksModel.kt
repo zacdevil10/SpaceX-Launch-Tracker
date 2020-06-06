@@ -6,6 +6,16 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class LaunchLinksModel(
+    @field:Json(name = "patch") val missionPatch: MissionPatchModel,
+    @field:Json(name = "reddit") val redditLinks: MissionRedditLinksModel,
+    @field:Json(name = "flickr") val flickr: MissionFlickrModel,
+    @field:Json(name = "presskit") val presskit: String,
+    @field:Json(name = "webcast") val webcast: String,
+    @field:Json(name = "youtube_id") val youtubeId: String,
+    @field:Json(name = "article") val article: String,
+    @field:Json(name = "wikipedia") val wikipedia: String
+
+    /* v3
     @field:Json(name = "mission_patch") var missionPatch: String?,
     @field:Json(name = "mission_patch_small") var missionPatchSmall: String?,
     @field:Json(name = "reddit_campaign") var redditCampaign: String?,
@@ -18,4 +28,25 @@ data class LaunchLinksModel(
     @field:Json(name = "video_link") var videoLink: String?,
     @field:Json(name = "youtube_id") var youtubeId: String?,
     @field:Json(name = "flickr_images") var flickrImages: List<String>
+    */
+) : Parcelable
+
+@Parcelize
+data class MissionPatchModel(
+    @field:Json(name = "small") val patchSmall: String,
+    @field:Json(name = "large") val patchLarge: String
+) : Parcelable
+
+@Parcelize
+data class MissionRedditLinksModel(
+    @field:Json(name = "campaign") val campaign: String,
+    @field:Json(name = "launch") val launch: String,
+    @field:Json(name = "media") val media: String,
+    @field:Json(name = "recovery") val recovery: String
+) : Parcelable
+
+@Parcelize
+data class MissionFlickrModel(
+    @field:Json(name = "small") val small: List<String>,
+    @field:Json(name = "original") val original: List<String>
 ) : Parcelable

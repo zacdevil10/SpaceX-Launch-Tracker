@@ -10,8 +10,8 @@ import uk.co.zac_h.spacex.model.spacex.*
 
 interface SpaceXInterface {
 
-    @GET("launches/{flight}")
-    fun getSingleLaunch(@Path("flight") flight: String): Call<LaunchesModel>
+    @GET("launches/{id}")
+    fun getSingleLaunch(@Path("id") id: String): Call<LaunchesModel>
 
     @GET("launches/{launches}")
     fun getLaunches(
@@ -51,7 +51,7 @@ interface SpaceXInterface {
 
     companion object RetrofitSetup {
         fun create(): SpaceXInterface = Retrofit.Builder().apply {
-            baseUrl("https://api.spacexdata.com/v3/")
+            baseUrl("https://api.spacexdata.com/v4/")
             addConverterFactory(MoshiConverterFactory.create())
         }.build().create(SpaceXInterface::class.java)
     }
