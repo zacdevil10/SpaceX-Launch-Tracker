@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -37,7 +38,26 @@ class DashboardPinnedAdapter(
             launchesCard.transitionName = launch.flightNumber.toString()
 
             launch.let {
-                Glide.with(itemView).load(launch.links?.missionPatch?.patchSmall)
+                Glide.with(itemView)
+                    .load(launch.links?.missionPatch?.patchSmall)
+                    .error(context?.let {
+                        ContextCompat.getDrawable(
+                            it,
+                            R.drawable.ic_mission_patch
+                        )
+                    })
+                    .fallback(context?.let {
+                        ContextCompat.getDrawable(
+                            it,
+                            R.drawable.ic_mission_patch
+                        )
+                    })
+                    .placeholder(context?.let {
+                        ContextCompat.getDrawable(
+                            it,
+                            R.drawable.ic_mission_patch
+                        )
+                    })
                     .into(missionPatch)
 
                 flightNumber.text = context?.getString(R.string.flight_number, it.flightNumber)
@@ -56,7 +76,7 @@ class DashboardPinnedAdapter(
                         R.id.action_dashboard_page_fragment_to_launch_details_fragment,
                         bundleOf("launch" to it, "title" to it.missionName),
                         null,
-                        FragmentNavigatorExtras(launchesCard to launch.flightNumber.toString())
+                        FragmentNavigatorExtras(launchesCard to launch.id)
                     )
                 }
             }

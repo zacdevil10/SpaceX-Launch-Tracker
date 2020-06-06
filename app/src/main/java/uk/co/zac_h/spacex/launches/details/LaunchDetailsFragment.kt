@@ -12,6 +12,7 @@ import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.Toast
 import android.widget.ToggleButton
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -89,8 +90,8 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
         launch?.let {
             presenter?.addLaunchModel(it)
-            binding.launchDetailsContainer.transitionName = it.flightNumber.toString()
-            pinned = presenter?.isPinned(it.flightNumber.toString()) ?: false
+            binding.launchDetailsContainer.transitionName = it.id
+            pinned = presenter?.isPinned(it.id) ?: false
         } ?: id?.let {
             presenter?.getLaunch(it)
             pinned = presenter?.isPinned(it) ?: false
@@ -169,7 +170,9 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(
-            if (id?.let { id -> presenter?.isPinned(id) } ?: presenter?.isPinned(launch?.flightNumber.toString()) == true) {
+            if (launch?.let { launchesModel -> presenter?.isPinned(launchesModel.id) } ?: presenter?.isPinned(
+                    id!!
+                ) == true) {
                 R.menu.menu_details_alternate
             } else {
                 R.menu.menu_details
@@ -180,13 +183,13 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.pin -> {
-            presenter?.pinLaunch(launch?.flightNumber?.toString() ?: id.toString(), true)
+            presenter?.pinLaunch(launch?.id ?: id.toString(), true)
             pinned = true
             activity?.invalidateOptionsMenu()
             true
         }
         R.id.unpin -> {
-            presenter?.pinLaunch(launch?.flightNumber?.toString() ?: id.toString(), false)
+            presenter?.pinLaunch(launch?.id ?: id.toString(), false)
             pinned = false
             activity?.invalidateOptionsMenu()
             true
@@ -219,6 +222,24 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
                 Glide.with(this@LaunchDetailsFragment)
                     .load(launch.links?.missionPatch?.patchSmall)
+                    .error(context?.let {
+                        ContextCompat.getDrawable(
+                            it,
+                            R.drawable.ic_mission_patch
+                        )
+                    })
+                    .fallback(context?.let {
+                        ContextCompat.getDrawable(
+                            it,
+                            R.drawable.ic_mission_patch
+                        )
+                    })
+                    .placeholder(context?.let {
+                        ContextCompat.getDrawable(
+                            it,
+                            R.drawable.ic_mission_patch
+                        )
+                    })
                     .into(launchDetailsMissionPatchImage)
 
                 launchDetailsNumberText.text = context?.getString(
@@ -282,52 +303,22 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 val links = ArrayList<LinksModel>()
 
                 launch.links?.webcast?.let { link ->
-                    links.add(
-                        LinksModel(
-                            "Watch",
-                            link
-                        )
-                    )
+                    links.add(LinksModel("Watch", link))
                 }
                 launch.links?.redditLinks?.campaign?.let { link ->
-                    links.add(
-                        LinksModel(
-                            "Reddit Campaign",
-                            link
-                        )
-                    )
+                    links.add(LinksModel("Reddit Campaign", link))
                 }
                 launch.links?.redditLinks?.launch?.let { link ->
-                    links.add(
-                        LinksModel(
-                            "Reddit Launch",
-                            link
-                        )
-                    )
+                    links.add(LinksModel("Reddit Launch", link))
                 }
                 launch.links?.redditLinks?.media?.let { link ->
-                    links.add(
-                        LinksModel(
-                            "Reddit Media",
-                            link
-                        )
-                    )
+                    links.add(LinksModel("Reddit Media", link))
                 }
                 launch.links?.presskit?.let { link ->
-                    links.add(
-                        LinksModel(
-                            "Press Kit",
-                            link
-                        )
-                    )
+                    links.add(LinksModel("Press Kit", link))
                 }
                 launch.links?.wikipedia?.let { link ->
-                    links.add(
-                        LinksModel(
-                            "Wikipedia Article",
-                            link
-                        )
-                    )
+                    links.add(LinksModel("Wikipedia Article", link))
                 }
 
                 if (links.isEmpty()) launchDetailsLinksText.visibility = View.GONE

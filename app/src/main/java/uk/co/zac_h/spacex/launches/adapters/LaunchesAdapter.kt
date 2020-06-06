@@ -97,7 +97,7 @@ class LaunchesAdapter(
                         R.id.action_launches_page_fragment_to_launch_details_fragment,
                         bundleOf("launch" to launch, "title" to launch.missionName),
                         null,
-                        FragmentNavigatorExtras(itemView to launch.flightNumber.toString())
+                        FragmentNavigatorExtras(itemView to launch.id)
                     )
             }
         }

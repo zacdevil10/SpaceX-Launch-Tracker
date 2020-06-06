@@ -116,10 +116,15 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         pinnedPrefs.pinnedLive.observe(viewLifecycleOwner, Observer { mode ->
             mode?.let {
                 it.forEach { element ->
+                    if (element.key.length < 4) {
+                        pinnedSharedPreferences.removePinnedLaunch(element.key)
+                        return@forEach
+                    }
+
                     if (element.value as Boolean) {
-                        if (!pinnedKeysArray.contains(element.key)) presenter?.getSingleLaunch(
-                            element.key
-                        )
+                        if (!pinnedKeysArray.contains(element.key)) {
+                            presenter?.getSingleLaunch(element.key)
+                        }
                     } else {
                         pinnedArray.removeAt(pinnedKeysArray.indexOf(element.key))
                         pinnedAdapter.notifyItemRemoved(pinnedKeysArray.indexOf(element.key))
@@ -192,8 +197,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         binding.dashboardNextLayout.dashboardNextCardView.visibility = View.VISIBLE
 
-        binding.dashboardNextLayout.dashboardNextCardView.transitionName =
-            nextLaunch.flightNumber.toString()
+        binding.dashboardNextLayout.dashboardNextCardView.transitionName = nextLaunch.id
 
         Glide.with(this)
             .load(nextLaunch.links?.missionPatch?.patchSmall)
@@ -230,7 +234,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
                 R.id.action_dashboard_page_fragment_to_launch_details_fragment,
                 bundleOf("launch" to nextLaunch, "title" to nextLaunch.missionName),
                 null,
-                FragmentNavigatorExtras(binding.dashboardNextLayout.dashboardNextCardView to nextLaunch.flightNumber.toString())
+                FragmentNavigatorExtras(binding.dashboardNextLayout.dashboardNextCardView to nextLaunch.id)
             )
         }
     }
@@ -240,8 +244,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         binding.dashboardLatestLayout.dashboardLatestCardView.visibility = View.VISIBLE
 
-        binding.dashboardLatestLayout.dashboardLatestCardView.transitionName =
-            latestLaunch.flightNumber.toString()
+        binding.dashboardLatestLayout.dashboardLatestCardView.transitionName = latestLaunch.id
 
         Glide.with(this)
             .load(latestLaunch.links?.missionPatch?.patchSmall)
@@ -269,8 +272,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
             latestLaunch.rocket.firstStage?.cores?.formatBlockNumber()
         )*/
 
-        binding.dashboardLatestLayout.dashboardLatestMissionNameText.text =
-            latestLaunch.missionName
+        binding.dashboardLatestLayout.dashboardLatestMissionNameText.text = latestLaunch.missionName
 
         binding.dashboardLatestLayout.dashboardLatestDateText.text =
             latestLaunch.launchDateUnix.formatDateMillisLong(latestLaunch.tbd)
@@ -283,7 +285,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
                     "title" to latestLaunch.missionName
                 ),
                 null,
-                FragmentNavigatorExtras(binding.dashboardLatestLayout.dashboardLatestCardView to latestLaunch.flightNumber.toString())
+                FragmentNavigatorExtras(binding.dashboardLatestLayout.dashboardLatestCardView to latestLaunch.id)
             )
         }
     }
