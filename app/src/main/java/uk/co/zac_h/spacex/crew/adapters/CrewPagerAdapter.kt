@@ -7,36 +7,36 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
-import com.google.android.material.card.MaterialCardView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.CrewModel
 
 class CrewPagerAdapter(private val context: Context?, private val crew: List<CrewModel>) :
     PagerAdapter() {
 
-    private var expanded = false
-
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view = LayoutInflater.from(context).inflate(R.layout.list_item_crew, container, false)
 
+        var expanded = false
+
         val person = crew[position]
 
-        val card: MaterialCardView = view.findViewById(R.id.list_item_crew_card)
+        val constraintLayout: ConstraintLayout = view.findViewById(R.id.list_item_crew_constraint)
         val imageView: ImageView = view.findViewById(R.id.list_item_crew_image)
         val name: TextView = view.findViewById(R.id.list_item_crew_title)
         val placeholder: TextView = view.findViewById(R.id.list_item_crew_placeholder)
 
-        card.tag = person.id
+        constraintLayout.tag = person.id
 
-        card.transitionName = person.id
+        constraintLayout.transitionName = person.id
 
         Glide.with(view).load(person.image).into(imageView)
 
         name.text = person.name
 
-        card.setOnClickListener {
+        constraintLayout.setOnClickListener {
             if (expanded) {
                 expanded = false
 

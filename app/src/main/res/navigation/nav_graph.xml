@@ -38,23 +38,21 @@
 
     <fragment
         android:id="@+id/crew_page_fragment"
-        android:name="uk.co.zac_h.spacex.crew.CrewPagerFragment"
+        android:name="uk.co.zac_h.spacex.crew.CrewFragment"
         android:label="@string/menu_crew"
         app:enterAnim="@android:anim/fade_in"
-        tools:layout="@layout/fragment_crew_pager">
+        tools:layout="@layout/fragment_crew">
         <action
-            android:id="@+id/action_crew_page_fragment_to_crew_grid_fragment"
-            app:destination="@id/crew_grid_fragment" />
+            android:id="@+id/action_crew_fragment_to_crew_details_fragment"
+            app:destination="@id/crew_detail_page_fragment"
+            app:exitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment
-        android:id="@+id/crew_grid_fragment"
-        android:name="uk.co.zac_h.spacex.crew.CrewGridFragment"
-        tools:layout="@layout/fragment_crew_grid">
-        <action
-            android:id="@+id/action_crew_grid_fragment_to_crew_page_fragment"
-            app:destination="@id/crew_page_fragment" />
-    </fragment>
+        android:id="@+id/crew_detail_page_fragment"
+        android:name="uk.co.zac_h.spacex.crew.details.CrewDetailsFragment"
+        android:label="{title}"
+        tools:layout="@layout/fragment_crew_details" />
 
     <fragment
         android:id="@+id/vehicles_page_fragment"

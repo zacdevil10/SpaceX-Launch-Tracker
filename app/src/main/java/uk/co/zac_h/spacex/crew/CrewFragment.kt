@@ -1,36 +1,33 @@
 package uk.co.zac_h.spacex.crew
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.FragmentNavigatorExtras
-import androidx.navigation.fragment.findNavController
-import com.google.android.material.card.MaterialCardView
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.crew.adapters.CrewPagerAdapter
-import uk.co.zac_h.spacex.databinding.FragmentCrewPagerBinding
+import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
+import uk.co.zac_h.spacex.databinding.FragmentCrewBinding
 import uk.co.zac_h.spacex.model.spacex.CrewModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class CrewPagerFragment : Fragment(), CrewContract.CrewView,
+class CrewFragment : Fragment(), CrewContract.CrewView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentCrewPagerBinding? = null
+    private var _binding: FragmentCrewBinding? = null
     private val binding get() = _binding!!
 
     private var presenter: CrewContract.CrewPresenter? = null
 
-    private lateinit var crewPagerAdapter: CrewPagerAdapter
+    private lateinit var crewAdapter: CrewAdapter
     private lateinit var crewArray: ArrayList<CrewModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
@@ -51,7 +48,7 @@ class CrewPagerFragment : Fragment(), CrewContract.CrewView,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentCrewPagerBinding.inflate(inflater, container, false)
+        _binding = FragmentCrewBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -63,10 +60,12 @@ class CrewPagerFragment : Fragment(), CrewContract.CrewView,
 
         presenter = CrewPresenterImpl(this, CrewInteractorImpl())
 
-        crewPagerAdapter = CrewPagerAdapter(context, crewArray)
+        crewAdapter = CrewAdapter(crewArray)
 
-        binding.crewPager.apply {
-            adapter = crewPagerAdapter
+        binding.crewRecycler.apply {
+            layoutManager = GridLayoutManager(this@CrewFragment.context, 2)
+            setHasFixedSize(true)
+            adapter = crewAdapter
         }
 
         binding.crewSwipeRefresh.setOnRefreshListener {
@@ -97,33 +96,11 @@ class CrewPagerFragment : Fragment(), CrewContract.CrewView,
         _binding = null
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_crew_list, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.list -> {
-            findNavController().navigate(
-                R.id.action_crew_page_fragment_to_crew_grid_fragment,
-                bundleOf("crew" to crewArray),
-                null,
-                FragmentNavigatorExtras(
-                    binding.crewPager.findViewWithTag<MaterialCardView>(
-                        crewArray[binding.crewPager.currentItem].id
-                    ) to crewArray[binding.crewPager.currentItem].id
-                )
-            )
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
-    }
-
     override fun updateCrew(crew: List<CrewModel>) {
         crewArray.clear()
         crewArray.addAll(crew)
 
-        crewPagerAdapter.notifyDataSetChanged()
+        crewAdapter.notifyDataSetChanged()
     }
 
     override fun showProgress() {
