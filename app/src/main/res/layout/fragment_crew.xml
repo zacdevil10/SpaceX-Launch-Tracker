@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".vehicles.dragon.DragonFragment">
+    tools:context=".crew.CrewFragment">
 
     <ProgressBar
-        android:id="@+id/dragon_progress_bar"
+        android:id="@+id/crew_progress_bar"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -18,17 +18,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/dragon_swipe_refresh"
+        android:id="@+id/crew_swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/dragon_recycler"
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/crew_pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingTop="8dp"
-            tools:listitem="@layout/list_item_vehicle" />
+            android:layout_height="match_parent" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

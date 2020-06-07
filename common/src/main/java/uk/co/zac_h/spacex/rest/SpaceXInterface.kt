@@ -37,6 +37,9 @@ interface SpaceXInterface {
     @GET("cores/{serial}")
     fun getSingleCore(@Path("serial") serial: String): Call<CoreModel>
 
+    @GET("crew")
+    fun getCrew(): Call<List<CrewModel>>
+
     @GET("launchpads")
     fun getLaunchpads(): Call<List<LaunchpadModel>>
 

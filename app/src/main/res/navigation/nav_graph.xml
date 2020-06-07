@@ -37,6 +37,15 @@
     </fragment>
 
     <fragment
+        android:id="@+id/crew_page_fragment"
+        android:name="uk.co.zac_h.spacex.crew.CrewFragment"
+        android:label="@string/menu_crew"
+        app:enterAnim="@android:anim/fade_in"
+        tools:layout="@layout/fragment_crew">
+
+    </fragment>
+
+    <fragment
         android:id="@+id/vehicles_page_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.VehiclesFragment"
         android:label="@string/menu_vehicles"
