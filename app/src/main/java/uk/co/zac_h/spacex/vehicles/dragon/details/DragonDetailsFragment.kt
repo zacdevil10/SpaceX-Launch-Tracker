@@ -75,13 +75,13 @@ class DragonDetailsFragment : Fragment() {
             )
             binding.dragonDetailsHeightText.text = context?.getString(
                 R.string.measurements,
-                it.heightWithTrunk.meters.metricFormat(),
-                it.heightWithTrunk.feet.metricFormat()
+                it.heightWithTrunk.meters?.metricFormat(),
+                it.heightWithTrunk.feet?.metricFormat()
             )
             binding.dragonDetailsDiameterText.text = context?.getString(
                 R.string.measurements,
-                it.diameter.meters.metricFormat(),
-                it.diameter.feet.metricFormat()
+                it.diameter.meters?.metricFormat(),
+                it.diameter.feet?.metricFormat()
             )
 
             binding.dragonDetailsShieldMaterialText.text = it.heatShield.material
@@ -98,14 +98,14 @@ class DragonDetailsFragment : Fragment() {
 
             binding.dragonDetailsLaunchMassText.text = context?.getString(
                 R.string.mass_formatted,
-                it.launchPayloadMass.kg.metricFormat(),
-                it.launchPayloadMass.lb.metricFormat()
+                it.launchPayloadMass.kg?.metricFormat(),
+                it.launchPayloadMass.lb?.metricFormat()
             )
 
             binding.dragonDetailsReturnMassText.text = context?.getString(
                 R.string.mass_formatted,
-                it.returnPayloadMass.kg.metricFormat(),
-                it.returnPayloadMass.lb.metricFormat()
+                it.returnPayloadMass.kg?.metricFormat(),
+                it.returnPayloadMass.lb?.metricFormat()
             )
 
             binding.dragonDetailsLaunchVolText.text = context?.getString(

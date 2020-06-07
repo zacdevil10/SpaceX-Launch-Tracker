@@ -5,7 +5,7 @@ import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class MassModel(
-    @field:Json(name = "kg") var kg: Int?,
-    @field:Json(name = "lb") var lb: Int?
+data class LandingLegsModel(
+    @field:Json(name = "number") val quantity: Int?,
+    @field:Json(name = "material") val material: String?
 ) : Parcelable

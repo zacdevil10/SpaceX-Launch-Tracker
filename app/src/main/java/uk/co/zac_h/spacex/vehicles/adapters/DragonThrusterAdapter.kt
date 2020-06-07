@@ -37,8 +37,8 @@ class DragonThrusterAdapter(
             fuel2.text = thruster.fuelType2.capitalize(Locale.ENGLISH)
             thrust.text = context?.getString(
                 R.string.thrust,
-                thruster.thrust.kN.metricFormat(),
-                thruster.thrust.lbf.metricFormat()
+                thruster.thrust.kN?.metricFormat(),
+                thruster.thrust.lbf?.metricFormat()
             )
         }
     }

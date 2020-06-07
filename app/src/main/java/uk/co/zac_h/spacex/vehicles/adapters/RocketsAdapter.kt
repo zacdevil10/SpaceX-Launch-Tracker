@@ -30,16 +30,16 @@ class RocketsAdapter(private val rockets: List<RocketsModel>) :
         val rocket = rockets[position]
 
         holder.apply {
-            itemView.transitionName = rocket.rocketId
+            itemView.transitionName = rocket.id
 
-            when (rocket.rocketId) {
-                "falcon1" -> image.setImageResource(R.drawable.falcon1)
-                "falcon9" -> image.setImageResource(R.drawable.falcon9)
-                "falconheavy" -> image.setImageResource(R.drawable.falconheavy)
-                "starship" -> image.setImageResource(R.drawable.starship)
+            when (rocket.id) {
+                "5e9d0d95eda69955f709d1eb" -> image.setImageResource(R.drawable.falcon1)
+                "5e9d0d95eda69973a809d1ec" -> image.setImageResource(R.drawable.falcon9)
+                "5e9d0d95eda69974db09d1ed" -> image.setImageResource(R.drawable.falconheavy)
+                "5e9d0d96eda699382d09d1ee" -> image.setImageResource(R.drawable.starship)
             }
 
-            title.text = rocket.rocketName
+            title.text = rocket.name
             details.text = rocket.description
 
             card.setOnClickListener { bind(rocket) }
@@ -59,9 +59,9 @@ class RocketsAdapter(private val rockets: List<RocketsModel>) :
         fun bind(rocket: RocketsModel) {
             itemView.findNavController().navigate(
                 R.id.action_vehicles_page_fragment_to_rocket_details_fragment,
-                bundleOf("rocket" to rocket, "title" to rocket.rocketName),
+                bundleOf("rocket" to rocket, "title" to rocket.name),
                 null,
-                FragmentNavigatorExtras(itemView to rocket.rocketId)
+                FragmentNavigatorExtras(itemView to rocket.id)
             )
         }
     }
