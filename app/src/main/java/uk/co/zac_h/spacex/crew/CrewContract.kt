@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.crew
 
+import uk.co.zac_h.spacex.model.spacex.CrewDocsModel
 import uk.co.zac_h.spacex.model.spacex.CrewModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
@@ -24,7 +25,7 @@ interface CrewContract {
     }
 
     interface InteractorCallback {
-        fun onSuccess(crew: List<CrewModel>?)
+        fun onSuccess(crew: CrewDocsModel?)
         fun onError(error: String)
     }
 

@@ -32,9 +32,7 @@ class CrewAdapter(private val crew: List<CrewModel>) :
         holder.apply {
             itemView.transitionName = person.id
 
-            Glide.with(itemView)
-                .load(person.image)
-                .into(image)
+            Glide.with(itemView).load(person.image).into(image)
 
             title.text = person.name
 

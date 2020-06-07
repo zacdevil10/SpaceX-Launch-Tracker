@@ -8,6 +8,8 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
@@ -19,14 +21,16 @@ class CrewPagerAdapter(private val context: Context?, private val crew: List<Cre
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view = LayoutInflater.from(context).inflate(R.layout.list_item_crew, container, false)
 
-        var expanded = false
+        var expanded = true
 
         val person = crew[position]
 
         val constraintLayout: ConstraintLayout = view.findViewById(R.id.list_item_crew_constraint)
         val imageView: ImageView = view.findViewById(R.id.list_item_crew_image)
         val name: TextView = view.findViewById(R.id.list_item_crew_title)
-        val placeholder: TextView = view.findViewById(R.id.list_item_crew_placeholder)
+        val placeholder: ConstraintLayout = view.findViewById(R.id.list_item_crew_placeholder)
+        val launchRecycler: RecyclerView = view.findViewById(R.id.list_item_crew_recycler)
+        val status: TextView = view.findViewById(R.id.list_item_crew_status)
 
         constraintLayout.tag = person.id
 
@@ -35,6 +39,12 @@ class CrewPagerAdapter(private val context: Context?, private val crew: List<Cre
         Glide.with(view).load(person.image).into(imageView)
 
         name.text = person.name
+        status.text = person.status
+
+        launchRecycler.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = CrewLaunchAdapter(context, person.launches)
+        }
 
         constraintLayout.setOnClickListener {
             if (expanded) {

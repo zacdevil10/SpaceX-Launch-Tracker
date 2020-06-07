@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.crew.adapters.CrewPagerAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewDetailsBinding
@@ -58,6 +59,16 @@ class CrewDetailsFragment : Fragment() {
             adapter = crewPagerAdapter
             currentItem = arguments?.getInt("position") ?: 0
             setPageTransformer(true, DepthPageTransformer())
+
+            addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageScrollStateChanged(state: Int) {}
+
+                override fun onPageScrolled(p: Int, pOffset: Float, pOffsetPixels: Int) {}
+
+                override fun onPageSelected(position: Int) {
+                    activity?.title = crewArray[position].name
+                }
+            })
         }
     }
 

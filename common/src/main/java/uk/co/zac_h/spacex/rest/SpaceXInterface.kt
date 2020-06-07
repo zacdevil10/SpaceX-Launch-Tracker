@@ -3,9 +3,7 @@ package uk.co.zac_h.spacex.rest
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 import uk.co.zac_h.spacex.model.spacex.*
 
 interface SpaceXInterface {
@@ -37,8 +35,8 @@ interface SpaceXInterface {
     @GET("cores/{serial}")
     fun getSingleCore(@Path("serial") serial: String): Call<CoreModel>
 
-    @GET("crew")
-    fun getCrew(): Call<List<CrewModel>>
+    @POST("crew/query")
+    fun getCrew(@Body body: QueryModel): Call<CrewDocsModel>
 
     @GET("launchpads")
     fun getLaunchpads(): Call<List<LaunchpadModel>>
