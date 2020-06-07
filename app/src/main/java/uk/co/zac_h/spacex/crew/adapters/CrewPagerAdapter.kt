@@ -28,6 +28,8 @@ class CrewPagerAdapter(private val context: Context?, private val crew: List<Cre
         val name: TextView = view.findViewById(R.id.list_item_crew_title)
         val placeholder: TextView = view.findViewById(R.id.list_item_crew_placeholder)
 
+        card.tag = person.id
+
         card.transitionName = person.id
 
         Glide.with(view).load(person.image).into(imageView)

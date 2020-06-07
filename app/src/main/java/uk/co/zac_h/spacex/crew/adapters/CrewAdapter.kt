@@ -41,6 +41,10 @@ class CrewAdapter(private val crew: List<CrewModel>) :
 
     override fun getItemCount(): Int = crew.size
 
+    fun getItemAtPosition(position: Int) {
+
+    }
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val card: CardView = itemView.findViewById(R.id.list_item_crew_card)
         val image: ImageView = itemView.findViewById(R.id.list_item_crew_image)

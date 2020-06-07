@@ -1,22 +1,26 @@
 package uk.co.zac_h.spacex.crew
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.card.MaterialCardView
+import com.google.android.material.transition.MaterialContainerTransform
+import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.crew.adapters.CrewPagerAdapter
-import uk.co.zac_h.spacex.databinding.FragmentCrewBinding
+import uk.co.zac_h.spacex.databinding.FragmentCrewPagerBinding
 import uk.co.zac_h.spacex.model.spacex.CrewModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class CrewFragment : Fragment(), CrewContract.CrewView,
+class CrewPagerFragment : Fragment(), CrewContract.CrewView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentCrewBinding? = null
+    private var _binding: FragmentCrewPagerBinding? = null
     private val binding get() = _binding!!
 
     private var presenter: CrewContract.CrewPresenter? = null
@@ -26,15 +30,28 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
 
-        crewArray = savedInstanceState?.getParcelableArrayList("crew") ?: ArrayList()
+        sharedElementEnterTransition = MaterialContainerTransform()
+
+        crewArray = when {
+            savedInstanceState != null -> {
+                savedInstanceState.getParcelableArrayList("crew") ?: ArrayList()
+            }
+            arguments != null -> {
+                requireArguments().getParcelableArrayList<CrewModel>("crew") as ArrayList<CrewModel>
+            }
+            else -> {
+                ArrayList()
+            }
+        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentCrewBinding.inflate(inflater, container, false)
+        _binding = FragmentCrewPagerBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -47,12 +64,6 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
         presenter = CrewPresenterImpl(this, CrewInteractorImpl())
 
         crewPagerAdapter = CrewPagerAdapter(context, crewArray)
-
-        /*binding.crewRecycler.apply {
-            layoutManager = LinearLayoutManager(this@CrewFragment.context, LinearLayoutManager.HORIZONTAL, false)
-            setHasFixedSize(true)
-            adapter = crewAdapter
-        }*/
 
         binding.crewPager.apply {
             adapter = crewPagerAdapter
@@ -84,6 +95,28 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
         super.onDestroyView()
         presenter?.cancelRequest()
         _binding = null
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_crew_list, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.list -> {
+            findNavController().navigate(
+                R.id.action_crew_page_fragment_to_crew_grid_fragment,
+                bundleOf("crew" to crewArray),
+                null,
+                FragmentNavigatorExtras(
+                    binding.crewPager.findViewWithTag<MaterialCardView>(
+                        crewArray[binding.crewPager.currentItem].id
+                    ) to crewArray[binding.crewPager.currentItem].id
+                )
+            )
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun updateCrew(crew: List<CrewModel>) {
