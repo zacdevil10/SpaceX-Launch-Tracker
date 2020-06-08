@@ -8,13 +8,11 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.CoreMissionsAdapter
 import uk.co.zac_h.spacex.model.spacex.CoreModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.utils.setImageAndTint
 
 class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
@@ -86,26 +84,17 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
         coreModel.apply {
             core = coreModel
 
-            binding.coreDetailsScrollview.transitionName = serial
+            binding.coreDetailsScrollview.transitionName = id
 
             binding.coreDetailsSerialText.text = serial
             binding.coreDetailsBlockText.text = block ?: "TBD"
-            binding.coreDetailsDetailsText.text = details
+            binding.coreDetailsDetailsText.text = lastUpdate
             binding.coreDetailsStatusText.text = status
             binding.coreDetailsReuseText.text = reuseCount.toString()
             binding.coreDetailsRtlsAttemptsText.text = attemptsRtls.toString()
             binding.coreDetailsRtlsLandingsText.text = landingsRtls.toString()
             binding.coreDetailsAsdsAttemptsText.text = attemptsAsds.toString()
             binding.coreDetailsAsdsLandingsText.text = landingsAsds.toString()
-            binding.coreDetailsWaterLandingImage.apply {
-                landingWater?.let { waterLanding ->
-                    if (waterLanding) setImageAndTint(
-                        R.drawable.ic_check_circle_black_24dp,
-                        R.color.success
-                    )
-                    else setImageAndTint(R.drawable.ic_remove_circle_black_24dp, R.color.failed)
-                } ?: setImageAndTint(R.drawable.ic_remove_circle_black_24dp, R.color.failed)
-            }
         }
 
         coreModel.missions?.let {

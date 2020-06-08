@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.vehicles.cores
 
-import uk.co.zac_h.spacex.model.spacex.CoreModel
+import uk.co.zac_h.spacex.model.spacex.CoreDocsModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class CorePresenterImpl(
@@ -17,11 +17,11 @@ class CorePresenterImpl(
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(cores: List<CoreModel>?) {
+    override fun onSuccess(cores: CoreDocsModel?) {
         view.apply {
             hideProgress()
             toggleSwipeRefresh(false)
-            cores?.let { updateCores(it) }
+            cores?.let { updateCores(it.docs) }
         }
     }
 

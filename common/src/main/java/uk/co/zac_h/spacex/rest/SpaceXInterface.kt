@@ -29,8 +29,8 @@ interface SpaceXInterface {
     @GET("capsules")
     fun getCapsules(): Call<List<CapsulesModel>>
 
-    @GET("cores")
-    fun getCores(): Call<List<CoreModel>>
+    @POST("cores/query")
+    fun getCores(@Body body: QueryModel): Call<CoreDocsModel>
 
     @GET("cores/{serial}")
     fun getSingleCore(@Path("serial") serial: String): Call<CoreModel>

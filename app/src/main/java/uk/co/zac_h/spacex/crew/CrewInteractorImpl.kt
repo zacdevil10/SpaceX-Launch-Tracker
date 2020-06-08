@@ -14,7 +14,7 @@ class CrewInteractorImpl : BaseNetwork(), CrewContract.CrewInteractor {
 
         populateList.add(QueryPopulateModel("launches", QueryCrewModel(1, 1)))
 
-        val query = QueryModel(QueryOptionsModel(populateList))
+        val query = QueryModel(QueryOptionsModel(false, populateList))
 
         call = api.getCrew(query).apply {
             makeCall {

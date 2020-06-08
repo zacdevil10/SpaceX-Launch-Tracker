@@ -5,6 +5,7 @@ data class QueryModel(
 )
 
 data class QueryOptionsModel(
+    private var pagination: Boolean,
     private var populate: List<QueryPopulateModel>
 )
 
@@ -14,6 +15,11 @@ data class QueryPopulateModel(
 )
 
 data class QueryCrewModel(
+    private var name: Int,
+    private var flight_number: Int
+)
+
+data class QueryCoreModel(
     private var name: Int,
     private var flight_number: Int
 )
