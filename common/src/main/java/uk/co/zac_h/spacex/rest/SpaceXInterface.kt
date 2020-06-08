@@ -26,8 +26,8 @@ interface SpaceXInterface {
     @GET("dragons")
     fun getDragons(): Call<List<DragonModel>>
 
-    @GET("capsules")
-    fun getCapsules(): Call<List<CapsulesModel>>
+    @POST("capsules/query")
+    fun getCapsules(@Body body: QueryModel): Call<CapsulesDocsModel>
 
     @POST("cores/query")
     fun getCores(@Body body: QueryModel): Call<CoreDocsModel>

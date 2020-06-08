@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.databinding.FragmentCapsuleDetailsBinding
 import uk.co.zac_h.spacex.model.spacex.CapsulesModel
-import uk.co.zac_h.spacex.utils.formatDateMillisShort
 import uk.co.zac_h.spacex.vehicles.adapters.CapsuleMissionsAdapter
 
 class CapsuleDetailsFragment : Fragment() {
@@ -41,20 +40,26 @@ class CapsuleDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         capsule?.let {
-            binding.capsuleDetailsScrollview.transitionName = it.serial
+            binding.capsuleDetailsScrollview.transitionName = it.id
 
-            binding.capsuleDetailsTypeText.text = it.type
-            binding.capsuleDetailsText.text = it.details
-            binding.capsuleDetailsStatusText.text = it.status.capitalize()
-            binding.capsuleDetailsDateText.text =
-                it.originalLaunchUnix?.formatDateMillisShort() ?: "TBD"
+            it.serial?.let { serial ->
+                binding.capsuleDetailsTypeText.text = when {
+                    serial.startsWith("C1") -> "Dragon 1.0"
+                    serial.startsWith("C2") -> "Dragon 2.0"
+                    else -> ""
+                }
+            }
+
+            binding.capsuleDetailsText.text = it.lastUpdate
+            binding.capsuleDetailsStatusText.text = it.status?.capitalize()
             binding.capsuleDetailsReuseText.text = it.reuseCount.toString()
-            binding.capsuleDetailsLandingText.text = it.landings.toString()
+            binding.capsuleDetailsLandingText.text =
+                ((it.landLandings ?: 0) + (it.waterLandings ?: 0)).toString()
 
-            if (it.missions.isNotEmpty()) binding.capsuleDetailsMissionsRecycler.apply {
+            if (it.launches.isNotEmpty()) binding.capsuleDetailsMissionsRecycler.apply {
                 layoutManager = LinearLayoutManager(this@CapsuleDetailsFragment.context)
                 setHasFixedSize(true)
-                adapter = CapsuleMissionsAdapter(context, it.missions)
+                adapter = CapsuleMissionsAdapter(context, it.launches)
             } else binding.capsuleDetailsNoMissionLabel.visibility = View.VISIBLE
         }
     }

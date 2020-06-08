@@ -23,3 +23,8 @@ data class QueryCoreModel(
     private var name: Int,
     private var flight_number: Int
 )
+
+data class QueryCapsulesModel(
+    private var name: Int,
+    private var flight_number: Int
+)
