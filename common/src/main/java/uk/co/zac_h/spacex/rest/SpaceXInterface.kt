@@ -47,7 +47,7 @@ interface SpaceXInterface {
     @GET("history")
     fun getHistory(@Query("order") order: String): Call<List<HistoryModel>>
 
-    @GET("info")
+    @GET("company")
     fun getCompanyInfo(): Call<CompanyModel>
 
     companion object RetrofitSetup {
