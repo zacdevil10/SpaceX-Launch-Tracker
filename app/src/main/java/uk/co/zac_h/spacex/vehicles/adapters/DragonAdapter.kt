@@ -33,8 +33,8 @@ class DragonAdapter(private val dragonList: List<DragonModel>) :
             itemView.transitionName = dragon.id
 
             when (dragon.id) {
-                "dragon1" -> image.setImageResource(R.drawable.dragon1)
-                "dragon2" -> image.setImageResource(R.drawable.dragon2)
+                "5e9d058759b1ff74a7ad5f8f" -> image.setImageResource(R.drawable.dragon1)
+                "5e9d058859b1ffd8e2ad5f90" -> image.setImageResource(R.drawable.dragon2)
             }
 
             title.text = dragon.name
