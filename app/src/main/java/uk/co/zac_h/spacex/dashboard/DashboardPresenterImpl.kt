@@ -90,7 +90,8 @@ class DashboardPresenterImpl(
                     launchModel.let { launch ->
                         launch.tbd?.let {
                             val time =
-                                launch.launchDateUnix.times(1000) - System.currentTimeMillis()
+                                (launch.launchDateUnix?.times(1000)
+                                    ?: 0) - System.currentTimeMillis()
                             if (!it && time >= 0) {
                                 view.apply {
                                     setCountdown(time)

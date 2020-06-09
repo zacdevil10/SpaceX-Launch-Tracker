@@ -69,7 +69,7 @@ class DashboardPinnedAdapter(
                 )*/
 
                 missionName.text = it.missionName
-                date.text = it.launchDateUnix.formatDateMillisLong(it.tbd)
+                date.text = it.launchDateUnix?.formatDateMillisLong(it.tbd ?: true)
 
                 launchesCard.setOnClickListener { _ ->
                     itemView.findNavController().navigate(

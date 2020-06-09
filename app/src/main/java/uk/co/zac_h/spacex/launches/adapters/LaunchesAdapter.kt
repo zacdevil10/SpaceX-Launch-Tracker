@@ -89,7 +89,7 @@ class LaunchesAdapter(
             )*/
 
             missionName.text = launch.missionName
-            date.text = launch.launchDateUnix.formatDateMillisLong(launch.tbd?.let { it } ?: false)
+            date.text = launch.launchDateUnix?.formatDateMillisLong(launch.tbd?.let { it } ?: false)
 
             itemView.setOnClickListener {
                 itemView.findNavController()
@@ -115,11 +115,13 @@ class LaunchesAdapter(
                         else -> {
                             val filteredList = ArrayList<LaunchesModel>()
                             launches.forEach { launch ->
-                                if (launch.missionName.toLowerCase(Locale.getDefault()).contains(
-                                        it.toString().toLowerCase(
-                                            Locale.getDefault()
-                                        )
-                                    ) || launch.launchDateUnix.formatDateMillisYYYY().toString().contains(
+                                if (launch.missionName?.toLowerCase(Locale.getDefault()).toString()
+                                        .contains(
+                                            it.toString().toLowerCase(
+                                                Locale.getDefault()
+                                            )
+                                        ) || launch.launchDateUnix?.formatDateMillisYYYY()
+                                        .toString().contains(
                                         it
                                     ) || launch.flightNumber.toString().contains(
                                         it

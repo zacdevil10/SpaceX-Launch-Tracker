@@ -227,7 +227,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         binding.dashboardNextLayout.dashboardNextMissionNameText.text = nextLaunch.missionName
         binding.dashboardNextLayout.dashboardNextDateText.text =
-            nextLaunch.launchDateUnix.formatDateMillisLong(nextLaunch.tbd)
+            nextLaunch.launchDateUnix?.formatDateMillisLong(nextLaunch.tbd ?: true)
 
         binding.dashboardNextLayout.dashboardNextCardView.setOnClickListener {
             findNavController().navigate(
@@ -275,7 +275,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         binding.dashboardLatestLayout.dashboardLatestMissionNameText.text = latestLaunch.missionName
 
         binding.dashboardLatestLayout.dashboardLatestDateText.text =
-            latestLaunch.launchDateUnix.formatDateMillisLong(latestLaunch.tbd)
+            latestLaunch.launchDateUnix?.formatDateMillisLong(latestLaunch.tbd ?: true)
 
         binding.dashboardLatestLayout.dashboardLatestCardView.setOnClickListener {
             findNavController().navigate(

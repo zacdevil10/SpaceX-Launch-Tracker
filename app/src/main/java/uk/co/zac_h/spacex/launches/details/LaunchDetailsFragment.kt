@@ -209,7 +209,8 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 launchDetailsContainer.transitionName = it.flightNumber.toString()
 
                 it.tbd?.let { tbd ->
-                    val time = launch.launchDateUnix.times(1000) - System.currentTimeMillis()
+                    val time =
+                        (launch.launchDateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
                     if (!tbd && time >= 0) {
                         setCountdown(time)
                         showCountdown()
@@ -252,8 +253,8 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 //launchDetailsSiteNameText.text = launch.launchSite.name
 
                 launchDetailsDateText.text = launch.tbd?.let { tbd ->
-                    launch.launchDateUnix.formatDateMillisLong(tbd)
-                } ?: launch.launchDateUnix.formatDateMillisLong()
+                    launch.launchDateUnix?.formatDateMillisLong(tbd)
+                } ?: launch.launchDateUnix?.formatDateMillisLong()
 
                 launch.staticFireDateUnix?.let { date ->
                     launchDetailsStaticFireDateLabel.visibility = View.VISIBLE
@@ -338,11 +339,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 data = CalendarContract.Events.CONTENT_URI
                 putExtra(
                     CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                    it.launchDateUnix.times(1000L)
+                    it.launchDateUnix?.times(1000L)
                 )
                 putExtra(
                     CalendarContract.EXTRA_EVENT_END_TIME,
-                    it.launchDateUnix.times(1000L).plus(3600000)
+                    it.launchDateUnix?.times(1000L)?.plus(3600000)
                 )
                 putExtra(
                     CalendarContract.Events.TITLE,

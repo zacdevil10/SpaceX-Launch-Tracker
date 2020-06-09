@@ -16,4 +16,16 @@ data class LaunchCoreModel(
     @field:Json(name = "landing_intent") var landingIntent: Boolean?,
     @field:Json(name = "landing_type") var landingType: String?,
     @field:Json(name = "landing_vehicle") var landingVehicle: String?
+
+    /* v4
+    @field:Json(name = "core") var id: String,
+    @field:Json(name = "flight") var flight: Int?,
+    @field:Json(name = "gridfins") var gridfins: Boolean?,
+    @field:Json(name = "legs") var legs: Boolean?,
+    @field:Json(name = "reused") var reused: Boolean?,
+    @field:Json(name = "landing_attempt") var landingAttempt: Boolean?,
+    @field:Json(name = "land_success") var landingSuccess: Boolean?,
+    @field:Json(name = "landing_type") var landingType: String?,
+    @field:Json(name = "landpad") var landingPad: String?*/
+
 ) : Parcelable

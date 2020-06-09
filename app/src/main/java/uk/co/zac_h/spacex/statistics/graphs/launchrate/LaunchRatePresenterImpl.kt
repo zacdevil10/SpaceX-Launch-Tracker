@@ -29,7 +29,7 @@ class LaunchRatePresenterImpl(
 
             var year = 2005
             launches.forEach {
-                val newYear = it.launchDateUnix.formatDateMillisYYYY()
+                val newYear = it.launchDateUnix?.formatDateMillisYYYY() ?: year
                 if (newYear > year) {
                     if (newYear != year++) {
                         for (y in year until newYear) rateStatsList.add(RateStatsModel(y))
@@ -37,10 +37,10 @@ class LaunchRatePresenterImpl(
                     rateStatsList.add(RateStatsModel(newYear))
                     year = newYear
                 }
-                if (!it.upcoming) {
+                /*if (!it.upcoming) {
                     it.success?.let { success ->
                         if (success) {
-                            /*when (it.rocket.id) {
+                            *//*when (it.rocket.id) {
                                 "falcon1" -> {
                                     rateStatsList[rateStatsList.lastIndex].falconOne++
                                 }
@@ -53,14 +53,14 @@ class LaunchRatePresenterImpl(
                                 else -> {
                                     return@forEach
                                 }
-                            }*/
+                            }*//*
                         } else {
                             rateStatsList[rateStatsList.lastIndex].failure++
                         }
                     }
                 } else {
                     rateStatsList[rateStatsList.lastIndex].planned++
-                }
+                }*/
             }
 
             view.apply {
