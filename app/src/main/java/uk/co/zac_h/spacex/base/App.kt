@@ -2,6 +2,7 @@ package uk.co.zac_h.spacex.base
 
 import android.app.Application
 import android.content.Context
+import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.utils.DashboardPreferencesRepository
 import uk.co.zac_h.spacex.utils.PinnedPreferencesRepository
 import uk.co.zac_h.spacex.utils.ThemePreferenceRepository
@@ -13,6 +14,16 @@ class App : Application() {
     lateinit var dashboardPreferencesRepo: DashboardPreferencesRepository
     lateinit var pinnedPreferencesRepo: PinnedPreferencesRepository
     lateinit var networkStateChangeListener: OnNetworkStateChangeListener
+
+    val startDestinations = mutableSetOf(
+        R.id.dashboard_page_fragment,
+        R.id.news_page_fragment,
+        R.id.launches_page_fragment,
+        R.id.crew_page_fragment,
+        R.id.vehicles_page_fragment,
+        R.id.statistics_page_fragment,
+        R.id.crew_detail_page_fragment
+    )
 
     override fun onCreate() {
         super.onCreate()

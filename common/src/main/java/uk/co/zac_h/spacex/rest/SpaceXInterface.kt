@@ -8,26 +8,11 @@ import uk.co.zac_h.spacex.model.spacex.*
 
 interface SpaceXInterface {
 
-    @GET("launches/{id}")
-    fun getSingleLaunch(@Path("id") id: String): Call<LaunchesModel>
-
-    @GET("launches/{launches}")
-    fun getLaunches(
-        @Path("launches") launches: String,
-        @Query("order") order: String
-    ): Call<List<LaunchesModel>>
-
-    @GET("launches")
-    fun getLaunches(): Call<List<LaunchesModel>>
-
-    @GET("rockets")
-    fun getRockets(): Call<List<RocketsModel>>
-
-    @GET("dragons")
-    fun getDragons(): Call<List<DragonModel>>
-
     @POST("capsules/query")
     fun getCapsules(@Body body: QueryModel): Call<CapsulesDocsModel>
+
+    @GET("company")
+    fun getCompanyInfo(): Call<CompanyModel>
 
     @POST("cores/query")
     fun getCores(@Body body: QueryModel): Call<CoreDocsModel>
@@ -38,17 +23,32 @@ interface SpaceXInterface {
     @POST("crew/query")
     fun getCrew(@Body body: QueryModel): Call<CrewDocsModel>
 
-    @GET("launchpads")
-    fun getLaunchpads(): Call<List<LaunchpadModel>>
+    @GET("dragons")
+    fun getDragons(): Call<List<DragonModel>>
 
     @GET("landpads")
     fun getLandingPads(): Call<List<LandingPadModel>>
 
+    @GET("launches/{id}")
+    fun getSingleLaunch(@Path("id") id: String): Call<LaunchesModel>
+
+    @GET("launches/{launches}")
+    fun getLaunches(
+        @Path("launches") launches: String,
+        @Query("order") order: String
+    ): Call<List<LaunchesModel>>
+
+    @POST("launches/query")
+    fun getLaunches(@Body body: QueryModel): Call<List<LaunchesModel>>
+
+    @GET("launchpads")
+    fun getLaunchpads(): Call<List<LaunchpadModel>>
+
+    @GET("rockets")
+    fun getRockets(): Call<List<RocketsModel>>
+
     @GET("history")
     fun getHistory(@Query("order") order: String): Call<List<HistoryModel>>
-
-    @GET("company")
-    fun getCompanyInfo(): Call<CompanyModel>
 
     companion object RetrofitSetup {
         fun create(): SpaceXInterface = Retrofit.Builder().apply {

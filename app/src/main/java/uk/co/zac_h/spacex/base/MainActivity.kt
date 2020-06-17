@@ -2,7 +2,6 @@ package uk.co.zac_h.spacex.base
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
@@ -25,7 +24,8 @@ class MainActivity : AppCompatActivity(),
         R.id.launches_page_fragment,
         R.id.crew_page_fragment,
         R.id.vehicles_page_fragment,
-        R.id.statistics_page_fragment
+        R.id.statistics_page_fragment,
+        R.id.crew_detail_page_fragment
     )
 
     private var snackbar: Snackbar? = null
@@ -34,8 +34,6 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        setSupportActionBar(binding.toolbar)
 
         (application as App).networkStateChangeListener.apply {
             addListener(this@MainActivity)
@@ -58,7 +56,7 @@ class MainActivity : AppCompatActivity(),
         val appBarConfig =
             AppBarConfiguration.Builder(startDestinations).setDrawerLayout(drawerLayout).build()
 
-        findViewById<Toolbar>(R.id.toolbar).setupWithNavController(navController, appBarConfig)
+        //findViewById<Toolbar>(R.id.toolbar).setupWithNavController(navController, appBarConfig)
         findViewById<NavigationView>(R.id.nav_view).setupWithNavController(navController)
 
         (application as App).preferencesRepo.themeModeLive.observe(this, Observer { mode ->

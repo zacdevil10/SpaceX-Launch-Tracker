@@ -35,7 +35,7 @@ class PadStatsPresenterImpl(
         launchpads?.forEach {
             padList.add(
                 StatsPadModel(
-                    it.nameLong,
+                    it.fullName,
                     it.launchAttempts,
                     it.launchSuccesses,
                     it.status
@@ -62,7 +62,7 @@ class PadStatsPresenterImpl(
         landingPads?.forEach {
             padList.add(
                 StatsPadModel(
-                    it.nameFull,
+                    it.fullName,
                     it.landingAttempts,
                     it.landingSuccesses,
                     it.status,

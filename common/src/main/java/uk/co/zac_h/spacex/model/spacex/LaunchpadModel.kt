@@ -2,16 +2,20 @@ package uk.co.zac_h.spacex.model.spacex
 
 import com.squareup.moshi.Json
 
+// v4
 data class LaunchpadModel(
-    @field:Json(name = "id") var id: Int,
-    @field:Json(name = "status") var status: String,
-    @field:Json(name = "location") var location: SiteLocationModel,
-    @field:Json(name = "vehicles_launched") var vehicles: List<String>,
-    @field:Json(name = "attempted_launches") var launchAttempts: Int,
-    @field:Json(name = "successful_launches") var launchSuccesses: Int,
-    @field:Json(name = "wikipedia") var wikiLink: String,
-    @field:Json(name = "details") var details: String,
-    @field:Json(name = "site_id") var siteId: String,
-    @field:Json(name = "site_name_long") var nameLong: String
+    @field:Json(name = "name") val name: String?,
+    @field:Json(name = "full_name") val fullName: String?,
+    @field:Json(name = "status") val status: String,
+    @field:Json(name = "locality") val locality: String?,
+    @field:Json(name = "region") val region: String?,
+    @field:Json(name = "timezone") val timezone: String?,
+    @field:Json(name = "latitude") val lat: Float?,
+    @field:Json(name = "longitude") val lng: Float?,
+    @field:Json(name = "launch_attempts") val launchAttempts: Int,
+    @field:Json(name = "launch_successes") val launchSuccesses: Int,
+    @field:Json(name = "rockets") val rockets: List<String>,
+    @field:Json(name = "launches") val launches: List<String>,
+    @field:Json(name = "id") var id: String
 )
 

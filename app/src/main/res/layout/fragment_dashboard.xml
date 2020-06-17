@@ -1,100 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/dashboard_swipe_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".dashboard.DashboardFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        app:elevation="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <ProgressBar
-            android:id="@+id/dashboard_progress_bar"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            style="?toolbarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize" />
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/dashboard_scroll_view"
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/dashboard_swipe_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/app_bar"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <ProgressBar
+                android:id="@+id/dashboard_progress_bar"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:animateLayoutChanges="true"
-                android:orientation="vertical">
+                android:indeterminate="true"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/dashboard_countdown_text"
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/dashboard_scroll_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:letterSpacing="0.1"
-                    android:textAlignment="center"
-                    android:textAppearance="?textAppearanceHeadline4"
-                    android:visibility="gone"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="43:13:23:55" />
-
-                <include
-                    android:id="@+id/dashboard_next_layout"
-                    layout="@layout/list_item_next_launch" />
-
-                <include
-                    android:id="@+id/dashboard_latest_layout"
-                    layout="@layout/list_item_latest_launch" />
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/dashboard_pinned_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:animateLayoutChanges="true"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/dashboard_pinned_heading_text"
+                        android:id="@+id/dashboard_countdown_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:text="@string/pinned_launches"
-                        android:textColor="@color/color_secondary"
-                        android:textSize="@dimen/heading"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/dashboard_pinned_launches_recycler"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:overScrollMode="never"
-                        app:layout_constraintTop_toBottomOf="@id/dashboard_pinned_heading_text"
-                        tools:itemCount="2"
-                        tools:listitem="@layout/list_item_launches" />
-
-                    <TextView
-                        android:id="@+id/dashboard_pinned_message_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/no_pinned_launches_found_label"
+                        android:letterSpacing="0.1"
+                        android:textAlignment="center"
+                        android:textAppearance="?textAppearanceHeadline4"
                         android:visibility="gone"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/dashboard_pinned_launches_recycler" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="43:13:23:55" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    <include
+                        android:id="@+id/dashboard_next_layout"
+                        layout="@layout/list_item_next_launch" />
 
-            </LinearLayout>
+                    <include
+                        android:id="@+id/dashboard_latest_layout"
+                        layout="@layout/list_item_latest_launch" />
 
-        </androidx.core.widget.NestedScrollView>
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/dashboard_pinned_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                        <TextView
+                            android:id="@+id/dashboard_pinned_heading_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="16dp"
+                            android:text="@string/pinned_launches"
+                            android:textColor="@color/color_secondary"
+                            android:textSize="@dimen/heading"
+                            app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/dashboard_pinned_launches_recycler"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:overScrollMode="never"
+                            app:layout_constraintTop_toBottomOf="@id/dashboard_pinned_heading_text"
+                            tools:itemCount="2"
+                            tools:listitem="@layout/list_item_launches" />
+
+                        <TextView
+                            android:id="@+id/dashboard_pinned_message_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_pinned_launches_found_label"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="@id/dashboard_pinned_launches_recycler" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </LinearLayout>
+
+            </androidx.core.widget.NestedScrollView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

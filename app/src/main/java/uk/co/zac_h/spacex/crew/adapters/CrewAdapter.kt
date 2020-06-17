@@ -50,7 +50,7 @@ class CrewAdapter(private val crew: List<CrewModel>) :
         fun bind(person: CrewModel) {
             itemView.findNavController().navigate(
                 R.id.action_crew_fragment_to_crew_details_fragment,
-                bundleOf("title" to person.name, "crew" to crew, "position" to adapterPosition),
+                bundleOf("crew" to crew, "position" to adapterPosition),
                 null,
                 FragmentNavigatorExtras(itemView to person.id)
             )

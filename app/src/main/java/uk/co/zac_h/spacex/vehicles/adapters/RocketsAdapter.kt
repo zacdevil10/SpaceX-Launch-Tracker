@@ -59,7 +59,7 @@ class RocketsAdapter(private val rockets: List<RocketsModel>) :
         fun bind(rocket: RocketsModel) {
             itemView.findNavController().navigate(
                 R.id.action_vehicles_page_fragment_to_rocket_details_fragment,
-                bundleOf("rocket" to rocket, "title" to rocket.name),
+                bundleOf("rocket" to rocket),
                 null,
                 FragmentNavigatorExtras(itemView to rocket.id)
             )

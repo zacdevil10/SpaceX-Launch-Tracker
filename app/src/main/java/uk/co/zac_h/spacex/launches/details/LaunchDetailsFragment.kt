@@ -13,15 +13,19 @@ import android.view.animation.RotateAnimation
 import android.widget.Toast
 import android.widget.ToggleButton
 import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.*
 import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchLinksAdapter
+import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
@@ -55,11 +59,8 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        launch = if (savedInstanceState != null) {
-            savedInstanceState.getParcelable("launch")
-        } else {
-            arguments?.getParcelable("launch") as LaunchesModel?
-        }
+        launch = savedInstanceState?.getParcelable("launch")
+
         id = arguments?.getString("launch_id")
     }
 
@@ -74,6 +75,14 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val navController = NavHostFragment.findNavController(this)
+        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        val appBarConfig =
+            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
+                .setDrawerLayout(drawerLayout).build()
+
+        binding.toolbar.setupWithNavController(navController, appBarConfig)
 
         pinnedSharedPreferences = PinnedSharedPreferencesHelperImpl(
             context?.getSharedPreferences(
@@ -205,18 +214,18 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         launch?.let {
             this.launch = launch
 
+            binding.toolbar.title = launch.missionName
+
             binding.apply {
                 launchDetailsContainer.transitionName = it.flightNumber.toString()
 
-                it.tbd?.let { tbd ->
-                    val time =
-                        (launch.launchDateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
-                    if (!tbd && time >= 0) {
-                        setCountdown(time)
-                        showCountdown()
-                    } else {
-                        hideCountdown()
-                    }
+
+                val time = launch.launchDateUnix.times(1000) - System.currentTimeMillis()
+                if (!it.tbd && time >= 0) {
+                    setCountdown(time)
+                    showCountdown()
+                } else {
+                    hideCountdown()
                 }
 
                 if (id == null) id = launch.flightNumber.toString()
@@ -252,9 +261,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
                 //launchDetailsSiteNameText.text = launch.launchSite.name
 
-                launchDetailsDateText.text = launch.tbd?.let { tbd ->
-                    launch.launchDateUnix?.formatDateMillisLong(tbd)
-                } ?: launch.launchDateUnix?.formatDateMillisLong()
+                launchDetailsDateText.text = launch.launchDateUnix.formatDateMillisLong(launch.tbd)
 
                 launch.staticFireDateUnix?.let { date ->
                     launchDetailsStaticFireDateLabel.visibility = View.VISIBLE
@@ -285,7 +292,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                     launchDetailsFirstStageCollapseToggle.visibility = View.GONE
                 }*/
 
-                /*launchDetailsPayloadRecycler.apply {
+                launchDetailsPayloadRecycler.apply {
                     layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
                     setHasFixedSize(false)
                     addItemDecoration(
@@ -296,10 +303,10 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                     )
                     adapter = PayloadAdapter(
                         this@LaunchDetailsFragment.context,
-                        launch.rocket.secondStage?.payloads
+                        launch.payloads
                     )
                     (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
-                }*/
+                }
 
                 val links = ArrayList<LinksModel>()
 
@@ -339,11 +346,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 data = CalendarContract.Events.CONTENT_URI
                 putExtra(
                     CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                    it.launchDateUnix?.times(1000L)
+                    it.launchDateUnix.times(1000L)
                 )
                 putExtra(
                     CalendarContract.EXTRA_EVENT_END_TIME,
-                    it.launchDateUnix?.times(1000L)?.plus(3600000)
+                    it.launchDateUnix.times(1000L).plus(3600000)
                 )
                 putExtra(
                     CalendarContract.Events.TITLE,

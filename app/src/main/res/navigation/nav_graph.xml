@@ -8,7 +8,6 @@
     <fragment
         android:id="@+id/dashboard_page_fragment"
         android:name="uk.co.zac_h.spacex.dashboard.DashboardFragment"
-        android:label="@string/menu_home"
         tools:layout="@layout/fragment_dashboard">
         <action
             android:id="@+id/action_dashboard_page_fragment_to_launch_details_fragment"
@@ -28,7 +27,6 @@
     <fragment
         android:id="@+id/launches_page_fragment"
         android:name="uk.co.zac_h.spacex.launches.LaunchesFragment"
-        android:label="@string/menu_launches"
         tools:layout="@layout/fragment_launches">
         <action
             android:id="@+id/action_launches_page_fragment_to_launch_details_fragment"
@@ -51,13 +49,11 @@
     <fragment
         android:id="@+id/crew_detail_page_fragment"
         android:name="uk.co.zac_h.spacex.crew.details.CrewDetailsFragment"
-        android:label="{title}"
         tools:layout="@layout/fragment_crew_details" />
 
     <fragment
         android:id="@+id/vehicles_page_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.VehiclesFragment"
-        android:label="@string/menu_vehicles"
         app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_vehicles">
         <action
@@ -112,12 +108,7 @@
     <fragment
         android:id="@+id/launch_details_fragment"
         android:name="uk.co.zac_h.spacex.launches.details.LaunchDetailsFragment"
-        android:label="{title}"
         tools:layout="@layout/fragment_launch_details">
-        <argument
-            android:name="title"
-            android:defaultValue="Launch Details"
-            app:argType="string" />
         <action
             android:id="@+id/action_launch_details_fragment_to_core_details_fragment"
             app:destination="@id/core_details_fragment"
@@ -130,12 +121,7 @@
     <fragment
         android:id="@+id/core_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.cores.details.CoreDetailsFragment"
-        android:label="{title}"
         tools:layout="@layout/fragment_core_details">
-        <argument
-            android:name="title"
-            android:defaultValue="Core Details"
-            app:argType="string" />
         <action
             android:id="@+id/action_core_details_fragment_to_launch_details_fragment"
             app:destination="@id/launch_details_fragment"
@@ -148,34 +134,19 @@
     <fragment
         android:id="@+id/rocket_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.rockets.details.RocketDetailsFragment"
-        android:label="{title}"
         tools:layout="@layout/fragment_rocket_details">
-        <argument
-            android:name="title"
-            android:defaultValue="Rocket Details"
-            app:argType="string" />
     </fragment>
 
     <fragment
         android:id="@+id/dragon_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.dragon.details.DragonDetailsFragment"
-        android:label="{title}"
         tools:layout="@layout/fragment_dragon_details">
-        <argument
-            android:name="title"
-            android:defaultValue="Dragon Details"
-            app:argType="string" />
     </fragment>
 
     <fragment
         android:id="@+id/capsule_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.capsules.details.CapsuleDetailsFragment"
-        android:label="{title}"
         tools:layout="@layout/fragment_capsule_details">
-        <argument
-            android:name="title"
-            android:defaultValue="Capsule Details"
-            app:argType="string" />
         <action
             android:id="@+id/action_capsule_details_fragment_to_launch_details_fragment"
             app:destination="@id/launch_details_fragment"

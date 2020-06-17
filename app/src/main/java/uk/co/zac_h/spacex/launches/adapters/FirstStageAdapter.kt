@@ -28,7 +28,8 @@ class FirstStageAdapter(private val cores: List<LaunchCoreModel>) :
         val core = cores[position]
 
         holder.apply {
-            coreSerial.text = core.serial
+            //TODO: Get core serial
+            coreSerial.text = core.id
 
             reusedImage.apply {
                 core.reused?.let { reused ->
@@ -51,7 +52,7 @@ class FirstStageAdapter(private val cores: List<LaunchCoreModel>) :
             }
 
             landingImage.apply {
-                core.landingIntent?.let { landingIntent ->
+                core.landingAttempt?.let { landingIntent ->
                     if (landingIntent) {
                         when (core.landingType) {
                             "ASDS" -> setImageAndTint(R.drawable.ic_waves, R.color.ocean)
@@ -83,7 +84,7 @@ class FirstStageAdapter(private val cores: List<LaunchCoreModel>) :
             itemView.findNavController()
                 .navigate(
                     R.id.action_launch_details_fragment_to_core_details_fragment,
-                    bundleOf("core_id" to core.serial, "title" to core.serial)
+                    bundleOf("core_id" to core.id, "title" to core.id) //TODO: Get core serial
                 )
         }
     }

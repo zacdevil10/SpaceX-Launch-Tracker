@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 
+// v3
 @Parcelize
 data class HistoryModel(
     @field:Json(name = "id") val id: Int,

@@ -4,10 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentRocketDetailsBinding
 import uk.co.zac_h.spacex.model.spacex.RocketsModel
 import uk.co.zac_h.spacex.utils.metricFormat
@@ -41,10 +46,25 @@ class RocketDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val navController = NavHostFragment.findNavController(this)
+        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        val appBarConfig =
+            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
+                .setDrawerLayout(drawerLayout).build()
+
+        NavigationUI.setupWithNavController(
+            binding.toolbarLayout,
+            binding.toolbar,
+            navController,
+            appBarConfig
+        )
+
         rocket?.let {
             binding.rocketDetailsCoordinator.transitionName = it.id
 
-            binding.rocketDetailsAppbarImage.setImageResource(
+            binding.toolbar.title = it.name
+
+            binding.header.setImageResource(
                 when (it.id) {
                     "5e9d0d95eda69955f709d1eb" -> R.drawable.falcon1
                     "5e9d0d95eda69973a809d1ec" -> R.drawable.falcon9
@@ -54,7 +74,6 @@ class RocketDetailsFragment : Fragment() {
                 }
             )
 
-            binding.rocketDetailsNameText.text = it.name
             binding.rocketDetailsText.text = it.description
 
             when (it.isActive) {
