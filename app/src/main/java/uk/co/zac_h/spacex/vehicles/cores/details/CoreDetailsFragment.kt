@@ -101,7 +101,7 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
             binding.coreDetailsMissionRecycler.apply {
                 layoutManager = LinearLayoutManager(this@CoreDetailsFragment.context)
                 setHasFixedSize(true)
-                adapter = CoreMissionsAdapter(context, it)
+                adapter = it?.let { missions -> CoreMissionsAdapter(context, missions) }
             }
         }
     }

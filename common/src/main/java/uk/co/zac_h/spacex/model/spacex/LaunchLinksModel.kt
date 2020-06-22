@@ -7,9 +7,9 @@ import kotlinx.android.parcel.Parcelize
 // v4
 @Parcelize
 data class LaunchLinksModel(
-    @field:Json(name = "patch") val missionPatch: MissionPatchModel,
-    @field:Json(name = "reddit") val redditLinks: MissionRedditLinksModel,
-    @field:Json(name = "flickr") val flickr: MissionFlickrModel,
+    @field:Json(name = "patch") val missionPatch: MissionPatchModel?,
+    @field:Json(name = "reddit") val redditLinks: MissionRedditLinksModel?,
+    @field:Json(name = "flickr") val flickr: MissionFlickrModel?,
     @field:Json(name = "presskit") val presskit: String?,
     @field:Json(name = "webcast") val webcast: String?,
     @field:Json(name = "youtube_id") val youtubeId: String?,
@@ -33,6 +33,6 @@ data class MissionRedditLinksModel(
 
 @Parcelize
 data class MissionFlickrModel(
-    @field:Json(name = "small") val small: List<String>,
-    @field:Json(name = "original") val original: List<String>
+    @field:Json(name = "small") val small: List<String>?,
+    @field:Json(name = "original") val original: List<String>?
 ) : Parcelable

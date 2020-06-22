@@ -167,7 +167,12 @@ class RocketDetailsFragment : Fragment() {
                 layoutManager = LinearLayoutManager(this@RocketDetailsFragment.context)
                 setHasFixedSize(true)
                 adapter =
-                    RocketPayloadAdapter(this@RocketDetailsFragment.context, it.payloadWeights)
+                    it.payloadWeights?.let { payloadWeights ->
+                        RocketPayloadAdapter(
+                            this@RocketDetailsFragment.context,
+                            payloadWeights
+                        )
+                    }
             }
         }
     }

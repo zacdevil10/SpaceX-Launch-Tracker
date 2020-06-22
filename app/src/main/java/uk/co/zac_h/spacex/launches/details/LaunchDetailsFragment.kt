@@ -228,12 +228,14 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 launchDetailsContainer.transitionName = it.id
 
 
-                val time = launch.launchDateUnix.times(1000) - System.currentTimeMillis()
-                if (!it.tbd && time >= 0) {
-                    setCountdown(time)
-                    showCountdown()
-                } else {
-                    hideCountdown()
+                val time = (launch.launchDateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
+                it.tbd?.let { tbd ->
+                    if (!tbd && time >= 0) {
+                        setCountdown(time)
+                        showCountdown()
+                    } else {
+                        hideCountdown()
+                    }
                 }
 
                 if (id == null) id = launch.flightNumber.toString()
@@ -264,16 +266,24 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                     R.string.flight_number,
                     launch.flightNumber
                 )
-                launchDetailsRocketTypeText.text = launch.rocket.name
+                launchDetailsRocketTypeText.text = launch.rocket?.name
                 launchDetailsMissionNameText.text = launch.missionName
 
                 launchDetailsSiteNameText.text = launch.launchpad?.name
 
-                launchDetailsDateText.text = launch.launchDateUnix.formatDateMillisLong(launch.tbd)
+                launchDetailsDateText.text = launch.tbd?.let { it1 ->
+                    launch.launchDateUnix?.formatDateMillisLong(
+                        it1
+                    )
+                }
 
                 launch.staticFireDateUnix?.let { date ->
                     launchDetailsStaticFireDateLabel.visibility = View.VISIBLE
-                    launchDetailsStaticFireDateText.text = date.formatDateMillisLong(launch.tbd)
+                    launchDetailsStaticFireDateText.text = launch.tbd?.let { it1 ->
+                        date.formatDateMillisLong(
+                            it1
+                        )
+                    }
                 } ?: run {
                     launchDetailsStaticFireDateText.visibility = View.GONE
                 }
@@ -282,7 +292,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                     if (launch.details.isNullOrEmpty()) View.GONE else View.VISIBLE
                 launchDetailsDetailsText.text = launch.details
 
-                launch.cores.forEach { core ->
+                launch.cores?.forEach { core ->
                     coreAssigned = core.core != null
                     if (coreAssigned) return@forEach
                 }
@@ -292,7 +302,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                     launchDetailsCoresRecycler.apply {
                         layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
                         setHasFixedSize(true)
-                        adapter = FirstStageAdapter(it)
+                        adapter = it?.let { it1 -> FirstStageAdapter(it1) }
                     }
                 } else {
                     //If no core has been assigned yet then hide the RecyclerView and related heading
@@ -354,11 +364,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 data = CalendarContract.Events.CONTENT_URI
                 putExtra(
                     CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                    it.launchDateUnix.times(1000L)
+                    it.launchDateUnix?.times(1000L)
                 )
                 putExtra(
                     CalendarContract.EXTRA_EVENT_END_TIME,
-                    it.launchDateUnix.times(1000L).plus(3600000)
+                    it.launchDateUnix?.times(1000L)?.plus(3600000)
                 )
                 putExtra(
                     CalendarContract.Events.TITLE,

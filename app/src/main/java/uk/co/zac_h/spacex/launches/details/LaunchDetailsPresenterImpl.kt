@@ -66,12 +66,14 @@ class LaunchDetailsPresenterImpl(
             launchModel?.docs?.get(0)?.let { launch ->
                 updateLaunchDataView(launch)
                 val time =
-                    (launch.launchDateUnix.times(1000)) - System.currentTimeMillis()
-                if (!launch.tbd && time >= 0) {
-                    setCountdown(time)
-                    showCountdown()
-                } else {
-                    hideCountdown()
+                    (launch.launchDateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
+                launch.tbd?.let {
+                    if (!it && time >= 0) {
+                        setCountdown(time)
+                        showCountdown()
+                    } else {
+                        hideCountdown()
+                    }
                 }
             }
         }

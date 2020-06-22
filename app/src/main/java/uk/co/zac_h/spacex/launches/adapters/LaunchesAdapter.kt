@@ -60,26 +60,26 @@ class LaunchesAdapter(
                 })
                 .into(missionPatch)
 
-            if (launch.rocket.name == "Falcon 9") {
-                reusedTag.visibility = launch.cores[0].reused?.let {
+            if (launch.rocket?.name == "Falcon 9") {
+                reusedTag.visibility = launch.cores?.get(0)?.reused?.let {
                     if (it) View.VISIBLE else View.GONE
                 } ?: View.GONE
 
                 landingVehicleTag.visibility =
-                    launch.cores[0].landingSuccess?.let {
+                    launch.cores?.get(0)?.landingSuccess?.let {
                         if (it) View.VISIBLE else View.GONE
                     } ?: View.GONE
 
-                landingVehicleTag.text = launch.cores[0].landingPad?.name
+                landingVehicleTag.text = launch.cores?.get(0)?.landingPad?.name
             } else {
                 reusedTag.visibility = View.GONE
                 landingVehicleTag.visibility = View.GONE
             }
 
-            vehicle.text = launch.rocket.name
+            vehicle.text = launch.rocket?.name
 
             missionName.text = launch.missionName
-            date.text = launch.launchDateUnix.formatDateMillisLong(launch.tbd)
+            date.text = launch.tbd?.let { launch.launchDateUnix?.formatDateMillisLong(it) }
 
             itemView.setOnClickListener {
                 itemView.findNavController()
@@ -109,12 +109,12 @@ class LaunchesAdapter(
                         else -> {
                             val filteredList = ArrayList<LaunchesExtendedModel>()
                             launches.forEach { launch ->
-                                if (launch.missionName.toLowerCase(Locale.getDefault()).toString()
+                                if (launch.missionName?.toLowerCase(Locale.getDefault()).toString()
                                         .contains(
                                             it.toString().toLowerCase(
                                                 Locale.getDefault()
                                             )
-                                        ) || launch.launchDateUnix.formatDateMillisYYYY()
+                                        ) || launch.launchDateUnix?.formatDateMillisYYYY()
                                         .toString().contains(
                                             it
                                         ) || launch.flightNumber.toString().contains(
@@ -125,7 +125,7 @@ class LaunchesAdapter(
                                     return@forEach
                                 }
 
-                                launch.rocket.name.let { rocketName ->
+                                launch.rocket?.name?.let { rocketName ->
                                     if (rocketName.toLowerCase(Locale.getDefault()).contains(s)) {
                                         filteredList.add(launch)
                                     }
