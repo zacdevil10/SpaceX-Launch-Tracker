@@ -9,10 +9,10 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.LaunchCoreModel
+import uk.co.zac_h.spacex.model.spacex.LaunchCoreExtendedModel
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
-class FirstStageAdapter(private val cores: List<LaunchCoreModel>) :
+class FirstStageAdapter(private val cores: List<LaunchCoreExtendedModel>) :
     RecyclerView.Adapter<FirstStageAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -28,8 +28,7 @@ class FirstStageAdapter(private val cores: List<LaunchCoreModel>) :
         val core = cores[position]
 
         holder.apply {
-            //TODO: Get core serial
-            coreSerial.text = core.id
+            coreSerial.text = core.core?.serial
 
             reusedImage.apply {
                 core.reused?.let { reused ->
@@ -80,11 +79,11 @@ class FirstStageAdapter(private val cores: List<LaunchCoreModel>) :
         val landingImage: ImageView =
             itemView.findViewById(R.id.list_item_first_stage_landing_image)
 
-        fun bind(core: LaunchCoreModel) {
+        fun bind(core: LaunchCoreExtendedModel) {
             itemView.findNavController()
                 .navigate(
                     R.id.action_launch_details_fragment_to_core_details_fragment,
-                    bundleOf("core_id" to core.id, "title" to core.id) //TODO: Get core serial
+                    bundleOf("core" to core.core, "title" to core.core?.serial)
                 )
         }
     }

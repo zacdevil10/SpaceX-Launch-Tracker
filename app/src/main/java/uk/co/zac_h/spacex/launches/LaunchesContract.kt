@@ -1,12 +1,13 @@
 package uk.co.zac_h.spacex.launches
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 interface LaunchesContract {
 
     interface LaunchesView {
-        fun updateLaunchesList(launches: List<LaunchesModel>?)
+        fun updateLaunchesList(launches: List<LaunchesExtendedModel>?)
         fun showProgress()
         fun hideProgress()
         fun toggleSwipeProgress(isRefreshing: Boolean)
@@ -30,7 +31,7 @@ interface LaunchesContract {
     }
 
     interface InteractorCallback {
-        fun onSuccess(launches: List<LaunchesModel>?)
+        fun onSuccess(launches: LaunchesExtendedDocsModel?)
         fun onError(error: String)
     }
 

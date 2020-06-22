@@ -11,7 +11,7 @@ import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.CoreMissionsAdapter
-import uk.co.zac_h.spacex.model.spacex.CoreModel
+import uk.co.zac_h.spacex.model.spacex.CoreExtendedModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
@@ -22,7 +22,7 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
 
     private var presenter: CoreDetailsContract.CoreDetailsPresenter? = null
 
-    private var core: CoreModel? = null
+    private var core: CoreExtendedModel? = null
     private var id: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,7 +80,7 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
         _binding = null
     }
 
-    override fun updateCoreDetails(coreModel: CoreModel) {
+    override fun updateCoreDetails(coreModel: CoreExtendedModel) {
         coreModel.apply {
             core = coreModel
 
@@ -97,7 +97,7 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
             binding.coreDetailsAsdsLandingsText.text = landingsAsds.toString()
         }
 
-        coreModel.missions?.let {
+        coreModel.missions.let {
             binding.coreDetailsMissionRecycler.apply {
                 layoutManager = LinearLayoutManager(this@CoreDetailsFragment.context)
                 setHasFixedSize(true)

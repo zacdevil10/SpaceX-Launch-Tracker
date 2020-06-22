@@ -13,12 +13,12 @@ class LaunchRateInteractorImpl : BaseNetwork(), LaunchRateContract.LaunchRateInt
         api: SpaceXInterface,
         listener: LaunchRateContract.InteractorCallback
     ) {
-        call = api.getLaunches().apply {
+        /*call = api.getLaunches().apply {
             makeCall {
                 onResponseSuccess = { listener.onSuccess(it.body(), true) }
                 onResponseFailure = { listener.onError(it) }
             }
-        }
+        }*/
     }
 
     override fun cancelAllRequests() = terminateAll()

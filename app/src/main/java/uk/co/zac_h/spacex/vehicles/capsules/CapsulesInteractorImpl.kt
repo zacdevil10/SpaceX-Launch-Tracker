@@ -12,9 +12,15 @@ class CapsulesInteractorImpl : BaseNetwork(), CapsulesContract.CapsulesInteracto
     override fun getCapsules(api: SpaceXInterface, listener: CapsulesContract.InteractorCallback) {
         val populateList: ArrayList<QueryPopulateModel> = ArrayList()
 
-        populateList.add(QueryPopulateModel("launches", QueryCapsulesModel(1, 1)))
+        populateList.add(
+            QueryPopulateModel(
+                "launches",
+                select = QueryCapsulesSelectModel(1, 1),
+                populate = ""
+            )
+        )
 
-        val query = QueryModel(QueryOptionsModel(false, populateList))
+        val query = QueryModel("", QueryOptionsModel(false, populateList, "", ""))
 
         call = api.getCapsules(query).apply {
             makeCall {

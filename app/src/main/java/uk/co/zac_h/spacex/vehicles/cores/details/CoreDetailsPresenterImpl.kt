@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.vehicles.cores.details
 
-import uk.co.zac_h.spacex.model.spacex.CoreModel
+import uk.co.zac_h.spacex.model.spacex.CoreExtendedModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class CoreDetailsPresenterImpl(
@@ -14,7 +14,7 @@ class CoreDetailsPresenterImpl(
         interactor.getCoreDetails(serial, api, this)
     }
 
-    override fun addCoreModel(coreModel: CoreModel) {
+    override fun addCoreModel(coreModel: CoreExtendedModel) {
         view.updateCoreDetails(coreModel)
     }
 
@@ -22,7 +22,7 @@ class CoreDetailsPresenterImpl(
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(coreModel: CoreModel?) {
+    override fun onSuccess(coreModel: CoreExtendedModel?) {
         coreModel?.let {
             view.apply {
                 hideProgress()

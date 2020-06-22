@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.launches
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class LaunchesPresenterImpl(
@@ -17,10 +17,10 @@ class LaunchesPresenterImpl(
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(launches: List<LaunchesModel>?) {
+    override fun onSuccess(launches: LaunchesExtendedDocsModel?) {
         view.apply {
             hideProgress()
-            updateLaunchesList(launches)
+            updateLaunchesList(launches?.docs)
             toggleSwipeProgress(false)
         }
     }

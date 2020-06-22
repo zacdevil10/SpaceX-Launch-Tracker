@@ -2,10 +2,8 @@ package uk.co.zac_h.spacex.base
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -17,16 +15,6 @@ class MainActivity : AppCompatActivity(),
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private lateinit var binding: ActivityMainBinding
-
-    private val startDestinations = mutableSetOf(
-        R.id.dashboard_page_fragment,
-        R.id.news_page_fragment,
-        R.id.launches_page_fragment,
-        R.id.crew_page_fragment,
-        R.id.vehicles_page_fragment,
-        R.id.statistics_page_fragment,
-        R.id.crew_detail_page_fragment
-    )
 
     private var snackbar: Snackbar? = null
 
@@ -52,11 +40,6 @@ class MainActivity : AppCompatActivity(),
             supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
         val navController = navHostFragment.navController
 
-        val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder(startDestinations).setDrawerLayout(drawerLayout).build()
-
-        //findViewById<Toolbar>(R.id.toolbar).setupWithNavController(navController, appBarConfig)
         findViewById<NavigationView>(R.id.nav_view).setupWithNavController(navController)
 
         (application as App).preferencesRepo.themeModeLive.observe(this, Observer { mode ->

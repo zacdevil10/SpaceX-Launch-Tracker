@@ -37,7 +37,8 @@ class CoreMissionsAdapter(
                     .navigate(
                         R.id.action_core_details_fragment_to_launch_details_fragment,
                         bundleOf(
-                            "launch_id" to mission.flightNumber.toString(),
+                            "launch_id" to mission.id,
+                            "flight_number" to mission.flightNumber,
                             "title" to mission.name
                         )
                     )

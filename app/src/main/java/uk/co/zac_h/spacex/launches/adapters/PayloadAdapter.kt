@@ -40,7 +40,7 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
 
             root.layoutTransition.disableTransitionType(LayoutTransition.CHANGING)
 
-            payloadName.text = payload?.id
+            payloadName.text = payload?.name
             payloadManufacturer.text = payload?.manufacturers?.formatCustomers()
 
             //Payload specs
@@ -48,7 +48,7 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
             payloadOrbit.text = payload?.orbit
 
             payload?.lifespan?.let {
-                payloadLifespan.text = it.toInt().toString()
+                payloadLifespan.text = it.toString()
             } ?: run {
                 payloadLifespanLabel.visibility = View.GONE
                 payloadLifespan.visibility = View.GONE

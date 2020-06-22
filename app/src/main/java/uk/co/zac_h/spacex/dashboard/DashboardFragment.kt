@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardPinnedAdapter
 import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
@@ -80,6 +81,8 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as MainActivity).setSupportActionBar(binding.toolbar)
+
         val navController = NavHostFragment.findNavController(this)
         val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
         val appBarConfig =
@@ -87,6 +90,8 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
                 .setDrawerLayout(drawerLayout).build()
 
         binding.toolbar.setupWithNavController(navController, appBarConfig)
+
+        binding.toolbar.title = resources.getString(R.string.menu_home)
 
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
@@ -239,12 +244,16 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         binding.dashboardNextLayout.dashboardNextMissionNameText.text = nextLaunch.missionName
         binding.dashboardNextLayout.dashboardNextDateText.text =
-            nextLaunch.launchDateUnix?.formatDateMillisLong(nextLaunch.tbd ?: true)
+            nextLaunch.launchDateUnix.formatDateMillisLong(nextLaunch.tbd)
 
         binding.dashboardNextLayout.dashboardNextCardView.setOnClickListener {
             findNavController().navigate(
                 R.id.action_dashboard_page_fragment_to_launch_details_fragment,
-                bundleOf("launch" to nextLaunch, "title" to nextLaunch.missionName),
+                bundleOf(
+                    "launch_id" to nextLaunch.id,
+                    "flight_number" to nextLaunch.flightNumber,
+                    "title" to nextLaunch.missionName
+                ),
                 null,
                 FragmentNavigatorExtras(binding.dashboardNextLayout.dashboardNextCardView to nextLaunch.id)
             )
@@ -287,13 +296,14 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         binding.dashboardLatestLayout.dashboardLatestMissionNameText.text = latestLaunch.missionName
 
         binding.dashboardLatestLayout.dashboardLatestDateText.text =
-            latestLaunch.launchDateUnix?.formatDateMillisLong(latestLaunch.tbd ?: true)
+            latestLaunch.launchDateUnix.formatDateMillisLong(latestLaunch.tbd)
 
         binding.dashboardLatestLayout.dashboardLatestCardView.setOnClickListener {
             findNavController().navigate(
                 R.id.action_dashboard_page_fragment_to_launch_details_fragment,
                 bundleOf(
-                    "launch" to latestLaunch,
+                    "launch_id" to latestLaunch.id,
+                    "flight_number" to latestLaunch.flightNumber,
                     "title" to latestLaunch.missionName
                 ),
                 null,

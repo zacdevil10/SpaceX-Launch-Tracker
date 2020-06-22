@@ -12,9 +12,15 @@ class CoreInteractorImpl : BaseNetwork(), CoreContract.CoreInteractor {
     override fun getCores(api: SpaceXInterface, listener: CoreContract.InteractorCallback) {
         val populateList: ArrayList<QueryPopulateModel> = ArrayList()
 
-        populateList.add(QueryPopulateModel("launches", QueryCoreModel(1, 1)))
+        populateList.add(
+            QueryPopulateModel(
+                "launches",
+                select = QueryCoreSelectModel(1, 1),
+                populate = ""
+            )
+        )
 
-        val query = QueryModel(QueryOptionsModel(false, populateList))
+        val query = QueryModel("", QueryOptionsModel(false, populateList, "", ""))
 
         call = api.getCores(query).apply {
             makeCall {

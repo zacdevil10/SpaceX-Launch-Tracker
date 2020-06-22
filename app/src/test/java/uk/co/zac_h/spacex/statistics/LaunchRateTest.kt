@@ -115,7 +115,7 @@ class LaunchRateTest {
     fun `When get launches then add to view`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
-                getLaunches()
+                getQueriedLaunches()
             } doReturn Calls.response(Response.success(launchesList))
         }
 
@@ -138,7 +138,7 @@ class LaunchRateTest {
     fun `When response from API is unsuccessful`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
-                getLaunches()
+                getQueriedLaunches()
             } doReturn Calls.response(
                 Response.error(
                 404,
@@ -156,7 +156,7 @@ class LaunchRateTest {
     fun `Show error in view when response from API fails`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
-                getLaunches()
+                getQueriedLaunches()
             } doReturn Calls.response(
                 Response.error(
                 404,

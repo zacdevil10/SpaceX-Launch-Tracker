@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.launches.details
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import java.util.concurrent.TimeUnit
@@ -12,12 +13,12 @@ class LaunchDetailsPresenterImpl(
 ) : LaunchDetailsContract.LaunchDetailsPresenter,
     LaunchDetailsContract.InteractorCallback {
 
-    override fun getLaunch(id: String, api: SpaceXInterface) {
+    override fun getLaunch(flightNumber: Int, api: SpaceXInterface) {
         view.showProgress()
-        interactor.getSingleLaunch(id, api, this)
+        interactor.getSingleLaunch(flightNumber, api, this)
     }
 
-    override fun addLaunchModel(launchModel: LaunchesModel?) {
+    override fun addLaunchModel(launchModel: LaunchesExtendedModel?) {
         view.updateLaunchDataView(launchModel)
     }
 
@@ -59,20 +60,18 @@ class LaunchDetailsPresenterImpl(
         interactor.cancelRequest()
     }
 
-    override fun onSuccess(launchModel: LaunchesModel?) {
+    override fun onSuccess(launchModel: LaunchesExtendedDocsModel?) {
         view.apply {
             hideProgress()
-            updateLaunchDataView(launchModel)
-            launchModel?.let { launch ->
-                launch.tbd?.let {
-                    val time =
-                        (launch.launchDateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
-                    if (!it && time >= 0) {
-                        setCountdown(time)
-                        showCountdown()
-                    } else {
-                        hideCountdown()
-                    }
+            launchModel?.docs?.get(0)?.let { launch ->
+                updateLaunchDataView(launch)
+                val time =
+                    (launch.launchDateUnix.times(1000)) - System.currentTimeMillis()
+                if (!launch.tbd && time >= 0) {
+                    setCountdown(time)
+                    showCountdown()
+                } else {
+                    hideCountdown()
                 }
             }
         }

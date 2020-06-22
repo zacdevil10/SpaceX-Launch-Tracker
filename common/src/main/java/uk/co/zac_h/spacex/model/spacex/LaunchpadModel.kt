@@ -1,8 +1,11 @@
 package uk.co.zac_h.spacex.model.spacex
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 
 // v4
+@Parcelize
 data class LaunchpadModel(
     @field:Json(name = "name") val name: String?,
     @field:Json(name = "full_name") val fullName: String?,
@@ -17,5 +20,5 @@ data class LaunchpadModel(
     @field:Json(name = "rockets") val rockets: List<String>,
     @field:Json(name = "launches") val launches: List<String>,
     @field:Json(name = "id") var id: String
-)
+) : Parcelable
 

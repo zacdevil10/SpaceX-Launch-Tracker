@@ -18,7 +18,7 @@ interface SpaceXInterface {
     fun getCores(@Body body: QueryModel): Call<CoreDocsModel>
 
     @GET("cores/{serial}")
-    fun getSingleCore(@Path("serial") serial: String): Call<CoreModel>
+    fun getSingleCore(@Path("serial") serial: String): Call<CoreExtendedModel>
 
     @POST("crew/query")
     fun getCrew(@Body body: QueryModel): Call<CrewDocsModel>
@@ -39,7 +39,7 @@ interface SpaceXInterface {
     ): Call<List<LaunchesModel>>
 
     @POST("launches/query")
-    fun getLaunches(@Body body: QueryModel): Call<List<LaunchesModel>>
+    fun getQueriedLaunches(@Body body: QueryModel): Call<LaunchesExtendedDocsModel>
 
     @GET("launchpads")
     fun getLaunchpads(): Call<List<LaunchpadModel>>

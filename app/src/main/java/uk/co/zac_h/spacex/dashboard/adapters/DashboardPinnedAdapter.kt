@@ -69,12 +69,16 @@ class DashboardPinnedAdapter(
                 )*/
 
                 missionName.text = it.missionName
-                date.text = it.launchDateUnix?.formatDateMillisLong(it.tbd ?: true)
+                date.text = it.launchDateUnix.formatDateMillisLong(it.tbd)
 
                 launchesCard.setOnClickListener { _ ->
                     itemView.findNavController().navigate(
                         R.id.action_dashboard_page_fragment_to_launch_details_fragment,
-                        bundleOf("launch" to it, "title" to it.missionName),
+                        bundleOf(
+                            "launch_id" to it.id,
+                            "flight_number" to it.flightNumber,
+                            "title" to it.missionName
+                        ),
                         null,
                         FragmentNavigatorExtras(launchesCard to launch.id)
                     )
@@ -89,7 +93,7 @@ class DashboardPinnedAdapter(
         val launchesCard: CardView = itemView.findViewById(R.id.launches_card_view)
         val missionPatch: ImageView = itemView.findViewById(R.id.launches_mission_patch_image)
         val flightNumber: TextView = itemView.findViewById(R.id.launches_flight_no_text)
-        val blockNumber: TextView = itemView.findViewById(R.id.launches_block_text)
+        val blockNumber: TextView = itemView.findViewById(R.id.launches_vehicle_text)
         val missionName: TextView = itemView.findViewById(R.id.launches_mission_name_text)
         val date: TextView = itemView.findViewById(R.id.launches_date_text)
     }
