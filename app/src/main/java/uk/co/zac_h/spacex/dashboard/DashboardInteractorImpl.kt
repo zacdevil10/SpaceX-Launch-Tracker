@@ -16,10 +16,17 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardIntera
         api: SpaceXInterface,
         listener: DashboardContract.InteractorCallback
     ) {
+        active.add(id)
         call = api.getSingleLaunch(id).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(id, it.body()) }
-                onResponseFailure = { listener.onError(it) }
+                onResponseSuccess = {
+                    listener.onSuccess(id, it.body())
+                    active.remove(id)
+                }
+                onResponseFailure = {
+                    listener.onError(it)
+                    active.remove(id)
+                }
             }
         }
     }

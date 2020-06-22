@@ -1,6 +1,8 @@
 package uk.co.zac_h.spacex.dashboard
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
@@ -218,29 +220,19 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         Glide.with(this)
             .load(nextLaunch.links?.missionPatch?.patchSmall)
-            .error(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_mission_patch) })
+            .error(context?.let {
+                ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
+            })
             .fallback(context?.let {
-                ContextCompat.getDrawable(
-                    it,
-                    R.drawable.ic_mission_patch
-                )
+                ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
             })
             .placeholder(context?.let {
-                ContextCompat.getDrawable(
-                    it,
-                    R.drawable.ic_mission_patch
-                )
+                ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
             })
             .into(binding.dashboardNextLayout.dashboardNextMissionPatchImage)
 
         binding.dashboardNextLayout.dashboardNextFlightNoText.text =
             context?.getString(R.string.flight_number, nextLaunch.flightNumber)
-
-        /*binding.dashboardNextLayout.dashboardNextBlockText.text = context?.getString(
-            R.string.vehicle_block_type,
-            nextLaunch.rocket.name,
-            nextLaunch.rocket.firstStage?.cores?.formatBlockNumber()
-        )*/
 
         binding.dashboardNextLayout.dashboardNextMissionNameText.text = nextLaunch.missionName
         binding.dashboardNextLayout.dashboardNextDateText.text =
@@ -269,29 +261,19 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         Glide.with(this)
             .load(latestLaunch.links?.missionPatch?.patchSmall)
-            .error(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_mission_patch) })
+            .error(context?.let {
+                ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
+            })
             .fallback(context?.let {
-                ContextCompat.getDrawable(
-                    it,
-                    R.drawable.ic_mission_patch
-                )
+                ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
             })
             .placeholder(context?.let {
-                ContextCompat.getDrawable(
-                    it,
-                    R.drawable.ic_mission_patch
-                )
+                ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
             })
             .into(binding.dashboardLatestLayout.dashboardLatestMissionPatchImage)
 
         binding.dashboardLatestLayout.dashboardLatestFlightNoText.text =
             context?.getString(R.string.flight_number, latestLaunch.flightNumber)
-
-        /*binding.dashboardLatestLayout.dashboardLatestBlockText.text = context?.getString(
-            R.string.vehicle_block_type,
-            latestLaunch.rocket.name,
-            latestLaunch.rocket.firstStage?.cores?.formatBlockNumber()
-        )*/
 
         binding.dashboardLatestLayout.dashboardLatestMissionNameText.text = latestLaunch.missionName
 
@@ -328,7 +310,14 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
             }
 
             override fun onFinish() {
-
+                nextLaunchModel?.links?.webcast?.let { link ->
+                    binding.dashboardCountdownText.apply {
+                        text = "LIVE"
+                        setOnClickListener {
+                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
+                        }
+                    }
+                }
             }
         }
 

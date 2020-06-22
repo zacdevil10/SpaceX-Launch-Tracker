@@ -35,38 +35,23 @@ class DashboardPinnedAdapter(
         val launch = launches[position]
 
         holder.apply {
-            launchesCard.transitionName = launch.flightNumber.toString()
+            launchesCard.transitionName = launch.id
 
             launch.let {
                 Glide.with(itemView)
                     .load(launch.links?.missionPatch?.patchSmall)
-                    .error(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            R.drawable.ic_mission_patch
-                        )
+                    .error(context?.let { context ->
+                        ContextCompat.getDrawable(context, R.drawable.ic_mission_patch)
                     })
-                    .fallback(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            R.drawable.ic_mission_patch
-                        )
+                    .fallback(context?.let { context ->
+                        ContextCompat.getDrawable(context, R.drawable.ic_mission_patch)
                     })
-                    .placeholder(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            R.drawable.ic_mission_patch
-                        )
+                    .placeholder(context?.let { context ->
+                        ContextCompat.getDrawable(context, R.drawable.ic_mission_patch)
                     })
                     .into(missionPatch)
 
                 flightNumber.text = context?.getString(R.string.flight_number, it.flightNumber)
-
-                /*blockNumber.text = context?.getString(
-                    R.string.vehicle_block_type,
-                    it.rocket.name,
-                    it.rocket.firstStage?.cores?.formatBlockNumber()
-                )*/
 
                 missionName.text = it.missionName
                 date.text = it.launchDateUnix.formatDateMillisLong(it.tbd)
@@ -93,7 +78,6 @@ class DashboardPinnedAdapter(
         val launchesCard: CardView = itemView.findViewById(R.id.launches_card_view)
         val missionPatch: ImageView = itemView.findViewById(R.id.launches_mission_patch_image)
         val flightNumber: TextView = itemView.findViewById(R.id.launches_flight_no_text)
-        val blockNumber: TextView = itemView.findViewById(R.id.launches_vehicle_text)
         val missionName: TextView = itemView.findViewById(R.id.launches_mission_name_text)
         val date: TextView = itemView.findViewById(R.id.launches_date_text)
     }

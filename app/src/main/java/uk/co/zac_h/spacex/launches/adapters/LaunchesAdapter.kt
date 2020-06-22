@@ -53,16 +53,10 @@ class LaunchesAdapter(
                 .load(launch.links?.missionPatch?.patchSmall)
                 .error(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_mission_patch) })
                 .fallback(context?.let {
-                    ContextCompat.getDrawable(
-                        it,
-                        R.drawable.ic_mission_patch
-                    )
+                    ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
                 })
                 .placeholder(context?.let {
-                    ContextCompat.getDrawable(
-                        it,
-                        R.drawable.ic_mission_patch
-                    )
+                    ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
                 })
                 .into(missionPatch)
 
@@ -107,9 +101,9 @@ class LaunchesAdapter(
 
     override fun getFilter(): Filter {
         return object : Filter() {
-            override fun performFiltering(search: CharSequence?): FilterResults {
+            override fun performFiltering(s: CharSequence?): FilterResults {
                 val filterResults = FilterResults()
-                search?.let {
+                s?.let {
                     filteredLaunches = when {
                         it.isEmpty() -> launches
                         else -> {
@@ -131,11 +125,11 @@ class LaunchesAdapter(
                                     return@forEach
                                 }
 
-                                /*launch.rocket.name?.let { rocketName ->
-                                    if (rocketName.toLowerCase(Locale.getDefault()).contains(search)) filteredList.add(
-                                        launch
-                                    )
-                                }*/
+                                launch.rocket.name.let { rocketName ->
+                                    if (rocketName.toLowerCase(Locale.getDefault()).contains(s)) {
+                                        filteredList.add(launch)
+                                    }
+                                }
                             }
 
                             filteredList
