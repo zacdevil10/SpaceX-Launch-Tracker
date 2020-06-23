@@ -40,8 +40,8 @@ data class PayloadModel(
 @Parcelize
 data class PayloadDragonModel(
     @field:Json(name = "capsule") val capsule: String?,
-    @field:Json(name = "mass_returned_kg") val massReturnedKg: Int?,
-    @field:Json(name = "mass_returned_lbs") val massReturnedLbs: Int?,
+    @field:Json(name = "mass_returned_kg") val massReturnedKg: Float?,
+    @field:Json(name = "mass_returned_lbs") val massReturnedLbs: Float?,
     @field:Json(name = "flight_time_sec") val flightTime: Int?,
     @field:Json(name = "manifest") val manifest: String?,
     @field:Json(name = "water_landing") val waterLanding: Boolean?,

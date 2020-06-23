@@ -287,11 +287,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
                 launch.staticFireDateUnix?.let { date ->
                     launchDetailsStaticFireDateLabel.visibility = View.VISIBLE
-                    launchDetailsStaticFireDateText.text = launch.tbd?.let { it1 ->
-                        date.formatDateMillisLong(
-                            it1
-                        )
-                    }
+                    launchDetailsStaticFireDateText.text = date.formatDateMillisLong()
                 } ?: run {
                     launchDetailsStaticFireDateText.visibility = View.GONE
                 }
