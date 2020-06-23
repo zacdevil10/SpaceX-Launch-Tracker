@@ -5,9 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
+import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.CoreMissionsAdapter
@@ -50,6 +55,14 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val navController = NavHostFragment.findNavController(this)
+        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        val appBarConfig =
+            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
+                .setDrawerLayout(drawerLayout).build()
+
+        binding.toolbar.setupWithNavController(navController, appBarConfig)
+
         presenter = CoreDetailsPresenterImpl(this, CoreDetailsInteractorImpl())
 
         core?.let {
@@ -83,6 +96,8 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
     override fun updateCoreDetails(coreModel: CoreExtendedModel) {
         coreModel.apply {
             core = coreModel
+
+            binding.toolbar.title = serial
 
             binding.coreDetailsScrollview.transitionName = id
 

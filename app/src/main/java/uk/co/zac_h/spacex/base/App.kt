@@ -21,8 +21,7 @@ class App : Application() {
         R.id.launches_page_fragment,
         R.id.crew_page_fragment,
         R.id.vehicles_page_fragment,
-        R.id.statistics_page_fragment,
-        R.id.crew_detail_page_fragment
+        R.id.statistics_page_fragment
     )
 
     override fun onCreate() {

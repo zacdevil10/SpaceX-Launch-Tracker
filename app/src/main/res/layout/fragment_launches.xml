@@ -16,16 +16,18 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
+            style="?toolbarStyle"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:elevation="0dp"
+            android:textColor="?colorOnSurface"
+            android:theme="@style/AppTheme.AppBarOverlay"
             app:layout_collapseMode="parallax"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:title="@string/menu_launches" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/launches_tab_layout"
-            style="@style/Widget.MaterialComponents.TabLayout.Colored"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize" />
 

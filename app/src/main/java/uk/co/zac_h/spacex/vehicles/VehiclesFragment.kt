@@ -13,6 +13,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.transition.Hold
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentVehiclesBinding
 import uk.co.zac_h.spacex.vehicles.adapters.VehiclesPagerAdapter
 
@@ -38,6 +39,8 @@ class VehiclesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as MainActivity).setSupportActionBar(binding.toolbar)
+
         val navController = NavHostFragment.findNavController(this)
         val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
         val appBarConfig =
@@ -55,7 +58,20 @@ class VehiclesFragment : Fragment() {
             adapter = VehiclesPagerAdapter(childFragmentManager)
             offscreenPageLimit = 3
         }
-        binding.vehiclesTabLayout.setupWithViewPager(binding.vehiclesViewPager)
+
+        val tabIcons = listOf(
+            R.drawable.ic_rocket,
+            R.drawable.ic_dragon,
+            R.drawable.ic_rocket,
+            R.drawable.ic_dragon
+        )
+
+        binding.vehiclesTabLayout.apply {
+            setupWithViewPager(binding.vehiclesViewPager)
+            for (position in 0..tabCount) {
+                getTabAt(position)?.setIcon(tabIcons[position])
+            }
+        }
     }
 
     override fun onDestroyView() {
