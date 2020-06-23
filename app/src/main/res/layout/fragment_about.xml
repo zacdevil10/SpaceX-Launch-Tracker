@@ -17,7 +17,8 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
-            style="?toolbarStyle"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            app:title="@string/menu_about"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize" />
 
@@ -77,14 +78,18 @@
             tools:text="v01.00.00" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
             android:text="@string/powered_by"
             android:textAppearance="?textAppearanceBody2"
+            android:textAlignment="center"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/about_version" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

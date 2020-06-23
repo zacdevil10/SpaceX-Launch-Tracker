@@ -7,6 +7,6 @@ import kotlinx.android.parcel.Parcelize
 // v4
 @Parcelize
 data class DimensModel(
-    @field:Json(name = "meters") val meters: Double,
-    @field:Json(name = "feet") val feet: Double
+    @field:Json(name = "meters") val meters: Double?,
+    @field:Json(name = "feet") val feet: Double?
 ) : Parcelable

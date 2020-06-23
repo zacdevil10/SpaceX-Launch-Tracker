@@ -10,7 +10,7 @@ data class SecondStageModel(
     @field:Json(name = "reusable") val reusable: Boolean,
     @field:Json(name = "engines") val engines: Int,
     @field:Json(name = "fuel_amount_tons") val fuelAmountTons: Double,
-    @field:Json(name = "burn_time_sec") val burnTimeSec: Int,
+    @field:Json(name = "burn_time_sec") val burnTimeSec: Int?,
     @field:Json(name = "thrust") val thrust: ThrustModel,
     @field:Json(name = "payloads") val payloads: PayloadConfigModel
 ) : Parcelable

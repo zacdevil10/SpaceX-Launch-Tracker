@@ -12,7 +12,7 @@ data class EngineConfigModel(
     @field:Json(name = "version") val version: String,
     @field:Json(name = "layout") val layout: String,
     @field:Json(name = "isp") val specificImpulse: SpecificImpulseModel,
-    @field:Json(name = "engine_loss_max") val engine_loss_max: Int,
+    @field:Json(name = "engine_loss_max") val engine_loss_max: Int?,
     @field:Json(name = "propellant_1") val propellant_1: String,
     @field:Json(name = "propellant_2") val propellant_2: String,
     @field:Json(name = "thrust_sea_level") val thrust_sea_level: ThrustModel,

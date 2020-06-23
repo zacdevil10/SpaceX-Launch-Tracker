@@ -107,7 +107,7 @@ class DashboardPresenterImpl(
             }
         }
 
-        if (!interactor.hasActiveRequest()) view.hideProgress()
+        view.hideProgress()
         view.toggleSwipeProgress(false)
     }
 

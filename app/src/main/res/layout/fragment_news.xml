@@ -16,10 +16,10 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            style="?toolbarStyle"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:elevation="0dp"
+            android:elevation="4dp"
             android:textColor="?colorOnSurface"
             android:theme="@style/AppTheme.AppBarOverlay"
             app:layout_collapseMode="parallax"
@@ -28,8 +28,13 @@
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/news_tab_layout"
+            style="@style/Widget.MaterialComponents.TabLayout.Colored"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
+            android:layout_height="?attr/actionBarSize"
+            android:elevation="4dp"
+            android:textColor="?colorOnSurface"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:tabIndicatorColor="?colorSecondary" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
