@@ -7,7 +7,7 @@ import uk.co.zac_h.spacex.rest.SpaceXInterface
 interface LaunchDetailsContract {
 
     interface LaunchDetailsView {
-        fun updateLaunchDataView(launch: LaunchesExtendedModel?)
+        fun updateLaunchDataView(launch: LaunchesExtendedModel?, isExt: Boolean)
         fun newCalendarEvent()
         fun openWebLink(link: String)
         fun showProgress()
@@ -21,7 +21,7 @@ interface LaunchDetailsContract {
 
     interface LaunchDetailsPresenter {
         fun getLaunch(flightNumber: Int, api: SpaceXInterface = SpaceXInterface.create())
-        fun addLaunchModel(launchModel: LaunchesExtendedModel?)
+        fun addLaunchModel(launchModel: LaunchesExtendedModel?, isExt: Boolean)
         fun pinLaunch(id: String, pin: Boolean)
         fun isPinned(id: String): Boolean
         fun createEvent()

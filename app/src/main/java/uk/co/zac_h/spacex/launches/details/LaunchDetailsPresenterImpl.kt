@@ -18,8 +18,8 @@ class LaunchDetailsPresenterImpl(
         interactor.getSingleLaunch(flightNumber, api, this)
     }
 
-    override fun addLaunchModel(launchModel: LaunchesExtendedModel?) {
-        view.updateLaunchDataView(launchModel)
+    override fun addLaunchModel(launchModel: LaunchesExtendedModel?, isExt: Boolean) {
+        view.updateLaunchDataView(launchModel, isExt)
     }
 
     override fun pinLaunch(id: String, pin: Boolean) {
@@ -64,7 +64,7 @@ class LaunchDetailsPresenterImpl(
         view.apply {
             hideProgress()
             launchModel?.docs?.get(0)?.let { launch ->
-                updateLaunchDataView(launch)
+                updateLaunchDataView(launch, true)
                 val time =
                     (launch.launchDateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
                 launch.tbd?.let {

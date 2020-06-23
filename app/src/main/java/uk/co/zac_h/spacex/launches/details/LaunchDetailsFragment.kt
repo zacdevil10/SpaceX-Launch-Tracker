@@ -45,6 +45,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
     private var launch: LaunchesExtendedModel? = null
+    private var launchShort: LaunchesExtendedModel? = null
     private var id: String? = null
     private var flightNumber: Int? = null
 
@@ -62,8 +63,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
+        launch = savedInstanceState?.getParcelable("launch")
+
         id = arguments?.getString("launch_id")
         flightNumber = arguments?.getInt("flight_number")
+        launchShort = arguments?.getParcelable("launch_short")
     }
 
     override fun onCreateView(
@@ -102,10 +106,14 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         )
 
         launch?.let {
-            presenter?.addLaunchModel(it)
+            println(it)
+            presenter?.addLaunchModel(it, true)
             binding.launchDetailsContainer.transitionName = it.id
             pinned = presenter?.isPinned(it.id) ?: false
         } ?: flightNumber?.let {
+            launchShort?.let {
+                presenter?.addLaunchModel(launchShort, false)
+            }
             presenter?.getLaunch(it)
         }
 
@@ -218,9 +226,9 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updateLaunchDataView(launch: LaunchesExtendedModel?) {
+    override fun updateLaunchDataView(launch: LaunchesExtendedModel?, isExt: Boolean) {
         launch?.let {
-            this.launch = launch
+            if (isExt) this.launch = launch
 
             binding.toolbar.title = launch.missionName
 
