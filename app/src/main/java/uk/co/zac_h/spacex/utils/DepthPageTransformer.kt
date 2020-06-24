@@ -20,7 +20,7 @@ class DepthPageTransformer : ViewPager.PageTransformer {
                 }
                 position <= 1 -> {
                     // Opacity of next page
-                    alpha = 1 - position
+                    alpha = 1f - position
 
                     // Offset next page position
                     translationX = ((pageWidth / 1.5) * -position).toFloat()

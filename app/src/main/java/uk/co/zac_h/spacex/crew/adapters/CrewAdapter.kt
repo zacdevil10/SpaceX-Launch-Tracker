@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.crew.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +13,10 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.model.spacex.CrewModel
 
-class CrewAdapter(private val crew: List<CrewModel>) :
+class CrewAdapter(private val context: Context?, private val crew: List<CrewModel>) :
     RecyclerView.Adapter<CrewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -36,7 +38,10 @@ class CrewAdapter(private val crew: List<CrewModel>) :
 
             title.text = person.name
 
-            card.setOnClickListener { bind(person) }
+            card.setOnClickListener {
+                (context?.applicationContext as App).currentPosition = position
+                bind(person)
+            }
         }
     }
 

@@ -204,7 +204,8 @@
         <item>Hot</item>
         <item>New</item>
     </string-array>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Crew -->
+    <string name="agency_label">Agency</string>
 
 </resources>

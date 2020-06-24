@@ -4,14 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.crew.adapters.CrewPagerAdapter
@@ -29,8 +27,6 @@ class CrewDetailsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        sharedElementEnterTransition = MaterialContainerTransform()
 
         crewArray = when {
             savedInstanceState != null -> {
@@ -64,14 +60,11 @@ class CrewDetailsFragment : Fragment() {
 
         binding.toolbar.setupWithNavController(navController, appBarConfig)
 
-        postponeEnterTransition()
-        view.doOnPreDraw { startPostponedEnterTransition() }
-
         crewPagerAdapter = CrewPagerAdapter(context, crewArray)
 
         binding.crewPager.apply {
             adapter = crewPagerAdapter
-            currentItem = arguments?.getInt("position") ?: 0
+            currentItem = (context.applicationContext as App).currentPosition
             setPageTransformer(true, DepthPageTransformer())
 
             addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -81,6 +74,7 @@ class CrewDetailsFragment : Fragment() {
 
                 override fun onPageSelected(position: Int) {
                     activity?.title = crewArray[position].name
+                    (context.applicationContext as App).currentPosition = position
                 }
             })
         }

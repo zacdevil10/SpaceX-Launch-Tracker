@@ -5,14 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
@@ -33,8 +31,6 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        sharedElementEnterTransition = MaterialContainerTransform()
 
         crewArray = when {
             savedInstanceState != null -> {
@@ -68,12 +64,9 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
 
         binding.toolbar.setupWithNavController(navController, appBarConfig)
 
-        postponeEnterTransition()
-        view.doOnPreDraw { startPostponedEnterTransition() }
-
         presenter = CrewPresenterImpl(this, CrewInteractorImpl())
 
-        crewAdapter = CrewAdapter(crewArray)
+        crewAdapter = CrewAdapter(context, crewArray)
 
         binding.crewRecycler.apply {
             layoutManager = GridLayoutManager(this@CrewFragment.context, 2)
