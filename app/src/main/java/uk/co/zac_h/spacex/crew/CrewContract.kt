@@ -12,6 +12,7 @@ interface CrewContract {
         fun hideProgress()
         fun toggleSwipeRefresh(refreshing: Boolean)
         fun showError(error: String)
+        fun startTransition()
     }
 
     interface CrewPresenter {

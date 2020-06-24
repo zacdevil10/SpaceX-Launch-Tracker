@@ -2,11 +2,12 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/grid_item_crew_constraint"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/list_item_crew_card"
+        android:id="@+id/grid_item_crew_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -24,7 +25,7 @@
             android:animateLayoutChanges="true">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/list_item_crew_image"
+                android:id="@+id/grid_item_crew_image"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/rocket_image_desc"
@@ -34,17 +35,17 @@
                 tools:src="@drawable/falcon9" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/list_item_crew_details"
+                android:id="@+id/grid_item_crew_details"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:background="#7E000000"
                 android:animateLayoutChanges="true"
-                app:layout_constraintBottom_toBottomOf="@id/list_item_crew_image"
+                app:layout_constraintBottom_toBottomOf="@id/grid_item_crew_image"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
-                    android:id="@+id/list_item_crew_title"
+                    android:id="@+id/grid_item_crew_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:padding="16dp"

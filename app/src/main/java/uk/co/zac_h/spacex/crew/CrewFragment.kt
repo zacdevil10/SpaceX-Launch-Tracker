@@ -5,12 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.app.SharedElementCallback
+import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
@@ -66,7 +70,7 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
 
         presenter = CrewPresenterImpl(this, CrewInteractorImpl())
 
-        crewAdapter = CrewAdapter(context, crewArray)
+        crewAdapter = CrewAdapter(this, context, crewArray)
 
         binding.crewRecycler.apply {
             layoutManager = GridLayoutManager(this@CrewFragment.context, 2)
@@ -74,11 +78,42 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
             adapter = crewAdapter
         }
 
+        prepareTransitions()
+        postponeEnterTransition()
+
         binding.crewSwipeRefresh.setOnRefreshListener {
             presenter?.getCrew()
         }
 
         if (crewArray.isEmpty()) presenter?.getCrew()
+    }
+
+    private fun prepareTransitions() {
+        sharedElementReturnTransition = MaterialContainerTransform()
+
+        setExitSharedElementCallback(object : SharedElementCallback() {
+            override fun onMapSharedElements(
+                names: MutableList<String>?,
+                sharedElements: MutableMap<String, View>?
+            ) {
+                val selectedViewHolder: RecyclerView.ViewHolder? =
+                    binding.crewRecycler.findViewHolderForAdapterPosition((context?.applicationContext as App).currentPosition)
+                        ?: return
+
+                names?.get(0)?.let { name ->
+                    selectedViewHolder?.itemView?.let { itemView ->
+                        sharedElements?.put(
+                            name,
+                            itemView.findViewById(R.id.grid_item_crew_constraint)
+                        )
+                    }
+                }
+            }
+        })
+    }
+
+    override fun startTransition() {
+        binding.root.doOnPreDraw { startPostponedEnterTransition() }
     }
 
     override fun onStart() {

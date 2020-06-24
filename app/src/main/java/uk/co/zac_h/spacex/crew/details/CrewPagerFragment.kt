@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.SharedElementCallback
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.viewpager.widget.ViewPager
+import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.crew.adapters.CrewPagerAdapter
@@ -17,7 +19,7 @@ import uk.co.zac_h.spacex.databinding.FragmentCrewDetailsBinding
 import uk.co.zac_h.spacex.model.spacex.CrewModel
 import uk.co.zac_h.spacex.utils.DepthPageTransformer
 
-class CrewDetailsFragment : Fragment() {
+class CrewPagerFragment : Fragment() {
 
     private var _binding: FragmentCrewDetailsBinding? = null
     private val binding get() = _binding!!
@@ -60,7 +62,7 @@ class CrewDetailsFragment : Fragment() {
 
         binding.toolbar.setupWithNavController(navController, appBarConfig)
 
-        crewPagerAdapter = CrewPagerAdapter(context, crewArray)
+        crewPagerAdapter = CrewPagerAdapter(childFragmentManager, crewArray)
 
         binding.crewPager.apply {
             adapter = crewPagerAdapter
@@ -78,6 +80,32 @@ class CrewDetailsFragment : Fragment() {
                 }
             })
         }
+
+        prepareSharedElementTransition()
+
+        if (savedInstanceState == null) postponeEnterTransition()
+    }
+
+    private fun prepareSharedElementTransition() {
+        sharedElementEnterTransition = MaterialContainerTransform()
+
+        setEnterSharedElementCallback(object : SharedElementCallback() {
+            override fun onMapSharedElements(
+                names: MutableList<String>?,
+                sharedElements: MutableMap<String, View>?
+            ) {
+                val currentFragment = binding.crewPager.adapter?.instantiateItem(
+                    binding.crewPager,
+                    (context?.applicationContext as App).currentPosition
+                ) as Fragment
+                val view = currentFragment.view
+                view?.let {
+                    names?.get(0)?.let { name ->
+                        sharedElements?.put(name, view.findViewById(R.id.item_crew_constraint))
+                    }
+                } ?: return
+            }
+        })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
