@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewBinding
 import uk.co.zac_h.spacex.model.spacex.CrewModel
@@ -97,7 +98,7 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
                 sharedElements: MutableMap<String, View>?
             ) {
                 val selectedViewHolder: RecyclerView.ViewHolder? =
-                    binding.crewRecycler.findViewHolderForAdapterPosition((context?.applicationContext as App).currentPosition)
+                    binding.crewRecycler.findViewHolderForAdapterPosition(MainActivity.currentPosition)
                         ?: return
 
                 names?.get(0)?.let { name ->

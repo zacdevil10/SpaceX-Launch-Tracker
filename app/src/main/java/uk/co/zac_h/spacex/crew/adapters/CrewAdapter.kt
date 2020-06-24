@@ -18,7 +18,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.crew.CrewContract
 import uk.co.zac_h.spacex.model.spacex.CrewModel
 
@@ -70,7 +70,7 @@ class CrewAdapter(
             title.text = person.name
 
             card.setOnClickListener {
-                (context?.applicationContext as App).currentPosition = position
+                MainActivity.currentPosition = position
                 bind(person)
             }
         }

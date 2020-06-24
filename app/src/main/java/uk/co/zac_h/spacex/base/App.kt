@@ -24,11 +24,8 @@ class App : Application() {
         R.id.statistics_page_fragment
     )
 
-    var currentPosition: Int = 0
-
     override fun onCreate() {
         super.onCreate()
-
         //TooLargeTool.startLogging(this)
 
         preferencesRepo = ThemePreferenceRepository(

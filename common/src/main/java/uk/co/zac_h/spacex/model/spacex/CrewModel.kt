@@ -24,5 +24,6 @@ data class CrewModel(
 data class CrewLaunchesModel(
     @field:Json(name = "flight_number") val flightNumber: Int,
     @field:Json(name = "name") val name: String,
+    @field:Json(name = "date_unix") val date: Long,
     @field:Json(name = "id") val id: String
 ) : Parcelable

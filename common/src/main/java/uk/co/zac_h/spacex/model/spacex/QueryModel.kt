@@ -20,21 +20,6 @@ data class QueryPopulateModel(
     private var populate: Any
 )
 
-data class QueryCrewSelectModel(
-    private var name: Int,
-    private var flight_number: Int
-)
-
-data class QueryCoreSelectModel(
-    private var name: Int,
-    private var flight_number: Int
-)
-
-data class QueryCapsulesSelectModel(
-    private var name: Int,
-    private var flight_number: Int
-)
-
 data class QueryLaunchesQueryModel(
     private var flight_number: Int
 )

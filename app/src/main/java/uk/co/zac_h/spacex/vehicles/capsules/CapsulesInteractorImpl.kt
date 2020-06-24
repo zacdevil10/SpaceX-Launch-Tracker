@@ -1,7 +1,10 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
 import retrofit2.Call
-import uk.co.zac_h.spacex.model.spacex.*
+import uk.co.zac_h.spacex.model.spacex.CapsulesDocsModel
+import uk.co.zac_h.spacex.model.spacex.QueryModel
+import uk.co.zac_h.spacex.model.spacex.QueryOptionsModel
+import uk.co.zac_h.spacex.model.spacex.QueryPopulateModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
@@ -15,7 +18,7 @@ class CapsulesInteractorImpl : BaseNetwork(), CapsulesContract.CapsulesInteracto
         populateList.add(
             QueryPopulateModel(
                 "launches",
-                select = QueryCapsulesSelectModel(1, 1),
+                select = listOf("name", "flight_number"),
                 populate = ""
             )
         )

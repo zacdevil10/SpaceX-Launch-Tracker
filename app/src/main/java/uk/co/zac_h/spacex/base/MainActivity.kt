@@ -23,6 +23,10 @@ class MainActivity : AppCompatActivity(),
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        savedInstanceState?.let {
+            currentPosition = it.getInt("crew_pager_position")
+        }
+
         (application as App).networkStateChangeListener.apply {
             addListener(this@MainActivity)
             registerReceiver()
@@ -52,6 +56,11 @@ class MainActivity : AppCompatActivity(),
         (application as App).networkStateChangeListener.updateState()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt("crew_pager_position", currentPosition)
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         snackbar = null
@@ -67,5 +76,9 @@ class MainActivity : AppCompatActivity(),
 
     override fun networkLost() {
         snackbar?.show()
+    }
+
+    companion object {
+        var currentPosition: Int = 0
     }
 }

@@ -14,6 +14,7 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.crew.adapters.CrewPagerAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewDetailsBinding
 import uk.co.zac_h.spacex.model.spacex.CrewModel
@@ -66,7 +67,7 @@ class CrewPagerFragment : Fragment() {
 
         binding.crewPager.apply {
             adapter = crewPagerAdapter
-            currentItem = (context.applicationContext as App).currentPosition
+            currentItem = MainActivity.currentPosition
             setPageTransformer(true, DepthPageTransformer())
 
             addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -76,7 +77,7 @@ class CrewPagerFragment : Fragment() {
 
                 override fun onPageSelected(position: Int) {
                     activity?.title = crewArray[position].name
-                    (context.applicationContext as App).currentPosition = position
+                    MainActivity.currentPosition = position
                 }
             })
         }
@@ -96,7 +97,7 @@ class CrewPagerFragment : Fragment() {
             ) {
                 val currentFragment = binding.crewPager.adapter?.instantiateItem(
                     binding.crewPager,
-                    (context?.applicationContext as App).currentPosition
+                    MainActivity.currentPosition
                 ) as Fragment
                 val view = currentFragment.view
                 view?.let {
