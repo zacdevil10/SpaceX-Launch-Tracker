@@ -7,6 +7,6 @@ import kotlinx.android.parcel.Parcelize
 // v4
 @Parcelize
 data class SpecificImpulseModel(
-    @field:Json(name = "sea_level") val seaLevel: Int,
-    @field:Json(name = "vacuum") val vacuum: Int
+    @field:Json(name = "sea_level") val seaLevel: Int?,
+    @field:Json(name = "vacuum") val vacuum: Int?
 ) : Parcelable

@@ -7,6 +7,6 @@ import kotlinx.android.parcel.Parcelize
 // v4
 @Parcelize
 data class LandingLegsModel(
-    @field:Json(name = "number") val quantity: Int,
+    @field:Json(name = "number") val quantity: Int?,
     @field:Json(name = "material") val material: String?
 ) : Parcelable

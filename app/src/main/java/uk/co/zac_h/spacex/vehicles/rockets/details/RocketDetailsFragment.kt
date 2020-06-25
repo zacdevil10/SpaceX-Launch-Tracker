@@ -10,6 +10,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
@@ -64,15 +65,10 @@ class RocketDetailsFragment : Fragment() {
 
             binding.toolbar.title = it.name
 
-            binding.header.setImageResource(
-                when (it.id) {
-                    "5e9d0d95eda69955f709d1eb" -> R.drawable.falcon1
-                    "5e9d0d95eda69973a809d1ec" -> R.drawable.falcon9
-                    "5e9d0d95eda69974db09d1ed" -> R.drawable.falconheavy
-                    "5e9d0d96eda699382d09d1ee" -> R.drawable.starship
-                    else -> R.drawable.starship //TODO: Add error image.
-                }
-            )
+            Glide.with(view)
+                .load(it.flickr?.random())
+                .error(R.drawable.ic_baseline_error_outline_24)
+                .into(binding.header)
 
             binding.rocketDetailsText.text = it.description
 

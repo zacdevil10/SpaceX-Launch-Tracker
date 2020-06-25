@@ -11,6 +11,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.RocketsModel
 
@@ -32,12 +33,10 @@ class RocketsAdapter(private val rockets: List<RocketsModel>) :
         holder.apply {
             itemView.transitionName = rocket.id
 
-            when (rocket.id) {
-                "5e9d0d95eda69955f709d1eb" -> image.setImageResource(R.drawable.falcon1)
-                "5e9d0d95eda69973a809d1ec" -> image.setImageResource(R.drawable.falcon9)
-                "5e9d0d95eda69974db09d1ed" -> image.setImageResource(R.drawable.falconheavy)
-                "5e9d0d96eda699382d09d1ee" -> image.setImageResource(R.drawable.starship)
-            }
+            Glide.with(holder.itemView)
+                .load(rocket.flickr?.random())
+                .error(R.drawable.ic_baseline_error_outline_24)
+                .into(image)
 
             title.text = rocket.name
             details.text = rocket.description

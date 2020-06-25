@@ -9,6 +9,6 @@ import kotlinx.android.parcel.Parcelize
 data class PayloadWeightsModel(
     @field:Json(name = "id") val id: String,
     @field:Json(name = "name") val name: String,
-    @field:Json(name = "kg") val kg: Int,
-    @field:Json(name = "lb") val lb: Int
+    @field:Json(name = "kg") val kg: Float,
+    @field:Json(name = "lb") val lb: Float
 ) : Parcelable
