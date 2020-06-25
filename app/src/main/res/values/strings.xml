@@ -133,7 +133,7 @@
     <string name="menu_vehicles">Vehicles</string>
     <string name="first_flight_label">First Flight</string>
     <string name="capsule_specs_label">Capsule Specs</string>
-    <string name="rocket_specs_label">Rocket Specs</string>
+    <string name="vehicle_specs_label">Vehicle Specs</string>
     <string name="rocket_image_desc">Rocket Image</string>
     <string name="measurements">%1$s m / %2$s ft</string>
     <string name="mass_formatted">%1$s kg / %2$s lbs</string>

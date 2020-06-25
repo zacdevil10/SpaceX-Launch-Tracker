@@ -3,17 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rocket_details_coordinator"
-    android:background="@color/color_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_background"
     tools:context=".vehicles.rockets.details.RocketDetailsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/rocket_details_appbar"
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:fitsSystemWindows="true"
         android:background="@android:color/transparent"
+        android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -35,8 +35,7 @@
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.5"
-                tools:ignore="ContentDescription"
-                tools:src="@drawable/falconheavy" />
+                tools:ignore="ContentDescription" />
 
             <View
                 android:layout_width="match_parent"
@@ -58,21 +57,16 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingStart="16dp"
-        android:paddingTop="8dp"
-        android:paddingEnd="24dp"
-        android:paddingBottom="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rocket_details_appbar"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="600dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:paddingStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="?attr/actionBarSize">
 
             <TextView
                 android:id="@+id/rocket_details_text"

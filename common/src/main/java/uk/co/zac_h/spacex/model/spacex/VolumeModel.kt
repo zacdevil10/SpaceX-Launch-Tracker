@@ -7,6 +7,6 @@ import kotlinx.android.parcel.Parcelize
 // v4
 @Parcelize
 data class VolumeModel(
-    @field:Json(name = "cubic_meters") val cubicMeters: Int,
-    @field:Json(name = "cubic_feet") val cubicFeet: Int
+    @field:Json(name = "cubic_meters") val cubicMeters: Int?,
+    @field:Json(name = "cubic_feet") val cubicFeet: Int?
 ) : Parcelable

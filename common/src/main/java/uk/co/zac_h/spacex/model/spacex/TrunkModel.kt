@@ -7,6 +7,6 @@ import kotlinx.android.parcel.Parcelize
 // v4
 @Parcelize
 data class TrunkModel(
-    @field:Json(name = "trunk_volume") val trunkVolume: VolumeModel,
-    @field:Json(name = "cargo") val cargo: CargoModel
+    @field:Json(name = "trunk_volume") val trunkVolume: VolumeModel?,
+    @field:Json(name = "cargo") val cargo: CargoModel?
 ) : Parcelable

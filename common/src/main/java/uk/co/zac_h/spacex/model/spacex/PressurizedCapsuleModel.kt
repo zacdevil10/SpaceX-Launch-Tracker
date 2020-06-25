@@ -7,5 +7,5 @@ import kotlinx.android.parcel.Parcelize
 // v4
 @Parcelize
 data class PressurizedCapsuleModel(
-    @field:Json(name = "payload_volume") val payloadVolume: VolumeModel
+    @field:Json(name = "payload_volume") val payloadVolume: VolumeModel?
 ) : Parcelable

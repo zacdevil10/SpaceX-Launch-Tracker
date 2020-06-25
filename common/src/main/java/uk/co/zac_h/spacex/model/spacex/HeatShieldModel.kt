@@ -7,8 +7,8 @@ import kotlinx.android.parcel.Parcelize
 // v4
 @Parcelize
 data class HeatShieldModel(
-    @field:Json(name = "material") val material: String,
-    @field:Json(name = "size_meters") val size: Float,
-    @field:Json(name = "temp_degrees") val temp: Int,
-    @field:Json(name = "dev_partner") val developmentPartner: String
+    @field:Json(name = "material") val material: String?,
+    @field:Json(name = "size_meters") val size: Float?,
+    @field:Json(name = "temp_degrees") val temp: Int?,
+    @field:Json(name = "dev_partner") val developmentPartner: String?
 ) : Parcelable

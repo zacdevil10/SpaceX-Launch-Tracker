@@ -10,7 +10,7 @@
     tools:context=".vehicles.rockets.details.RocketDetailsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/rocket_details_appbar"
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:background="@android:color/transparent"
@@ -36,8 +36,7 @@
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.5"
-                tools:ignore="ContentDescription"
-                tools:src="@drawable/falconheavy" />
+                tools:ignore="ContentDescription" />
 
             <View
                 android:layout_width="match_parent"
@@ -76,7 +75,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:lines="1"
+                tools:lines="4"
                 tools:text="@tools:sample/lorem/random" />
 
             <TextView

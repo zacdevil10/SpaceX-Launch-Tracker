@@ -4,10 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentDragonDetailsBinding
 import uk.co.zac_h.spacex.model.spacex.DragonModel
 import uk.co.zac_h.spacex.utils.metricFormat
@@ -41,20 +47,29 @@ class DragonDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val navController = NavHostFragment.findNavController(this)
+        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        val appBarConfig =
+            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
+                .setDrawerLayout(drawerLayout).build()
+
+        NavigationUI.setupWithNavController(
+            binding.toolbarLayout,
+            binding.toolbar,
+            navController,
+            appBarConfig
+        )
+
         dragon?.let {
             binding.dragonDetailsCoordinator.transitionName = it.id
 
+            binding.toolbar.title = it.name
 
+            Glide.with(view)
+                .load(it.flickr?.random())
+                .error(R.drawable.ic_baseline_error_outline_24)
+                .into(binding.header)
 
-            binding.dragonDetailsAppbarImage.setImageResource(
-                when (it.id) {
-                    "5e9d058759b1ff74a7ad5f8f" -> R.drawable.dragon1
-                    "5e9d058859b1ffd8e2ad5f90" -> R.drawable.dragon2
-                    else -> R.drawable.dragon2 //TODO: Add error image.
-                }
-            )
-
-            binding.dragonDetailsNameText.text = it.name
             binding.dragonDetailsText.text = it.description
 
             when (it.active) {
@@ -99,7 +114,9 @@ class DragonDetailsFragment : Fragment() {
             binding.dragonDetailsThrusterRecycler.apply {
                 layoutManager = LinearLayoutManager(this@DragonDetailsFragment.context)
                 setHasFixedSize(true)
-                adapter = DragonThrusterAdapter(this@DragonDetailsFragment.context, it.thrusters)
+                adapter = it.thrusters?.let { thrusters ->
+                    DragonThrusterAdapter(this@DragonDetailsFragment.context, thrusters)
+                }
             }
 
             it.launchPayloadMass?.let { launchPayloadMass ->
