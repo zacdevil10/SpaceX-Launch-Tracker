@@ -56,7 +56,6 @@ class VehiclesFragment : Fragment() {
 
         binding.vehiclesViewPager.apply {
             adapter = VehiclesPagerAdapter(childFragmentManager)
-            offscreenPageLimit = 3
         }
 
         val tabIcons = listOf(
