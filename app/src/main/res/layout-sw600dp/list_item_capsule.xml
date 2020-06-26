@@ -27,11 +27,11 @@
 
             <TextView
                 android:id="@+id/list_item_capsule_serial"
-                android:textAppearance="?textAppearanceHeadline6"
                 android:layout_width="wrap_content"
                 android:layout_height="34dp"
                 android:layout_marginStart="16dp"
                 android:gravity="bottom"
+                android:textAppearance="?textAppearanceHeadline6"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="C101" />
@@ -42,23 +42,22 @@
                 android:layout_height="34dp"
                 android:layout_marginEnd="24dp"
                 android:gravity="bottom|end"
-                app:layout_constraintBottom_toTopOf="@+id/list_item_capsule_type"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/list_item_capsule_serial"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Retired" />
 
             <TextView
-                android:id="@+id/list_item_capsule_type"
+                android:id="@+id/list_item_capsule_details"
                 android:layout_width="0dp"
-                android:layout_height="22dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
-                android:gravity="bottom"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_capsule_serial"
-                tools:text="Dragon 1.0" />
+                tools:text="Engine failure at T+33 seconds resulted in loss of vehicle" />
 
             <TextView
                 android:id="@+id/list_item_capsule_flights_label"
@@ -68,7 +67,7 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/flights_label"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/list_item_capsule_type" />
+                app:layout_constraintTop_toBottomOf="@id/list_item_capsule_details" />
 
             <TextView
                 android:id="@+id/list_item_capsule_flights_text"
@@ -83,18 +82,41 @@
                 app:layout_constraintTop_toTopOf="@id/list_item_capsule_flights_label"
                 tools:text="3" />
 
+            <TextView
+                android:id="@+id/list_item_capsule_type_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="Type"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_capsule_flights_label" />
+
+            <TextView
+                android:id="@+id/list_item_capsule_type_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="24dp"
+                android:textAlignment="textEnd"
+                app:layout_constraintBottom_toBottomOf="@id/list_item_capsule_type_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/list_item_capsule_type_label"
+                app:layout_constraintTop_toTopOf="@id/list_item_capsule_type_label"
+                tools:text="Dragon 1.0" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/list_item_capsule_specs_button"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginBottom="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:text="@string/capsule_specs_label"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/list_item_capsule_flights_text" />
+                app:layout_constraintTop_toBottomOf="@id/list_item_capsule_type_label" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

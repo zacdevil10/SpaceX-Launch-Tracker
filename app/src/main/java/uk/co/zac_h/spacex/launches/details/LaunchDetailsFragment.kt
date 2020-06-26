@@ -251,22 +251,13 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 Glide.with(this@LaunchDetailsFragment)
                     .load(launch.links?.missionPatch?.patchSmall)
                     .error(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            R.drawable.ic_mission_patch
-                        )
+                        ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
                     })
                     .fallback(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            R.drawable.ic_mission_patch
-                        )
+                        ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
                     })
                     .placeholder(context?.let {
-                        ContextCompat.getDrawable(
-                            it,
-                            R.drawable.ic_mission_patch
-                        )
+                        ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
                     })
                     .into(launchDetailsMissionPatchImage)
 
@@ -279,17 +270,14 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
                 launchDetailsSiteNameText.text = launch.launchpad?.name
 
-                launchDetailsDateText.text = launch.tbd?.let { it1 ->
-                    launch.launchDateUnix?.formatDateMillisLong(
-                        it1
-                    )
+                launchDetailsDateText.text = launch.tbd?.let { tbd ->
+                    launch.launchDateUnix?.formatDateMillisLong(tbd)
                 }
 
                 launch.staticFireDateUnix?.let { date ->
                     launchDetailsStaticFireDateLabel.visibility = View.VISIBLE
+                    launchDetailsStaticFireDateText.visibility = View.VISIBLE
                     launchDetailsStaticFireDateText.text = date.formatDateMillisLong()
-                } ?: run {
-                    launchDetailsStaticFireDateText.visibility = View.GONE
                 }
 
                 launchDetailsDetailsText.visibility =

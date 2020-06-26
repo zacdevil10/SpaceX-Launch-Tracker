@@ -212,6 +212,7 @@
                     android:id="@+id/launch_details_static_fire_date_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/launch_details_static_fire_date_label"
                     app:layout_constraintTop_toBottomOf="@id/launch_details_date_text"

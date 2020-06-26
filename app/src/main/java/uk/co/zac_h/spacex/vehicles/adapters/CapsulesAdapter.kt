@@ -52,7 +52,13 @@ class CapsulesAdapter(private val capsules: ArrayList<CapsulesModel>) :
                 }
             }
             status.text = capsule.status.capitalize()
-            details.text = capsule.lastUpdate
+
+            capsule.lastUpdate?.let { lastUpdate ->
+                details.text = lastUpdate
+            } ?: run {
+                details.visibility = View.GONE
+            }
+
             flightNumber.text = capsule.reuseCount.toString()
 
             button.setOnClickListener { bind(capsule) }
@@ -108,7 +114,7 @@ class CapsulesAdapter(private val capsules: ArrayList<CapsulesModel>) :
         fun bind(capsule: CapsulesModel) {
             itemView.findNavController().navigate(
                 R.id.action_vehicles_page_fragment_to_capsule_details_fragment,
-                bundleOf("capsule" to capsule, "title" to capsule.serial),
+                bundleOf("capsule" to capsule),
                 null,
                 FragmentNavigatorExtras(itemView to capsule.id)
             )

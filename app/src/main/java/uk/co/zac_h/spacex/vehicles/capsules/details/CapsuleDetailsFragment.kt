@@ -5,9 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
+import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentCapsuleDetailsBinding
 import uk.co.zac_h.spacex.model.spacex.CapsulesModel
 import uk.co.zac_h.spacex.vehicles.adapters.CapsuleMissionsAdapter
@@ -39,10 +45,20 @@ class CapsuleDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        capsule?.let {
-            binding.capsuleDetailsScrollview.transitionName = it.id
+        val navController = NavHostFragment.findNavController(this)
+        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        val appBarConfig =
+            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
+                .setDrawerLayout(drawerLayout).build()
 
-            it.serial?.let { serial ->
+        binding.toolbar.setupWithNavController(navController, appBarConfig)
+
+        capsule?.let {
+            binding.capsuleDetailsConstraint.transitionName = it.id
+
+            binding.toolbar.title = it.serial
+
+            it.serial.let { serial ->
                 binding.capsuleDetailsTypeText.text = when {
                     serial.startsWith("C1") -> "Dragon 1.0"
                     serial.startsWith("C2") -> "Dragon 2.0"
@@ -50,11 +66,15 @@ class CapsuleDetailsFragment : Fragment() {
                 }
             }
 
-            binding.capsuleDetailsText.text = it.lastUpdate
-            binding.capsuleDetailsStatusText.text = it.status?.capitalize()
+            it.lastUpdate?.let { lastUpdate ->
+                binding.capsuleDetailsText.text = lastUpdate
+            } ?: run {
+                binding.capsuleDetailsText.visibility = View.GONE
+            }
+
+            binding.capsuleDetailsStatusText.text = it.status.capitalize()
             binding.capsuleDetailsReuseText.text = it.reuseCount.toString()
-            binding.capsuleDetailsLandingText.text =
-                ((it.landLandings ?: 0) + (it.waterLandings ?: 0)).toString()
+            binding.capsuleDetailsLandingText.text = (it.landLandings + it.waterLandings).toString()
 
             if (it.launches.isNotEmpty()) binding.capsuleDetailsMissionsRecycler.apply {
                 layoutManager = LinearLayoutManager(this@CapsuleDetailsFragment.context)

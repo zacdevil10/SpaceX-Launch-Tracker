@@ -202,15 +202,15 @@
                     android:text="@string/static_fire_label"
                     android:textStyle="italic"
                     android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="@id/launch_details_static_fire_date_text"
+                    app:layout_constraintTop_toBottomOf="@id/launch_details_date_text"
                     app:layout_constraintEnd_toStartOf="@id/launch_details_static_fire_date_text"
-                    app:layout_constraintStart_toStartOf="@id/launch_details_date_text"
-                    app:layout_constraintTop_toTopOf="@id/launch_details_static_fire_date_text" />
+                    app:layout_constraintStart_toStartOf="@id/launch_details_date_text" />
 
                 <TextView
                     android:id="@+id/launch_details_static_fire_date_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/launch_details_static_fire_date_label"
                     app:layout_constraintTop_toBottomOf="@id/launch_details_date_text"
