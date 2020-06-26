@@ -13,7 +13,9 @@ import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 import retrofit2.mock.Calls
-import uk.co.zac_h.spacex.model.spacex.CoreModel
+import uk.co.zac_h.spacex.model.spacex.CoreDocsModel
+import uk.co.zac_h.spacex.model.spacex.CoreExtendedModel
+import uk.co.zac_h.spacex.model.spacex.QueryModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.vehicles.cores.CoreContract
 import uk.co.zac_h.spacex.vehicles.cores.CoreInteractorImpl
@@ -24,17 +26,24 @@ class CoreTest {
     private lateinit var mPresenter: CoreContract.CorePresenter
     private lateinit var presenter: CoreContract.CorePresenter
     private lateinit var interactor: CoreContract.CoreInteractor
+
     @Mock
     val mInteractor: CoreContract.CoreInteractor = mock(CoreContract.CoreInteractor::class.java)
+
     @Mock
     val mView: CoreContract.CoreView = mock(CoreContract.CoreView::class.java)
+
     @Mock
     val mListener: CoreContract.InteractorCallback =
         mock(CoreContract.InteractorCallback::class.java)
-    @Mock
-    val mCoreModel: CoreModel = mock(CoreModel::class.java)
 
-    private lateinit var coreList: List<CoreModel>
+    @Mock
+    val mCoreModel: CoreExtendedModel = mock(CoreExtendedModel::class.java)
+
+    private val mCoreDocsModel = CoreDocsModel(listOf(mCoreModel))
+
+    @Mock
+    val query: QueryModel = mock(QueryModel::class.java)
 
     @Before
     fun setup() {
@@ -43,14 +52,12 @@ class CoreTest {
         interactor = CoreInteractorImpl()
         mPresenter = CorePresenterImpl(mView, mInteractor)
         presenter = CorePresenterImpl(mView, interactor)
-
-        coreList = listOf(mCoreModel)
     }
 
     @Test
     fun `When response from API is successful then add cores to view`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getCores() } doReturn Calls.response(Response.success(coreList))
+            onBlocking { getCores(query) } doReturn Calls.response(Response.success(mCoreDocsModel))
         }
 
         presenter.getCores(mockRepo)
@@ -59,7 +66,7 @@ class CoreTest {
             showProgress()
             hideProgress()
             toggleSwipeRefresh(false)
-            updateCores(coreList)
+            updateCores(mCoreDocsModel.docs)
         }
     }
 
@@ -67,7 +74,7 @@ class CoreTest {
     fun `When response from API is unsuccessful`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
-                getCores()
+                getCores(query)
             } doReturn Calls.response(
                 Response.error(
                 404,
@@ -85,7 +92,7 @@ class CoreTest {
     fun `Show error in view when response from API fails`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
-                getCores()
+                getCores(query)
             } doReturn Calls.response(
                 Response.error(
                 404,

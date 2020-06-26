@@ -15,12 +15,14 @@ import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 import retrofit2.mock.Calls
-import uk.co.zac_h.spacex.model.spacex.LaunchConfigModel
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
+import uk.co.zac_h.spacex.model.spacex.QueryModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.statistics.graphs.launchhistory.LaunchHistoryContract
 import uk.co.zac_h.spacex.statistics.graphs.launchhistory.LaunchHistoryInteractorImpl
 import uk.co.zac_h.spacex.statistics.graphs.launchhistory.LaunchHistoryPresenterImpl
+import uk.co.zac_h.spacex.utils.RocketType
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 
 class LaunchHistoryTest {
@@ -42,29 +44,24 @@ class LaunchHistoryTest {
         mock(LaunchHistoryContract.InteractorCallback::class.java)
 
     @Mock
-    val mLaunchModelF1: LaunchesModel = mock(LaunchesModel::class.java)
+    val mLaunchModelF1: LaunchesExtendedModel = mock(LaunchesExtendedModel::class.java)
 
     @Mock
-    val mLaunchConfigModelF1: LaunchConfigModel = mock(LaunchConfigModel::class.java)
+    val mLaunchModelF9: LaunchesExtendedModel = mock(LaunchesExtendedModel::class.java)
 
     @Mock
-    val mLaunchModelF9: LaunchesModel = mock(LaunchesModel::class.java)
+    val mLaunchModelFH: LaunchesExtendedModel = mock(LaunchesExtendedModel::class.java)
 
-    @Mock
-    val mLaunchConfigModelF9: LaunchConfigModel = mock(LaunchConfigModel::class.java)
+    private val mLaunchesExtendedDocsModel: LaunchesExtendedDocsModel =
+        LaunchesExtendedDocsModel(listOf(mLaunchModelF1, mLaunchModelF9, mLaunchModelFH))
 
-    @Mock
-    val mLaunchModelFH: LaunchesModel = mock(LaunchesModel::class.java)
+    private val historyStatsModelF1 = HistoryStatsModel(RocketType.FALCON_ONE, 0, 1, 0)
+    private val historyStatsModelF9 = HistoryStatsModel(RocketType.FALCON_NINE, 1, 0, 100)
+    private val historyStatsModelFH = HistoryStatsModel(RocketType.FALCON_HEAVY, 1, 0, 100)
 
-    @Mock
-    val mLaunchConfigModelFH: LaunchConfigModel = mock(LaunchConfigModel::class.java)
-
-    private val historyStatsModelF1 = HistoryStatsModel("falcon1", 0, 1, 0)
-    private val historyStatsModelF9 = HistoryStatsModel("falcon9", 1, 0, 100)
-    private val historyStatsModelFH = HistoryStatsModel("falconheavy", 1, 0, 100)
-
-    private lateinit var launchesList: List<LaunchesModel>
     private lateinit var historyList: List<HistoryStatsModel>
+
+    private lateinit var query: QueryModel
 
     @Before
     fun setup() {
@@ -74,11 +71,6 @@ class LaunchHistoryTest {
         mPresenter = LaunchHistoryPresenterImpl(mView, mInteractor)
         presenter = LaunchHistoryPresenterImpl(mView, interactor)
 
-        `when`(mLaunchModelF1.rocket).thenReturn(mLaunchConfigModelF1)
-        `when`(mLaunchModelF9.rocket).thenReturn(mLaunchConfigModelF9)
-        `when`(mLaunchModelFH.rocket).thenReturn(mLaunchConfigModelFH)
-
-        launchesList = listOf(mLaunchModelF1, mLaunchModelF9, mLaunchModelFH)
         historyList = listOf(historyStatsModelF1, historyStatsModelF9, historyStatsModelFH)
     }
 
@@ -86,15 +78,17 @@ class LaunchHistoryTest {
     fun `When get past launches then add to stats model`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
-                getLaunches("past", "asc")
-            } doReturn Calls.response(Response.success(launchesList))
+                getQueriedLaunches(query)
+            } doReturn Calls.response(
+                Response.success(mLaunchesExtendedDocsModel)
+            )
         }
 
-        `when`(mLaunchModelF1.rocket.id).thenReturn("falcon1")
+        `when`(mLaunchModelF1.rocket?.id).thenReturn("falcon1")
         `when`(mLaunchModelF1.success).thenReturn(false)
-        `when`(mLaunchModelF9.rocket.id).thenReturn("falcon9")
+        `when`(mLaunchModelF9.rocket?.id).thenReturn("falcon9")
         `when`(mLaunchModelF9.success).thenReturn(true)
-        `when`(mLaunchModelFH.rocket.id).thenReturn("falconheavy")
+        `when`(mLaunchModelFH.rocket?.id).thenReturn("falconheavy")
         `when`(mLaunchModelFH.success).thenReturn(true)
 
         presenter.getLaunchList(mockRepo)
@@ -145,8 +139,8 @@ class LaunchHistoryTest {
                 getLaunches("past", "asc")
             } doReturn Calls.response(
                 Response.error(
-                404,
-                "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                    404,
+                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
                 )
             )
         }
@@ -163,8 +157,8 @@ class LaunchHistoryTest {
                 getLaunches("past", "asc")
             } doReturn Calls.response(
                 Response.error(
-                404,
-                "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                    404,
+                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
                 )
             )
         }

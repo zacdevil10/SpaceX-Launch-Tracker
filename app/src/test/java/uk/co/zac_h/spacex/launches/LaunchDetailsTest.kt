@@ -18,7 +18,10 @@ import retrofit2.mock.Calls
 import uk.co.zac_h.spacex.launches.details.LaunchDetailsContract
 import uk.co.zac_h.spacex.launches.details.LaunchDetailsInteractorImpl
 import uk.co.zac_h.spacex.launches.details.LaunchDetailsPresenterImpl
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
+import uk.co.zac_h.spacex.model.spacex.QueryLaunchesQueryModel
+import uk.co.zac_h.spacex.model.spacex.QueryModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 
@@ -27,20 +30,30 @@ class LaunchDetailsTest {
     private lateinit var mPresenter: LaunchDetailsContract.LaunchDetailsPresenter
     private lateinit var presenter: LaunchDetailsContract.LaunchDetailsPresenter
     private lateinit var interactor: LaunchDetailsContract.LaunchDetailsInteractor
+
     @Mock
     val mInteractor: LaunchDetailsContract.LaunchDetailsInteractor =
         mock(LaunchDetailsContract.LaunchDetailsInteractor::class.java)
+
     @Mock
     val mView: LaunchDetailsContract.LaunchDetailsView =
         mock(LaunchDetailsContract.LaunchDetailsView::class.java)
+
     @Mock
     val mListener: LaunchDetailsContract.InteractorCallback =
         mock(LaunchDetailsContract.InteractorCallback::class.java)
+
     @Mock
     val mPinnedSharedPreferencesHelper: PinnedSharedPreferencesHelper =
         mock(PinnedSharedPreferencesHelper::class.java)
+
     @Mock
-    val mLaunchesModel: LaunchesModel = mock(LaunchesModel::class.java)
+    val mLaunchesExtendedModel: LaunchesExtendedModel = mock(LaunchesExtendedModel::class.java)
+
+    private val mLaunchesExtendedDocsModel: LaunchesExtendedDocsModel =
+        LaunchesExtendedDocsModel(listOf(mLaunchesExtendedModel))
+
+    private lateinit var query: QueryModel
 
     @Before
     fun setup() {
@@ -49,46 +62,51 @@ class LaunchDetailsTest {
         interactor = LaunchDetailsInteractorImpl()
         mPresenter = LaunchDetailsPresenterImpl(mView, mPinnedSharedPreferencesHelper, mInteractor)
         presenter = LaunchDetailsPresenterImpl(mView, mPinnedSharedPreferencesHelper, interactor)
+
+        query = QueryModel(
+            QueryLaunchesQueryModel(1),
+            ""
+        )
     }
 
     @Test
     fun `When launch id is provided then get launch data`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getSingleLaunch("1") } doReturn Calls.response(
+            onBlocking { getQueriedLaunches(query) } doReturn Calls.response(
                 Response.success(
-                    mLaunchesModel
+                    mLaunchesExtendedDocsModel
                 )
             )
         }
 
-        interactor.getSingleLaunch("1", mockRepo, mListener)
+        interactor.getSingleLaunch(1, mockRepo, mListener)
 
-        verifyBlocking(mListener) { onSuccess(mLaunchesModel) }
+        verifyBlocking(mListener) { onSuccess(mLaunchesExtendedDocsModel) }
     }
 
     @Test
     fun `When LaunchModel is provided then add to view`() {
-        mPresenter.addLaunchModel(mLaunchesModel)
+        mPresenter.addLaunchModel(mLaunchesExtendedModel, true)
 
-        verify(mView).updateLaunchDataView(mLaunchesModel)
+        verify(mView).updateLaunchDataView(mLaunchesExtendedModel, true)
     }
 
     @Test
     fun `When get launch data then add to view`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getSingleLaunch("1") } doReturn Calls.response(
+            onBlocking { getQueriedLaunches(query) } doReturn Calls.response(
                 Response.success(
-                    mLaunchesModel
+                    mLaunchesExtendedDocsModel
                 )
             )
         }
 
-        presenter.getLaunch("1", mockRepo)
+        presenter.getLaunch(1, mockRepo)
 
         verifyBlocking(mView) {
             showProgress()
             hideProgress()
-            updateLaunchDataView(mLaunchesModel)
+            updateLaunchDataView(mLaunchesExtendedDocsModel.docs[0], false)
         }
     }
 
@@ -123,15 +141,15 @@ class LaunchDetailsTest {
     @Test
     fun `When response from API is unsuccessful`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getSingleLaunch("1") } doReturn Calls.response(
+            onBlocking { getQueriedLaunches(query) } doReturn Calls.response(
                 Response.error(
-                404,
-                "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                    404,
+                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
                 )
             )
         }
 
-        interactor.getSingleLaunch("1", mockRepo, mListener)
+        interactor.getSingleLaunch(1, mockRepo, mListener)
 
         verifyBlocking(mListener) { onError("Error: 404") }
     }
@@ -139,15 +157,15 @@ class LaunchDetailsTest {
     @Test
     fun `Show error in view when response from API fails`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getSingleLaunch("1") } doReturn Calls.response(
+            onBlocking { getQueriedLaunches(query) } doReturn Calls.response(
                 Response.error(
-                404,
-                "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                    404,
+                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
                 )
             )
         }
 
-        presenter.getLaunch("1", mockRepo)
+        presenter.getLaunch(1, mockRepo)
 
         verifyBlocking(mView) {
             showProgress()

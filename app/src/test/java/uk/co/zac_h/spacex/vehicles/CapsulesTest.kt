@@ -13,7 +13,9 @@ import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 import retrofit2.mock.Calls
+import uk.co.zac_h.spacex.model.spacex.CapsulesDocsModel
 import uk.co.zac_h.spacex.model.spacex.CapsulesModel
+import uk.co.zac_h.spacex.model.spacex.QueryModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.vehicles.capsules.CapsulesContract
 import uk.co.zac_h.spacex.vehicles.capsules.CapsulesInteractorImpl
@@ -41,6 +43,10 @@ class CapsulesTest {
 
     private lateinit var capsulesList: List<CapsulesModel>
 
+    private val capsulesDocsMock = CapsulesDocsModel(capsulesList)
+
+    private lateinit var query: QueryModel
+
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
@@ -55,7 +61,11 @@ class CapsulesTest {
     @Test
     fun `When response from API is successful then add to view`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getCapsules() } doReturn Calls.response(Response.success(capsulesList))
+            onBlocking { getCapsules(query) } doReturn Calls.response(
+                Response.success(
+                    capsulesDocsMock
+                )
+            )
         }
 
         presenter.getCapsules(mockRepo)
@@ -72,7 +82,7 @@ class CapsulesTest {
     fun `When response from API is unsuccessful`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
-                getCapsules()
+                getCapsules(query)
             } doReturn Calls.response(
                 Response.error(
                 404,
@@ -90,7 +100,7 @@ class CapsulesTest {
     fun `Show error in view when response from API fails`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
-                getCapsules()
+                getCapsules(query)
             } doReturn Calls.response(
                 Response.error(
                 404,

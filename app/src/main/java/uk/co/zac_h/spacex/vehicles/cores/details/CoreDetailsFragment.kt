@@ -28,7 +28,6 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
     private var presenter: CoreDetailsContract.CoreDetailsPresenter? = null
 
     private var core: CoreExtendedModel? = null
-    private var id: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +39,6 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
         } else {
             arguments?.getParcelable("core")
         }
-        id = arguments?.getString("core_id")
     }
 
     override fun onCreateView(
@@ -63,12 +61,10 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
 
         binding.toolbar.setupWithNavController(navController, appBarConfig)
 
-        presenter = CoreDetailsPresenterImpl(this, CoreDetailsInteractorImpl())
+        presenter = CoreDetailsPresenterImpl(this)
 
         core?.let {
             presenter?.addCoreModel(it)
-        } ?: id?.let {
-            presenter?.getCoreDetails(it)
         }
     }
 
@@ -89,7 +85,6 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter?.cancelRequest()
         _binding = null
     }
 
@@ -131,13 +126,5 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
 
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun networkAvailable() {
-        activity?.runOnUiThread {
-            id?.let {
-                if (core == null) presenter?.getCoreDetails(it)
-            }
-        }
     }
 }
