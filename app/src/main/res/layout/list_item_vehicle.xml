@@ -33,8 +33,7 @@
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/falcon9" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/list_item_vehicle_title"
@@ -72,7 +71,7 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="2dp"
                 android:layout_marginBottom="8dp"
-                android:text="@string/rocket_specs_label"
+                android:text="@string/vehicle_specs_label"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_vehicle_details" />

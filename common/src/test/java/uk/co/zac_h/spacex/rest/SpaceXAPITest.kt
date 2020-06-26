@@ -63,13 +63,12 @@ class SpaceXAPITest : BaseNetwork() {
 
                     it.body()?.run {
                         assert(flightNumber == 1)
-                        assert(missionName == "FalconSat")
-                        assert(missionId.isEmpty())
-                        assert(launchDateUnix == 1143239400L)
-                        assert(tentative == false)
-                        assert(tentativeMaxPrecision == "hour")
-                        assert(tbd == false)
-                        assert(launchWindow == 0)
+                        assert(missionName == "Name")
+                        assert(id == "5eb87d46ffd86e000604b389")
+                        assert(launchDateUnix == 1592040060L)
+                        assert(datePrecision == "hour")
+                        assert(!tbd)
+                        assert(window == 0)
 
                         assert(ships.isEmpty())
 
@@ -77,8 +76,6 @@ class SpaceXAPITest : BaseNetwork() {
 
                         assert(details == "Details")
                         assert(!upcoming)
-                        assert(staticFireDateUTC == "2006-03-17T00:00:00.000Z")
-                        assert(staticFireDateUnix == 1142553600L)
                     }
                 }
             }

@@ -4,19 +4,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="58dp"
-    android:background="?android:attr/colorBackground">
+    android:layout_height="wrap_content">
 
-    <TextView
+    <com.google.android.material.chip.Chip
         android:id="@+id/list_item_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/heading"
-        android:textColor="@color/color_secondary"
-        android:layout_marginStart="32dp"
+        style="@style/Widget.MaterialComponents.Chip.Action"
+        app:chipBackgroundColor="@color/color_secondary"
+        app:chipIconTint="@android:color/white"
+        android:textColor="@android:color/white"
+        android:clipChildren="true"
+        android:elevation="8dp"
+        tools:text="Landing Sites"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:text="Landing Pads" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

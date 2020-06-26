@@ -5,16 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.CoreMissionsAdapter
-import uk.co.zac_h.spacex.model.spacex.CoreModel
+import uk.co.zac_h.spacex.model.spacex.CoreExtendedModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.utils.setImageAndTint
 
 class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
@@ -24,8 +27,7 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
 
     private var presenter: CoreDetailsContract.CoreDetailsPresenter? = null
 
-    private var core: CoreModel? = null
-    private var id: String? = null
+    private var core: CoreExtendedModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +39,6 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
         } else {
             arguments?.getParcelable("core")
         }
-        id = arguments?.getString("core_id")
     }
 
     override fun onCreateView(
@@ -52,12 +53,18 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = CoreDetailsPresenterImpl(this, CoreDetailsInteractorImpl())
+        val navController = NavHostFragment.findNavController(this)
+        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        val appBarConfig =
+            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
+                .setDrawerLayout(drawerLayout).build()
+
+        binding.toolbar.setupWithNavController(navController, appBarConfig)
+
+        presenter = CoreDetailsPresenterImpl(this)
 
         core?.let {
             presenter?.addCoreModel(it)
-        } ?: id?.let {
-            presenter?.getCoreDetails(it)
         }
     }
 
@@ -78,41 +85,33 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter?.cancelRequest()
         _binding = null
     }
 
-    override fun updateCoreDetails(coreModel: CoreModel) {
+    override fun updateCoreDetails(coreModel: CoreExtendedModel) {
         coreModel.apply {
             core = coreModel
 
-            binding.coreDetailsScrollview.transitionName = serial
+            binding.toolbar.title = serial
+
+            binding.coreDetailsScrollview.transitionName = id
 
             binding.coreDetailsSerialText.text = serial
             binding.coreDetailsBlockText.text = block ?: "TBD"
-            binding.coreDetailsDetailsText.text = details
+            binding.coreDetailsDetailsText.text = lastUpdate
             binding.coreDetailsStatusText.text = status
             binding.coreDetailsReuseText.text = reuseCount.toString()
             binding.coreDetailsRtlsAttemptsText.text = attemptsRtls.toString()
             binding.coreDetailsRtlsLandingsText.text = landingsRtls.toString()
             binding.coreDetailsAsdsAttemptsText.text = attemptsAsds.toString()
             binding.coreDetailsAsdsLandingsText.text = landingsAsds.toString()
-            binding.coreDetailsWaterLandingImage.apply {
-                landingWater?.let { waterLanding ->
-                    if (waterLanding) setImageAndTint(
-                        R.drawable.ic_check_circle_black_24dp,
-                        R.color.success
-                    )
-                    else setImageAndTint(R.drawable.ic_remove_circle_black_24dp, R.color.failed)
-                } ?: setImageAndTint(R.drawable.ic_remove_circle_black_24dp, R.color.failed)
-            }
         }
 
-        coreModel.missions?.let {
+        coreModel.missions.let {
             binding.coreDetailsMissionRecycler.apply {
                 layoutManager = LinearLayoutManager(this@CoreDetailsFragment.context)
                 setHasFixedSize(true)
-                adapter = CoreMissionsAdapter(context, it)
+                adapter = it?.let { missions -> CoreMissionsAdapter(context, missions) }
             }
         }
     }
@@ -127,13 +126,5 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
 
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun networkAvailable() {
-        activity?.runOnUiThread {
-            id?.let {
-                if (core == null) presenter?.getCoreDetails(it)
-            }
-        }
     }
 }

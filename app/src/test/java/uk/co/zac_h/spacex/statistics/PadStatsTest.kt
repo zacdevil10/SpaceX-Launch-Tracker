@@ -14,8 +14,7 @@ import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 import retrofit2.mock.Calls
-import uk.co.zac_h.spacex.model.spacex.LandingPadModel
-import uk.co.zac_h.spacex.model.spacex.LaunchpadModel
+import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.statistics.graphs.padstats.PadStatsContract
 import uk.co.zac_h.spacex.statistics.graphs.padstats.PadStatsInteractorImpl
@@ -31,17 +30,24 @@ class PadStatsTest {
         mock(PadStatsContract.PadStatsInteractor::class.java)
     @Mock
     val mView: PadStatsContract.PadStatsView = mock(PadStatsContract.PadStatsView::class.java)
+
     @Mock
     val mListener: PadStatsContract.InteractorCallback =
         mock(PadStatsContract.InteractorCallback::class.java)
 
     @Mock
     val mLandingPadModel: LandingPadModel = mock(LandingPadModel::class.java)
+
     @Mock
     val mLaunchpadModel: LaunchpadModel = mock(LaunchpadModel::class.java)
 
+    private lateinit var query: QueryModel
+
     private lateinit var launchpadList: List<LaunchpadModel>
     private lateinit var landingPadList: List<LandingPadModel>
+
+    private val launchpadDocsModel = LaunchpadDocsModel(launchpadList)
+    private val landingPadDocsModel = LandingPadDocsModel(landingPadList)
 
     @Before
     fun setup() {
@@ -54,12 +60,12 @@ class PadStatsTest {
         launchpadList = listOf(mLaunchpadModel)
         landingPadList = listOf(mLandingPadModel)
 
-        `when`(mLaunchpadModel.nameLong).thenReturn("")
+        `when`(mLaunchpadModel.fullName).thenReturn("")
         `when`(mLaunchpadModel.launchAttempts).thenReturn(0)
         `when`(mLaunchpadModel.launchSuccesses).thenReturn(0)
         `when`(mLaunchpadModel.status).thenReturn("")
 
-        `when`(mLandingPadModel.nameFull).thenReturn("")
+        `when`(mLandingPadModel.fullName).thenReturn("")
         `when`(mLandingPadModel.landingAttempts).thenReturn(0)
         `when`(mLandingPadModel.landingSuccesses).thenReturn(0)
         `when`(mLandingPadModel.status).thenReturn("")
@@ -70,12 +76,12 @@ class PadStatsTest {
     fun `When get pads then add to view`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
-                getLandingPads()
-            } doReturn Calls.response(Response.success(landingPadList))
+                getQueriedLandingPads(query)
+            } doReturn Calls.response(Response.success(landingPadDocsModel))
 
             onBlocking {
-                getLaunchpads()
-            } doReturn Calls.response(Response.success(launchpadList))
+                getQueriedLaunchpads(query)
+            } doReturn Calls.response(Response.success(launchpadDocsModel))
         }
 
         presenter.getPads(mockRepo)
@@ -119,7 +125,7 @@ class PadStatsTest {
     fun `Show error in view when response from API fails`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
-                getLaunchpads()
+                getQueriedLaunchpads(query)
             } doReturn Calls.response(
                 Response.error(
                     404,
@@ -127,7 +133,7 @@ class PadStatsTest {
                 )
             )
             onBlocking {
-                getLandingPads()
+                getQueriedLandingPads(query)
             } doReturn Calls.response(
                 Response.error(
                     404,

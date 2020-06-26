@@ -1,13 +1,13 @@
 package uk.co.zac_h.spacex.launches
 
 import retrofit2.Call
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
 class LaunchesInteractorImpl : BaseNetwork(), LaunchesContract.LaunchesInteractor {
 
-    private var call: Call<List<LaunchesModel>>? = null
+    private var call: Call<LaunchesExtendedDocsModel>? = null
 
     override fun getLaunches(
         id: String,
@@ -15,7 +15,46 @@ class LaunchesInteractorImpl : BaseNetwork(), LaunchesContract.LaunchesInteracto
         api: SpaceXInterface,
         listener: LaunchesContract.InteractorCallback
     ) {
-        call = api.getLaunches(id, order).apply {
+
+        val query = QueryModel(
+            query = QueryUpcomingLaunchesModel(id == "upcoming"),
+            options = QueryOptionsModel(
+                pagination = false,
+                populate = listOf(
+                    QueryPopulateModel(path = "rocket", populate = "", select = listOf("name")),
+                    QueryPopulateModel(
+                        path = "cores",
+                        populate = listOf(
+                            QueryPopulateModel(
+                                path = "landpad",
+                                populate = "",
+                                select = listOf("name")
+                            ),
+                            QueryPopulateModel(
+                                path = "core",
+                                populate = "",
+                                select = listOf("reuse_count")
+                            )
+                        ),
+                        select = ""
+                    )
+                ),
+                sort = QueryLaunchesSortModel(order),
+                select = listOf(
+                    "flight_number",
+                    "name",
+                    "date_unix",
+                    "tbd",
+                    "links.patch.small",
+                    "rocket",
+                    "cores.core",
+                    "cores.reused",
+                    "cores.landpad"
+                )
+            )
+        )
+
+        call = api.getQueriedLaunches(query).apply {
             makeCall {
                 onResponseSuccess = { listener.onSuccess(it.body()) }
                 onResponseFailure = { listener.onError(it) }

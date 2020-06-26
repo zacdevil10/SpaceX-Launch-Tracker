@@ -95,7 +95,7 @@
     <string name="launch_pad_type_desc">Pad type</string>
 
     <!--About-->
-    <string name="powered_by">Powered by the r/SpaceX API</string>
+    <string name="powered_by">Powered by the r/SpaceX, Twitter and Reddit API</string>
     <string name="spacex_launch_tracker_icon_desc">SpaceX Launch Tracker Icon</string>
     <string name="version_name">v%1$s</string>
 
@@ -133,7 +133,7 @@
     <string name="menu_vehicles">Vehicles</string>
     <string name="first_flight_label">First Flight</string>
     <string name="capsule_specs_label">Capsule Specs</string>
-    <string name="rocket_specs_label">Rocket Specs</string>
+    <string name="vehicle_specs_label">Vehicle Specs</string>
     <string name="rocket_image_desc">Rocket Image</string>
     <string name="measurements">%1$s m / %2$s ft</string>
     <string name="mass_formatted">%1$s kg / %2$s lbs</string>
@@ -198,10 +198,16 @@
     <string name="edit_label">Edit</string>
     <string name="launch_site_label">Launch site:</string>
     <string name="mass_to_orbit_label">Mass to Orbit</string>
+    <string name="menu_crew">Crew</string>
 
     <string-array name="order">
         <item>Hot</item>
         <item>New</item>
     </string-array>
+
+    <!-- Crew -->
+    <string name="agency_label">Agency</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

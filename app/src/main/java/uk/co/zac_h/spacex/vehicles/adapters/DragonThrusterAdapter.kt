@@ -33,12 +33,12 @@ class DragonThrusterAdapter(
             type.text = thruster.type
             amount.text = thruster.amount.toString()
             pods.text = thruster.pods.toString()
-            fuel1.text = thruster.fuelType1.capitalize(Locale.ENGLISH)
-            fuel2.text = thruster.fuelType2.capitalize(Locale.ENGLISH)
+            fuel1.text = thruster.fuelType1?.capitalize(Locale.ENGLISH)
+            fuel2.text = thruster.fuelType2?.capitalize(Locale.ENGLISH)
             thrust.text = context?.getString(
                 R.string.thrust,
-                thruster.thrust.kN.metricFormat(),
-                thruster.thrust.lbf.metricFormat()
+                thruster.thrust?.kN?.metricFormat(),
+                thruster.thrust?.lbf?.metricFormat()
             )
         }
     }

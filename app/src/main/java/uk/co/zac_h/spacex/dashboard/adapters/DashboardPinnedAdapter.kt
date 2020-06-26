@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -14,7 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
-import uk.co.zac_h.spacex.utils.formatBlockNumber
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 
 class DashboardPinnedAdapter(
@@ -35,33 +35,37 @@ class DashboardPinnedAdapter(
         val launch = launches[position]
 
         holder.apply {
-            launchesCard.transitionName = launch.flightNumber.toString()
+            launchesCard.transitionName = launch.id
 
             launch.let {
-                missionPatch.visibility =
-                    launch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
-
-                Glide.with(itemView).load(launch.links.missionPatchSmall)
+                Glide.with(itemView)
+                    .load(launch.links?.missionPatch?.patchSmall)
+                    .error(context?.let { context ->
+                        ContextCompat.getDrawable(context, R.drawable.ic_mission_patch)
+                    })
+                    .fallback(context?.let { context ->
+                        ContextCompat.getDrawable(context, R.drawable.ic_mission_patch)
+                    })
+                    .placeholder(context?.let { context ->
+                        ContextCompat.getDrawable(context, R.drawable.ic_mission_patch)
+                    })
                     .into(missionPatch)
 
                 flightNumber.text = context?.getString(R.string.flight_number, it.flightNumber)
 
-                blockNumber.text = context?.getString(
-                    R.string.vehicle_block_type,
-                    it.rocket.name,
-                    it.rocket.firstStage?.cores?.formatBlockNumber()
-                )
                 missionName.text = it.missionName
-                date.text = it.tbd?.let { tbd ->
-                    it.launchDateUnix.formatDateMillisLong(tbd)
-                } ?: it.launchDateUnix.formatDateMillisLong()
+                date.text = it.launchDateUnix.formatDateMillisLong(it.tbd)
 
                 launchesCard.setOnClickListener { _ ->
                     itemView.findNavController().navigate(
                         R.id.action_dashboard_page_fragment_to_launch_details_fragment,
-                        bundleOf("launch" to it, "title" to it.missionName),
+                        bundleOf(
+                            "launch_id" to it.id,
+                            "flight_number" to it.flightNumber,
+                            "title" to it.missionName
+                        ),
                         null,
-                        FragmentNavigatorExtras(launchesCard to launch.flightNumber.toString())
+                        FragmentNavigatorExtras(launchesCard to launch.id)
                     )
                 }
             }
@@ -74,7 +78,6 @@ class DashboardPinnedAdapter(
         val launchesCard: CardView = itemView.findViewById(R.id.launches_card_view)
         val missionPatch: ImageView = itemView.findViewById(R.id.launches_mission_patch_image)
         val flightNumber: TextView = itemView.findViewById(R.id.launches_flight_no_text)
-        val blockNumber: TextView = itemView.findViewById(R.id.launches_block_text)
         val missionName: TextView = itemView.findViewById(R.id.launches_mission_name_text)
         val date: TextView = itemView.findViewById(R.id.launches_date_text)
     }

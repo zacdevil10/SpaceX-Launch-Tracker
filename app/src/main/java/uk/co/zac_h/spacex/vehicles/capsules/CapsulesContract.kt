@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
+import uk.co.zac_h.spacex.model.spacex.CapsulesDocsModel
 import uk.co.zac_h.spacex.model.spacex.CapsulesModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
@@ -24,7 +25,7 @@ interface CapsulesContract {
     }
 
     interface InteractorCallback {
-        fun onSuccess(capsules: List<CapsulesModel>?)
+        fun onSuccess(capsules: CapsulesDocsModel?)
         fun onError(error: String)
     }
 }

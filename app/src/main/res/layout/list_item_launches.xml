@@ -28,7 +28,7 @@
             tools:text="Flight 73" />
 
         <TextView
-            android:id="@+id/launches_block_text"
+            android:id="@+id/launches_vehicle_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
@@ -81,7 +81,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="@+id/launches_date_text"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/launches_block_text">
+            app:layout_constraintTop_toBottomOf="@id/launches_vehicle_text">
 
             <TextView
                 android:id="@+id/launches_reused_text"

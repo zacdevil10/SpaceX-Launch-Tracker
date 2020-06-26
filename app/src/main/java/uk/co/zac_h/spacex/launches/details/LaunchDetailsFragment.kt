@@ -12,17 +12,23 @@ import android.view.animation.Animation
 import android.view.animation.RotateAnimation
 import android.widget.Toast
 import android.widget.ToggleButton
+import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.*
 import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.launches.adapters.LaunchLinksAdapter
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
@@ -38,8 +44,10 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     private var presenter: LaunchDetailsContract.LaunchDetailsPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
-    private var launch: LaunchesModel? = null
+    private var launch: LaunchesExtendedModel? = null
+    private var launchShort: LaunchesExtendedModel? = null
     private var id: String? = null
+    private var flightNumber: Int? = null
 
     private var pinned: Boolean = false
 
@@ -55,12 +63,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        launch = if (savedInstanceState != null) {
-            savedInstanceState.getParcelable("launch")
-        } else {
-            arguments?.getParcelable("launch") as LaunchesModel?
-        }
+        launch = savedInstanceState?.getParcelable("launch")
+
         id = arguments?.getString("launch_id")
+        flightNumber = arguments?.getInt("flight_number")
+        launchShort = arguments?.getParcelable("launch_short")
     }
 
     override fun onCreateView(
@@ -74,6 +81,16 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (activity as MainActivity).setSupportActionBar(binding.toolbar)
+
+        val navController = NavHostFragment.findNavController(this)
+        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        val appBarConfig =
+            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
+                .setDrawerLayout(drawerLayout).build()
+
+        binding.toolbar.setupWithNavController(navController, appBarConfig)
 
         pinnedSharedPreferences = PinnedSharedPreferencesHelperImpl(
             context?.getSharedPreferences(
@@ -89,11 +106,19 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         )
 
         launch?.let {
-            presenter?.addLaunchModel(it)
-            binding.launchDetailsContainer.transitionName = it.flightNumber.toString()
-            pinned = presenter?.isPinned(it.flightNumber.toString()) ?: false
-        } ?: id?.let {
+            println(it)
+            presenter?.addLaunchModel(it, true)
+            binding.launchDetailsContainer.transitionName = it.id
+            pinned = presenter?.isPinned(it.id) ?: false
+        } ?: flightNumber?.let {
+            launchShort?.let {
+                presenter?.addLaunchModel(launchShort, false)
+            }
             presenter?.getLaunch(it)
+        }
+
+        id?.let {
+            binding.launchDetailsContainer.transitionName = it
             pinned = presenter?.isPinned(it) ?: false
         }
 
@@ -170,7 +195,9 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(
-            if (id?.let { id -> presenter?.isPinned(id) } ?: presenter?.isPinned(launch?.flightNumber.toString()) == true) {
+            if (launch?.let { launchesModel -> presenter?.isPinned(launchesModel.id) } ?: presenter?.isPinned(
+                    id!!
+                ) == true) {
                 R.menu.menu_details_alternate
             } else {
                 R.menu.menu_details
@@ -181,13 +208,13 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.pin -> {
-            presenter?.pinLaunch(launch?.flightNumber?.toString() ?: id.toString(), true)
+            presenter?.pinLaunch(launch?.id ?: id.toString(), true)
             pinned = true
             activity?.invalidateOptionsMenu()
             true
         }
         R.id.unpin -> {
-            presenter?.pinLaunch(launch?.flightNumber?.toString() ?: id.toString(), false)
+            presenter?.pinLaunch(launch?.id ?: id.toString(), false)
             pinned = false
             activity?.invalidateOptionsMenu()
             true
@@ -199,15 +226,18 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updateLaunchDataView(launch: LaunchesModel?) {
+    override fun updateLaunchDataView(launch: LaunchesExtendedModel?, isExt: Boolean) {
         launch?.let {
-            this.launch = launch
+            if (isExt) this.launch = launch
+
+            binding.toolbar.title = launch.missionName
 
             binding.apply {
-                launchDetailsContainer.transitionName = it.flightNumber.toString()
+                launchDetailsContainer.transitionName = it.id
 
+
+                val time = (launch.launchDateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
                 it.tbd?.let { tbd ->
-                    val time = launch.launchDateUnix.times(1000) - System.currentTimeMillis()
                     if (!tbd && time >= 0) {
                         setCountdown(time)
                         showCountdown()
@@ -218,47 +248,53 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
                 if (id == null) id = launch.flightNumber.toString()
 
-                launch.links.missionPatchSmall?.let {
-                    Glide.with(this@LaunchDetailsFragment)
-                        .load(it)
-                        .into(launchDetailsMissionPatchImage)
-                }
+                Glide.with(this@LaunchDetailsFragment)
+                    .load(launch.links?.missionPatch?.patchSmall)
+                    .error(context?.let {
+                        ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
+                    })
+                    .fallback(context?.let {
+                        ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
+                    })
+                    .placeholder(context?.let {
+                        ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
+                    })
+                    .into(launchDetailsMissionPatchImage)
 
                 launchDetailsNumberText.text = context?.getString(
                     R.string.flight_number,
                     launch.flightNumber
                 )
-                launchDetailsRocketTypeText.text = launch.rocket.name
+                launchDetailsRocketTypeText.text = launch.rocket?.name
                 launchDetailsMissionNameText.text = launch.missionName
 
-                launchDetailsSiteNameText.text = launch.launchSite.name
+                launchDetailsSiteNameText.text = launch.launchpad?.name
 
                 launchDetailsDateText.text = launch.tbd?.let { tbd ->
-                    launch.launchDateUnix.formatDateMillisLong(tbd)
-                } ?: launch.launchDateUnix.formatDateMillisLong()
+                    launch.launchDateUnix?.formatDateMillisLong(tbd)
+                }
 
                 launch.staticFireDateUnix?.let { date ->
                     launchDetailsStaticFireDateLabel.visibility = View.VISIBLE
+                    launchDetailsStaticFireDateText.visibility = View.VISIBLE
                     launchDetailsStaticFireDateText.text = date.formatDateMillisLong()
-                } ?: run {
-                    launchDetailsStaticFireDateText.visibility = View.GONE
                 }
 
                 launchDetailsDetailsText.visibility =
                     if (launch.details.isNullOrEmpty()) View.GONE else View.VISIBLE
                 launchDetailsDetailsText.text = launch.details
 
-                launch.rocket.firstStage?.cores?.forEach { core ->
+                launch.cores?.forEach { core ->
+                    coreAssigned = core.core != null
                     if (coreAssigned) return@forEach
-                    coreAssigned = core.serial != null
                 }
 
-                if (coreAssigned) launch.rocket.firstStage?.cores?.let {
+                if (coreAssigned) launch.cores.let {
                     //If a core has been assigned to a launch then add the adapter to the RecyclerView
                     launchDetailsCoresRecycler.apply {
                         layoutManager = LinearLayoutManager(this@LaunchDetailsFragment.context)
                         setHasFixedSize(true)
-                        adapter = FirstStageAdapter(it)
+                        adapter = it?.let { it1 -> FirstStageAdapter(it1) }
                     }
                 } else {
                     //If no core has been assigned yet then hide the RecyclerView and related heading
@@ -277,60 +313,30 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                     )
                     adapter = PayloadAdapter(
                         this@LaunchDetailsFragment.context,
-                        launch.rocket.secondStage?.payloads
+                        launch.payloads
                     )
                     (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
                 }
 
                 val links = ArrayList<LinksModel>()
 
-                launch.links.videoLink?.let { link ->
-                    links.add(
-                        LinksModel(
-                            "Watch",
-                            link
-                        )
-                    )
+                launch.links?.webcast?.let { link ->
+                    links.add(LinksModel("Watch", link))
                 }
-                launch.links.redditCampaign?.let { link ->
-                    links.add(
-                        LinksModel(
-                            "Reddit Campaign",
-                            link
-                        )
-                    )
+                launch.links?.redditLinks?.campaign?.let { link ->
+                    links.add(LinksModel("Reddit Campaign", link))
                 }
-                launch.links.redditLaunch?.let { link ->
-                    links.add(
-                        LinksModel(
-                            "Reddit Launch",
-                            link
-                        )
-                    )
+                launch.links?.redditLinks?.launch?.let { link ->
+                    links.add(LinksModel("Reddit Launch", link))
                 }
-                launch.links.redditMedia?.let { link ->
-                    links.add(
-                        LinksModel(
-                            "Reddit Media",
-                            link
-                        )
-                    )
+                launch.links?.redditLinks?.media?.let { link ->
+                    links.add(LinksModel("Reddit Media", link))
                 }
-                launch.links.presskit?.let { link ->
-                    links.add(
-                        LinksModel(
-                            "Press Kit",
-                            link
-                        )
-                    )
+                launch.links?.presskit?.let { link ->
+                    links.add(LinksModel("Press Kit", link))
                 }
-                launch.links.wikipedia?.let { link ->
-                    links.add(
-                        LinksModel(
-                            "Wikipedia Article",
-                            link
-                        )
-                    )
+                launch.links?.wikipedia?.let { link ->
+                    links.add(LinksModel("Wikipedia Article", link))
                 }
 
                 if (links.isEmpty()) launchDetailsLinksText.visibility = View.GONE
@@ -350,11 +356,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 data = CalendarContract.Events.CONTENT_URI
                 putExtra(
                     CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                    it.launchDateUnix.times(1000L)
+                    it.launchDateUnix?.times(1000L)
                 )
                 putExtra(
                     CalendarContract.EXTRA_EVENT_END_TIME,
-                    it.launchDateUnix.times(1000L).plus(3600000)
+                    it.launchDateUnix?.times(1000L)?.plus(3600000)
                 )
                 putExtra(
                     CalendarContract.Events.TITLE,
@@ -444,7 +450,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            id?.let {
+            flightNumber?.let {
                 if (launch == null) presenter?.getLaunch(it)
             }
         }

@@ -2,11 +2,8 @@ package uk.co.zac_h.spacex.base
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -19,14 +16,6 @@ class MainActivity : AppCompatActivity(),
 
     private lateinit var binding: ActivityMainBinding
 
-    private val startDestinations = mutableSetOf(
-        R.id.dashboard_page_fragment,
-        R.id.news_page_fragment,
-        R.id.launches_page_fragment,
-        R.id.vehicles_page_fragment,
-        R.id.statistics_page_fragment
-    )
-
     private var snackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +23,9 @@ class MainActivity : AppCompatActivity(),
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        setSupportActionBar(binding.toolbar)
+        savedInstanceState?.let {
+            currentPosition = it.getInt("crew_pager_position")
+        }
 
         (application as App).networkStateChangeListener.apply {
             addListener(this@MainActivity)
@@ -53,11 +44,6 @@ class MainActivity : AppCompatActivity(),
             supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
         val navController = navHostFragment.navController
 
-        val drawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder(startDestinations).setDrawerLayout(drawerLayout).build()
-
-        findViewById<Toolbar>(R.id.toolbar).setupWithNavController(navController, appBarConfig)
         findViewById<NavigationView>(R.id.nav_view).setupWithNavController(navController)
 
         (application as App).preferencesRepo.themeModeLive.observe(this, Observer { mode ->
@@ -68,6 +54,11 @@ class MainActivity : AppCompatActivity(),
     override fun onStart() {
         super.onStart()
         (application as App).networkStateChangeListener.updateState()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt("crew_pager_position", currentPosition)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroy() {
@@ -85,5 +76,9 @@ class MainActivity : AppCompatActivity(),
 
     override fun networkLost() {
         snackbar?.show()
+    }
+
+    companion object {
+        var currentPosition: Int = 0
     }
 }

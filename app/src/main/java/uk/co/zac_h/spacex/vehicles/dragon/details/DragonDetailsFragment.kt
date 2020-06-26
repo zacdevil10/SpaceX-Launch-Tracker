@@ -4,10 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentDragonDetailsBinding
 import uk.co.zac_h.spacex.model.spacex.DragonModel
 import uk.co.zac_h.spacex.utils.metricFormat
@@ -41,18 +47,29 @@ class DragonDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val navController = NavHostFragment.findNavController(this)
+        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        val appBarConfig =
+            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
+                .setDrawerLayout(drawerLayout).build()
+
+        NavigationUI.setupWithNavController(
+            binding.toolbarLayout,
+            binding.toolbar,
+            navController,
+            appBarConfig
+        )
+
         dragon?.let {
             binding.dragonDetailsCoordinator.transitionName = it.id
 
-            binding.dragonDetailsAppbarImage.setImageResource(
-                when (it.id) {
-                    "dragon1" -> R.drawable.dragon1
-                    "dragon2" -> R.drawable.dragon2
-                    else -> R.drawable.dragon2 //TODO: Add error image.
-                }
-            )
+            binding.toolbar.title = it.name
 
-            binding.dragonDetailsNameText.text = it.name
+            Glide.with(view)
+                .load(it.flickr?.random())
+                .error(R.drawable.ic_baseline_error_outline_24)
+                .into(binding.header)
+
             binding.dragonDetailsText.text = it.description
 
             when (it.active) {
@@ -70,71 +87,89 @@ class DragonDetailsFragment : Fragment() {
             binding.dragonDetailsFirstFlightText.text = it.firstFlight
             binding.dragonDetailsDryMassText.text = context?.getString(
                 R.string.mass_formatted,
-                it.dryMassKg.metricFormat(),
-                it.dryMassLb.metricFormat()
+                it.dryMassKg?.metricFormat(),
+                it.dryMassLb?.metricFormat()
             )
-            binding.dragonDetailsHeightText.text = context?.getString(
-                R.string.measurements,
-                it.heightWithTrunk.meters.metricFormat(),
-                it.heightWithTrunk.feet.metricFormat()
-            )
-            binding.dragonDetailsDiameterText.text = context?.getString(
-                R.string.measurements,
-                it.diameter.meters.metricFormat(),
-                it.diameter.feet.metricFormat()
-            )
+            it.heightWithTrunk?.let { heightWithTrunk ->
+                binding.dragonDetailsHeightText.text = context?.getString(
+                    R.string.measurements,
+                    heightWithTrunk.meters?.metricFormat(),
+                    heightWithTrunk.feet?.metricFormat()
+                )
+            }
+            it.diameter?.let { diameter ->
+                binding.dragonDetailsDiameterText.text = context?.getString(
+                    R.string.measurements,
+                    diameter.meters?.metricFormat(),
+                    diameter.feet?.metricFormat()
+                )
+            }
 
-            binding.dragonDetailsShieldMaterialText.text = it.heatShield.material
+            binding.dragonDetailsShieldMaterialText.text = it.heatShield?.material
             binding.dragonDetailsShieldSizeText.text =
-                it.heatShield.size.toString() //TODO: Format with units
+                it.heatShield?.size.toString() //TODO: Format with units
             binding.dragonDetailsShieldTempText.text =
-                it.heatShield.temp.toString() //TODO: Format with units
+                it.heatShield?.temp.toString() //TODO: Format with units
 
             binding.dragonDetailsThrusterRecycler.apply {
                 layoutManager = LinearLayoutManager(this@DragonDetailsFragment.context)
                 setHasFixedSize(true)
-                adapter = DragonThrusterAdapter(this@DragonDetailsFragment.context, it.thrusters)
+                adapter = it.thrusters?.let { thrusters ->
+                    DragonThrusterAdapter(this@DragonDetailsFragment.context, thrusters)
+                }
             }
 
-            binding.dragonDetailsLaunchMassText.text = context?.getString(
-                R.string.mass_formatted,
-                it.launchPayloadMass.kg.metricFormat(),
-                it.launchPayloadMass.lb.metricFormat()
-            )
+            it.launchPayloadMass?.let { launchPayloadMass ->
+                binding.dragonDetailsLaunchMassText.text = context?.getString(
+                    R.string.mass_formatted,
+                    launchPayloadMass.kg?.metricFormat(),
+                    launchPayloadMass.lb?.metricFormat()
+                )
+            }
 
-            binding.dragonDetailsReturnMassText.text = context?.getString(
-                R.string.mass_formatted,
-                it.returnPayloadMass.kg.metricFormat(),
-                it.returnPayloadMass.lb.metricFormat()
-            )
+            it.returnPayloadMass?.let { returnPayloadMass ->
+                binding.dragonDetailsReturnMassText.text = context?.getString(
+                    R.string.mass_formatted,
+                    returnPayloadMass.kg?.metricFormat(),
+                    returnPayloadMass.lb?.metricFormat()
+                )
+            }
 
-            binding.dragonDetailsLaunchVolText.text = context?.getString(
-                R.string.volume_formatted,
-                it.launchPayloadVolume.cubicMeters.metricFormat(),
-                it.launchPayloadVolume.cubicFeet.metricFormat()
-            )
+            it.launchPayloadVolume?.let { launchPayloadVolume ->
+                binding.dragonDetailsLaunchVolText.text = context?.getString(
+                    R.string.volume_formatted,
+                    launchPayloadVolume.cubicMeters?.metricFormat(),
+                    launchPayloadVolume.cubicFeet?.metricFormat()
+                )
+            }
 
-            binding.dragonDetailsReturnVolText.text = context?.getString(
-                R.string.volume_formatted,
-                it.returnPayloadVol.cubicMeters.metricFormat(),
-                it.returnPayloadVol.cubicFeet.metricFormat()
-            )
+            it.returnPayloadVol?.let { returnPayloadVol ->
+                binding.dragonDetailsReturnVolText.text = context?.getString(
+                    R.string.volume_formatted,
+                    returnPayloadVol.cubicMeters?.metricFormat(),
+                    returnPayloadVol.cubicFeet?.metricFormat()
+                )
+            }
 
-            binding.dragonDetailsPressurizedVolText.text = context?.getString(
-                R.string.volume_formatted,
-                it.pressurizedCapsule.payloadVolume.cubicMeters.metricFormat(),
-                it.pressurizedCapsule.payloadVolume.cubicFeet.metricFormat()
-            )
+            it.pressurizedCapsule?.payloadVolume?.let { payloadVolume ->
+                binding.dragonDetailsPressurizedVolText.text = context?.getString(
+                    R.string.volume_formatted,
+                    payloadVolume.cubicMeters?.metricFormat(),
+                    payloadVolume.cubicFeet?.metricFormat()
+                )
+            }
 
-            binding.dragonDetailsTrunkVolText.text = context?.getString(
-                R.string.volume_formatted,
-                it.trunk.trunkVolume.cubicMeters.metricFormat(),
-                it.trunk.trunkVolume.cubicFeet.metricFormat()
-            )
+            it.trunk?.trunkVolume?.let { trunkVolume ->
+                binding.dragonDetailsTrunkVolText.text = context?.getString(
+                    R.string.volume_formatted,
+                    trunkVolume.cubicMeters?.metricFormat(),
+                    trunkVolume.cubicFeet?.metricFormat()
+                )
+            }
 
-            binding.dragonDetailsSolarArrayText.text = it.trunk.cargo.solarArray.toString()
+            binding.dragonDetailsSolarArrayText.text = (it.trunk?.cargo?.solarArray ?: 0).toString()
 
-            when (it.trunk.cargo.unpressurizedCargo) {
+            when (it.trunk?.cargo?.unpressurizedCargo) {
                 true -> binding.dragonDetailsUnpressurizedCargoImage.setImageAndTint(
                     R.drawable.ic_check_circle_black_24dp,
                     R.color.success

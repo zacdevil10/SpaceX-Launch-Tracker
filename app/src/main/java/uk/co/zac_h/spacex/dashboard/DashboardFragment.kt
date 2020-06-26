@@ -1,20 +1,28 @@
 package uk.co.zac_h.spacex.dashboard
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardPinnedAdapter
 import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
@@ -24,7 +32,6 @@ import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_PINNED_LAUNCH
 import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_PREVIOUS_LAUNCH
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
-import uk.co.zac_h.spacex.utils.formatBlockNumber
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
@@ -76,6 +83,18 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as MainActivity).setSupportActionBar(binding.toolbar)
+
+        val navController = NavHostFragment.findNavController(this)
+        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        val appBarConfig =
+            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
+                .setDrawerLayout(drawerLayout).build()
+
+        binding.toolbar.setupWithNavController(navController, appBarConfig)
+
+        binding.toolbar.title = resources.getString(R.string.menu_home)
+
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
@@ -116,10 +135,15 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         pinnedPrefs.pinnedLive.observe(viewLifecycleOwner, Observer { mode ->
             mode?.let {
                 it.forEach { element ->
+                    if (element.key.length < 4) {
+                        pinnedSharedPreferences.removePinnedLaunch(element.key)
+                        return@forEach
+                    }
+
                     if (element.value as Boolean) {
-                        if (!pinnedKeysArray.contains(element.key)) presenter?.getSingleLaunch(
-                            element.key
-                        )
+                        if (!pinnedKeysArray.contains(element.key)) {
+                            presenter?.getSingleLaunch(element.key)
+                        }
                     } else {
                         pinnedArray.removeAt(pinnedKeysArray.indexOf(element.key))
                         pinnedAdapter.notifyItemRemoved(pinnedKeysArray.indexOf(element.key))
@@ -192,35 +216,38 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         binding.dashboardNextLayout.dashboardNextCardView.visibility = View.VISIBLE
 
-        binding.dashboardNextLayout.dashboardNextCardView.transitionName =
-            nextLaunch.flightNumber.toString()
-
-        binding.dashboardNextLayout.dashboardNextMissionPatchImage.visibility =
-            nextLaunch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
+        binding.dashboardNextLayout.dashboardNextCardView.transitionName = nextLaunch.id
 
         Glide.with(this)
-            .load(nextLaunch.links.missionPatchSmall)
+            .load(nextLaunch.links?.missionPatch?.patchSmall)
+            .error(context?.let {
+                ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
+            })
+            .fallback(context?.let {
+                ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
+            })
+            .placeholder(context?.let {
+                ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
+            })
             .into(binding.dashboardNextLayout.dashboardNextMissionPatchImage)
 
         binding.dashboardNextLayout.dashboardNextFlightNoText.text =
             context?.getString(R.string.flight_number, nextLaunch.flightNumber)
 
-        binding.dashboardNextLayout.dashboardNextBlockText.text = context?.getString(
-            R.string.vehicle_block_type,
-            nextLaunch.rocket.name,
-            nextLaunch.rocket.firstStage?.cores?.formatBlockNumber()
-        )
         binding.dashboardNextLayout.dashboardNextMissionNameText.text = nextLaunch.missionName
-        binding.dashboardNextLayout.dashboardNextDateText.text = nextLaunch.tbd?.let { tbd ->
-            nextLaunch.launchDateUnix.formatDateMillisLong(tbd)
-        } ?: nextLaunch.launchDateUnix.formatDateMillisLong()
+        binding.dashboardNextLayout.dashboardNextDateText.text =
+            nextLaunch.launchDateUnix.formatDateMillisLong(nextLaunch.tbd)
 
         binding.dashboardNextLayout.dashboardNextCardView.setOnClickListener {
             findNavController().navigate(
                 R.id.action_dashboard_page_fragment_to_launch_details_fragment,
-                bundleOf("launch" to nextLaunch, "title" to nextLaunch.missionName),
+                bundleOf(
+                    "launch_id" to nextLaunch.id,
+                    "flight_number" to nextLaunch.flightNumber,
+                    "title" to nextLaunch.missionName
+                ),
                 null,
-                FragmentNavigatorExtras(binding.dashboardNextLayout.dashboardNextCardView to nextLaunch.flightNumber.toString())
+                FragmentNavigatorExtras(binding.dashboardNextLayout.dashboardNextCardView to nextLaunch.id)
             )
         }
     }
@@ -230,38 +257,39 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         binding.dashboardLatestLayout.dashboardLatestCardView.visibility = View.VISIBLE
 
-        binding.dashboardLatestLayout.dashboardLatestCardView.transitionName =
-            latestLaunch.flightNumber.toString()
+        binding.dashboardLatestLayout.dashboardLatestCardView.transitionName = latestLaunch.id
 
-        binding.dashboardLatestLayout.dashboardLatestMissionPatchImage.visibility =
-            latestLaunch.links.missionPatchSmall?.let { View.VISIBLE } ?: View.GONE
-
-        Glide.with(this).load(latestLaunch.links.missionPatchSmall)
+        Glide.with(this)
+            .load(latestLaunch.links?.missionPatch?.patchSmall)
+            .error(context?.let {
+                ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
+            })
+            .fallback(context?.let {
+                ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
+            })
+            .placeholder(context?.let {
+                ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
+            })
             .into(binding.dashboardLatestLayout.dashboardLatestMissionPatchImage)
 
         binding.dashboardLatestLayout.dashboardLatestFlightNoText.text =
             context?.getString(R.string.flight_number, latestLaunch.flightNumber)
 
-        binding.dashboardLatestLayout.dashboardLatestBlockText.text = context?.getString(
-            R.string.vehicle_block_type,
-            latestLaunch.rocket.name,
-            latestLaunch.rocket.firstStage?.cores?.formatBlockNumber()
-        )
-        binding.dashboardLatestLayout.dashboardLatestMissionNameText.text =
-            latestLaunch.missionName
-        binding.dashboardLatestLayout.dashboardLatestDateText.text = latestLaunch.tbd?.let { tbd ->
-            latestLaunch.launchDateUnix.formatDateMillisLong(tbd)
-        } ?: latestLaunch.launchDateUnix.formatDateMillisLong()
+        binding.dashboardLatestLayout.dashboardLatestMissionNameText.text = latestLaunch.missionName
+
+        binding.dashboardLatestLayout.dashboardLatestDateText.text =
+            latestLaunch.launchDateUnix.formatDateMillisLong(latestLaunch.tbd)
 
         binding.dashboardLatestLayout.dashboardLatestCardView.setOnClickListener {
             findNavController().navigate(
                 R.id.action_dashboard_page_fragment_to_launch_details_fragment,
                 bundleOf(
-                    "launch" to latestLaunch,
+                    "launch_id" to latestLaunch.id,
+                    "flight_number" to latestLaunch.flightNumber,
                     "title" to latestLaunch.missionName
                 ),
                 null,
-                FragmentNavigatorExtras(binding.dashboardLatestLayout.dashboardLatestCardView to latestLaunch.flightNumber.toString())
+                FragmentNavigatorExtras(binding.dashboardLatestLayout.dashboardLatestCardView to latestLaunch.id)
             )
         }
     }
@@ -282,7 +310,14 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
             }
 
             override fun onFinish() {
-
+                nextLaunchModel?.links?.webcast?.let { link ->
+                    binding.dashboardCountdownText.apply {
+                        text = "LIVE"
+                        setOnClickListener {
+                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
+                        }
+                    }
+                }
             }
         }
 

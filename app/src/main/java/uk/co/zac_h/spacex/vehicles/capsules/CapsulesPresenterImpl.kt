@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
-import uk.co.zac_h.spacex.model.spacex.CapsulesModel
+import uk.co.zac_h.spacex.model.spacex.CapsulesDocsModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class CapsulesPresenterImpl(
@@ -17,11 +17,11 @@ class CapsulesPresenterImpl(
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(capsules: List<CapsulesModel>?) {
+    override fun onSuccess(capsules: CapsulesDocsModel?) {
         view.apply {
             hideProgress()
             toggleSwipeRefresh(false)
-            capsules?.let { updateCapsules(it) }
+            capsules?.let { updateCapsules(it.docs) }
         }
     }
 

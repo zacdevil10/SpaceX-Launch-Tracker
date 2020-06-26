@@ -1,12 +1,13 @@
 package uk.co.zac_h.spacex.launches.details
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 interface LaunchDetailsContract {
 
     interface LaunchDetailsView {
-        fun updateLaunchDataView(launch: LaunchesModel?)
+        fun updateLaunchDataView(launch: LaunchesExtendedModel?, isExt: Boolean)
         fun newCalendarEvent()
         fun openWebLink(link: String)
         fun showProgress()
@@ -19,8 +20,8 @@ interface LaunchDetailsContract {
     }
 
     interface LaunchDetailsPresenter {
-        fun getLaunch(id: String, api: SpaceXInterface = SpaceXInterface.create())
-        fun addLaunchModel(launchModel: LaunchesModel?)
+        fun getLaunch(flightNumber: Int, api: SpaceXInterface = SpaceXInterface.create())
+        fun addLaunchModel(launchModel: LaunchesExtendedModel?, isExt: Boolean)
         fun pinLaunch(id: String, pin: Boolean)
         fun isPinned(id: String): Boolean
         fun createEvent()
@@ -29,12 +30,12 @@ interface LaunchDetailsContract {
     }
 
     interface LaunchDetailsInteractor {
-        fun getSingleLaunch(id: String, api: SpaceXInterface, listener: InteractorCallback)
+        fun getSingleLaunch(flightNumber: Int, api: SpaceXInterface, listener: InteractorCallback)
         fun cancelRequest(): Unit?
     }
 
     interface InteractorCallback {
-        fun onSuccess(launchModel: LaunchesModel?)
+        fun onSuccess(launchModel: LaunchesExtendedDocsModel?)
         fun onError(error: String)
     }
 }

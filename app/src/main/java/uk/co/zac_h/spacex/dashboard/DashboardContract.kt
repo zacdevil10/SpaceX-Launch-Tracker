@@ -48,8 +48,7 @@ interface DashboardContract {
 
     interface DashboardInteractor {
         fun getSingleLaunch(id: String, api: SpaceXInterface, listener: InteractorCallback)
-        fun hasActiveRequest(): Boolean
-        fun cancelAllRequests(): Unit?
+        fun cancelAllRequests()
     }
 
     interface InteractorCallback {

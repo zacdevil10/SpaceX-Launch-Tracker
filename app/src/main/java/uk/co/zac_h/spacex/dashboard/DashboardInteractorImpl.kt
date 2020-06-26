@@ -9,8 +9,6 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardIntera
 
     private var call: Call<LaunchesModel>? = null
 
-    private val active = ArrayList<String>()
-
     override fun getSingleLaunch(
         id: String,
         api: SpaceXInterface,
@@ -18,13 +16,15 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardIntera
     ) {
         call = api.getSingleLaunch(id).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(id, it.body()) }
-                onResponseFailure = { listener.onError(it) }
+                onResponseSuccess = {
+                    listener.onSuccess(id, it.body())
+                }
+                onResponseFailure = {
+                    listener.onError(it)
+                }
             }
         }
     }
-
-    override fun hasActiveRequest(): Boolean = active.isNotEmpty()
 
     override fun cancelAllRequests() = terminateAll()
 }

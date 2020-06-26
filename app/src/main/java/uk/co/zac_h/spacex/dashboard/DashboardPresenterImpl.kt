@@ -88,17 +88,14 @@ class DashboardPresenterImpl(
                 "next" -> {
                     view.updateNextLaunch(launchModel)
                     launchModel.let { launch ->
-                        launch.tbd?.let {
-                            val time =
-                                launch.launchDateUnix.times(1000) - System.currentTimeMillis()
-                            if (!it && time >= 0) {
-                                view.apply {
-                                    setCountdown(time)
-                                    showCountdown()
-                                }
-                            } else {
-                                view.hideCountdown()
+                        val time = (launch.launchDateUnix.times(1000)) - System.currentTimeMillis()
+                        if (!launch.tbd && time >= 0) {
+                            view.apply {
+                                setCountdown(time)
+                                showCountdown()
                             }
+                        } else {
+                            view.hideCountdown()
                         }
                     }
                 }
@@ -110,7 +107,7 @@ class DashboardPresenterImpl(
             }
         }
 
-        if (!interactor.hasActiveRequest()) view.hideProgress()
+        view.hideProgress()
         view.toggleSwipeProgress(false)
     }
 

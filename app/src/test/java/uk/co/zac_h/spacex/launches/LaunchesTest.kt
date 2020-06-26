@@ -13,7 +13,7 @@ import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 import retrofit2.mock.Calls
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class LaunchesTest {
@@ -34,9 +34,12 @@ class LaunchesTest {
         mock(LaunchesContract.InteractorCallback::class.java)
 
     @Mock
-    val mLaunchesModel: LaunchesModel = mock(LaunchesModel::class.java)
+    val mLaunchesExtendedModel: LaunchesExtendedModel = mock(LaunchesExtendedModel::class.java)
 
-    private lateinit var launchesList: List<LaunchesModel>
+    private val mLaunchesExtendedDocsModel: LaunchesExtendedDocsModel =
+        LaunchesExtendedDocsModel(listOf(mLaunchesExtendedModel))
+
+    private lateinit var query: QueryModel
 
     @Before
     fun setup() {
@@ -46,15 +49,18 @@ class LaunchesTest {
         mPresenter = LaunchesPresenterImpl(mView, mInteractor)
         presenter = LaunchesPresenterImpl(mView, interactor)
 
-        launchesList = listOf(mLaunchesModel)
+        query = QueryModel(
+            query = QueryUpcomingLaunchesModel(true),
+            options = QueryOptionsModel(false, "", QueryLaunchesSortModel("desc"), "")
+        )
     }
 
     @Test
     fun `When get future launches then add ascending to view`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getLaunches("upcoming", "asc") } doReturn Calls.response(
+            onBlocking { getQueriedLaunches(query) } doReturn Calls.response(
                 Response.success(
-                    launchesList
+                    mLaunchesExtendedDocsModel
                 )
             )
         }
@@ -64,16 +70,16 @@ class LaunchesTest {
         verifyBlocking(mView) {
             showProgress()
             hideProgress()
-            updateLaunchesList(launchesList)
+            updateLaunchesList(mLaunchesExtendedDocsModel.docs)
         }
     }
 
     @Test
     fun `When get past launches then add descending to view`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getLaunches("past", "desc") } doReturn Calls.response(
+            onBlocking { getQueriedLaunches(query) } doReturn Calls.response(
                 Response.success(
-                    launchesList
+                    mLaunchesExtendedDocsModel
                 )
             )
         }
@@ -83,17 +89,17 @@ class LaunchesTest {
         verifyBlocking(mView) {
             showProgress()
             hideProgress()
-            updateLaunchesList(launchesList)
+            updateLaunchesList(mLaunchesExtendedDocsModel.docs)
         }
     }
 
     @Test
     fun `When response from API is unsuccessful`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getLaunches("past", "desc") } doReturn Calls.response(
+            onBlocking { getQueriedLaunches(query) } doReturn Calls.response(
                 Response.error(
-                404,
-                "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                    404,
+                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
                 )
             )
         }
@@ -106,10 +112,10 @@ class LaunchesTest {
     @Test
     fun `Show error in view when response from API fails`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getLaunches("past", "desc") } doReturn Calls.response(
+            onBlocking { getQueriedLaunches(query) } doReturn Calls.response(
                 Response.error(
-                404,
-                "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                    404,
+                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
                 )
             )
         }

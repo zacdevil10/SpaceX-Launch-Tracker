@@ -8,27 +8,46 @@
     android:background="@color/color_background"
     tools:context=".launches.details.LaunchDetailsFragment">
 
-    <TextView
-        android:id="@+id/launch_details_countdown_text"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/color_secondary"
-        android:letterSpacing="0.1"
-        android:textAlignment="center"
-        android:textAppearance="?textAppearanceHeadline5"
-        android:textColor="@android:color/white"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="43:13:23:55" />
+        app:elevation="4dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:elevation="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:textColor="?colorOnSurface" />
+
+        <TextView
+            android:id="@+id/launch_details_countdown_text"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?colorPrimary"
+            android:letterSpacing="0.1"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textAlignment="center"
+            android:textAppearance="?textAppearanceHeadline5"
+            android:textColor="?colorOnPrimary"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/app_bar"
+            tools:text="43:13:23:55" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/launch_details_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/launch_details_countdown_text">
+        app:layout_constraintTop_toBottomOf="@id/app_bar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="600dp"
@@ -193,6 +212,7 @@
                     android:id="@+id/launch_details_static_fire_date_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/launch_details_static_fire_date_label"
                     app:layout_constraintTop_toBottomOf="@id/launch_details_date_text"

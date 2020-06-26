@@ -9,11 +9,11 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.MissionsModel
+import uk.co.zac_h.spacex.model.spacex.CoreLaunchesModel
 
 class CoreMissionsAdapter(
     private val context: Context?,
-    private val missions: List<MissionsModel>
+    private val missions: List<CoreLaunchesModel>
 ) :
     RecyclerView.Adapter<CoreMissionsAdapter.ViewHolder>() {
 
@@ -37,7 +37,8 @@ class CoreMissionsAdapter(
                     .navigate(
                         R.id.action_core_details_fragment_to_launch_details_fragment,
                         bundleOf(
-                            "launch_id" to mission.flightNumber.toString(),
+                            "launch_id" to mission.id,
+                            "flight_number" to mission.flightNumber,
                             "title" to mission.name
                         )
                     )

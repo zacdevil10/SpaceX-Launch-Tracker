@@ -4,8 +4,8 @@ import android.os.Parcelable
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 
+// v4
 @Parcelize
-data class MissionsModel(
-    @field:Json(name = "name") val name: String?,
-    @field:Json(name = "flight") val flightNumber: Int?
+data class PressurizedCapsuleModel(
+    @field:Json(name = "payload_volume") val payloadVolume: VolumeModel?
 ) : Parcelable

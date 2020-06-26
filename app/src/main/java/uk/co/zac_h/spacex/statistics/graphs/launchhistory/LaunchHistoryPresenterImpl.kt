@@ -1,9 +1,10 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.utils.RocketIds
+import uk.co.zac_h.spacex.utils.RocketType
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
-import kotlin.math.roundToInt
 
 class LaunchHistoryPresenterImpl(
     private val view: LaunchHistoryContract.LaunchHistoryView,
@@ -44,35 +45,40 @@ class LaunchHistoryPresenterImpl(
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(launches: List<LaunchesModel>?, animate: Boolean) {
-        val falconOne = HistoryStatsModel("falcon1")
-        val falconNine = HistoryStatsModel("falcon9")
-        val falconHeavy = HistoryStatsModel("falconheavy")
+    override fun onSuccess(launchDocs: LaunchesExtendedDocsModel?, animate: Boolean) {
+        val falconOne = HistoryStatsModel(RocketType.FALCON_ONE)
+        val falconNine = HistoryStatsModel(RocketType.FALCON_NINE)
+        val falconHeavy = HistoryStatsModel(RocketType.FALCON_HEAVY)
 
-        launches?.let {
+        launchDocs?.docs?.let { launches ->
             launches.forEach {
-                when (it.rocket.id) {
-                    "falcon1" -> it.success?.let { success ->
-                        if (success) falconOne.successes++ else falconOne.failures++
+                when (it.rocket?.id) {
+                    RocketIds.FALCON_ONE -> {
+                        it.success?.let { success ->
+                            if (success) falconOne.successes++ else falconOne.failures++
+                        }
+                        it.rocket?.successRate?.let { successRate ->
+                            falconOne.successRate = successRate
+                        }
                     }
-                    "falcon9" -> it.success?.let { success ->
-                        if (success) falconNine.successes++ else falconNine.failures++
+                    RocketIds.FALCON_NINE -> {
+                        it.success?.let { success ->
+                            if (success) falconNine.successes++ else falconNine.failures++
+                        }
+                        it.rocket?.successRate?.let { successRate ->
+                            falconNine.successRate = successRate
+                        }
                     }
-                    "falconheavy" -> it.success?.let { success ->
-                        if (success) falconHeavy.successes++ else falconHeavy.failures++
+                    RocketIds.FALCON_HEAVY -> {
+                        it.success?.let { success ->
+                            if (success) falconHeavy.successes++ else falconHeavy.failures++
+                        }
+                        it.rocket?.successRate?.let { successRate ->
+                            falconHeavy.successRate = successRate
+                        }
                     }
                 }
             }
-
-            falconOne.successRate =
-                falconOne.successes.toFloat().div(falconOne.successes + falconOne.failures)
-                    .times(100).roundToInt()
-            falconNine.successRate =
-                falconNine.successes.toFloat().div(falconNine.successes + falconNine.failures)
-                    .times(100).roundToInt()
-            falconHeavy.successRate =
-                falconHeavy.successes.toFloat().div(falconHeavy.successes + falconHeavy.failures)
-                    .times(100).roundToInt()
 
             launchesList = listOf(falconOne, falconNine, falconHeavy)
 

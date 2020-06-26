@@ -15,8 +15,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
-import uk.co.zac_h.spacex.utils.formatBlockNumber
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import java.util.*
@@ -24,10 +23,10 @@ import kotlin.collections.ArrayList
 
 class LaunchesAdapter(
     private val context: Context?,
-    private val launches: ArrayList<LaunchesModel>
+    private val launches: ArrayList<LaunchesExtendedModel>
 ) : RecyclerView.Adapter<LaunchesAdapter.ViewHolder>(), Filterable {
 
-    private var filteredLaunches: ArrayList<LaunchesModel>
+    private var filteredLaunches: ArrayList<LaunchesExtendedModel>
 
     init {
         filteredLaunches = launches
@@ -46,58 +45,54 @@ class LaunchesAdapter(
         val launch = filteredLaunches[position]
 
         holder.apply {
-            itemView.transitionName = launch.flightNumber.toString()
+            itemView.transitionName = launch.id
 
             flightNumber.text = context?.getString(R.string.flight_number, launch.flightNumber)
 
             Glide.with(itemView)
-                .load(launch.links.missionPatchSmall)
+                .load(launch.links?.missionPatch?.patchSmall)
                 .error(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_mission_patch) })
                 .fallback(context?.let {
-                    ContextCompat.getDrawable(
-                        it,
-                        R.drawable.ic_mission_patch
-                    )
+                    ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
                 })
                 .placeholder(context?.let {
-                    ContextCompat.getDrawable(
-                        it,
-                        R.drawable.ic_mission_patch
-                    )
+                    ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
                 })
                 .into(missionPatch)
 
-            if (launch.rocket.id == "falcon9") {
-                reusedTag.visibility = launch.rocket.firstStage?.cores?.get(0)?.reused?.let {
+            if (launch.rocket?.name == "Falcon 9") {
+                reusedTag.visibility = launch.cores?.get(0)?.reused?.let {
                     if (it) View.VISIBLE else View.GONE
                 } ?: View.GONE
 
                 landingVehicleTag.visibility =
-                    launch.rocket.firstStage?.cores?.get(0)?.landingSuccess?.let {
+                    launch.cores?.get(0)?.landingSuccess?.let {
                         if (it) View.VISIBLE else View.GONE
                     } ?: View.GONE
 
-                landingVehicleTag.text = launch.rocket.firstStage?.cores?.get(0)?.landingVehicle
+                landingVehicleTag.text = launch.cores?.get(0)?.landingPad?.name
             } else {
                 reusedTag.visibility = View.GONE
                 landingVehicleTag.visibility = View.GONE
             }
 
-            blockNumber.text = context?.getString(
-                R.string.vehicle_block_type,
-                launch.rocket.name,
-                launch.rocket.firstStage?.cores?.formatBlockNumber()
-            )
+            vehicle.text = launch.rocket?.name
+
             missionName.text = launch.missionName
-            date.text = launch.launchDateUnix.formatDateMillisLong(launch.tbd?.let { it } ?: false)
+            date.text = launch.tbd?.let { launch.launchDateUnix?.formatDateMillisLong(it) }
 
             itemView.setOnClickListener {
                 itemView.findNavController()
                     .navigate(
                         R.id.action_launches_page_fragment_to_launch_details_fragment,
-                        bundleOf("launch" to launch, "title" to launch.missionName),
+                        bundleOf(
+                            "launch_short" to launch,
+                            "launch_id" to launch.id,
+                            "flight_number" to launch.flightNumber,
+                            "title" to launch.missionName
+                        ),
                         null,
-                        FragmentNavigatorExtras(itemView to launch.flightNumber.toString())
+                        FragmentNavigatorExtras(itemView to launch.id)
                     )
             }
         }
@@ -107,21 +102,23 @@ class LaunchesAdapter(
 
     override fun getFilter(): Filter {
         return object : Filter() {
-            override fun performFiltering(search: CharSequence?): FilterResults {
+            override fun performFiltering(s: CharSequence?): FilterResults {
                 val filterResults = FilterResults()
-                search?.let {
+                s?.let {
                     filteredLaunches = when {
                         it.isEmpty() -> launches
                         else -> {
-                            val filteredList = ArrayList<LaunchesModel>()
+                            val filteredList = ArrayList<LaunchesExtendedModel>()
                             launches.forEach { launch ->
-                                if (launch.missionName.toLowerCase(Locale.getDefault()).contains(
-                                        it.toString().toLowerCase(
-                                            Locale.getDefault()
-                                        )
-                                    ) || launch.launchDateUnix.formatDateMillisYYYY().toString().contains(
-                                        it
-                                    ) || launch.flightNumber.toString().contains(
+                                if (launch.missionName?.toLowerCase(Locale.getDefault()).toString()
+                                        .contains(
+                                            it.toString().toLowerCase(
+                                                Locale.getDefault()
+                                            )
+                                        ) || launch.launchDateUnix?.formatDateMillisYYYY()
+                                        .toString().contains(
+                                            it
+                                        ) || launch.flightNumber.toString().contains(
                                         it
                                     )
                                 ) {
@@ -129,10 +126,10 @@ class LaunchesAdapter(
                                     return@forEach
                                 }
 
-                                launch.rocket.name?.let { rocketName ->
-                                    if (rocketName.toLowerCase(Locale.getDefault()).contains(search)) filteredList.add(
-                                        launch
-                                    )
+                                launch.rocket?.name?.let { rocketName ->
+                                    if (rocketName.toLowerCase(Locale.getDefault()).contains(s)) {
+                                        filteredList.add(launch)
+                                    }
                                 }
                             }
 
@@ -157,7 +154,7 @@ class LaunchesAdapter(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val flightNumber: TextView = itemView.findViewById(R.id.launches_flight_no_text)
-        val blockNumber: TextView = itemView.findViewById(R.id.launches_block_text)
+        val vehicle: TextView = itemView.findViewById(R.id.launches_vehicle_text)
         val missionPatch: ImageView = itemView.findViewById(R.id.launches_mission_patch_image)
         val missionName: TextView = itemView.findViewById(R.id.launches_mission_name_text)
         val date: TextView = itemView.findViewById(R.id.launches_date_text)

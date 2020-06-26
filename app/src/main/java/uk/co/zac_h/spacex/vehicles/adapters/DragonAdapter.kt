@@ -11,6 +11,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.DragonModel
 
@@ -32,10 +33,10 @@ class DragonAdapter(private val dragonList: List<DragonModel>) :
         holder.apply {
             itemView.transitionName = dragon.id
 
-            when (dragon.id) {
-                "dragon1" -> image.setImageResource(R.drawable.dragon1)
-                "dragon2" -> image.setImageResource(R.drawable.dragon2)
-            }
+            Glide.with(holder.itemView)
+                .load(dragon.flickr?.random())
+                .error(R.drawable.ic_baseline_error_outline_24)
+                .into(image)
 
             title.text = dragon.name
             details.text = dragon.description
