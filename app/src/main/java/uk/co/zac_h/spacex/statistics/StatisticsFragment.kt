@@ -46,7 +46,19 @@ class StatisticsFragment : Fragment() {
             adapter = StatisticsPagerAdapter(childFragmentManager)
             offscreenPageLimit = 2
         }
-        binding.statisticsTabLayout.setupWithViewPager(binding.statisticsViewPager)
+
+        val tabIcons = listOf(
+            R.drawable.ic_history_black_24dp,
+            R.drawable.ic_baseline_bar_chart_24,
+            R.drawable.ic_baseline_import_export_24
+        )
+
+        binding.statisticsTabLayout.apply {
+            setupWithViewPager(binding.statisticsViewPager)
+            for (position in 0..tabCount) {
+                getTabAt(position)?.setIcon(tabIcons[position])
+            }
+        }
     }
 
     override fun onDestroyView() {
