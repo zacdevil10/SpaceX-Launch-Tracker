@@ -1,7 +1,7 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
-import uk.co.zac_h.spacex.model.spacex.LandingPadModel
-import uk.co.zac_h.spacex.model.spacex.LaunchpadModel
+import uk.co.zac_h.spacex.model.spacex.LandingPadDocsModel
+import uk.co.zac_h.spacex.model.spacex.LaunchpadDocsModel
 import uk.co.zac_h.spacex.model.spacex.StatsPadModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
@@ -22,7 +22,7 @@ class PadStatsPresenterImpl(
         interactor.cancelAllRequests()
     }
 
-    override fun onGetLaunchpads(launchpads: List<LaunchpadModel>?) {
+    override fun onGetLaunchpads(launchpads: LaunchpadDocsModel?) {
         padList.add(
             StatsPadModel(
                 "Launch Sites",
@@ -32,7 +32,7 @@ class PadStatsPresenterImpl(
                 isHeading = true
             )
         )
-        launchpads?.forEach {
+        launchpads?.docs?.forEach {
             padList.add(
                 StatsPadModel(
                     it.fullName,
@@ -49,7 +49,7 @@ class PadStatsPresenterImpl(
         }
     }
 
-    override fun onGetLandingPads(landingPads: List<LandingPadModel>?) {
+    override fun onGetLandingPads(landingPads: LandingPadDocsModel?) {
         padList.add(
             StatsPadModel(
                 "Landing Sites",
@@ -59,7 +59,7 @@ class PadStatsPresenterImpl(
                 isHeading = true
             )
         )
-        landingPads?.forEach {
+        landingPads?.docs?.forEach {
             padList.add(
                 StatsPadModel(
                     it.fullName,

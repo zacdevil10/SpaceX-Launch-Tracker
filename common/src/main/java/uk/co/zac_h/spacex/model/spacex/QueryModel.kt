@@ -9,7 +9,7 @@ data class QueryModel(
 
 data class QueryOptionsModel(
     private var pagination: Boolean,
-    private var populate: List<QueryPopulateModel>,
+    private var populate: Any,
     private var sort: Any,
     private var select: Any
 )

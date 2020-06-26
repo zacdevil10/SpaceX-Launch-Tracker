@@ -70,11 +70,11 @@ class PadStatsTest {
     fun `When get pads then add to view`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
-                getLandingPads()
+                getQueriedLandingPads()
             } doReturn Calls.response(Response.success(landingPadList))
 
             onBlocking {
-                getLaunchpads()
+                getQueriedLaunchpads()
             } doReturn Calls.response(Response.success(launchpadList))
         }
 
@@ -119,7 +119,7 @@ class PadStatsTest {
     fun `Show error in view when response from API fails`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
-                getLaunchpads()
+                getQueriedLaunchpads()
             } doReturn Calls.response(
                 Response.error(
                     404,
@@ -127,7 +127,7 @@ class PadStatsTest {
                 )
             )
             onBlocking {
-                getLandingPads()
+                getQueriedLandingPads()
             } doReturn Calls.response(
                 Response.error(
                     404,

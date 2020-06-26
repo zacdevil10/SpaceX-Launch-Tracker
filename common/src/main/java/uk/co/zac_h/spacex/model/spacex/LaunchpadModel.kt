@@ -5,6 +5,12 @@ import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 
 // v4
+
+@Parcelize
+data class LaunchpadDocsModel(
+    @field:Json(name = "docs") val docs: List<LaunchpadModel>
+) : Parcelable
+
 @Parcelize
 data class LaunchpadModel(
     @field:Json(name = "name") val name: String?,

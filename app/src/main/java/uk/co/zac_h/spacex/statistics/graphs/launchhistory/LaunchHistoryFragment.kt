@@ -17,6 +17,7 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentLaunchHistoryBinding
+import uk.co.zac_h.spacex.utils.RocketType
 import uk.co.zac_h.spacex.utils.generateCenterSpannableText
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
@@ -151,18 +152,18 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
         var falconHeavy = 0
 
         stats.forEach {
-            when (it.name) {
-                "falcon1" -> falconOne = when {
+            when (it.rocket) {
+                RocketType.FALCON_ONE -> falconOne = when {
                     filterSuccessful -> it.successes
                     filterFailed -> it.failures
                     else -> it.successes + it.failures
                 }
-                "falcon9" -> falconNine = when {
+                RocketType.FALCON_NINE -> falconNine = when {
                     filterSuccessful -> it.successes
                     filterFailed -> it.failures
                     else -> it.successes + it.failures
                 }
-                "falconheavy" -> falconHeavy = when {
+                RocketType.FALCON_HEAVY -> falconHeavy = when {
                     filterSuccessful -> it.successes
                     filterFailed -> it.failures
                     else -> it.successes + it.failures
@@ -202,8 +203,8 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
 
     override fun setSuccessRate(stats: List<HistoryStatsModel>, animate: Boolean) {
         stats.forEach {
-            when (it.name) {
-                "falcon1" -> {
+            when (it.rocket) {
+                RocketType.FALCON_ONE -> {
                     if (animate) ValueAnimator.ofInt(0, it.successRate).apply {
                         duration = 1000
                         addUpdateListener { valueAnim ->
@@ -216,7 +217,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
                     binding.launchHistoryFalconOnePercentText.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }
-                "falcon9" -> {
+                RocketType.FALCON_NINE -> {
                     if (animate) ValueAnimator.ofInt(0, it.successRate).apply {
                         duration = 1000
                         addUpdateListener { valueAnim ->
@@ -229,7 +230,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
                     binding.launchHistoryFalconNinePercentText.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }
-                "falconheavy" -> {
+                RocketType.FALCON_HEAVY -> {
                     if (animate) ValueAnimator.ofInt(0, it.successRate).apply {
                         duration = 1000
                         addUpdateListener { valueAnim ->

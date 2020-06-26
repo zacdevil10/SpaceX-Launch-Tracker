@@ -26,8 +26,8 @@ interface SpaceXInterface {
     @GET("dragons")
     fun getDragons(): Call<List<DragonModel>>
 
-    @GET("landpads")
-    fun getLandingPads(): Call<List<LandingPadModel>>
+    @POST("landpads/query")
+    fun getQueriedLandingPads(@Body body: QueryModel): Call<LandingPadDocsModel>
 
     @GET("launches/{id}")
     fun getSingleLaunch(@Path("id") id: String): Call<LaunchesModel>
@@ -41,8 +41,8 @@ interface SpaceXInterface {
     @POST("launches/query")
     fun getQueriedLaunches(@Body body: QueryModel): Call<LaunchesExtendedDocsModel>
 
-    @GET("launchpads")
-    fun getLaunchpads(): Call<List<LaunchpadModel>>
+    @POST("launchpads/query")
+    fun getQueriedLaunchpads(@Body body: QueryModel): Call<LaunchpadDocsModel>
 
     @GET("rockets")
     fun getRockets(): Call<List<RocketsModel>>

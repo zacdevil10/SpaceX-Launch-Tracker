@@ -1,7 +1,7 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
-import uk.co.zac_h.spacex.model.spacex.LandingPadModel
-import uk.co.zac_h.spacex.model.spacex.LaunchpadModel
+import uk.co.zac_h.spacex.model.spacex.LandingPadDocsModel
+import uk.co.zac_h.spacex.model.spacex.LaunchpadDocsModel
 import uk.co.zac_h.spacex.model.spacex.StatsPadModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
@@ -25,8 +25,8 @@ interface PadStatsContract {
     }
 
     interface InteractorCallback {
-        fun onGetLaunchpads(launchpads: List<LaunchpadModel>?)
-        fun onGetLandingPads(landingPads: List<LandingPadModel>?)
+        fun onGetLaunchpads(launchpads: LaunchpadDocsModel?)
+        fun onGetLandingPads(landingPads: LandingPadDocsModel?)
         fun onError(error: String)
     }
 }
