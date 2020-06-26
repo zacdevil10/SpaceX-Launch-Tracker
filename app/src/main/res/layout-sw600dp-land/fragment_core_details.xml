@@ -29,8 +29,8 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="600dp"
@@ -98,7 +98,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:text="@string/status_label"
-                android:textAppearance="?textAppearanceSubtitle2"
                 app:layout_constraintBottom_toTopOf="@id/core_details_reuse_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/core_details_details_text" />
@@ -120,7 +119,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/flights_label"
-                android:textAppearance="?textAppearanceSubtitle2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/core_details_status_label" />
 
@@ -141,7 +139,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/rtls_attempts_label"
-                android:textAppearance="?textAppearanceSubtitle2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/core_details_reuse_text" />
 
@@ -162,7 +159,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/rtls_landings_label"
-                android:textAppearance="?textAppearanceSubtitle2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/core_details_rtls_attempts_label" />
 
@@ -183,7 +179,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/asds_attempts_label"
-                android:textAppearance="?textAppearanceSubtitle2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/core_details_rtls_landings_label" />
 
@@ -204,7 +199,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/asds_landings_label"
-                android:textAppearance="?textAppearanceSubtitle2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/core_details_asds_attempts_label" />
 
@@ -225,6 +219,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/missions_label"
+                android:textAppearance="?textAppearanceSubtitle2"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/core_details_asds_landings_label" />

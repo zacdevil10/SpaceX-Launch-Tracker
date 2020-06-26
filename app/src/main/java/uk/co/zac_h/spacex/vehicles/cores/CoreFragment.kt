@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
-import uk.co.zac_h.spacex.model.spacex.CoreModel
+import uk.co.zac_h.spacex.model.spacex.CoreExtendedModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
 
@@ -23,7 +23,7 @@ class CoreFragment : Fragment(), CoreContract.CoreView, SearchView.OnQueryTextLi
     private var presenter: CoreContract.CorePresenter? = null
 
     private lateinit var coreAdapter: CoreAdapter
-    private lateinit var coresArray: ArrayList<CoreModel>
+    private lateinit var coresArray: ArrayList<CoreExtendedModel>
 
     private var sortNew = false
     private lateinit var searchView: SearchView
@@ -126,7 +126,7 @@ class CoreFragment : Fragment(), CoreContract.CoreView, SearchView.OnQueryTextLi
         return false
     }
 
-    override fun updateCores(cores: List<CoreModel>) {
+    override fun updateCores(cores: List<CoreExtendedModel>) {
         coresArray.clear()
         coresArray.addAll(if (sortNew) cores.reversed() else cores)
 

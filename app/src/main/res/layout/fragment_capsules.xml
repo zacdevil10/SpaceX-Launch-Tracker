@@ -28,6 +28,7 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingTop="8dp"
+            android:paddingBottom="32dp"
             tools:listitem="@layout/list_item_capsule" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

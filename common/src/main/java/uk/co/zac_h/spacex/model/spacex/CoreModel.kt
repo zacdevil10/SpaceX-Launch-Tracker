@@ -5,9 +5,6 @@ import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 
 //v4
-data class CoreDocsModel(
-    @field:Json(name = "docs") val docs: List<CoreModel>
-)
 
 @Parcelize
 data class CoreModel(
@@ -23,6 +20,10 @@ data class CoreModel(
     @field:Json(name = "launches") val missions: List<String>,
     @field:Json(name = "id") val id: String
 ) : Parcelable
+
+data class CoreDocsModel(
+    @field:Json(name = "docs") val docs: List<CoreExtendedModel>
+)
 
 @Parcelize
 data class CoreExtendedModel(

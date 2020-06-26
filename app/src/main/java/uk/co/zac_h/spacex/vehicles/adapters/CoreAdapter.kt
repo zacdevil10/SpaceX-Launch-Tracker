@@ -15,14 +15,14 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.CoreModel
+import uk.co.zac_h.spacex.model.spacex.CoreExtendedModel
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CoreAdapter(private val context: Context?, private val cores: ArrayList<CoreModel>) :
+class CoreAdapter(private val context: Context?, private val cores: ArrayList<CoreExtendedModel>) :
     RecyclerView.Adapter<CoreAdapter.ViewHolder>(), Filterable {
 
-    private var filteredCores: ArrayList<CoreModel>
+    private var filteredCores: ArrayList<CoreExtendedModel>
 
     init {
         filteredCores = cores
@@ -55,9 +55,15 @@ class CoreAdapter(private val context: Context?, private val cores: ArrayList<Co
                 separator.visibility = View.GONE
             }
 
-            details.text = core.lastUpdate
-            status.text = core.status?.capitalize() ?: "Unknown"
-            flights.text = core.reuseCount.toString()
+            core.lastUpdate?.let {
+                details.text = it
+                details.visibility = View.VISIBLE
+            } ?: run {
+                details.visibility = View.GONE
+            }
+
+            status.text = core.status.capitalize()
+            flights.text = (core.missions?.size ?: 0).toString()
 
             button.setOnClickListener { bind(core) }
             card.setOnClickListener { bind(core) }
@@ -74,7 +80,7 @@ class CoreAdapter(private val context: Context?, private val cores: ArrayList<Co
                     filteredCores = when {
                         it.isEmpty() -> cores
                         else -> {
-                            val filteredList = ArrayList<CoreModel>()
+                            val filteredList = ArrayList<CoreExtendedModel>()
                             cores.forEach { core ->
                                 if (core.serial.toLowerCase(Locale.getDefault()).contains(
                                         search.toString().toLowerCase(
@@ -110,7 +116,7 @@ class CoreAdapter(private val context: Context?, private val cores: ArrayList<Co
         val flights: TextView = itemView.findViewById(R.id.list_item_core_flights_text)
         val button: Button = itemView.findViewById(R.id.list_item_core_specs_button)
 
-        fun bind(core: CoreModel) {
+        fun bind(core: CoreExtendedModel) {
             itemView.findNavController().navigate(
                 R.id.action_vehicles_page_fragment_to_core_details_fragment,
                 bundleOf("core" to core, "title" to core.serial),
