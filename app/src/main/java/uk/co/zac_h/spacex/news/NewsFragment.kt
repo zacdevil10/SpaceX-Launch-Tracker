@@ -34,7 +34,7 @@ class NewsFragment : Fragment() {
         val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
         val appBarConfig =
             AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setDrawerLayout(drawerLayout).build()
+                .setOpenableLayout(drawerLayout).build()
 
         binding.toolbar.setupWithNavController(navController, appBarConfig)
 

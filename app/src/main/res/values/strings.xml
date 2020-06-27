@@ -3,7 +3,7 @@
 
     <string name="nav_header_title">SpaceX - Launch Tracker</string>
     <string name="nav_header_subtitle">By Zac Hadjineophytou</string>
-    <string name="nav_header_desc">Navigation header</string>
+    <!--<string name="nav_header_desc">Navigation header</string>-->
 
     <string name="menu_home">Home</string>
     <string name="menu_news">News</string>
@@ -16,7 +16,6 @@
 
 
     <string name="flight_number">Flight %1$d</string>
-    <string name="vehicle_block_type">%1$s - Block %2$s</string>
     <string name="reused">Reused</string>
 
     <!-- Dashboard -->
@@ -43,7 +42,6 @@
     <string name="mission_patch">Mission patch</string>
     <string name="first_stage">First Stage</string>
     <string name="payload_label">Payload</string>
-    <string name="details_label">Details</string>
     <string name="reused_status_desc">Reused status</string>
     <string name="landed_label">Landed</string>
     <string name="landed_status_desc">Landed status</string>
@@ -55,8 +53,6 @@
     <string name="asds_attempts_label">ASDS Attempts</string>
     <string name="asds_landings_label">ASDS Landings</string>
     <string name="core_serial_label">Core Serial</string>
-    <string name="water_landing_label">Water Landing</string>
-    <string name="water_landing_indicator">Water Landing Indicator</string>
     <string name="block_label">Block</string>
     <string name="customer_label">Customer</string>
     <string name="orbit_label">Orbit</string>
@@ -141,7 +137,6 @@
     <string name="ton_format">%1$s t</string>
     <string name="thrust">%1$s kN / %2$s lbf</string>
     <string name="seconds_format">%1$d s</string>
-    <string name="name_label">Name</string>
     <string name="active_label">Active</string>
     <string name="status_image_desc">Status Image</string>
     <string name="cost_per_launch_label">Cost Per Launch</string>
@@ -166,7 +161,6 @@
     <string name="oldest_first_label">Oldest first</string>
     <string name="filter_label">Filter</string>
     <string name="reload_label">Reload</string>
-    <string name="specs_label">Specs</string>
     <string name="amount_label">Amount</string>
     <string name="pods_label">Pods</string>
     <string name="fuel_1_label">Fuel 1</string>
@@ -207,7 +201,6 @@
 
     <!-- Crew -->
     <string name="agency_label">Agency</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="more_icon_desc">More Icon</string>
 
 </resources>

@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.crew.adapters
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +23,6 @@ import uk.co.zac_h.spacex.model.spacex.CrewModel
 
 class CrewAdapter(
     private val view: CrewContract.CrewView,
-    private val context: Context?,
     private val crew: List<CrewModel>
 ) :
     RecyclerView.Adapter<CrewAdapter.ViewHolder>() {

@@ -43,7 +43,7 @@ class ThemeAlertDialog : BottomSheetDialogFragment() {
             AppCompatDelegate.MODE_NIGHT_NO -> binding.dialogThemeNever.isChecked = true
         }
 
-        binding.dialogThemeRadioGroup.setOnCheckedChangeListener { group, checkedId ->
+        binding.dialogThemeRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             preferenceRepository.isTheme = when (checkedId) {
                 R.id.dialog_theme_always -> AppCompatDelegate.MODE_NIGHT_YES
                 R.id.dialog_theme_system -> {

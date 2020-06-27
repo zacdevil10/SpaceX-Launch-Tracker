@@ -65,13 +65,14 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
         val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
         val appBarConfig =
             AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setDrawerLayout(drawerLayout).build()
+                .setOpenableLayout(drawerLayout)
+                .build()
 
         binding.toolbar.setupWithNavController(navController, appBarConfig)
 
         presenter = CrewPresenterImpl(this, CrewInteractorImpl())
 
-        crewAdapter = CrewAdapter(this, context, crewArray)
+        crewAdapter = CrewAdapter(this, crewArray)
 
         binding.crewRecycler.apply {
             layoutManager = GridLayoutManager(this@CrewFragment.context, 2)
