@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">SpaceX</string>
 
-    <string name="nav_header_title">SpaceX Launch Tracker</string>
+    <string name="nav_header_title">SpaceX - Launch Tracker</string>
     <string name="nav_header_subtitle">By Zac Hadjineophytou</string>
     <string name="nav_header_desc">Navigation header</string>
 
