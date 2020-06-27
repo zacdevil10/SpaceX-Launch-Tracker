@@ -39,7 +39,18 @@ class NewsFragment : Fragment() {
         binding.toolbar.setupWithNavController(navController, appBarConfig)
 
         binding.newsViewPager.adapter = NewsPagerAdapter(childFragmentManager)
-        binding.newsTabLayout.setupWithViewPager(binding.newsViewPager)
+
+        val tabIcons = listOf(
+            R.drawable.ic_twitter,
+            R.drawable.reddit
+        )
+
+        binding.newsTabLayout.apply {
+            setupWithViewPager(binding.newsViewPager)
+            for (position in 0..tabCount) {
+                getTabAt(position)?.setIcon(tabIcons[position])
+            }
+        }
     }
 
     override fun onDestroyView() {
