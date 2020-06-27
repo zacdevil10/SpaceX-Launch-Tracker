@@ -202,5 +202,6 @@
     <!-- Crew -->
     <string name="agency_label">Agency</string>
     <string name="more_icon_desc">More Icon</string>
+    <string name="customise_dashboard_label">Customise dashboard</string>
 
 </resources>
