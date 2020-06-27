@@ -10,8 +10,8 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentPadStatsBinding
 import uk.co.zac_h.spacex.model.spacex.StatsPadModel
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
-import uk.co.zac_h.spacex.utils.HeaderItemDecoration
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.utils.views.HeaderItemDecoration
 
 class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
@@ -52,7 +52,13 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
             layoutManager = LinearLayoutManager(this@PadStatsFragment.context)
             setHasFixedSize(true)
             adapter = padsAdapter
-            addItemDecoration(HeaderItemDecoration(this, padsAdapter.isHeader(), false))
+            addItemDecoration(
+                HeaderItemDecoration(
+                    this,
+                    padsAdapter.isHeader(),
+                    false
+                )
+            )
         }
 
         if (pads.isEmpty()) presenter?.getPads()

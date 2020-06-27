@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.utils
+package uk.co.zac_h.spacex.utils.views
 
 import android.graphics.Canvas
 import android.graphics.Rect

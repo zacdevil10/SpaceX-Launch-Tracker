@@ -15,9 +15,9 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentHistoryBinding
-import uk.co.zac_h.spacex.utils.HeaderItemDecoration
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.utils.views.HeaderItemDecoration
 
 class HistoryFragment : Fragment(), HistoryContract.HistoryView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {

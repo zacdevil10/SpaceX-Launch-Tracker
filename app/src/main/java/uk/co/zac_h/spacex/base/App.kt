@@ -3,10 +3,10 @@ package uk.co.zac_h.spacex.base
 import android.app.Application
 import android.content.Context
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.utils.DashboardPreferencesRepository
-import uk.co.zac_h.spacex.utils.PinnedPreferencesRepository
-import uk.co.zac_h.spacex.utils.ThemePreferenceRepository
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.utils.repo.DashboardPreferencesRepository
+import uk.co.zac_h.spacex.utils.repo.PinnedPreferencesRepository
+import uk.co.zac_h.spacex.utils.repo.ThemePreferenceRepository
 
 class App : Application() {
 
@@ -28,15 +28,18 @@ class App : Application() {
         super.onCreate()
         //TooLargeTool.startLogging(this)
 
-        preferencesRepo = ThemePreferenceRepository(
-            getSharedPreferences(DEFAULT_PREFERENCES, Context.MODE_PRIVATE)
-        )
-        dashboardPreferencesRepo = DashboardPreferencesRepository(
-            getSharedPreferences(DASHBOARD_PREFERENCES, Context.MODE_PRIVATE)
-        )
-        pinnedPreferencesRepo = PinnedPreferencesRepository(
-            getSharedPreferences(PINNED_PREFERENCES, Context.MODE_PRIVATE)
-        )
+        preferencesRepo =
+            ThemePreferenceRepository(
+                getSharedPreferences(DEFAULT_PREFERENCES, Context.MODE_PRIVATE)
+            )
+        dashboardPreferencesRepo =
+            DashboardPreferencesRepository(
+                getSharedPreferences(DASHBOARD_PREFERENCES, Context.MODE_PRIVATE)
+            )
+        pinnedPreferencesRepo =
+            PinnedPreferencesRepository(
+                getSharedPreferences(PINNED_PREFERENCES, Context.MODE_PRIVATE)
+            )
         networkStateChangeListener = OnNetworkStateChangeListener(this)
     }
 

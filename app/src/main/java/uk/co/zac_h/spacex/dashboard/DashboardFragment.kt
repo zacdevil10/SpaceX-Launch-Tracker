@@ -26,14 +26,14 @@ import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardPinnedAdapter
 import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
-import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_LATEST_NEWS
-import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_NEXT_LAUNCH
-import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_PINNED_LAUNCH
-import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_PREVIOUS_LAUNCH
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_LATEST_NEWS
+import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_NEXT_LAUNCH
+import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_PINNED_LAUNCH
+import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_PREVIOUS_LAUNCH
 
 class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {

@@ -126,7 +126,7 @@
 
         </androidx.cardview.widget.CardView>
 
-        <uk.co.zac_h.spacex.utils.HtmlTextView
+        <uk.co.zac_h.spacex.utils.views.HtmlTextView
             android:id="@+id/tweet_full_text"
             style="@style/TextAppearance.MaterialComponents.Subtitle2"
             android:layout_width="0dp"
@@ -211,7 +211,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="Date" />
 
-                <uk.co.zac_h.spacex.utils.HtmlTextView
+                <uk.co.zac_h.spacex.utils.views.HtmlTextView
                     android:id="@+id/tweet_quoted_full_text"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

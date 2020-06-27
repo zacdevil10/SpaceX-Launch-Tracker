@@ -18,7 +18,7 @@ import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.crew.adapters.CrewPagerAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewDetailsBinding
 import uk.co.zac_h.spacex.model.spacex.CrewModel
-import uk.co.zac_h.spacex.utils.DepthPageTransformer
+import uk.co.zac_h.spacex.utils.views.DepthPageTransformer
 
 class CrewPagerFragment : Fragment() {
 
@@ -68,7 +68,10 @@ class CrewPagerFragment : Fragment() {
         binding.crewPager.apply {
             adapter = crewPagerAdapter
             currentItem = MainActivity.currentPosition
-            setPageTransformer(true, DepthPageTransformer())
+            setPageTransformer(
+                true,
+                DepthPageTransformer()
+            )
 
             addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageScrollStateChanged(state: Int) {}

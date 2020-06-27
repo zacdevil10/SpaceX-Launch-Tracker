@@ -5,10 +5,10 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_NEXT_LAUNCH
-import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_PINNED_LAUNCH
-import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_PREVIOUS_LAUNCH
-import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_SECTION
+import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_NEXT_LAUNCH
+import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_PINNED_LAUNCH
+import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_PREVIOUS_LAUNCH
+import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_SECTION
 
 class DashboardEditDialog : DialogFragment() {
 

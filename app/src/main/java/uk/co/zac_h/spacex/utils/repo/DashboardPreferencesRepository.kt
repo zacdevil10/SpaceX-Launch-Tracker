@@ -1,9 +1,9 @@
-package uk.co.zac_h.spacex.utils
+package uk.co.zac_h.spacex.utils.repo
 
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import uk.co.zac_h.spacex.utils.DashboardObj.PREFERENCES_SECTION
+import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_SECTION
 
 object DashboardObj {
     var PREFERENCES_SECTION = ""

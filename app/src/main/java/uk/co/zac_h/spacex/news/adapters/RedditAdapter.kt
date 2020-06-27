@@ -13,8 +13,8 @@ import com.google.android.material.card.MaterialCardView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.reddit.SubredditPostModel
 import uk.co.zac_h.spacex.news.reddit.RedditFeedContract
-import uk.co.zac_h.spacex.utils.HtmlTextView
 import uk.co.zac_h.spacex.utils.convertDate
+import uk.co.zac_h.spacex.utils.views.HtmlTextView
 
 class RedditAdapter(
     private val view: RedditFeedContract.RedditFeedView,

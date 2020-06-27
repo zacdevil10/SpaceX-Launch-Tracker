@@ -19,10 +19,10 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.twitter.TimelineExtendedEntityModel
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.news.twitter.TwitterFeedContract
-import uk.co.zac_h.spacex.utils.HtmlTextView
 import uk.co.zac_h.spacex.utils.convertDate
 import uk.co.zac_h.spacex.utils.dateStringToMillis
 import uk.co.zac_h.spacex.utils.formatWithUrls
+import uk.co.zac_h.spacex.utils.views.HtmlTextView
 
 class TwitterFeedAdapter(
     private val context: Context?,
