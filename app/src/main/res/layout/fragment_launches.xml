@@ -32,7 +32,8 @@
             android:elevation="4dp"
             android:textColor="?colorOnSurface"
             android:theme="@style/AppTheme.AppBarOverlay"
-            app:tabIndicatorColor="?colorSecondary" />
+            app:tabIndicatorColor="?colorSecondary"
+            app:tabInlineLabel="true" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

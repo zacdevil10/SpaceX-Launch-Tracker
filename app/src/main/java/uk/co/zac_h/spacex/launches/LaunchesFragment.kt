@@ -47,7 +47,18 @@ class LaunchesFragment : Fragment() {
         view.doOnPreDraw { startPostponedEnterTransition() }
 
         binding.launchesViewPager.adapter = LaunchesPagerAdapter(childFragmentManager)
-        binding.launchesTabLayout.setupWithViewPager(binding.launchesViewPager)
+
+        val tabIcons = listOf(
+            R.drawable.ic_baseline_schedule_24,
+            R.drawable.ic_history_black_24dp
+        )
+
+        binding.launchesTabLayout.apply {
+            setupWithViewPager(binding.launchesViewPager)
+            for (position in 0..tabCount) {
+                getTabAt(position)?.setIcon(tabIcons[position])
+            }
+        }
     }
 
     override fun onDestroy() {
