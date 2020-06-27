@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialog_theme_radio_group"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <com.google.android.material.radiobutton.MaterialRadioButton
+        android:id="@+id/dialog_theme_always"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:textAppearance="?textAppearanceListItem"
+        tools:ignore="RtlSymmetry" />
+
+    <com.google.android.material.radiobutton.MaterialRadioButton
+        android:id="@+id/dialog_theme_system"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:textAppearance="?textAppearanceListItem"
+        tools:ignore="RtlSymmetry" />
+
+    <com.google.android.material.radiobutton.MaterialRadioButton
+        android:id="@+id/dialog_theme_never"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:textAppearance="?textAppearanceListItem"
+        tools:ignore="RtlSymmetry" />
+
+</RadioGroup>
