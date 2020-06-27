@@ -43,8 +43,6 @@ class LaunchesFragment : Fragment() {
 
         binding.toolbar.setupWithNavController(navController, appBarConfig)
 
-        binding.toolbar.title = resources.getString(R.string.menu_launches)
-
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 

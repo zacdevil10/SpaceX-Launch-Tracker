@@ -54,8 +54,6 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
 
         binding.toolbar.setupWithNavController(navController, appBarConfig)
 
-        binding.toolbar.title = resources.getString(R.string.menu_company)
-
         presenter = CompanyPresenterImpl(this, CompanyInteractorImpl())
 
         companyInfo?.let {

@@ -49,8 +49,6 @@ class VehiclesFragment : Fragment() {
 
         binding.toolbar.setupWithNavController(navController, appBarConfig)
 
-        binding.toolbar.title = resources.getString(R.string.menu_vehicles)
-
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 

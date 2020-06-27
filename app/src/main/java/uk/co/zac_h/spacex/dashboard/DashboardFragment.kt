@@ -93,8 +93,6 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         binding.toolbar.setupWithNavController(navController, appBarConfig)
 
-        binding.toolbar.title = resources.getString(R.string.menu_home)
-
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
