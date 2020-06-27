@@ -59,18 +59,58 @@
                 app:layout_constraintTop_toBottomOf="@id/company_logo_image"
                 tools:text="Rocket Road, Hawthorne, California" />
 
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/company_button_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/company_address_text">
+
+                <Button
+                    android:id="@+id/company_website_button"
+                    style="?attr/materialButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/website_label"
+                    android:textAppearance="?textAppearanceBody2"
+                    app:icon="@drawable/ic_baseline_web_24" />
+
+                <Button
+                    android:id="@+id/company_twitter_button"
+                    style="?attr/materialButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/twitter_label"
+                    android:textAppearance="?textAppearanceBody2"
+                    app:icon="@drawable/ic_twitter" />
+
+                <Button
+                    android:id="@+id/company_album_button"
+                    style="?attr/materialButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/album_label"
+                    android:textAppearance="?textAppearanceBody2"
+                    app:icon="@drawable/ic_baseline_photo_album_24" />
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
+
             <TextView
                 android:id="@+id/company_summary_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:textAlignment="center"
                 android:textAppearance="?textAppearanceBody2"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/company_address_text"
+                app:layout_constraintTop_toBottomOf="@id/company_button_bar"
                 tools:text="SpaceX designs, manufactures and launches advanced rockets and spacecraft. The company was founded in 2002 to revolutionize space technology, with the ultimate goal of enabling people to live on other planets." />
 
             <TextView

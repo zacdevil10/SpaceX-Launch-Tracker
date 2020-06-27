@@ -1,5 +1,7 @@
 package uk.co.zac_h.spacex.about.company
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -91,6 +93,13 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
                 binding.companyAddressText.text =
                     context?.getString(R.string.address, address, city, state)
             }
+
+            with(companyModel.links) {
+                binding.companyWebsiteButton.setOnClickListener { openWebLink(website) }
+                binding.companyTwitterButton.setOnClickListener { openWebLink(twitter) }
+                binding.companyAlbumButton.setOnClickListener { openWebLink(flickr) }
+            }
+
             binding.companySummaryText.text = companyModel.summary
             binding.companyFoundedText.text =
                 context?.getString(R.string.founded, companyModel.founder, companyModel.founded)
@@ -105,6 +114,10 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
             companyLaunchSitesText.text = companyModel.launchSites.toString()
             companyTestSitesText.text = companyModel.testSites.toString()
         }
+    }
+
+    fun openWebLink(link: String) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 
     override fun showProgress() {
