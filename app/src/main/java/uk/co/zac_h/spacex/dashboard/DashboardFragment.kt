@@ -106,7 +106,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         pinnedAdapter = DashboardPinnedAdapter(context, pinnedArray)
 
-        binding.dashboardPinnedLaunchesRecycler.apply {
+        binding.dashboardPinnedLayout.dashboardPinnedLaunchesRecycler.apply {
             layoutManager = LinearLayoutManager(this@DashboardFragment.context)
             adapter = pinnedAdapter
         }
@@ -212,9 +212,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     override fun updateNextLaunch(nextLaunch: LaunchesModel) {
         nextLaunchModel = nextLaunch
 
-        binding.dashboardNextLayout.dashboardNextCardView.visibility = View.VISIBLE
-
-        binding.dashboardNextLayout.dashboardNextCardView.transitionName = nextLaunch.id
+        binding.dashboardNextLayout.dashboardNextLayout.transitionName = nextLaunch.id
 
         Glide.with(this)
             .load(nextLaunch.links?.missionPatch?.patchSmall)
@@ -236,7 +234,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         binding.dashboardNextLayout.dashboardNextDateText.text =
             nextLaunch.launchDateUnix.formatDateMillisLong(nextLaunch.tbd)
 
-        binding.dashboardNextLayout.dashboardNextCardView.setOnClickListener {
+        binding.dashboardNextLayout.dashboardNextLayout.setOnClickListener {
             findNavController().navigate(
                 R.id.action_dashboard_page_fragment_to_launch_details_fragment,
                 bundleOf(
@@ -245,7 +243,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
                     "title" to nextLaunch.missionName
                 ),
                 null,
-                FragmentNavigatorExtras(binding.dashboardNextLayout.dashboardNextCardView to nextLaunch.id)
+                FragmentNavigatorExtras(binding.dashboardNextLayout.dashboardNextLayout to nextLaunch.id)
             )
         }
     }
@@ -253,9 +251,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     override fun updateLatestLaunch(latestLaunch: LaunchesModel) {
         latestLaunchModel = latestLaunch
 
-        binding.dashboardLatestLayout.dashboardLatestCardView.visibility = View.VISIBLE
-
-        binding.dashboardLatestLayout.dashboardLatestCardView.transitionName = latestLaunch.id
+        binding.dashboardLatestLayout.dashboardLatestLayout.transitionName = latestLaunch.id
 
         Glide.with(this)
             .load(latestLaunch.links?.missionPatch?.patchSmall)
@@ -278,7 +274,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         binding.dashboardLatestLayout.dashboardLatestDateText.text =
             latestLaunch.launchDateUnix.formatDateMillisLong(latestLaunch.tbd)
 
-        binding.dashboardLatestLayout.dashboardLatestCardView.setOnClickListener {
+        binding.dashboardLatestLayout.dashboardLatestLayout.setOnClickListener {
             findNavController().navigate(
                 R.id.action_dashboard_page_fragment_to_launch_details_fragment,
                 bundleOf(
@@ -287,7 +283,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
                     "title" to latestLaunch.missionName
                 ),
                 null,
-                FragmentNavigatorExtras(binding.dashboardLatestLayout.dashboardLatestCardView to latestLaunch.id)
+                FragmentNavigatorExtras(binding.dashboardLatestLayout.dashboardLatestLayout to latestLaunch.id)
             )
         }
     }
@@ -309,8 +305,8 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
             override fun onFinish() {
                 nextLaunchModel?.links?.webcast?.let { link ->
-                    binding.dashboardCountdownText.apply {
-                        text = "LIVE"
+                    binding.dashboardNextLayout.dashboardCountdownText.apply {
+                        text = "WATCH LIVE"
                         setOnClickListener {
                             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
                         }
@@ -323,15 +319,16 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     }
 
     override fun updateCountdown(countdown: String) {
-        binding.dashboardCountdownText.text = countdown
+        binding.dashboardNextLayout.dashboardCountdownText.text = countdown
     }
 
     override fun showPinnedMessage() {
-        if (pinnedArray.isEmpty()) binding.dashboardPinnedMessageText.visibility = View.VISIBLE
+        if (pinnedArray.isEmpty())
+            binding.dashboardPinnedLayout.dashboardPinnedMessageText.visibility = View.VISIBLE
     }
 
     override fun hidePinnedMessage() {
-        binding.dashboardPinnedMessageText.visibility = View.GONE
+        binding.dashboardPinnedLayout.dashboardPinnedMessageText.visibility = View.GONE
     }
 
     override fun showProgress() {
@@ -343,11 +340,11 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     }
 
     override fun showCountdown() {
-        binding.dashboardCountdownText.visibility = View.VISIBLE
+        binding.dashboardNextLayout.dashboardCountdownText.visibility = View.VISIBLE
     }
 
     override fun hideCountdown() {
-        binding.dashboardCountdownText.visibility = View.GONE
+        binding.dashboardNextLayout.dashboardCountdownText.visibility = View.GONE
     }
 
     override fun showNextLaunch() {
@@ -367,11 +364,11 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     }
 
     override fun showPinnedList() {
-        binding.dashboardPinnedLayout.visibility = View.VISIBLE
+        binding.dashboardPinnedLayout.dashboardPinnedCard.visibility = View.VISIBLE
     }
 
     override fun hidePinnedList() {
-        binding.dashboardPinnedLayout.visibility = View.GONE
+        binding.dashboardPinnedLayout.dashboardPinnedCard.visibility = View.GONE
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {

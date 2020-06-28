@@ -1,101 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dashboard_latest_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardElevation="4dp"
     tools:showIn="@layout/fragment_dashboard">
 
-    <TextView
-        android:id="@+id/dashboard_latest_heading_text"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:text="@string/latest_launch"
-        android:textColor="@color/color_secondary"
-        android:textSize="@dimen/heading"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/dashboard_latest_card_view"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        app:cardElevation="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/dashboard_latest_heading_text">
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/dashboard_latest_heading_text"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:paddingBottom="8dp"
+            android:text="@string/latest_launch"
+            android:textAppearance="?textAppearanceHeadline5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/dashboard_latest_flight_no_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@id/dashboard_latest_mission_patch_image"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Flight 73" />
+        <TextView
+            android:id="@+id/dashboard_latest_flight_no_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@id/dashboard_latest_mission_patch_image"
+            app:layout_constraintTop_toBottomOf="@id/dashboard_latest_heading_text"
+            tools:text="Flight 73" />
 
-            <TextView
-                android:id="@+id/dashboard_latest_block_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/dashboard_latest_flight_no_text"
-                tools:text="Block 5" />
+        <TextView
+            android:id="@+id/dashboard_latest_block_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/dashboard_latest_flight_no_text"
+            tools:text="Block 5" />
 
-            <ImageView
-                android:id="@+id/dashboard_latest_mission_patch_image"
-                android:layout_width="72dp"
-                android:layout_height="0dp"
-                android:contentDescription="@string/mission_patch"
-                android:paddingEnd="16dp"
-                app:layout_constraintBottom_toBottomOf="@id/dashboard_latest_date_text"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="RtlSymmetry"
-                tools:src="@drawable/ic_check_circle_black_24dp" />
+        <ImageView
+            android:id="@+id/dashboard_latest_mission_patch_image"
+            android:layout_width="72dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/mission_patch"
+            android:paddingEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="@id/dashboard_latest_date_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dashboard_latest_heading_text"
+            tools:ignore="RtlSymmetry"
+            tools:src="@drawable/ic_check_circle_black_24dp" />
 
-            <TextView
-                android:id="@+id/dashboard_latest_mission_name_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:textAppearance="?textAppearanceHeadline6"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/dashboard_latest_mission_patch_image"
-                app:layout_constraintTop_toBottomOf="@id/dashboard_latest_flight_no_text"
-                tools:text="Nusantara Satu (PSN-6) / GTO-1 / Beresheet" />
+        <TextView
+            android:id="@+id/dashboard_latest_mission_name_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textAppearance="?textAppearanceHeadline6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/dashboard_latest_mission_patch_image"
+            app:layout_constraintTop_toBottomOf="@id/dashboard_latest_flight_no_text"
+            tools:text="Nusantara Satu (PSN-6) / GTO-1 / Beresheet" />
 
-            <TextView
-                android:id="@+id/dashboard_latest_date_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:singleLine="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/dashboard_latest_mission_patch_image"
-                app:layout_constraintTop_toBottomOf="@id/dashboard_latest_mission_name_text"
-                tools:text="14 Oct 2019 - 12:35" />
+        <TextView
+            android:id="@+id/dashboard_latest_date_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:singleLine="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/dashboard_latest_mission_patch_image"
+            app:layout_constraintTop_toBottomOf="@id/dashboard_latest_mission_name_text"
+            tools:text="14 Oct 2019 - 12:35" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </com.google.android.material.card.MaterialCardView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
