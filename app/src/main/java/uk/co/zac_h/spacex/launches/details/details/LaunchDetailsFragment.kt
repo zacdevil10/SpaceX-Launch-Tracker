@@ -220,6 +220,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 }
 
                 launch.links?.wikipedia?.let { link ->
+                    binding.launchDetailsWikiButton.visibility = View.VISIBLE
                     binding.launchDetailsWikiButton.setOnClickListener {
                         binding.launchDetailsWikiButton.visibility = View.VISIBLE
                         openWebLink(link)
