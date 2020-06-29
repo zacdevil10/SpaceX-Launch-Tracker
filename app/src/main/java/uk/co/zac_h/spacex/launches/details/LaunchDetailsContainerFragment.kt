@@ -157,7 +157,7 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
         binding.launchDetailsCountdownText.text = countdown
     }
 
-    fun replaceFragment(fragment: Fragment) {
+    private fun replaceFragment(fragment: Fragment) {
         childFragmentManager
             .beginTransaction()
             .replace(

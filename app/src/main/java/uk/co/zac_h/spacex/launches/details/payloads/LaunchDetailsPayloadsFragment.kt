@@ -62,6 +62,7 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
 
         binding.launchDetailsPayloadRecycler.apply {
             layoutManager = LinearLayoutManager(this@LaunchDetailsPayloadsFragment.context)
+            setHasFixedSize(true)
             adapter = payloadAdapter
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
