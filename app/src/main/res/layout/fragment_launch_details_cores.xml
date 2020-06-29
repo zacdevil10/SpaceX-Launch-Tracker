@@ -23,6 +23,8 @@
         android:id="@+id/launch_details_cores_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="8dp"
+        android:clipToPadding="false"
         tools:listitem="@layout/list_item_first_stage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
