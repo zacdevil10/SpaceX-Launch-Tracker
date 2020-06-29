@@ -59,7 +59,7 @@ class VehiclesFragment : Fragment() {
         val tabIcons = listOf(
             R.drawable.ic_rocket,
             R.drawable.ic_dragon,
-            R.drawable.ic_rocket,
+            R.drawable.ic_core,
             R.drawable.ic_dragon
         )
 

@@ -82,8 +82,8 @@ class FirstStageAdapter(private val cores: List<LaunchCoreExtendedModel>) :
         fun bind(core: LaunchCoreExtendedModel) {
             itemView.findNavController()
                 .navigate(
-                    R.id.action_launch_details_fragment_to_core_details_fragment,
-                    bundleOf("core" to core.core, "title" to core.core?.serial)
+                    R.id.action_launch_details_container_fragment_to_core_details_fragment,
+                    bundleOf("core" to core.core)
                 )
         }
     }

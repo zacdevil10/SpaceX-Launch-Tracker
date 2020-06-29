@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.launches.details.LaunchDetailsContract
+import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsContract
 import uk.co.zac_h.spacex.utils.models.LinksModel
 
 class LaunchLinksAdapter(

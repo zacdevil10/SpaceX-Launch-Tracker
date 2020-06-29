@@ -50,7 +50,8 @@ class LaunchesInteractorImpl : BaseNetwork(), LaunchesContract.LaunchesInteracto
                     "cores.core",
                     "cores.reused",
                     "cores.landpad"
-                )
+                ),
+                limit = 5000
             )
         )
 

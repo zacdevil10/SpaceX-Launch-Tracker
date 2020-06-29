@@ -35,11 +35,9 @@ class CoreMissionsAdapter(
             itemView.setOnClickListener {
                 itemView.findNavController()
                     .navigate(
-                        R.id.action_core_details_fragment_to_launch_details_fragment,
+                        R.id.action_core_details_fragment_to_launch_details_container_fragment,
                         bundleOf(
-                            "launch_id" to mission.id,
-                            "flight_number" to mission.flightNumber,
-                            "title" to mission.name
+                            "launch_id" to mission.id
                         )
                     )
             }

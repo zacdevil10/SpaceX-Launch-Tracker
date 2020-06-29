@@ -23,7 +23,7 @@ class CoreInteractorImpl : BaseNetwork(), CoreContract.CoreInteractor {
             )
         )
 
-        val query = QueryModel("", QueryOptionsModel(false, populateList, "", ""))
+        val query = QueryModel("", QueryOptionsModel(false, populateList, "", "", 100000))
 
         call = api.getCores(query).apply {
             makeCall {

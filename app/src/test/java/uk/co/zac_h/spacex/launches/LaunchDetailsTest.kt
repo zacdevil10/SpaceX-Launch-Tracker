@@ -15,9 +15,9 @@ import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 import retrofit2.mock.Calls
-import uk.co.zac_h.spacex.launches.details.LaunchDetailsContract
-import uk.co.zac_h.spacex.launches.details.LaunchDetailsInteractorImpl
-import uk.co.zac_h.spacex.launches.details.LaunchDetailsPresenterImpl
+import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsContract
+import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsInteractorImpl
+import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsPresenterImpl
 import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
 import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
 import uk.co.zac_h.spacex.model.spacex.QueryLaunchesQueryModel
@@ -59,12 +59,23 @@ class LaunchDetailsTest {
     fun setup() {
         MockitoAnnotations.initMocks(this)
 
-        interactor = LaunchDetailsInteractorImpl()
-        mPresenter = LaunchDetailsPresenterImpl(mView, mPinnedSharedPreferencesHelper, mInteractor)
-        presenter = LaunchDetailsPresenterImpl(mView, mPinnedSharedPreferencesHelper, interactor)
+        interactor =
+            LaunchDetailsInteractorImpl()
+        mPresenter =
+            LaunchDetailsPresenterImpl(
+                mView,
+                mPinnedSharedPreferencesHelper,
+                mInteractor
+            )
+        presenter =
+            LaunchDetailsPresenterImpl(
+                mView,
+                mPinnedSharedPreferencesHelper,
+                interactor
+            )
 
         query = QueryModel(
-            QueryLaunchesQueryModel(1),
+            QueryLaunchesQueryModel("1"),
             ""
         )
     }
@@ -79,7 +90,7 @@ class LaunchDetailsTest {
             )
         }
 
-        interactor.getSingleLaunch(1, mockRepo, mListener)
+        interactor.getSingleLaunch("1", mockRepo, mListener)
 
         verifyBlocking(mListener) { onSuccess(mLaunchesExtendedDocsModel) }
     }
@@ -101,7 +112,7 @@ class LaunchDetailsTest {
             )
         }
 
-        presenter.getLaunch(1, mockRepo)
+        presenter.getLaunch("1", mockRepo)
 
         verifyBlocking(mView) {
             showProgress()
@@ -149,7 +160,7 @@ class LaunchDetailsTest {
             )
         }
 
-        interactor.getSingleLaunch(1, mockRepo, mListener)
+        interactor.getSingleLaunch("1", mockRepo, mListener)
 
         verifyBlocking(mListener) { onError("Error: 404") }
     }
@@ -165,7 +176,7 @@ class LaunchDetailsTest {
             )
         }
 
-        presenter.getLaunch(1, mockRepo)
+        presenter.getLaunch("1", mockRepo)
 
         verifyBlocking(mView) {
             showProgress()

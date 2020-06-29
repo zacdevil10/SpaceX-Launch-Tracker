@@ -1,14 +1,14 @@
 package uk.co.zac_h.spacex.dashboard
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 interface DashboardContract {
 
     interface DashboardView {
-        fun updateNextLaunch(nextLaunch: LaunchesModel)
-        fun updateLatestLaunch(latestLaunch: LaunchesModel)
-        fun updatePinnedList(id: String, pinnedLaunch: LaunchesModel)
+        fun updateNextLaunch(nextLaunch: LaunchesExtendedModel)
+        fun updateLatestLaunch(latestLaunch: LaunchesExtendedModel)
+        fun updatePinnedList(id: String, pinnedLaunch: LaunchesExtendedModel)
         fun updateCountdown(countdown: String)
         fun setCountdown(time: Long)
         fun showPinnedMessage()
@@ -29,13 +29,13 @@ interface DashboardContract {
 
     interface DashboardPresenter {
         fun getLatestLaunches(
-            next: LaunchesModel? = null,
-            latest: LaunchesModel? = null,
+            next: LaunchesExtendedModel? = null,
+            latest: LaunchesExtendedModel? = null,
             api: SpaceXInterface = SpaceXInterface.create()
         )
 
         fun getSingleLaunch(
-            flight: String,
+            id: String,
             api: SpaceXInterface = SpaceXInterface.create()
         )
 
@@ -52,7 +52,7 @@ interface DashboardContract {
     }
 
     interface InteractorCallback {
-        fun onSuccess(id: String, launchesModel: LaunchesModel?)
+        fun onSuccess(id: String, launchModel: LaunchesExtendedModel?)
         fun onError(error: String)
     }
 }

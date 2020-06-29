@@ -25,7 +25,7 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardPinnedAdapter
 import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
@@ -44,12 +44,12 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     private var presenter: DashboardContract.DashboardPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
-    private var nextLaunchModel: LaunchesModel? = null
-    private var latestLaunchModel: LaunchesModel? = null
+    private var nextLaunchModel: LaunchesExtendedModel? = null
+    private var latestLaunchModel: LaunchesExtendedModel? = null
 
     private lateinit var pinnedAdapter: DashboardPinnedAdapter
 
-    private lateinit var pinnedArray: ArrayList<LaunchesModel>
+    private lateinit var pinnedArray: ArrayList<LaunchesExtendedModel>
     private lateinit var pinnedKeysArray: ArrayList<String>
 
     private var countdownTimer: CountDownTimer? = null
@@ -65,7 +65,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         }
 
         pinnedArray = savedInstanceState?.let {
-            it.getParcelableArrayList<LaunchesModel>("pinned") as ArrayList<LaunchesModel>
+            it.getParcelableArrayList<LaunchesExtendedModel>("pinned") as ArrayList<LaunchesExtendedModel>
         } ?: ArrayList()
 
         pinnedKeysArray = savedInstanceState?.getStringArrayList("pinned_keys") ?: ArrayList()
@@ -209,7 +209,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updateNextLaunch(nextLaunch: LaunchesModel) {
+    override fun updateNextLaunch(nextLaunch: LaunchesExtendedModel) {
         nextLaunchModel = nextLaunch
 
         binding.dashboardNextLayout.dashboardNextLayout.transitionName = nextLaunch.id
@@ -232,15 +232,13 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         binding.dashboardNextLayout.dashboardNextMissionNameText.text = nextLaunch.missionName
         binding.dashboardNextLayout.dashboardNextDateText.text =
-            nextLaunch.launchDateUnix.formatDateMillisLong(nextLaunch.tbd)
+            nextLaunch.tbd?.let { nextLaunch.launchDateUnix?.formatDateMillisLong(it) }
 
         binding.dashboardNextLayout.dashboardNextLayout.setOnClickListener {
             findNavController().navigate(
-                R.id.action_dashboard_page_fragment_to_launch_details_fragment,
+                R.id.action_dashboard_page_fragment_to_launch_details_container_fragment,
                 bundleOf(
-                    "launch_id" to nextLaunch.id,
-                    "flight_number" to nextLaunch.flightNumber,
-                    "title" to nextLaunch.missionName
+                    "launch_short" to nextLaunch
                 ),
                 null,
                 FragmentNavigatorExtras(binding.dashboardNextLayout.dashboardNextLayout to nextLaunch.id)
@@ -248,7 +246,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         }
     }
 
-    override fun updateLatestLaunch(latestLaunch: LaunchesModel) {
+    override fun updateLatestLaunch(latestLaunch: LaunchesExtendedModel) {
         latestLaunchModel = latestLaunch
 
         binding.dashboardLatestLayout.dashboardLatestLayout.transitionName = latestLaunch.id
@@ -272,15 +270,13 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         binding.dashboardLatestLayout.dashboardLatestMissionNameText.text = latestLaunch.missionName
 
         binding.dashboardLatestLayout.dashboardLatestDateText.text =
-            latestLaunch.launchDateUnix.formatDateMillisLong(latestLaunch.tbd)
+            latestLaunch.tbd?.let { latestLaunch.launchDateUnix?.formatDateMillisLong(it) }
 
         binding.dashboardLatestLayout.dashboardLatestLayout.setOnClickListener {
             findNavController().navigate(
-                R.id.action_dashboard_page_fragment_to_launch_details_fragment,
+                R.id.action_dashboard_page_fragment_to_launch_details_container_fragment,
                 bundleOf(
-                    "launch_id" to latestLaunch.id,
-                    "flight_number" to latestLaunch.flightNumber,
-                    "title" to latestLaunch.missionName
+                    "launch_short" to latestLaunch
                 ),
                 null,
                 FragmentNavigatorExtras(binding.dashboardLatestLayout.dashboardLatestLayout to latestLaunch.id)
@@ -288,7 +284,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         }
     }
 
-    override fun updatePinnedList(id: String, pinnedLaunch: LaunchesModel) {
+    override fun updatePinnedList(id: String, pinnedLaunch: LaunchesExtendedModel) {
         if (!pinnedKeysArray.contains(id)) {
             pinnedArray.add(pinnedLaunch)
             pinnedKeysArray.add(id)

@@ -23,7 +23,7 @@ class CapsulesInteractorImpl : BaseNetwork(), CapsulesContract.CapsulesInteracto
             )
         )
 
-        val query = QueryModel("", QueryOptionsModel(false, populateList, "", ""))
+        val query = QueryModel("", QueryOptionsModel(false, populateList, "", "", 100000))
 
         call = api.getCapsules(query).apply {
             makeCall {

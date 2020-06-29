@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.launches.details
+package uk.co.zac_h.spacex.launches.details.details
 
 import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
 import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
@@ -12,25 +12,20 @@ interface LaunchDetailsContract {
         fun openWebLink(link: String)
         fun showProgress()
         fun hideProgress()
-        fun updateCountdown(countdown: String)
-        fun setCountdown(time: Long)
-        fun showCountdown()
-        fun hideCountdown()
         fun showError(error: String)
     }
 
     interface LaunchDetailsPresenter {
-        fun getLaunch(flightNumber: Int, api: SpaceXInterface = SpaceXInterface.create())
+        fun getLaunch(id: String, api: SpaceXInterface = SpaceXInterface.create())
         fun addLaunchModel(launchModel: LaunchesExtendedModel?, isExt: Boolean)
         fun pinLaunch(id: String, pin: Boolean)
         fun isPinned(id: String): Boolean
         fun createEvent()
-        fun updateCountdown(time: Long)
         fun cancelRequest()
     }
 
     interface LaunchDetailsInteractor {
-        fun getSingleLaunch(flightNumber: Int, api: SpaceXInterface, listener: InteractorCallback)
+        fun getSingleLaunch(id: String, api: SpaceXInterface, listener: InteractorCallback)
         fun cancelRequest(): Unit?
     }
 

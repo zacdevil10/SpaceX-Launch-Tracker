@@ -20,7 +20,8 @@ class PadStatsInteractorImpl : BaseNetwork(), PadStatsContract.PadStatsInteracto
                 false,
                 "",
                 "",
-                listOf("full_name", "launch_attempts", "launch_successes", "status")
+                listOf("full_name", "launch_attempts", "launch_successes", "status"),
+                100000
             )
         )
 
@@ -30,7 +31,8 @@ class PadStatsInteractorImpl : BaseNetwork(), PadStatsContract.PadStatsInteracto
                 false,
                 "",
                 "",
-                listOf("full_name", "landing_attempts", "landing_successes", "status", "type")
+                listOf("full_name", "landing_attempts", "landing_successes", "status", "type"),
+                100000
             )
         )
 

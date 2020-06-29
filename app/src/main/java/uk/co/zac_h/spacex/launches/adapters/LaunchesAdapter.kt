@@ -84,12 +84,9 @@ class LaunchesAdapter(
             itemView.setOnClickListener {
                 itemView.findNavController()
                     .navigate(
-                        R.id.action_launches_page_fragment_to_launch_details_fragment,
+                        R.id.action_launches_page_fragment_to_launch_details_container_fragment,
                         bundleOf(
-                            "launch_short" to launch,
-                            "launch_id" to launch.id,
-                            "flight_number" to launch.flightNumber,
-                            "title" to launch.missionName
+                            "launch_short" to launch
                         ),
                         null,
                         FragmentNavigatorExtras(itemView to launch.id)

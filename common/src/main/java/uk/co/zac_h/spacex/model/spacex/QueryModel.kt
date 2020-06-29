@@ -11,7 +11,8 @@ data class QueryOptionsModel(
     private var pagination: Boolean,
     private var populate: Any,
     private var sort: Any,
-    private var select: Any
+    private var select: Any,
+    private var limit: Int
 )
 
 data class QueryPopulateModel(
@@ -21,7 +22,7 @@ data class QueryPopulateModel(
 )
 
 data class QueryLaunchesQueryModel(
-    private var flight_number: Int
+    private var _id: String
 )
 
 data class QueryUpcomingLaunchesModel(

@@ -1,18 +1,18 @@
-package uk.co.zac_h.spacex.dashboard
+package uk.co.zac_h.spacex.launches.details.details
 
 import retrofit2.Call
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardInteractor {
+class LaunchDetailsInteractorImpl : BaseNetwork(), LaunchDetailsContract.LaunchDetailsInteractor {
 
     private var call: Call<LaunchesExtendedDocsModel>? = null
 
     override fun getSingleLaunch(
         id: String,
         api: SpaceXInterface,
-        listener: DashboardContract.InteractorCallback
+        listener: LaunchDetailsContract.InteractorCallback
     ) {
         val populateList = listOf(
             QueryPopulateModel("launchpad", select = listOf("name"), populate = ""),
@@ -20,18 +20,11 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardIntera
         )
 
         val query = QueryModel(
-            when (id) {
-                "next", "latest" -> QueryUpcomingLaunchesModel(id == "next")
-                else -> QueryLaunchesQueryModel(id)
-            },
+            QueryLaunchesQueryModel(id),
             QueryOptionsModel(
                 true,
-                populateList,
-                sort = when (id) {
-                    "next" -> QueryLaunchesSortModel("asc")
-                    "latest" -> QueryLaunchesSortModel("desc")
-                    else -> ""
-                },
+                populate = populateList,
+                sort = "",
                 select = listOf(
                     "links",
                     "static_fire_date_unix",
@@ -50,15 +43,11 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardIntera
 
         call = api.getQueriedLaunches(query).apply {
             makeCall {
-                onResponseSuccess = {
-                    listener.onSuccess(id, it.body()?.docs?.get(0))
-                }
-                onResponseFailure = {
-                    listener.onError(it)
-                }
+                onResponseSuccess = { listener.onSuccess(it.body()) }
+                onResponseFailure = { listener.onError(it) }
             }
         }
     }
 
-    override fun cancelAllRequests() = terminateAll()
+    override fun cancelRequest() = terminateAll()
 }
