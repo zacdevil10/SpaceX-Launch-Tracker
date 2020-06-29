@@ -4,13 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCoresBinding
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.model.spacex.LaunchCoreExtendedModel
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View {
+class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var _binding: FragmentLaunchDetailsCoresBinding? = null
     private val binding get() = _binding!!
@@ -66,6 +70,16 @@ class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList("cores", cores)
         super.onSaveInstanceState(outState)
@@ -73,6 +87,7 @@ class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        presenter?.cancelRequest()
         _binding = null
     }
 
@@ -94,6 +109,14 @@ class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View {
     }
 
     override fun showError(error: String) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
 
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            id?.let {
+                if (cores.isEmpty()) presenter?.getLaunch(it)
+            }
+        }
     }
 }

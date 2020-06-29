@@ -4,14 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
+import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsPayloadsBinding
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
 import uk.co.zac_h.spacex.model.spacex.PayloadModel
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.View {
+class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.View,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var _binding: FragmentLaunchDetailsPayloadsBinding? = null
     private val binding get() = _binding!!
@@ -67,6 +71,16 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList("payloads", payloads)
         super.onSaveInstanceState(outState)
@@ -95,6 +109,14 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
     }
 
     override fun showError(error: String) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
 
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            id?.let {
+                if (payloads.isEmpty()) presenter?.getLaunch(it)
+            }
+        }
     }
 }
