@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
-import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -99,9 +98,6 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
                 else -> false
             }
         }
-
-        postponeEnterTransition()
-        view.doOnPreDraw { startPostponedEnterTransition() }
 
         val pinnedPrefs = (context?.applicationContext as App).pinnedPreferencesRepo
 
