@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.dashboard
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import java.util.concurrent.TimeUnit
 
@@ -11,8 +11,8 @@ class DashboardPresenterImpl(
     DashboardContract.InteractorCallback {
 
     override fun getLatestLaunches(
-        next: LaunchesModel?,
-        latest: LaunchesModel?,
+        next: LaunchesExtendedModel?,
+        latest: LaunchesExtendedModel?,
         api: SpaceXInterface
     ) {
         view.showProgress()
@@ -31,9 +31,9 @@ class DashboardPresenterImpl(
         }
     }
 
-    override fun getSingleLaunch(flight: String, api: SpaceXInterface) {
+    override fun getSingleLaunch(id: String, api: SpaceXInterface) {
         view.showProgress()
-        interactor.getSingleLaunch(flight, api, this)
+        interactor.getSingleLaunch(id, api, this)
     }
 
     override fun updateCountdown(time: Long) {
@@ -82,27 +82,26 @@ class DashboardPresenterImpl(
         }
     }
 
-    override fun onSuccess(id: String, launchesModel: LaunchesModel?) {
-        launchesModel?.let { launchModel ->
+    override fun onSuccess(id: String, launchModel: LaunchesExtendedModel?) {
+        launchModel?.let { launch ->
             when (id) {
                 "next" -> {
-                    view.updateNextLaunch(launchModel)
-                    launchModel.let { launch ->
-                        val time = (launch.launchDateUnix.times(1000)) - System.currentTimeMillis()
-                        if (!launch.tbd && time >= 0) {
-                            view.apply {
-                                setCountdown(time)
-                                showCountdown()
-                            }
-                        } else {
-                            view.hideCountdown()
-                        }
+                    view.updateNextLaunch(launch)
+                    val time =
+                        (launch.launchDateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
+                    launch.tbd?.let { tbd ->
+                        if (!tbd && time >= 0) view.apply {
+                            setCountdown(time)
+                            showCountdown()
+                        } else view.hideCountdown()
+                    } ?: run {
+                        view.hideCountdown()
                     }
                 }
-                "latest" -> view.updateLatestLaunch(launchModel)
+                "latest" -> view.updateLatestLaunch(launch)
                 else -> {
                     view.hidePinnedMessage()
-                    view.updatePinnedList(id, launchModel)
+                    view.updatePinnedList(id, launch)
                 }
             }
         }

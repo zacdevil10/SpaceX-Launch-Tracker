@@ -19,7 +19,7 @@ class LaunchHistoryInteractorImpl : BaseNetwork(), LaunchHistoryContract.LaunchH
 
         val query = QueryModel(
             QueryUpcomingLaunchesModel(false),
-            QueryOptionsModel(false, populateList, "", listOf("rocket", "success"))
+            QueryOptionsModel(false, populateList, "", listOf("rocket", "success"), 100000)
         )
 
         call = api.getQueriedLaunches(query).apply {

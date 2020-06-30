@@ -14,12 +14,12 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 
 class DashboardPinnedAdapter(
     private val context: Context?,
-    private val launches: ArrayList<LaunchesModel>
+    private val launches: ArrayList<LaunchesExtendedModel>
 ) : RecyclerView.Adapter<DashboardPinnedAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -54,15 +54,13 @@ class DashboardPinnedAdapter(
                 flightNumber.text = context?.getString(R.string.flight_number, it.flightNumber)
 
                 missionName.text = it.missionName
-                date.text = it.launchDateUnix.formatDateMillisLong(it.tbd)
+                date.text = it.tbd?.let { it1 -> it.launchDateUnix?.formatDateMillisLong(it1) }
 
                 launchesCard.setOnClickListener { _ ->
                     itemView.findNavController().navigate(
-                        R.id.action_dashboard_page_fragment_to_launch_details_fragment,
+                        R.id.action_dashboard_page_fragment_to_launch_details_container_fragment,
                         bundleOf(
-                            "launch_id" to it.id,
-                            "flight_number" to it.flightNumber,
-                            "title" to it.missionName
+                            "launch_short" to it
                         ),
                         null,
                         FragmentNavigatorExtras(launchesCard to launch.id)

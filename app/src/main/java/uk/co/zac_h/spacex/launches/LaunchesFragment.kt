@@ -33,6 +33,8 @@ class LaunchesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        postponeEnterTransition()
+
         (activity as MainActivity).setSupportActionBar(binding.toolbar)
 
         val navController = NavHostFragment.findNavController(this)
@@ -42,9 +44,6 @@ class LaunchesFragment : Fragment() {
                 .setOpenableLayout(drawerLayout).build()
 
         binding.toolbar.setupWithNavController(navController, appBarConfig)
-
-        postponeEnterTransition()
-        view.doOnPreDraw { startPostponedEnterTransition() }
 
         binding.launchesViewPager.adapter = LaunchesPagerAdapter(childFragmentManager)
 
@@ -59,6 +58,8 @@ class LaunchesFragment : Fragment() {
                 getTabAt(position)?.setIcon(tabIcons[position])
             }
         }
+
+        view.doOnPreDraw { startPostponedEnterTransition() }
     }
 
     override fun onDestroy() {

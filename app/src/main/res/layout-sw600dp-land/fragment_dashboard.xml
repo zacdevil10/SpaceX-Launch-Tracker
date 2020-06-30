@@ -37,30 +37,42 @@
         <androidx.core.widget.NestedScrollView
             android:id="@+id/dashboard_scroll_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:clipToPadding="false">
+            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
                 android:animateLayoutChanges="true"
-                android:orientation="vertical">
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:padding="8dp">
 
-                <include
-                    android:id="@+id/dashboard_next_layout"
-                    layout="@layout/list_item_next_launch" />
+                <LinearLayout
+                    android:id="@+id/dashboard_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"
+                    android:orientation="vertical"
+                    app:layout_constraintEnd_toStartOf="@id/dashboard_pinned_layout"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <include
-                    android:id="@+id/dashboard_latest_layout"
-                    layout="@layout/list_item_latest_launch" />
+                    <include
+                        android:id="@+id/dashboard_next_layout"
+                        layout="@layout/list_item_next_launch" />
+
+                    <include
+                        android:id="@+id/dashboard_latest_layout"
+                        layout="@layout/list_item_latest_launch" />
+
+                </LinearLayout>
 
                 <include
                     android:id="@+id/dashboard_pinned_layout"
                     layout="@layout/dashboard_pinned_layout" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>
 

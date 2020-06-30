@@ -1,10 +1,9 @@
-package uk.co.zac_h.spacex.launches.details
+package uk.co.zac_h.spacex.launches.details.details
 
 import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
 import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
-import java.util.concurrent.TimeUnit
 
 class LaunchDetailsPresenterImpl(
     private val view: LaunchDetailsContract.LaunchDetailsView,
@@ -13,9 +12,9 @@ class LaunchDetailsPresenterImpl(
 ) : LaunchDetailsContract.LaunchDetailsPresenter,
     LaunchDetailsContract.InteractorCallback {
 
-    override fun getLaunch(flightNumber: Int, api: SpaceXInterface) {
+    override fun getLaunch(id: String, api: SpaceXInterface) {
         view.showProgress()
-        interactor.getSingleLaunch(flightNumber, api, this)
+        interactor.getSingleLaunch(id, api, this)
     }
 
     override fun addLaunchModel(launchModel: LaunchesExtendedModel?, isExt: Boolean) {
@@ -32,30 +31,6 @@ class LaunchDetailsPresenterImpl(
         view.newCalendarEvent()
     }
 
-    override fun updateCountdown(time: Long) {
-        val remaining = String.format(
-            "T-%02d:%02d:%02d:%02d",
-            TimeUnit.MILLISECONDS.toDays(time),
-            TimeUnit.MILLISECONDS.toHours(time) - TimeUnit.DAYS.toHours(
-                TimeUnit.MILLISECONDS.toDays(
-                    time
-                )
-            ),
-            TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(
-                TimeUnit.MILLISECONDS.toHours(
-                    time
-                )
-            ),
-            TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(
-                TimeUnit.MILLISECONDS.toMinutes(
-                    time
-                )
-            )
-        )
-
-        view.updateCountdown(remaining)
-    }
-
     override fun cancelRequest() {
         interactor.cancelRequest()
     }
@@ -65,16 +40,6 @@ class LaunchDetailsPresenterImpl(
             hideProgress()
             launchModel?.docs?.get(0)?.let { launch ->
                 updateLaunchDataView(launch, true)
-                val time =
-                    (launch.launchDateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
-                launch.tbd?.let {
-                    if (!it && time >= 0) {
-                        setCountdown(time)
-                        showCountdown()
-                    } else {
-                        hideCountdown()
-                    }
-                }
             }
         }
     }

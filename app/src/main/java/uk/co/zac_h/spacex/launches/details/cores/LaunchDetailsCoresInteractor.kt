@@ -1,23 +1,20 @@
-package uk.co.zac_h.spacex.launches.details
+package uk.co.zac_h.spacex.launches.details.cores
 
 import retrofit2.Call
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class LaunchDetailsInteractorImpl : BaseNetwork(), LaunchDetailsContract.LaunchDetailsInteractor {
+class LaunchDetailsCoresInteractor : BaseNetwork(), LaunchDetailsCoresContract.Interactor {
 
     private var call: Call<LaunchesExtendedDocsModel>? = null
 
     override fun getSingleLaunch(
-        flightNumber: Int,
+        id: String,
         api: SpaceXInterface,
-        listener: LaunchDetailsContract.InteractorCallback
+        listener: LaunchDetailsCoresContract.InteractorCallback
     ) {
         val populateList = listOf(
-            QueryPopulateModel("launchpad", select = listOf("name"), populate = ""),
-            QueryPopulateModel("payloads", populate = "", select = ""),
-            QueryPopulateModel("rocket", populate = "", select = listOf("name")),
             QueryPopulateModel(
                 "cores",
                 populate = listOf(
@@ -43,8 +40,8 @@ class LaunchDetailsInteractorImpl : BaseNetwork(), LaunchDetailsContract.LaunchD
         )
 
         val query = QueryModel(
-            QueryLaunchesQueryModel(flightNumber),
-            QueryOptionsModel(false, populateList, "", "")
+            QueryLaunchesQueryModel(id),
+            QueryOptionsModel(false, populateList, "", listOf("cores"), 10)
         )
 
         call = api.getQueriedLaunches(query).apply {
@@ -56,4 +53,5 @@ class LaunchDetailsInteractorImpl : BaseNetwork(), LaunchDetailsContract.LaunchD
     }
 
     override fun cancelRequest() = terminateAll()
+
 }

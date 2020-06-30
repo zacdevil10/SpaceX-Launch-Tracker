@@ -85,7 +85,7 @@ class HistoryAdapter(
                     launchDetailsButton.setOnClickListener {
                         itemView.findNavController()
                             .navigate(
-                                R.id.action_history_fragment_to_launch_details_fragment,
+                                R.id.action_history_fragment_to_launch_details_container_fragment,
                                 bundleOf(
                                     "launch_id" to flight.toString()
                                 )

@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.launches.adapters
 
-import android.animation.LayoutTransition
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,7 @@ import uk.co.zac_h.spacex.utils.metricFormat
 class PayloadAdapter(private var context: Context?, private var payloads: List<PayloadModel>?) :
     RecyclerView.Adapter<PayloadAdapter.ViewHolder>() {
 
-    private var expandedPosition = -1
+    private var expandedPosition = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
@@ -37,8 +36,6 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
             details.visibility = if (isExpanded) View.VISIBLE else View.GONE
             itemView.isActivated = isExpanded
             expandIndicator.isChecked = isExpanded
-
-            root.layoutTransition.disableTransitionType(LayoutTransition.CHANGING)
 
             payloadName.text = payload?.name
             payloadManufacturer.text = payload?.manufacturers?.formatCustomers()
@@ -133,7 +130,6 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
 
             itemView.setOnClickListener {
                 expandedPosition = if (isExpanded) -1 else position
-                root.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
                 notifyItemChanged(position)
             }
         }

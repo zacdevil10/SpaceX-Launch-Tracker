@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.CoreLaunchesModel
@@ -29,18 +30,21 @@ class CoreMissionsAdapter(
         val mission = missions[position]
 
         holder.apply {
+            itemView.transitionName = mission.id
+
             missionName.text = mission.name
             flightNumber.text = context?.getString(R.string.flight_number, mission.flightNumber)
+
 
             itemView.setOnClickListener {
                 itemView.findNavController()
                     .navigate(
-                        R.id.action_core_details_fragment_to_launch_details_fragment,
+                        R.id.action_core_details_fragment_to_launch_details_container_fragment,
                         bundleOf(
-                            "launch_id" to mission.id,
-                            "flight_number" to mission.flightNumber,
-                            "title" to mission.name
-                        )
+                            "launch_id" to mission.id
+                        ),
+                        null,
+                        FragmentNavigatorExtras(itemView to mission.id)
                     )
             }
         }
