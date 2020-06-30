@@ -5,7 +5,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -22,7 +24,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardPinnedAdapter
 import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
 import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
@@ -57,8 +58,6 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setHasOptionsMenu(true)
-
         savedInstanceState?.let {
             nextLaunchModel = it.getParcelable("next")
             latestLaunchModel = it.getParcelable("latest")
@@ -83,8 +82,6 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as MainActivity).setSupportActionBar(binding.toolbar)
-
         val navController = NavHostFragment.findNavController(this)
         val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
         val appBarConfig =
@@ -92,6 +89,16 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
                 .setOpenableLayout(drawerLayout).build()
 
         binding.toolbar.setupWithNavController(navController, appBarConfig)
+
+        binding.toolbar.setOnMenuItemClickListener {
+            when (it.itemId) {
+                R.id.edit -> {
+                    findNavController().navigate(R.id.action_dashboard_page_fragment_to_dashboard_edit_dialog)
+                    true
+                }
+                else -> false
+            }
+        }
 
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
@@ -193,20 +200,6 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         countdownTimer = null
         presenter?.cancelRequests()
         _binding = null
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_dashboard, menu)
-
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.edit -> {
-            findNavController().navigate(R.id.action_dashboard_page_fragment_to_dashboard_edit_dialog)
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
     }
 
     override fun updateNextLaunch(nextLaunch: LaunchesExtendedModel) {

@@ -24,6 +24,8 @@
         android:id="@+id/launch_details_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:paddingBottom="?attr/actionBarSize"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 

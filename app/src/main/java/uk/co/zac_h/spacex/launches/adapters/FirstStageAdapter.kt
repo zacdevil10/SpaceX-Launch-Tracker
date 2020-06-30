@@ -9,6 +9,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.card.MaterialCardView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.LaunchCoreExtendedModel
 import uk.co.zac_h.spacex.utils.setImageAndTint
@@ -29,7 +30,7 @@ class FirstStageAdapter(private val cores: List<LaunchCoreExtendedModel>) :
         val core = cores[position]
 
         holder.apply {
-            itemView.transitionName = core.core?.id ?: ""
+            cardView.transitionName = core.core?.id ?: ""
 
             coreSerial.text = core.core?.serial
 
@@ -66,7 +67,7 @@ class FirstStageAdapter(private val cores: List<LaunchCoreExtendedModel>) :
                 }
             }
 
-            itemView.setOnClickListener {
+            cardView.setOnClickListener {
                 bind(core)
             }
         }
@@ -75,6 +76,7 @@ class FirstStageAdapter(private val cores: List<LaunchCoreExtendedModel>) :
     override fun getItemCount(): Int = cores.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val cardView: MaterialCardView = itemView.findViewById(R.id.list_item_first_stage_card)
         val coreSerial: TextView =
             itemView.findViewById(R.id.list_item_first_stage_core_serial_text)
         val reusedImage: ImageView = itemView.findViewById(R.id.list_item_first_stage_reused_image)
@@ -88,7 +90,7 @@ class FirstStageAdapter(private val cores: List<LaunchCoreExtendedModel>) :
                     R.id.action_launch_details_container_fragment_to_core_details_fragment,
                     bundleOf("core" to core.core),
                     null,
-                    FragmentNavigatorExtras(itemView to (core.core?.id ?: ""))
+                    FragmentNavigatorExtras(cardView to (core.core?.id ?: ""))
                 )
         }
     }
