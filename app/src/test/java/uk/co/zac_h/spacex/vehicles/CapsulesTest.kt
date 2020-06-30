@@ -13,9 +13,7 @@ import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 import retrofit2.mock.Calls
-import uk.co.zac_h.spacex.model.spacex.CapsulesDocsModel
-import uk.co.zac_h.spacex.model.spacex.CapsulesModel
-import uk.co.zac_h.spacex.model.spacex.QueryModel
+import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.vehicles.capsules.CapsulesContract
 import uk.co.zac_h.spacex.vehicles.capsules.CapsulesInteractorImpl
@@ -41,7 +39,7 @@ class CapsulesTest {
     @Mock
     val mCapsulesModel: CapsulesModel = mock(CapsulesModel::class.java)
 
-    private lateinit var capsulesList: List<CapsulesModel>
+    private var capsulesList = listOf(mCapsulesModel)
 
     private val capsulesDocsMock = CapsulesDocsModel(capsulesList)
 
@@ -55,7 +53,17 @@ class CapsulesTest {
         mPresenter = CapsulesPresenterImpl(mView, mInteractor)
         presenter = CapsulesPresenterImpl(mView, interactor)
 
-        capsulesList = listOf(mCapsulesModel)
+        val populateList: ArrayList<QueryPopulateModel> = ArrayList()
+
+        populateList.add(
+            QueryPopulateModel(
+                "launches",
+                select = listOf("name", "flight_number"),
+                populate = ""
+            )
+        )
+
+        query = QueryModel("", QueryOptionsModel(false, populateList, "", "", 100000))
     }
 
     @Test

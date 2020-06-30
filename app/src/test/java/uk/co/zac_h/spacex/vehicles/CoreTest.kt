@@ -13,9 +13,7 @@ import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 import retrofit2.mock.Calls
-import uk.co.zac_h.spacex.model.spacex.CoreDocsModel
-import uk.co.zac_h.spacex.model.spacex.CoreExtendedModel
-import uk.co.zac_h.spacex.model.spacex.QueryModel
+import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.vehicles.cores.CoreContract
 import uk.co.zac_h.spacex.vehicles.cores.CoreInteractorImpl
@@ -42,8 +40,7 @@ class CoreTest {
 
     private val mCoreDocsModel = CoreDocsModel(listOf(mCoreModel))
 
-    @Mock
-    val query: QueryModel = mock(QueryModel::class.java)
+    private lateinit var query: QueryModel
 
     @Before
     fun setup() {
@@ -52,6 +49,18 @@ class CoreTest {
         interactor = CoreInteractorImpl()
         mPresenter = CorePresenterImpl(mView, mInteractor)
         presenter = CorePresenterImpl(mView, interactor)
+
+        val populateList: ArrayList<QueryPopulateModel> = ArrayList()
+
+        populateList.add(
+            QueryPopulateModel(
+                "launches",
+                select = listOf("name", "flight_number"),
+                populate = ""
+            )
+        )
+
+        query = QueryModel("", QueryOptionsModel(false, populateList, "", "", 100000))
     }
 
     @Test

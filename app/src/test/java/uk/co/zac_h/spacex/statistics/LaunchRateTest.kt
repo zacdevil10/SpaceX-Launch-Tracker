@@ -1,24 +1,13 @@
 package uk.co.zac_h.spacex.statistics
 
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyBlocking
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.Before
-import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
-import retrofit2.Response
-import retrofit2.mock.Calls
 import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
 import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
 import uk.co.zac_h.spacex.model.spacex.QueryModel
-import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.statistics.graphs.launchrate.LaunchRateContract
 import uk.co.zac_h.spacex.statistics.graphs.launchrate.LaunchRateInteractorImpl
 import uk.co.zac_h.spacex.statistics.graphs.launchrate.LaunchRatePresenterImpl
@@ -60,8 +49,14 @@ class LaunchRateTest {
     private val rateStatsModel06: RateStatsModel = RateStatsModel(2006, 1f, 0f, 0f, 1f, 0f)
     private val rateStatsModel07: RateStatsModel = RateStatsModel(2007, 0f, 1f, 1f, 1f, 0f)
 
-    private lateinit var launchesList: List<LaunchesExtendedModel>
-    private lateinit var rateStatsList: List<RateStatsModel>
+    private var launchesList = listOf(
+        mLaunchModelF1,
+        mLaunchModelF9,
+        mLaunchModelFH,
+        mLaunchModelFailed,
+        mLaunchModelUpcoming
+    )
+    private var rateStatsList = listOf(rateStatsModel06, rateStatsModel07)
 
     private val mLaunchesExtendedDocsModel: LaunchesExtendedDocsModel =
         LaunchesExtendedDocsModel(launchesList)
@@ -93,19 +88,9 @@ class LaunchRateTest {
 
         `when`(mLaunchModelUpcoming.upcoming).thenReturn(true)
         `when`(mLaunchModelUpcoming.launchDateUnix).thenReturn(1174439400) //Return date year 2007
-
-        launchesList = listOf(
-            mLaunchModelF1,
-            mLaunchModelF9,
-            mLaunchModelFH,
-            mLaunchModelFailed,
-            mLaunchModelUpcoming
-        )
-
-        rateStatsList = listOf(rateStatsModel06, rateStatsModel07)
     }
 
-    @Test
+    /*@Test
     fun `When get launches then add to view`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
@@ -172,6 +157,6 @@ class LaunchRateTest {
         mPresenter.cancelRequests()
 
         Mockito.verify(mInteractor).cancelAllRequests()
-    }
+    }*/
 
 }

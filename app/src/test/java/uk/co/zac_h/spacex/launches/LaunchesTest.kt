@@ -51,7 +51,41 @@ class LaunchesTest {
 
         query = QueryModel(
             query = QueryUpcomingLaunchesModel(true),
-            options = QueryOptionsModel(false, "", QueryLaunchesSortModel("desc"), "")
+            options = QueryOptionsModel(
+                pagination = false,
+                populate = listOf(
+                    QueryPopulateModel(path = "rocket", populate = "", select = listOf("name")),
+                    QueryPopulateModel(
+                        path = "cores",
+                        populate = listOf(
+                            QueryPopulateModel(
+                                path = "landpad",
+                                populate = "",
+                                select = listOf("name")
+                            ),
+                            QueryPopulateModel(
+                                path = "core",
+                                populate = "",
+                                select = listOf("reuse_count")
+                            )
+                        ),
+                        select = ""
+                    )
+                ),
+                sort = QueryLaunchesSortModel("asc"),
+                select = listOf(
+                    "flight_number",
+                    "name",
+                    "date_unix",
+                    "tbd",
+                    "links.patch.small",
+                    "rocket",
+                    "cores.core",
+                    "cores.reused",
+                    "cores.landpad"
+                ),
+                limit = 5000
+            )
         )
     }
 
@@ -84,7 +118,7 @@ class LaunchesTest {
             )
         }
 
-        presenter.getLaunchList("past", mockRepo)
+        presenter.getLaunchList("upcoming", mockRepo)
 
         verifyBlocking(mView) {
             showProgress()
@@ -104,7 +138,7 @@ class LaunchesTest {
             )
         }
 
-        interactor.getLaunches("past", "desc", mockRepo, mListener)
+        interactor.getLaunches("upcoming", "asc", mockRepo, mListener)
 
         verifyBlocking(mListener) { onError("Error: 404") }
     }
@@ -120,7 +154,7 @@ class LaunchesTest {
             )
         }
 
-        presenter.getLaunchList("past", mockRepo)
+        presenter.getLaunchList("upcoming", mockRepo)
 
         verifyBlocking(mView) {
             showProgress()

@@ -2,6 +2,7 @@ package uk.co.zac_h.spacex.statistics
 
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verifyBlocking
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -41,10 +42,11 @@ class PadStatsTest {
     @Mock
     val mLaunchpadModel: LaunchpadModel = mock(LaunchpadModel::class.java)
 
-    private lateinit var query: QueryModel
+    private lateinit var launchQuery: QueryModel
+    private lateinit var landQuery: QueryModel
 
-    private lateinit var launchpadList: List<LaunchpadModel>
-    private lateinit var landingPadList: List<LandingPadModel>
+    private var launchpadList = listOf(mLaunchpadModel)
+    private var landingPadList = listOf(mLandingPadModel)
 
     private val launchpadDocsModel = LaunchpadDocsModel(launchpadList)
     private val landingPadDocsModel = LandingPadDocsModel(landingPadList)
@@ -57,9 +59,6 @@ class PadStatsTest {
         mPresenter = PadStatsPresenterImpl(mView, mInteractor)
         presenter = PadStatsPresenterImpl(mView, interactor)
 
-        launchpadList = listOf(mLaunchpadModel)
-        landingPadList = listOf(mLandingPadModel)
-
         `when`(mLaunchpadModel.fullName).thenReturn("")
         `when`(mLaunchpadModel.launchAttempts).thenReturn(0)
         `when`(mLaunchpadModel.launchSuccesses).thenReturn(0)
@@ -70,17 +69,39 @@ class PadStatsTest {
         `when`(mLandingPadModel.landingSuccesses).thenReturn(0)
         `when`(mLandingPadModel.status).thenReturn("")
         `when`(mLandingPadModel.type).thenReturn("")
+
+        launchQuery = QueryModel(
+            "",
+            QueryOptionsModel(
+                false,
+                "",
+                "",
+                listOf("full_name", "launch_attempts", "launch_successes", "status"),
+                100000
+            )
+        )
+
+        landQuery = QueryModel(
+            "",
+            QueryOptionsModel(
+                false,
+                "",
+                "",
+                listOf("full_name", "landing_attempts", "landing_successes", "status", "type"),
+                100000
+            )
+        )
     }
 
     @Test
     fun `When get pads then add to view`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
-                getQueriedLandingPads(query)
+                getQueriedLandingPads(landQuery)
             } doReturn Calls.response(Response.success(landingPadDocsModel))
 
             onBlocking {
-                getQueriedLaunchpads(query)
+                getQueriedLaunchpads(launchQuery)
             } doReturn Calls.response(Response.success(launchpadDocsModel))
         }
 
@@ -92,11 +113,11 @@ class PadStatsTest {
         }
     }
 
-    /*@Test
+    @Test
     fun `When response from API is unsuccessful`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
-                getLandingPads()
+                getQueriedLandingPads(landQuery)
             } doReturn Calls.response(
                 Response.error(
                 404,
@@ -105,7 +126,7 @@ class PadStatsTest {
             )
 
             onBlocking {
-                getLaunchpads()
+                getQueriedLaunchpads(launchQuery)
             } doReturn Calls.response(
                 Response.error(
                     404,
@@ -116,16 +137,16 @@ class PadStatsTest {
 
         interactor.getPads(api = mockRepo, listener = mListener)
 
-        verifyBlocking(mListener) {
+        verifyBlocking(mListener, times(2)) {
             onError("Error: 404")
         }
-    }*/
+    }
 
     @Test
     fun `Show error in view when response from API fails`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
-                getQueriedLaunchpads(query)
+                getQueriedLaunchpads(launchQuery)
             } doReturn Calls.response(
                 Response.error(
                     404,
@@ -133,7 +154,7 @@ class PadStatsTest {
                 )
             )
             onBlocking {
-                getQueriedLandingPads(query)
+                getQueriedLandingPads(landQuery)
             } doReturn Calls.response(
                 Response.error(
                     404,

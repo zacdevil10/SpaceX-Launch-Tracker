@@ -18,10 +18,7 @@ import retrofit2.mock.Calls
 import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsContract
 import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsInteractorImpl
 import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsPresenterImpl
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
-import uk.co.zac_h.spacex.model.spacex.QueryLaunchesQueryModel
-import uk.co.zac_h.spacex.model.spacex.QueryModel
+import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 
@@ -74,9 +71,31 @@ class LaunchDetailsTest {
                 interactor
             )
 
+        val populateList = listOf(
+            QueryPopulateModel("launchpad", select = listOf("name"), populate = ""),
+            QueryPopulateModel("rocket", populate = "", select = listOf("name"))
+        )
+
         query = QueryModel(
             QueryLaunchesQueryModel("1"),
-            ""
+            QueryOptionsModel(
+                true,
+                populate = populateList,
+                sort = "",
+                select = listOf(
+                    "links",
+                    "static_fire_date_unix",
+                    "tbd",
+                    "net",
+                    "rocket",
+                    "details",
+                    "launchpad",
+                    "flight_number",
+                    "name",
+                    "date_unix"
+                ),
+                limit = 1
+            )
         )
     }
 
