@@ -5,6 +5,7 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
@@ -37,10 +38,6 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        retainInstance = true
-
-        postponeEnterTransition()
-
         sharedElementEnterTransition = MaterialContainerTransform()
 
         launchShort = arguments?.getParcelable("launch_short")
@@ -58,6 +55,9 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
 
         (activity as MainActivity).setSupportActionBar(binding.toolbar)
 
@@ -122,8 +122,6 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
             }
             false
         }
-
-        startPostponedEnterTransition()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

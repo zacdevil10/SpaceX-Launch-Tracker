@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.CapsuleLaunchesModel
@@ -29,6 +30,7 @@ class CapsuleMissionsAdapter(
         val mission = missions[position]
 
         holder.apply {
+            itemView.transitionName = mission.id
             missionName.text = mission.name
             flightNumber.text = context?.getString(R.string.flight_number, mission.flightNumber)
 
@@ -36,9 +38,9 @@ class CapsuleMissionsAdapter(
                 itemView.findNavController()
                     .navigate(
                         R.id.action_capsule_details_fragment_to_launch_details_container_fragment,
-                        bundleOf(
-                            "launch_id" to mission.id
-                        )
+                        bundleOf("launch_id" to mission.id),
+                        null,
+                        FragmentNavigatorExtras(itemView to mission.id)
                     )
             }
         }

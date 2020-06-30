@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
@@ -53,6 +54,8 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        postponeEnterTransition()
+
         val navController = NavHostFragment.findNavController(this)
         val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
         val appBarConfig =
@@ -66,6 +69,8 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
         core?.let {
             presenter?.addCoreModel(it)
         }
+
+        view.doOnPreDraw { startPostponedEnterTransition() }
     }
 
     override fun onResume() {
@@ -92,9 +97,9 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
         coreModel.apply {
             core = coreModel
 
-            binding.toolbar.title = serial
-
             binding.coreDetailsScrollview.transitionName = id
+
+            binding.toolbar.title = serial
 
             binding.coreDetailsSerialText.text = serial
             binding.coreDetailsBlockText.text = block ?: "TBD"

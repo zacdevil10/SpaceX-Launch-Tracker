@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.LaunchCoreExtendedModel
@@ -28,6 +29,8 @@ class FirstStageAdapter(private val cores: List<LaunchCoreExtendedModel>) :
         val core = cores[position]
 
         holder.apply {
+            itemView.transitionName = core.core?.id ?: ""
+
             coreSerial.text = core.core?.serial
 
             reusedImage.apply {
@@ -83,7 +86,9 @@ class FirstStageAdapter(private val cores: List<LaunchCoreExtendedModel>) :
             itemView.findNavController()
                 .navigate(
                     R.id.action_launch_details_container_fragment_to_core_details_fragment,
-                    bundleOf("core" to core.core)
+                    bundleOf("core" to core.core),
+                    null,
+                    FragmentNavigatorExtras(itemView to (core.core?.id ?: ""))
                 )
         }
     }

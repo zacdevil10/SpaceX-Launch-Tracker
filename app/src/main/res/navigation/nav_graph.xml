@@ -88,10 +88,7 @@
         <action
             android:id="@+id/action_history_fragment_to_launch_details_container_fragment"
             app:destination="@id/launch_details_container_fragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
+            app:exitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment
@@ -106,10 +103,7 @@
         <action
             android:id="@+id/action_launch_details_container_fragment_to_core_details_fragment"
             app:destination="@id/core_details_fragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
+            app:exitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment
@@ -119,10 +113,7 @@
         <action
             android:id="@+id/action_core_details_fragment_to_launch_details_container_fragment"
             app:destination="@id/launch_details_container_fragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
+            app:exitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment
@@ -144,10 +135,7 @@
         <action
             android:id="@+id/action_capsule_details_fragment_to_launch_details_container_fragment"
             app:destination="@id/launch_details_container_fragment"
-            app:enterAnim="@android:anim/fade_in"
-            app:exitAnim="@android:anim/fade_out"
-            app:popEnterAnim="@android:anim/fade_in"
-            app:popExitAnim="@android:anim/fade_out" />
+            app:exitAnim="@android:anim/fade_out" />
     </fragment>
 
     <dialog
