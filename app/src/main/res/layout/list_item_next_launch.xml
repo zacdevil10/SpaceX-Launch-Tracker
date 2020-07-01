@@ -14,6 +14,16 @@
     app:cardElevation="4dp"
     tools:showIn="@layout/fragment_dashboard">
 
+    <com.google.android.material.progressindicator.ProgressIndicator
+        android:id="@+id/dashboard_progress_indicator"
+        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:layout_gravity="bottom"
+        app:indicatorColor="?colorSecondary"
+        app:layout_constraintBottom_toBottomOf="@id/toolbar" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -54,13 +64,13 @@
             tools:text="Flight 73" />
 
         <TextView
-            android:id="@+id/dashboard_next_block_text"
+            android:id="@+id/dashboard_next_vehicle_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/dashboard_next_flight_no_text"
-            tools:text="Block 5" />
+            tools:text="Falcon 9" />
 
         <ImageView
             android:id="@+id/dashboard_next_mission_patch_image"

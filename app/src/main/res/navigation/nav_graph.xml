@@ -8,6 +8,7 @@
     <fragment
         android:id="@+id/dashboard_page_fragment"
         android:name="uk.co.zac_h.spacex.dashboard.DashboardFragment"
+        app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_dashboard">
         <action
             android:id="@+id/action_dashboard_page_fragment_to_launch_details_container_fragment"
@@ -21,11 +22,13 @@
     <fragment
         android:id="@+id/news_page_fragment"
         android:name="uk.co.zac_h.spacex.news.NewsFragment"
+        app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_news" />
 
     <fragment
         android:id="@+id/launches_page_fragment"
         android:name="uk.co.zac_h.spacex.launches.LaunchesFragment"
+        app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_launches">
         <action
             android:id="@+id/action_launches_page_fragment_to_launch_details_container_fragment"
@@ -74,16 +77,19 @@
     <fragment
         android:id="@+id/statistics_page_fragment"
         android:name="uk.co.zac_h.spacex.statistics.StatisticsFragment"
+        app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_statistics" />
 
     <fragment
         android:id="@+id/company_page_fragment"
         android:name="uk.co.zac_h.spacex.about.company.CompanyFragment"
+        app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_company" />
 
     <fragment
         android:id="@+id/history_page_fragment"
         android:name="uk.co.zac_h.spacex.about.history.HistoryFragment"
+        app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_history">
         <action
             android:id="@+id/action_history_fragment_to_launch_details_container_fragment"
@@ -94,6 +100,7 @@
     <fragment
         android:id="@+id/about_page_fragment"
         android:name="uk.co.zac_h.spacex.about.AboutFragment"
+        app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_about" />
 
     <fragment
@@ -119,14 +126,12 @@
     <fragment
         android:id="@+id/rocket_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.rockets.details.RocketDetailsFragment"
-        tools:layout="@layout/fragment_rocket_details">
-    </fragment>
+        tools:layout="@layout/fragment_rocket_details" />
 
     <fragment
         android:id="@+id/dragon_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.dragon.details.DragonDetailsFragment"
-        tools:layout="@layout/fragment_dragon_details">
-    </fragment>
+        tools:layout="@layout/fragment_dragon_details" />
 
     <fragment
         android:id="@+id/capsule_details_fragment"

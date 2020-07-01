@@ -32,7 +32,7 @@ class FirstStageAdapter(private val cores: List<LaunchCoreExtendedModel>) :
         holder.apply {
             cardView.transitionName = core.core?.id ?: ""
 
-            coreSerial.text = core.core?.serial
+            coreSerial.text = core.core?.serial ?: "Unknown"
 
             reusedImage.apply {
                 core.reused?.let { reused ->
@@ -67,8 +67,13 @@ class FirstStageAdapter(private val cores: List<LaunchCoreExtendedModel>) :
                 }
             }
 
-            cardView.setOnClickListener {
-                bind(core)
+            core.core?.let {
+                detailsImage.visibility = View.VISIBLE
+                cardView.setOnClickListener {
+                    bind(core)
+                }
+            } ?: run {
+                detailsImage.visibility = View.GONE
             }
         }
     }
@@ -77,6 +82,8 @@ class FirstStageAdapter(private val cores: List<LaunchCoreExtendedModel>) :
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val cardView: MaterialCardView = itemView.findViewById(R.id.list_item_first_stage_card)
+        val detailsImage: ImageView =
+            itemView.findViewById(R.id.list_item_first_stage_details_image)
         val coreSerial: TextView =
             itemView.findViewById(R.id.list_item_first_stage_core_serial_text)
         val reusedImage: ImageView = itemView.findViewById(R.id.list_item_first_stage_reused_image)

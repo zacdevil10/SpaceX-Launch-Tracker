@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/launches_card_view"
     android:background="?selectableItemBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -29,7 +28,7 @@
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/launches_flight_no_text"
-        tools:text="Block 5" />
+        tools:text="Falcon 9" />
 
     <ImageView
         android:id="@+id/launches_mission_patch_image"

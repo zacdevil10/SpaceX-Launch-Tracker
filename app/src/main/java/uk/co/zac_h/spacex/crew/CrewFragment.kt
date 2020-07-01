@@ -37,7 +37,7 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        crewArray = when {
+        /*crewArray = when {
             savedInstanceState != null -> {
                 savedInstanceState.getParcelableArrayList("crew") ?: ArrayList()
             }
@@ -47,7 +47,9 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
             else -> {
                 ArrayList()
             }
-        }
+        }*/
+
+        crewArray = savedInstanceState?.getParcelableArrayList<CrewModel>("crew") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -60,6 +62,12 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        hideProgress()
+
+        if (savedInstanceState == null) {
+            startTransition()
+        }
 
         val navController = NavHostFragment.findNavController(this)
         val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
@@ -147,11 +155,11 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
     }
 
     override fun showProgress() {
-        binding.crewProgressBar.visibility = View.VISIBLE
+        binding.crewProgressBar.show()
     }
 
     override fun hideProgress() {
-        binding.crewProgressBar.visibility = View.GONE
+        binding.crewProgressBar.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
@@ -164,7 +172,7 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (crewArray.isEmpty() || binding.crewProgressBar.visibility == View.VISIBLE) presenter?.getCrew()
+            if (crewArray.isEmpty() || binding.crewProgressBar.isShown) presenter?.getCrew()
         }
     }
 }

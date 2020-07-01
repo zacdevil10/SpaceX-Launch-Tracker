@@ -99,6 +99,8 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
             }
         }
 
+        togglePinnedProgress(false)
+
         val pinnedPrefs = (context?.applicationContext as App).pinnedPreferencesRepo
 
         pinnedSharedPreferences = PinnedSharedPreferencesHelperImpl(
@@ -219,6 +221,8 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         binding.dashboardNextLayout.dashboardNextFlightNoText.text =
             context?.getString(R.string.flight_number, nextLaunch.flightNumber)
 
+        binding.dashboardNextLayout.dashboardNextVehicleText.text = nextLaunch.rocket?.name
+
         binding.dashboardNextLayout.dashboardNextMissionNameText.text = nextLaunch.missionName
         binding.dashboardNextLayout.dashboardNextDateText.text =
             nextLaunch.tbd?.let { nextLaunch.launchDateUnix?.formatDateMillisLong(it) }
@@ -255,6 +259,8 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         binding.dashboardLatestLayout.dashboardLatestFlightNoText.text =
             context?.getString(R.string.flight_number, latestLaunch.flightNumber)
+
+        binding.dashboardLatestLayout.dashboardLatestVehicleText.text = latestLaunch.rocket?.name
 
         binding.dashboardLatestLayout.dashboardLatestMissionNameText.text = latestLaunch.missionName
 
@@ -316,12 +322,19 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         binding.dashboardPinnedLayout.dashboardPinnedMessageText.visibility = View.GONE
     }
 
-    override fun showProgress() {
-        binding.dashboardProgressBar.visibility = View.VISIBLE
+    override fun toggleNextProgress(isShown: Boolean) = when {
+        isShown -> binding.dashboardNextLayout.dashboardProgressIndicator.show()
+        else -> binding.dashboardNextLayout.dashboardProgressIndicator.hide()
     }
 
-    override fun hideProgress() {
-        binding.dashboardProgressBar.visibility = View.GONE
+    override fun toggleLatestProgress(isShown: Boolean) = when {
+        isShown -> binding.dashboardLatestLayout.dashboardProgressIndicator.show()
+        else -> binding.dashboardLatestLayout.dashboardProgressIndicator.hide()
+    }
+
+    override fun togglePinnedProgress(isShown: Boolean) = when {
+        isShown -> binding.dashboardPinnedLayout.dashboardProgressIndicator.show()
+        else -> binding.dashboardPinnedLayout.dashboardProgressIndicator.hide()
     }
 
     override fun showCountdown() {
@@ -369,7 +382,8 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
             if (nextLaunchModel == null
                 || latestLaunchModel == null
                 || pinnedArray.isEmpty()
-                || binding.dashboardProgressBar.visibility == View.VISIBLE
+                || binding.dashboardNextLayout.dashboardProgressIndicator.isShown
+                || binding.dashboardLatestLayout.dashboardProgressIndicator.isShown
             ) presenter?.getLatestLaunches()
         }
     }

@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
@@ -35,7 +34,7 @@ class DashboardPinnedAdapter(
         val launch = launches[position]
 
         holder.apply {
-            launchesCard.transitionName = launch.id
+            itemView.transitionName = launch.id
 
             launch.let {
                 Glide.with(itemView)
@@ -52,18 +51,18 @@ class DashboardPinnedAdapter(
                     .into(missionPatch)
 
                 flightNumber.text = context?.getString(R.string.flight_number, it.flightNumber)
-
+                vehicle.text = it.rocket?.name
                 missionName.text = it.missionName
                 date.text = it.tbd?.let { it1 -> it.launchDateUnix?.formatDateMillisLong(it1) }
 
-                launchesCard.setOnClickListener { _ ->
+                itemView.setOnClickListener { _ ->
                     itemView.findNavController().navigate(
                         R.id.action_dashboard_page_fragment_to_launch_details_container_fragment,
                         bundleOf(
                             "launch_short" to it
                         ),
                         null,
-                        FragmentNavigatorExtras(launchesCard to launch.id)
+                        FragmentNavigatorExtras(itemView to launch.id)
                     )
                 }
             }
@@ -73,9 +72,9 @@ class DashboardPinnedAdapter(
     override fun getItemCount(): Int = launches.size
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val launchesCard: ConstraintLayout = itemView.findViewById(R.id.launches_card_view)
         val missionPatch: ImageView = itemView.findViewById(R.id.launches_mission_patch_image)
         val flightNumber: TextView = itemView.findViewById(R.id.launches_flight_no_text)
+        val vehicle: TextView = itemView.findViewById(R.id.launches_vehicle_text)
         val missionName: TextView = itemView.findViewById(R.id.launches_mission_name_text)
         val date: TextView = itemView.findViewById(R.id.launches_date_text)
     }

@@ -15,24 +15,23 @@ class DashboardPresenterImpl(
         latest: LaunchesExtendedModel?,
         api: SpaceXInterface
     ) {
-        view.showProgress()
         view.showPinnedMessage()
 
         interactor.apply {
-            if (next == null)
+            if (next == null) {
+                view.toggleNextProgress(true)
                 getSingleLaunch("next", api, this@DashboardPresenterImpl)
-            else
-                onSuccess("next", next)
+            } else onSuccess("next", next)
 
-            if (latest == null)
+            if (latest == null) {
+                view.toggleLatestProgress(true)
                 getSingleLaunch("latest", api, this@DashboardPresenterImpl)
-            else
-                onSuccess("latest", latest)
+            } else onSuccess("latest", latest)
         }
     }
 
     override fun getSingleLaunch(id: String, api: SpaceXInterface) {
-        view.showProgress()
+        view.togglePinnedProgress(true)
         interactor.getSingleLaunch(id, api, this)
     }
 
@@ -87,6 +86,7 @@ class DashboardPresenterImpl(
             when (id) {
                 "next" -> {
                     view.updateNextLaunch(launch)
+                    view.toggleNextProgress(false)
                     val time =
                         (launch.launchDateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
                     launch.tbd?.let { tbd ->
@@ -98,15 +98,17 @@ class DashboardPresenterImpl(
                         view.hideCountdown()
                     }
                 }
-                "latest" -> view.updateLatestLaunch(launch)
+                "latest" -> {
+                    view.updateLatestLaunch(launch)
+                    view.toggleLatestProgress(false)
+                }
                 else -> {
                     view.hidePinnedMessage()
                     view.updatePinnedList(id, launch)
+                    view.togglePinnedProgress(false)
                 }
             }
         }
-
-        view.hideProgress()
         view.toggleSwipeProgress(false)
     }
 

@@ -19,6 +19,10 @@ class MainActivity : AppCompatActivity(),
     private var snackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        (application as App).preferencesRepo.themeModeLive.observe(this, Observer { mode ->
+            mode?.let { delegate.localNightMode = it }
+        })
+
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -46,10 +50,6 @@ class MainActivity : AppCompatActivity(),
         val navController = navHostFragment.navController
 
         findViewById<NavigationView>(R.id.nav_view).setupWithNavController(navController)
-
-        (application as App).preferencesRepo.themeModeLive.observe(this, Observer { mode ->
-            mode?.let { delegate.localNightMode = it }
-        })
     }
 
     override fun onStart() {
