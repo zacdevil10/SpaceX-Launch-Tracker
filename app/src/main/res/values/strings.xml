@@ -13,6 +13,7 @@
     <string name="menu_about_spacex">About SpaceX</string>
     <string name="menu_company">Company</string>
     <string name="menu_history">History</string>
+    <string name="menu_ships">Ships</string>
 
 
     <string name="flight_number">Flight %1$d</string>

@@ -19,8 +19,8 @@ interface LaunchDetailsCoresContract {
     }
 
     interface Interactor {
-        fun getSingleLaunch(id: String, api: SpaceXInterface, listener: InteractorCallback)
-        fun cancelRequest(): Unit?
+        fun getCores(id: String, api: SpaceXInterface, listener: InteractorCallback)
+        fun cancelRequest()
     }
 
     interface InteractorCallback {

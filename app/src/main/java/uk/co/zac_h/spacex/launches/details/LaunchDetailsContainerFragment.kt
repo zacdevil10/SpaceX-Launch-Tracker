@@ -17,6 +17,7 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsContainerBinding
 import uk.co.zac_h.spacex.launches.details.cores.LaunchDetailsCoresFragment
+import uk.co.zac_h.spacex.launches.details.crew.LaunchDetailsCrewFragment
 import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsFragment
 import uk.co.zac_h.spacex.launches.details.payloads.LaunchDetailsPayloadsFragment
 import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
@@ -75,9 +76,23 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
             binding.toolbar.title = it.missionName
             binding.fragmentLaunchDetailsContainer.transitionName = it.id
 
+            if (it.crew?.isNotEmpty() == true || it.ships?.isNotEmpty() == true) {
+                if (it.crew?.isNotEmpty() == true && it.ships?.isNotEmpty() == true) {
+                    binding.launchDetailsBottomNavigation.inflateMenu(R.menu.launch_details_bottom_nav_menu_all)
+                } else if (it.crew?.isNotEmpty() == true) {
+                    binding.launchDetailsBottomNavigation.inflateMenu(R.menu.launch_details_bottom_nav_menu_crew)
+                } else if (it.ships?.isNotEmpty() == true) {
+                    binding.launchDetailsBottomNavigation.inflateMenu(R.menu.launch_details_bottom_nav_menu_ships)
+                }
+            } else {
+                binding.launchDetailsBottomNavigation.inflateMenu(R.menu.launch_details_bottom_nav_menu)
+            }
+
             presenter?.startCountdown(it.launchDateUnix, it.tbd)
         } ?: id?.let {
             binding.fragmentLaunchDetailsContainer.transitionName = it
+
+            binding.launchDetailsBottomNavigation.inflateMenu(R.menu.launch_details_bottom_nav_menu)
         }
 
         if (selectedItem == null) {
@@ -115,6 +130,14 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
                             replaceFragment(LaunchDetailsPayloadsFragment.newInstance(launchShort.id))
                         } ?: id?.let { id ->
                             replaceFragment(LaunchDetailsPayloadsFragment.newInstance(id))
+                        }
+                        return@setOnNavigationItemSelectedListener true
+                    }
+                    R.id.launch_details_crew -> {
+                        launchShort?.let { launchShort ->
+                            replaceFragment(LaunchDetailsCrewFragment.newInstance(launchShort.id))
+                        } ?: id?.let { id ->
+                            replaceFragment(LaunchDetailsCrewFragment.newInstance(id))
                         }
                         return@setOnNavigationItemSelectedListener true
                     }

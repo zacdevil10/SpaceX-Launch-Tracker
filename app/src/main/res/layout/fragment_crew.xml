@@ -26,7 +26,6 @@
         app:indicatorColor="?colorSecondary"
         app:layout_constraintBottom_toBottomOf="@id/toolbar" />
 
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/crew_swipe_refresh"
         android:layout_width="match_parent"

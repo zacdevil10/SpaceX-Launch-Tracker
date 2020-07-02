@@ -10,7 +10,7 @@ class LaunchDetailsCoresPresenter(
 
     override fun getLaunch(id: String, api: SpaceXInterface) {
         view.showProgress()
-        interactor.getSingleLaunch(id, api, this)
+        interactor.getCores(id, api, this)
     }
 
     override fun cancelRequest() {

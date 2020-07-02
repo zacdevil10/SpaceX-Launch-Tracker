@@ -111,6 +111,10 @@
             android:id="@+id/action_launch_details_container_fragment_to_core_details_fragment"
             app:destination="@id/core_details_fragment"
             app:exitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_crew_fragment_to_crew_details_fragment"
+            app:destination="@id/crew_detail_page_fragment"
+            app:exitAnim="@android:anim/fade_out" />
     </fragment>
 
     <fragment

@@ -59,7 +59,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/launch_details_bottom_nav_menu" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

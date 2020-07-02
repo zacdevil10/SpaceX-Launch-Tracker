@@ -15,7 +15,9 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardIntera
         listener: DashboardContract.InteractorCallback
     ) {
         val populateList = listOf(
-            QueryPopulateModel("rocket", populate = "", select = listOf("name"))
+            QueryPopulateModel("rocket", populate = "", select = listOf("name")),
+            QueryPopulateModel("crew", populate = "", select = listOf("id")),
+            QueryPopulateModel("ships", populate = "", select = listOf("id"))
         )
 
         val query = QueryModel(
@@ -37,7 +39,9 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardIntera
                     "date_unix",
                     "tbd",
                     "links.patch.small",
-                    "rocket"
+                    "rocket",
+                    "crew",
+                    "ships"
                 ),
                 limit = 1
             )

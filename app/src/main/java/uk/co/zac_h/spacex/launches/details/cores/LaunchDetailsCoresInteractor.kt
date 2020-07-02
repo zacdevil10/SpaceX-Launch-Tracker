@@ -9,7 +9,7 @@ class LaunchDetailsCoresInteractor : BaseNetwork(), LaunchDetailsCoresContract.I
 
     private var call: Call<LaunchesExtendedDocsModel>? = null
 
-    override fun getSingleLaunch(
+    override fun getCores(
         id: String,
         api: SpaceXInterface,
         listener: LaunchDetailsCoresContract.InteractorCallback
