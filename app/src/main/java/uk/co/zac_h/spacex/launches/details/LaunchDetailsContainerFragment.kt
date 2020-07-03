@@ -20,6 +20,7 @@ import uk.co.zac_h.spacex.launches.details.cores.LaunchDetailsCoresFragment
 import uk.co.zac_h.spacex.launches.details.crew.LaunchDetailsCrewFragment
 import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsFragment
 import uk.co.zac_h.spacex.launches.details.payloads.LaunchDetailsPayloadsFragment
+import uk.co.zac_h.spacex.launches.details.ships.LaunchDetailsShipsFragment
 import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
 
 class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContract.View {
@@ -138,6 +139,14 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
                             replaceFragment(LaunchDetailsCrewFragment.newInstance(launchShort.id))
                         } ?: id?.let { id ->
                             replaceFragment(LaunchDetailsCrewFragment.newInstance(id))
+                        }
+                        return@setOnNavigationItemSelectedListener true
+                    }
+                    R.id.launch_details_ships -> {
+                        launchShort?.let { launchShort ->
+                            replaceFragment(LaunchDetailsShipsFragment.newInstance(launchShort.id))
+                        } ?: id?.let { id ->
+                            replaceFragment(LaunchDetailsShipsFragment.newInstance(id))
                         }
                         return@setOnNavigationItemSelectedListener true
                     }

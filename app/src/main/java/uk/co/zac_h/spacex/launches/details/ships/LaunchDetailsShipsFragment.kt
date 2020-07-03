@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.launches.details.crew
+package uk.co.zac_h.spacex.launches.details.ships
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,31 +6,30 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.crew.CrewContract
-import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
-import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCrewBinding
-import uk.co.zac_h.spacex.model.spacex.CrewModel
+import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsShipsBinding
+import uk.co.zac_h.spacex.launches.adapters.ShipsAdapter
+import uk.co.zac_h.spacex.model.spacex.ShipModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
+class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentLaunchDetailsCrewBinding? = null
+    private var _binding: FragmentLaunchDetailsShipsBinding? = null
     private val binding get() = _binding!!
 
-    private var presenter: LaunchDetailsCrewContract.Presenter? = null
+    private var presenter: LaunchDetailsShipsContract.Presenter? = null
 
-    private lateinit var crewAdapter: CrewAdapter
-    private lateinit var crewArray: ArrayList<CrewModel>
+    private lateinit var shipsAdapter: ShipsAdapter
+    private lateinit var shipsArray: ArrayList<ShipModel>
 
     private var id: String? = null
 
     companion object {
         @JvmStatic
         fun newInstance(id: String) =
-            LaunchDetailsCrewFragment().apply {
+            LaunchDetailsShipsFragment().apply {
                 arguments = Bundle().apply {
                     putString("id", id)
                 }
@@ -40,7 +39,7 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        crewArray = savedInstanceState?.getParcelableArrayList<CrewModel>("crew") ?: ArrayList()
+        shipsArray = savedInstanceState?.getParcelableArrayList<ShipModel>("ships") ?: ArrayList()
         id = arguments?.getString("id")
     }
 
@@ -48,25 +47,25 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentLaunchDetailsCrewBinding.inflate(inflater, container, false)
+        _binding = FragmentLaunchDetailsShipsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = LaunchDetailsCrewPresenter(this, LaunchDetailsCrewInteractor())
+        presenter = LaunchDetailsShipsPresenter(this, LaunchDetailsShipsInteractor())
 
-        crewAdapter = CrewAdapter(this, crewArray)
+        shipsAdapter = ShipsAdapter(shipsArray)
 
-        binding.launchDetailsCrewRecycler.apply {
-            layoutManager = GridLayoutManager(this@LaunchDetailsCrewFragment.context, 2)
+        binding.launchDetailsShipsRecycler.apply {
+            layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
-            adapter = crewAdapter
+            adapter = shipsAdapter
         }
 
-        if (crewArray.isEmpty()) id?.let {
-            presenter?.getCrew(it)
+        if (shipsArray.isEmpty()) id?.let {
+            presenter?.getShips(it)
         }
     }
 
@@ -81,7 +80,7 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("crew", crewArray)
+        outState.putParcelableArrayList("ships", shipsArray)
         super.onSaveInstanceState(outState)
     }
 
@@ -91,27 +90,19 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
         _binding = null
     }
 
-    override fun updateCrew(crew: List<CrewModel>) {
-        crewArray.clear()
-        crewArray.addAll(crew)
+    override fun updateShipsRecyclerView(ships: List<ShipModel>) {
+        shipsArray.clear()
+        shipsArray.addAll(ships)
 
-        crewAdapter.notifyDataSetChanged()
+        shipsAdapter.notifyDataSetChanged()
     }
 
     override fun showProgress() {
-        binding.launchDetailsCrewProgress.show()
+        binding.launchDetailsShipsProgress.show()
     }
 
     override fun hideProgress() {
-        binding.launchDetailsCrewProgress.hide()
-    }
-
-    override fun toggleSwipeRefresh(refreshing: Boolean) {
-
-    }
-
-    override fun startTransition() {
-
+        binding.launchDetailsShipsProgress.hide()
     }
 
     override fun showError(error: String) {
@@ -121,7 +112,7 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             id?.let {
-                if (crewArray.isEmpty()) presenter?.getCrew(it)
+                if (shipsArray.isEmpty()) presenter?.getShips(it)
             }
         }
     }
