@@ -55,6 +55,8 @@ class LaunchesTest {
                 pagination = false,
                 populate = listOf(
                     QueryPopulateModel(path = "rocket", populate = "", select = listOf("name")),
+                    QueryPopulateModel("crew", populate = "", select = listOf("id")),
+                    QueryPopulateModel("ships", populate = "", select = listOf("id")),
                     QueryPopulateModel(
                         path = "cores",
                         populate = listOf(
@@ -82,7 +84,9 @@ class LaunchesTest {
                     "rocket",
                     "cores.core",
                     "cores.reused",
-                    "cores.landpad"
+                    "cores.landpad",
+                    "crew",
+                    "ships"
                 ),
                 limit = 5000
             )

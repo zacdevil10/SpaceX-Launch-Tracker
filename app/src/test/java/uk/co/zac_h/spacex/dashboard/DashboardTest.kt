@@ -54,8 +54,9 @@ class DashboardTest {
         prefsMap?.set("1", true)
 
         val populateList = listOf(
-            QueryPopulateModel("launchpad", select = listOf("name"), populate = ""),
-            QueryPopulateModel("rocket", populate = "", select = listOf("name"))
+            QueryPopulateModel("rocket", populate = "", select = listOf("name")),
+            QueryPopulateModel("crew", populate = "", select = listOf("id")),
+            QueryPopulateModel("ships", populate = "", select = listOf("id"))
         )
 
         queryNext = QueryModel(
@@ -65,16 +66,14 @@ class DashboardTest {
                 populateList,
                 QueryLaunchesSortModel("asc"),
                 select = listOf(
-                    "links",
-                    "static_fire_date_unix",
-                    "tbd",
-                    "net",
-                    "rocket",
-                    "details",
-                    "launchpad",
                     "flight_number",
                     "name",
-                    "date_unix"
+                    "date_unix",
+                    "tbd",
+                    "links.patch.small",
+                    "rocket",
+                    "crew",
+                    "ships"
                 ),
                 limit = 1
             )
@@ -87,16 +86,14 @@ class DashboardTest {
                 populateList,
                 QueryLaunchesSortModel("desc"),
                 select = listOf(
-                    "links",
-                    "static_fire_date_unix",
-                    "tbd",
-                    "net",
-                    "rocket",
-                    "details",
-                    "launchpad",
                     "flight_number",
                     "name",
-                    "date_unix"
+                    "date_unix",
+                    "tbd",
+                    "links.patch.small",
+                    "rocket",
+                    "crew",
+                    "ships"
                 ),
                 limit = 1
             )
@@ -109,16 +106,14 @@ class DashboardTest {
                 populateList,
                 "",
                 select = listOf(
-                    "links",
-                    "static_fire_date_unix",
-                    "tbd",
-                    "net",
-                    "rocket",
-                    "details",
-                    "launchpad",
                     "flight_number",
                     "name",
-                    "date_unix"
+                    "date_unix",
+                    "tbd",
+                    "links.patch.small",
+                    "rocket",
+                    "crew",
+                    "ships"
                 ),
                 limit = 1
             )
@@ -225,7 +220,8 @@ class DashboardTest {
         presenter.getLatestLaunches(api = mockRepo)
 
         verifyBlocking(mView) {
-            showProgress()
+            toggleNextProgress(true)
+            toggleLatestProgress(true)
             showError("Error: 404")
             showError("Error: 404")
             toggleSwipeProgress(false)
