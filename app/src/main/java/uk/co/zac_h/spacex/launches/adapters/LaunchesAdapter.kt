@@ -47,8 +47,6 @@ class LaunchesAdapter(
         holder.apply {
             itemView.transitionName = launch.id
 
-            flightNumber.text = context?.getString(R.string.flight_number, launch.flightNumber)
-
             Glide.with(itemView)
                 .load(launch.links?.missionPatch?.patchSmall)
                 .error(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_mission_patch) })
@@ -76,8 +74,8 @@ class LaunchesAdapter(
                 landingVehicleTag.visibility = View.GONE
             }
 
+            flightNumber.text = context?.getString(R.string.flight_number, launch.flightNumber)
             vehicle.text = launch.rocket?.name
-
             missionName.text = launch.missionName
             date.text = launch.tbd?.let { launch.launchDateUnix?.formatDateMillisLong(it) }
 

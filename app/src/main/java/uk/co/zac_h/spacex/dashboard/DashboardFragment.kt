@@ -284,6 +284,10 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
             pinnedArray.add(pinnedLaunch)
             pinnedKeysArray.add(id)
         }
+
+        pinnedKeysArray.sortDescending()
+        pinnedArray.sortByDescending { it.flightNumber }
+
         pinnedAdapter.notifyDataSetChanged()
     }
 

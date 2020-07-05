@@ -14,20 +14,35 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardIntera
         api: SpaceXInterface,
         listener: DashboardContract.InteractorCallback
     ) {
-        val populateList = listOf(
-            QueryPopulateModel("rocket", populate = "", select = listOf("name")),
-            QueryPopulateModel("crew", populate = "", select = listOf("id")),
-            QueryPopulateModel("ships", populate = "", select = listOf("id"))
-        )
-
         val query = QueryModel(
-            when (id) {
+            query = when (id) {
                 "next", "latest" -> QueryUpcomingLaunchesModel(id == "next")
                 else -> QueryLaunchesQueryModel(id)
             },
-            QueryOptionsModel(
-                true,
-                populateList,
+            options = QueryOptionsModel(
+                pagination = true,
+                populate = listOf(
+                    QueryPopulateModel(path = "rocket", populate = "", select = listOf("name")),
+                    QueryPopulateModel("launchpad", select = listOf("name"), populate = ""),
+                    QueryPopulateModel("crew", populate = "", select = listOf("id")),
+                    QueryPopulateModel("ships", populate = "", select = listOf("id")),
+                    QueryPopulateModel(
+                        path = "cores",
+                        populate = listOf(
+                            QueryPopulateModel(
+                                path = "landpad",
+                                populate = "",
+                                select = listOf("name")
+                            ),
+                            QueryPopulateModel(
+                                path = "core",
+                                populate = "",
+                                select = listOf("reuse_count")
+                            )
+                        ),
+                        select = ""
+                    )
+                ),
                 sort = when (id) {
                     "next" -> QueryLaunchesSortModel("asc")
                     "latest" -> QueryLaunchesSortModel("desc")
@@ -40,8 +55,15 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardIntera
                     "tbd",
                     "links.patch.small",
                     "rocket",
+                    "cores.core",
+                    "cores.reused",
+                    "cores.landpad",
                     "crew",
-                    "ships"
+                    "ships",
+                    "links",
+                    "static_fire_date_unix",
+                    "details",
+                    "launchpad"
                 ),
                 limit = 1
             )

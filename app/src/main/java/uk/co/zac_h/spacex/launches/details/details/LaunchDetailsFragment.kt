@@ -31,7 +31,6 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
     private var launch: LaunchesExtendedModel? = null
-    private var launchShort: LaunchesExtendedModel? = null
     private var id: String? = null
 
     private var pinned: Boolean = false
@@ -58,9 +57,9 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        launch = savedInstanceState?.getParcelable("launch")
+        launch =
+            savedInstanceState?.getParcelable("launch") ?: arguments?.getParcelable("launch_short")
         id = arguments?.getString("id")
-        launchShort = arguments?.getParcelable("launch_short")
     }
 
     override fun onCreateView(
@@ -92,10 +91,6 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         launch?.let {
             presenter?.addLaunchModel(it, true)
             pinned = presenter?.isPinned(it.id) ?: false
-        } ?: launchShort?.let {
-            pinned = presenter?.isPinned(it.id) ?: false
-            presenter?.getLaunch(it.id)
-            presenter?.addLaunchModel(launchShort, false)
         } ?: id?.let { id ->
             pinned = presenter?.isPinned(id) ?: false
             presenter?.getLaunch(id)
@@ -125,7 +120,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(
-            if (launch?.id?.let { presenter?.isPinned(it) } ?: launchShort?.id?.let {
+            if (launch?.id?.let { presenter?.isPinned(it) } ?: launch?.id?.let {
                     presenter?.isPinned(
                         it
                     )
@@ -302,8 +297,8 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            launchShort?.id?.let {
-                if (launch == null) presenter?.getLaunch(it)
+            if (launch == null) launch?.id?.let {
+                presenter?.getLaunch(it)
             }
         }
     }

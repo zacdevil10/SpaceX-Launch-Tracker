@@ -55,8 +55,43 @@ class DashboardTest {
 
         val populateList = listOf(
             QueryPopulateModel("rocket", populate = "", select = listOf("name")),
+            QueryPopulateModel("launchpad", select = listOf("name"), populate = ""),
             QueryPopulateModel("crew", populate = "", select = listOf("id")),
-            QueryPopulateModel("ships", populate = "", select = listOf("id"))
+            QueryPopulateModel("ships", populate = "", select = listOf("id")),
+            QueryPopulateModel(
+                path = "cores",
+                populate = listOf(
+                    QueryPopulateModel(
+                        path = "landpad",
+                        populate = "",
+                        select = listOf("name")
+                    ),
+                    QueryPopulateModel(
+                        path = "core",
+                        populate = "",
+                        select = listOf("reuse_count")
+                    )
+                ),
+                select = ""
+            )
+        )
+
+        val selected = listOf(
+            "flight_number",
+            "name",
+            "date_unix",
+            "tbd",
+            "links.patch.small",
+            "rocket",
+            "cores.core",
+            "cores.reused",
+            "cores.landpad",
+            "crew",
+            "ships",
+            "links",
+            "static_fire_date_unix",
+            "details",
+            "launchpad"
         )
 
         queryNext = QueryModel(
@@ -65,16 +100,7 @@ class DashboardTest {
                 true,
                 populateList,
                 QueryLaunchesSortModel("asc"),
-                select = listOf(
-                    "flight_number",
-                    "name",
-                    "date_unix",
-                    "tbd",
-                    "links.patch.small",
-                    "rocket",
-                    "crew",
-                    "ships"
-                ),
+                select = selected,
                 limit = 1
             )
         )
@@ -85,16 +111,7 @@ class DashboardTest {
                 true,
                 populateList,
                 QueryLaunchesSortModel("desc"),
-                select = listOf(
-                    "flight_number",
-                    "name",
-                    "date_unix",
-                    "tbd",
-                    "links.patch.small",
-                    "rocket",
-                    "crew",
-                    "ships"
-                ),
+                select = selected,
                 limit = 1
             )
         )
@@ -105,16 +122,7 @@ class DashboardTest {
                 true,
                 populateList,
                 "",
-                select = listOf(
-                    "flight_number",
-                    "name",
-                    "date_unix",
-                    "tbd",
-                    "links.patch.small",
-                    "rocket",
-                    "crew",
-                    "ships"
-                ),
+                select = selected,
                 limit = 1
             )
         )

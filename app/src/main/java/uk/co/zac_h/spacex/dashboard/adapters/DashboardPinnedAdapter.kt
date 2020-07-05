@@ -50,6 +50,22 @@ class DashboardPinnedAdapter(
                     })
                     .into(missionPatch)
 
+                if (launch.rocket?.name == "Falcon 9") {
+                    reusedTag.visibility = launch.cores?.get(0)?.reused?.let {
+                        if (it) View.VISIBLE else View.GONE
+                    } ?: View.GONE
+
+                    landingVehicleTag.visibility =
+                        launch.cores?.get(0)?.landingSuccess?.let {
+                            if (it) View.VISIBLE else View.GONE
+                        } ?: View.GONE
+
+                    landingVehicleTag.text = launch.cores?.get(0)?.landingPad?.name
+                } else {
+                    reusedTag.visibility = View.GONE
+                    landingVehicleTag.visibility = View.GONE
+                }
+
                 flightNumber.text = context?.getString(R.string.flight_number, it.flightNumber)
                 vehicle.text = it.rocket?.name
                 missionName.text = it.missionName
@@ -77,5 +93,7 @@ class DashboardPinnedAdapter(
         val vehicle: TextView = itemView.findViewById(R.id.launches_vehicle_text)
         val missionName: TextView = itemView.findViewById(R.id.launches_mission_name_text)
         val date: TextView = itemView.findViewById(R.id.launches_date_text)
+        val reusedTag: TextView = itemView.findViewById(R.id.launches_reused_text)
+        val landingVehicleTag: TextView = itemView.findViewById(R.id.launches_landing_vehicle_text)
     }
 }
