@@ -36,13 +36,7 @@ data class CoreExtendedModel(
     @field:Json(name = "asds_attempts") val attemptsAsds: Int,
     @field:Json(name = "asds_landings") val landingsAsds: Int,
     @field:Json(name = "last_update") val lastUpdate: String?,
-    @field:Json(name = "launches") val missions: List<CoreLaunchesModel>?,
+    @field:Json(name = "launches") val missions: List<MissionsModel>?,
     @field:Json(name = "id") val id: String
 ) : Parcelable
 
-@Parcelize
-data class CoreLaunchesModel(
-    @field:Json(name = "flight_number") val flightNumber: Int?,
-    @field:Json(name = "name") val name: String?,
-    @field:Json(name = "id") val id: String
-) : Parcelable

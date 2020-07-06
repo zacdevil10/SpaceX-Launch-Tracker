@@ -16,7 +16,7 @@ import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
-import uk.co.zac_h.spacex.launches.adapters.CoreMissionsAdapter
+import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
 import uk.co.zac_h.spacex.model.spacex.CoreExtendedModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
@@ -112,11 +112,11 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
             binding.coreDetailsAsdsLandingsText.text = landingsAsds.toString()
         }
 
-        coreModel.missions.let {
+        coreModel.missions?.let {
             binding.coreDetailsMissionRecycler.apply {
                 layoutManager = LinearLayoutManager(this@CoreDetailsFragment.context)
                 setHasFixedSize(true)
-                adapter = it?.let { missions -> CoreMissionsAdapter(context, missions) }
+                adapter = MissionsAdapter(context, it)
             }
         }
     }

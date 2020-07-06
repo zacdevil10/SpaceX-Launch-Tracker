@@ -14,17 +14,25 @@ class LaunchDetailsShipsInteractor : BaseNetwork(), LaunchDetailsShipsContract.I
         api: SpaceXInterface,
         listener: LaunchDetailsShipsContract.InteractorCallback
     ) {
-        val populateList = listOf(
-            QueryPopulateModel(
-                "ships",
-                populate = "",
-                select = ""
-            )
-        )
 
         val query = QueryModel(
             QueryLaunchesQueryModel(id),
-            QueryOptionsModel(false, populateList, "", listOf("ships"), 1)
+            QueryOptionsModel(
+                false,
+                listOf(
+                    QueryPopulateModel(
+                        "ships",
+                        populate = listOf(
+                            QueryPopulateModel(
+                                "launches",
+                                populate = "",
+                                select = listOf("name", "flight_number")
+                            )
+                        ),
+                        select = ""
+                    )
+                ), "", listOf("ships"), 1
+            )
         )
 
         call = api.getQueriedLaunches(query).apply {

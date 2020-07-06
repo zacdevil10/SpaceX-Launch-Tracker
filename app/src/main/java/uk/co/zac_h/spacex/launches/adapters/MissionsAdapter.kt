@@ -10,17 +10,17 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.CoreLaunchesModel
+import uk.co.zac_h.spacex.model.spacex.MissionsModel
 
-class CoreMissionsAdapter(
+class MissionsAdapter(
     private val context: Context?,
-    private val missions: List<CoreLaunchesModel>
+    private val missions: List<MissionsModel>
 ) :
-    RecyclerView.Adapter<CoreMissionsAdapter.ViewHolder>() {
+    RecyclerView.Adapter<MissionsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
         LayoutInflater.from(parent.context).inflate(
-            R.layout.list_item_core_mission,
+            R.layout.list_item_mission,
             parent,
             false
         )
@@ -31,18 +31,14 @@ class CoreMissionsAdapter(
 
         holder.apply {
             itemView.transitionName = mission.id
-
             missionName.text = mission.name
             flightNumber.text = context?.getString(R.string.flight_number, mission.flightNumber)
-
 
             itemView.setOnClickListener {
                 itemView.findNavController()
                     .navigate(
-                        R.id.action_core_details_fragment_to_launch_details_container_fragment,
-                        bundleOf(
-                            "launch_id" to mission.id
-                        ),
+                        R.id.missions_to_launch_details_container_fragment,
+                        bundleOf("launch_id" to mission.id),
                         null,
                         FragmentNavigatorExtras(itemView to mission.id)
                     )
@@ -53,7 +49,7 @@ class CoreMissionsAdapter(
     override fun getItemCount(): Int = missions.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val missionName: TextView = itemView.findViewById(R.id.list_item_core_mission_name_text)
-        val flightNumber: TextView = itemView.findViewById(R.id.list_item_core_mission_flight_text)
+        val missionName: TextView = itemView.findViewById(R.id.list_item_mission_name_text)
+        val flightNumber: TextView = itemView.findViewById(R.id.list_item_mission_flight_text)
     }
 }

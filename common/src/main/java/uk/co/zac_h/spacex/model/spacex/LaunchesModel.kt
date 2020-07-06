@@ -59,7 +59,7 @@ data class LaunchesExtendedModel(
     @field:Json(name = "details") val details: String?,
     @field:Json(name = "fairings") val fairings: FairingsModel?,
     @field:Json(name = "crew") val crew: List<CrewModel>?,
-    @field:Json(name = "ships") val ships: List<ShipModel>?,
+    @field:Json(name = "ships") val ships: List<ShipExtendedModel>?,
     @field:Json(name = "capsules") val capsules: List<String>?,
     @field:Json(name = "payloads") val payloads: List<PayloadModel>?,
     @field:Json(name = "launchpad") val launchpad: LaunchpadModel?,

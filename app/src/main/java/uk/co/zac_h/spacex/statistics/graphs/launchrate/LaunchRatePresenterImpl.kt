@@ -29,7 +29,6 @@ class LaunchRatePresenterImpl(
 
             var year = 2005
             launches.forEach {
-                println(it.launchDateLocal?.substring(0, 4).toString().toIntOrNull())
                 val newYear =
                     it.launchDateLocal?.substring(0, 4).toString().toIntOrNull() ?: return@forEach
                 if (newYear > year) {

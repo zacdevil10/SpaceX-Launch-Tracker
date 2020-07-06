@@ -195,6 +195,9 @@
     <string name="trunk_volume_label">Trunk Volume</string>
     <string name="solar_array_label">Solar Array</string>
     <string name="unpressurized_cargo_label">Unpressurized Cargo</string>
+    <string name="roles_label">Roles</string>
+    <string name="home_port_label">Home Port</string>
+    <string name="year_built_label">Year Built</string>
 
     <!-- Network -->
     <string name="network_connection">No network connection detected!</string>

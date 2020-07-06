@@ -17,13 +17,6 @@ data class CapsulesModel(
     @field:Json(name = "water_landings") val waterLandings: Int,
     @field:Json(name = "land_landings") val landLandings: Int,
     @field:Json(name = "last_update") val lastUpdate: String?,
-    @field:Json(name = "launches") val launches: List<CapsuleLaunchesModel>,
-    @field:Json(name = "id") val id: String
-) : Parcelable
-
-@Parcelize
-data class CapsuleLaunchesModel(
-    @field:Json(name = "flight_number") val flightNumber: Int,
-    @field:Json(name = "name") val name: String,
+    @field:Json(name = "launches") val launches: List<MissionsModel>,
     @field:Json(name = "id") val id: String
 ) : Parcelable

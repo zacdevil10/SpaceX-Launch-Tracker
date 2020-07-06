@@ -1,13 +1,13 @@
 package uk.co.zac_h.spacex.launches.details.ships
 
 import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
-import uk.co.zac_h.spacex.model.spacex.ShipModel
+import uk.co.zac_h.spacex.model.spacex.ShipExtendedModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 interface LaunchDetailsShipsContract {
 
     interface View {
-        fun updateShipsRecyclerView(ships: List<ShipModel>)
+        fun updateShipsRecyclerView(ships: List<ShipExtendedModel>)
         fun showProgress()
         fun hideProgress()
         fun showError(error: String)

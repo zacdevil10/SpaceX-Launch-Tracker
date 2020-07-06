@@ -65,6 +65,10 @@
             app:destination="@id/dragon_details_fragment"
             app:exitAnim="@android:anim/fade_out" />
         <action
+            android:id="@+id/action_vehicles_page_fragment_to_ship_details_fragment"
+            app:destination="@id/ship_details_fragment"
+            app:exitAnim="@android:anim/fade_out" />
+        <action
             android:id="@+id/action_vehicles_page_fragment_to_capsule_details_fragment"
             app:destination="@id/capsule_details_fragment"
             app:exitAnim="@android:anim/fade_out" />
@@ -112,6 +116,10 @@
             app:destination="@id/core_details_fragment"
             app:exitAnim="@android:anim/fade_out" />
         <action
+            android:id="@+id/action_launch_details_container_fragment_to_ship_details_fragment"
+            app:destination="@id/ship_details_fragment"
+            app:exitAnim="@android:anim/fade_out" />
+        <action
             android:id="@+id/action_crew_fragment_to_crew_details_fragment"
             app:destination="@id/crew_detail_page_fragment"
             app:exitAnim="@android:anim/fade_out" />
@@ -122,7 +130,7 @@
         android:name="uk.co.zac_h.spacex.vehicles.cores.details.CoreDetailsFragment"
         tools:layout="@layout/fragment_core_details">
         <action
-            android:id="@+id/action_core_details_fragment_to_launch_details_container_fragment"
+            android:id="@+id/missions_to_launch_details_container_fragment"
             app:destination="@id/launch_details_container_fragment"
             app:exitAnim="@android:anim/fade_out" />
     </fragment>
@@ -138,11 +146,21 @@
         tools:layout="@layout/fragment_dragon_details" />
 
     <fragment
+        android:id="@+id/ship_details_fragment"
+        android:name="uk.co.zac_h.spacex.vehicles.ships.details.ShipDetailsFragment"
+        tools:layout="@layout/fragment_ship_details">
+        <action
+            android:id="@+id/missions_to_launch_details_container_fragment"
+            app:destination="@id/launch_details_container_fragment"
+            app:exitAnim="@android:anim/fade_out" />
+    </fragment>
+
+    <fragment
         android:id="@+id/capsule_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.capsules.details.CapsuleDetailsFragment"
         tools:layout="@layout/fragment_capsule_details">
         <action
-            android:id="@+id/action_capsule_details_fragment_to_launch_details_container_fragment"
+            android:id="@+id/missions_to_launch_details_container_fragment"
             app:destination="@id/launch_details_container_fragment"
             app:exitAnim="@android:anim/fade_out" />
     </fragment>

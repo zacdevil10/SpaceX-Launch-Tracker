@@ -141,7 +141,7 @@
                 android:overScrollMode="never"
                 app:layout_constraintTop_toBottomOf="@id/capsule_details_mission_label"
                 tools:itemCount="3"
-                tools:listitem="@layout/list_item_core_mission" />
+                tools:listitem="@layout/list_item_mission" />
 
             <TextView
                 android:id="@+id/capsule_details_no_mission_label"

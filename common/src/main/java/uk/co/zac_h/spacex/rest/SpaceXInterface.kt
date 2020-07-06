@@ -47,8 +47,8 @@ interface SpaceXInterface {
     @GET("rockets")
     fun getRockets(): Call<List<RocketsModel>>
 
-    @GET("ships")
-    fun getShips(): Call<List<ShipModel>>
+    @POST("ships/query")
+    fun getShips(@Body body: QueryModel): Call<ShipsDocsModel>
 
     @GET("history")
     fun getHistory(@Query("order") order: String): Call<List<HistoryModel>>
