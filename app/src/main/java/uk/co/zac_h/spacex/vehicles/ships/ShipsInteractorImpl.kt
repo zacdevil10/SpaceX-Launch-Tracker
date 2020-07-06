@@ -1,20 +1,20 @@
-package uk.co.zac_h.spacex.vehicles.dragon
+package uk.co.zac_h.spacex.vehicles.ships
 
 import retrofit2.Call
-import uk.co.zac_h.spacex.model.spacex.DragonModel
+import uk.co.zac_h.spacex.model.spacex.ShipModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 import uk.co.zac_h.spacex.vehicles.VehiclesContract
 
-class DragonInteractorImpl : BaseNetwork(), VehiclesContract.Interactor<DragonModel> {
+class ShipsInteractorImpl : BaseNetwork(), VehiclesContract.Interactor<ShipModel> {
 
-    private var call: Call<List<DragonModel>>? = null
+    private var call: Call<List<ShipModel>>? = null
 
     override fun getVehicles(
         api: SpaceXInterface,
-        listener: VehiclesContract.InteractorCallback<DragonModel>
+        listener: VehiclesContract.InteractorCallback<ShipModel>
     ) {
-        call = api.getDragons().apply {
+        call = api.getShips().apply {
             makeCall {
                 onResponseSuccess = { listener.onSuccess(it.body()) }
                 onResponseFailure = { listener.onError(it) }
@@ -23,5 +23,4 @@ class DragonInteractorImpl : BaseNetwork(), VehiclesContract.Interactor<DragonMo
     }
 
     override fun cancelAllRequests() = terminateAll()
-
 }

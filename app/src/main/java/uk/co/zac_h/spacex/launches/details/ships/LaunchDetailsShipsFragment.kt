@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsShipsBinding
-import uk.co.zac_h.spacex.launches.adapters.ShipsAdapter
+import uk.co.zac_h.spacex.launches.adapters.LaunchDetailsShipsAdapter
 import uk.co.zac_h.spacex.model.spacex.ShipModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
@@ -21,7 +21,7 @@ class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
 
     private var presenter: LaunchDetailsShipsContract.Presenter? = null
 
-    private lateinit var shipsAdapter: ShipsAdapter
+    private lateinit var shipsAdapter: LaunchDetailsShipsAdapter
     private lateinit var shipsArray: ArrayList<ShipModel>
 
     private var id: String? = null
@@ -56,7 +56,7 @@ class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
 
         presenter = LaunchDetailsShipsPresenter(this, LaunchDetailsShipsInteractor())
 
-        shipsAdapter = ShipsAdapter(shipsArray)
+        shipsAdapter = LaunchDetailsShipsAdapter(shipsArray)
 
         binding.launchDetailsShipsRecycler.apply {
             layoutManager = LinearLayoutManager(context)

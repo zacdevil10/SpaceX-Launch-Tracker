@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.launches.adapters
+package uk.co.zac_h.spacex.vehicles.adapters
 
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +19,8 @@ class ShipsAdapter(private val ships: List<ShipModel>) :
         ViewHolder(
             LayoutInflater.from(parent.context).inflate(
                 R.layout.list_item_vehicle,
-                parent, false
+                parent,
+                false
             )
         )
 

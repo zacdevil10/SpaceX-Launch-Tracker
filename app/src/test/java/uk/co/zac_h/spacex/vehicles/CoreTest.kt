@@ -15,25 +15,23 @@ import retrofit2.Response
 import retrofit2.mock.Calls
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
-import uk.co.zac_h.spacex.vehicles.cores.CoreContract
 import uk.co.zac_h.spacex.vehicles.cores.CoreInteractorImpl
 import uk.co.zac_h.spacex.vehicles.cores.CorePresenterImpl
 
 class CoreTest {
 
-    private lateinit var mPresenter: CoreContract.CorePresenter
-    private lateinit var presenter: CoreContract.CorePresenter
-    private lateinit var interactor: CoreContract.CoreInteractor
+    private lateinit var mPresenter: VehiclesContract.Presenter
+    private lateinit var presenter: VehiclesContract.Presenter
+    private lateinit var interactor: VehiclesContract.Interactor<CoreExtendedModel>
 
     @Mock
-    val mInteractor: CoreContract.CoreInteractor = mock(CoreContract.CoreInteractor::class.java)
+    val mInteractor: VehiclesContract.Interactor<CoreExtendedModel> = mock()
 
     @Mock
-    val mView: CoreContract.CoreView = mock(CoreContract.CoreView::class.java)
+    val mView: VehiclesContract.View<CoreExtendedModel> = mock()
 
     @Mock
-    val mListener: CoreContract.InteractorCallback =
-        mock(CoreContract.InteractorCallback::class.java)
+    val mListener: VehiclesContract.InteractorCallback<CoreExtendedModel> = mock()
 
     @Mock
     val mCoreModel: CoreExtendedModel = mock(CoreExtendedModel::class.java)
@@ -41,6 +39,8 @@ class CoreTest {
     private val mCoreDocsModel = CoreDocsModel(listOf(mCoreModel))
 
     private lateinit var query: QueryModel
+
+    inline fun <reified T : Any> mock(): T = mock(T::class.java)
 
     @Before
     fun setup() {
@@ -69,13 +69,13 @@ class CoreTest {
             onBlocking { getCores(query) } doReturn Calls.response(Response.success(mCoreDocsModel))
         }
 
-        presenter.getCores(mockRepo)
+        presenter.getVehicles(mockRepo)
 
         verifyBlocking(mView) {
             showProgress()
             hideProgress()
             toggleSwipeRefresh(false)
-            updateCores(mCoreDocsModel.docs)
+            updateVehicles(mCoreDocsModel.docs)
         }
     }
 
@@ -92,7 +92,7 @@ class CoreTest {
             )
         }
 
-        interactor.getCores(api = mockRepo, listener = mListener)
+        interactor.getVehicles(api = mockRepo, listener = mListener)
 
         verifyBlocking(mListener) { onError("Error: 404") }
     }
@@ -110,7 +110,7 @@ class CoreTest {
             )
         }
 
-        presenter.getCores(mockRepo)
+        presenter.getVehicles(mockRepo)
 
         verifyBlocking(mView) {
             showProgress()

@@ -13,15 +13,16 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentDragonBinding
 import uk.co.zac_h.spacex.model.spacex.DragonModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.vehicles.VehiclesContract
 import uk.co.zac_h.spacex.vehicles.adapters.DragonAdapter
 
-class DragonFragment : Fragment(), DragonContract.DragonView,
+class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var _binding: FragmentDragonBinding? = null
     private val binding get() = _binding!!
 
-    private var presenter: DragonContract.DragonPresenter? = null
+    private var presenter: VehiclesContract.Presenter? = null
 
     private lateinit var dragonAdapter: DragonAdapter
     private lateinit var dragonArray: ArrayList<DragonModel>
@@ -54,10 +55,10 @@ class DragonFragment : Fragment(), DragonContract.DragonView,
         }
 
         binding.dragonSwipeRefresh.setOnRefreshListener {
-            presenter?.getDragon()
+            presenter?.getVehicles()
         }
 
-        if (dragonArray.isEmpty()) presenter?.getDragon()
+        if (dragonArray.isEmpty()) presenter?.getVehicles()
     }
 
     override fun onStart() {
@@ -81,9 +82,9 @@ class DragonFragment : Fragment(), DragonContract.DragonView,
         _binding = null
     }
 
-    override fun updateDragon(dragon: List<DragonModel>) {
+    override fun updateVehicles(vehicles: List<DragonModel>) {
         dragonArray.clear()
-        dragonArray.addAll(dragon)
+        dragonArray.addAll(vehicles)
 
         binding.dragonRecycler.layoutAnimation =
             AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
@@ -109,7 +110,7 @@ class DragonFragment : Fragment(), DragonContract.DragonView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (dragonArray.isEmpty() || binding.dragonProgressBar.visibility == View.VISIBLE) presenter?.getDragon()
+            if (dragonArray.isEmpty() || binding.dragonProgressBar.visibility == View.VISIBLE) presenter?.getVehicles()
         }
     }
 

@@ -2,26 +2,27 @@ package uk.co.zac_h.spacex.vehicles.dragon
 
 import uk.co.zac_h.spacex.model.spacex.DragonModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.vehicles.VehiclesContract
 
 class DragonPresenterImpl(
-    private val view: DragonContract.DragonView,
-    private val interactor: DragonContract.DragonInteractor
-) : DragonContract.DragonPresenter, DragonContract.InteractorCallback {
+    private val view: VehiclesContract.View<DragonModel>,
+    private val interactor: VehiclesContract.Interactor<DragonModel>
+) : VehiclesContract.Presenter, VehiclesContract.InteractorCallback<DragonModel> {
 
-    override fun getDragon(api: SpaceXInterface) {
+    override fun getVehicles(api: SpaceXInterface) {
         view.showProgress()
-        interactor.getDragon(api, this)
+        interactor.getVehicles(api, this)
     }
 
     override fun cancelRequest() {
-        interactor.cancelRequest()
+        interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(dragon: List<DragonModel>?) {
+    override fun onSuccess(vehicles: List<DragonModel>?) {
         view.apply {
             hideProgress()
             toggleSwipeRefresh(false)
-            dragon?.let { updateDragon(it.reversed()) }
+            vehicles?.let { updateVehicles(it.reversed()) }
         }
     }
 

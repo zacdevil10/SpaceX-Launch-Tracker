@@ -15,26 +15,23 @@ import retrofit2.Response
 import retrofit2.mock.Calls
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
-import uk.co.zac_h.spacex.vehicles.capsules.CapsulesContract
 import uk.co.zac_h.spacex.vehicles.capsules.CapsulesInteractorImpl
 import uk.co.zac_h.spacex.vehicles.capsules.CapsulesPresenterImpl
 
 class CapsulesTest {
 
-    private lateinit var mPresenter: CapsulesContract.CapsulesPresenter
-    private lateinit var presenter: CapsulesContract.CapsulesPresenter
-    private lateinit var interactor: CapsulesContract.CapsulesInteractor
+    private lateinit var mPresenter: VehiclesContract.Presenter
+    private lateinit var presenter: VehiclesContract.Presenter
+    private lateinit var interactor: VehiclesContract.Interactor<CapsulesModel>
 
     @Mock
-    val mInteractor: CapsulesContract.CapsulesInteractor =
-        mock(CapsulesContract.CapsulesInteractor::class.java)
+    val mInteractor: VehiclesContract.Interactor<CapsulesModel> = mock()
 
     @Mock
-    val mView: CapsulesContract.CapsulesView = mock(CapsulesContract.CapsulesView::class.java)
+    val mView: VehiclesContract.View<CapsulesModel> = mock()
 
     @Mock
-    val mListener: CapsulesContract.InteractorCallback =
-        mock(CapsulesContract.InteractorCallback::class.java)
+    val mListener: VehiclesContract.InteractorCallback<CapsulesModel> = mock()
 
     @Mock
     val mCapsulesModel: CapsulesModel = mock(CapsulesModel::class.java)
@@ -44,6 +41,8 @@ class CapsulesTest {
     private val capsulesDocsMock = CapsulesDocsModel(capsulesList)
 
     private lateinit var query: QueryModel
+
+    inline fun <reified T : Any> mock(): T = mock(T::class.java)
 
     @Before
     fun setup() {
@@ -76,13 +75,13 @@ class CapsulesTest {
             )
         }
 
-        presenter.getCapsules(mockRepo)
+        presenter.getVehicles(mockRepo)
 
         verifyBlocking(mView) {
             showProgress()
             hideProgress()
             toggleSwipeRefresh(false)
-            updateCapsules(capsulesList)
+            updateVehicles(capsulesList)
         }
     }
 
@@ -99,7 +98,7 @@ class CapsulesTest {
             )
         }
 
-        interactor.getCapsules(api = mockRepo, listener = mListener)
+        interactor.getVehicles(api = mockRepo, listener = mListener)
 
         verifyBlocking(mListener) { onError("Error: 404") }
     }
@@ -117,7 +116,7 @@ class CapsulesTest {
             )
         }
 
-        presenter.getCapsules(mockRepo)
+        presenter.getVehicles(mockRepo)
 
         verifyBlocking(mView) {
             showProgress()
@@ -128,7 +127,7 @@ class CapsulesTest {
 
     @Test
     fun `Cancel request`() {
-        mPresenter.cancelRequests()
+        mPresenter.cancelRequest()
 
         Mockito.verify(mInteractor).cancelAllRequests()
     }

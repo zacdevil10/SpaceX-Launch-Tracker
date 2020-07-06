@@ -1,27 +1,28 @@
 package uk.co.zac_h.spacex.vehicles.cores
 
-import uk.co.zac_h.spacex.model.spacex.CoreDocsModel
+import uk.co.zac_h.spacex.model.spacex.CoreExtendedModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.vehicles.VehiclesContract
 
 class CorePresenterImpl(
-    private val view: CoreContract.CoreView,
-    private val interactor: CoreContract.CoreInteractor
-) : CoreContract.CorePresenter, CoreContract.InteractorCallback {
+    private val view: VehiclesContract.View<CoreExtendedModel>,
+    private val interactor: VehiclesContract.Interactor<CoreExtendedModel>
+) : VehiclesContract.Presenter, VehiclesContract.InteractorCallback<CoreExtendedModel> {
 
-    override fun getCores(api: SpaceXInterface) {
+    override fun getVehicles(api: SpaceXInterface) {
         view.showProgress()
-        interactor.getCores(api, this)
+        interactor.getVehicles(api, this)
     }
 
     override fun cancelRequest() {
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(cores: CoreDocsModel?) {
+    override fun onSuccess(vehicles: List<CoreExtendedModel>?) {
         view.apply {
             hideProgress()
             toggleSwipeRefresh(false)
-            cores?.let { updateCores(it.docs) }
+            vehicles?.let { updateVehicles(it) }
         }
     }
 

@@ -15,27 +15,30 @@ import retrofit2.Response
 import retrofit2.mock.Calls
 import uk.co.zac_h.spacex.model.spacex.RocketsModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
-import uk.co.zac_h.spacex.vehicles.rockets.RocketContract
 import uk.co.zac_h.spacex.vehicles.rockets.RocketInteractorImpl
 import uk.co.zac_h.spacex.vehicles.rockets.RocketPresenterImpl
 
 class RocketTest {
 
-    private lateinit var mPresenter: RocketContract.RocketPresenter
-    private lateinit var presenter: RocketContract.RocketPresenter
-    private lateinit var interactor: RocketContract.RocketInteractor
+    private lateinit var mPresenter: VehiclesContract.Presenter
+    private lateinit var presenter: VehiclesContract.Presenter
+    private lateinit var interactor: VehiclesContract.Interactor<RocketsModel>
+
     @Mock
-    val mInteractor: RocketContract.RocketInteractor =
-        mock(RocketContract.RocketInteractor::class.java)
+    val mInteractor: VehiclesContract.Interactor<RocketsModel> = mock()
+
     @Mock
-    val mView: RocketContract.RocketView = mock(RocketContract.RocketView::class.java)
+    val mView: VehiclesContract.View<RocketsModel> = mock()
+
     @Mock
-    val mListener: RocketContract.InteractorCallback =
-        mock(RocketContract.InteractorCallback::class.java)
+    val mListener: VehiclesContract.InteractorCallback<RocketsModel> = mock()
+
     @Mock
     val mRocketsModel: RocketsModel = mock(RocketsModel::class.java)
 
     private lateinit var rocketsList: List<RocketsModel>
+
+    inline fun <reified T : Any> mock(): T = mock(T::class.java)
 
     @Before
     fun setup() {
@@ -54,13 +57,13 @@ class RocketTest {
             onBlocking { getRockets() } doReturn Calls.response(Response.success(rocketsList))
         }
 
-        presenter.getRockets(mockRepo)
+        presenter.getVehicles(mockRepo)
 
         verifyBlocking(mView) {
             showProgress()
             hideProgress()
             toggleSwipeRefresh(false)
-            updateRockets(rocketsList)
+            updateVehicles(rocketsList)
         }
     }
 
@@ -77,7 +80,7 @@ class RocketTest {
             )
         }
 
-        interactor.getRockets(api = mockRepo, listener = mListener)
+        interactor.getVehicles(api = mockRepo, listener = mListener)
 
         verifyBlocking(mListener) { onError("Error: 404") }
     }
@@ -95,7 +98,7 @@ class RocketTest {
             )
         }
 
-        presenter.getRockets(mockRepo)
+        presenter.getVehicles(mockRepo)
 
         verifyBlocking(mView) {
             showProgress()

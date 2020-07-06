@@ -12,15 +12,17 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentCapsulesBinding
 import uk.co.zac_h.spacex.model.spacex.CapsulesModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.vehicles.VehiclesContract
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
 
-class CapsulesFragment : Fragment(), CapsulesContract.CapsulesView, SearchView.OnQueryTextListener,
+class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
+    SearchView.OnQueryTextListener,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var _binding: FragmentCapsulesBinding? = null
     private val binding get() = _binding!!
 
-    private var presenter: CapsulesContract.CapsulesPresenter? = null
+    private var presenter: VehiclesContract.Presenter? = null
 
     private lateinit var capsulesAdapter: CapsulesAdapter
     private lateinit var capsulesArray: ArrayList<CapsulesModel>
@@ -59,10 +61,10 @@ class CapsulesFragment : Fragment(), CapsulesContract.CapsulesView, SearchView.O
         }
 
         binding.capsulesSwipeRefresh.setOnRefreshListener {
-            presenter?.getCapsules()
+            presenter?.getVehicles()
         }
 
-        if (capsulesArray.isEmpty()) presenter?.getCapsules()
+        if (capsulesArray.isEmpty()) presenter?.getVehicles()
     }
 
     override fun onStart() {
@@ -83,7 +85,7 @@ class CapsulesFragment : Fragment(), CapsulesContract.CapsulesView, SearchView.O
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter?.cancelRequests()
+        presenter?.cancelRequest()
         _binding = null
     }
 
@@ -127,9 +129,9 @@ class CapsulesFragment : Fragment(), CapsulesContract.CapsulesView, SearchView.O
         return false
     }
 
-    override fun updateCapsules(capsules: List<CapsulesModel>) {
+    override fun updateVehicles(vehicles: List<CapsulesModel>) {
         capsulesArray.clear()
-        capsulesArray.addAll(if (sortNew) capsules.reversed() else capsules)
+        capsulesArray.addAll(if (sortNew) vehicles.reversed() else vehicles)
 
         binding.capsulesRecycler.layoutAnimation =
             AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
@@ -156,7 +158,7 @@ class CapsulesFragment : Fragment(), CapsulesContract.CapsulesView, SearchView.O
     override fun networkAvailable() {
         activity?.runOnUiThread {
             if (capsulesArray.isEmpty() || binding.capsulesProgressBar.visibility == View.VISIBLE)
-                presenter?.getCapsules()
+                presenter?.getVehicles()
         }
     }
 }

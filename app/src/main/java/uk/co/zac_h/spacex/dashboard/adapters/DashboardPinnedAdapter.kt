@@ -51,13 +51,13 @@ class DashboardPinnedAdapter(
                     .into(missionPatch)
 
                 if (launch.rocket?.name == "Falcon 9") {
-                    reusedTag.visibility = launch.cores?.get(0)?.reused?.let {
-                        if (it) View.VISIBLE else View.GONE
+                    reusedTag.visibility = launch.cores?.get(0)?.reused?.let { reused ->
+                        if (reused) View.VISIBLE else View.GONE
                     } ?: View.GONE
 
                     landingVehicleTag.visibility =
-                        launch.cores?.get(0)?.landingSuccess?.let {
-                            if (it) View.VISIBLE else View.GONE
+                        launch.cores?.get(0)?.landingSuccess?.let { landingSuccess ->
+                            if (landingSuccess) View.VISIBLE else View.GONE
                         } ?: View.GONE
 
                     landingVehicleTag.text = launch.cores?.get(0)?.landingPad?.name

@@ -1,18 +1,19 @@
 package uk.co.zac_h.spacex.vehicles.cores
 
 import retrofit2.Call
-import uk.co.zac_h.spacex.model.spacex.CoreDocsModel
-import uk.co.zac_h.spacex.model.spacex.QueryModel
-import uk.co.zac_h.spacex.model.spacex.QueryOptionsModel
-import uk.co.zac_h.spacex.model.spacex.QueryPopulateModel
+import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
+import uk.co.zac_h.spacex.vehicles.VehiclesContract
 
-class CoreInteractorImpl : BaseNetwork(), CoreContract.CoreInteractor {
+class CoreInteractorImpl : BaseNetwork(), VehiclesContract.Interactor<CoreExtendedModel> {
 
     private var call: Call<CoreDocsModel>? = null
 
-    override fun getCores(api: SpaceXInterface, listener: CoreContract.InteractorCallback) {
+    override fun getVehicles(
+        api: SpaceXInterface,
+        listener: VehiclesContract.InteractorCallback<CoreExtendedModel>
+    ) {
         val populateList: ArrayList<QueryPopulateModel> = ArrayList()
 
         populateList.add(
@@ -27,7 +28,7 @@ class CoreInteractorImpl : BaseNetwork(), CoreContract.CoreInteractor {
 
         call = api.getCores(query).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(it.body()) }
+                onResponseSuccess = { listener.onSuccess(it.body()?.docs) }
                 onResponseFailure = { listener.onError(it) }
             }
         }

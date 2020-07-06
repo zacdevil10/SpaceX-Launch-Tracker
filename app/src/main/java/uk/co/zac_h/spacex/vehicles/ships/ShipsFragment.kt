@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.vehicles.rockets
+package uk.co.zac_h.spacex.vehicles.ships
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,55 +10,55 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.databinding.FragmentRocketBinding
-import uk.co.zac_h.spacex.model.spacex.RocketsModel
+import uk.co.zac_h.spacex.databinding.FragmentShipsBinding
+import uk.co.zac_h.spacex.model.spacex.ShipModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.VehiclesContract
-import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
+import uk.co.zac_h.spacex.vehicles.adapters.ShipsAdapter
 
-class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
+class ShipsFragment : Fragment(), VehiclesContract.View<ShipModel>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentRocketBinding? = null
+    private var _binding: FragmentShipsBinding? = null
     private val binding get() = _binding!!
 
     private var presenter: VehiclesContract.Presenter? = null
 
-    private lateinit var rocketsAdapter: RocketsAdapter
-    private lateinit var rocketsArray: ArrayList<RocketsModel>
+    private lateinit var shipsAdapter: ShipsAdapter
+    private lateinit var shipsArray: ArrayList<ShipModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        rocketsArray = savedInstanceState?.getParcelableArrayList("rockets") ?: ArrayList()
+        shipsArray = savedInstanceState?.getParcelableArrayList("ships") ?: ArrayList()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentRocketBinding.inflate(inflater, container, false)
+        _binding = FragmentShipsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = RocketPresenterImpl(this, RocketInteractorImpl())
+        presenter = ShipsPresenterImpl(this, ShipsInteractorImpl())
 
-        rocketsAdapter = RocketsAdapter(rocketsArray)
+        shipsAdapter = ShipsAdapter(shipsArray)
 
-        binding.rocketRecycler.apply {
-            layoutManager = LinearLayoutManager(this@RocketFragment.context)
+        binding.recycler.apply {
+            layoutManager = LinearLayoutManager(this@ShipsFragment.context)
             setHasFixedSize(true)
-            adapter = rocketsAdapter
+            adapter = shipsAdapter
         }
 
-        binding.rocketSwipeRefresh.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
             presenter?.getVehicles()
         }
 
-        if (rocketsArray.isEmpty()) presenter?.getVehicles()
+        if (shipsArray.isEmpty()) presenter?.getVehicles()
     }
 
     override fun onStart() {
@@ -72,7 +72,7 @@ class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("rockets", rocketsArray)
+        outState.putParcelableArrayList("ships", shipsArray)
         super.onSaveInstanceState(outState)
     }
 
@@ -82,26 +82,26 @@ class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
         _binding = null
     }
 
-    override fun updateVehicles(vehicles: List<RocketsModel>) {
-        rocketsArray.clear()
-        rocketsArray.addAll(vehicles)
+    override fun updateVehicles(vehicles: List<ShipModel>) {
+        shipsArray.clear()
+        shipsArray.addAll(vehicles)
 
-        binding.rocketRecycler.layoutAnimation =
+        binding.recycler.layoutAnimation =
             AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
-        rocketsAdapter.notifyDataSetChanged()
-        binding.rocketRecycler.scheduleLayoutAnimation()
+        shipsAdapter.notifyDataSetChanged()
+        binding.recycler.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        binding.rocketProgressBar.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.VISIBLE
     }
 
     override fun hideProgress() {
-        binding.rocketProgressBar.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding.rocketSwipeRefresh.isRefreshing = refreshing
+        binding.swipeRefresh.isRefreshing = refreshing
     }
 
     override fun showError(error: String) {
@@ -110,7 +110,7 @@ class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (rocketsArray.isEmpty() || binding.rocketProgressBar.visibility == View.VISIBLE)
+            if (shipsArray.isEmpty() || binding.progressBar.visibility == View.VISIBLE)
                 presenter?.getVehicles()
         }
     }

@@ -1,18 +1,19 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
 import retrofit2.Call
-import uk.co.zac_h.spacex.model.spacex.CapsulesDocsModel
-import uk.co.zac_h.spacex.model.spacex.QueryModel
-import uk.co.zac_h.spacex.model.spacex.QueryOptionsModel
-import uk.co.zac_h.spacex.model.spacex.QueryPopulateModel
+import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
+import uk.co.zac_h.spacex.vehicles.VehiclesContract
 
-class CapsulesInteractorImpl : BaseNetwork(), CapsulesContract.CapsulesInteractor {
+class CapsulesInteractorImpl : BaseNetwork(), VehiclesContract.Interactor<CapsulesModel> {
 
     private var call: Call<CapsulesDocsModel>? = null
 
-    override fun getCapsules(api: SpaceXInterface, listener: CapsulesContract.InteractorCallback) {
+    override fun getVehicles(
+        api: SpaceXInterface,
+        listener: VehiclesContract.InteractorCallback<CapsulesModel>
+    ) {
         val populateList: ArrayList<QueryPopulateModel> = ArrayList()
 
         populateList.add(
@@ -27,7 +28,7 @@ class CapsulesInteractorImpl : BaseNetwork(), CapsulesContract.CapsulesInteracto
 
         call = api.getCapsules(query).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(it.body()) }
+                onResponseSuccess = { listener.onSuccess(it.body()?.docs) }
                 onResponseFailure = { listener.onError(it) }
             }
         }

@@ -12,15 +12,17 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
 import uk.co.zac_h.spacex.model.spacex.CoreExtendedModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.vehicles.VehiclesContract
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
 
-class CoreFragment : Fragment(), CoreContract.CoreView, SearchView.OnQueryTextListener,
+class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
+    SearchView.OnQueryTextListener,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var _binding: FragmentCoreBinding? = null
     private val binding get() = _binding!!
 
-    private var presenter: CoreContract.CorePresenter? = null
+    private var presenter: VehiclesContract.Presenter? = null
 
     private lateinit var coreAdapter: CoreAdapter
     private lateinit var coresArray: ArrayList<CoreExtendedModel>
@@ -58,10 +60,10 @@ class CoreFragment : Fragment(), CoreContract.CoreView, SearchView.OnQueryTextLi
         }
 
         binding.coreSwipeRefresh.setOnRefreshListener {
-            presenter?.getCores()
+            presenter?.getVehicles()
         }
 
-        if (coresArray.isEmpty()) presenter?.getCores()
+        if (coresArray.isEmpty()) presenter?.getVehicles()
     }
 
     override fun onStart() {
@@ -126,9 +128,9 @@ class CoreFragment : Fragment(), CoreContract.CoreView, SearchView.OnQueryTextLi
         return false
     }
 
-    override fun updateCores(cores: List<CoreExtendedModel>) {
+    override fun updateVehicles(vehicles: List<CoreExtendedModel>) {
         coresArray.clear()
-        coresArray.addAll(if (sortNew) cores.reversed() else cores)
+        coresArray.addAll(if (sortNew) vehicles.reversed() else vehicles)
 
         binding.coreRecycler.layoutAnimation =
             AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
@@ -155,7 +157,7 @@ class CoreFragment : Fragment(), CoreContract.CoreView, SearchView.OnQueryTextLi
     override fun networkAvailable() {
         activity?.runOnUiThread {
             if (coresArray.isEmpty() || binding.coreProgressBar.visibility == View.VISIBLE)
-                presenter?.getCores()
+                presenter?.getVehicles()
         }
     }
 }
