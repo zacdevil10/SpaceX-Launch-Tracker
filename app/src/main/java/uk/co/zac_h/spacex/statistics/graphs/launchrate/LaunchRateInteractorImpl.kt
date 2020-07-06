@@ -26,7 +26,7 @@ class LaunchRateInteractorImpl : BaseNetwork(), LaunchRateContract.LaunchRateInt
                 false,
                 populateList,
                 "",
-                listOf("rocket", "success", "upcoming", "date_unix"),
+                listOf("rocket", "success", "upcoming", "date_local"),
                 100000
             )
         )

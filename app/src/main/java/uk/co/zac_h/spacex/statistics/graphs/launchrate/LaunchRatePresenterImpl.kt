@@ -3,7 +3,6 @@ package uk.co.zac_h.spacex.statistics.graphs.launchrate
 import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.RocketIds
-import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.RateStatsModel
 
 class LaunchRatePresenterImpl(
@@ -30,7 +29,9 @@ class LaunchRatePresenterImpl(
 
             var year = 2005
             launches.forEach {
-                val newYear = it.launchDateUnix?.formatDateMillisYYYY() ?: return@forEach
+                println(it.launchDateLocal?.substring(0, 4).toString().toIntOrNull())
+                val newYear =
+                    it.launchDateLocal?.substring(0, 4).toString().toIntOrNull() ?: return@forEach
                 if (newYear > year) {
                     if (newYear != year++) {
                         for (y in year until newYear) rateStatsList.add(RateStatsModel(y))
