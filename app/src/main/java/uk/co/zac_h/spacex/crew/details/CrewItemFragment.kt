@@ -53,7 +53,7 @@ class CrewItemFragment : Fragment() {
 
         val typedVal = TypedValue()
         val initialMargin = binding.itemCrewIndicator.marginTop
-        val bottomSheetBehavior = BottomSheetBehavior.from(binding.itemCrewDetails)
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.itemCrewBottomSheet)
 
         bottomSheetBehavior.apply {
             state = BottomSheetBehavior.STATE_COLLAPSED

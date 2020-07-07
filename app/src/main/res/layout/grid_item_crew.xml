@@ -31,7 +31,8 @@
                 android:contentDescription="@string/rocket_image_desc"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/avatars" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/grid_item_crew_details"

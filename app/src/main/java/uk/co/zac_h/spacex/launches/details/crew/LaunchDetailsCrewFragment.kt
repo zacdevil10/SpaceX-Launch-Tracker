@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.crew.CrewContract
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
@@ -62,7 +61,6 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
         crewAdapter = CrewAdapter(this, crewArray)
 
         binding.launchDetailsCrewRecycler.apply {
-            layoutManager = GridLayoutManager(this@LaunchDetailsCrewFragment.context, 2)
             setHasFixedSize(true)
             adapter = crewAdapter
         }

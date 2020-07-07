@@ -34,7 +34,7 @@
         android:layout_width="156dp"
         android:layout_height="wrap_content"
         android:layout_margin="32dp"
-        android:background="@color/color_rate_key"
+        android:background="?colorPrimary"
         android:padding="8dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/launch_rate_bar_chart"

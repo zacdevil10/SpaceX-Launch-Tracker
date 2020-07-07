@@ -74,6 +74,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
                 isGranularityEnabled = true
                 granularity = 1f
                 axisMinimum = 0f
+                setDrawGridLines(false)
             }
             axisRight.isEnabled = false
             setScaleEnabled(false)

@@ -36,6 +36,7 @@
                 tools:text="B1047" />
 
             <ImageView
+                android:id="@+id/list_item_first_stage_details_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/more_icon_desc"

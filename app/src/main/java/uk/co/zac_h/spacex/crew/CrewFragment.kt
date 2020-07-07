@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
@@ -83,7 +82,6 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
         crewAdapter = CrewAdapter(this, crewArray)
 
         binding.crewRecycler.apply {
-            layoutManager = GridLayoutManager(this@CrewFragment.context, 2)
             setHasFixedSize(true)
             adapter = crewAdapter
         }

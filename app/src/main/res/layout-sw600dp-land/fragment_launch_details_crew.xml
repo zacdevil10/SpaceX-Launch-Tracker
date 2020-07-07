@@ -21,9 +21,8 @@
         android:layout_height="match_parent"
         android:paddingStart="16dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
+        app:spanCount="4"
         tools:listitem="@layout/grid_item_crew"
-        tools:context=".launches.details.crew.LaunchDetailsCrewFragment"
         tools:ignore="RtlSymmetry" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
