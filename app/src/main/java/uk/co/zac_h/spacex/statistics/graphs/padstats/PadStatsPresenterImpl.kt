@@ -36,8 +36,8 @@ class PadStatsPresenterImpl(
             padList.add(
                 StatsPadModel(
                     it.fullName,
-                    it.launchAttempts,
-                    it.launchSuccesses,
+                    it.launchAttempts ?: 0,
+                    it.launchSuccesses ?: 0,
                     it.status
                 )
             )
@@ -63,8 +63,8 @@ class PadStatsPresenterImpl(
             padList.add(
                 StatsPadModel(
                     it.fullName,
-                    it.landingAttempts,
-                    it.landingSuccesses,
+                    it.landingAttempts ?: 0,
+                    it.landingSuccesses ?: 0,
                     it.status,
                     it.type
                 )

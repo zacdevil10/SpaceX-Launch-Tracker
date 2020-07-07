@@ -21,10 +21,10 @@ data class LandingPadModel(
     @field:Json(name = "region") val region: String?,
     @field:Json(name = "latitude") val lat: Float?,
     @field:Json(name = "longitude") val lng: Float?,
-    @field:Json(name = "landing_attempts") val landingAttempts: Int,
-    @field:Json(name = "landing_successes") val landingSuccesses: Int,
+    @field:Json(name = "landing_attempts") val landingAttempts: Int?,
+    @field:Json(name = "landing_successes") val landingSuccesses: Int?,
     @field:Json(name = "wikipedia") val wiki: String?,
     @field:Json(name = "details") val details: String?,
-    @field:Json(name = "launches") val launches: List<String>,
+    @field:Json(name = "launches") val launches: List<String>?,
     @field:Json(name = "id") val id: String
 ) : Parcelable

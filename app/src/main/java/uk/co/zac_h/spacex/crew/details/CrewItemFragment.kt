@@ -115,7 +115,7 @@ class CrewItemFragment : Fragment() {
         binding.itemCrewRecycler.apply {
             layoutManager = LinearLayoutManager(context)
             if (person != null) {
-                adapter = CrewLaunchAdapter(context, person.launches)
+                adapter = person.launches?.let { CrewLaunchAdapter(context, it) }
             }
         }
     }

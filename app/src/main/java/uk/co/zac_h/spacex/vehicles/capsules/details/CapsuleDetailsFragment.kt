@@ -62,7 +62,7 @@ class CapsuleDetailsFragment : Fragment() {
 
             binding.toolbar.title = it.serial
 
-            it.serial.let { serial ->
+            it.serial?.let { serial ->
                 binding.capsuleDetailsTypeText.text = when {
                     serial.startsWith("C1") -> "Dragon 1.0"
                     serial.startsWith("C2") -> "Dragon 2.0"
@@ -76,15 +76,18 @@ class CapsuleDetailsFragment : Fragment() {
                 binding.capsuleDetailsText.visibility = View.GONE
             }
 
-            binding.capsuleDetailsStatusText.text = it.status.capitalize()
+            binding.capsuleDetailsStatusText.text = it.status?.capitalize()
             binding.capsuleDetailsReuseText.text = it.reuseCount.toString()
-            binding.capsuleDetailsLandingText.text = (it.landLandings + it.waterLandings).toString()
+            binding.capsuleDetailsLandingText.text =
+                ((it.landLandings ?: 0) + (it.waterLandings ?: 0)).toString()
 
-            if (it.launches.isNotEmpty()) binding.capsuleDetailsMissionsRecycler.apply {
-                layoutManager = LinearLayoutManager(this@CapsuleDetailsFragment.context)
-                setHasFixedSize(true)
-                adapter = MissionsAdapter(context, it.launches)
-            } else binding.capsuleDetailsNoMissionLabel.visibility = View.VISIBLE
+            it.launches?.let { launches ->
+                binding.capsuleDetailsMissionsRecycler.apply {
+                    layoutManager = LinearLayoutManager(this@CapsuleDetailsFragment.context)
+                    setHasFixedSize(true)
+                    adapter = MissionsAdapter(context, launches)
+                }
+            } ?: run { binding.capsuleDetailsNoMissionLabel.visibility = View.VISIBLE }
         }
     }
 

@@ -41,7 +41,7 @@ data class LaunchesExtendedDocsModel(
 
 @Parcelize
 data class LaunchesExtendedModel(
-    @field:Json(name = "flight_number") val flightNumber: Int,
+    @field:Json(name = "flight_number") val flightNumber: Int?,
     @field:Json(name = "name") val missionName: String?,
     @field:Json(name = "date_utc") val launchDateUtc: String?,
     @field:Json(name = "date_unix") val launchDateUnix: Long?,

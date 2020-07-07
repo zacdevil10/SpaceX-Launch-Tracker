@@ -11,12 +11,12 @@ data class CapsulesDocsModel(
 
 @Parcelize
 data class CapsulesModel(
-    @field:Json(name = "serial") val serial: String,
-    @field:Json(name = "status") val status: String,
-    @field:Json(name = "reuse_count") val reuseCount: Int,
-    @field:Json(name = "water_landings") val waterLandings: Int,
-    @field:Json(name = "land_landings") val landLandings: Int,
+    @field:Json(name = "serial") val serial: String?,
+    @field:Json(name = "status") val status: String?,
+    @field:Json(name = "reuse_count") val reuseCount: Int?,
+    @field:Json(name = "water_landings") val waterLandings: Int?,
+    @field:Json(name = "land_landings") val landLandings: Int?,
     @field:Json(name = "last_update") val lastUpdate: String?,
-    @field:Json(name = "launches") val launches: List<MissionsModel>,
+    @field:Json(name = "launches") val launches: List<MissionsModel>?,
     @field:Json(name = "id") val id: String
 ) : Parcelable

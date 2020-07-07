@@ -9,12 +9,12 @@ import kotlinx.android.parcel.Parcelize
 data class PayloadModel(
     @field:Json(name = "name") val name: String?,
     @field:Json(name = "type") val type: String?,
-    @field:Json(name = "reused") val reused: Boolean,
+    @field:Json(name = "reused") val reused: Boolean?,
     @field:Json(name = "launch") val launch: String?,
-    @field:Json(name = "customers") val customers: List<String>,
-    @field:Json(name = "norad_ids") val noradIds: List<Int>,
-    @field:Json(name = "nationalities") val nationalities: List<String>,
-    @field:Json(name = "manufacturers") val manufacturers: List<String>,
+    @field:Json(name = "customers") val customers: List<String>?,
+    @field:Json(name = "norad_ids") val noradIds: List<Int>?,
+    @field:Json(name = "nationalities") val nationalities: List<String>?,
+    @field:Json(name = "manufacturers") val manufacturers: List<String>?,
     @field:Json(name = "mass_kg") val massKg: Float?,
     @field:Json(name = "mass_lbs") val massLbs: Float?,
     @field:Json(name = "orbit") val orbit: String?,
@@ -33,7 +33,7 @@ data class PayloadModel(
     @field:Json(name = "raan") val raan: Float?,
     @field:Json(name = "arg_of_pericenter") val argOfPericenter: Float?,
     @field:Json(name = "mean_anomaly") val meanAnomaly: Float?,
-    @field:Json(name = "dragon") val dragon: PayloadDragonModel,
+    @field:Json(name = "dragon") val dragon: PayloadDragonModel?,
     @field:Json(name = "id") val id: String
 ) : Parcelable
 

@@ -10,5 +10,5 @@ data class FairingsModel(
     @field:Json(name = "reused") val reused: Boolean?,
     @field:Json(name = "recovery_attempt") val recoveryAttempt: Boolean?,
     @field:Json(name = "recovered") val isRecovered: Boolean?,
-    @field:Json(name = "ships") val ships: List<String>
+    @field:Json(name = "ships") val ships: List<String>?
 ) : Parcelable

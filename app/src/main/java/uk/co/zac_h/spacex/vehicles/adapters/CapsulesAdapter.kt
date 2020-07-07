@@ -44,14 +44,14 @@ class CapsulesAdapter(private val capsules: ArrayList<CapsulesModel>) :
             itemView.transitionName = capsule.id
 
             serial.text = capsule.serial
-            capsule.serial.let {
+            capsule.serial?.let {
                 type.text = when {
                     it.startsWith("C1") -> "Dragon 1.0"
                     it.startsWith("C2") -> "Dragon 2.0"
                     else -> ""
                 }
             }
-            status.text = capsule.status.capitalize()
+            status.text = capsule.status?.capitalize()
 
             capsule.lastUpdate?.let { lastUpdate ->
                 details.text = lastUpdate
@@ -78,7 +78,7 @@ class CapsulesAdapter(private val capsules: ArrayList<CapsulesModel>) :
                         else -> {
                             val filteredList = ArrayList<CapsulesModel>()
                             capsules.forEach { capsule ->
-                                capsule.serial.let { serial ->
+                                capsule.serial?.let { serial ->
                                     if (serial.toLowerCase(Locale.getDefault()).contains(
                                             search.toString().toLowerCase(Locale.getDefault())
                                         )

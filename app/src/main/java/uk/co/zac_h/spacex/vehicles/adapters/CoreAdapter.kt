@@ -62,7 +62,7 @@ class CoreAdapter(private val context: Context?, private val cores: ArrayList<Co
                 details.visibility = View.GONE
             }
 
-            status.text = core.status.capitalize()
+            status.text = core.status?.capitalize()
             flights.text = (core.missions?.size ?: 0).toString()
 
             button.setOnClickListener { bind(core) }
@@ -82,13 +82,15 @@ class CoreAdapter(private val context: Context?, private val cores: ArrayList<Co
                         else -> {
                             val filteredList = ArrayList<CoreExtendedModel>()
                             cores.forEach { core ->
-                                if (core.serial.toLowerCase(Locale.getDefault()).contains(
-                                        search.toString().toLowerCase(
-                                            Locale.getDefault()
+                                core.serial?.let { serial ->
+                                    if (serial.toLowerCase(Locale.getDefault()).contains(
+                                            search.toString().toLowerCase(
+                                                Locale.getDefault()
+                                            )
                                         )
-                                    )
-                                ) {
-                                    filteredList.add(core)
+                                    ) {
+                                        filteredList.add(core)
+                                    }
                                 }
                             }
                             filteredList

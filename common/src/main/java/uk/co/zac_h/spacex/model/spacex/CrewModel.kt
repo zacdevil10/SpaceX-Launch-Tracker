@@ -16,14 +16,14 @@ data class CrewModel(
     @field:Json(name = "agency") val agency: String?,
     @field:Json(name = "image") val image: String?,
     @field:Json(name = "wikipedia") val wikipedia: String?,
-    @field:Json(name = "launches") val launches: List<CrewLaunchesModel>,
+    @field:Json(name = "launches") val launches: List<CrewLaunchesModel>?,
     @field:Json(name = "id") val id: String
 ) : Parcelable
 
 @Parcelize
 data class CrewLaunchesModel(
-    @field:Json(name = "flight_number") val flightNumber: Int,
-    @field:Json(name = "name") val name: String,
-    @field:Json(name = "date_unix") val date: Long,
+    @field:Json(name = "flight_number") val flightNumber: Int?,
+    @field:Json(name = "name") val name: String?,
+    @field:Json(name = "date_unix") val date: Long?,
     @field:Json(name = "id") val id: String
 ) : Parcelable
