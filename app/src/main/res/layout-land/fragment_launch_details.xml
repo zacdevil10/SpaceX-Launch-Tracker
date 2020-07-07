@@ -22,8 +22,8 @@
         android:id="@+id/launch_details_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:clipToPadding="false"
         android:paddingBottom="?attr/actionBarSize"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -96,7 +96,7 @@
                     android:textStyle="italic"
                     android:visibility="gone"
                     app:layout_constraintEnd_toStartOf="@id/launch_details_static_fire_date_text"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/launch_details_date_text"
                     app:layout_constraintTop_toBottomOf="@id/launch_details_date_text" />
 
                 <TextView
@@ -109,6 +109,44 @@
                     app:layout_constraintTop_toBottomOf="@id/launch_details_date_text"
                     tools:text="04 Nov 19 - 00:00 BST" />
 
+                <com.google.android.material.button.MaterialButtonToggleGroup
+                    android:id="@+id/launch_details_button_bar_main"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/launch_details_static_fire_date_label">
+
+                    <Button
+                        android:id="@+id/launch_details_watch_button"
+                        style="?attr/materialButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/watch_label"
+                        android:textAppearance="?textAppearanceBody2"
+                        app:icon="@drawable/ic_play_arrow_black_24dp" />
+
+                    <Button
+                        android:id="@+id/launch_details_press_kit_button"
+                        style="?attr/materialButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/press_kit_label"
+                        android:textAppearance="?textAppearanceBody2"
+                        app:icon="@drawable/ic_assignment_black_24dp" />
+
+                    <Button
+                        android:id="@+id/launch_details_wiki_button"
+                        style="?attr/materialButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/wikipedia_label"
+                        android:textAppearance="?textAppearanceBody2"
+                        app:icon="@drawable/wikipedia" />
+
+                </com.google.android.material.button.MaterialButtonToggleGroup>
+
                 <TextView
                     android:id="@+id/launch_details_details_text"
                     android:layout_width="match_parent"
@@ -117,7 +155,7 @@
                     android:textAppearance="?textAppearanceBody2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/launch_details_static_fire_date_label"
+                    app:layout_constraintTop_toBottomOf="@id/launch_details_button_bar_main"
                     tools:lines="10"
                     tools:text="@tools:sample/lorem/random" />
 
@@ -141,89 +179,37 @@
                     tools:text="CCAFS SLC 40" />
 
                 <com.google.android.material.button.MaterialButtonToggleGroup
-                    android:id="@+id/launch_details_button_bar_main"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toStartOf="@id/launch_details_button_bar_reddit"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/launch_details_site_name_text">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/launch_details_watch_button"
-                        style="?attr/materialButtonStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"
-                        android:text="@string/watch_label"
-                        android:textAppearance="?textAppearanceBody2"
-                        app:icon="@drawable/ic_play_arrow_black_24dp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/launch_details_press_kit_button"
-                        style="?attr/materialButtonStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"
-                        android:text="@string/press_kit_label"
-                        android:textAppearance="?textAppearanceBody2"
-                        app:icon="@drawable/ic_assignment_black_24dp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/launch_details_wiki_button"
-                        style="?attr/materialButtonStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"
-                        android:text="@string/wikipedia_label"
-                        android:textAppearance="?textAppearanceBody2"
-                        app:icon="@drawable/wikipedia" />
-
-                </com.google.android.material.button.MaterialButtonToggleGroup>
-
-                <com.google.android.material.button.MaterialButtonToggleGroup
                     android:id="@+id/launch_details_button_bar_reddit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:orientation="vertical"
+                    android:layout_marginTop="8dp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/launch_details_button_bar_main"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/launch_details_site_name_label">
 
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/launch_details_campaign_button"
                         style="?attr/materialButtonStyle"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"
                         android:text="@string/campaign_label"
                         android:textAppearance="?textAppearanceBody2"
                         app:icon="@drawable/reddit" />
 
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/launch_details_launch_button"
                         style="?attr/materialButtonStyle"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"
                         android:text="@string/launch_label"
                         android:textAppearance="?textAppearanceBody2"
                         app:icon="@drawable/reddit" />
 
-                    <com.google.android.material.button.MaterialButton
+                    <Button
                         android:id="@+id/launch_details_media_button"
                         style="?attr/materialButtonStyle"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:insetTop="0dp"
-                        android:insetBottom="0dp"
                         android:text="@string/media_label"
                         android:textAppearance="?textAppearanceBody2"
                         app:icon="@drawable/reddit" />

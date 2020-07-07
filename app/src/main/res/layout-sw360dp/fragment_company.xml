@@ -66,40 +66,33 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_address_text">
 
-                <com.google.android.material.button.MaterialButton
+                <Button
                     android:id="@+id/company_website_button"
                     style="?attr/materialButtonStyle"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
                     android:text="@string/website_label"
                     android:textAppearance="?textAppearanceBody2"
                     app:icon="@drawable/ic_baseline_web_24" />
 
-                <com.google.android.material.button.MaterialButton
+                <Button
                     android:id="@+id/company_twitter_button"
                     style="?attr/materialButtonStyle"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
                     android:text="@string/twitter_label"
                     android:textAppearance="?textAppearanceBody2"
                     app:icon="@drawable/ic_twitter" />
 
-                <com.google.android.material.button.MaterialButton
+                <Button
                     android:id="@+id/company_album_button"
                     style="?attr/materialButtonStyle"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
                     android:text="@string/album_label"
                     android:textAppearance="?textAppearanceBody2"
                     app:icon="@drawable/ic_baseline_photo_album_24" />

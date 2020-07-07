@@ -66,7 +66,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_address_text">
@@ -76,8 +75,6 @@
                     style="?attr/materialButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
                     android:text="@string/website_label"
                     android:textAppearance="?textAppearanceBody2"
                     app:icon="@drawable/ic_baseline_web_24" />
@@ -87,8 +84,6 @@
                     style="?attr/materialButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
                     android:text="@string/twitter_label"
                     android:textAppearance="?textAppearanceBody2"
                     app:icon="@drawable/ic_twitter" />
@@ -98,8 +93,6 @@
                     style="?attr/materialButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:insetTop="0dp"
-                    android:insetBottom="0dp"
                     android:text="@string/album_label"
                     android:textAppearance="?textAppearanceBody2"
                     app:icon="@drawable/ic_baseline_photo_album_24" />
