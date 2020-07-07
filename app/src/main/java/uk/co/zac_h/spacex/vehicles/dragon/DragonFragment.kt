@@ -44,6 +44,8 @@ class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+
         presenter = DragonPresenterImpl(this, DragonInteractorImpl())
 
         dragonAdapter = DragonAdapter(dragonArray)
@@ -93,11 +95,11 @@ class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
     }
 
     override fun showProgress() {
-        binding.dragonProgressBar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        binding.dragonProgressBar.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
@@ -110,7 +112,7 @@ class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (dragonArray.isEmpty() || binding.dragonProgressBar.visibility == View.VISIBLE) presenter?.getVehicles()
+            if (dragonArray.isEmpty() || binding.progressIndicator.isShown) presenter?.getVehicles()
         }
     }
 

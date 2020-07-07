@@ -53,6 +53,9 @@ class TwitterFeedFragment : Fragment(), TwitterFeedContract.TwitterFeedView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+        hidePagingProgress()
+
         presenter = TwitterFeedPresenterImpl(this, TwitterFeedInteractorImpl())
 
         twitterAdapter = TwitterFeedAdapter(context, tweetsList, this)
@@ -155,19 +158,19 @@ class TwitterFeedFragment : Fragment(), TwitterFeedContract.TwitterFeedView,
     }
 
     override fun showProgress() {
-        binding.twitterFeedProgressBar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun showPagingProgress() {
-        binding.twitterFeedPagingProgressBar.visibility = View.VISIBLE
+        binding.pagingProgressIndicator.show()
     }
 
     override fun hideProgress() {
-        binding.twitterFeedProgressBar.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun hidePagingProgress() {
-        binding.twitterFeedPagingProgressBar.visibility = View.GONE
+        binding.pagingProgressIndicator.hide()
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {
@@ -180,7 +183,7 @@ class TwitterFeedFragment : Fragment(), TwitterFeedContract.TwitterFeedView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (tweetsList.isEmpty() || binding.twitterFeedProgressBar.visibility == View.VISIBLE)
+            if (tweetsList.isEmpty() || binding.progressIndicator.isShown)
                 presenter?.getTweets()
 
             if (isLoading) presenter?.getTweets(tweetsList[tweetsList.size - 1].id)

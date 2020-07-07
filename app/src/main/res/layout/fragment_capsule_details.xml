@@ -154,6 +154,7 @@
                 app:layout_constraintTop_toTopOf="@id/capsule_details_missions_recycler" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

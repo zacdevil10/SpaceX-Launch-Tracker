@@ -15,14 +15,13 @@
         app:layout_constraintTop_toTopOf="parent"
         app:title="@string/menu_history" />
 
-    <ProgressBar
-        android:id="@+id/history_progress_bar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+    <com.google.android.material.progressindicator.ProgressIndicator
+        android:id="@+id/progress_indicator"
+        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="4dp"
-        android:indeterminate="true"
-        android:visibility="gone"
+        app:indicatorColor="?colorSecondary"
         app:layout_constraintBottom_toBottomOf="@id/toolbar" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

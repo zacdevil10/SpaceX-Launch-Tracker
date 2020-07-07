@@ -55,6 +55,8 @@ class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+
         presenter = LaunchDetailsShipsPresenter(this, LaunchDetailsShipsInteractor())
 
         shipsAdapter = LaunchDetailsShipsAdapter(shipsArray)

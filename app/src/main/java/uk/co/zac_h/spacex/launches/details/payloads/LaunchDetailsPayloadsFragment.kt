@@ -56,6 +56,8 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+
         presenter = LaunchDetailsPayloadsPresenter(this, LaunchDetailsPayloadsInteractor())
 
         payloadAdapter = PayloadAdapter(context, payloads)
@@ -102,11 +104,11 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
     }
 
     override fun showProgress() {
-        binding.launchDetailsPayloadProgress.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        binding.launchDetailsPayloadProgress.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun showError(error: String) {

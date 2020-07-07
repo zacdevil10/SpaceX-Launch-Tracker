@@ -56,6 +56,8 @@ class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+
         presenter = LaunchDetailsCoresPresenter(this, LaunchDetailsCoresInteractor())
 
         coresAdapter = FirstStageAdapter(cores)
@@ -101,11 +103,11 @@ class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
     }
 
     override fun showProgress() {
-        binding.launchDetailsCoresProgress.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        binding.launchDetailsCoresProgress.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun showError(error: String) {

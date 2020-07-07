@@ -8,15 +8,13 @@
     android:animateLayoutChanges="true"
     tools:context=".statistics.graphs.launchrate.LaunchRateFragment">
 
-    <ProgressBar
-        android:id="@+id/launch_rate_progress_bar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="0dp"
+    <com.google.android.material.progressindicator.ProgressIndicator
+        android:id="@+id/progress_indicator"
+        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:elevation="4dp"
+        app:indicatorColor="?colorSecondary"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.github.mikephil.charting.charts.BarChart

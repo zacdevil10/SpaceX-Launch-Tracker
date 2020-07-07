@@ -51,6 +51,8 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+
         presenter = LaunchRatePresenterImpl(this, LaunchRateInteractorImpl())
 
         if (statsList.isEmpty()) presenter?.getLaunchList()
@@ -225,11 +227,11 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
     }
 
     override fun showProgress() {
-        binding.launchRateProgressBar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        binding.launchRateProgressBar.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun showError(error: String) {
@@ -238,7 +240,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (statsList.isEmpty() || binding.launchRateProgressBar.visibility == View.VISIBLE) presenter?.getLaunchList()
+            if (statsList.isEmpty() || binding.progressIndicator.isShown) presenter?.getLaunchList()
         }
     }
 }

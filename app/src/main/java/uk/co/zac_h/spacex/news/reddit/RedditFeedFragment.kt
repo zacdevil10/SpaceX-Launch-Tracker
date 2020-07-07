@@ -59,6 +59,9 @@ class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+        hidePagingProgress()
+
         presenter = RedditFeedPresenterImpl(this, RedditFeedInteractorImpl())
 
         redditAdapter = RedditAdapter(this, posts)
@@ -183,11 +186,11 @@ class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
     }
 
     override fun showProgress() {
-        binding.redditProgressBar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        binding.redditProgressBar.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
@@ -195,11 +198,11 @@ class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
     }
 
     override fun showPagingProgress() {
-        binding.redditFeedPagingProgressBar.visibility = View.VISIBLE
+        binding.pagingProgressIndicator.show()
     }
 
     override fun hidePagingProgress() {
-        binding.redditFeedPagingProgressBar.visibility = View.GONE
+        binding.pagingProgressIndicator.hide()
     }
 
     override fun showError(error: String) {
@@ -208,7 +211,7 @@ class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (posts.isEmpty() || binding.redditProgressBar.visibility == View.VISIBLE)
+            if (posts.isEmpty() || binding.progressIndicator.isShown)
                 presenter?.getSub(order)
             
             if (isLoading) presenter?.getNextPage(posts[posts.size - 1].data.name, order)

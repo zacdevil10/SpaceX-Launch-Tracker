@@ -49,6 +49,8 @@ class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+
         presenter = CorePresenterImpl(this, CoreInteractorImpl())
 
         coreAdapter = CoreAdapter(context, coresArray)
@@ -139,11 +141,11 @@ class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
     }
 
     override fun showProgress() {
-        binding.coreProgressBar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        binding.coreProgressBar.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
@@ -156,7 +158,7 @@ class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (coresArray.isEmpty() || binding.coreProgressBar.visibility == View.VISIBLE)
+            if (coresArray.isEmpty() || binding.progressIndicator.isShown)
                 presenter?.getVehicles()
         }
     }

@@ -74,6 +74,8 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+
         pinnedSharedPreferences = PinnedSharedPreferencesHelperImpl(
             context?.getSharedPreferences(
                 "pinned",
@@ -284,11 +286,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     }
 
     override fun showProgress() {
-        binding.launchDetailsProgress.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        binding.launchDetailsProgress.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun showError(error: String) {

@@ -44,6 +44,8 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+
         presenter = PadStatsPresenterImpl(this, PadStatsInteractorImpl())
 
         padsAdapter = PadStatsSitesAdapter(pads)
@@ -106,11 +108,11 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
     }
 
     override fun showProgress() {
-        binding.padStatsSitesProgressBar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        binding.padStatsSitesProgressBar.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun showError(error: String) {
@@ -119,7 +121,7 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (pads.isEmpty() || binding.padStatsSitesProgressBar.visibility == View.VISIBLE) presenter?.getPads()
+            if (pads.isEmpty() || binding.progressIndicator.isShown) presenter?.getPads()
         }
     }
 }

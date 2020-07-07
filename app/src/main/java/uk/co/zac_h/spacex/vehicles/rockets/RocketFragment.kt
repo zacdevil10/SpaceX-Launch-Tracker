@@ -44,6 +44,8 @@ class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+
         presenter = RocketPresenterImpl(this, RocketInteractorImpl())
 
         rocketsAdapter = RocketsAdapter(rocketsArray)
@@ -93,11 +95,11 @@ class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
     }
 
     override fun showProgress() {
-        binding.rocketProgressBar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        binding.rocketProgressBar.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
@@ -110,7 +112,7 @@ class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (rocketsArray.isEmpty() || binding.rocketProgressBar.visibility == View.VISIBLE)
+            if (rocketsArray.isEmpty() || binding.progressIndicator.isShown)
                 presenter?.getVehicles()
         }
     }

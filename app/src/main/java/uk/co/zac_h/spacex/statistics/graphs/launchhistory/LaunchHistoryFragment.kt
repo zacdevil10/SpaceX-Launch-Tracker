@@ -55,6 +55,8 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+
         presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
 
         binding.launchHistoryChipGroup.setOnCheckedChangeListener { group, _ ->
@@ -265,11 +267,11 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
     }
 
     override fun showProgress() {
-        binding.launchHistoryProgressBar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        binding.launchHistoryProgressBar.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun showError(error: String) {
@@ -279,7 +281,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
     override fun networkAvailable() {
         activity?.runOnUiThread {
             presenter?.apply {
-                if (launchStats.isEmpty() || binding.launchHistoryProgressBar.visibility == View.VISIBLE) getLaunchList()
+                if (launchStats.isEmpty() || binding.progressIndicator.isShown) getLaunchList()
             }
         }
     }

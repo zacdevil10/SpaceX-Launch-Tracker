@@ -50,6 +50,8 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+
         presenter = CapsulesPresenterImpl(this, CapsulesInteractorImpl())
 
         capsulesAdapter = CapsulesAdapter(capsulesArray)
@@ -140,11 +142,11 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
     }
 
     override fun showProgress() {
-        binding.capsulesProgressBar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        binding.capsulesProgressBar.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
@@ -157,8 +159,7 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (capsulesArray.isEmpty() || binding.capsulesProgressBar.visibility == View.VISIBLE)
-                presenter?.getVehicles()
+            if (capsulesArray.isEmpty() || binding.progressIndicator.isShown) presenter?.getVehicles()
         }
     }
 }

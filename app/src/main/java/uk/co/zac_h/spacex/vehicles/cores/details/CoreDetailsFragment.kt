@@ -54,6 +54,8 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+
         postponeEnterTransition()
 
         val navController = NavHostFragment.findNavController(this)
@@ -122,11 +124,11 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
     }
 
     override fun showProgress() {
-        binding.coreDetailsProgressBar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        binding.coreDetailsProgressBar.visibility = View.INVISIBLE
+        binding.progressIndicator.hide()
     }
 
     override fun showError(error: String) {

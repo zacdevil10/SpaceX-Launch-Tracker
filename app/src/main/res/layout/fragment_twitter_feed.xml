@@ -6,15 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".news.twitter.TwitterFeedFragment">
 
-    <ProgressBar
-        android:id="@+id/twitter_feed_progress_bar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="0dp"
+    <com.google.android.material.progressindicator.ProgressIndicator
+        android:id="@+id/progress_indicator"
+        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:elevation="4dp"
+        app:indicatorColor="?colorSecondary"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -32,15 +30,13 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <ProgressBar
-        android:id="@+id/twitter_feed_paging_progress_bar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="0dp"
+    <com.google.android.material.progressindicator.ProgressIndicator
+        android:id="@+id/paging_progress_indicator"
+        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:elevation="4dp"
+        app:indicatorColor="?colorSecondary"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <com.google.android.material.chip.Chip

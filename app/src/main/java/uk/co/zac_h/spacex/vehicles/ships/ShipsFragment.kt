@@ -44,6 +44,8 @@ class ShipsFragment : Fragment(), VehiclesContract.View<ShipExtendedModel>,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+
         presenter = ShipsPresenterImpl(this, ShipsInteractorImpl())
 
         shipsAdapter = ShipsAdapter(shipsArray)
@@ -93,11 +95,11 @@ class ShipsFragment : Fragment(), VehiclesContract.View<ShipExtendedModel>,
     }
 
     override fun showProgress() {
-        binding.progressBar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        binding.progressBar.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
@@ -110,8 +112,7 @@ class ShipsFragment : Fragment(), VehiclesContract.View<ShipExtendedModel>,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (shipsArray.isEmpty() || binding.progressBar.visibility == View.VISIBLE)
-                presenter?.getVehicles()
+            if (shipsArray.isEmpty() || binding.progressIndicator.isShown) presenter?.getVehicles()
         }
     }
 }

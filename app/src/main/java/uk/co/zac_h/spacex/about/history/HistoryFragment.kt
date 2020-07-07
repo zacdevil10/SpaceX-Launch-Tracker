@@ -52,6 +52,8 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+
         val navController = NavHostFragment.findNavController(this)
         val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
         val appBarConfig =
@@ -158,11 +160,11 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
     }
 
     override fun showProgress() {
-        binding.historyProgressBar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        binding.historyProgressBar.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {
@@ -175,7 +177,7 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (history.isEmpty() || binding.historyProgressBar.visibility == View.VISIBLE)
+            if (history.isEmpty() || binding.progressIndicator.isShown)
                 presenter?.getHistory(sortNew)
         }
     }

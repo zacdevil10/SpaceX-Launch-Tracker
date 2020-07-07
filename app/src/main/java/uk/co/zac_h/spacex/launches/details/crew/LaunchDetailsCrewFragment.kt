@@ -55,6 +55,8 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+
         presenter = LaunchDetailsCrewPresenter(this, LaunchDetailsCrewInteractor())
 
         crewAdapter = CrewAdapter(this, crewArray)

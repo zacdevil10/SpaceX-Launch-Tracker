@@ -48,6 +48,8 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+
         val navController = NavHostFragment.findNavController(this)
         val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
         val appBarConfig =
@@ -121,11 +123,11 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
     }
 
     override fun showProgress() {
-        binding.companyProgressBar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        binding.companyProgressBar.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun showError(error: String) {

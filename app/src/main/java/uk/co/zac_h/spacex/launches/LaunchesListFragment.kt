@@ -57,6 +57,8 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+
         launchParam = arguments?.getString("launchParam")
 
         presenter = LaunchesPresenterImpl(this, LaunchesInteractorImpl())
@@ -147,11 +149,11 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
     }
 
     override fun showProgress() {
-        binding.launchesProgressBar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        binding.launchesProgressBar.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {
@@ -164,7 +166,7 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (launchesList.isEmpty() || binding.launchesProgressBar.visibility == View.VISIBLE)
+            if (launchesList.isEmpty() || binding.progressIndicator.isShown)
                 launchParam?.let { launchId ->
                     presenter?.getLaunchList(launchId)
                 }
