@@ -120,7 +120,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/launch_details_static_fire_date_label">
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/launch_details_watch_button"
                         style="?attr/materialButtonStyle"
                         android:layout_width="wrap_content"
@@ -129,7 +129,7 @@
                         android:textAppearance="?textAppearanceBody2"
                         app:icon="@drawable/ic_play_arrow_black_24dp" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/launch_details_press_kit_button"
                         style="?attr/materialButtonStyle"
                         android:layout_width="wrap_content"
@@ -138,7 +138,7 @@
                         android:textAppearance="?textAppearanceBody2"
                         app:icon="@drawable/ic_assignment_black_24dp" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/launch_details_wiki_button"
                         style="?attr/materialButtonStyle"
                         android:layout_width="wrap_content"
@@ -188,7 +188,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/launch_details_site_name_label">
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/launch_details_campaign_button"
                         style="?attr/materialButtonStyle"
                         android:layout_width="wrap_content"
@@ -197,7 +197,7 @@
                         android:textAppearance="?textAppearanceBody2"
                         app:icon="@drawable/reddit" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/launch_details_launch_button"
                         style="?attr/materialButtonStyle"
                         android:layout_width="wrap_content"
@@ -206,7 +206,7 @@
                         android:textAppearance="?textAppearanceBody2"
                         app:icon="@drawable/reddit" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/launch_details_media_button"
                         style="?attr/materialButtonStyle"
                         android:layout_width="wrap_content"
