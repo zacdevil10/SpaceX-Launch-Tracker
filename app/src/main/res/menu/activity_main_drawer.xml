@@ -33,10 +33,10 @@
                 android:icon="@drawable/ic_data_usage_black_24dp"
                 android:checkable="true"
                 android:title="@string/menu_statistics" />
-            <item
+            <!--<item
                 android:id="@+id/history_page_fragment"
                 android:icon="@drawable/ic_history_black_24dp"
-                android:title="@string/menu_history" />
+                android:title="@string/menu_history" />-->
             <item
                 android:id="@+id/company_page_fragment"
                 android:icon="@drawable/domain"
