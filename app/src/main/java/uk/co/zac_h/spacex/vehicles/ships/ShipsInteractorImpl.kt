@@ -27,7 +27,7 @@ class ShipsInteractorImpl : BaseNetwork(), VehiclesContract.Interactor<ShipExten
                 ),
                 sort = "",
                 select = "",
-                limit = 50
+                limit = 200
             )
         )
 
