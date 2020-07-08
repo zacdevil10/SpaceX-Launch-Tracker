@@ -40,6 +40,9 @@ class RedditTest {
     @Mock
     val mRedditModel: SubredditModel = mock(SubredditModel::class.java)
 
+    private lateinit var mockRepoSuccess: RedditInterface
+    private lateinit var mockRepoError: RedditInterface
+
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
@@ -47,19 +50,30 @@ class RedditTest {
         interactor = RedditFeedInteractorImpl()
         mPresenter = RedditFeedPresenterImpl(mView, mInteractor)
         presenter = RedditFeedPresenterImpl(mView, interactor)
+
+        mockRepoSuccess = mock {
+            onBlocking { getRedditFeed("SpaceX", "asc") } doReturn Calls.response(
+                Response.success(mRedditModel)
+            )
+
+            onBlocking {
+                getRedditFeed("SpaceX", "asc", "id")
+            } doReturn Calls.response(Response.success(mRedditModel))
+        }
+
+        mockRepoError = mock {
+            onBlocking { getRedditFeed("SpaceX", "asc") } doReturn Calls.response(
+                Response.error(
+                    404,
+                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
+            )
+        }
     }
 
     @Test
     fun `When get reddit feed then add to view`() {
-        val mockRepo = mock<RedditInterface> {
-            onBlocking { getRedditFeed("SpaceX", "asc") } doReturn Calls.response(
-                Response.success(
-                    mRedditModel
-                )
-            )
-        }
-
-        presenter.getSub("asc", mockRepo)
+        presenter.getSub("asc", mockRepoSuccess)
 
         verifyBlocking(mView) {
             showProgress()
@@ -70,13 +84,7 @@ class RedditTest {
 
     @Test
     fun `When getting next page then add to existing adapter`() {
-        val mockRepo = mock<RedditInterface> {
-            onBlocking {
-                getRedditFeed("SpaceX", "asc", "id")
-            } doReturn Calls.response(Response.success(mRedditModel))
-        }
-
-        presenter.getNextPage("id", "asc", mockRepo)
+        presenter.getNextPage("id", "asc", mockRepoSuccess)
 
         verifyBlocking(mView) {
             showPagingProgress()
@@ -87,16 +95,7 @@ class RedditTest {
 
     @Test
     fun `When response from API is unsuccessful`() {
-        val mockRepo = mock<RedditInterface> {
-            onBlocking { getRedditFeed("SpaceX", "asc") } doReturn Calls.response(
-                Response.error(
-                404,
-                "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
-                )
-            )
-        }
-
-        interactor.getSubreddit(mockRepo, mListener, "asc")
+        interactor.getSubreddit(mockRepoError, mListener, "asc")
 
         verifyBlocking(mListener) { onError("Error: 404") }
     }

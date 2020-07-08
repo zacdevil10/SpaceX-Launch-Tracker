@@ -43,6 +43,9 @@ class DashboardTest {
     private lateinit var queryLatest: QueryModel
     private lateinit var querySingle: QueryModel
 
+    private lateinit var mockRepoSuccess: SpaceXInterface
+    private lateinit var mockRepoError: SpaceXInterface
+
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
@@ -126,6 +129,40 @@ class DashboardTest {
                 limit = 1
             )
         )
+
+        mockRepoSuccess = mock {
+            onBlocking { getQueriedLaunches(queryNext) } doReturn Calls.response(
+                Response.success(
+                    mLaunchExtendedDocsModel
+                )
+            )
+            onBlocking { getQueriedLaunches(queryLatest) } doReturn Calls.response(
+                Response.success(
+                    mLaunchExtendedDocsModel
+                )
+            )
+            onBlocking { getQueriedLaunches(querySingle) } doReturn Calls.response(
+                Response.success(
+                    mLaunchExtendedDocsModel
+                )
+            )
+        }
+
+        mockRepoError = mock {
+            onBlocking { getQueriedLaunches(queryNext) } doReturn Calls.response(
+                Response.error(
+                    404,
+                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
+            )
+
+            onBlocking { getQueriedLaunches(queryLatest) } doReturn Calls.response(
+                Response.error(
+                    404,
+                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
+            )
+        }
     }
 
     @Test
@@ -172,60 +209,23 @@ class DashboardTest {
 
     @Test
     fun `When next launch is added and now date is set then hide countdown`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getQueriedLaunches(queryNext) } doReturn Calls.response(
-                Response.success(
-                    mLaunchExtendedDocsModel
-                )
-            )
-            onBlocking { getQueriedLaunches(queryLatest) } doReturn Calls.response(
-                Response.success(
-                    mLaunchExtendedDocsModel
-                )
-            )
-        }
-
         `when`(mLaunchModel.tbd).thenReturn(true)
 
-        presenter.getLatestLaunches(api = mockRepo)
+        presenter.getLatestLaunches(api = mockRepoSuccess)
 
         verifyBlocking(mView) { hideCountdown() }
     }
 
     @Test
     fun `When pinned launch is added then add to pinned view`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getQueriedLaunches(querySingle) } doReturn Calls.response(
-                Response.success(
-                    mLaunchExtendedDocsModel
-                )
-            )
-        }
-
-        presenter.getSingleLaunch("1", api = mockRepo)
+        presenter.getSingleLaunch("1", api = mockRepoSuccess)
 
         verifyBlocking(mView) { hidePinnedMessage() }
     }
 
     @Test
     fun `When response from API fails then show error`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getQueriedLaunches(queryNext) } doReturn Calls.response(
-                Response.error(
-                    404,
-                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
-                )
-            )
-
-            onBlocking { getQueriedLaunches(queryLatest) } doReturn Calls.response(
-                Response.error(
-                    404,
-                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
-                )
-            )
-        }
-
-        presenter.getLatestLaunches(api = mockRepo)
+        presenter.getLatestLaunches(api = mockRepoError)
 
         verifyBlocking(mView) {
             toggleNextProgress(true)

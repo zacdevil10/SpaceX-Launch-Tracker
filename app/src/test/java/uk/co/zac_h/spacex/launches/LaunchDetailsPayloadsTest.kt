@@ -45,6 +45,9 @@ class LaunchDetailsPayloadsTest {
 
     private lateinit var query: QueryModel
 
+    private lateinit var mockRepoSuccess: SpaceXInterface
+    private lateinit var mockRepoError: SpaceXInterface
+
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
@@ -61,11 +64,8 @@ class LaunchDetailsPayloadsTest {
             QueryLaunchesQueryModel("id"),
             QueryOptionsModel(false, populateList, "", listOf("payloads"), 1000)
         )
-    }
 
-    @Test
-    fun `When launch id is provided then get launch cores data`() {
-        val mockRepo = mock<SpaceXInterface> {
+        mockRepoSuccess = mock<SpaceXInterface> {
             onBlocking { getQueriedLaunches(query) } doReturn Calls.response(
                 Response.success(
                     mLaunchesExtendedDocsModel
@@ -73,7 +73,19 @@ class LaunchDetailsPayloadsTest {
             )
         }
 
-        interactor.getPayloads("id", mockRepo, mListener)
+        mockRepoError = mock {
+            onBlocking { getQueriedLaunches(query) } doReturn Calls.response(
+                Response.error(
+                    404,
+                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `When launch id is provided then get launch cores data`() {
+        interactor.getPayloads("id", mockRepoSuccess, mListener)
 
         verifyBlocking(mListener) {
             onSuccess(mLaunchesExtendedDocsModel)
@@ -82,15 +94,7 @@ class LaunchDetailsPayloadsTest {
 
     @Test
     fun `Add launch data to view`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getQueriedLaunches(query) } doReturn Calls.response(
-                Response.success(
-                    mLaunchesExtendedDocsModel
-                )
-            )
-        }
-
-        presenter.getLaunch("id", mockRepo)
+        presenter.getLaunch("id", mockRepoSuccess)
 
         verifyBlocking(mView) {
             showProgress()
@@ -103,32 +107,14 @@ class LaunchDetailsPayloadsTest {
 
     @Test
     fun `When response from API is unsuccessful`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getQueriedLaunches(query) } doReturn Calls.response(
-                Response.error(
-                    404,
-                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
-                )
-            )
-        }
-
-        interactor.getPayloads("id", mockRepo, mListener)
+        interactor.getPayloads("id", mockRepoError, mListener)
 
         verifyBlocking(mListener) { onError("Error: 404") }
     }
 
     @Test
     fun `Show error in view when response from API fails`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getQueriedLaunches(query) } doReturn Calls.response(
-                Response.error(
-                    404,
-                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
-                )
-            )
-        }
-
-        presenter.getLaunch("id", mockRepo)
+        presenter.getLaunch("id", mockRepoError)
 
         verifyBlocking(mView) {
             showProgress()

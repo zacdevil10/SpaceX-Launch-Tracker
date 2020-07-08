@@ -51,6 +51,8 @@ class PadStatsTest {
     private val launchpadDocsModel = LaunchpadDocsModel(launchpadList)
     private val landingPadDocsModel = LandingPadDocsModel(landingPadList)
 
+    private lateinit var mockRepoError: SpaceXInterface
+
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
@@ -91,6 +93,26 @@ class PadStatsTest {
                 100000
             )
         )
+
+        mockRepoError = mock {
+            onBlocking {
+                getQueriedLandingPads(landQuery)
+            } doReturn Calls.response(
+                Response.error(
+                    404,
+                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
+            )
+
+            onBlocking {
+                getQueriedLaunchpads(launchQuery)
+            } doReturn Calls.response(
+                Response.error(
+                    404,
+                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
+            )
+        }
     }
 
     @Test
@@ -115,27 +137,7 @@ class PadStatsTest {
 
     @Test
     fun `When response from API is unsuccessful`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking {
-                getQueriedLandingPads(landQuery)
-            } doReturn Calls.response(
-                Response.error(
-                404,
-                "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
-                )
-            )
-
-            onBlocking {
-                getQueriedLaunchpads(launchQuery)
-            } doReturn Calls.response(
-                Response.error(
-                    404,
-                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
-                )
-            )
-        }
-
-        interactor.getPads(api = mockRepo, listener = mListener)
+        interactor.getPads(api = mockRepoError, listener = mListener)
 
         verifyBlocking(mListener, times(2)) {
             onError("Error: 404")
@@ -144,26 +146,7 @@ class PadStatsTest {
 
     @Test
     fun `Show error in view when response from API fails`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking {
-                getQueriedLaunchpads(launchQuery)
-            } doReturn Calls.response(
-                Response.error(
-                    404,
-                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
-                )
-            )
-            onBlocking {
-                getQueriedLandingPads(landQuery)
-            } doReturn Calls.response(
-                Response.error(
-                    404,
-                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
-                )
-            )
-        }
-
-        presenter.getPads(mockRepo)
+        presenter.getPads(mockRepoError)
 
         verifyBlocking(mView) {
             showProgress()

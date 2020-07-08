@@ -41,6 +41,8 @@ class CrewTest {
         CrewDocsModel(listOf(mCrewModel))
 
     private lateinit var query: QueryModel
+    private lateinit var mockRepoSuccess: SpaceXInterface
+    private lateinit var mockRepoError: SpaceXInterface
 
     @Before
     fun setup() {
@@ -63,11 +65,8 @@ class CrewTest {
                 ), "", "", 100000
             )
         )
-    }
 
-    @Test
-    fun `When launch id is provided then get launch cores data`() {
-        val mockRepo = mock<SpaceXInterface> {
+        mockRepoSuccess = mock {
             onBlocking { getCrew(query) } doReturn Calls.response(
                 Response.success(
                     mCrewDocsModel
@@ -75,7 +74,19 @@ class CrewTest {
             )
         }
 
-        interactor.getCrew(mockRepo, mListener)
+        mockRepoError = mock {
+            onBlocking { getCrew(query) } doReturn Calls.response(
+                Response.error(
+                    404,
+                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `When launch id is provided then get launch cores data`() {
+        interactor.getCrew(mockRepoSuccess, mListener)
 
         verifyBlocking(mListener) {
             onSuccess(mCrewDocsModel)
@@ -84,15 +95,7 @@ class CrewTest {
 
     @Test
     fun `Add launch data to view`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getCrew(query) } doReturn Calls.response(
-                Response.success(
-                    mCrewDocsModel
-                )
-            )
-        }
-
-        presenter.getCrew(mockRepo)
+        presenter.getCrew(mockRepoSuccess)
 
         verifyBlocking(mView) {
             showProgress()
@@ -103,32 +106,14 @@ class CrewTest {
 
     @Test
     fun `When response from API is unsuccessful`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getCrew(query) } doReturn Calls.response(
-                Response.error(
-                    404,
-                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
-                )
-            )
-        }
-
-        interactor.getCrew(mockRepo, mListener)
+        interactor.getCrew(mockRepoError, mListener)
 
         verifyBlocking(mListener) { onError("Error: 404") }
     }
 
     @Test
     fun `Show error in view when response from API fails`() {
-        val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getCrew(query) } doReturn Calls.response(
-                Response.error(
-                    404,
-                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
-                )
-            )
-        }
-
-        presenter.getCrew(mockRepo)
+        presenter.getCrew(mockRepoError)
 
         verifyBlocking(mView) {
             showProgress()

@@ -30,13 +30,18 @@ class TwitterTest {
     @Mock
     val mView: TwitterFeedContract.TwitterFeedView =
         mock(TwitterFeedContract.TwitterFeedView::class.java)
+
     @Mock
     val mListener: TwitterFeedContract.InteractorCallback =
         mock(TwitterFeedContract.InteractorCallback::class.java)
+
     @Mock
     val mTwitterModel: TimelineTweetModel = mock(TimelineTweetModel::class.java)
 
     private lateinit var twitterList: List<TimelineTweetModel>
+
+    private lateinit var mockRepoSuccess: TwitterInterface
+    private lateinit var mockRepoError: TwitterInterface
 
     @Before
     fun setup() {
@@ -47,11 +52,8 @@ class TwitterTest {
         presenter = TwitterFeedPresenterImpl(mView, interactor)
 
         twitterList = listOf(mTwitterModel)
-    }
 
-    @Test
-    fun `When get twitter feed then add to view`() {
-        val mockRepo = mock<TwitterInterface> {
+        mockRepoSuccess = mock {
             onBlocking {
                 getTweets(
                     "SpaceX",
@@ -61,20 +63,7 @@ class TwitterTest {
                     count = 15
                 )
             } doReturn Calls.response(Response.success(twitterList))
-        }
 
-        presenter.getTweets(mockRepo)
-
-        verifyBlocking(mView) {
-            showProgress()
-            hideProgress()
-            updateRecycler(twitterList)
-        }
-    }
-
-    @Test
-    fun `When getting next page then add to existing adapter`() {
-        val mockRepo = mock<TwitterInterface> {
             onBlocking {
                 getTweets(
                     "SpaceX",
@@ -87,7 +76,38 @@ class TwitterTest {
             } doReturn Calls.response(Response.success(twitterList))
         }
 
-        presenter.getTweets(1L, mockRepo)
+        mockRepoError = mock {
+            onBlocking {
+                getTweets(
+                    "SpaceX",
+                    rts = false,
+                    trim = false,
+                    mode = "extended",
+                    count = 15
+                )
+            } doReturn Calls.response(
+                Response.error(
+                    404,
+                    "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `When get twitter feed then add to view`() {
+        presenter.getTweets(mockRepoSuccess)
+
+        verifyBlocking(mView) {
+            showProgress()
+            hideProgress()
+            updateRecycler(twitterList)
+        }
+    }
+
+    @Test
+    fun `When getting next page then add to existing adapter`() {
+        presenter.getTweets(1L, mockRepoSuccess)
 
         verifyBlocking(mView) {
             showPagingProgress()
@@ -98,48 +118,14 @@ class TwitterTest {
 
     @Test
     fun `When response from API is unsuccessful`() {
-        val mockRepo = mock<TwitterInterface> {
-            onBlocking {
-                getTweets(
-                    "SpaceX",
-                    rts = false,
-                    trim = false,
-                    mode = "extended",
-                    count = 15
-                )
-            } doReturn Calls.response(
-                Response.error(
-                404,
-                "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
-                )
-            )
-        }
-
-        interactor.getTwitterTimeline(api = mockRepo, listener = mListener)
+        interactor.getTwitterTimeline(api = mockRepoError, listener = mListener)
 
         verifyBlocking(mListener) { onError("Error: 404") }
     }
 
     @Test
     fun `Show error in view when response from API fails`() {
-        val mockRepo = mock<TwitterInterface> {
-            onBlocking {
-                getTweets(
-                    "SpaceX",
-                    rts = false,
-                    trim = false,
-                    mode = "extended",
-                    count = 15
-                )
-            } doReturn Calls.response(
-                Response.error(
-                404,
-                "{\\\"Error\\\":[\\\"404\\\"]}".toResponseBody("application/json".toMediaTypeOrNull())
-                )
-            )
-        }
-
-        presenter.getTweets(mockRepo)
+        presenter.getTweets(mockRepoError)
 
         verifyBlocking(mView) {
             showProgress()
