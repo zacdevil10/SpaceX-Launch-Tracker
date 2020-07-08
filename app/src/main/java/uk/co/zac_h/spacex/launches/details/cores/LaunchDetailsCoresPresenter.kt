@@ -25,6 +25,6 @@ class LaunchDetailsCoresPresenter(
     }
 
     override fun onError(error: String) {
-        view.showProgress()
+        view.showError(error)
     }
 }

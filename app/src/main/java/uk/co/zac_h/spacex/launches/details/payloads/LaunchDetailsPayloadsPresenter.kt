@@ -10,7 +10,7 @@ class LaunchDetailsPayloadsPresenter(
 
     override fun getLaunch(id: String, api: SpaceXInterface) {
         view.showProgress()
-        interactor.getSingleLaunch(id, api, this)
+        interactor.getPayloads(id, api, this)
     }
 
     override fun cancelRequest() {

@@ -14,7 +14,6 @@ class LaunchDetailsShipsInteractor : BaseNetwork(), LaunchDetailsShipsContract.I
         api: SpaceXInterface,
         listener: LaunchDetailsShipsContract.InteractorCallback
     ) {
-
         val query = QueryModel(
             QueryLaunchesQueryModel(id),
             QueryOptionsModel(

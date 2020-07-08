@@ -9,7 +9,7 @@ class LaunchDetailsPayloadsInteractor : BaseNetwork(), LaunchDetailsPayloadsCont
 
     private var call: Call<LaunchesExtendedDocsModel>? = null
 
-    override fun getSingleLaunch(
+    override fun getPayloads(
         id: String,
         api: SpaceXInterface,
         listener: LaunchDetailsPayloadsContract.InteractorCallback

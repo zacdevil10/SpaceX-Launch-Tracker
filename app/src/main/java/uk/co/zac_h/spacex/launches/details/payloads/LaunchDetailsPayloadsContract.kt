@@ -19,7 +19,7 @@ interface LaunchDetailsPayloadsContract {
     }
 
     interface Interactor {
-        fun getSingleLaunch(id: String, api: SpaceXInterface, listener: InteractorCallback)
+        fun getPayloads(id: String, api: SpaceXInterface, listener: InteractorCallback)
         fun cancelRequest()
     }
 
