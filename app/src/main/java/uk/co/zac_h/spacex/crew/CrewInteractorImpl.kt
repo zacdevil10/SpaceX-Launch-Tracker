@@ -13,17 +13,19 @@ class CrewInteractorImpl : BaseNetwork(), CrewContract.CrewInteractor {
     private var call: Call<CrewDocsModel>? = null
 
     override fun getCrew(api: SpaceXInterface, listener: CrewContract.InteractorCallback) {
-        val populateList: ArrayList<QueryPopulateModel> = ArrayList()
-
-        populateList.add(
-            QueryPopulateModel(
-                "launches",
-                select = listOf("flight_number", "name", "date_unix"),
-                populate = ""
+        val query = QueryModel(
+            "",
+            QueryOptionsModel(
+                false,
+                listOf(
+                    QueryPopulateModel(
+                        "launches",
+                        select = listOf("flight_number", "name", "date_unix"),
+                        populate = ""
+                    )
+                ), "", "", 100000
             )
         )
-
-        val query = QueryModel("", QueryOptionsModel(false, populateList, "", "", 100000))
 
         call = api.getCrew(query).apply {
             makeCall {
