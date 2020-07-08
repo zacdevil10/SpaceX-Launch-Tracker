@@ -11,7 +11,7 @@ import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 import retrofit2.mock.Calls
-import uk.co.zac_h.spacex.model.spacex.ShipModel
+import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.vehicles.ships.ShipsInteractorImpl
 import uk.co.zac_h.spacex.vehicles.ships.ShipsPresenterImpl
@@ -20,21 +20,23 @@ class ShipsTest {
 
     private lateinit var mPresenter: VehiclesContract.Presenter
     private lateinit var presenter: VehiclesContract.Presenter
-    private lateinit var interactor: VehiclesContract.Interactor<ShipModel>
+    private lateinit var interactor: VehiclesContract.Interactor<ShipExtendedModel>
 
     @Mock
-    val mInteractor: VehiclesContract.Interactor<ShipModel> = mock()
+    val mInteractor: VehiclesContract.Interactor<ShipExtendedModel> = mock()
 
     @Mock
-    val mView: VehiclesContract.View<ShipModel> = mock()
+    val mView: VehiclesContract.View<ShipExtendedModel> = mock()
 
     @Mock
-    val mListener: VehiclesContract.InteractorCallback<ShipModel> = mock()
+    val mListener: VehiclesContract.InteractorCallback<ShipExtendedModel> = mock()
 
     @Mock
-    val mRocketsModel: ShipModel = Mockito.mock(ShipModel::class.java)
+    val shipExtendedModel: ShipExtendedModel = Mockito.mock(ShipExtendedModel::class.java)
 
-    private lateinit var rocketsList: List<ShipModel>
+    val shipDocsModel: ShipsDocsModel = ShipsDocsModel(listOf(shipExtendedModel))
+
+    private lateinit var query: QueryModel
 
     inline fun <reified T : Any> mock(): T = Mockito.mock(T::class.java)
 
@@ -46,13 +48,28 @@ class ShipsTest {
         mPresenter = ShipsPresenterImpl(mView, mInteractor)
         presenter = ShipsPresenterImpl(mView, interactor)
 
-        rocketsList = listOf(mRocketsModel)
+        query = QueryModel(
+            query = "",
+            options = QueryOptionsModel(
+                false,
+                populate = listOf(
+                    QueryPopulateModel(
+                        path = "launches",
+                        select = listOf("flight_number", "name"),
+                        populate = ""
+                    )
+                ),
+                sort = "",
+                select = "",
+                limit = 200
+            )
+        )
     }
 
     @Test
     fun `When response from API is successful then add cores to view`() {
         val mockRepo = com.nhaarman.mockitokotlin2.mock<SpaceXInterface> {
-            onBlocking { getShips() } doReturn Calls.response(Response.success(rocketsList))
+            onBlocking { getShips(query) } doReturn Calls.response(Response.success(shipDocsModel))
         }
 
         presenter.getVehicles(mockRepo)
@@ -61,7 +78,7 @@ class ShipsTest {
             showProgress()
             hideProgress()
             toggleSwipeRefresh(false)
-            updateVehicles(rocketsList)
+            updateVehicles(shipDocsModel.docs)
         }
     }
 
@@ -69,7 +86,7 @@ class ShipsTest {
     fun `When response from API is unsuccessful`() {
         val mockRepo = com.nhaarman.mockitokotlin2.mock<SpaceXInterface> {
             onBlocking {
-                getShips()
+                getShips(query)
             } doReturn Calls.response(
                 Response.error(
                     404,
@@ -87,7 +104,7 @@ class ShipsTest {
     fun `Show error in view when response from API fails`() {
         val mockRepo = com.nhaarman.mockitokotlin2.mock<SpaceXInterface> {
             onBlocking {
-                getShips()
+                getShips(query)
             } doReturn Calls.response(
                 Response.error(
                     404,
