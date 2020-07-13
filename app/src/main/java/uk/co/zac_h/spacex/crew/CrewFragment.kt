@@ -121,7 +121,7 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
     }
 
     override fun startTransition() {
-        binding.root.doOnPreDraw { startPostponedEnterTransition() }
+        _binding?.root?.doOnPreDraw { startPostponedEnterTransition() }
     }
 
     override fun onStart() {
