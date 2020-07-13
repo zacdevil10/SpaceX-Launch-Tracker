@@ -93,7 +93,7 @@ class LaunchDetailsCoresTest {
             )
         }
 
-        mockRepoError = mock<SpaceXInterface> {
+        mockRepoError = mock {
             onBlocking { getQueriedLaunches(query) } doReturn Calls.response(
                 Response.error(
                     404,

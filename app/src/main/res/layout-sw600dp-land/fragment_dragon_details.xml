@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_background"
-    tools:context=".vehicles.dragon.details.DragonDetailsFragment">
+    tools:context=".vehicles.dragon.details.DragonDetailsFragment"
+    tools:ignore="Overdraw">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"

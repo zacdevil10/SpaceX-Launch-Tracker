@@ -34,7 +34,7 @@ class ShipsTest {
     @Mock
     val shipExtendedModel: ShipExtendedModel = Mockito.mock(ShipExtendedModel::class.java)
 
-    val shipDocsModel: ShipsDocsModel = ShipsDocsModel(listOf(shipExtendedModel))
+    private val shipDocsModel: ShipsDocsModel = ShipsDocsModel(listOf(shipExtendedModel))
 
     private lateinit var query: QueryModel
 

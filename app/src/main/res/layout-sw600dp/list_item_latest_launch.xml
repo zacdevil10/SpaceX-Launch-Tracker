@@ -17,7 +17,7 @@
     tools:showIn="@layout/fragment_dashboard">
 
     <com.google.android.material.progressindicator.ProgressIndicator
-        android:id="@+id/dashboard_progress_indicator"
+        android:id="@+id/latest_progress_indicator"
         style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

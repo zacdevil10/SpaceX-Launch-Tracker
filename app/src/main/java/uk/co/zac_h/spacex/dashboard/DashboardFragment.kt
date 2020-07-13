@@ -307,7 +307,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
             override fun onFinish() {
                 nextLaunchModel?.links?.webcast?.let { link ->
                     binding.dashboardNextLayout.dashboardCountdownText.apply {
-                        text = "WATCH LIVE"
+                        text = context.getString(R.string.watch_live_label)
                         setOnClickListener {
                             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
                         }
@@ -333,18 +333,18 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     }
 
     override fun toggleNextProgress(isShown: Boolean) = when {
-        isShown -> binding.dashboardNextLayout.dashboardProgressIndicator.show()
-        else -> binding.dashboardNextLayout.dashboardProgressIndicator.hide()
+        isShown -> binding.dashboardNextLayout.nextProgressIndicator.show()
+        else -> binding.dashboardNextLayout.nextProgressIndicator.hide()
     }
 
     override fun toggleLatestProgress(isShown: Boolean) = when {
-        isShown -> binding.dashboardLatestLayout.dashboardProgressIndicator.show()
-        else -> binding.dashboardLatestLayout.dashboardProgressIndicator.hide()
+        isShown -> binding.dashboardLatestLayout.latestProgressIndicator.show()
+        else -> binding.dashboardLatestLayout.latestProgressIndicator.hide()
     }
 
     override fun togglePinnedProgress(isShown: Boolean) = when {
-        isShown -> binding.dashboardPinnedLayout.dashboardProgressIndicator.show()
-        else -> binding.dashboardPinnedLayout.dashboardProgressIndicator.hide()
+        isShown -> binding.dashboardPinnedLayout.pinnedProgressIndicator.show()
+        else -> binding.dashboardPinnedLayout.pinnedProgressIndicator.hide()
     }
 
     override fun showCountdown() {
@@ -392,8 +392,8 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
             if (nextLaunchModel == null
                 || latestLaunchModel == null
                 || pinnedArray.isEmpty()
-                || binding.dashboardNextLayout.dashboardProgressIndicator.isShown
-                || binding.dashboardLatestLayout.dashboardProgressIndicator.isShown
+                || binding.dashboardNextLayout.nextProgressIndicator.isShown
+                || binding.dashboardLatestLayout.latestProgressIndicator.isShown
             ) presenter?.getLatestLaunches()
         }
     }

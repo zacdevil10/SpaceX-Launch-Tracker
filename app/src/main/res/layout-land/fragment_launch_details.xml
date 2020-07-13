@@ -7,7 +7,8 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@color/color_background"
-    tools:context=".launches.details.details.LaunchDetailsFragment">
+    tools:context=".launches.details.details.LaunchDetailsFragment"
+    tools:ignore="Overdraw">
 
     <com.google.android.material.progressindicator.ProgressIndicator
         android:id="@+id/progress_indicator"

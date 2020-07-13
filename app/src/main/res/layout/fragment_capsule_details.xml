@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_background"
-    tools:context=".vehicles.capsules.details.CapsuleDetailsFragment">
+    tools:context=".vehicles.capsules.details.CapsuleDetailsFragment"
+    tools:ignore="Overdraw">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

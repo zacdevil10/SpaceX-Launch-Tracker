@@ -65,7 +65,7 @@ class LaunchDetailsPayloadsTest {
             QueryOptionsModel(false, populateList, "", listOf("payloads"), 1000)
         )
 
-        mockRepoSuccess = mock<SpaceXInterface> {
+        mockRepoSuccess = mock {
             onBlocking { getQueriedLaunches(query) } doReturn Calls.response(
                 Response.success(
                     mLaunchesExtendedDocsModel
