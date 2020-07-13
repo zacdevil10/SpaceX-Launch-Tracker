@@ -137,23 +137,29 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         pinnedPrefs.pinnedLive.observe(viewLifecycleOwner, Observer { mode ->
             mode?.let {
-                it.forEach { element ->
-                    if (element.key.length < 4) {
-                        pinnedSharedPreferences.removePinnedLaunch(element.key)
+                it.forEach { e ->
+                    if (e.key.length < 4) {
+                        pinnedSharedPreferences.removePinnedLaunch(e.key)
                         return@forEach
                     }
 
-                    if (element.value as Boolean) {
-                        if (!pinnedKeysArray.contains(element.key)) {
-                            presenter?.getSingleLaunch(element.key)
+                    if (e.value as Boolean) {
+                        if (!pinnedKeysArray.contains(e.key)) {
+                            presenter?.getSingleLaunch(e.key)
                         }
                     } else {
-                        pinnedArray.removeAt(pinnedKeysArray.indexOf(element.key))
-                        pinnedAdapter.notifyItemRemoved(pinnedKeysArray.indexOf(element.key))
-                        pinnedKeysArray.remove(element.key)
-                        pinnedSharedPreferences.removePinnedLaunch(element.key)
+                        if (pinnedKeysArray.contains(e.key)) {
+                            if (pinnedArray.size >= pinnedKeysArray.indexOf(e.key)) {
+                                pinnedArray.removeAt(pinnedKeysArray.indexOf(e.key))
+                                pinnedAdapter.notifyItemRemoved(pinnedKeysArray.indexOf(e.key))
+                            }
+                            pinnedKeysArray.remove(e.key)
+                        }
+                        pinnedSharedPreferences.removePinnedLaunch(e.key)
                     }
                 }
+
+                if (it.isNullOrEmpty()) showPinnedMessage()
             }
         })
 
