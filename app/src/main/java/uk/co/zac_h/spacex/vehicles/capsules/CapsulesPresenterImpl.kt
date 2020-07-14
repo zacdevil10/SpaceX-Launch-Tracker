@@ -1,27 +1,29 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
 import uk.co.zac_h.spacex.model.spacex.CapsulesModel
+import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.vehicles.VehiclesContract
 
 class CapsulesPresenterImpl(
-    private val view: CapsulesView,
-    private val interactor: CapsulesInteractor
-) : CapsulesPresenter, CapsulesInteractor.Callback {
+    private val view: VehiclesContract.View<CapsulesModel>,
+    private val interactor: VehiclesContract.Interactor<CapsulesModel>
+) : VehiclesContract.Presenter, VehiclesContract.InteractorCallback<CapsulesModel> {
 
-    override fun getCapsules() {
+    override fun getVehicles(api: SpaceXInterface) {
         view.showProgress()
-        interactor.getCapsules(this)
+        interactor.getVehicles(api, this)
     }
 
-    override fun cancelRequests() {
+    override fun cancelRequest() {
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(capsules: List<CapsulesModel>?) {
+    override fun onSuccess(vehicles: List<CapsulesModel>?) {
         view.apply {
             hideProgress()
             toggleSwipeRefresh(false)
+            vehicles?.let { updateVehicles(it) }
         }
-        capsules?.let { view.updateCapsules(it) }
     }
 
     override fun onError(error: String) {

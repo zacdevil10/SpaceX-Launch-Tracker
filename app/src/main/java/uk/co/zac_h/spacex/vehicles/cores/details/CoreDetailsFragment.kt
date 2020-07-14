@@ -5,51 +5,74 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.doOnPreDraw
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_core_details.*
+import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.launches.adapters.CoreMissionsAdapter
-import uk.co.zac_h.spacex.model.spacex.CoreModel
+import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
+import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
+import uk.co.zac_h.spacex.model.spacex.CoreExtendedModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.utils.setImageAndTint
 
-class CoreDetailsFragment : Fragment(), CoreDetailsView,
+class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: CoreDetailsPresenter? = null
+    private var _binding: FragmentCoreDetailsBinding? = null
+    private val binding get() = _binding!!
 
-    private var core: CoreModel? = null
-    private var id: String? = null
+    private var presenter: CoreDetailsContract.CoreDetailsPresenter? = null
+
+    private var core: CoreExtendedModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        sharedElementEnterTransition = MaterialContainerTransform()
 
         core = if (savedInstanceState != null) {
             savedInstanceState.getParcelable("core")
         } else {
             arguments?.getParcelable("core")
         }
-        id = arguments?.getString("core_id")
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_core_details, container, false)
+    ): View? {
+        _binding = FragmentCoreDetailsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = CoreDetailsPresenterImpl(this, CoreDetailsInteractorImpl())
+        hideProgress()
+
+        postponeEnterTransition()
+
+        val navController = NavHostFragment.findNavController(this)
+        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        val appBarConfig =
+            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
+                .setOpenableLayout(drawerLayout).build()
+
+        binding.toolbar.setupWithNavController(navController, appBarConfig)
+
+        presenter = CoreDetailsPresenterImpl(this)
 
         core?.let {
             presenter?.addCoreModel(it)
-        } ?: id?.let {
-            presenter?.getCoreDetails(it)
         }
+
+        view.doOnPreDraw { startPostponedEnterTransition() }
     }
 
     override fun onResume() {
@@ -69,58 +92,46 @@ class CoreDetailsFragment : Fragment(), CoreDetailsView,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter?.cancelRequest()
+        _binding = null
     }
 
-    override fun updateCoreDetails(coreModel: CoreModel) {
+    override fun updateCoreDetails(coreModel: CoreExtendedModel) {
         coreModel.apply {
             core = coreModel
-            core_details_serial_text.text = serial
-            core_details_block_text.text = block ?: "TBD"
-            core_details_details_text.text = details
-            core_details_status_text.text = status
-            core_details_reuse_text.text = reuseCount.toString()
-            core_details_rtls_attempts_text.text = attemptsRtls.toString()
-            core_details_rtls_landings_text.text = landingsRtls.toString()
-            core_details_asds_attempts_text.text = attemptsAsds.toString()
-            core_details_asds_landings_text.text = landingsAsds.toString()
-            core_details_water_landing_image.apply {
-                landingWater?.let { waterLanding ->
-                    if (waterLanding) setImageAndTint(
-                        R.drawable.ic_check_circle_black_24dp,
-                        R.color.success
-                    )
-                    else setImageAndTint(R.drawable.ic_remove_circle_black_24dp, R.color.failed)
-                } ?: setImageAndTint(R.drawable.ic_remove_circle_black_24dp, R.color.failed)
-            }
+
+            binding.coreDetailsScrollview.transitionName = id
+
+            binding.toolbar.title = serial
+
+            binding.coreDetailsSerialText.text = serial
+            binding.coreDetailsBlockText.text = block ?: "TBD"
+            binding.coreDetailsDetailsText.text = lastUpdate
+            binding.coreDetailsStatusText.text = status
+            binding.coreDetailsReuseText.text = reuseCount.toString()
+            binding.coreDetailsRtlsAttemptsText.text = attemptsRtls.toString()
+            binding.coreDetailsRtlsLandingsText.text = landingsRtls.toString()
+            binding.coreDetailsAsdsAttemptsText.text = attemptsAsds.toString()
+            binding.coreDetailsAsdsLandingsText.text = landingsAsds.toString()
         }
 
         coreModel.missions?.let {
-            core_details_mission_recycler.apply {
+            binding.coreDetailsMissionRecycler.apply {
                 layoutManager = LinearLayoutManager(this@CoreDetailsFragment.context)
                 setHasFixedSize(true)
-                adapter = CoreMissionsAdapter(context, it)
+                adapter = MissionsAdapter(context, it)
             }
         }
     }
 
     override fun showProgress() {
-        core_details_progress_bar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        core_details_progress_bar.visibility = View.INVISIBLE
+        binding.progressIndicator.hide()
     }
 
     override fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun networkAvailable() {
-        activity?.runOnUiThread {
-            id?.let {
-                if (core == null) presenter?.getCoreDetails(it)
-            }
-        }
     }
 }

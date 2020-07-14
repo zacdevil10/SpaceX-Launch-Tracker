@@ -5,17 +5,27 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.CapsulesModel
-import uk.co.zac_h.spacex.utils.formatDateMillisShort
+import java.util.*
+import kotlin.collections.ArrayList
 
-class CapsulesAdapter(private val capsules: List<CapsulesModel>) :
-    RecyclerView.Adapter<CapsulesAdapter.ViewHolder>() {
+class CapsulesAdapter(private val capsules: ArrayList<CapsulesModel>) :
+    RecyclerView.Adapter<CapsulesAdapter.ViewHolder>(), Filterable {
+
+    private var filteredCapsules: ArrayList<CapsulesModel>
+
+    init {
+        filteredCapsules = capsules
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
@@ -28,33 +38,85 @@ class CapsulesAdapter(private val capsules: List<CapsulesModel>) :
 
     @SuppressLint("DefaultLocale")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val capsule = capsules[position]
+        val capsule = filteredCapsules[position]
 
         holder.apply {
+            itemView.transitionName = capsule.id
+
             serial.text = capsule.serial
-            type.text = capsule.type
-            status.text = capsule.status.capitalize()
-            date.text = capsule.originalLaunchUnix?.formatDateMillisShort() ?: "TBD"
+            capsule.serial?.let {
+                type.text = when {
+                    it.startsWith("C1") -> "Dragon 1.0"
+                    it.startsWith("C2") -> "Dragon 2.0"
+                    else -> ""
+                }
+            }
+            status.text = capsule.status?.capitalize()
+
+            capsule.lastUpdate?.let { lastUpdate ->
+                details.text = lastUpdate
+            } ?: run {
+                details.visibility = View.GONE
+            }
+
+            flightNumber.text = capsule.reuseCount.toString()
 
             button.setOnClickListener { bind(capsule) }
             card.setOnClickListener { bind(capsule) }
         }
     }
 
-    override fun getItemCount(): Int = capsules.size
+    override fun getItemCount(): Int = filteredCapsules.size
+
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(search: CharSequence?): FilterResults {
+                val filterResults = FilterResults()
+                search?.let {
+                    filteredCapsules = when {
+                        it.isEmpty() -> capsules
+                        else -> {
+                            val filteredList = ArrayList<CapsulesModel>()
+                            capsules.forEach { capsule ->
+                                capsule.serial?.let { serial ->
+                                    if (serial.toLowerCase(Locale.getDefault()).contains(
+                                            search.toString().toLowerCase(Locale.getDefault())
+                                        )
+                                    ) {
+                                        filteredList.add(capsule)
+                                    }
+                                }
+                            }
+                            filteredList
+                        }
+                    }
+                    filterResults.values = filteredCapsules
+                    filterResults.count = filteredCapsules.size
+                }
+                return filterResults
+            }
+
+            override fun publishResults(p0: CharSequence?, p1: FilterResults?) {
+                notifyDataSetChanged()
+            }
+        }
+    }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val card: CardView = itemView.findViewById(R.id.list_item_capsule_card)
         val serial: TextView = itemView.findViewById(R.id.list_item_capsule_serial)
-        val type: TextView = itemView.findViewById(R.id.list_item_capsule_type)
+        val type: TextView = itemView.findViewById(R.id.list_item_capsule_type_text)
         val status: TextView = itemView.findViewById(R.id.list_item_capsule_status_text)
-        val date: TextView = itemView.findViewById(R.id.list_item_capsule_date_text)
+        val details: TextView = itemView.findViewById(R.id.list_item_capsule_details)
+        val flightNumber: TextView = itemView.findViewById(R.id.list_item_capsule_flights_text)
         val button: Button = itemView.findViewById(R.id.list_item_capsule_specs_button)
 
         fun bind(capsule: CapsulesModel) {
             itemView.findNavController().navigate(
                 R.id.action_vehicles_page_fragment_to_capsule_details_fragment,
-                bundleOf("capsule" to capsule, "title" to capsule.serial)
+                bundleOf("capsule" to capsule),
+                null,
+                FragmentNavigatorExtras(itemView to capsule.id)
             )
         }
     }

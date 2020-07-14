@@ -1,48 +1,27 @@
 package uk.co.zac_h.spacex.vehicles.rockets
 
-import android.util.Log
-import kotlinx.coroutines.*
-import retrofit2.HttpException
+import retrofit2.Call
+import uk.co.zac_h.spacex.model.spacex.RocketsModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
-import java.net.UnknownHostException
-import kotlin.coroutines.CoroutineContext
+import uk.co.zac_h.spacex.utils.BaseNetwork
+import uk.co.zac_h.spacex.vehicles.VehiclesContract
 
-class RocketInteractorImpl : RocketInteractor {
+class RocketInteractorImpl : BaseNetwork(),
+    VehiclesContract.Interactor<RocketsModel> {
 
-    private val parentJob = Job()
-    private val coroutineContext: CoroutineContext
-        get() = parentJob + Dispatchers.Default
+    private var call: Call<List<RocketsModel>>? = null
 
-    private val scope = CoroutineScope(coroutineContext)
-
-    override fun getRockets(listener: RocketInteractor.Callback) {
-        scope.launch {
-            val response = async(SupervisorJob(parentJob)) {
-                SpaceXInterface.create().getRockets()
-            }
-
-            withContext(Dispatchers.Main) {
-                try {
-                    if (response.await().isSuccessful) {
-                        listener.onSuccess(response.await().body())
-                    } else {
-                        listener.onError("Error: ${response.await().code()}")
-                    }
-                } catch (e: HttpException) {
-                    listener.onError(
-                        e.localizedMessage ?: "There was a network error! Please try refreshing."
-                    )
-                } catch (e: UnknownHostException) {
-                    listener.onError("Unable to resolve host! Check your network connection and try again.")
-                } catch (e: Throwable) {
-                    Log.e(
-                        this@RocketInteractorImpl.javaClass.name,
-                        e.localizedMessage ?: "Job failed to execute"
-                    )
-                }
+    override fun getVehicles(
+        api: SpaceXInterface,
+        listener: VehiclesContract.InteractorCallback<RocketsModel>
+    ) {
+        call = api.getRockets().apply {
+            makeCall {
+                onResponseSuccess = { listener.onSuccess(it.body()) }
+                onResponseFailure = { listener.onError(it) }
             }
         }
     }
 
-    override fun cancelAllRequests() = coroutineContext.cancel()
+    override fun cancelAllRequests() = terminateAll()
 }

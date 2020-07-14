@@ -8,16 +8,16 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
-import com.squareup.picasso.Picasso
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.reddit.SubredditPostModel
-import uk.co.zac_h.spacex.news.reddit.RedditFeedView
-import uk.co.zac_h.spacex.utils.HtmlTextView
+import uk.co.zac_h.spacex.news.reddit.RedditFeedContract
 import uk.co.zac_h.spacex.utils.convertDate
+import uk.co.zac_h.spacex.utils.views.HtmlTextView
 
 class RedditAdapter(
-    private val view: RedditFeedView,
+    private val view: RedditFeedContract.RedditFeedView,
     private val posts: List<SubredditPostModel>
 ) :
     RecyclerView.Adapter<RedditAdapter.ViewHolder>() {
@@ -43,7 +43,7 @@ class RedditAdapter(
                 thumbCard.visibility = View.GONE
             } else if (post.data.thumbnail.isNotEmpty()) {
                 thumbCard.visibility = View.VISIBLE
-                Picasso.get().load(post.data.thumbnail)
+                Glide.with(itemView).load(post.data.thumbnail)
                     .placeholder(R.drawable.ic_placeholder_reddit).into(thumbnail)
                 thumbLink.text = post.data.domain
             }
@@ -51,7 +51,7 @@ class RedditAdapter(
             if (post.data.redditDomain && post.data.preview != null && post.data.textHtml.isNullOrEmpty()) post.data.preview?.let {
                 preview.visibility = View.VISIBLE
                 val image = it.images[0].resolutions[it.images[0].resolutions.size - 1]
-                Picasso.get().load(image.url).into(preview)
+                Glide.with(itemView).load(image.url).into(preview)
 
                 ConstraintSet().apply {
                     clone(content)

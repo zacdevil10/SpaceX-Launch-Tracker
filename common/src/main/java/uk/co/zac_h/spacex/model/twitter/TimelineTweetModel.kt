@@ -20,9 +20,9 @@ data class TimelineTweetModel(
 
 @Parcelize
 data class TimelineEntityModel(
-    @field:Json(name = "hashtags") var hashtags: List<TweetHashTagModel>?,
-    @field:Json(name = "user_mentions") var mentions: List<TweetMentionsModel>?,
-    @field:Json(name = "urls") var urls: List<TweetUrlModel>?
+    @field:Json(name = "hashtags") var hashtags: List<TweetHashTagModel>,
+    @field:Json(name = "user_mentions") var mentions: List<TweetMentionsModel>,
+    @field:Json(name = "urls") var urls: List<TweetUrlModel>
 ) : Parcelable
 
 @Parcelize

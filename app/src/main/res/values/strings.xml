@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">SpaceX</string>
 
-    <string name="nav_header_title">SpaceX Launch Tracker</string>
+    <string name="nav_header_title">SpaceX - Launch Tracker</string>
     <string name="nav_header_subtitle">By Zac Hadjineophytou</string>
-    <string name="nav_header_desc">Navigation header</string>
+    <!--<string name="nav_header_desc">Navigation header</string>-->
 
     <string name="menu_home">Home</string>
     <string name="menu_news">News</string>
@@ -13,16 +13,18 @@
     <string name="menu_about_spacex">About SpaceX</string>
     <string name="menu_company">Company</string>
     <string name="menu_history">History</string>
+    <string name="menu_ships">Ships</string>
 
 
     <string name="flight_number">Flight %1$d</string>
-    <string name="vehicle_block_type">%1$s - Block %2$s</string>
     <string name="reused">Reused</string>
 
     <!-- Dashboard -->
     <string name="no_pinned_launches_found_label">No pinned launches found.</string>
-    <string name="next_launch">Next Launch</string>
-    <string name="latest_launch">Latest Launch</string>
+    <string name="next_launch">Next</string>
+    <string name="latest_launch">Previous</string>
+    <string name="customise_dashboard_label">Customise dashboard</string>
+    <string name="watch_live_label">WATCH LIVE</string>
 
     <!--Filter labels-->
     <string name="filter_successes">Successes</string>
@@ -38,13 +40,11 @@
     <string name="screen_name">\@%1$s</string>
     <string name="twitter_profile_image_desc">Twitter profile image</string>
     <string name="scroll_to_top_label">Scroll To Top</string>
-    <string name="reddit_label">Reddit</string>
 
     <!--Launch Details-->
     <string name="mission_patch">Mission patch</string>
     <string name="first_stage">First Stage</string>
     <string name="payload_label">Payload</string>
-    <string name="details_label">Details</string>
     <string name="reused_status_desc">Reused status</string>
     <string name="landed_label">Landed</string>
     <string name="landed_status_desc">Landed status</string>
@@ -56,8 +56,6 @@
     <string name="asds_attempts_label">ASDS Attempts</string>
     <string name="asds_landings_label">ASDS Landings</string>
     <string name="core_serial_label">Core Serial</string>
-    <string name="water_landing_label">Water Landing</string>
-    <string name="water_landing_indicator">Water Landing Indicator</string>
     <string name="block_label">Block</string>
     <string name="customer_label">Customer</string>
     <string name="orbit_label">Orbit</string>
@@ -75,7 +73,15 @@
     <string name="period_label">Period</string>
     <string name="mass">%1$s kg / %2$s lbs</string>
     <string name="static_fire_label">(static fire)</string>
-    <string name="links_label">Links</string>
+    <string name="watch_label">Watch</string>
+    <string name="press_kit_label">Press Kit</string>
+    <string name="campaign_label">Campaign</string>
+    <string name="launch_label">Launch</string>
+    <string name="media_label">Media</string>
+
+    <string name="details_label">Details</string>
+    <string name="cores_label">Cores</string>
+    <string name="payloads_label">Payloads</string>
 
     <!--Statistics-->
     <string name="success_rate_heading">Launch Success Rate</string>
@@ -96,13 +102,13 @@
     <string name="launch_pad_type_desc">Pad type</string>
 
     <!--About-->
-    <string name="powered_by">Powered by the r/SpaceX API</string>
+    <string name="powered_by">Powered by the r/SpaceX, Twitter and Reddit API</string>
     <string name="spacex_launch_tracker_icon_desc">SpaceX Launch Tracker Icon</string>
     <string name="version_name">v%1$s</string>
 
     <!--Menu-->
     <string name="search">Search</string>
-    <string name="pinned_launches">Pinned Launches</string>
+    <string name="pinned_launches">Pinned</string>
     <string name="pin">Pin</string>
 
     <!--About SpaceX-->
@@ -120,6 +126,10 @@
     <string name="address">%1$s, %2$s, %3$s</string>
     <string name="founded">%1$s, %2$d</string>
 
+    <string name="website_label">Website</string>
+    <string name="twitter_label">Twitter</string>
+    <string name="album_label">Album</string>
+
     <string name="create_event_label">Create Event</string>
     <string name="launch_details_icon_desc">Launch Details Icon</string>
     <string name="launch_details_label">Launch Details</string>
@@ -134,14 +144,14 @@
     <string name="menu_vehicles">Vehicles</string>
     <string name="first_flight_label">First Flight</string>
     <string name="capsule_specs_label">Capsule Specs</string>
-    <string name="rocket_specs_label">Rocket Specs</string>
+    <string name="vehicle_specs_label">Vehicle Specs</string>
     <string name="rocket_image_desc">Rocket Image</string>
     <string name="measurements">%1$s m / %2$s ft</string>
     <string name="mass_formatted">%1$s kg / %2$s lbs</string>
+    <string name="volume_formatted">%1$s m\u00B3 / %2$s ft\u00B3</string>
     <string name="ton_format">%1$s t</string>
     <string name="thrust">%1$s kN / %2$s lbf</string>
     <string name="seconds_format">%1$d s</string>
-    <string name="name_label">Name</string>
     <string name="active_label">Active</string>
     <string name="status_image_desc">Status Image</string>
     <string name="cost_per_launch_label">Cost Per Launch</string>
@@ -166,18 +176,49 @@
     <string name="oldest_first_label">Oldest first</string>
     <string name="filter_label">Filter</string>
     <string name="reload_label">Reload</string>
+    <string name="amount_label">Amount</string>
+    <string name="pods_label">Pods</string>
+    <string name="fuel_1_label">Fuel 1</string>
+    <string name="fuel_2_label">Fuel 2</string>
+    <string name="core_specs_label">Core Specs</string>
+    <string name="crew_capacity_label">Crew Capacity</string>
+    <string name="dry_mass_label">Dry Mass</string>
+    <string name="heat_shield_label">Heat Shield</string>
+    <string name="material_label">Material</string>
+    <string name="size_label">Size</string>
+    <string name="temperature_label">Temperature</string>
+    <string name="thrusters_label">Thrusters</string>
+    <string name="launch_mass_label">Launch Mass</string>
+    <string name="return_mass_label">Return Mass</string>
+    <string name="launch_volume_label">Launch Volume</string>
+    <string name="return_volume_label">Return Volume</string>
+    <string name="pressurized_volume_label">Pressurized Volume</string>
+    <string name="trunk_volume_label">Trunk Volume</string>
+    <string name="solar_array_label">Solar Array</string>
+    <string name="unpressurized_cargo_label">Unpressurized Cargo</string>
+    <string name="roles_label">Roles</string>
+    <string name="home_port_label">Home Port</string>
+    <string name="year_built_label">Year Built</string>
 
     <!-- Network -->
     <string name="network_connection">No network connection detected!</string>
     <string name="dismiss_label">Dismiss</string>
 
     <!-- Theme -->
-    <string name="dark_theme_label">Dark theme</string>
+    <string name="theme_label">Theme</string>
 
+    <string name="edit_label">Edit</string>
+    <string name="launch_site_label">Launch site:</string>
+    <string name="mass_to_orbit_label">Mass to Orbit</string>
+    <string name="menu_crew">Crew</string>
 
     <string-array name="order">
         <item>Hot</item>
         <item>New</item>
     </string-array>
+
+    <!-- Crew -->
+    <string name="agency_label">Agency</string>
+    <string name="more_icon_desc">More Icon</string>
 
 </resources>

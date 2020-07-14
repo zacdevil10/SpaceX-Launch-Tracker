@@ -10,19 +10,22 @@ import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_twitter_feed.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.databinding.FragmentTwitterFeedBinding
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.news.adapters.TwitterFeedAdapter
 import uk.co.zac_h.spacex.utils.PaginationScrollListener
 import uk.co.zac_h.spacex.utils.addAllExcludingPosition
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class TwitterFeedFragment : Fragment(), TwitterFeedView,
+class TwitterFeedFragment : Fragment(), TwitterFeedContract.TwitterFeedView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: TwitterFeedPresenter? = null
+    private var _binding: FragmentTwitterFeedBinding? = null
+    private val binding get() = _binding!!
+
+    private var presenter: TwitterFeedContract.TwitterFeedPresenter? = null
 
     private lateinit var twitterAdapter: TwitterFeedAdapter
     private lateinit var tweetsList: ArrayList<TimelineTweetModel>
@@ -42,20 +45,23 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_twitter_feed, container, false)
+    ): View? {
+        _binding = FragmentTwitterFeedBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = TwitterFeedPresenterImpl(
-            this,
-            TwitterFeedInteractorImpl()
-        )
+        hideProgress()
+        hidePagingProgress()
+
+        presenter = TwitterFeedPresenterImpl(this, TwitterFeedInteractorImpl())
 
         twitterAdapter = TwitterFeedAdapter(context, tweetsList, this)
         val layout = LinearLayoutManager(this@TwitterFeedFragment.context)
 
-        twitter_feed_recycler.apply {
+        binding.twitterFeedRecycler.apply {
             layoutManager = layout
             setHasFixedSize(true)
             adapter = twitterAdapter
@@ -82,12 +88,12 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
             })
         }
 
-        twitter_feed_swipe_refresh.setOnRefreshListener {
+        binding.twitterFeedSwipeRefresh.setOnRefreshListener {
             presenter?.getTweets()
         }
 
-        twitter_feed_scroll_up.setOnClickListener {
-            twitter_feed_recycler.smoothScrollToPosition(0)
+        binding.twitterFeedScrollUp.setOnClickListener {
+            binding.twitterFeedRecycler.smoothScrollToPosition(0)
         }
 
         if (tweetsList.isEmpty()) presenter?.getTweets()
@@ -111,6 +117,7 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequests()
+        _binding = null
     }
 
     override fun updateRecycler(tweets: List<TimelineTweetModel>) {
@@ -134,7 +141,7 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
     override fun showScrollUp() {
         isFabVisible = true
         val animation = AnimationUtils.loadAnimation(context, R.anim.slide_in_top)
-        twitter_feed_scroll_up.apply {
+        binding.twitterFeedScrollUp.apply {
             startAnimation(animation)
             visibility = View.VISIBLE
         }
@@ -144,30 +151,30 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
     override fun hideScrollUp() {
         isFabVisible = false
         val animation = AnimationUtils.loadAnimation(context, R.anim.slide_out_top)
-        twitter_feed_scroll_up.apply {
+        binding.twitterFeedScrollUp.apply {
             startAnimation(animation)
             visibility = View.INVISIBLE
         }
     }
 
     override fun showProgress() {
-        twitter_feed_progress_bar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun showPagingProgress() {
-        twitter_feed_paging_progress_bar.visibility = View.VISIBLE
+        binding.pagingProgressIndicator.show()
     }
 
     override fun hideProgress() {
-        twitter_feed_progress_bar.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun hidePagingProgress() {
-        twitter_feed_paging_progress_bar.visibility = View.GONE
+        binding.pagingProgressIndicator.hide()
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {
-        twitter_feed_swipe_refresh.isRefreshing = isRefreshing
+        binding.twitterFeedSwipeRefresh.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {
@@ -176,7 +183,9 @@ class TwitterFeedFragment : Fragment(), TwitterFeedView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (tweetsList.isEmpty() || twitter_feed_progress_bar.visibility == View.VISIBLE) presenter?.getTweets()
+            if (tweetsList.isEmpty() || binding.progressIndicator.isShown)
+                presenter?.getTweets()
+
             if (isLoading) presenter?.getTweets(tweetsList[tweetsList.size - 1].id)
         }
     }

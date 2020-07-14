@@ -2,24 +2,30 @@ package uk.co.zac_h.spacex.vehicles.cores
 
 import android.os.Bundle
 import android.view.*
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_core.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.model.spacex.CoreModel
+import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
+import uk.co.zac_h.spacex.model.spacex.CoreExtendedModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.vehicles.VehiclesContract
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
 
-class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
+class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
+    SearchView.OnQueryTextListener,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: CorePresenter? = null
+    private var _binding: FragmentCoreBinding? = null
+    private val binding get() = _binding!!
+
+    private var presenter: VehiclesContract.Presenter? = null
 
     private lateinit var coreAdapter: CoreAdapter
-    private lateinit var coresArray: ArrayList<CoreModel>
+    private lateinit var coresArray: ArrayList<CoreExtendedModel>
 
     private var sortNew = false
     private lateinit var searchView: SearchView
@@ -28,33 +34,38 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        coresArray = savedInstanceState?.getParcelableArrayList<CoreModel>("cores") ?: ArrayList()
+        coresArray = savedInstanceState?.getParcelableArrayList("cores") ?: ArrayList()
         sortNew = savedInstanceState?.getBoolean("sort") ?: false
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_core, container, false)
+    ): View? {
+        _binding = FragmentCoreBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        hideProgress()
 
         presenter = CorePresenterImpl(this, CoreInteractorImpl())
 
         coreAdapter = CoreAdapter(context, coresArray)
 
-        core_recycler.apply {
+        binding.coreRecycler.apply {
             layoutManager = LinearLayoutManager(this@CoreFragment.context)
             setHasFixedSize(true)
             adapter = coreAdapter
         }
 
-        core_swipe_refresh.setOnRefreshListener {
-            presenter?.getCores()
+        binding.coreSwipeRefresh.setOnRefreshListener {
+            presenter?.getVehicles()
         }
 
-        if (coresArray.isEmpty()) presenter?.getCores()
+        if (coresArray.isEmpty()) presenter?.getVehicles()
     }
 
     override fun onStart() {
@@ -76,6 +87,7 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
+        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -118,23 +130,26 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
         return false
     }
 
-    override fun updateCores(cores: List<CoreModel>) {
+    override fun updateVehicles(vehicles: List<CoreExtendedModel>) {
         coresArray.clear()
-        coresArray.addAll(cores)
+        coresArray.addAll(if (sortNew) vehicles.reversed() else vehicles)
 
+        binding.coreRecycler.layoutAnimation =
+            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
         coreAdapter.notifyDataSetChanged()
+        binding.coreRecycler.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        core_progress_bar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        core_progress_bar.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
-        core_swipe_refresh.isRefreshing = refreshing
+        binding.coreSwipeRefresh.isRefreshing = refreshing
     }
 
     override fun showError(error: String) {
@@ -143,7 +158,8 @@ class CoreFragment : Fragment(), CoreView, SearchView.OnQueryTextListener,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (coresArray.isEmpty() || core_progress_bar.visibility == View.VISIBLE) presenter?.getCores()
+            if (coresArray.isEmpty() || binding.progressIndicator.isShown)
+                presenter?.getVehicles()
         }
     }
 }

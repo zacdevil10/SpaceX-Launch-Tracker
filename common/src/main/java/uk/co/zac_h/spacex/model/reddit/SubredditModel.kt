@@ -6,20 +6,16 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class SubredditModel(
-    @field:Json(name = "kind") var kind: String,
     @field:Json(name = "data") var data: SubredditDataModel
 ) : Parcelable
 
 @Parcelize
 data class SubredditDataModel(
-    @field:Json(name = "modhash") var modhash: String,
-    @field:Json(name = "dist") var dist: Int,
     @field:Json(name = "children") var children: List<SubredditPostModel>
 ) : Parcelable
 
 @Parcelize
 data class SubredditPostModel(
-    @field:Json(name = "kind") var kind: String,
     @field:Json(name = "data") var data: RedditPostData
 ) : Parcelable
 

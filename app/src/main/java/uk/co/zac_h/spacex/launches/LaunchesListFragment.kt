@@ -2,23 +2,27 @@ package uk.co.zac_h.spacex.launches
 
 import android.os.Bundle
 import android.view.*
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_launches_list.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextListener,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
+    SearchView.OnQueryTextListener, OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: LaunchesPresenter? = null
+    private var _binding: FragmentLaunchesListBinding? = null
+    private val binding get() = _binding!!
+
+    private var presenter: LaunchesContract.LaunchesPresenter? = null
     private lateinit var launchesAdapter: LaunchesAdapter
-    private lateinit var launchesList: ArrayList<LaunchesModel>
+    private lateinit var launchesList: ArrayList<LaunchesExtendedModel>
 
     private lateinit var searchView: SearchView
 
@@ -37,7 +41,7 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
         setHasOptionsMenu(true)
 
         launchesList = savedInstanceState?.let {
-            it.getParcelableArrayList<LaunchesModel>("launches") as ArrayList<LaunchesModel>
+            it.getParcelableArrayList<LaunchesExtendedModel>("launches") as ArrayList<LaunchesExtendedModel>
         } ?: ArrayList()
     }
 
@@ -45,10 +49,15 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_launches_list, container, false)
+    ): View? {
+        _binding = FragmentLaunchesListBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        hideProgress()
 
         launchParam = arguments?.getString("launchParam")
 
@@ -56,14 +65,14 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
         launchesAdapter = LaunchesAdapter(context, launchesList)
 
-        launches_recycler.apply {
+        binding.launchesRecycler.apply {
             layoutManager = LinearLayoutManager(this@LaunchesListFragment.context)
             setHasFixedSize(true)
             adapter = launchesAdapter
         }
 
         launchParam?.let { launchId ->
-            launches_swipe_refresh.setOnRefreshListener {
+            binding.launchesSwipeRefresh.setOnRefreshListener {
                 presenter?.getLaunchList(launchId)
             }
 
@@ -78,12 +87,12 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
     override fun onResume() {
         super.onResume()
-        launches_swipe_refresh.isEnabled = true
+        binding.launchesSwipeRefresh.isEnabled = true
     }
 
     override fun onPause() {
         super.onPause()
-        launches_swipe_refresh.isEnabled = false
+        binding.launchesSwipeRefresh.isEnabled = false
     }
 
     override fun onStop() {
@@ -99,6 +108,7 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequests()
+        _binding = null
     }
 
     override fun onDestroy() {
@@ -126,25 +136,28 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
         return false
     }
 
-    override fun updateLaunchesList(launches: List<LaunchesModel>?) {
+    override fun updateLaunchesList(launches: List<LaunchesExtendedModel>?) {
         launches?.let {
             launchesList.clear()
             launchesList.addAll(it)
         }
 
+        binding.launchesRecycler.layoutAnimation =
+            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
         launchesAdapter.notifyDataSetChanged()
+        binding.launchesRecycler.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        launches_progress_bar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        launches_progress_bar.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {
-        launches_swipe_refresh?.isRefreshing = isRefreshing
+        binding.launchesSwipeRefresh.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {
@@ -153,7 +166,7 @@ class LaunchesListFragment : Fragment(), LaunchesView, SearchView.OnQueryTextLis
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (launchesList.isEmpty() || launches_progress_bar.visibility == View.VISIBLE)
+            if (launchesList.isEmpty() || binding.progressIndicator.isShown)
                 launchParam?.let { launchId ->
                     presenter?.getLaunchList(launchId)
                 }

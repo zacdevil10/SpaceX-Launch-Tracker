@@ -1,20 +1,21 @@
 package uk.co.zac_h.spacex.news.twitter
 
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
+import uk.co.zac_h.spacex.rest.TwitterInterface
 
 class TwitterFeedPresenterImpl(
-    private val view: TwitterFeedView,
-    private val interactor: TwitterFeedInteractor
-) : TwitterFeedPresenter, TwitterFeedInteractor.Callback {
+    private val view: TwitterFeedContract.TwitterFeedView,
+    private val interactor: TwitterFeedContract.TwitterFeedInteractor
+) : TwitterFeedContract.TwitterFeedPresenter, TwitterFeedContract.InteractorCallback {
 
-    override fun getTweets() {
+    override fun getTweets(api: TwitterInterface) {
         view.showProgress()
-        interactor.getTwitterTimeline(this)
+        interactor.getTwitterTimeline(listener = this, api = api)
     }
 
-    override fun getTweets(maxId: Long) {
+    override fun getTweets(maxId: Long, api: TwitterInterface) {
         view.showPagingProgress()
-        interactor.getTwitterTimelineFromId(maxId, this)
+        interactor.getTwitterTimeline(maxId, this, api)
     }
 
     override fun toggleScrollUp(visible: Boolean) {

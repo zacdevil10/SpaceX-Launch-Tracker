@@ -1,20 +1,20 @@
 package uk.co.zac_h.spacex.about.history
 
 import uk.co.zac_h.spacex.model.spacex.HistoryModel
+import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
+import uk.co.zac_h.spacex.utils.splitHistoryListByDate
 
 class HistoryPresenterImpl(
-    private val view: HistoryView,
-    private val interactor: HistoryInteractor
-) : HistoryPresenter, HistoryInteractor.Callback {
+    private val view: HistoryContract.HistoryView,
+    private val interactor: HistoryContract.HistoryInteractor
+) : HistoryContract.HistoryPresenter, HistoryContract.InteractorCallback {
 
     private val historyHeaders = ArrayList<HistoryHeaderModel>()
 
-    private var year: Int = 0
-
-    override fun getHistory() {
+    override fun getHistory(sortNew: Boolean, api: SpaceXInterface) {
         view.showProgress()
-        interactor.getAllHistoricEvents(this)
+        interactor.getAllHistoricEvents(if (sortNew) "desc" else "asc", api, this)
     }
 
     override fun cancelRequest() {
@@ -23,27 +23,7 @@ class HistoryPresenterImpl(
 
     override fun onSuccess(history: List<HistoryModel>?) {
         history?.let {
-            historyHeaders.clear()
-            it.forEach { model ->
-                val newYear = model.dateUtc.subSequence(0, 4).toString().toInt()
-                if (year != newYear) {
-                    historyHeaders.add(
-                        HistoryHeaderModel(
-                            newYear.toString(),
-                            null,
-                            true
-                        )
-                    )
-                    year = newYear
-                }
-                historyHeaders.add(
-                    HistoryHeaderModel(
-                        null,
-                        model,
-                        false
-                    )
-                )
-            }
+            historyHeaders.splitHistoryListByDate(it)
 
             view.apply {
                 hideProgress()
@@ -59,4 +39,6 @@ class HistoryPresenterImpl(
             toggleSwipeProgress(false)
         }
     }
+
+
 }

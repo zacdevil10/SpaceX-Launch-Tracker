@@ -11,7 +11,7 @@
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:background="@color/color_timeline"
-        app:layout_constraintBottom_toTopOf="@id/list_item_history_marker"
+        app:layout_constraintBottom_toBottomOf="@id/list_item_history_marker"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

@@ -9,7 +9,9 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.RocketsModel
 
@@ -19,7 +21,7 @@ class RocketsAdapter(private val rockets: List<RocketsModel>) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_rocket,
+                R.layout.list_item_vehicle,
                 parent,
                 false
             )
@@ -29,14 +31,14 @@ class RocketsAdapter(private val rockets: List<RocketsModel>) :
         val rocket = rockets[position]
 
         holder.apply {
-            when (rocket.rocketId) {
-                "falcon1" -> image.setImageResource(R.drawable.falcon1)
-                "falcon9" -> image.setImageResource(R.drawable.falcon9)
-                "falconheavy" -> image.setImageResource(R.drawable.falconheavy)
-                "starship" -> image.setImageResource(R.drawable.starship)
-            }
+            itemView.transitionName = rocket.id
 
-            title.text = rocket.rocketName
+            Glide.with(itemView)
+                .load(rocket.flickr?.random())
+                .error(R.drawable.ic_baseline_error_outline_24)
+                .into(image)
+
+            title.text = rocket.name
             details.text = rocket.description
 
             card.setOnClickListener { bind(rocket) }
@@ -47,16 +49,18 @@ class RocketsAdapter(private val rockets: List<RocketsModel>) :
     override fun getItemCount(): Int = rockets.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val card: CardView = itemView.findViewById(R.id.list_item_rocket_card)
-        val image: ImageView = itemView.findViewById(R.id.list_item_rocket_image)
-        val title: TextView = itemView.findViewById(R.id.list_item_rocket_title)
-        val details: TextView = itemView.findViewById(R.id.list_item_rocket_details)
-        val specs: Button = itemView.findViewById(R.id.list_item_rocket_specs_button)
+        val card: CardView = itemView.findViewById(R.id.list_item_vehicle_card)
+        val image: ImageView = itemView.findViewById(R.id.list_item_vehicle_image)
+        val title: TextView = itemView.findViewById(R.id.list_item_vehicle_title)
+        val details: TextView = itemView.findViewById(R.id.list_item_vehicle_details)
+        val specs: Button = itemView.findViewById(R.id.list_item_vehicle_specs_button)
 
         fun bind(rocket: RocketsModel) {
             itemView.findNavController().navigate(
                 R.id.action_vehicles_page_fragment_to_rocket_details_fragment,
-                bundleOf("rocket" to rocket, "title" to rocket.rocketName)
+                bundleOf("rocket" to rocket),
+                null,
+                FragmentNavigatorExtras(itemView to rocket.id)
             )
         }
     }

@@ -6,6 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class MissionsModel(
+    @field:Json(name = "flight_number") val flightNumber: Int?,
     @field:Json(name = "name") val name: String?,
-    @field:Json(name = "flight") val flightNumber: Int?
+    @field:Json(name = "id") val id: String
 ) : Parcelable

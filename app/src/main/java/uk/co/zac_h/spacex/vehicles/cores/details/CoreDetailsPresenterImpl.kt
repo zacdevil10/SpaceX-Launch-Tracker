@@ -1,41 +1,13 @@
 package uk.co.zac_h.spacex.vehicles.cores.details
 
-import uk.co.zac_h.spacex.model.spacex.CoreModel
+import uk.co.zac_h.spacex.model.spacex.CoreExtendedModel
 
 class CoreDetailsPresenterImpl(
-    private val view: CoreDetailsView,
-    private val interactor: CoreDetailsInteractor
-) : CoreDetailsPresenter,
-    CoreDetailsInteractor.InteractorCallback {
+    private val view: CoreDetailsContract.CoreDetailsView
+) : CoreDetailsContract.CoreDetailsPresenter {
 
-    private var coreDetails: CoreModel? = null
-
-    override fun getCoreDetails(serial: String) {
-        view.showProgress()
-        interactor.getCoreDetails(serial, this)
-    }
-
-    override fun addCoreModel(coreModel: CoreModel) {
-        coreDetails = coreModel
+    override fun addCoreModel(coreModel: CoreExtendedModel) {
         view.updateCoreDetails(coreModel)
     }
 
-    override fun cancelRequest() {
-        interactor.cancelAllRequests()
-    }
-
-    override fun onSuccess(coreModel: CoreModel?) {
-        coreModel?.let {
-            coreDetails = coreModel
-
-            view.apply {
-                hideProgress()
-                updateCoreDetails(coreModel)
-            }
-        }
-    }
-
-    override fun onError(error: String) {
-        view.showError(error)
-    }
 }

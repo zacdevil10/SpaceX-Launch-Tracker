@@ -9,15 +9,13 @@
     android:orientation="vertical"
     tools:context=".statistics.graphs.launchhistory.LaunchHistoryFragment">
 
-    <ProgressBar
-        android:id="@+id/launch_history_progress_bar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="0dp"
+    <com.google.android.material.progressindicator.ProgressIndicator
+        android:id="@+id/progress_indicator"
+        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:elevation="4dp"
+        app:indicatorColor="?colorSecondary"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -78,6 +76,8 @@
         android:id="@+id/launch_history_pie_chart"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="64dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/launch_history_progress_card"
         app:layout_constraintStart_toStartOf="parent"
@@ -87,7 +87,8 @@
         android:id="@+id/launch_history_progress_card"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:cardElevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/launch_history_pie_chart"

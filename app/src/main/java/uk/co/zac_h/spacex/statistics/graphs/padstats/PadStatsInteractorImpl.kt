@@ -1,77 +1,55 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
-import android.util.Log
-import kotlinx.coroutines.*
-import retrofit2.HttpException
+import retrofit2.Call
+import uk.co.zac_h.spacex.model.spacex.LandingPadDocsModel
+import uk.co.zac_h.spacex.model.spacex.LaunchpadDocsModel
+import uk.co.zac_h.spacex.model.spacex.QueryModel
+import uk.co.zac_h.spacex.model.spacex.QueryOptionsModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
-import java.net.UnknownHostException
-import kotlin.coroutines.CoroutineContext
+import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class PadStatsInteractorImpl : PadStatsInteractor {
+class PadStatsInteractorImpl : BaseNetwork(), PadStatsContract.PadStatsInteractor {
 
-    private val parentJob = Job()
-    private val coroutineContext: CoroutineContext
-        get() = parentJob + Dispatchers.Default
+    private var launchCall: Call<LaunchpadDocsModel>? = null
+    private var landingCall: Call<LandingPadDocsModel>? = null
 
-    private val scope = CoroutineScope(coroutineContext)
+    override fun getPads(api: SpaceXInterface, listener: PadStatsContract.InteractorCallback) {
+        val launchQuery = QueryModel(
+            "",
+            QueryOptionsModel(
+                false,
+                "",
+                "",
+                listOf("full_name", "launch_attempts", "launch_successes", "status"),
+                100000
+            )
+        )
 
-    override fun getLaunchpads(listener: PadStatsInteractor.InteractorCallback) {
-        scope.launch {
-            val response = async(SupervisorJob(parentJob)) {
-                SpaceXInterface.create().getLaunchpads()
+        val landQuery = QueryModel(
+            "",
+            QueryOptionsModel(
+                false,
+                "",
+                "",
+                listOf("full_name", "landing_attempts", "landing_successes", "status", "type"),
+                100000
+            )
+        )
+
+        launchCall = api.getQueriedLaunchpads(launchQuery).apply {
+            makeCall {
+                onResponseSuccess = { listener.onGetLaunchpads(it.body()) }
+                onResponseFailure = { listener.onError(it) }
             }
+        }
 
-            withContext(Dispatchers.Main) {
-                try {
-                    if (response.await().isSuccessful) {
-                        listener.onGetLaunchpads(response.await().body())
-                    } else {
-                        listener.onError("Error: ${response.await().code()}")
-                    }
-                } catch (e: HttpException) {
-                    listener.onError(
-                        e.localizedMessage ?: "There was a network error! Please try refreshing."
-                    )
-                } catch (e: UnknownHostException) {
-                    listener.onError("Unable to resolve host! Check your network connection and try again.")
-                } catch (e: Throwable) {
-                    Log.e(
-                        this@PadStatsInteractorImpl.javaClass.name,
-                        e.localizedMessage ?: "Job failed to execute"
-                    )
-                }
+        landingCall = api.getQueriedLandingPads(landQuery).apply {
+            makeCall {
+                onResponseSuccess = { listener.onGetLandingPads(it.body()) }
+                onResponseFailure = { listener.onError(it) }
             }
         }
     }
 
-    override fun getLandingPads(listener: PadStatsInteractor.InteractorCallback) {
-        scope.launch {
-            val response = async(SupervisorJob(parentJob)) {
-                SpaceXInterface.create().getLandingPads()
-            }
-
-            withContext(Dispatchers.Main) {
-                try {
-                    if (response.await().isSuccessful) {
-                        listener.onGetLandingPads(response.await().body())
-                    } else {
-                        listener.onError("Error: ${response.await().code()}")
-                    }
-                } catch (e: HttpException) {
-                    listener.onError(
-                        e.localizedMessage ?: "There was a network error! Please try refreshing."
-                    )
-                } catch (e: UnknownHostException) {
-                    listener.onError("Unable to resolve host! Check your network connection and try again.")
-                } catch (e: Throwable) {
-                    Log.e(
-                        this@PadStatsInteractorImpl.javaClass.name,
-                        e.localizedMessage ?: "Job failed to execute"
-                    )
-                }
-            }
-        }
-    }
-
-    override fun cancelAllRequests() = coroutineContext.cancel()
+    override fun cancelAllRequests() = terminateAll()
 }

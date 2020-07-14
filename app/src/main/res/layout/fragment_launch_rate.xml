@@ -8,22 +8,20 @@
     android:animateLayoutChanges="true"
     tools:context=".statistics.graphs.launchrate.LaunchRateFragment">
 
-    <ProgressBar
-        android:id="@+id/launch_rate_progress_bar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="0dp"
+    <com.google.android.material.progressindicator.ProgressIndicator
+        android:id="@+id/progress_indicator"
+        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:elevation="4dp"
+        app:indicatorColor="?colorSecondary"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/launch_rate_bar_chart"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="64dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +32,7 @@
         android:layout_width="156dp"
         android:layout_height="wrap_content"
         android:layout_margin="32dp"
-        android:background="@color/color_rate_key"
+        android:background="?colorPrimary"
         android:padding="8dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"

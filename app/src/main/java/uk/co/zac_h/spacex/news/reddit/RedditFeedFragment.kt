@@ -10,19 +10,22 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_reddit_feed.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.databinding.FragmentRedditFeedBinding
 import uk.co.zac_h.spacex.model.reddit.SubredditModel
 import uk.co.zac_h.spacex.model.reddit.SubredditPostModel
 import uk.co.zac_h.spacex.news.adapters.RedditAdapter
 import uk.co.zac_h.spacex.utils.PaginationScrollListener
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class RedditFeedFragment : Fragment(), RedditFeedView,
+class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: RedditFeedPresenter? = null
+    private var _binding: FragmentRedditFeedBinding? = null
+    private val binding get() = _binding!!
+
+    private var presenter: RedditFeedContract.RedditFeedPresenter? = null
 
     private lateinit var redditAdapter: RedditAdapter
     private lateinit var posts: ArrayList<SubredditPostModel>
@@ -48,10 +51,16 @@ class RedditFeedFragment : Fragment(), RedditFeedView,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_reddit_feed, container, false)
+    ): View? {
+        _binding = FragmentRedditFeedBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        hideProgress()
+        hidePagingProgress()
 
         presenter = RedditFeedPresenterImpl(this, RedditFeedInteractorImpl())
 
@@ -59,7 +68,7 @@ class RedditFeedFragment : Fragment(), RedditFeedView,
 
         val layout = LinearLayoutManager(this@RedditFeedFragment.context)
 
-        reddit_recycler.apply {
+        binding.redditRecycler.apply {
             layoutManager = layout
             setHasFixedSize(true)
             adapter = redditAdapter
@@ -86,7 +95,7 @@ class RedditFeedFragment : Fragment(), RedditFeedView,
             })
         }
 
-        reddit_swipe_refresh.setOnRefreshListener {
+        binding.redditSwipeRefresh.setOnRefreshListener {
             presenter?.getSub(order)
         }
     }
@@ -112,6 +121,7 @@ class RedditFeedFragment : Fragment(), RedditFeedView,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
+        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -161,7 +171,7 @@ class RedditFeedFragment : Fragment(), RedditFeedView,
         posts.addAll(subredditData.data.children)
 
         redditAdapter.notifyDataSetChanged()
-        reddit_recycler.scrollToPosition(0)
+        binding.redditRecycler.scrollToPosition(0)
     }
 
     override fun addPagedData(subredditData: SubredditModel) {
@@ -176,23 +186,23 @@ class RedditFeedFragment : Fragment(), RedditFeedView,
     }
 
     override fun showProgress() {
-        reddit_progress_bar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        reddit_progress_bar.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
-        reddit_swipe_refresh.isRefreshing = refreshing
+        binding.redditSwipeRefresh.isRefreshing = refreshing
     }
 
     override fun showPagingProgress() {
-        reddit_feed_paging_progress_bar.visibility = View.VISIBLE
+        binding.pagingProgressIndicator.show()
     }
 
     override fun hidePagingProgress() {
-        reddit_feed_paging_progress_bar.visibility = View.GONE
+        binding.pagingProgressIndicator.hide()
     }
 
     override fun showError(error: String) {
@@ -201,9 +211,9 @@ class RedditFeedFragment : Fragment(), RedditFeedView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (posts.isEmpty() || reddit_progress_bar.visibility == View.VISIBLE) presenter?.getSub(
-                order
-            )
+            if (posts.isEmpty() || binding.progressIndicator.isShown)
+                presenter?.getSub(order)
+            
             if (isLoading) presenter?.getNextPage(posts[posts.size - 1].data.name, order)
         }
     }

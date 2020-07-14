@@ -1,91 +1,37 @@
 package uk.co.zac_h.spacex.news.twitter
 
-import android.util.Log
-import kotlinx.coroutines.*
-import retrofit2.HttpException
+import retrofit2.Call
+import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.rest.TwitterInterface
-import java.net.UnknownHostException
-import kotlin.coroutines.CoroutineContext
+import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class TwitterFeedInteractorImpl :
-    TwitterFeedInteractor {
+class TwitterFeedInteractorImpl : BaseNetwork(), TwitterFeedContract.TwitterFeedInteractor {
 
-    private val parentJob = Job()
-    private val coroutineContext: CoroutineContext
-        get() = parentJob + Dispatchers.Default
+    private var call: Call<List<TimelineTweetModel>>? = null
 
-    private val scope = CoroutineScope(coroutineContext)
-
-    override fun getTwitterTimeline(listener: TwitterFeedInteractor.Callback) {
-        scope.launch {
-            val response = async(SupervisorJob(parentJob)) {
-                TwitterInterface.create().getTweets(
-                    screenName = "SpaceX",
-                    rts = false,
-                    trim = false,
-                    mode = "extended",
-                    count = 15
-                )
-            }
-
-            withContext(Dispatchers.Main) {
-                try {
-                    if (response.await().isSuccessful) {
-                        listener.onSuccess(response.await().body())
-                    } else {
-                        listener.onError(response.await().message())
-                    }
-                } catch (e: HttpException) {
-                    listener.onError(
-                        e.localizedMessage ?: "There was a network error! Please try refreshing."
-                    )
-                } catch (e: UnknownHostException) {
-                    listener.onError("Unable to resolve host! Check your network connection and try again.")
-                } catch (e: Throwable) {
-                    Log.e(
-                        this@TwitterFeedInteractorImpl.javaClass.name,
-                        e.localizedMessage ?: "Job failed to execute"
-                    )
+    override fun getTwitterTimeline(
+        id: Long?,
+        listener: TwitterFeedContract.InteractorCallback,
+        api: TwitterInterface
+    ) {
+        call = api.getTweets(
+            screenName = "SpaceX",
+            rts = false,
+            trim = false,
+            mode = "extended",
+            count = 15,
+            maxId = id
+        ).apply {
+            makeCall {
+                onResponseSuccess = {
+                    id?.let { _ ->
+                        listener.onPagedSuccess(it.body())
+                    } ?: listener.onSuccess(it.body())
                 }
+                onResponseFailure = { listener.onError(it) }
             }
         }
     }
 
-    override fun getTwitterTimelineFromId(id: Long, listener: TwitterFeedInteractor.Callback) {
-        scope.launch {
-            val response = async(SupervisorJob(parentJob)) {
-                TwitterInterface.create().getTweetsFromId(
-                    screenName = "SpaceX",
-                    rts = false,
-                    trim = false,
-                    mode = "extended",
-                    count = 15,
-                    maxId = id
-                )
-            }
-
-            withContext(Dispatchers.Main) {
-                try {
-                    if (response.await().isSuccessful) {
-                        listener.onPagedSuccess(response.await().body())
-                    } else {
-                        listener.onError(response.await().message())
-                    }
-                } catch (e: HttpException) {
-                    listener.onError(
-                        e.localizedMessage ?: "There was a network error! Please try refreshing."
-                    )
-                } catch (e: UnknownHostException) {
-                    listener.onError("Unable to resolve host! Check your network connection and try again.")
-                } catch (e: Throwable) {
-                    Log.e(
-                        this@TwitterFeedInteractorImpl.javaClass.name,
-                        e.localizedMessage ?: "Job failed to execute"
-                    )
-                }
-            }
-        }
-    }
-
-    override fun cancelAllRequests() = coroutineContext.cancel()
+    override fun cancelAllRequests() = terminateAll()
 }

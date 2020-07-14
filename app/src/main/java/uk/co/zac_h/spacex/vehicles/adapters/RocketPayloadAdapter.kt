@@ -28,11 +28,11 @@ class RocketPayloadAdapter(
         val payload = payloads[position]
 
         holder.apply {
-            orbit.text = payload.name
+            orbitType.text = payload.name
             mass.text = context?.getString(
                 R.string.mass,
-                payload.kg.metricFormat(),
-                payload.lb.metricFormat()
+                payload.kg?.metricFormat(),
+                payload.lb?.metricFormat()
             )
         }
     }
@@ -40,7 +40,8 @@ class RocketPayloadAdapter(
     override fun getItemCount(): Int = payloads.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val orbit: TextView = itemView.findViewById(R.id.list_item_rocket_payload_orbit_text)
+        val orbitType: TextView =
+            itemView.findViewById(R.id.list_item_rocket_payload_orbit_type_text)
         val mass: TextView = itemView.findViewById(R.id.list_item_rocket_payload_mass_text)
     }
 }

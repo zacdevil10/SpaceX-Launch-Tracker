@@ -4,20 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_rocket.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.databinding.FragmentRocketBinding
 import uk.co.zac_h.spacex.model.spacex.RocketsModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.vehicles.VehiclesContract
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 
-class RocketFragment : Fragment(), RocketView,
+class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var presenter: RocketPresenter? = null
+    private var _binding: FragmentRocketBinding? = null
+    private val binding get() = _binding!!
+
+    private var presenter: VehiclesContract.Presenter? = null
 
     private lateinit var rocketsAdapter: RocketsAdapter
     private lateinit var rocketsArray: ArrayList<RocketsModel>
@@ -25,33 +30,37 @@ class RocketFragment : Fragment(), RocketView,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        rocketsArray =
-            savedInstanceState?.getParcelableArrayList<RocketsModel>("rockets") ?: ArrayList()
+        rocketsArray = savedInstanceState?.getParcelableArrayList("rockets") ?: ArrayList()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_rocket, container, false)
+    ): View? {
+        _binding = FragmentRocketBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        hideProgress()
 
         presenter = RocketPresenterImpl(this, RocketInteractorImpl())
 
         rocketsAdapter = RocketsAdapter(rocketsArray)
 
-        rocket_recycler.apply {
+        binding.rocketRecycler.apply {
             layoutManager = LinearLayoutManager(this@RocketFragment.context)
             setHasFixedSize(true)
             adapter = rocketsAdapter
         }
 
-        rocket_swipe_refresh.setOnRefreshListener {
-            presenter?.getRockets()
+        binding.rocketSwipeRefresh.setOnRefreshListener {
+            presenter?.getVehicles()
         }
 
-        if (rocketsArray.isEmpty()) presenter?.getRockets()
+        if (rocketsArray.isEmpty()) presenter?.getVehicles()
     }
 
     override fun onStart() {
@@ -72,25 +81,29 @@ class RocketFragment : Fragment(), RocketView,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
+        _binding = null
     }
 
-    override fun updateRockets(rockets: List<RocketsModel>) {
+    override fun updateVehicles(vehicles: List<RocketsModel>) {
         rocketsArray.clear()
-        rocketsArray.addAll(rockets)
+        rocketsArray.addAll(vehicles)
 
+        binding.rocketRecycler.layoutAnimation =
+            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
         rocketsAdapter.notifyDataSetChanged()
+        binding.rocketRecycler.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        rocket_progress_bar.visibility = View.VISIBLE
+        binding.progressIndicator.show()
     }
 
     override fun hideProgress() {
-        rocket_progress_bar.visibility = View.GONE
+        binding.progressIndicator.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
-        rocket_swipe_refresh.isRefreshing = refreshing
+        binding.rocketSwipeRefresh.isRefreshing = refreshing
     }
 
     override fun showError(error: String) {
@@ -99,7 +112,8 @@ class RocketFragment : Fragment(), RocketView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (rocketsArray.isEmpty() || rocket_progress_bar.visibility == View.VISIBLE) presenter?.getRockets()
+            if (rocketsArray.isEmpty() || binding.progressIndicator.isShown)
+                presenter?.getVehicles()
         }
     }
 }

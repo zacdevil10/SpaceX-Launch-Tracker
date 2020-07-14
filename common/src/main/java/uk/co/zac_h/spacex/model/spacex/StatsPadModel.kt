@@ -5,10 +5,10 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class StatsPadModel(
-    val name: String,
+    val name: String?,
     val attempts: Int,
     val successes: Int,
-    val status: String,
-    val type: String = "RTLS",
+    val status: String?,
+    val type: String? = "RTLS",
     val isHeading: Boolean = false
 ) : Parcelable

@@ -6,15 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".vehicles.cores.CoreFragment">
 
-    <ProgressBar
-        android:id="@+id/core_progress_bar"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="0dp"
+    <com.google.android.material.progressindicator.ProgressIndicator
+        android:id="@+id/progress_indicator"
+        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:elevation="4dp"
+        app:indicatorColor="?colorSecondary"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -28,6 +26,7 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:paddingTop="8dp"
+            android:paddingBottom="32dp"
             tools:listitem="@layout/list_item_core" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

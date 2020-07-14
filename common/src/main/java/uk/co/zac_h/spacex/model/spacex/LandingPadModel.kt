@@ -1,15 +1,30 @@
 package uk.co.zac_h.spacex.model.spacex
 
+import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.android.parcel.Parcelize
 
+// v4
+
+@Parcelize
+data class LandingPadDocsModel(
+    @field:Json(name = "docs") val docs: List<LandingPadModel>
+) : Parcelable
+
+@Parcelize
 data class LandingPadModel(
-    @field:Json(name = "id") var id: String,
-    @field:Json(name = "full_name") var nameFull: String,
-    @field:Json(name = "status") var status: String,
-    @field:Json(name = "location") var location: SiteLocationModel,
-    @field:Json(name = "landing_type") var type: String,
-    @field:Json(name = "attempted_landings") var landingAttempts: Int,
-    @field:Json(name = "successful_landings") var landingSuccesses: Int,
-    @field:Json(name = "wikipedia") var wiki: String,
-    @field:Json(name = "details") var details: String
-)
+    @field:Json(name = "name") val name: String?,
+    @field:Json(name = "full_name") val fullName: String?,
+    @field:Json(name = "status") val status: String?,
+    @field:Json(name = "type") val type: String?,
+    @field:Json(name = "locality") val locality: String?,
+    @field:Json(name = "region") val region: String?,
+    @field:Json(name = "latitude") val lat: Float?,
+    @field:Json(name = "longitude") val lng: Float?,
+    @field:Json(name = "landing_attempts") val landingAttempts: Int?,
+    @field:Json(name = "landing_successes") val landingSuccesses: Int?,
+    @field:Json(name = "wikipedia") val wiki: String?,
+    @field:Json(name = "details") val details: String?,
+    @field:Json(name = "launches") val launches: List<String>?,
+    @field:Json(name = "id") val id: String
+) : Parcelable

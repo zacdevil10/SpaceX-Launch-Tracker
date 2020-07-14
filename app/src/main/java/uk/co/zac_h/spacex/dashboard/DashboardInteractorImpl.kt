@@ -1,54 +1,85 @@
 package uk.co.zac_h.spacex.dashboard
 
-import android.util.Log
-import kotlinx.coroutines.*
-import retrofit2.HttpException
+import retrofit2.Call
+import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
-import java.net.UnknownHostException
-import kotlin.coroutines.CoroutineContext
+import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class DashboardInteractorImpl : DashboardInteractor {
+class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardInteractor {
 
-    private val parentJob = Job()
-    private val coroutineContext: CoroutineContext
-        get() = parentJob + Dispatchers.Default
+    private var call: Call<LaunchesExtendedDocsModel>? = null
 
-    private val scope = CoroutineScope(coroutineContext)
-
-    private val active = ArrayList<String>()
-
-    override fun getSingleLaunch(id: String, listener: DashboardInteractor.InteractorCallback) {
-        active.add(id)
-        scope.launch {
-            val response = async(SupervisorJob(parentJob)) {
-                SpaceXInterface.create().getSingleLaunch(id)
-            }
-
-            withContext(Dispatchers.Main) {
-                active.remove(id)
-                try {
-                    if (response.await().isSuccessful) {
-                        listener.onSuccess(id, response.await().body())
-                    } else {
-                        listener.onError("Error: ${response.await().code()}")
-                    }
-                } catch (e: HttpException) {
-                    listener.onError(
-                        e.localizedMessage ?: "There was a network error! Please try refreshing."
+    override fun getSingleLaunch(
+        id: String,
+        api: SpaceXInterface,
+        listener: DashboardContract.InteractorCallback
+    ) {
+        val query = QueryModel(
+            query = when (id) {
+                "next", "latest" -> QueryUpcomingLaunchesModel(id == "next")
+                else -> QueryLaunchesQueryModel(id)
+            },
+            options = QueryOptionsModel(
+                pagination = true,
+                populate = listOf(
+                    QueryPopulateModel(path = "rocket", populate = "", select = listOf("name")),
+                    QueryPopulateModel("launchpad", select = listOf("name"), populate = ""),
+                    QueryPopulateModel("crew", populate = "", select = listOf("id")),
+                    QueryPopulateModel("ships", populate = "", select = listOf("id")),
+                    QueryPopulateModel(
+                        path = "cores",
+                        populate = listOf(
+                            QueryPopulateModel(
+                                path = "landpad",
+                                populate = "",
+                                select = listOf("name")
+                            ),
+                            QueryPopulateModel(
+                                path = "core",
+                                populate = "",
+                                select = listOf("reuse_count")
+                            )
+                        ),
+                        select = ""
                     )
-                } catch (e: UnknownHostException) {
-                    listener.onError("Unable to resolve host! Check your network connection and try again.")
-                } catch (e: Throwable) {
-                    Log.e(
-                        this@DashboardInteractorImpl.javaClass.name,
-                        e.localizedMessage ?: "Job failed to execute"
-                    )
+                ),
+                sort = when (id) {
+                    "next" -> QueryLaunchesSortModel("asc")
+                    "latest" -> QueryLaunchesSortModel("desc")
+                    else -> ""
+                },
+                select = listOf(
+                    "flight_number",
+                    "name",
+                    "date_unix",
+                    "tbd",
+                    "links.patch.small",
+                    "rocket",
+                    "cores.core",
+                    "cores.reused",
+                    "cores.landpad",
+                    "crew",
+                    "ships",
+                    "links",
+                    "static_fire_date_unix",
+                    "details",
+                    "launchpad"
+                ),
+                limit = 1
+            )
+        )
+
+        call = api.getQueriedLaunches(query).apply {
+            makeCall {
+                onResponseSuccess = {
+                    listener.onSuccess(id, it.body()?.docs?.get(0))
+                }
+                onResponseFailure = {
+                    listener.onError(it)
                 }
             }
         }
     }
 
-    override fun hasActiveRequest(): Boolean = active.isNotEmpty()
-
-    override fun cancelAllRequests() = coroutineContext.cancel()
+    override fun cancelAllRequests() = terminateAll()
 }

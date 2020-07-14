@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/unpin"
+        android:icon="@drawable/ic_pin"
+        android:title="@string/pin"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/create_event"
+        android:icon="@drawable/ic_calendar_plus"
+        android:title="@string/create_event_label"
+        app:showAsAction="ifRoom" />
+
+</menu>

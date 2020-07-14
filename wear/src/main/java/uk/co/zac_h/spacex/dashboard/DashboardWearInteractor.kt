@@ -6,7 +6,7 @@ interface DashboardWearInteractor {
 
     fun getSingleLaunch(id: String, listener: Callback)
 
-    fun cancelAllRequests()
+    fun cancelAllRequests(): Unit?
 
     interface Callback {
         fun onNextSuccess(launch: LaunchesModel?)
