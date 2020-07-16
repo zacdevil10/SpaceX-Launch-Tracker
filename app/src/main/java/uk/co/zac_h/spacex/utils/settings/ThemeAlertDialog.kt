@@ -16,8 +16,8 @@ class ThemeAlertDialog : BottomSheetDialogFragment() {
     private var _binding: DialogThemeAlertBinding? = null
     private val binding get() = _binding!!
 
-    private val itemsP = arrayOf("Always", "Battery Saver only", "Never")
-    private val itemsQ = arrayOf("Always", "System theme", "Never")
+    private val itemsP = arrayOf("Dark theme", "Battery saver only", "Light theme")
+    private val itemsQ = arrayOf("Dark theme", "System theme", "Light theme")
 
     override fun onCreateView(
         inflater: LayoutInflater,
