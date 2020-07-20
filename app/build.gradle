@@ -88,10 +88,10 @@ dependencies {
     implementation 'com.github.zacdevil10:MediaRecyclerView:v0.1.9-beta'
 
     //Firebase
-    implementation 'com.google.firebase:firebase-analytics:17.4.3'
-    implementation 'com.google.firebase:firebase-crashlytics:17.1.0'
-    implementation 'com.google.firebase:firebase-core:17.4.3'
-    implementation 'com.google.firebase:firebase-messaging:20.2.1'
+    implementation 'com.google.firebase:firebase-analytics:17.4.4'
+    implementation 'com.google.firebase:firebase-crashlytics:17.1.1'
+    implementation 'com.google.firebase:firebase-core:17.4.4'
+    implementation 'com.google.firebase:firebase-messaging:20.2.3'
 
     //LeakCanary
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0'
@@ -100,7 +100,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.13'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
-    testImplementation 'com.squareup.okhttp3:mockwebserver:4.7.2'
+    testImplementation 'com.squareup.okhttp3:mockwebserver:4.8.0'
     testImplementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
     testImplementation 'com.squareup.retrofit2:retrofit-mock:2.9.0'
     androidTestImplementation 'androidx.test:runner:1.2.0'
