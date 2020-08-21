@@ -12,7 +12,7 @@ data class CrewDocsModel(
 @Parcelize
 data class CrewModel(
     @field:Json(name = "name") val name: String?,
-    @field:Json(name = "status") val status: String,
+    @field:Json(name = "status") val status: String?,
     @field:Json(name = "agency") val agency: String?,
     @field:Json(name = "image") val image: String?,
     @field:Json(name = "wikipedia") val wikipedia: String?,
