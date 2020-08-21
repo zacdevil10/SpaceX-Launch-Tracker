@@ -294,7 +294,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     }
 
     override fun showError(error: String) {
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
