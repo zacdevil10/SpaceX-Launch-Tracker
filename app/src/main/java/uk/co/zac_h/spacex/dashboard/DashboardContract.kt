@@ -13,9 +13,9 @@ interface DashboardContract {
         fun setCountdown(time: Long)
         fun showPinnedMessage()
         fun hidePinnedMessage()
-        fun toggleNextProgress(isShown: Boolean)
-        fun toggleLatestProgress(isShown: Boolean)
-        fun togglePinnedProgress(isShown: Boolean)
+        fun toggleNextProgress(isShown: Boolean): Unit?
+        fun toggleLatestProgress(isShown: Boolean): Unit?
+        fun togglePinnedProgress(isShown: Boolean): Unit?
         fun showCountdown()
         fun hideCountdown()
         fun showNextLaunch()
