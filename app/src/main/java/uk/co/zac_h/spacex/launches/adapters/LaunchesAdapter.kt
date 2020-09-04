@@ -77,7 +77,7 @@ class LaunchesAdapter(
             flightNumber.text = context?.getString(R.string.flight_number, launch.flightNumber)
             vehicle.text = launch.rocket?.name
             missionName.text = launch.missionName
-            date.text = launch.tbd?.let { launch.launchDateUnix?.formatDateMillisLong(it) }
+            date.text = launch.launchDateUnix?.formatDateMillisLong(launch.datePrecision)
 
             itemView.setOnClickListener {
                 itemView.findNavController()

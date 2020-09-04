@@ -184,8 +184,8 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
                 launchDetailsSiteNameText.text = launch.launchpad?.name
 
-                launchDetailsDateText.text = launch.tbd?.let { tbd ->
-                    launch.launchDateUnix?.formatDateMillisLong(tbd)
+                launchDetailsDateText.text = launch.datePrecision?.let { datePrecision ->
+                    launch.launchDateUnix?.formatDateMillisLong(datePrecision)
                 }
 
                 launch.staticFireDateUnix?.let { date ->
@@ -294,7 +294,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     }
 
     override fun showError(error: String) {
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
