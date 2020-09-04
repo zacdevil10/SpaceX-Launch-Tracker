@@ -7,9 +7,9 @@ private const val SECOND_MILLIS = 1000
 private const val MINUTE_MILLIS = 60 * SECOND_MILLIS
 private const val HOUR_MILLIS = 60 * MINUTE_MILLIS
 
-fun Long.formatDateMillisLong(tbd: Boolean = false): String =
+fun Long.formatDateMillisLong(precision: String? = ""): String =
     SimpleDateFormat(
-        if (!tbd) "dd MMM yyyy - HH:mm zzz" else "MMM yyyy - HH:mm zzz",
+        getFormatFromPrecision(precision),
         Locale.ENGLISH
     ).apply {
         timeZone = TimeZone.getDefault()
@@ -17,11 +17,20 @@ fun Long.formatDateMillisLong(tbd: Boolean = false): String =
 
 fun Long.formatDateMillisShort(tbd: Boolean = false): String =
     SimpleDateFormat(
-        if (!tbd) "dd MMM yy - HH:mm" else "MMM yy - HH:mm",
+        if (!tbd) "dd MMM yy - HH:mm" else "MMM yy",
         Locale.ENGLISH
     ).apply {
         timeZone = TimeZone.getDefault()
     }.format(Date(this.times(1000L)))
+
+fun getFormatFromPrecision(precision: String? = ""): String =
+    when (precision) {
+        "year" -> "yyyy"
+        "month" -> "MMM yyyy"
+        "day" -> "dd MMM yyyy"
+        "hour" -> "dd MMM yy - HH:mm zzz"
+        else -> "dd MMM yy - HH:mm zzz"
+    }
 
 fun Long.formatDateMillisDDMMM(): String =
     SimpleDateFormat(

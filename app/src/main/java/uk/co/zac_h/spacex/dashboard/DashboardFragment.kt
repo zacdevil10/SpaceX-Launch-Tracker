@@ -232,7 +232,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         binding?.dashboardNextLayout?.dashboardNextMissionNameText?.text = nextLaunch.missionName
         binding?.dashboardNextLayout?.dashboardNextDateText?.text =
-            nextLaunch.tbd?.let { nextLaunch.launchDateUnix?.formatDateMillisLong(it) }
+            nextLaunch.datePrecision?.let { nextLaunch.launchDateUnix?.formatDateMillisLong(it) }
 
         binding?.dashboardNextLayout?.dashboardNextLayout?.let { card ->
             card.setOnClickListener {
@@ -277,7 +277,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
             latestLaunch.missionName
 
         binding?.dashboardLatestLayout?.dashboardLatestDateText?.text =
-            latestLaunch.tbd?.let { latestLaunch.launchDateUnix?.formatDateMillisLong(it) }
+            latestLaunch.launchDateUnix?.formatDateMillisLong(latestLaunch.datePrecision)
 
         binding?.dashboardLatestLayout?.dashboardLatestLayout?.let { card ->
             card.setOnClickListener {

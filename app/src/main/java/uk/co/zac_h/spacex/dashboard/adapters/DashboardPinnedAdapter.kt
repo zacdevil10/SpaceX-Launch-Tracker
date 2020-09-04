@@ -69,7 +69,7 @@ class DashboardPinnedAdapter(
                 flightNumber.text = context?.getString(R.string.flight_number, it.flightNumber)
                 vehicle.text = it.rocket?.name
                 missionName.text = it.missionName
-                date.text = it.tbd?.let { it1 -> it.launchDateUnix?.formatDateMillisLong(it1) }
+                date.text = it.launchDateUnix?.formatDateMillisLong(it.datePrecision)
 
                 itemView.setOnClickListener { _ ->
                     itemView.findNavController().navigate(
@@ -87,7 +87,7 @@ class DashboardPinnedAdapter(
 
     override fun getItemCount(): Int = launches.size
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val missionPatch: ImageView = itemView.findViewById(R.id.launches_mission_patch_image)
         val flightNumber: TextView = itemView.findViewById(R.id.launches_flight_no_text)
         val vehicle: TextView = itemView.findViewById(R.id.launches_vehicle_text)

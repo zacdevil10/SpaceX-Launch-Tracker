@@ -63,7 +63,8 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardIntera
                     "links",
                     "static_fire_date_unix",
                     "details",
-                    "launchpad"
+                    "launchpad",
+                    "date_precision"
                 ),
                 limit = 1
             )
