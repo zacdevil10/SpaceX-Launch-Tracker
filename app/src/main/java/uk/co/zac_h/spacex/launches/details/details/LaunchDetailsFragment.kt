@@ -184,8 +184,8 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
                 launchDetailsSiteNameText.text = launch.launchpad?.name
 
-                launchDetailsDateText.text = launch.tbd?.let { tbd ->
-                    launch.launchDateUnix?.formatDateMillisLong(tbd)
+                launchDetailsDateText.text = launch.datePrecision?.let { datePrecision ->
+                    launch.launchDateUnix?.formatDateMillisLong(datePrecision)
                 }
 
                 launch.staticFireDateUnix?.let { date ->
