@@ -94,7 +94,8 @@ class DashboardTest {
             "links",
             "static_fire_date_unix",
             "details",
-            "launchpad"
+            "launchpad",
+            "date_precision"
         )
 
         queryNext = QueryModel(

@@ -94,7 +94,8 @@ class LaunchesTest {
                     "links",
                     "static_fire_date_unix",
                     "details",
-                    "launchpad"
+                    "launchpad",
+                    "date_precision"
                 ),
                 limit = 5000
             )

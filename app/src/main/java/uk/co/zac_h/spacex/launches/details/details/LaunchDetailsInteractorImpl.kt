@@ -35,7 +35,8 @@ class LaunchDetailsInteractorImpl : BaseNetwork(), LaunchDetailsContract.LaunchD
                     "launchpad",
                     "flight_number",
                     "name",
-                    "date_unix"
+                    "date_unix",
+                    "date_precision"
                 ),
                 limit = 1
             )

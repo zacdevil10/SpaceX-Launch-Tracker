@@ -10,19 +10,19 @@ class DateUtilsTest {
 
     @Test
     fun formatMillisecondDateToLongFormatString() {
-        val tbdDateFormatted = dateInMillis.formatDateMillisLong(true)
-        val confirmedDateFormatted = dateInMillis.formatDateMillisLong()
+        val monthPrecisionDateFormatted = dateInMillis.formatDateMillisLong("month")
+        val hourPrecisionDateFormatted = dateInMillis.formatDateMillisLong("hour")
 
         assert(
-            tbdDateFormatted == SimpleDateFormat(
-                "MMM yyyy - HH:mm zzz",
+            monthPrecisionDateFormatted == SimpleDateFormat(
+                "MMM yyyy",
                 Locale.ENGLISH
             ).apply { timeZone = TimeZone.getDefault() }.format(Date(dateInMillis.times(1000L)))
         )
 
         assert(
-            confirmedDateFormatted == SimpleDateFormat(
-                "dd MMM yyyy - HH:mm zzz",
+            hourPrecisionDateFormatted == SimpleDateFormat(
+                "dd MMM yy - HH:mm zzz",
                 Locale.ENGLISH
             ).apply { timeZone = TimeZone.getDefault() }.format(Date(dateInMillis.times(1000L)))
         )
@@ -35,7 +35,7 @@ class DateUtilsTest {
 
         assert(
             tbdDateFormatted == SimpleDateFormat(
-                "MMM yy - HH:mm",
+                "MMM yy",
                 Locale.ENGLISH
             ).apply { timeZone = TimeZone.getDefault() }.format(Date(dateInMillis.times(1000L)))
         )
