@@ -22,8 +22,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentRedditFeedBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentRedditFeedBinding? = null
 
     private var presenter: RedditFeedContract.RedditFeedPresenter? = null
 
@@ -52,8 +51,8 @@ class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentRedditFeedBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentRedditFeedBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,7 +67,7 @@ class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
 
         val layout = LinearLayoutManager(this@RedditFeedFragment.context)
 
-        binding.redditRecycler.apply {
+        binding?.redditRecycler?.apply {
             layoutManager = layout
             setHasFixedSize(true)
             adapter = redditAdapter
@@ -95,7 +94,7 @@ class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
             })
         }
 
-        binding.redditSwipeRefresh.setOnRefreshListener {
+        binding?.redditSwipeRefresh?.setOnRefreshListener {
             presenter?.getSub(order)
         }
     }
@@ -121,7 +120,7 @@ class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
+        binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -171,7 +170,7 @@ class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
         posts.addAll(subredditData.data.children)
 
         redditAdapter.notifyDataSetChanged()
-        binding.redditRecycler.scrollToPosition(0)
+        binding?.redditRecycler?.scrollToPosition(0)
     }
 
     override fun addPagedData(subredditData: SubredditModel) {
@@ -186,23 +185,23 @@ class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
     }
 
     override fun showProgress() {
-        binding.progressIndicator.show()
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        binding.progressIndicator.hide()
+        binding?.progressIndicator?.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding.redditSwipeRefresh.isRefreshing = refreshing
+        binding?.redditSwipeRefresh?.isRefreshing = refreshing
     }
 
     override fun showPagingProgress() {
-        binding.pagingProgressIndicator.show()
+        binding?.pagingProgressIndicator?.show()
     }
 
     override fun hidePagingProgress() {
-        binding.pagingProgressIndicator.hide()
+        binding?.pagingProgressIndicator?.hide()
     }
 
     override fun showError(error: String) {
@@ -211,9 +210,11 @@ class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (posts.isEmpty() || binding.progressIndicator.isShown)
-                presenter?.getSub(order)
-            
+            binding?.let {
+                if (posts.isEmpty() || it.progressIndicator.isShown)
+                    presenter?.getSub(order)
+            }
+
             if (isLoading) presenter?.getNextPage(posts[posts.size - 1].data.name, order)
         }
     }

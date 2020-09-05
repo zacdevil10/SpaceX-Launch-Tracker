@@ -21,11 +21,11 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_landscape"
-            android:tint="@color/landscape"
             android:contentDescription="@string/launch_pad_type_desc"
             app:layout_constraintStart_toStartOf="@id/list_item_pad_name_text"
             app:layout_constraintBottom_toBottomOf="@+id/list_item_pad_name_text"
-            app:layout_constraintTop_toTopOf="@+id/list_item_pad_name_text" />
+            app:layout_constraintTop_toTopOf="@+id/list_item_pad_name_text"
+            app:tint="@color/landscape" />
 
         <TextView
             android:id="@+id/list_item_pad_name_text"
@@ -104,13 +104,13 @@
             android:id="@+id/list_item_pad_status_image"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-            android:tint="@color/color_secondary"
             app:layout_constraintBottom_toBottomOf="@+id/list_item_pad_success_text"
             app:layout_constraintEnd_toEndOf="@+id/list_item_pad_status_label"
             app:layout_constraintStart_toStartOf="@+id/list_item_pad_status_label"
             app:layout_constraintTop_toTopOf="@+id/list_item_pad_success_text"
             tools:src="@drawable/ic_build_black_24dp"
-            android:contentDescription="@string/launch_pad_status_desc" />
+            android:contentDescription="@string/launch_pad_status_desc"
+            app:tint="@color/color_secondary" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

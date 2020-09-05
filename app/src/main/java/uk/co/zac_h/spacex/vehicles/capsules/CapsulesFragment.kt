@@ -19,8 +19,7 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
     SearchView.OnQueryTextListener,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentCapsulesBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentCapsulesBinding? = null
 
     private var presenter: VehiclesContract.Presenter? = null
 
@@ -43,8 +42,8 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentCapsulesBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentCapsulesBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,13 +55,13 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
 
         capsulesAdapter = CapsulesAdapter(capsulesArray)
 
-        binding.capsulesRecycler.apply {
+        binding?.capsulesRecycler?.apply {
             layoutManager = LinearLayoutManager(this@CapsulesFragment.context)
             setHasFixedSize(true)
             adapter = capsulesAdapter
         }
 
-        binding.capsulesSwipeRefresh.setOnRefreshListener {
+        binding?.capsulesSwipeRefresh?.setOnRefreshListener {
             presenter?.getVehicles()
         }
 
@@ -88,7 +87,7 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
+        binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -135,22 +134,22 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
         capsulesArray.clear()
         capsulesArray.addAll(if (sortNew) vehicles.reversed() else vehicles)
 
-        binding.capsulesRecycler.layoutAnimation =
+        binding?.capsulesRecycler?.layoutAnimation =
             AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
         capsulesAdapter.notifyDataSetChanged()
-        binding.capsulesRecycler.scheduleLayoutAnimation()
+        binding?.capsulesRecycler?.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        binding.progressIndicator.show()
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        binding.progressIndicator.hide()
+        binding?.progressIndicator?.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding.capsulesSwipeRefresh.isRefreshing = refreshing
+        binding?.capsulesSwipeRefresh?.isRefreshing = refreshing
     }
 
     override fun showError(error: String) {
@@ -159,7 +158,9 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (capsulesArray.isEmpty() || binding.progressIndicator.isShown) presenter?.getVehicles()
+            binding?.let {
+                if (capsulesArray.isEmpty() || it.progressIndicator.isShown) presenter?.getVehicles()
+            }
         }
     }
 }

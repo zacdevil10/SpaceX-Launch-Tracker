@@ -23,8 +23,7 @@ import uk.co.zac_h.spacex.utils.setImageAndTint
 
 class ShipDetailsFragment : Fragment() {
 
-    private var _binding: FragmentShipDetailsBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentShipDetailsBinding? = null
 
     private var ship: ShipExtendedModel? = null
 
@@ -40,8 +39,8 @@ class ShipDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentShipDetailsBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentShipDetailsBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,63 +55,65 @@ class ShipDetailsFragment : Fragment() {
             AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
                 .setOpenableLayout(drawerLayout).build()
 
-        binding.toolbar.setupWithNavController(navController, appBarConfig)
+        binding?.apply {
+            toolbar.setupWithNavController(navController, appBarConfig)
 
-        ship?.let {
-            binding.shipDetailsCoordinator.transitionName = it.id
-            binding.toolbar.title = it.name
+            ship?.let {
+                shipDetailsCoordinator.transitionName = it.id
+                toolbar.title = it.name
 
-            Glide.with(view)
-                .load(it.image)
-                .error(R.drawable.ic_baseline_error_outline_24)
-                .into(binding.header)
+                Glide.with(view)
+                    .load(it.image)
+                    .error(R.drawable.ic_baseline_error_outline_24)
+                    .into(header)
 
-            when (it.active) {
-                true -> binding.shipDetailsStatusImage.setImageAndTint(
-                    R.drawable.ic_check_circle_black_24dp,
-                    R.color.success
-                )
-                false -> binding.shipDetailsStatusImage.setImageAndTint(
-                    R.drawable.ic_remove_circle_black_24dp,
-                    R.color.failed
-                )
-            }
-
-            binding.shipDetailsTypeText.text = it.type
-            binding.shipDetailsRolesText.text = it.roles?.joinToString(", ")
-            binding.shipDetailsPortText.text = it.homePort
-
-            it.yearBuilt?.let { yearBuilt ->
-                binding.shipDetailsBuiltText.text = yearBuilt.toString()
-            } ?: run {
-                binding.shipDetailsBuiltLabel.visibility = View.GONE
-                binding.shipDetailsBuiltText.visibility = View.GONE
-            }
-
-            if (it.massKg != null && it.massLbs != null) {
-                binding.shipDetailsMassText.text = context?.getString(
-                    R.string.mass_formatted,
-                    it.massKg?.metricFormat(),
-                    it.massLbs?.metricFormat()
-                )
-            } else {
-                binding.shipDetailsMassLabel.visibility = View.GONE
-                binding.shipDetailsMassText.visibility = View.GONE
-            }
-
-            it.launches?.let {
-                binding.shipDetailsMissionRecycler.apply {
-                    layoutManager = LinearLayoutManager(this@ShipDetailsFragment.context)
-                    setHasFixedSize(true)
-                    adapter = MissionsAdapter(context, it)
+                when (it.active) {
+                    true -> shipDetailsStatusImage.setImageAndTint(
+                        R.drawable.ic_check_circle_black_24dp,
+                        R.color.success
+                    )
+                    false -> shipDetailsStatusImage.setImageAndTint(
+                        R.drawable.ic_remove_circle_black_24dp,
+                        R.color.failed
+                    )
                 }
-            }
 
+                shipDetailsTypeText.text = it.type
+                shipDetailsRolesText.text = it.roles?.joinToString(", ")
+                shipDetailsPortText.text = it.homePort
+
+                it.yearBuilt?.let { yearBuilt ->
+                    shipDetailsBuiltText.text = yearBuilt.toString()
+                } ?: run {
+                    shipDetailsBuiltLabel.visibility = View.GONE
+                    shipDetailsBuiltText.visibility = View.GONE
+                }
+
+                if (it.massKg != null && it.massLbs != null) {
+                    shipDetailsMassText.text = context?.getString(
+                        R.string.mass_formatted,
+                        it.massKg?.metricFormat(),
+                        it.massLbs?.metricFormat()
+                    )
+                } else {
+                    shipDetailsMassLabel.visibility = View.GONE
+                    shipDetailsMassText.visibility = View.GONE
+                }
+
+                it.launches?.let {
+                    shipDetailsMissionRecycler.apply {
+                        layoutManager = LinearLayoutManager(this@ShipDetailsFragment.context)
+                        setHasFixedSize(true)
+                        adapter = MissionsAdapter(context, it)
+                    }
+                }
+
+            }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 }

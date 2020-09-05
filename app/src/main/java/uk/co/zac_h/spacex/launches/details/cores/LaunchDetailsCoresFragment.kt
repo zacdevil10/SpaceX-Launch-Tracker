@@ -16,8 +16,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentLaunchDetailsCoresBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentLaunchDetailsCoresBinding? = null
 
     private var presenter: LaunchDetailsCoresContract.Presenter? = null
 
@@ -49,8 +48,8 @@ class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentLaunchDetailsCoresBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentLaunchDetailsCoresBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,7 +61,7 @@ class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
 
         coresAdapter = FirstStageAdapter(cores)
 
-        binding.launchDetailsCoresRecycler.apply {
+        binding?.launchDetailsCoresRecycler?.apply {
             layoutManager = LinearLayoutManager(this@LaunchDetailsCoresFragment.context)
             adapter = coresAdapter
         }
@@ -90,7 +89,7 @@ class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
+        binding = null
     }
 
     override fun updateCoresRecyclerView(coresList: List<LaunchCoreExtendedModel>?) {
@@ -103,11 +102,11 @@ class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
     }
 
     override fun showProgress() {
-        binding.progressIndicator.show()
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        binding.progressIndicator.hide()
+        binding?.progressIndicator?.hide()
     }
 
     override fun showError(error: String) {

@@ -16,8 +16,7 @@ import uk.co.zac_h.spacex.utils.views.HeaderItemDecoration
 class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentPadStatsBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentPadStatsBinding? = null
 
     private var presenter: PadStatsContract.PadStatsPresenter? = null
 
@@ -37,8 +36,8 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentPadStatsBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentPadStatsBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,7 +49,7 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
 
         padsAdapter = PadStatsSitesAdapter(pads)
 
-        binding.padStatsLaunchSitesRecycler.apply {
+        binding?.padStatsLaunchSitesRecycler?.apply {
             layoutManager = LinearLayoutManager(this@PadStatsFragment.context)
             setHasFixedSize(true)
             adapter = padsAdapter
@@ -84,7 +83,7 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequests()
-        _binding = null
+        binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -108,11 +107,11 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
     }
 
     override fun showProgress() {
-        binding.progressIndicator.show()
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        binding.progressIndicator.hide()
+        binding?.progressIndicator?.hide()
     }
 
     override fun showError(error: String) {
@@ -121,7 +120,9 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (pads.isEmpty() || binding.progressIndicator.isShown) presenter?.getPads()
+            binding?.let {
+                if (pads.isEmpty() || it.progressIndicator.isShown) presenter?.getPads()
+            }
         }
     }
 }

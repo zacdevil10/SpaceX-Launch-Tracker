@@ -16,15 +16,14 @@ import uk.co.zac_h.spacex.news.adapters.NewsPagerAdapter
 
 class NewsFragment : Fragment() {
 
-    private var _binding: FragmentNewsBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentNewsBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentNewsBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentNewsBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -36,17 +35,17 @@ class NewsFragment : Fragment() {
             AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
                 .setOpenableLayout(drawerLayout).build()
 
-        binding.toolbar.setupWithNavController(navController, appBarConfig)
+        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
-        binding.newsViewPager.adapter = NewsPagerAdapter(childFragmentManager)
+        binding?.newsViewPager?.adapter = NewsPagerAdapter(childFragmentManager)
 
         val tabIcons = listOf(
             R.drawable.ic_twitter,
             R.drawable.reddit
         )
 
-        binding.newsTabLayout.apply {
-            setupWithViewPager(binding.newsViewPager)
+        binding?.newsTabLayout?.apply {
+            setupWithViewPager(binding?.newsViewPager)
             for (position in 0..tabCount) {
                 getTabAt(position)?.setIcon(tabIcons[position])
             }
@@ -55,6 +54,6 @@ class NewsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 }

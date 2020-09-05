@@ -19,8 +19,7 @@ import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentRocketBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentRocketBinding? = null
 
     private var presenter: VehiclesContract.Presenter? = null
 
@@ -37,8 +36,8 @@ class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentRocketBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentRocketBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,13 +49,13 @@ class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
 
         rocketsAdapter = RocketsAdapter(rocketsArray)
 
-        binding.rocketRecycler.apply {
+        binding?.rocketRecycler?.apply {
             layoutManager = LinearLayoutManager(this@RocketFragment.context)
             setHasFixedSize(true)
             adapter = rocketsAdapter
         }
 
-        binding.rocketSwipeRefresh.setOnRefreshListener {
+        binding?.rocketSwipeRefresh?.setOnRefreshListener {
             presenter?.getVehicles()
         }
 
@@ -81,29 +80,29 @@ class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
+        binding = null
     }
 
     override fun updateVehicles(vehicles: List<RocketsModel>) {
         rocketsArray.clear()
         rocketsArray.addAll(vehicles)
 
-        binding.rocketRecycler.layoutAnimation =
+        binding?.rocketRecycler?.layoutAnimation =
             AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
         rocketsAdapter.notifyDataSetChanged()
-        binding.rocketRecycler.scheduleLayoutAnimation()
+        binding?.rocketRecycler?.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        binding.progressIndicator.show()
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        binding.progressIndicator.hide()
+        binding?.progressIndicator?.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding.rocketSwipeRefresh.isRefreshing = refreshing
+        binding?.rocketSwipeRefresh?.isRefreshing = refreshing
     }
 
     override fun showError(error: String) {
@@ -112,8 +111,10 @@ class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (rocketsArray.isEmpty() || binding.progressIndicator.isShown)
-                presenter?.getVehicles()
+            binding?.let {
+                if (rocketsArray.isEmpty() || it.progressIndicator.isShown)
+                    presenter?.getVehicles()
+            }
         }
     }
 }

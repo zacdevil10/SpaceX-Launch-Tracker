@@ -41,10 +41,10 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/more_icon_desc"
                 android:src="@drawable/ic_keyboard_arrow_right_black_24dp"
-                android:tint="?colorOnBackground"
                 app:layout_constraintBottom_toBottomOf="@id/list_item_first_stage_core_serial_text"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/list_item_first_stage_core_serial_text" />
+                app:layout_constraintTop_toTopOf="@id/list_item_first_stage_core_serial_text"
+                app:tint="?colorOnBackground" />
 
             <View
                 android:id="@+id/list_item_separator"
@@ -98,10 +98,10 @@
                 android:layout_marginTop="8dp"
                 android:contentDescription="@string/landed_status_desc"
                 android:src="@drawable/ic_help_outline_black_24dp"
-                android:tint="?colorControlNormal"
                 app:layout_constraintEnd_toEndOf="@+id/list_item_pad_success_label"
                 app:layout_constraintStart_toStartOf="@+id/list_item_pad_success_label"
-                app:layout_constraintTop_toBottomOf="@+id/list_item_pad_success_label" />
+                app:layout_constraintTop_toBottomOf="@+id/list_item_pad_success_label"
+                app:tint="?colorControlNormal" />
 
             <TextView
                 android:id="@+id/list_item_first_stage_landing_text"
@@ -120,10 +120,10 @@
                 android:layout_height="0dp"
                 android:contentDescription="@string/launch_pad_status_desc"
                 android:src="@drawable/ic_help_outline_black_24dp"
-                android:tint="?colorControlNormal"
                 app:layout_constraintEnd_toEndOf="@+id/list_item_first_stage_landing_text"
                 app:layout_constraintStart_toStartOf="@+id/list_item_first_stage_landing_text"
-                app:layout_constraintTop_toTopOf="@+id/list_item_first_stage_landed_image" />
+                app:layout_constraintTop_toTopOf="@+id/list_item_first_stage_landed_image"
+                app:tint="?colorControlNormal" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

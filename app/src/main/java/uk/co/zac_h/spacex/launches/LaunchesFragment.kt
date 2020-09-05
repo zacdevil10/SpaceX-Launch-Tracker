@@ -18,16 +18,15 @@ import uk.co.zac_h.spacex.launches.adapters.LaunchesPagerAdapter
 
 class LaunchesFragment : Fragment() {
 
-    private var _binding: FragmentLaunchesBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentLaunchesBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentLaunchesBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentLaunchesBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,7 +34,7 @@ class LaunchesFragment : Fragment() {
 
         postponeEnterTransition()
 
-        (activity as MainActivity).setSupportActionBar(binding.toolbar)
+        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
 
         val navController = NavHostFragment.findNavController(this)
         val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
@@ -43,17 +42,17 @@ class LaunchesFragment : Fragment() {
             AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
                 .setOpenableLayout(drawerLayout).build()
 
-        binding.toolbar.setupWithNavController(navController, appBarConfig)
+        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
-        binding.launchesViewPager.adapter = LaunchesPagerAdapter(childFragmentManager)
+        binding?.launchesViewPager?.adapter = LaunchesPagerAdapter(childFragmentManager)
 
         val tabIcons = listOf(
             R.drawable.ic_baseline_schedule_24,
             R.drawable.ic_history_black_24dp
         )
 
-        binding.launchesTabLayout.apply {
-            setupWithViewPager(binding.launchesViewPager)
+        binding?.launchesTabLayout?.apply {
+            setupWithViewPager(binding?.launchesViewPager)
             for (position in 0..tabCount) {
                 getTabAt(position)?.setIcon(tabIcons[position])
             }
@@ -64,6 +63,6 @@ class LaunchesFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        _binding = null
+        binding = null
     }
 }
