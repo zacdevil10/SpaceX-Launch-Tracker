@@ -19,8 +19,7 @@ class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
     SearchView.OnQueryTextListener,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentCoreBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentCoreBinding? = null
 
     private var presenter: VehiclesContract.Presenter? = null
 
@@ -42,8 +41,8 @@ class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentCoreBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentCoreBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,13 +54,13 @@ class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
 
         coreAdapter = CoreAdapter(context, coresArray)
 
-        binding.coreRecycler.apply {
+        binding?.coreRecycler?.apply {
             layoutManager = LinearLayoutManager(this@CoreFragment.context)
             setHasFixedSize(true)
             adapter = coreAdapter
         }
 
-        binding.coreSwipeRefresh.setOnRefreshListener {
+        binding?.coreSwipeRefresh?.setOnRefreshListener {
             presenter?.getVehicles()
         }
 
@@ -87,7 +86,7 @@ class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
+        binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -134,22 +133,22 @@ class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
         coresArray.clear()
         coresArray.addAll(if (sortNew) vehicles.reversed() else vehicles)
 
-        binding.coreRecycler.layoutAnimation =
+        binding?.coreRecycler?.layoutAnimation =
             AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
         coreAdapter.notifyDataSetChanged()
-        binding.coreRecycler.scheduleLayoutAnimation()
+        binding?.coreRecycler?.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        binding.progressIndicator.show()
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        binding.progressIndicator.hide()
+        binding?.progressIndicator?.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding.coreSwipeRefresh.isRefreshing = refreshing
+        binding?.coreSwipeRefresh?.isRefreshing = refreshing
     }
 
     override fun showError(error: String) {
@@ -158,8 +157,10 @@ class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (coresArray.isEmpty() || binding.progressIndicator.isShown)
-                presenter?.getVehicles()
+            binding?.let {
+                if (coresArray.isEmpty() || it.progressIndicator.isShown)
+                    presenter?.getVehicles()
+            }
         }
     }
 }

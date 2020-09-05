@@ -24,8 +24,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentLaunchDetailsBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentLaunchDetailsBinding? = null
 
     private var presenter: LaunchDetailsContract.LaunchDetailsPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
@@ -67,8 +66,8 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentLaunchDetailsBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentLaunchDetailsBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -117,7 +116,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
+        binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -161,7 +160,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
             (activity as MainActivity).supportActionBar?.title = launch.missionName
 
-            binding.apply {
+            binding?.apply {
                 Glide.with(this@LaunchDetailsFragment)
                     .load(launch.links?.missionPatch?.patchSmall)
                     .error(context?.let {
@@ -199,58 +198,58 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 launchDetailsDetailsText.text = launch.details
 
                 launch.links?.webcast?.let { link ->
-                    binding.launchDetailsWatchButton.visibility = View.VISIBLE
-                    binding.launchDetailsWatchButton.setOnClickListener {
+                    launchDetailsWatchButton.visibility = View.VISIBLE
+                    launchDetailsWatchButton.setOnClickListener {
                         openWebLink(link)
                     }
                 } ?: run {
-                    binding.launchDetailsWatchButton.visibility = View.GONE
+                    launchDetailsWatchButton.visibility = View.GONE
                 }
 
                 launch.links?.presskit?.let { link ->
-                    binding.launchDetailsPressKitButton.visibility = View.VISIBLE
-                    binding.launchDetailsPressKitButton.setOnClickListener {
+                    launchDetailsPressKitButton.visibility = View.VISIBLE
+                    launchDetailsPressKitButton.setOnClickListener {
                         openWebLink(link)
                     }
                 } ?: run {
-                    binding.launchDetailsPressKitButton.visibility = View.GONE
+                    launchDetailsPressKitButton.visibility = View.GONE
                 }
 
                 launch.links?.wikipedia?.let { link ->
-                    binding.launchDetailsWikiButton.visibility = View.VISIBLE
-                    binding.launchDetailsWikiButton.setOnClickListener {
-                        binding.launchDetailsWikiButton.visibility = View.VISIBLE
+                    launchDetailsWikiButton.visibility = View.VISIBLE
+                    launchDetailsWikiButton.setOnClickListener {
+                        launchDetailsWikiButton.visibility = View.VISIBLE
                         openWebLink(link)
                     }
                 } ?: run {
-                    binding.launchDetailsWikiButton.visibility = View.GONE
+                    launchDetailsWikiButton.visibility = View.GONE
                 }
 
                 launch.links?.redditLinks?.campaign?.let { link ->
-                    binding.launchDetailsCampaignButton.visibility = View.VISIBLE
-                    binding.launchDetailsCampaignButton.setOnClickListener {
+                    launchDetailsCampaignButton.visibility = View.VISIBLE
+                    launchDetailsCampaignButton.setOnClickListener {
                         openWebLink(link)
                     }
                 } ?: run {
-                    binding.launchDetailsCampaignButton.visibility = View.GONE
+                    launchDetailsCampaignButton.visibility = View.GONE
                 }
 
                 launch.links?.redditLinks?.launch?.let { link ->
-                    binding.launchDetailsLaunchButton.visibility = View.VISIBLE
-                    binding.launchDetailsLaunchButton.setOnClickListener {
+                    launchDetailsLaunchButton.visibility = View.VISIBLE
+                    launchDetailsLaunchButton.setOnClickListener {
                         openWebLink(link)
                     }
                 } ?: run {
-                    binding.launchDetailsLaunchButton.visibility = View.GONE
+                    launchDetailsLaunchButton.visibility = View.GONE
                 }
 
                 launch.links?.redditLinks?.media?.let { link ->
-                    binding.launchDetailsMediaButton.visibility = View.VISIBLE
-                    binding.launchDetailsMediaButton.setOnClickListener {
+                    launchDetailsMediaButton.visibility = View.VISIBLE
+                    launchDetailsMediaButton.setOnClickListener {
                         openWebLink(link)
                     }
                 } ?: run {
-                    binding.launchDetailsMediaButton.visibility = View.GONE
+                    launchDetailsMediaButton.visibility = View.GONE
                 }
             }
         }
@@ -286,11 +285,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     }
 
     override fun showProgress() {
-        binding.progressIndicator.show()
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        binding.progressIndicator.hide()
+        binding?.progressIndicator?.hide()
     }
 
     override fun showError(error: String) {

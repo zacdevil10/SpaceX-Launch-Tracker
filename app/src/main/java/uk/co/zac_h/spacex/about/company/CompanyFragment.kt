@@ -22,8 +22,7 @@ import java.text.DecimalFormat
 class CompanyFragment : Fragment(), CompanyContract.CompanyView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentCompanyBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentCompanyBinding? = null
 
     private var presenter: CompanyContract.CompanyPresenter? = null
 
@@ -41,8 +40,8 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentCompanyBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentCompanyBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,7 +55,7 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
             AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
                 .setOpenableLayout(drawerLayout).build()
 
-        binding.toolbar.setupWithNavController(navController, appBarConfig)
+        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
         presenter = CompanyPresenterImpl(this, CompanyInteractorImpl())
 
@@ -85,25 +84,25 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
+        binding = null
     }
 
     override fun updateCompanyInfo(companyModel: CompanyModel) {
         companyInfo = companyModel
-        binding.apply {
+        binding?.apply {
             with(companyModel.headquarters) {
-                binding.companyAddressText.text =
+                companyAddressText.text =
                     context?.getString(R.string.address, address, city, state)
             }
 
             with(companyModel.links) {
-                binding.companyWebsiteButton.setOnClickListener { openWebLink(website) }
-                binding.companyTwitterButton.setOnClickListener { openWebLink(twitter) }
-                binding.companyAlbumButton.setOnClickListener { openWebLink(flickr) }
+                companyWebsiteButton.setOnClickListener { openWebLink(website) }
+                companyTwitterButton.setOnClickListener { openWebLink(twitter) }
+                companyAlbumButton.setOnClickListener { openWebLink(flickr) }
             }
 
-            binding.companySummaryText.text = companyModel.summary
-            binding.companyFoundedText.text =
+            companySummaryText.text = companyModel.summary
+            companyFoundedText.text =
                 context?.getString(R.string.founded, companyModel.founder, companyModel.founded)
             companyCeoText.text = companyModel.ceo
             companyCtoText.text = companyModel.cto
@@ -123,11 +122,11 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
     }
 
     override fun showProgress() {
-        binding.progressIndicator.show()
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        binding.progressIndicator.hide()
+        binding?.progressIndicator?.hide()
     }
 
     override fun showError(error: String) {

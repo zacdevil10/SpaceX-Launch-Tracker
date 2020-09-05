@@ -64,11 +64,11 @@
                 android:layout_height="0dp"
                 android:layout_marginEnd="16dp"
                 android:src="@drawable/ic_pin"
-                android:tint="?colorSecondary"
                 app:layout_constraintBottom_toBottomOf="@id/list_item_reddit_date"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/list_item_reddit_date"
-                tools:ignore="ContentDescription" />
+                tools:ignore="ContentDescription"
+                app:tint="?colorSecondary" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/list_item_reddit_header"

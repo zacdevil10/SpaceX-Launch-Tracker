@@ -16,8 +16,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentLaunchDetailsShipsBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentLaunchDetailsShipsBinding? = null
 
     private var presenter: LaunchDetailsShipsContract.Presenter? = null
 
@@ -48,8 +47,8 @@ class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentLaunchDetailsShipsBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentLaunchDetailsShipsBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,7 +60,7 @@ class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
 
         shipsAdapter = LaunchDetailsShipsAdapter(shipsArray)
 
-        binding.launchDetailsShipsRecycler.apply {
+        binding?.launchDetailsShipsRecycler?.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
             adapter = shipsAdapter
@@ -90,7 +89,7 @@ class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
+        binding = null
     }
 
     override fun updateShipsRecyclerView(ships: List<ShipExtendedModel>) {
@@ -101,11 +100,11 @@ class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
     }
 
     override fun showProgress() {
-        binding.launchDetailsShipsProgress.show()
+        binding?.launchDetailsShipsProgress?.show()
     }
 
     override fun hideProgress() {
-        binding.launchDetailsShipsProgress.hide()
+        binding?.launchDetailsShipsProgress?.hide()
     }
 
     override fun showError(error: String) {

@@ -23,8 +23,7 @@ import java.text.DecimalFormat
 
 class RocketDetailsFragment : Fragment() {
 
-    private var _binding: FragmentRocketDetailsBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentRocketDetailsBinding? = null
 
     private var rocket: RocketsModel? = null
 
@@ -40,8 +39,8 @@ class RocketDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentRocketDetailsBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentRocketDetailsBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,128 +52,130 @@ class RocketDetailsFragment : Fragment() {
             AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
                 .setOpenableLayout(drawerLayout).build()
 
-        NavigationUI.setupWithNavController(
-            binding.toolbarLayout,
-            binding.toolbar,
-            navController,
-            appBarConfig
-        )
+        binding?.apply {
+            NavigationUI.setupWithNavController(
+                toolbarLayout,
+                toolbar,
+                navController,
+                appBarConfig
+            )
 
-        rocket?.let {
-            binding.rocketDetailsCoordinator.transitionName = it.id
+            rocket?.let {
+                rocketDetailsCoordinator.transitionName = it.id
 
-            binding.toolbar.title = it.name
+                toolbar.title = it.name
 
-            Glide.with(view)
-                .load(it.flickr?.random())
-                .error(R.drawable.ic_baseline_error_outline_24)
-                .into(binding.header)
+                Glide.with(view)
+                    .load(it.flickr?.random())
+                    .error(R.drawable.ic_baseline_error_outline_24)
+                    .into(header)
 
-            binding.rocketDetailsText.text = it.description
+                rocketDetailsText.text = it.description
 
-            when (it.isActive) {
-                true -> binding.rocketDetailsStatusImage.setImageAndTint(
-                    R.drawable.ic_check_circle_black_24dp,
-                    R.color.success
-                )
-                false -> binding.rocketDetailsStatusImage.setImageAndTint(
-                    R.drawable.ic_remove_circle_black_24dp,
-                    R.color.failed
-                )
-            }
-
-            binding.rocketDetailsCostText.text =
-                DecimalFormat("$#,###.00").format(it.costPerLaunch).toString()
-            binding.rocketDetailsSuccessText.text =
-                context?.getString(R.string.percentage, it.successRate)
-            binding.rocketDetailsFirstFlightText.text = it.firstFlight
-            binding.rocketDetailsStagesText.text = it.stages.toString()
-
-            it.height?.let { height ->
-                binding.rocketDetailsHeightText.text = context?.getString(
-                    R.string.measurements,
-                    height.meters?.metricFormat(),
-                    height.feet?.metricFormat()
-                )
-            }
-            it.diameter?.let { diameter ->
-                binding.rocketDetailsDiameterText.text = context?.getString(
-                    R.string.measurements,
-                    diameter.meters?.metricFormat(),
-                    diameter.feet?.metricFormat()
-                )
-            }
-            it.mass?.let { mass ->
-                binding.rocketDetailsMassText.text = context?.getString(
-                    R.string.mass_formatted,
-                    mass.kg?.metricFormat(),
-                    mass.lb?.metricFormat()
-                )
-            }
-
-            it.firstStage?.let { firstStage ->
-                when (firstStage.reusable) {
-                    true -> binding.rocketDetailsReusableImage.setImageAndTint(
+                when (it.isActive) {
+                    true -> rocketDetailsStatusImage.setImageAndTint(
                         R.drawable.ic_check_circle_black_24dp,
                         R.color.success
                     )
-                    false -> binding.rocketDetailsReusableImage.setImageAndTint(
+                    false -> rocketDetailsStatusImage.setImageAndTint(
                         R.drawable.ic_remove_circle_black_24dp,
                         R.color.failed
                     )
                 }
 
-                binding.rocketDetailsEnginesFirstText.text = firstStage.engines.toString()
-                binding.rocketDetailsFuelFirstText.text = context?.getString(
-                    R.string.ton_format,
-                    firstStage.fuelAmountTons?.metricFormat()
-                )
-                binding.rocketDetailsBurnFirstText.text =
-                    context?.getString(R.string.seconds_format, firstStage.burnTimeSec ?: 0)
-                binding.rocketDetailsThrustSeaText.text = context?.getString(
-                    R.string.thrust,
-                    firstStage.thrustSeaLevel?.kN?.metricFormat(),
-                    firstStage.thrustSeaLevel?.lbf?.metricFormat()
-                )
-                binding.rocketDetailsThrustVacText.text = context?.getString(
-                    R.string.thrust,
-                    firstStage.thrustVacuum?.kN?.metricFormat(),
-                    firstStage.thrustVacuum?.lbf?.metricFormat()
-                )
-            }
+                rocketDetailsCostText.text =
+                    DecimalFormat("$#,###.00").format(it.costPerLaunch).toString()
+                rocketDetailsSuccessText.text =
+                    context?.getString(R.string.percentage, it.successRate)
+                rocketDetailsFirstFlightText.text = it.firstFlight
+                rocketDetailsStagesText.text = it.stages.toString()
 
-            it.secondStage?.let { secondStage ->
-                binding.rocketDetailsEnginesSecondText.text = secondStage.engines.toString()
-                binding.rocketDetailsFuelSecondText.text =
-                    context?.getString(
-                        R.string.ton_format,
-                        secondStage.fuelAmountTons?.metricFormat()
+                it.height?.let { height ->
+                    rocketDetailsHeightText.text = context?.getString(
+                        R.string.measurements,
+                        height.meters?.metricFormat(),
+                        height.feet?.metricFormat()
                     )
-                binding.rocketDetailsBurnSecondText.text =
-                    context?.getString(R.string.seconds_format, secondStage.burnTimeSec ?: 0)
-                binding.rocketDetailsThrustSecondText.text = context?.getString(
-                    R.string.thrust,
-                    secondStage.thrust?.kN?.metricFormat(),
-                    secondStage.thrust?.lbf?.metricFormat()
-                )
-            }
+                }
+                it.diameter?.let { diameter ->
+                    rocketDetailsDiameterText.text = context?.getString(
+                        R.string.measurements,
+                        diameter.meters?.metricFormat(),
+                        diameter.feet?.metricFormat()
+                    )
+                }
+                it.mass?.let { mass ->
+                    rocketDetailsMassText.text = context?.getString(
+                        R.string.mass_formatted,
+                        mass.kg?.metricFormat(),
+                        mass.lb?.metricFormat()
+                    )
+                }
 
-            binding.rocketDetailsPayloadRecycler.apply {
-                layoutManager = LinearLayoutManager(this@RocketDetailsFragment.context)
-                setHasFixedSize(true)
-                adapter =
-                    it.payloadWeights?.let { payloadWeights ->
-                        RocketPayloadAdapter(
-                            this@RocketDetailsFragment.context,
-                            payloadWeights
+                it.firstStage?.let { firstStage ->
+                    when (firstStage.reusable) {
+                        true -> rocketDetailsReusableImage.setImageAndTint(
+                            R.drawable.ic_check_circle_black_24dp,
+                            R.color.success
+                        )
+                        false -> rocketDetailsReusableImage.setImageAndTint(
+                            R.drawable.ic_remove_circle_black_24dp,
+                            R.color.failed
                         )
                     }
+
+                    rocketDetailsEnginesFirstText.text = firstStage.engines.toString()
+                    rocketDetailsFuelFirstText.text = context?.getString(
+                        R.string.ton_format,
+                        firstStage.fuelAmountTons?.metricFormat()
+                    )
+                    rocketDetailsBurnFirstText.text =
+                        context?.getString(R.string.seconds_format, firstStage.burnTimeSec ?: 0)
+                    rocketDetailsThrustSeaText.text = context?.getString(
+                        R.string.thrust,
+                        firstStage.thrustSeaLevel?.kN?.metricFormat(),
+                        firstStage.thrustSeaLevel?.lbf?.metricFormat()
+                    )
+                    rocketDetailsThrustVacText.text = context?.getString(
+                        R.string.thrust,
+                        firstStage.thrustVacuum?.kN?.metricFormat(),
+                        firstStage.thrustVacuum?.lbf?.metricFormat()
+                    )
+                }
+
+                it.secondStage?.let { secondStage ->
+                    rocketDetailsEnginesSecondText.text = secondStage.engines.toString()
+                    rocketDetailsFuelSecondText.text =
+                        context?.getString(
+                            R.string.ton_format,
+                            secondStage.fuelAmountTons?.metricFormat()
+                        )
+                    rocketDetailsBurnSecondText.text =
+                        context?.getString(R.string.seconds_format, secondStage.burnTimeSec ?: 0)
+                    rocketDetailsThrustSecondText.text = context?.getString(
+                        R.string.thrust,
+                        secondStage.thrust?.kN?.metricFormat(),
+                        secondStage.thrust?.lbf?.metricFormat()
+                    )
+                }
+
+                rocketDetailsPayloadRecycler.apply {
+                    layoutManager = LinearLayoutManager(this@RocketDetailsFragment.context)
+                    setHasFixedSize(true)
+                    adapter =
+                        it.payloadWeights?.let { payloadWeights ->
+                            RocketPayloadAdapter(
+                                this@RocketDetailsFragment.context,
+                                payloadWeights
+                            )
+                        }
+                }
             }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 }

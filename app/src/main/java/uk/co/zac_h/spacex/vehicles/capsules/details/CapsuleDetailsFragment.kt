@@ -21,8 +21,7 @@ import uk.co.zac_h.spacex.model.spacex.CapsulesModel
 
 class CapsuleDetailsFragment : Fragment() {
 
-    private var _binding: FragmentCapsuleDetailsBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentCapsuleDetailsBinding? = null
 
     private var capsule: CapsulesModel? = null
 
@@ -38,8 +37,8 @@ class CapsuleDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentCapsuleDetailsBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentCapsuleDetailsBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     @SuppressLint("DefaultLocale")
@@ -55,15 +54,15 @@ class CapsuleDetailsFragment : Fragment() {
             AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
                 .setOpenableLayout(drawerLayout).build()
 
-        binding.toolbar.setupWithNavController(navController, appBarConfig)
+        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
         capsule?.let {
-            binding.capsuleDetailsConstraint.transitionName = it.id
+            binding?.capsuleDetailsConstraint?.transitionName = it.id
 
-            binding.toolbar.title = it.serial
+            binding?.toolbar?.title = it.serial
 
             it.serial?.let { serial ->
-                binding.capsuleDetailsTypeText.text = when {
+                binding?.capsuleDetailsTypeText?.text = when {
                     serial.startsWith("C1") -> "Dragon 1.0"
                     serial.startsWith("C2") -> "Dragon 2.0"
                     else -> ""
@@ -71,28 +70,28 @@ class CapsuleDetailsFragment : Fragment() {
             }
 
             it.lastUpdate?.let { lastUpdate ->
-                binding.capsuleDetailsText.text = lastUpdate
+                binding?.capsuleDetailsText?.text = lastUpdate
             } ?: run {
-                binding.capsuleDetailsText.visibility = View.GONE
+                binding?.capsuleDetailsText?.visibility = View.GONE
             }
 
-            binding.capsuleDetailsStatusText.text = it.status?.capitalize()
-            binding.capsuleDetailsReuseText.text = it.reuseCount.toString()
-            binding.capsuleDetailsLandingText.text =
+            binding?.capsuleDetailsStatusText?.text = it.status?.capitalize()
+            binding?.capsuleDetailsReuseText?.text = it.reuseCount.toString()
+            binding?.capsuleDetailsLandingText?.text =
                 ((it.landLandings ?: 0) + (it.waterLandings ?: 0)).toString()
 
             it.launches?.let { launches ->
-                binding.capsuleDetailsMissionsRecycler.apply {
+                binding?.capsuleDetailsMissionsRecycler?.apply {
                     layoutManager = LinearLayoutManager(this@CapsuleDetailsFragment.context)
                     setHasFixedSize(true)
                     adapter = MissionsAdapter(context, launches)
                 }
-            } ?: run { binding.capsuleDetailsNoMissionLabel.visibility = View.VISIBLE }
+            } ?: run { binding?.capsuleDetailsNoMissionLabel?.visibility = View.VISIBLE }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 }

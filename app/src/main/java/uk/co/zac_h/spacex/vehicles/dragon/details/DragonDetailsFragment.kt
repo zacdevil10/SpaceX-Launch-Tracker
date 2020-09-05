@@ -22,8 +22,7 @@ import uk.co.zac_h.spacex.vehicles.adapters.DragonThrusterAdapter
 
 class DragonDetailsFragment : Fragment() {
 
-    private var _binding: FragmentDragonDetailsBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentDragonDetailsBinding? = null
 
     private var dragon: DragonModel? = null
 
@@ -40,8 +39,8 @@ class DragonDetailsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentDragonDetailsBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentDragonDetailsBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,138 +52,140 @@ class DragonDetailsFragment : Fragment() {
             AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
                 .setOpenableLayout(drawerLayout).build()
 
-        NavigationUI.setupWithNavController(
-            binding.toolbarLayout,
-            binding.toolbar,
-            navController,
-            appBarConfig
-        )
-
-        dragon?.let {
-            binding.dragonDetailsCoordinator.transitionName = it.id
-
-            binding.toolbar.title = it.name
-
-            Glide.with(view)
-                .load(it.flickr?.random())
-                .error(R.drawable.ic_baseline_error_outline_24)
-                .into(binding.header)
-
-            binding.dragonDetailsText.text = it.description
-
-            when (it.active) {
-                true -> binding.dragonDetailsStatusImage.setImageAndTint(
-                    R.drawable.ic_check_circle_black_24dp,
-                    R.color.success
-                )
-                false -> binding.dragonDetailsStatusImage.setImageAndTint(
-                    R.drawable.ic_remove_circle_black_24dp,
-                    R.color.failed
-                )
-            }
-
-            binding.dragonDetailsCrewCapacityText.text = it.crewCapacity.toString()
-            binding.dragonDetailsFirstFlightText.text = it.firstFlight
-            binding.dragonDetailsDryMassText.text = context?.getString(
-                R.string.mass_formatted,
-                it.dryMassKg?.metricFormat(),
-                it.dryMassLb?.metricFormat()
+        binding?.apply {
+            NavigationUI.setupWithNavController(
+                toolbarLayout,
+                toolbar,
+                navController,
+                appBarConfig
             )
-            it.heightWithTrunk?.let { heightWithTrunk ->
-                binding.dragonDetailsHeightText.text = context?.getString(
-                    R.string.measurements,
-                    heightWithTrunk.meters?.metricFormat(),
-                    heightWithTrunk.feet?.metricFormat()
-                )
-            }
-            it.diameter?.let { diameter ->
-                binding.dragonDetailsDiameterText.text = context?.getString(
-                    R.string.measurements,
-                    diameter.meters?.metricFormat(),
-                    diameter.feet?.metricFormat()
-                )
-            }
 
-            binding.dragonDetailsShieldMaterialText.text = it.heatShield?.material
-            binding.dragonDetailsShieldSizeText.text =
-                it.heatShield?.size.toString() //TODO: Format with units
-            binding.dragonDetailsShieldTempText.text =
-                it.heatShield?.temp.toString() //TODO: Format with units
+            dragon?.let {
+                dragonDetailsCoordinator.transitionName = it.id
 
-            binding.dragonDetailsThrusterRecycler.apply {
-                layoutManager = LinearLayoutManager(this@DragonDetailsFragment.context)
-                setHasFixedSize(true)
-                adapter = it.thrusters?.let { thrusters ->
-                    DragonThrusterAdapter(this@DragonDetailsFragment.context, thrusters)
+                toolbar.title = it.name
+
+                Glide.with(view)
+                    .load(it.flickr?.random())
+                    .error(R.drawable.ic_baseline_error_outline_24)
+                    .into(header)
+
+                dragonDetailsText.text = it.description
+
+                when (it.active) {
+                    true -> dragonDetailsStatusImage.setImageAndTint(
+                        R.drawable.ic_check_circle_black_24dp,
+                        R.color.success
+                    )
+                    false -> dragonDetailsStatusImage.setImageAndTint(
+                        R.drawable.ic_remove_circle_black_24dp,
+                        R.color.failed
+                    )
                 }
-            }
 
-            it.launchPayloadMass?.let { launchPayloadMass ->
-                binding.dragonDetailsLaunchMassText.text = context?.getString(
+                dragonDetailsCrewCapacityText.text = it.crewCapacity.toString()
+                dragonDetailsFirstFlightText.text = it.firstFlight
+                dragonDetailsDryMassText.text = context?.getString(
                     R.string.mass_formatted,
-                    launchPayloadMass.kg?.metricFormat(),
-                    launchPayloadMass.lb?.metricFormat()
+                    it.dryMassKg?.metricFormat(),
+                    it.dryMassLb?.metricFormat()
                 )
-            }
+                it.heightWithTrunk?.let { heightWithTrunk ->
+                    dragonDetailsHeightText.text = context?.getString(
+                        R.string.measurements,
+                        heightWithTrunk.meters?.metricFormat(),
+                        heightWithTrunk.feet?.metricFormat()
+                    )
+                }
+                it.diameter?.let { diameter ->
+                    dragonDetailsDiameterText.text = context?.getString(
+                        R.string.measurements,
+                        diameter.meters?.metricFormat(),
+                        diameter.feet?.metricFormat()
+                    )
+                }
 
-            it.returnPayloadMass?.let { returnPayloadMass ->
-                binding.dragonDetailsReturnMassText.text = context?.getString(
-                    R.string.mass_formatted,
-                    returnPayloadMass.kg?.metricFormat(),
-                    returnPayloadMass.lb?.metricFormat()
-                )
-            }
+                dragonDetailsShieldMaterialText.text = it.heatShield?.material
+                dragonDetailsShieldSizeText.text =
+                    it.heatShield?.size.toString() //TODO: Format with units
+                dragonDetailsShieldTempText.text =
+                    it.heatShield?.temp.toString() //TODO: Format with units
 
-            it.launchPayloadVolume?.let { launchPayloadVolume ->
-                binding.dragonDetailsLaunchVolText.text = context?.getString(
-                    R.string.volume_formatted,
-                    launchPayloadVolume.cubicMeters?.metricFormat(),
-                    launchPayloadVolume.cubicFeet?.metricFormat()
-                )
-            }
+                dragonDetailsThrusterRecycler.apply {
+                    layoutManager = LinearLayoutManager(this@DragonDetailsFragment.context)
+                    setHasFixedSize(true)
+                    adapter = it.thrusters?.let { thrusters ->
+                        DragonThrusterAdapter(this@DragonDetailsFragment.context, thrusters)
+                    }
+                }
 
-            it.returnPayloadVol?.let { returnPayloadVol ->
-                binding.dragonDetailsReturnVolText.text = context?.getString(
-                    R.string.volume_formatted,
-                    returnPayloadVol.cubicMeters?.metricFormat(),
-                    returnPayloadVol.cubicFeet?.metricFormat()
-                )
-            }
+                it.launchPayloadMass?.let { launchPayloadMass ->
+                    dragonDetailsLaunchMassText.text = context?.getString(
+                        R.string.mass_formatted,
+                        launchPayloadMass.kg?.metricFormat(),
+                        launchPayloadMass.lb?.metricFormat()
+                    )
+                }
 
-            it.pressurizedCapsule?.payloadVolume?.let { payloadVolume ->
-                binding.dragonDetailsPressurizedVolText.text = context?.getString(
-                    R.string.volume_formatted,
-                    payloadVolume.cubicMeters?.metricFormat(),
-                    payloadVolume.cubicFeet?.metricFormat()
-                )
-            }
+                it.returnPayloadMass?.let { returnPayloadMass ->
+                    dragonDetailsReturnMassText.text = context?.getString(
+                        R.string.mass_formatted,
+                        returnPayloadMass.kg?.metricFormat(),
+                        returnPayloadMass.lb?.metricFormat()
+                    )
+                }
 
-            it.trunk?.trunkVolume?.let { trunkVolume ->
-                binding.dragonDetailsTrunkVolText.text = context?.getString(
-                    R.string.volume_formatted,
-                    trunkVolume.cubicMeters?.metricFormat(),
-                    trunkVolume.cubicFeet?.metricFormat()
-                )
-            }
+                it.launchPayloadVolume?.let { launchPayloadVolume ->
+                    dragonDetailsLaunchVolText.text = context?.getString(
+                        R.string.volume_formatted,
+                        launchPayloadVolume.cubicMeters?.metricFormat(),
+                        launchPayloadVolume.cubicFeet?.metricFormat()
+                    )
+                }
 
-            binding.dragonDetailsSolarArrayText.text = (it.trunk?.cargo?.solarArray ?: 0).toString()
+                it.returnPayloadVol?.let { returnPayloadVol ->
+                    dragonDetailsReturnVolText.text = context?.getString(
+                        R.string.volume_formatted,
+                        returnPayloadVol.cubicMeters?.metricFormat(),
+                        returnPayloadVol.cubicFeet?.metricFormat()
+                    )
+                }
 
-            when (it.trunk?.cargo?.unpressurizedCargo) {
-                true -> binding.dragonDetailsUnpressurizedCargoImage.setImageAndTint(
-                    R.drawable.ic_check_circle_black_24dp,
-                    R.color.success
-                )
-                false -> binding.dragonDetailsUnpressurizedCargoImage.setImageAndTint(
-                    R.drawable.ic_remove_circle_black_24dp,
-                    R.color.failed
-                )
+                it.pressurizedCapsule?.payloadVolume?.let { payloadVolume ->
+                    dragonDetailsPressurizedVolText.text = context?.getString(
+                        R.string.volume_formatted,
+                        payloadVolume.cubicMeters?.metricFormat(),
+                        payloadVolume.cubicFeet?.metricFormat()
+                    )
+                }
+
+                it.trunk?.trunkVolume?.let { trunkVolume ->
+                    dragonDetailsTrunkVolText.text = context?.getString(
+                        R.string.volume_formatted,
+                        trunkVolume.cubicMeters?.metricFormat(),
+                        trunkVolume.cubicFeet?.metricFormat()
+                    )
+                }
+
+                dragonDetailsSolarArrayText.text = (it.trunk?.cargo?.solarArray ?: 0).toString()
+
+                when (it.trunk?.cargo?.unpressurizedCargo) {
+                    true -> dragonDetailsUnpressurizedCargoImage.setImageAndTint(
+                        R.drawable.ic_check_circle_black_24dp,
+                        R.color.success
+                    )
+                    false -> dragonDetailsUnpressurizedCargoImage.setImageAndTint(
+                        R.drawable.ic_remove_circle_black_24dp,
+                        R.color.failed
+                    )
+                }
             }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 
 }

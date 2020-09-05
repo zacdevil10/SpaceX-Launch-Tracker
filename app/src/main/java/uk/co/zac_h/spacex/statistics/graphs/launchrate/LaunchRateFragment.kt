@@ -25,8 +25,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentLaunchRateBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentLaunchRateBinding? = null
 
     private var presenter: LaunchRateContract.LaunchRatePresenter? = null
 
@@ -44,8 +43,8 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentLaunchRateBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentLaunchRateBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,7 +57,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
         if (statsList.isEmpty()) presenter?.getLaunchList()
         else presenter?.addLaunchList(statsList)
 
-        binding.launchRateBarChart.apply {
+        binding?.launchRateBarChart?.apply {
             xAxis.apply {
                 position = XAxis.XAxisPosition.BOTTOM
                 textColor = ContextCompat.getColor(context, R.color.color_on_background)
@@ -90,47 +89,49 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
                     e?.let {
                         val stats = statsList[(e.x - 2006).toInt()]
 
-                        binding.launchRateKey.visibility = View.VISIBLE
+                        binding?.apply {
+                            launchRateKey.visibility = View.VISIBLE
 
-                        binding.launchRateYear.text = stats.year.toString()
+                            launchRateYear.text = stats.year.toString()
 
-                        binding.launchRateFalconOneLabel.visibility =
-                            if (stats.falconOne == 0f) View.GONE else View.VISIBLE
-                        binding.launchRateFalconOneValue.visibility =
-                            if (stats.falconOne == 0f) View.GONE else View.VISIBLE
-                        binding.launchRateFalconOneValue.text = stats.falconOne.toInt().toString()
+                            launchRateFalconOneLabel.visibility =
+                                if (stats.falconOne == 0f) View.GONE else View.VISIBLE
+                            launchRateFalconOneValue.visibility =
+                                if (stats.falconOne == 0f) View.GONE else View.VISIBLE
+                            launchRateFalconOneValue.text = stats.falconOne.toInt().toString()
 
-                        binding.launchRateFalconNineLabel.visibility =
-                            if (stats.falconNine == 0f) View.GONE else View.VISIBLE
-                        binding.launchRateFalconNineValue.visibility =
-                            if (stats.falconNine == 0f) View.GONE else View.VISIBLE
-                        binding.launchRateFalconNineValue.text = stats.falconNine.toInt().toString()
+                            launchRateFalconNineLabel.visibility =
+                                if (stats.falconNine == 0f) View.GONE else View.VISIBLE
+                            launchRateFalconNineValue.visibility =
+                                if (stats.falconNine == 0f) View.GONE else View.VISIBLE
+                            launchRateFalconNineValue.text = stats.falconNine.toInt().toString()
 
-                        binding.launchRateFalconHeavyLabel.visibility =
-                            if (stats.falconHeavy == 0f) View.GONE else View.VISIBLE
-                        binding.launchRateFalconHeavyValue.visibility =
-                            if (stats.falconHeavy == 0f) View.GONE else View.VISIBLE
-                        binding.launchRateFalconHeavyValue.text =
-                            stats.falconHeavy.toInt().toString()
+                            launchRateFalconHeavyLabel.visibility =
+                                if (stats.falconHeavy == 0f) View.GONE else View.VISIBLE
+                            launchRateFalconHeavyValue.visibility =
+                                if (stats.falconHeavy == 0f) View.GONE else View.VISIBLE
+                            launchRateFalconHeavyValue.text =
+                                stats.falconHeavy.toInt().toString()
 
-                        binding.launchRateFailuresLabel.visibility =
-                            if (stats.failure == 0f) View.GONE else View.VISIBLE
-                        binding.launchRateFailuresValue.visibility =
-                            if (stats.failure == 0f) View.GONE else View.VISIBLE
-                        binding.launchRateFailuresValue.text = stats.failure.toInt().toString()
+                            launchRateFailuresLabel.visibility =
+                                if (stats.failure == 0f) View.GONE else View.VISIBLE
+                            launchRateFailuresValue.visibility =
+                                if (stats.failure == 0f) View.GONE else View.VISIBLE
+                            launchRateFailuresValue.text = stats.failure.toInt().toString()
 
-                        binding.launchRateFutureLabel.visibility =
-                            if (stats.planned == 0f) View.GONE else View.VISIBLE
-                        binding.launchRateFutureValue.visibility =
-                            if (stats.planned == 0f) View.GONE else View.VISIBLE
-                        binding.launchRateFutureValue.text = stats.planned.toInt().toString()
+                            launchRateFutureLabel.visibility =
+                                if (stats.planned == 0f) View.GONE else View.VISIBLE
+                            launchRateFutureValue.visibility =
+                                if (stats.planned == 0f) View.GONE else View.VISIBLE
+                            launchRateFutureValue.text = stats.planned.toInt().toString()
 
-                        binding.launchRateTotalValue.text = e.y.toInt().toString()
+                            launchRateTotalValue.text = e.y.toInt().toString()
+                        }
                     }
                 }
 
                 override fun onNothingSelected() {
-                    binding.launchRateKey.visibility = View.GONE
+                    binding?.launchRateKey?.visibility = View.GONE
                 }
             })
         }
@@ -154,7 +155,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequests()
-        _binding = null
+        binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -213,7 +214,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
         val dataSets = ArrayList<IBarDataSet>()
         dataSets.add(set)
 
-        binding.launchRateBarChart.apply {
+        binding?.launchRateBarChart?.apply {
             if (animate) animateY(400, Easing.Linear)
             xAxis.labelCount = stats.size
             axisLeft.apply {
@@ -228,11 +229,11 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
     }
 
     override fun showProgress() {
-        binding.progressIndicator.show()
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        binding.progressIndicator.hide()
+        binding?.progressIndicator?.hide()
     }
 
     override fun showError(error: String) {
@@ -241,7 +242,9 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (statsList.isEmpty() || binding.progressIndicator.isShown) presenter?.getLaunchList()
+            binding?.let {
+                if (statsList.isEmpty() || it.progressIndicator.isShown) presenter?.getLaunchList()
+            }
         }
     }
 }
