@@ -3,7 +3,6 @@ package uk.co.zac_h.spacex.vehicles.capsules
 import android.os.Bundle
 import android.view.*
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -153,7 +152,7 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
     }
 
     override fun showError(error: String) {
-        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+
     }
 
     override fun networkAvailable() {

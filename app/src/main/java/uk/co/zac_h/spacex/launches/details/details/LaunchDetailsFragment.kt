@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.view.*
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
@@ -293,7 +292,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     }
 
     override fun showError(error: String) {
-        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+
     }
 
     override fun networkAvailable() {

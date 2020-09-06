@@ -2,7 +2,6 @@ package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.animation.Easing
@@ -237,7 +236,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
     }
 
     override fun showError(error: String) {
-        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+
     }
 
     override fun networkAvailable() {

@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
@@ -177,7 +176,7 @@ class TwitterFeedFragment : Fragment(), TwitterFeedContract.TwitterFeedView,
     }
 
     override fun showError(error: String) {
-        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+
     }
 
     override fun networkAvailable() {

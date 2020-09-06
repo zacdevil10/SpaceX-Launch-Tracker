@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.app.SharedElementCallback
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
@@ -164,7 +163,7 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
     }
 
     override fun showError(error: String) {
-        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+
     }
 
     override fun networkAvailable() {
