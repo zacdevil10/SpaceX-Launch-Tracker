@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
@@ -19,8 +18,7 @@ import uk.co.zac_h.spacex.vehicles.adapters.ShipsAdapter
 class ShipsFragment : Fragment(), VehiclesContract.View<ShipExtendedModel>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentShipsBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentShipsBinding? = null
 
     private var presenter: VehiclesContract.Presenter? = null
 
@@ -37,8 +35,8 @@ class ShipsFragment : Fragment(), VehiclesContract.View<ShipExtendedModel>,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentShipsBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentShipsBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,13 +48,13 @@ class ShipsFragment : Fragment(), VehiclesContract.View<ShipExtendedModel>,
 
         shipsAdapter = ShipsAdapter(shipsArray)
 
-        binding.recycler.apply {
+        binding?.recycler?.apply {
             layoutManager = LinearLayoutManager(this@ShipsFragment.context)
             setHasFixedSize(true)
             adapter = shipsAdapter
         }
 
-        binding.swipeRefresh.setOnRefreshListener {
+        binding?.swipeRefresh?.setOnRefreshListener {
             presenter?.getVehicles()
         }
 
@@ -81,38 +79,40 @@ class ShipsFragment : Fragment(), VehiclesContract.View<ShipExtendedModel>,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
+        binding = null
     }
 
     override fun updateVehicles(vehicles: List<ShipExtendedModel>) {
         shipsArray.clear()
         shipsArray.addAll(vehicles)
 
-        binding.recycler.layoutAnimation =
+        binding?.recycler?.layoutAnimation =
             AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
         shipsAdapter.notifyDataSetChanged()
-        binding.recycler.scheduleLayoutAnimation()
+        binding?.recycler?.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        binding.progressIndicator.show()
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        binding.progressIndicator.hide()
+        binding?.progressIndicator?.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding.swipeRefresh.isRefreshing = refreshing
+        binding?.swipeRefresh?.isRefreshing = refreshing
     }
 
     override fun showError(error: String) {
-        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (shipsArray.isEmpty() || binding.progressIndicator.isShown) presenter?.getVehicles()
+            binding?.let {
+                if (shipsArray.isEmpty() || it.progressIndicator.isShown) presenter?.getVehicles()
+            }
         }
     }
 }

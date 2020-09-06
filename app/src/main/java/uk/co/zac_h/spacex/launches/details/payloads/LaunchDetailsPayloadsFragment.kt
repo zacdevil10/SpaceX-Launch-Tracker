@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -17,8 +16,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.View,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentLaunchDetailsPayloadsBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentLaunchDetailsPayloadsBinding? = null
 
     private var presenter: LaunchDetailsPayloadsContract.Presenter? = null
 
@@ -49,8 +47,8 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentLaunchDetailsPayloadsBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentLaunchDetailsPayloadsBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,7 +60,7 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
 
         payloadAdapter = PayloadAdapter(context, payloads)
 
-        binding.launchDetailsPayloadRecycler.apply {
+        binding?.launchDetailsPayloadRecycler?.apply {
             layoutManager = LinearLayoutManager(this@LaunchDetailsPayloadsFragment.context)
             setHasFixedSize(true)
             adapter = payloadAdapter
@@ -91,7 +89,7 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 
     override fun updatePayloadsRecyclerView(payloadsList: List<PayloadModel>?) {
@@ -104,15 +102,15 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
     }
 
     override fun showProgress() {
-        binding.progressIndicator.show()
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        binding.progressIndicator.hide()
+        binding?.progressIndicator?.hide()
     }
 
     override fun showError(error: String) {
-        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+
     }
 
     override fun networkAvailable() {

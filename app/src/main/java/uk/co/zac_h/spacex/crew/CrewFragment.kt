@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.app.SharedElementCallback
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
@@ -25,8 +24,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class CrewFragment : Fragment(), CrewContract.CrewView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentCrewBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentCrewBinding? = null
 
     private var presenter: CrewContract.CrewPresenter? = null
 
@@ -55,8 +53,8 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentCrewBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentCrewBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -75,13 +73,13 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
                 .setOpenableLayout(drawerLayout)
                 .build()
 
-        binding.toolbar.setupWithNavController(navController, appBarConfig)
+        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
         presenter = CrewPresenterImpl(this, CrewInteractorImpl())
 
         crewAdapter = CrewAdapter(this, crewArray)
 
-        binding.crewRecycler.apply {
+        binding?.crewRecycler?.apply {
             setHasFixedSize(true)
             adapter = crewAdapter
         }
@@ -89,7 +87,7 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
         prepareTransitions()
         postponeEnterTransition()
 
-        binding.crewSwipeRefresh.setOnRefreshListener {
+        binding?.crewSwipeRefresh?.setOnRefreshListener {
             presenter?.getCrew()
         }
 
@@ -105,7 +103,7 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
                 sharedElements: MutableMap<String, View>?
             ) {
                 val selectedViewHolder: RecyclerView.ViewHolder? =
-                    binding.crewRecycler.findViewHolderForAdapterPosition(MainActivity.currentPosition)
+                    binding?.crewRecycler?.findViewHolderForAdapterPosition(MainActivity.currentPosition)
                         ?: return
 
                 names?.get(0)?.let { name ->
@@ -121,7 +119,7 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
     }
 
     override fun startTransition() {
-        _binding?.root?.doOnPreDraw { startPostponedEnterTransition() }
+        binding?.root?.doOnPreDraw { startPostponedEnterTransition() }
     }
 
     override fun onStart() {
@@ -142,7 +140,7 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
+        binding = null
     }
 
     override fun updateCrew(crew: List<CrewModel>) {
@@ -153,24 +151,26 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
     }
 
     override fun showProgress() {
-        binding.crewProgressBar.show()
+        binding?.crewProgressBar?.show()
     }
 
     override fun hideProgress() {
-        binding.crewProgressBar.hide()
+        binding?.crewProgressBar?.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding.crewSwipeRefresh.isRefreshing = refreshing
+        binding?.crewSwipeRefresh?.isRefreshing = refreshing
     }
 
     override fun showError(error: String) {
-        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (crewArray.isEmpty() || binding.crewProgressBar.isShown) presenter?.getCrew()
+            binding?.let {
+                if (crewArray.isEmpty() || it.crewProgressBar.isShown) presenter?.getCrew()
+            }
         }
     }
 }

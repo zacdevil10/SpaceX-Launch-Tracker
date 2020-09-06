@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
@@ -19,8 +18,7 @@ import uk.co.zac_h.spacex.vehicles.adapters.DragonAdapter
 class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentDragonBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentDragonBinding? = null
 
     private var presenter: VehiclesContract.Presenter? = null
 
@@ -37,8 +35,8 @@ class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentDragonBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentDragonBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,13 +48,13 @@ class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
 
         dragonAdapter = DragonAdapter(dragonArray)
 
-        binding.dragonRecycler.apply {
+        binding?.dragonRecycler?.apply {
             layoutManager = LinearLayoutManager(this@DragonFragment.context)
             setHasFixedSize(true)
             adapter = dragonAdapter
         }
 
-        binding.dragonSwipeRefresh.setOnRefreshListener {
+        binding?.dragonSwipeRefresh?.setOnRefreshListener {
             presenter?.getVehicles()
         }
 
@@ -81,38 +79,40 @@ class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
+        binding = null
     }
 
     override fun updateVehicles(vehicles: List<DragonModel>) {
         dragonArray.clear()
         dragonArray.addAll(vehicles)
 
-        binding.dragonRecycler.layoutAnimation =
+        binding?.dragonRecycler?.layoutAnimation =
             AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
         dragonAdapter.notifyDataSetChanged()
-        binding.dragonRecycler.scheduleLayoutAnimation()
+        binding?.dragonRecycler?.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        binding.progressIndicator.show()
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        binding.progressIndicator.hide()
+        binding?.progressIndicator?.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding.dragonSwipeRefresh.isRefreshing = refreshing
+        binding?.dragonSwipeRefresh?.isRefreshing = refreshing
     }
 
     override fun showError(error: String) {
-        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (dragonArray.isEmpty() || binding.progressIndicator.isShown) presenter?.getVehicles()
+            binding?.let {
+                if (dragonArray.isEmpty() || it.progressIndicator.isShown) presenter?.getVehicles()
+            }
         }
     }
 

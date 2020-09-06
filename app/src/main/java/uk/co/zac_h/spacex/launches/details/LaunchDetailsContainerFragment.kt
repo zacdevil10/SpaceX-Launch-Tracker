@@ -25,8 +25,7 @@ import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
 
 class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContract.View {
 
-    private var _binding: FragmentLaunchDetailsContainerBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentLaunchDetailsContainerBinding? = null
 
     private var presenter: LaunchDetailsContainerContract.Presenter? = null
 
@@ -51,8 +50,8 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentLaunchDetailsContainerBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentLaunchDetailsContainerBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,7 +60,7 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding.toolbar)
+        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
 
         val navController = NavHostFragment.findNavController(this)
         val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
@@ -69,31 +68,31 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
             AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
                 .setOpenableLayout(drawerLayout).build()
 
-        binding.toolbar.setupWithNavController(navController, appBarConfig)
+        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
         presenter = LaunchDetailsContainerPresenter(this)
 
         launchShort?.let {
-            binding.toolbar.title = it.missionName
-            binding.fragmentLaunchDetailsContainer.transitionName = it.id
+            binding?.toolbar?.title = it.missionName
+            binding?.fragmentLaunchDetailsContainer?.transitionName = it.id
 
             if (it.crew?.isNotEmpty() == true || it.ships?.isNotEmpty() == true) {
                 if (it.crew?.isNotEmpty() == true && it.ships?.isNotEmpty() == true) {
-                    binding.launchDetailsBottomNavigation.inflateMenu(R.menu.launch_details_bottom_nav_menu_all)
+                    binding?.launchDetailsBottomNavigation?.inflateMenu(R.menu.launch_details_bottom_nav_menu_all)
                 } else if (it.crew?.isNotEmpty() == true) {
-                    binding.launchDetailsBottomNavigation.inflateMenu(R.menu.launch_details_bottom_nav_menu_crew)
+                    binding?.launchDetailsBottomNavigation?.inflateMenu(R.menu.launch_details_bottom_nav_menu_crew)
                 } else if (it.ships?.isNotEmpty() == true) {
-                    binding.launchDetailsBottomNavigation.inflateMenu(R.menu.launch_details_bottom_nav_menu_ships)
+                    binding?.launchDetailsBottomNavigation?.inflateMenu(R.menu.launch_details_bottom_nav_menu_ships)
                 }
             } else {
-                binding.launchDetailsBottomNavigation.inflateMenu(R.menu.launch_details_bottom_nav_menu)
+                binding?.launchDetailsBottomNavigation?.inflateMenu(R.menu.launch_details_bottom_nav_menu)
             }
 
             presenter?.startCountdown(it.launchDateUnix, it.tbd)
         } ?: id?.let {
-            binding.fragmentLaunchDetailsContainer.transitionName = it
+            binding?.fragmentLaunchDetailsContainer?.transitionName = it
 
-            binding.launchDetailsBottomNavigation.inflateMenu(R.menu.launch_details_bottom_nav_menu)
+            binding?.launchDetailsBottomNavigation?.inflateMenu(R.menu.launch_details_bottom_nav_menu)
         }
 
         if (selectedItem == null) {
@@ -103,10 +102,10 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
                 replaceFragment(LaunchDetailsFragment.newInstance(it))
             }
         } else {
-            binding.launchDetailsBottomNavigation.selectedItemId = selectedItem as Int
+            binding?.launchDetailsBottomNavigation?.selectedItemId = selectedItem as Int
         }
 
-        binding.launchDetailsBottomNavigation.setOnNavigationItemSelectedListener {
+        binding?.launchDetailsBottomNavigation?.setOnNavigationItemSelectedListener {
             if (selectedItem != it.itemId) {
                 selectedItem = it.itemId
                 when (it.itemId) {
@@ -165,7 +164,7 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
         super.onDestroyView()
         countdownTimer?.cancel()
         countdownTimer = null
-        _binding = null
+        binding = null
     }
 
     override fun setCountdown(time: Long) {
@@ -184,7 +183,7 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
     }
 
     override fun updateCountdown(countdown: String) {
-        binding.launchDetailsCountdownText.text = countdown
+        binding?.launchDetailsCountdownText?.text = countdown
     }
 
     private fun replaceFragment(fragment: Fragment) {
@@ -198,10 +197,10 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
     }
 
     override fun showCountdown() {
-        binding.launchDetailsCountdownText.visibility = View.VISIBLE
+        binding?.launchDetailsCountdownText?.visibility = View.VISIBLE
     }
 
     override fun hideCountdown() {
-        binding.launchDetailsCountdownText.visibility = View.GONE
+        binding?.launchDetailsCountdownText?.visibility = View.GONE
     }
 }

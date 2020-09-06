@@ -19,8 +19,7 @@ import uk.co.zac_h.spacex.vehicles.adapters.VehiclesPagerAdapter
 
 class VehiclesFragment : Fragment() {
 
-    private var _binding: FragmentVehiclesBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentVehiclesBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,14 +31,14 @@ class VehiclesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentVehiclesBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentVehiclesBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as MainActivity).setSupportActionBar(binding.toolbar)
+        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
 
         val navController = NavHostFragment.findNavController(this)
         val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
@@ -47,33 +46,35 @@ class VehiclesFragment : Fragment() {
             AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
                 .setOpenableLayout(drawerLayout).build()
 
-        binding.toolbar.setupWithNavController(navController, appBarConfig)
+        binding?.apply {
+            toolbar.setupWithNavController(navController, appBarConfig)
 
-        postponeEnterTransition()
-        view.doOnPreDraw { startPostponedEnterTransition() }
+            postponeEnterTransition()
+            view.doOnPreDraw { startPostponedEnterTransition() }
 
-        binding.vehiclesViewPager.apply {
-            adapter = VehiclesPagerAdapter(childFragmentManager)
-        }
+            vehiclesViewPager.apply {
+                adapter = VehiclesPagerAdapter(childFragmentManager)
+            }
 
-        val tabIcons = listOf(
-            R.drawable.ic_rocket,
-            R.drawable.ic_dragon,
-            R.drawable.ic_baseline_directions_boat_24,
-            R.drawable.ic_core,
-            R.drawable.ic_dragon
-        )
+            val tabIcons = listOf(
+                R.drawable.ic_rocket,
+                R.drawable.ic_dragon,
+                R.drawable.ic_baseline_directions_boat_24,
+                R.drawable.ic_core,
+                R.drawable.ic_dragon
+            )
 
-        binding.vehiclesTabLayout.apply {
-            setupWithViewPager(binding.vehiclesViewPager)
-            for (position in 0..tabCount) {
-                getTabAt(position)?.setIcon(tabIcons[position])
+            vehiclesTabLayout.apply {
+                setupWithViewPager(vehiclesViewPager)
+                for (position in 0..tabCount) {
+                    getTabAt(position)?.setIcon(tabIcons[position])
+                }
             }
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 }

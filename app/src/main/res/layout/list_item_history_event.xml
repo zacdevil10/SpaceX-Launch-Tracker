@@ -94,11 +94,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_rocket"
-            android:tint="@color/color_on_surface"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/launch_details_icon_desc" />
+            android:contentDescription="@string/launch_details_icon_desc"
+            app:tint="@color/color_on_surface" />
 
         <TextView
             android:id="@+id/list_item_history_details_text"
@@ -134,11 +134,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/reddit"
-            android:tint="@color/color_on_surface"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/reddit_campaign_icon_desc" />
+            android:contentDescription="@string/reddit_campaign_icon_desc"
+            app:tint="@color/color_on_surface" />
 
         <TextView
             android:id="@+id/list_item_history_reddit_text"
@@ -174,11 +174,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/wikipedia"
-            android:tint="@color/color_on_surface"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/wikipedia_icon_desc" />
+            android:contentDescription="@string/wikipedia_icon_desc"
+            app:tint="@color/color_on_surface" />
 
         <TextView
             android:id="@+id/list_item_history_wiki_text"
@@ -215,11 +215,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_assignment_black_24dp"
-            android:tint="@color/color_on_surface"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/article_icon_desc" />
+            android:contentDescription="@string/article_icon_desc"
+            app:tint="@color/color_on_surface" />
 
         <TextView
             android:id="@+id/list_item_history_article_text"

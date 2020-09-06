@@ -3,7 +3,6 @@ package uk.co.zac_h.spacex.launches
 import android.os.Bundle
 import android.view.*
 import android.view.animation.AnimationUtils
-import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,8 +16,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
     SearchView.OnQueryTextListener, OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentLaunchesListBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentLaunchesListBinding? = null
 
     private var presenter: LaunchesContract.LaunchesPresenter? = null
     private lateinit var launchesAdapter: LaunchesAdapter
@@ -50,8 +48,8 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentLaunchesListBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentLaunchesListBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,14 +63,14 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
 
         launchesAdapter = LaunchesAdapter(context, launchesList)
 
-        binding.launchesRecycler.apply {
+        binding?.launchesRecycler?.apply {
             layoutManager = LinearLayoutManager(this@LaunchesListFragment.context)
             setHasFixedSize(true)
             adapter = launchesAdapter
         }
 
         launchParam?.let { launchId ->
-            binding.launchesSwipeRefresh.setOnRefreshListener {
+            binding?.launchesSwipeRefresh?.setOnRefreshListener {
                 presenter?.getLaunchList(launchId)
             }
 
@@ -87,12 +85,12 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
 
     override fun onResume() {
         super.onResume()
-        binding.launchesSwipeRefresh.isEnabled = true
+        binding?.launchesSwipeRefresh?.isEnabled = true
     }
 
     override fun onPause() {
         super.onPause()
-        binding.launchesSwipeRefresh.isEnabled = false
+        binding?.launchesSwipeRefresh?.isEnabled = false
     }
 
     override fun onStop() {
@@ -108,7 +106,7 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequests()
-        _binding = null
+        binding = null
     }
 
     override fun onDestroy() {
@@ -142,34 +140,36 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
             launchesList.addAll(it)
         }
 
-        binding.launchesRecycler.layoutAnimation =
+        binding?.launchesRecycler?.layoutAnimation =
             AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
         launchesAdapter.notifyDataSetChanged()
-        binding.launchesRecycler.scheduleLayoutAnimation()
+        binding?.launchesRecycler?.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        binding.progressIndicator.show()
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        binding.progressIndicator.hide()
+        binding?.progressIndicator?.hide()
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {
-        binding.launchesSwipeRefresh.isRefreshing = isRefreshing
+        binding?.launchesSwipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {
-        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (launchesList.isEmpty() || binding.progressIndicator.isShown)
-                launchParam?.let { launchId ->
-                    presenter?.getLaunchList(launchId)
-                }
+            binding?.let {
+                if (launchesList.isEmpty() || it.progressIndicator.isShown)
+                    launchParam?.let { launchId ->
+                        presenter?.getLaunchList(launchId)
+                    }
+            }
         }
     }
 }

@@ -35,7 +35,7 @@ class CrewLaunchAdapter(
 
     override fun getItemCount(): Int = launches.size
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val name: TextView = itemView.findViewById(R.id.list_item_crew_mission_name_text)
         val flight: TextView = itemView.findViewById(R.id.list_item_crew_mission_flight_text)
     }

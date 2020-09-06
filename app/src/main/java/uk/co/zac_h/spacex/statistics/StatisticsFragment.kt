@@ -17,22 +17,21 @@ import uk.co.zac_h.spacex.statistics.adapters.StatisticsPagerAdapter
 
 class StatisticsFragment : Fragment() {
 
-    private var _binding: FragmentStatisticsBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentStatisticsBinding? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentStatisticsBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentStatisticsBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as MainActivity).setSupportActionBar(binding.toolbar)
+        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
 
         val navController = NavHostFragment.findNavController(this)
         val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
@@ -40,9 +39,9 @@ class StatisticsFragment : Fragment() {
             AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
                 .setOpenableLayout(drawerLayout).build()
 
-        binding.toolbar.setupWithNavController(navController, appBarConfig)
+        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
-        binding.statisticsViewPager.apply {
+        binding?.statisticsViewPager?.apply {
             adapter = StatisticsPagerAdapter(childFragmentManager)
             offscreenPageLimit = 2
         }
@@ -53,8 +52,8 @@ class StatisticsFragment : Fragment() {
             R.drawable.ic_baseline_import_export_24
         )
 
-        binding.statisticsTabLayout.apply {
-            setupWithViewPager(binding.statisticsViewPager)
+        binding?.statisticsTabLayout?.apply {
+            setupWithViewPager(binding?.statisticsViewPager)
             for (position in 0..tabCount) {
                 getTabAt(position)?.setIcon(tabIcons[position])
             }
@@ -63,6 +62,6 @@ class StatisticsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 }

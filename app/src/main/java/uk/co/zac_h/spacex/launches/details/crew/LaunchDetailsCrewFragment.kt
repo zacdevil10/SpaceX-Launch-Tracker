@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.crew.CrewContract
@@ -16,8 +15,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentLaunchDetailsCrewBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentLaunchDetailsCrewBinding? = null
 
     private var presenter: LaunchDetailsCrewContract.Presenter? = null
 
@@ -47,8 +45,8 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentLaunchDetailsCrewBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentLaunchDetailsCrewBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,7 +58,7 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
 
         crewAdapter = CrewAdapter(this, crewArray)
 
-        binding.launchDetailsCrewRecycler.apply {
+        binding?.launchDetailsCrewRecycler?.apply {
             setHasFixedSize(true)
             adapter = crewAdapter
         }
@@ -88,7 +86,7 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
+        binding = null
     }
 
     override fun updateCrew(crew: List<CrewModel>) {
@@ -99,11 +97,11 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
     }
 
     override fun showProgress() {
-        binding.launchDetailsCrewProgress.show()
+        binding?.launchDetailsCrewProgress?.show()
     }
 
     override fun hideProgress() {
-        binding.launchDetailsCrewProgress.hide()
+        binding?.launchDetailsCrewProgress?.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
@@ -115,7 +113,7 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
     }
 
     override fun showError(error: String) {
-        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+
     }
 
     override fun networkAvailable() {

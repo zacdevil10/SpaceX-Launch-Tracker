@@ -48,7 +48,7 @@ class ShipsAdapter(private val ships: List<ShipExtendedModel>) :
 
     override fun getItemCount(): Int = ships.size
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val card: CardView = itemView.findViewById(R.id.list_item_vehicle_card)
         val image: ImageView = itemView.findViewById(R.id.list_item_vehicle_image)
         val title: TextView = itemView.findViewById(R.id.list_item_vehicle_title)

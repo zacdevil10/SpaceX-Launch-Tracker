@@ -4,7 +4,6 @@ import android.animation.ValueAnimator
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.animation.Easing
@@ -25,8 +24,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentLaunchHistoryBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentLaunchHistoryBinding? = null
 
     private var presenter: LaunchHistoryContract.LaunchHistoryPresenter? = null
 
@@ -48,8 +46,8 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentLaunchHistoryBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentLaunchHistoryBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -59,16 +57,16 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
 
         presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
 
-        binding.launchHistoryChipGroup.setOnCheckedChangeListener { group, _ ->
+        binding?.launchHistoryChipGroup?.setOnCheckedChangeListener { group, _ ->
             presenter?.updateFilter(
                 launchStats,
                 "success",
-                binding.launchHistorySuccessToggle.id == group.checkedChipId
+                binding?.launchHistorySuccessToggle?.id == group.checkedChipId
             )
             presenter?.updateFilter(
                 launchStats,
                 "failed",
-                binding.launchHistoryFailureToggle.id == group.checkedChipId
+                binding?.launchHistoryFailureToggle?.id == group.checkedChipId
             )
         }
 
@@ -77,7 +75,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
         }
 
         //Pie chart appearance
-        binding.launchHistoryPieChart.apply {
+        binding?.launchHistoryPieChart?.apply {
             isDrawHoleEnabled = true
             setHoleColor(ContextCompat.getColor(context, R.color.color_background))
             setDrawEntryLabels(false)
@@ -117,7 +115,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequests()
-        _binding = null
+        binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -194,7 +192,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
             setValueTextSize(11f)
         }
 
-        binding.launchHistoryPieChart.apply {
+        binding?.launchHistoryPieChart?.apply {
             if (animate) animateY(1400, Easing.EaseInOutCubic)
             this.centerText = context?.getString(R.string.pie_chart_title, "2006 - 2020")
                 ?.generateCenterSpannableText()
@@ -210,39 +208,39 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
                     if (animate) ValueAnimator.ofInt(0, it.successRate).apply {
                         duration = 1000
                         addUpdateListener { valueAnim ->
-                            binding.launchHistoryFalconOneRateProgress.progress =
+                            binding?.launchHistoryFalconOneRateProgress?.progress =
                                 valueAnim.animatedValue as Int
                         }
-                    }.start() else binding.launchHistoryFalconOneRateProgress.progress =
+                    }.start() else binding?.launchHistoryFalconOneRateProgress?.progress =
                         it.successRate
 
-                    binding.launchHistoryFalconOnePercentText.text =
+                    binding?.launchHistoryFalconOnePercentText?.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }
                 RocketType.FALCON_NINE -> {
                     if (animate) ValueAnimator.ofInt(0, it.successRate).apply {
                         duration = 1000
                         addUpdateListener { valueAnim ->
-                            binding.launchHistoryFalconNineRateProgress.progress =
+                            binding?.launchHistoryFalconNineRateProgress?.progress =
                                 valueAnim.animatedValue as Int
                         }
-                    }.start() else binding.launchHistoryFalconNineRateProgress.progress =
+                    }.start() else binding?.launchHistoryFalconNineRateProgress?.progress =
                         it.successRate
 
-                    binding.launchHistoryFalconNinePercentText.text =
+                    binding?.launchHistoryFalconNinePercentText?.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }
                 RocketType.FALCON_HEAVY -> {
                     if (animate) ValueAnimator.ofInt(0, it.successRate).apply {
                         duration = 1000
                         addUpdateListener { valueAnim ->
-                            binding.launchHistoryFalconHeavyRateProgress.progress =
+                            binding?.launchHistoryFalconHeavyRateProgress?.progress =
                                 valueAnim.animatedValue as Int
                         }
-                    }.start() else binding.launchHistoryFalconHeavyRateProgress.progress =
+                    }.start() else binding?.launchHistoryFalconHeavyRateProgress?.progress =
                         it.successRate
 
-                    binding.launchHistoryFalconHeavyPercentText.text =
+                    binding?.launchHistoryFalconHeavyPercentText?.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }
             }
@@ -250,7 +248,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
     }
 
     override fun showFilter(filterVisible: Boolean) {
-        binding.launchHistoryFilterConstraint.visibility = when (filterVisible) {
+        binding?.launchHistoryFilterConstraint?.visibility = when (filterVisible) {
             true -> View.VISIBLE
             false -> View.GONE
         }
@@ -267,21 +265,21 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
     }
 
     override fun showProgress() {
-        binding.progressIndicator.show()
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        binding.progressIndicator.hide()
+        binding?.progressIndicator?.hide()
     }
 
     override fun showError(error: String) {
-        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            presenter?.apply {
-                if (launchStats.isEmpty() || binding.progressIndicator.isShown) getLaunchList()
+            binding?.let {
+                if (launchStats.isEmpty() || it.progressIndicator.isShown) presenter?.getLaunchList()
             }
         }
     }

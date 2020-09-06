@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -23,8 +22,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var _binding: FragmentCoreDetailsBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentCoreDetailsBinding? = null
 
     private var presenter: CoreDetailsContract.CoreDetailsPresenter? = null
 
@@ -47,8 +45,8 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentCoreDetailsBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentCoreDetailsBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -64,7 +62,7 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
             AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
                 .setOpenableLayout(drawerLayout).build()
 
-        binding.toolbar.setupWithNavController(navController, appBarConfig)
+        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
         presenter = CoreDetailsPresenterImpl(this)
 
@@ -92,30 +90,32 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 
     override fun updateCoreDetails(coreModel: CoreExtendedModel) {
         coreModel.apply {
             core = coreModel
 
-            binding.coreDetailsScrollview.transitionName = id
+            binding?.apply {
+                coreDetailsScrollview.transitionName = id
 
-            binding.toolbar.title = serial
+                toolbar.title = serial
 
-            binding.coreDetailsSerialText.text = serial
-            binding.coreDetailsBlockText.text = block ?: "TBD"
-            binding.coreDetailsDetailsText.text = lastUpdate
-            binding.coreDetailsStatusText.text = status
-            binding.coreDetailsReuseText.text = reuseCount.toString()
-            binding.coreDetailsRtlsAttemptsText.text = attemptsRtls.toString()
-            binding.coreDetailsRtlsLandingsText.text = landingsRtls.toString()
-            binding.coreDetailsAsdsAttemptsText.text = attemptsAsds.toString()
-            binding.coreDetailsAsdsLandingsText.text = landingsAsds.toString()
+                coreDetailsSerialText.text = serial
+                coreDetailsBlockText.text = block ?: "TBD"
+                coreDetailsDetailsText.text = lastUpdate
+                coreDetailsStatusText.text = status
+                coreDetailsReuseText.text = reuseCount.toString()
+                coreDetailsRtlsAttemptsText.text = attemptsRtls.toString()
+                coreDetailsRtlsLandingsText.text = landingsRtls.toString()
+                coreDetailsAsdsAttemptsText.text = attemptsAsds.toString()
+                coreDetailsAsdsLandingsText.text = landingsAsds.toString()
+            }
         }
 
         coreModel.missions?.let {
-            binding.coreDetailsMissionRecycler.apply {
+            binding?.coreDetailsMissionRecycler?.apply {
                 layoutManager = LinearLayoutManager(this@CoreDetailsFragment.context)
                 setHasFixedSize(true)
                 adapter = MissionsAdapter(context, it)
@@ -124,14 +124,14 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
     }
 
     override fun showProgress() {
-        binding.progressIndicator.show()
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        binding.progressIndicator.hide()
+        binding?.progressIndicator?.hide()
     }
 
     override fun showError(error: String) {
-        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+
     }
 }
