@@ -8,12 +8,10 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -117,7 +115,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         val prefs = (context?.applicationContext as App).dashboardPreferencesRepo
 
-        prefs.visibleLive.observe(viewLifecycleOwner, Observer { mode ->
+        prefs.visibleLive.observe(viewLifecycleOwner, { mode ->
             mode?.let {
                 it.forEach { elements ->
                     when (elements.key) {
@@ -134,7 +132,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
             }
         })
 
-        pinnedPrefs.pinnedLive.observe(viewLifecycleOwner, Observer { mode ->
+        pinnedPrefs.pinnedLive.observe(viewLifecycleOwner, { mode ->
             mode?.let {
                 it.forEach { e ->
                     if (e.key.length < 4) {
@@ -392,7 +390,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     }
 
     override fun showError(error: String) {
-        Toast.makeText(activity, error, Toast.LENGTH_SHORT).show()
+
     }
 
     override fun networkAvailable() {
