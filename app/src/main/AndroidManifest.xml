@@ -15,6 +15,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.DayNight">
         <activity android:name=".base.MainActivity">
+
+        <service
+            android:name=".utils.widgets.services.LaunchWidgetService"
+            android:exported="false" />
+
+        <receiver android:name=".utils.widgets.LaunchCountdownWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/launch_countdown_widget_info" />
+        </receiver>
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
