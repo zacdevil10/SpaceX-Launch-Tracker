@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.chip.Chip
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.StatsPadModel
+import uk.co.zac_h.spacex.model.spacex.StatsPadModel
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
 class PadStatsSitesAdapter(private var sites: ArrayList<StatsPadModel>) :
@@ -18,7 +19,7 @@ class PadStatsSitesAdapter(private var sites: ArrayList<StatsPadModel>) :
             0 -> {
                 HeaderViewHolder(
                     LayoutInflater.from(parent.context).inflate(
-                        R.layout.list_item_heading,
+                        R.layout.list_item_pad_stats_heading,
                         parent,
                         false
                     )
@@ -80,6 +81,6 @@ class PadStatsSitesAdapter(private var sites: ArrayList<StatsPadModel>) :
     }
 
     class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var heading: TextView = itemView.findViewById(R.id.list_item_heading)
+        var heading: Chip = itemView.findViewById(R.id.list_item_heading)
     }
 }

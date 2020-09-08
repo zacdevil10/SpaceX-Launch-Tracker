@@ -1,69 +1,127 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_pad_stats.*
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.StatsPadModel
+import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.databinding.FragmentPadStatsBinding
+import uk.co.zac_h.spacex.model.spacex.StatsPadModel
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
-import uk.co.zac_h.spacex.utils.HeaderItemDecoration
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.utils.views.HeaderItemDecoration
 
-class PadStatsFragment : Fragment(), PadStatsView {
+class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: PadStatsPresenter
+    private var binding: FragmentPadStatsBinding? = null
+
+    private var presenter: PadStatsContract.PadStatsPresenter? = null
 
     private lateinit var padsAdapter: PadStatsSitesAdapter
+
+    private lateinit var pads: ArrayList<StatsPadModel>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+
+        pads = savedInstanceState?.getParcelableArrayList("pads") ?: ArrayList()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
-        inflater.inflate(R.layout.fragment_pad_stats, container, false)
+    ): View? {
+        binding = FragmentPadStatsBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (!::presenter.isInitialized) presenter =
-            PadStatsPresenterImpl(this, PadStatsInteractorImpl())
+        hideProgress()
 
-        presenter.getPads()
+        presenter = PadStatsPresenterImpl(this, PadStatsInteractorImpl())
+
+        padsAdapter = PadStatsSitesAdapter(pads)
+
+        binding?.padStatsLaunchSitesRecycler?.apply {
+            layoutManager = LinearLayoutManager(this@PadStatsFragment.context)
+            setHasFixedSize(true)
+            adapter = padsAdapter
+            addItemDecoration(
+                HeaderItemDecoration(
+                    this,
+                    padsAdapter.isHeader(),
+                    false
+                )
+            )
+        }
+
+        if (pads.isEmpty()) presenter?.getPads()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("pads", pads)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        pad_stats_launch_sites_recycler.adapter = null
+        presenter?.cancelRequests()
+        binding = null
     }
 
-    override fun setPadsList(pads: ArrayList<StatsPadModel>) {
-        padsAdapter = PadStatsSitesAdapter(pads)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_statistics_pads, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
 
-        pad_stats_launch_sites_recycler.apply {
-            layoutManager = LinearLayoutManager(this@PadStatsFragment.context)
-            setHasFixedSize(true)
-            adapter = padsAdapter
-            addItemDecoration(HeaderItemDecoration(this, padsAdapter.isHeader()))
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.reload -> {
+            presenter?.getPads()
+            true
         }
+        else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updateRecycler() {
+    override fun updateRecycler(pads: ArrayList<StatsPadModel>) {
+        this.pads.clear()
+        this.pads.addAll(pads)
+
         padsAdapter.notifyDataSetChanged()
     }
 
     override fun showProgress() {
-        pad_stats_sites_progress_bar.visibility = View.VISIBLE
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        pad_stats_sites_progress_bar.visibility = View.GONE
+        binding?.progressIndicator?.hide()
     }
 
     override fun showError(error: String) {
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            binding?.let {
+                if (pads.isEmpty() || it.progressIndicator.isShown) presenter?.getPads()
+            }
+        }
     }
 }

@@ -1,50 +1,27 @@
 package uk.co.zac_h.spacex.dashboard
 
-import android.util.Log
-import kotlinx.coroutines.*
-import retrofit2.HttpException
+import retrofit2.Call
+import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
-import kotlin.coroutines.CoroutineContext
+import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class DashboardWearInteractorImpl : DashboardWearInteractor {
+class DashboardWearInteractorImpl : BaseNetwork(), DashboardWearInteractor {
 
-    private val parentJob = Job()
-    private val coroutineContext: CoroutineContext
-        get() = parentJob + Dispatchers.Default
-
-    private val scope = CoroutineScope(coroutineContext)
+    private var call: Call<LaunchesModel>? = null
 
     override fun getSingleLaunch(id: String, listener: DashboardWearInteractor.Callback) {
-        scope.launch {
-            val response = async(SupervisorJob(parentJob)) {
-                SpaceXInterface.create().getSingleLaunch(id)
-            }
-
-            withContext(Dispatchers.Main) {
-                try {
-                    if (response.await().isSuccessful) {
-                        when (id) {
-                            "next" -> listener.onNextSuccess(response.await().body())
-                            "latest" -> listener.onLatestSuccess(response.await().body())
-                            else -> Log.e(
-                                this@DashboardWearInteractorImpl.javaClass.name,
-                                "Invalid launch ID"
-                            )
-                        }
-                    } else {
-                        listener.onError("Error: ${response.await().code()}")
+        call = SpaceXInterface.create().getSingleLaunch(id).apply {
+            makeCall {
+                onResponseSuccess = {
+                    when (id) {
+                        "next" -> listener.onNextSuccess(it.body())
+                        "latest" -> listener.onLatestSuccess(it.body())
                     }
-                } catch (e: HttpException) {
-                    listener.onError("Error: ${e.localizedMessage}")
-                } catch (e: Throwable) {
-                    Log.e(
-                        this@DashboardWearInteractorImpl.javaClass.name,
-                        e.localizedMessage ?: "Job failed to execute"
-                    )
                 }
+                onResponseFailure = { listener.onError(it) }
             }
         }
     }
 
-    override fun cancelAllRequests() = coroutineContext.cancel()
+    override fun cancelAllRequests() = call?.cancel()
 }

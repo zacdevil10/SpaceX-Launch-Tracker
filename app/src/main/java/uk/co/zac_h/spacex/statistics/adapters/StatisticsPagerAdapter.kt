@@ -15,7 +15,7 @@ class StatisticsPagerAdapter(fragmentManager: FragmentManager) :
             0 -> LaunchHistoryFragment()
             1 -> LaunchRateFragment()
             2 -> PadStatsFragment()
-            else -> throw IllegalArgumentException("")
+            else -> throw IllegalArgumentException("Invalid position: $position")
         }
 
     override fun getCount(): Int = 3
@@ -24,7 +24,7 @@ class StatisticsPagerAdapter(fragmentManager: FragmentManager) :
         0 -> "Launch History"
         1 -> "Launch Rate"
         2 -> "Launch/Landing Pads"
-        else -> throw IllegalArgumentException("")
+        else -> super.getPageTitle(position)
     }
 
 

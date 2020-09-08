@@ -4,63 +4,116 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_rocket.*
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.RocketsModel
+import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.databinding.FragmentRocketBinding
+import uk.co.zac_h.spacex.model.spacex.RocketsModel
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.vehicles.VehiclesContract
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 
-class RocketFragment : Fragment(), RocketView {
+class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: RocketPresenter
+    private var binding: FragmentRocketBinding? = null
+
+    private var presenter: VehiclesContract.Presenter? = null
 
     private lateinit var rocketsAdapter: RocketsAdapter
-    private val rocketsArray = ArrayList<RocketsModel>()
+    private lateinit var rocketsArray: ArrayList<RocketsModel>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        rocketsArray = savedInstanceState?.getParcelableArrayList("rockets") ?: ArrayList()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_rocket, container, false)
+    ): View? {
+        binding = FragmentRocketBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        hideProgress()
 
         presenter = RocketPresenterImpl(this, RocketInteractorImpl())
 
         rocketsAdapter = RocketsAdapter(rocketsArray)
 
-        rocket_recycler.apply {
+        binding?.rocketRecycler?.apply {
             layoutManager = LinearLayoutManager(this@RocketFragment.context)
             setHasFixedSize(true)
             adapter = rocketsAdapter
         }
 
-        if (rocketsArray.isEmpty()) presenter.getRockets()
+        binding?.rocketSwipeRefresh?.setOnRefreshListener {
+            presenter?.getVehicles()
+        }
+
+        if (rocketsArray.isEmpty()) presenter?.getVehicles()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("rockets", rocketsArray)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequest()
+        presenter?.cancelRequest()
+        binding = null
     }
 
-    override fun updateRockets(rockets: List<RocketsModel>) {
+    override fun updateVehicles(vehicles: List<RocketsModel>) {
         rocketsArray.clear()
-        rocketsArray.addAll(rockets)
+        rocketsArray.addAll(vehicles)
 
+        binding?.rocketRecycler?.layoutAnimation =
+            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
         rocketsAdapter.notifyDataSetChanged()
+        binding?.rocketRecycler?.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        rocket_progress_bar.visibility = View.VISIBLE
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        rocket_progress_bar.visibility = View.GONE
+        binding?.progressIndicator?.hide()
     }
 
-    override fun error(error: String) {
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    override fun toggleSwipeRefresh(refreshing: Boolean) {
+        binding?.rocketSwipeRefresh?.isRefreshing = refreshing
+    }
+
+    override fun showError(error: String) {
+
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            binding?.let {
+                if (rocketsArray.isEmpty() || it.progressIndicator.isShown)
+                    presenter?.getVehicles()
+            }
+        }
     }
 }

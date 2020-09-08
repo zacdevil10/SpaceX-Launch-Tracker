@@ -1,78 +1,73 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
-import com.github.mikephil.charting.data.BarEntry
-import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
+import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.utils.RocketIds
+import uk.co.zac_h.spacex.utils.models.RateStatsModel
 
 class LaunchRatePresenterImpl(
-    private val view: LaunchRateView,
-    private val interactor: LaunchRateInteractor
-) : LaunchRatePresenter, LaunchRateInteractor.InteractorCallback {
+    private val view: LaunchRateContract.LaunchRateView,
+    private val interactor: LaunchRateContract.LaunchRateInteractor
+) : LaunchRateContract.LaunchRatePresenter, LaunchRateContract.InteractorCallback {
 
-    private lateinit var launchesList: List<LaunchesModel>
-
-    private var filterFalconOne = true
-    private var filterFalconNine = true
-    private var filterFalconHeavy = true
-
-    override fun getLaunchList() {
-        if (!::launchesList.isInitialized) {
-            view.showProgress()
-            interactor.getLaunches(this)
-        } else {
-            onSuccess(launchesList)
-        }
+    override fun getLaunchList(api: SpaceXInterface) {
+        view.showProgress()
+        interactor.getLaunches(api, this)
     }
 
-    override fun updateFilter(id: String, isChecked: Boolean) {
-        when (id) {
-            "falcon1" -> filterFalconOne = isChecked
-            "falcon9" -> filterFalconNine = isChecked
-            "falconheavy" -> filterFalconHeavy = isChecked
-        }
-        if (::launchesList.isInitialized && launchesList.isNotEmpty()) onSuccess(launchesList)
+    override fun addLaunchList(launches: List<RateStatsModel>) {
+        view.updateBarChart(launches, false)
     }
 
     override fun cancelRequests() {
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(launches: List<LaunchesModel>?) {
-        launches?.let {
-            if (!::launchesList.isInitialized) launchesList = launches
+    override fun onSuccess(launchDocs: LaunchesExtendedDocsModel?, animate: Boolean) {
+        launchDocs?.docs?.let { launches ->
+            val rateStatsList = ArrayList<RateStatsModel>()
 
-            val entries = ArrayList<BarEntry>()
-
-            val dataMap = LinkedHashMap<Int, Int>()
-            val dataMapFuture = LinkedHashMap<Int, Int>()
-
-            for (i in 2006..launches[launches.size - 1].launchYear) {
-                dataMap[i + 1] = 0
-            }
-
+            var year = 2005
             launches.forEach {
-                if (!filterFalconOne && it.rocket.id == "falcon1") return@forEach
-                if (!filterFalconNine && it.rocket.id == "falcon9") return@forEach
-                if (!filterFalconHeavy && it.rocket.id == "falconheavy") return@forEach
-
-                if (it.launchDateUnix.times(1000) <= System.currentTimeMillis()) {
-                    dataMap[it.launchYear + 1] = dataMap[it.launchYear + 1]?.plus(1) ?: 1
+                val newYear =
+                    it.launchDateLocal?.substring(0, 4).toString().toIntOrNull() ?: return@forEach
+                if (newYear > year) {
+                    if (newYear != year++) {
+                        for (y in year until newYear) rateStatsList.add(RateStatsModel(y))
+                    }
+                    rateStatsList.add(RateStatsModel(newYear))
+                    year = newYear
+                }
+                if (!it.upcoming!!) {
+                    it.success?.let { success ->
+                        if (success) {
+                            when (it.rocket?.id) {
+                                RocketIds.FALCON_ONE -> {
+                                    rateStatsList[rateStatsList.lastIndex].falconOne++
+                                }
+                                RocketIds.FALCON_NINE -> {
+                                    rateStatsList[rateStatsList.lastIndex].falconNine++
+                                }
+                                RocketIds.FALCON_HEAVY -> {
+                                    rateStatsList[rateStatsList.lastIndex].falconHeavy++
+                                }
+                                else -> {
+                                    return@forEach
+                                }
+                            }
+                        } else {
+                            rateStatsList[rateStatsList.lastIndex].failure++
+                        }
+                    }
                 } else {
-                    dataMapFuture[it.launchYear + 1] =
-                        dataMapFuture[it.launchYear + 1]?.plus(1) ?: 1
+                    rateStatsList[rateStatsList.lastIndex].planned++
                 }
             }
 
-            dataMap.forEach {
-                entries.add(
-                    BarEntry(
-                        it.key.toFloat(),
-                        floatArrayOf(it.value.toFloat(), dataMapFuture[it.key]?.toFloat() ?: 0f)
-                    )
-                )
+            view.apply {
+                hideProgress()
+                updateBarChart(rateStatsList, animate)
             }
-
-            view.hideProgress()
-            view.updateBarChart(entries, dataMap.size + 1)
         }
     }
 

@@ -12,7 +12,7 @@ class LaunchesPagerAdapter(fragmentManager: FragmentManager) :
         when (position) {
             0 -> LaunchesListFragment.newInstance("upcoming")
             1 -> LaunchesListFragment.newInstance("past")
-            else -> throw IllegalArgumentException("")
+            else -> throw IllegalArgumentException("Invalid position: $position")
         }
 
     override fun getCount(): Int = 2
@@ -20,7 +20,7 @@ class LaunchesPagerAdapter(fragmentManager: FragmentManager) :
     override fun getPageTitle(position: Int): CharSequence? = when (position) {
         0 -> "Upcoming"
         1 -> "Past"
-        else -> throw IllegalArgumentException("")
+        else -> super.getPageTitle(position)
     }
 
 }

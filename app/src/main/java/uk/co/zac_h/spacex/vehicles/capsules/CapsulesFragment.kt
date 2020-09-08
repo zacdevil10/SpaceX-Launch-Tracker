@@ -1,64 +1,165 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
+import android.view.*
+import android.view.animation.AnimationUtils
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.fragment_capsules.*
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.CapsulesModel
+import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.databinding.FragmentCapsulesBinding
+import uk.co.zac_h.spacex.model.spacex.CapsulesModel
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.vehicles.VehiclesContract
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
 
-class CapsulesFragment : Fragment(), CapsulesView {
+class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
+    SearchView.OnQueryTextListener,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: CapsulesPresenter
+    private var binding: FragmentCapsulesBinding? = null
+
+    private var presenter: VehiclesContract.Presenter? = null
 
     private lateinit var capsulesAdapter: CapsulesAdapter
-    private val capsulesArray = ArrayList<CapsulesModel>()
+    private lateinit var capsulesArray: ArrayList<CapsulesModel>
+
+    private var sortNew = false
+    private lateinit var searchView: SearchView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+
+        capsulesArray =
+            savedInstanceState?.getParcelableArrayList("capsules") ?: ArrayList()
+        sortNew = savedInstanceState?.getBoolean("sort") ?: false
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_capsules, container, false)
+    ): View? {
+        binding = FragmentCapsulesBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        hideProgress()
+
         presenter = CapsulesPresenterImpl(this, CapsulesInteractorImpl())
 
-        capsules_recycler.apply {
+        capsulesAdapter = CapsulesAdapter(capsulesArray)
+
+        binding?.capsulesRecycler?.apply {
             layoutManager = LinearLayoutManager(this@CapsulesFragment.context)
             setHasFixedSize(true)
-            adapter = CapsulesAdapter(capsulesArray)
+            adapter = capsulesAdapter
         }
 
-        if (capsulesArray.isEmpty()) presenter.getCapsules()
+        binding?.capsulesSwipeRefresh?.setOnRefreshListener {
+            presenter?.getVehicles()
+        }
+
+        if (capsulesArray.isEmpty()) presenter?.getVehicles()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("capsules", capsulesArray)
+        outState.putBoolean("sort", sortNew)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequests()
+        presenter?.cancelRequest()
+        binding = null
     }
 
-    override fun updateCapsules(capsules: List<CapsulesModel>) {
-        capsulesArray.clear()
-        capsulesArray.addAll(capsules)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_vehicles_cores, menu)
 
+        searchView = menu.findItem(R.id.app_bar_search).actionView as SearchView
+        searchView.setOnQueryTextListener(this)
+
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        when (item.itemId) {
+            R.id.sort_new -> {
+                if (!sortNew) {
+                    sortNew = true
+                    capsulesArray.reverse()
+                    capsulesAdapter.notifyDataSetChanged()
+                }
+                true
+            }
+            R.id.sort_old -> {
+                if (sortNew) {
+                    sortNew = false
+                    capsulesArray.reverse()
+                    capsulesAdapter.notifyDataSetChanged()
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        capsulesAdapter.filter.filter(query)
+        return false
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        capsulesAdapter.filter.filter(newText)
+        return false
+    }
+
+    override fun updateVehicles(vehicles: List<CapsulesModel>) {
+        capsulesArray.clear()
+        capsulesArray.addAll(if (sortNew) vehicles.reversed() else vehicles)
+
+        binding?.capsulesRecycler?.layoutAnimation =
+            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
         capsulesAdapter.notifyDataSetChanged()
+        binding?.capsulesRecycler?.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        capsules_progress_bar.visibility = View.VISIBLE
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        capsules_progress_bar.visibility = View.GONE
+        binding?.progressIndicator?.hide()
     }
 
-    override fun error(error: String) {
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    override fun toggleSwipeRefresh(refreshing: Boolean) {
+        binding?.capsulesSwipeRefresh?.isRefreshing = refreshing
+    }
+
+    override fun showError(error: String) {
+
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            binding?.let {
+                if (capsulesArray.isEmpty() || it.progressIndicator.isShown) presenter?.getVehicles()
+            }
+        }
     }
 }

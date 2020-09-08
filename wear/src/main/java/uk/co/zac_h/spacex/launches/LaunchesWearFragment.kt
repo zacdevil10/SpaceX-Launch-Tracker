@@ -10,7 +10,7 @@ import androidx.wear.widget.WearableLinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_launches_wear.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.launches.adapter.LaunchesWearAdapter
-import uk.co.zac_h.spacex.model.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.LaunchesModel
 
 class LaunchesWearFragment : Fragment(), LaunchesWearView {
 

@@ -1,54 +1,43 @@
 package uk.co.zac_h.spacex.dashboard
 
-import uk.co.zac_h.spacex.model.LaunchesModel
-import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
+import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
+import uk.co.zac_h.spacex.rest.SpaceXInterface
 import java.util.concurrent.TimeUnit
 
 class DashboardPresenterImpl(
-    private val view: DashboardView,
-    private val prefs: PinnedSharedPreferencesHelper,
-    private val interactor: DashboardInteractor
-) : DashboardPresenter,
-    DashboardInteractor.InteractorCallback {
+    private val view: DashboardContract.DashboardView,
+    private val interactor: DashboardContract.DashboardInteractor
+) : DashboardContract.DashboardPresenter,
+    DashboardContract.InteractorCallback {
 
-    private val launchesMap = LinkedHashMap<String, LaunchesModel>()
-    private val pinnedLaunches = ArrayList<LaunchesModel>()
+    override fun getLatestLaunches(
+        next: LaunchesExtendedModel?,
+        latest: LaunchesExtendedModel?,
+        api: SpaceXInterface
+    ) {
+        view.showPinnedMessage()
 
-    override fun getLatestLaunches(isRefresh: Boolean) {
-        view.showProgress()
-        view.hidePinnedHeading()
+        interactor.apply {
+            if (next == null) {
+                view.toggleNextProgress(true)
+                getSingleLaunch("next", api, this@DashboardPresenterImpl)
+            } else onSuccess("next", next)
 
-        if (isRefresh) {
-            launchesMap.clear()
-            pinnedLaunches.clear()
+            if (latest == null) {
+                view.toggleLatestProgress(true)
+                getSingleLaunch("latest", api, this@DashboardPresenterImpl)
+            } else onSuccess("latest", latest)
         }
+    }
 
-        if (launchesMap.isEmpty()) {
-            interactor.apply {
-                getSingleLaunch("next", this@DashboardPresenterImpl)
-                getSingleLaunch("latest", this@DashboardPresenterImpl)
-            }
-
-            if (!isRefresh) view.setLaunchesList(launchesMap)
-        }
-
-        if (pinnedLaunches.isEmpty()) {
-            interactor.apply {
-                prefs.getAllPinnedLaunches()?.forEach {
-                    if (it.value as Boolean) getSingleLaunch(
-                        it.key,
-                        this@DashboardPresenterImpl
-                    )
-                }
-            }
-
-            if (!isRefresh) view.setPinnedList(pinnedLaunches)
-        }
+    override fun getSingleLaunch(id: String, api: SpaceXInterface) {
+        view.togglePinnedProgress(true)
+        interactor.getSingleLaunch(id, api, this)
     }
 
     override fun updateCountdown(time: Long) {
         val remaining = String.format(
-            "%02d:%02d:%02d:%02d",
+            "T-%02d:%02d:%02d:%02d",
             TimeUnit.MILLISECONDS.toDays(time),
             TimeUnit.MILLISECONDS.toHours(time) - TimeUnit.DAYS.toHours(
                 TimeUnit.MILLISECONDS.toDays(
@@ -74,41 +63,59 @@ class DashboardPresenterImpl(
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(id: String, launchesModel: LaunchesModel?) {
-        launchesModel?.let {
-            when (id) {
-                "next", "latest" -> {
-                    launchesMap[id] = it
-                }
-                else -> {
-                    pinnedLaunches.add(it)
-                    view.updatePinnedList()
-                    view.showPinnedHeading()
-                }
-            }
+    override fun toggleNextLaunchVisibility(visible: Boolean) {
+        view.apply {
+            if (visible) showNextLaunch() else hideNextLaunch()
         }
+    }
 
-        if (launchesMap.size == 2) {
-            launchesMap["next"]?.let { launch ->
-                launch.tbd?.let {
-                    if (!it) {
-                        view.apply {
-                            setCountdown(launch.launchDateUnix)
+    override fun toggleLatestLaunchVisibility(visible: Boolean) {
+        view.apply {
+            if (visible) showLatestLaunch() else hideLatestLaunch()
+        }
+    }
+
+    override fun togglePinnedList(visible: Boolean) {
+        view.apply {
+            if (visible) showPinnedList() else hidePinnedList()
+        }
+    }
+
+    override fun onSuccess(id: String, launchModel: LaunchesExtendedModel?) {
+        launchModel?.let { launch ->
+            when (id) {
+                "next" -> {
+                    view.updateNextLaunch(launch)
+                    view.toggleNextProgress(false)
+                    val time =
+                        (launch.launchDateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
+                    launch.tbd?.let { tbd ->
+                        if (!tbd && time >= 0) view.apply {
+                            setCountdown(time)
                             showCountdown()
-                        }
-                    } else {
+                        } else view.hideCountdown()
+                    } ?: run {
                         view.hideCountdown()
                     }
                 }
+                "latest" -> {
+                    view.updateLatestLaunch(launch)
+                    view.toggleLatestProgress(false)
+                }
+                else -> {
+                    view.hidePinnedMessage()
+                    view.updatePinnedList(id, launch)
+                    view.togglePinnedProgress(false)
+                }
             }
-            view.updateLaunchesList()
         }
-        if (!interactor.hasActiveRequest()) view.hideProgress()
         view.toggleSwipeProgress(false)
     }
 
     override fun onError(error: String) {
-        view.showError(error)
-        view.toggleSwipeProgress(false)
+        view.apply {
+            showError(error)
+            toggleSwipeProgress(false)
+        }
     }
 }

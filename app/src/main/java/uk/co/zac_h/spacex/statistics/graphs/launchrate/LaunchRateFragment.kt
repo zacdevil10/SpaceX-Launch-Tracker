@@ -1,117 +1,226 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
-import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
+import android.view.*
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
-import kotlinx.android.synthetic.main.fragment_launch_rate.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.databinding.FragmentLaunchRateBinding
+import uk.co.zac_h.spacex.utils.models.RateStatsModel
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchRateFragment : Fragment(), LaunchRateView {
+class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private lateinit var presenter: LaunchRatePresenter
+    private var binding: FragmentLaunchRateBinding? = null
+
+    private var presenter: LaunchRateContract.LaunchRatePresenter? = null
+
+    private lateinit var statsList: ArrayList<RateStatsModel>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+
+        statsList = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
-        inflater.inflate(R.layout.fragment_launch_rate, container, false)
+    ): View? {
+        binding = FragmentLaunchRateBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (!::presenter.isInitialized) presenter =
-            LaunchRatePresenterImpl(this, LaunchRateInteractorImpl())
+        hideProgress()
 
-        launch_rate_falcon_one_toggle.setOnCheckedChangeListener { _, isChecked ->
-            presenter.updateFilter("falcon1", isChecked)
-        }
-        launch_rate_falcon_nine_toggle.setOnCheckedChangeListener { _, isChecked ->
-            presenter.updateFilter("falcon9", isChecked)
-        }
+        presenter = LaunchRatePresenterImpl(this, LaunchRateInteractorImpl())
 
-        launch_rate_falcon_heavy_toggle.setOnCheckedChangeListener { _, isChecked ->
-            presenter.updateFilter("falconheavy", isChecked)
-        }
+        if (statsList.isEmpty()) presenter?.getLaunchList()
+        else presenter?.addLaunchList(statsList)
 
-        launch_rate_bar_chart.apply {
+        binding?.launchRateBarChart?.apply {
             xAxis.apply {
                 position = XAxis.XAxisPosition.BOTTOM
-                textColor = Color.WHITE
+                textColor = ContextCompat.getColor(context, R.color.color_on_background)
                 valueFormatter = object : ValueFormatter() {
                     override fun getFormattedValue(value: Float): String {
                         return "'" + value.toInt().toString().takeLast(2)
                     }
                 }
-                granularity = 1f
                 setDrawGridLines(false)
             }
             axisLeft.apply {
-                textColor = Color.WHITE
+                textColor = ContextCompat.getColor(context, R.color.color_on_background)
+                isGranularityEnabled = true
                 granularity = 1f
                 axisMinimum = 0f
+                setDrawGridLines(false)
             }
             axisRight.isEnabled = false
             setScaleEnabled(false)
             description.isEnabled = false
             setDrawBorders(false)
-
+            isHighlightFullBarEnabled = true
             legend.apply {
-                textColor = Color.WHITE
-
+                textColor = ContextCompat.getColor(context, R.color.color_on_background)
             }
-        }
 
-        presenter.getLaunchList()
+            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+                override fun onValueSelected(e: Entry?, h: Highlight?) {
+                    e?.let {
+                        val stats = statsList[(e.x - 2006).toInt()]
+
+                        binding?.apply {
+                            launchRateKey.visibility = View.VISIBLE
+
+                            launchRateYear.text = stats.year.toString()
+
+                            launchRateFalconOneLabel.visibility =
+                                if (stats.falconOne == 0f) View.GONE else View.VISIBLE
+                            launchRateFalconOneValue.visibility =
+                                if (stats.falconOne == 0f) View.GONE else View.VISIBLE
+                            launchRateFalconOneValue.text = stats.falconOne.toInt().toString()
+
+                            launchRateFalconNineLabel.visibility =
+                                if (stats.falconNine == 0f) View.GONE else View.VISIBLE
+                            launchRateFalconNineValue.visibility =
+                                if (stats.falconNine == 0f) View.GONE else View.VISIBLE
+                            launchRateFalconNineValue.text = stats.falconNine.toInt().toString()
+
+                            launchRateFalconHeavyLabel.visibility =
+                                if (stats.falconHeavy == 0f) View.GONE else View.VISIBLE
+                            launchRateFalconHeavyValue.visibility =
+                                if (stats.falconHeavy == 0f) View.GONE else View.VISIBLE
+                            launchRateFalconHeavyValue.text =
+                                stats.falconHeavy.toInt().toString()
+
+                            launchRateFailuresLabel.visibility =
+                                if (stats.failure == 0f) View.GONE else View.VISIBLE
+                            launchRateFailuresValue.visibility =
+                                if (stats.failure == 0f) View.GONE else View.VISIBLE
+                            launchRateFailuresValue.text = stats.failure.toInt().toString()
+
+                            launchRateFutureLabel.visibility =
+                                if (stats.planned == 0f) View.GONE else View.VISIBLE
+                            launchRateFutureValue.visibility =
+                                if (stats.planned == 0f) View.GONE else View.VISIBLE
+                            launchRateFutureValue.text = stats.planned.toInt().toString()
+
+                            launchRateTotalValue.text = e.y.toInt().toString()
+                        }
+                    }
+                }
+
+                override fun onNothingSelected() {
+                    binding?.launchRateKey?.visibility = View.GONE
+                }
+            })
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelableArrayList("launches", statsList)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter.cancelRequests()
+        presenter?.cancelRequests()
+        binding = null
     }
 
-    override fun updateBarChart(entries: ArrayList<BarEntry>, dataSize: Int) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_statistics_pads, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.reload -> {
+            statsList.clear()
+            presenter?.getLaunchList()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
+    }
+
+    override fun updateBarChart(stats: List<RateStatsModel>, animate: Boolean) {
+        if (statsList.isEmpty()) statsList.addAll(stats)
+
         val colors = ArrayList<Int>()
 
-        colors.add(ColorTemplate.rgb("29b6f6"))
-        colors.add(ColorTemplate.rgb("FFFFFF"))
+        colors.add(ColorTemplate.rgb("29b6f6")) //F1
+        colors.add(ColorTemplate.rgb("9ccc65")) //F9
+        colors.add(ColorTemplate.rgb("ff7043")) //FH
+        colors.add(ColorTemplate.rgb("b00020")) //Failures
+        colors.add(ColorTemplate.rgb("66bb6a")) //Future
 
-        val set = BarDataSet(entries, "Launches").apply {
+        val entries = ArrayList<BarEntry>()
+
+        var max = 0f
+
+        stats.forEach {
+            val newMax = it.falconOne + it.falconNine + it.falconHeavy + it.failure + it.planned
+            if (newMax > max) max = newMax
+            entries.add(
+                BarEntry(
+                    it.year.toFloat(),
+                    floatArrayOf(
+                        it.falconOne,
+                        it.falconNine,
+                        it.falconHeavy,
+                        it.failure,
+                        it.planned
+                    )
+                )
+            )
+        }
+
+        val set = BarDataSet(entries, "").apply {
             setColors(colors)
-            valueTextColor = Color.WHITE
-            valueTextSize = 9f
-            valueFormatter = object : ValueFormatter() {
-                override fun getBarStackedLabel(value: Float, stackedEntry: BarEntry): String {
-                    val vals = stackedEntry.yVals
-                    // find out if we are on top of the stack
-                    return if (vals[vals.size - 1] == value) {
-                        // return the "sum" across all stack values
-                        "" + stackedEntry.y.toInt()
-                    } else {
-                        "" + value.toInt()
-                    }
-                }
-            }
-            stackLabels = arrayOf("Past", "Future")
+            setDrawValues(false)
+
+            stackLabels = arrayOf("Falcon 1", "Falcon 9", "Falcon Heavy", "Failures", "Future")
         }
 
         val dataSets = ArrayList<IBarDataSet>()
         dataSets.add(set)
 
-        launch_rate_bar_chart.apply {
-            xAxis.apply {
-                setLabelCount(dataSize, true)
+        binding?.launchRateBarChart?.apply {
+            if (animate) animateY(400, Easing.Linear)
+            xAxis.labelCount = stats.size
+            axisLeft.apply {
+                axisMinimum = 0f
+                axisMaximum = if ((max.toInt() % 2) == 0) max else max.plus(1)
+                labelCount =
+                    if ((max.toInt() % 2) == 0) max.toInt() / 2 else max.toInt().plus(1) / 2
             }
             data = BarData(dataSets)
             invalidate()
@@ -119,14 +228,22 @@ class LaunchRateFragment : Fragment(), LaunchRateView {
     }
 
     override fun showProgress() {
-        launch_rate_progress_bar.visibility = View.VISIBLE
+        binding?.progressIndicator?.show()
     }
 
     override fun hideProgress() {
-        launch_rate_progress_bar.visibility = View.GONE
+        binding?.progressIndicator?.hide()
     }
 
     override fun showError(error: String) {
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+
+    }
+
+    override fun networkAvailable() {
+        activity?.runOnUiThread {
+            binding?.let {
+                if (statsList.isEmpty() || it.progressIndicator.isShown) presenter?.getLaunchList()
+            }
+        }
     }
 }

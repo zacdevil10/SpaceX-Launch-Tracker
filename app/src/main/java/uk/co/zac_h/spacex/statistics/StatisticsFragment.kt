@@ -1,26 +1,67 @@
 package uk.co.zac_h.spacex.statistics
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_statistics.*
-
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.MainActivity
+import uk.co.zac_h.spacex.databinding.FragmentStatisticsBinding
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsPagerAdapter
 
 class StatisticsFragment : Fragment() {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_statistics, container, false)
+    private var binding: FragmentStatisticsBinding? = null
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentStatisticsBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        statistics_view_pager.adapter = StatisticsPagerAdapter(childFragmentManager)
-        statistics_tab_layout.setupWithViewPager(statistics_view_pager)
+        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
+
+        val navController = NavHostFragment.findNavController(this)
+        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        val appBarConfig =
+            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
+                .setOpenableLayout(drawerLayout).build()
+
+        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+
+        binding?.statisticsViewPager?.apply {
+            adapter = StatisticsPagerAdapter(childFragmentManager)
+            offscreenPageLimit = 2
+        }
+
+        val tabIcons = listOf(
+            R.drawable.ic_history_black_24dp,
+            R.drawable.ic_baseline_bar_chart_24,
+            R.drawable.ic_baseline_import_export_24
+        )
+
+        binding?.statisticsTabLayout?.apply {
+            setupWithViewPager(binding?.statisticsViewPager)
+            for (position in 0..tabCount) {
+                getTabAt(position)?.setIcon(tabIcons[position])
+            }
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 }
