@@ -26,7 +26,7 @@ class LaunchWidgetService : Service() {
                 RemoteViews(this.applicationContext.packageName, R.layout.launch_countdown_widget)
 
             CoroutineScope(Dispatchers.Main).launch {
-                val response = SpaceXInterface.create().getSingleLaunch("87")
+                val response = SpaceXInterface.create().getSingleLaunch("106")
 
                 try {
                     if (response.isSuccessful) {
@@ -35,9 +35,12 @@ class LaunchWidgetService : Service() {
                             response.body()?.tbd?.let { tbd ->
                                 if (!tbd) {
                                     response.body()?.launchDateUnix?.let { it1 ->
-                                        updateCountdown(
-                                            it1.times(1000) - System.currentTimeMillis()
-                                        )
+                                        val time = it1.times(1000) - System.currentTimeMillis()
+                                        if (time >= 0) {
+                                            updateCountdown(time)
+                                        } else {
+                                            "Launching"
+                                        }
                                     } ?: "TBD"
                                 } else {
                                     "TBD"

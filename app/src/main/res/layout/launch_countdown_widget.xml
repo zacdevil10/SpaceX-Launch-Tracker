@@ -1,34 +1,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/widget_background"
     android:gravity="center"
     android:orientation="vertical"
-    android:background="#12000000"
     android:padding="@dimen/widget_margin">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:orientation="horizontal"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:orientation="horizontal"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:tint="@android:color/white"
             android:src="@drawable/ic_rocket"
+            android:tint="@android:color/white"
             tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/launch_countdown_widget_mission_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
             android:singleLine="true"
+            android:textColor="@android:color/white"
             tools:text="Starlink 2" />
 
     </LinearLayout>
@@ -37,17 +37,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:orientation="horizontal"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
-        android:orientation="horizontal"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:tint="@android:color/white"
-            android:src="@drawable/ic_timer_black_24dp"
             android:layout_marginEnd="8dp"
+            android:src="@drawable/ic_timer_black_24dp"
+            android:tint="@android:color/white"
             tools:ignore="ContentDescription" />
 
         <TextView
