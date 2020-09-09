@@ -47,7 +47,7 @@ class ThemeAlertDialog : BottomSheetDialogFragment() {
             preferenceRepository.isTheme = when (checkedId) {
                 R.id.dialog_theme_always -> AppCompatDelegate.MODE_NIGHT_YES
                 R.id.dialog_theme_system -> {
-                    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
                         AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
                     else
                         AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
@@ -64,7 +64,7 @@ class ThemeAlertDialog : BottomSheetDialogFragment() {
     }
 
     private fun getVersionList(): Array<String> =
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) itemsQ else itemsP
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) itemsQ else itemsP
 
 
 }
