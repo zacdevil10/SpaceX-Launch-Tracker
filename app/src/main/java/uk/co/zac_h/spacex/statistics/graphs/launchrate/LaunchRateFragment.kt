@@ -3,7 +3,11 @@ package uk.co.zac_h.spacex.statistics.graphs.launchrate
 import android.os.Bundle
 import android.view.*
 import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
@@ -17,6 +21,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchRateBinding
 import uk.co.zac_h.spacex.utils.models.RateStatsModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
@@ -48,6 +53,16 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
+
+        val navController = NavHostFragment.findNavController(this)
+        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        val appBarConfig =
+            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
+                .setOpenableLayout(drawerLayout).build()
+
+        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
         hideProgress()
 

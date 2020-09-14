@@ -9,11 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentStatisticsBinding
-import uk.co.zac_h.spacex.statistics.adapters.StatisticsPagerAdapter
+import uk.co.zac_h.spacex.statistics.adapters.StatisticsAdapter
 
 class StatisticsFragment : Fragment() {
 
@@ -41,8 +42,13 @@ class StatisticsFragment : Fragment() {
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
-        binding?.statisticsViewPager?.apply {
-            adapter = StatisticsPagerAdapter(childFragmentManager)
+        binding?.statisticsRecycler?.apply {
+            layoutManager = LinearLayoutManager(this@StatisticsFragment.context)
+            adapter = StatisticsAdapter()
+        }
+
+        /*binding?.statisticsViewPager?.apply {
+            adapter = StatisticsAdapter(childFragmentManager)
             offscreenPageLimit = 2
         }
 
@@ -57,7 +63,7 @@ class StatisticsFragment : Fragment() {
             for (position in 0..tabCount) {
                 getTabAt(position)?.setIcon(tabIcons[position])
             }
-        }
+        }*/
     }
 
     override fun onDestroyView() {

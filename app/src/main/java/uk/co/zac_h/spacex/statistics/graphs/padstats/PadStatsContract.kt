@@ -15,12 +15,14 @@ interface PadStatsContract {
     }
 
     interface PadStatsPresenter {
-        fun getPads(api: SpaceXInterface = SpaceXInterface.create())
+        fun getLaunchpads(api: SpaceXInterface = SpaceXInterface.create())
+        fun getLandingPads(api: SpaceXInterface = SpaceXInterface.create())
         fun cancelRequests()
     }
 
     interface PadStatsInteractor {
-        fun getPads(api: SpaceXInterface, listener: InteractorCallback)
+        fun getLaunchpads(api: SpaceXInterface, listener: InteractorCallback)
+        fun getLandingPads(api: SpaceXInterface, listener: InteractorCallback)
         fun cancelAllRequests()
     }
 
