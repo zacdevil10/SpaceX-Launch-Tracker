@@ -92,6 +92,10 @@
             app:destination="@id/launch_rate_fragment"
             app:exitAnim="@android:anim/fade_out" />
         <action
+            android:id="@+id/action_statistics_fragment_to_launch_mass"
+            app:destination="@id/launch_mass_fragment"
+            app:exitAnim="@android:anim/fade_out" />
+        <action
             android:id="@+id/action_statistics_fragment_to_pad_stats"
             app:destination="@id/pad_stats_fragment"
             app:exitAnim="@android:anim/fade_out" />
@@ -106,6 +110,11 @@
         android:id="@+id/launch_rate_fragment"
         android:name="uk.co.zac_h.spacex.statistics.graphs.launchrate.LaunchRateFragment"
         tools:layout="@layout/fragment_launch_rate" />
+
+    <fragment
+        android:id="@+id/launch_mass_fragment"
+        android:name="uk.co.zac_h.spacex.statistics.graphs.launchmass.LaunchMassFragment"
+        tools:layout="@layout/fragment_launch_mass" />
 
     <fragment
         android:id="@+id/pad_stats_fragment"

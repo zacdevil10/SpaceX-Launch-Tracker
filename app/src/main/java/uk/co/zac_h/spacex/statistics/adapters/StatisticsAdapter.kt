@@ -53,6 +53,7 @@ class StatisticsAdapter :
                     when (position) {
                         0 -> R.id.action_statistics_fragment_to_launch_history
                         1 -> R.id.action_statistics_fragment_to_launch_rate
+                        2 -> R.id.action_statistics_fragment_to_launch_mass
                         3 -> R.id.action_statistics_fragment_to_pad_stats
                         4 -> R.id.action_statistics_fragment_to_pad_stats
                         else -> R.id.action_statistics_fragment_to_launch_history
