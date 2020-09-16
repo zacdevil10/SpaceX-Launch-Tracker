@@ -40,13 +40,16 @@ class StatisticsAdapter :
 
             graphics.setImageResource(
                 when (position) {
-                    0 -> R.drawable.ic_data_trends
+                    0 -> R.drawable.ic_version_control_amico
                     1 -> R.drawable.ic_browser_stats
                     2 -> R.drawable.ic_world
                     3 -> R.drawable.ic_launch_stats
+                    4 -> R.drawable.ic_astronaut_bro
                     else -> R.drawable.ic_baseline_error_outline_24
                 }
             )
+
+            if (position == 0) graphics.scaleX = -1f
 
             card.setOnClickListener {
                 itemView.findNavController().navigate(
