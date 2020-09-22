@@ -3,6 +3,7 @@ package uk.co.zac_h.spacex.statistics.graphs.launchrate
 import android.os.Bundle
 import android.view.*
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
@@ -19,6 +20,7 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
+import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
@@ -31,6 +33,8 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
 
     private var binding: FragmentLaunchRateBinding? = null
 
+    private var heading: String? = null
+
     private var presenter: LaunchRateContract.LaunchRatePresenter? = null
 
     private lateinit var statsList: ArrayList<RateStatsModel>
@@ -39,6 +43,9 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
+        sharedElementEnterTransition = MaterialContainerTransform()
+
+        heading = arguments?.getString("heading")
         statsList = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
     }
 
@@ -54,6 +61,9 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
+
         (activity as MainActivity).setSupportActionBar(binding?.toolbar)
 
         val navController = NavHostFragment.findNavController(this)
@@ -63,6 +73,8 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
                 .setOpenableLayout(drawerLayout).build()
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+
+        binding?.launchRateConstraint?.transitionName = heading
 
         hideProgress()
 

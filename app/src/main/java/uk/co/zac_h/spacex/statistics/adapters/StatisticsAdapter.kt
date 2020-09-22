@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import uk.co.zac_h.spacex.R
@@ -36,6 +37,7 @@ class StatisticsAdapter :
         val heading = titles[position]
 
         holder.apply {
+            itemView.transitionName = heading
             title.text = heading
 
             graphics.setImageResource(
@@ -66,8 +68,11 @@ class StatisticsAdapter :
                             3 -> "type" to PadType.LAUNCHPAD
                             4 -> "type" to PadType.LANDING_PAD
                             else -> "" to ""
-                        }
-                    )
+                        },
+                        "heading" to heading
+                    ),
+                    null,
+                    FragmentNavigatorExtras(itemView to heading)
                 )
             }
         }

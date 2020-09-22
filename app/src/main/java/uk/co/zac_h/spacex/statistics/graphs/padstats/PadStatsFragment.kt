@@ -2,12 +2,14 @@ package uk.co.zac_h.spacex.statistics.graphs.padstats
 
 import android.os.Bundle
 import android.view.*
+import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
@@ -22,6 +24,8 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
 
     private var binding: FragmentPadStatsBinding? = null
 
+    private var heading: String? = null
+
     private var presenter: PadStatsContract.PadStatsPresenter? = null
 
     private var type: PadType? = null
@@ -34,6 +38,9 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
+        sharedElementEnterTransition = MaterialContainerTransform()
+
+        heading = arguments?.getString("heading")
         type = arguments?.get("type") as PadType?
         pads = savedInstanceState?.getParcelableArrayList("pads") ?: ArrayList()
     }
@@ -50,6 +57,9 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
+
         (activity as MainActivity).setSupportActionBar(binding?.toolbar)
 
         val navController = NavHostFragment.findNavController(this)
@@ -59,6 +69,8 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
                 .setOpenableLayout(drawerLayout).build()
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+
+        binding?.padStatsConstraint?.transitionName = heading
 
         hideProgress()
 

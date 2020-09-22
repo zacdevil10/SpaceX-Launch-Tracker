@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
@@ -32,6 +33,9 @@ class StatisticsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
+
         (activity as MainActivity).setSupportActionBar(binding?.toolbar)
 
         val navController = NavHostFragment.findNavController(this)
@@ -46,24 +50,6 @@ class StatisticsFragment : Fragment() {
             layoutManager = LinearLayoutManager(this@StatisticsFragment.context)
             adapter = StatisticsAdapter()
         }
-
-        /*binding?.statisticsViewPager?.apply {
-            adapter = StatisticsAdapter(childFragmentManager)
-            offscreenPageLimit = 2
-        }
-
-        val tabIcons = listOf(
-            R.drawable.ic_history_black_24dp,
-            R.drawable.ic_baseline_bar_chart_24,
-            R.drawable.ic_baseline_import_export_24
-        )
-
-        binding?.statisticsTabLayout?.apply {
-            setupWithViewPager(binding?.statisticsViewPager)
-            for (position in 0..tabCount) {
-                getTabAt(position)?.setIcon(tabIcons[position])
-            }
-        }*/
     }
 
     override fun onDestroyView() {

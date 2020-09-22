@@ -3,6 +3,7 @@ package uk.co.zac_h.spacex.statistics.graphs.launchmass
 import android.os.Bundle
 import android.view.*
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
@@ -20,6 +21,7 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
+import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
@@ -43,6 +45,7 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
     private var filterRocket: RocketType? = null
     private var filterType: LaunchMassViewType? = LaunchMassViewType.ROCKETS
 
+    private var heading: String? = null
     private lateinit var statsList: ArrayList<LaunchMassStatsModel>
 
     private lateinit var keyAdapter: StatisticsKeyAdapter
@@ -52,6 +55,9 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
+        sharedElementEnterTransition = MaterialContainerTransform()
+
+        heading = arguments?.getString("heading")
         statsList = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
     }
 
@@ -66,6 +72,9 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
+
         (activity as MainActivity).setSupportActionBar(binding?.toolbar)
 
         val navController = NavHostFragment.findNavController(this)
@@ -75,6 +84,8 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
                 .setOpenableLayout(drawerLayout).build()
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+
+        binding?.launchMassConstraint?.transitionName = heading
 
         hideProgress()
 
