@@ -42,6 +42,35 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/app_bar" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/launch_mass_key"
+        android:layout_width="198dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="32dp"
+        android:padding="8dp"
+        android:background="?colorPrimary"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar">
+
+        <TextView
+            android:id="@+id/launch_mass_year"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?textAppearanceHeadline6"
+            android:textColor="?colorOnPrimary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="2017" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/launch_mass_key_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/launch_mass_year" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <View
         android:id="@+id/launch_mass_filter_tint"
         android:layout_width="match_parent"
@@ -137,9 +166,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
+                app:selectionRequired="true"
                 app:singleLine="true"
-                app:singleSelection="true"
-                app:selectionRequired="true">
+                app:singleSelection="true">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/launch_mass_rocket_toggle"

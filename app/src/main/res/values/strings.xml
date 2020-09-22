@@ -95,6 +95,8 @@
     <string name="future_rate_label">Future:</string>
     <string name="total_rate_label">Total:</string>
 
+    <string name="mass_kg">%1$s kg</string>
+
     <string name="status_label">Status</string>
     <string name="successes_label">Successes</string>
     <string name="attempts_label">Attempts</string>
@@ -220,7 +222,5 @@
     <!-- Crew -->
     <string name="agency_label">Agency</string>
     <string name="more_icon_desc">More Icon</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

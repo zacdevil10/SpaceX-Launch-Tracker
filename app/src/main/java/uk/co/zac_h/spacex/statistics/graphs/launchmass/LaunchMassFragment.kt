@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
@@ -23,8 +24,10 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchMassBinding
+import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
 import uk.co.zac_h.spacex.utils.LaunchMassViewType
 import uk.co.zac_h.spacex.utils.RocketType
+import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.LaunchMassStatsModel
 import uk.co.zac_h.spacex.utils.models.OrbitMassModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
@@ -41,6 +44,9 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
     private var filterType: LaunchMassViewType? = LaunchMassViewType.ROCKETS
 
     private lateinit var statsList: ArrayList<LaunchMassStatsModel>
+
+    private lateinit var keyAdapter: StatisticsKeyAdapter
+    private var keys: ArrayList<KeysModel> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,6 +109,13 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
             presenter?.updateFilter(statsList)
         }
 
+        keyAdapter = StatisticsKeyAdapter(context, keys)
+
+        binding?.launchMassKeyRecycler?.apply {
+            layoutManager = LinearLayoutManager(this@LaunchMassFragment.context)
+            adapter = keyAdapter
+        }
+
         binding?.launchMassBarChart?.apply {
             xAxis.apply {
                 position = XAxis.XAxisPosition.BOTTOM
@@ -132,18 +145,66 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
 
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
+                    e?.let {
+                        val stats = statsList[(e.x - 2006).toInt()]
 
+                        keys.clear()
+
+                        binding?.launchMassKey?.visibility = View.VISIBLE
+
+                        binding?.launchMassYear?.text = stats.year.toString()
+
+                        when (filterType) {
+                            LaunchMassViewType.ROCKETS -> {
+                                when (filterRocket) {
+                                    RocketType.FALCON_ONE -> keys.add(
+                                        KeysModel("Falcon 1", stats.falconOne.total)
+                                    )
+                                    RocketType.FALCON_NINE -> keys.add(
+                                        KeysModel("Falcon 9", stats.falconNine.total)
+                                    )
+                                    RocketType.FALCON_HEAVY -> keys.add(
+                                        KeysModel("Falcon Heavy", stats.falconHeavy.total)
+                                    )
+                                    else -> keys.apply {
+                                        add(KeysModel("Falcon 1", stats.falconOne.total))
+                                        add(KeysModel("Falcon 9", stats.falconNine.total))
+                                        add(KeysModel("Falcon Heavy", stats.falconHeavy.total))
+                                        add(
+                                            KeysModel(
+                                                "Total",
+                                                stats.falconOne.total + stats.falconNine.total + stats.falconHeavy.total
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+                            LaunchMassViewType.ORBIT -> {
+                                when (filterRocket) {
+                                    RocketType.FALCON_ONE -> presenter?.populateKey(f1 = stats.falconOne)
+                                    RocketType.FALCON_NINE -> presenter?.populateKey(f9 = stats.falconNine)
+                                    RocketType.FALCON_HEAVY -> presenter?.populateKey(fh = stats.falconHeavy)
+                                    else -> presenter?.populateKey(
+                                        stats.falconOne,
+                                        stats.falconNine,
+                                        stats.falconHeavy
+                                    )
+                                }
+                            }
+                        }
+
+                        keyAdapter.notifyDataSetChanged()
+                    }
                 }
 
                 override fun onNothingSelected() {
+                    binding?.launchMassKey?.visibility = View.GONE
 
+                    keys.clear()
+                    keyAdapter.notifyDataSetChanged()
                 }
             })
         }
-    }
-
-    private fun populateLabel() {
-
     }
 
     override fun onStart() {
@@ -187,6 +248,8 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
 
     override fun updateData(mass: ArrayList<LaunchMassStatsModel>, animate: Boolean) {
         if (statsList.isEmpty()) statsList.addAll(mass)
+
+        binding?.launchMassKey?.visibility = View.GONE
 
         val colors = ArrayList<Int>()
 
@@ -253,13 +316,13 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
                             else -> floatArrayOf(
                                 it.falconOne.LEO + it.falconNine.LEO + it.falconHeavy.LEO,
                                 it.falconOne.GTO + it.falconNine.GTO + it.falconHeavy.GTO,
-                                it.falconOne.PO + it.falconNine.PO + it.falconHeavy.PO,
                                 it.falconOne.SSO + it.falconNine.SSO + it.falconHeavy.SSO,
                                 it.falconOne.ISS + it.falconNine.ISS + it.falconHeavy.ISS,
                                 it.falconOne.HCO + it.falconNine.HCO + it.falconHeavy.HCO,
                                 it.falconOne.MEO + it.falconNine.MEO + it.falconHeavy.MEO,
                                 it.falconOne.SO + it.falconNine.SO + it.falconHeavy.SO,
-                                it.falconOne.ED_L1 + it.falconNine.ED_L1 + it.falconHeavy.ED_L1
+                                it.falconOne.ED_L1 + it.falconNine.ED_L1 + it.falconHeavy.ED_L1,
+                                it.falconOne.other + it.falconNine.other + it.falconHeavy.other
                             )
                         }
                         else -> floatArrayOf(
@@ -286,13 +349,13 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
                 LaunchMassViewType.ORBIT -> arrayOf(
                     "LEO",
                     "GTO",
-                    "PO",
                     "SSO",
                     "ISS",
                     "HCO",
                     "MEO",
                     "SO",
-                    "ED-L1"
+                    "ED-L1",
+                    "Other"
                 )
                 else -> arrayOf("")
             }
@@ -302,6 +365,8 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
         dataSets.add(set)
 
         binding?.launchMassBarChart?.apply {
+            onTouchListener.setLastHighlighted(null)
+            highlightValues(null)
             if (animate) animateY(400, Easing.Linear)
             xAxis.labelCount = c
             axisLeft.apply {
@@ -315,16 +380,20 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
         }
     }
 
+    override fun updateKey(keys: ArrayList<KeysModel>) {
+        this.keys.addAll(keys)
+    }
+
     private fun orbitsToArray(orbitMassModel: OrbitMassModel): FloatArray = floatArrayOf(
         orbitMassModel.LEO,
         orbitMassModel.GTO,
-        orbitMassModel.PO,
         orbitMassModel.SSO,
         orbitMassModel.ISS,
         orbitMassModel.HCO,
         orbitMassModel.MEO,
         orbitMassModel.SO,
-        orbitMassModel.ED_L1
+        orbitMassModel.ED_L1,
+        orbitMassModel.other
     )
 
     override fun showFilter(filterVisible: Boolean) {
