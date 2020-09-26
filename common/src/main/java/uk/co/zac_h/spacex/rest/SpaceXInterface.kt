@@ -50,8 +50,8 @@ interface SpaceXInterface {
     @POST("ships/query")
     fun getShips(@Body body: QueryModel): Call<ShipsDocsModel>
 
-    @GET("history")
-    fun getHistory(@Query("order") order: String): Call<List<HistoryModel>>
+    @POST("history/query")
+    fun getHistory(@Body body: QueryModel): Call<HistoryDocsModel>
 
     companion object RetrofitSetup {
         fun create(): SpaceXInterface = Retrofit.Builder().apply {
