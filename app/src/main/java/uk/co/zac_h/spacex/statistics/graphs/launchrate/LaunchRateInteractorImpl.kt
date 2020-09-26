@@ -1,10 +1,7 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
 import retrofit2.Call
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
-import uk.co.zac_h.spacex.model.spacex.QueryModel
-import uk.co.zac_h.spacex.model.spacex.QueryOptionsModel
-import uk.co.zac_h.spacex.model.spacex.QueryPopulateModel
+import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
@@ -25,7 +22,7 @@ class LaunchRateInteractorImpl : BaseNetwork(), LaunchRateContract.LaunchRateInt
             QueryOptionsModel(
                 false,
                 populateList,
-                "",
+                QueryLaunchesSortByDate("asc"),
                 listOf("rocket", "success", "upcoming", "date_local"),
                 100000
             )

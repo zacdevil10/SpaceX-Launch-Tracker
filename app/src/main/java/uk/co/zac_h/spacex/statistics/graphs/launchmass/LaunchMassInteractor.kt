@@ -22,7 +22,8 @@ class LaunchMassInteractor : BaseNetwork(), LaunchMassContract.Interactor {
                     ),
                     QueryPopulateModel("rocket", populate = "", select = listOf("id"))
                 ),
-                "", listOf("payloads", "name", "date_local", "rocket"),
+                QueryLaunchesSortByDate("asc"),
+                listOf("payloads", "name", "date_local", "date_unix", "rocket"),
                 1000000
             )
         )

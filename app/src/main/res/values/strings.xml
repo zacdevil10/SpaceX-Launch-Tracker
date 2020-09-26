@@ -222,5 +222,8 @@
     <!-- Crew -->
     <string name="agency_label">Agency</string>
     <string name="more_icon_desc">More Icon</string>
+    <string name="rockets_label">Rockets</string>
+    <string name="orbits_label">Orbits</string>
+    <string name="type_filter_label">Type:</string>
 
 </resources>

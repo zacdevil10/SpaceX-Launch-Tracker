@@ -37,3 +37,7 @@ data class QueryUpcomingSuccessLaunchesModel(
 data class QueryLaunchesSortModel(
     private var flight_number: String
 )
+
+data class QueryLaunchesSortByDate(
+    private var date_unix: String
+)

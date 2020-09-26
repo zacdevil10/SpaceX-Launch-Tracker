@@ -72,8 +72,6 @@ class LaunchMassPresenter(
         launchDocs?.docs?.let { launches ->
             val massStats = ArrayList<LaunchMassStatsModel>()
 
-            println(launches)
-
             var year = 2005
             launches.forEach {
                 val newYear =

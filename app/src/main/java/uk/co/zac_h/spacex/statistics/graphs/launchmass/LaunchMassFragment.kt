@@ -246,6 +246,11 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.filter -> {
+            binding?.launchMassKey?.visibility = View.GONE
+            binding?.launchMassBarChart?.apply {
+                onTouchListener.setLastHighlighted(null)
+                highlightValues(null)
+            }
             presenter?.showFilter(!filterVisible)
             true
         }
