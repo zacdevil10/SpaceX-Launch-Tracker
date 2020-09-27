@@ -79,18 +79,22 @@ class HistoryAdapter(
                         R.anim.item_animation_from_right
                     ).apply { startOffset = 80 })
 
-                articleButton.visibility =
-                    event.historyModel?.links?.article?.let { View.VISIBLE } ?: View.GONE
-                articleButton.startAnimation(
-                    AnimationUtils.loadAnimation(
-                        context,
-                        R.anim.item_animation_from_right
-                    ).apply { startOffset = 240 })
+                articleButton.apply {
+                    event.historyModel?.links?.article?.let { link ->
+                        visibility = View.VISIBLE
+                        startAnimation(
+                            AnimationUtils.loadAnimation(
+                                context,
+                                R.anim.item_animation_from_right
+                            ).apply { startOffset = 240 })
 
-                articleButton.setOnClickListener {
-                    event.historyModel?.links?.article?.let { link -> view.openWebLink(link) }
+                        setOnClickListener {
+                            view.openWebLink(link)
+                        }
+                    } ?: run {
+                        visibility = View.GONE
+                    }
                 }
-
             }
             is HeaderViewHolder -> holder.apply {
                 lineTop.visibility =
