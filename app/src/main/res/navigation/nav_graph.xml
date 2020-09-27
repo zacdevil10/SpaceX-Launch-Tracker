@@ -94,12 +94,8 @@
         android:id="@+id/history_page_fragment"
         android:name="uk.co.zac_h.spacex.about.history.HistoryFragment"
         app:enterAnim="@android:anim/fade_in"
-        tools:layout="@layout/fragment_history">
-        <action
-            android:id="@+id/action_history_fragment_to_launch_details_container_fragment"
-            app:destination="@id/launch_details_container_fragment"
-            app:exitAnim="@android:anim/fade_out" />
-    </fragment>
+        app:exitAnim="@android:anim/fade_out"
+        tools:layout="@layout/fragment_history" />
 
     <fragment
         android:id="@+id/about_page_fragment"
