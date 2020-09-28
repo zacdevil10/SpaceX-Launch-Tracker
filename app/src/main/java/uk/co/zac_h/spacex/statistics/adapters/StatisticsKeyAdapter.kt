@@ -10,7 +10,11 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.models.KeysModel
 
-class StatisticsKeyAdapter(private val context: Context?, private var keys: ArrayList<KeysModel>) :
+class StatisticsKeyAdapter(
+    private val context: Context?,
+    private var keys: ArrayList<KeysModel>,
+    private val format: Boolean
+) :
     RecyclerView.Adapter<StatisticsKeyAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -27,7 +31,10 @@ class StatisticsKeyAdapter(private val context: Context?, private var keys: Arra
 
         holder.apply {
             label.text = key.label
-            value.text = context?.getString(R.string.mass_kg, key.value.metricFormat())
+            value.text = if (format) context?.getString(
+                R.string.mass_kg,
+                key.value.metricFormat()
+            ) else key.value.toInt().toString()
         }
     }
 

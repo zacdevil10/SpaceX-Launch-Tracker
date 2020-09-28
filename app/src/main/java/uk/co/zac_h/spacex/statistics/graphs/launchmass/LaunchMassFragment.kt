@@ -114,7 +114,7 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
             presenter?.updateFilter(statsList)
         }
 
-        keyAdapter = StatisticsKeyAdapter(context, keys)
+        keyAdapter = StatisticsKeyAdapter(context, keys, true)
 
         binding?.launchMassKeyRecycler?.apply {
             layoutManager = LinearLayoutManager(this@LaunchMassFragment.context)

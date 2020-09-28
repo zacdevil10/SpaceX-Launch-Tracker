@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
@@ -25,6 +26,8 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchRateBinding
+import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
+import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.RateStatsModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
@@ -38,6 +41,9 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
     private var presenter: LaunchRateContract.LaunchRatePresenter? = null
 
     private lateinit var statsList: ArrayList<RateStatsModel>
+
+    private lateinit var keyAdapter: StatisticsKeyAdapter
+    private var keys: ArrayList<KeysModel> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,8 +86,12 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
 
         presenter = LaunchRatePresenterImpl(this, LaunchRateInteractorImpl())
 
-        if (statsList.isEmpty()) presenter?.getLaunchList()
-        else presenter?.addLaunchList(statsList)
+        keyAdapter = StatisticsKeyAdapter(context, keys, false)
+
+        binding?.launchRateKeyRecycler?.apply {
+            layoutManager = LinearLayoutManager(this@LaunchRateFragment.context)
+            adapter = keyAdapter
+        }
 
         binding?.launchRateBarChart?.apply {
             xAxis.apply {
@@ -115,51 +125,50 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
                     e?.let {
                         val stats = statsList[(e.x - 2006).toInt()]
 
+                        keys.clear()
+
                         binding?.apply {
                             launchRateKey.visibility = View.VISIBLE
 
                             launchRateYear.text = stats.year.toString()
 
-                            launchRateFalconOneLabel.visibility =
-                                if (stats.falconOne == 0f) View.GONE else View.VISIBLE
-                            launchRateFalconOneValue.visibility =
-                                if (stats.falconOne == 0f) View.GONE else View.VISIBLE
-                            launchRateFalconOneValue.text = stats.falconOne.toInt().toString()
-
-                            launchRateFalconNineLabel.visibility =
-                                if (stats.falconNine == 0f) View.GONE else View.VISIBLE
-                            launchRateFalconNineValue.visibility =
-                                if (stats.falconNine == 0f) View.GONE else View.VISIBLE
-                            launchRateFalconNineValue.text = stats.falconNine.toInt().toString()
-
-                            launchRateFalconHeavyLabel.visibility =
-                                if (stats.falconHeavy == 0f) View.GONE else View.VISIBLE
-                            launchRateFalconHeavyValue.visibility =
-                                if (stats.falconHeavy == 0f) View.GONE else View.VISIBLE
-                            launchRateFalconHeavyValue.text =
-                                stats.falconHeavy.toInt().toString()
-
-                            launchRateFailuresLabel.visibility =
-                                if (stats.failure == 0f) View.GONE else View.VISIBLE
-                            launchRateFailuresValue.visibility =
-                                if (stats.failure == 0f) View.GONE else View.VISIBLE
-                            launchRateFailuresValue.text = stats.failure.toInt().toString()
-
-                            launchRateFutureLabel.visibility =
-                                if (stats.planned == 0f) View.GONE else View.VISIBLE
-                            launchRateFutureValue.visibility =
-                                if (stats.planned == 0f) View.GONE else View.VISIBLE
-                            launchRateFutureValue.text = stats.planned.toInt().toString()
-
-                            launchRateTotalValue.text = e.y.toInt().toString()
+                            keys.apply {
+                                if (stats.falconOne > 0) {
+                                    add(KeysModel("Falcon 1", stats.falconOne))
+                                }
+                                if (stats.falconNine > 0) {
+                                    add(KeysModel("Falcon 9", stats.falconNine))
+                                }
+                                if (stats.falconHeavy > 0) {
+                                    add(KeysModel("Falcon Heavy", stats.falconHeavy))
+                                }
+                                if (stats.failure > 0) {
+                                    add(KeysModel("Failures", stats.failure))
+                                }
+                                if (stats.planned > 0) {
+                                    add(KeysModel("Planned", stats.planned))
+                                }
+                                add(KeysModel("Total", e.y))
+                            }
                         }
+
+                        keyAdapter.notifyDataSetChanged()
                     }
                 }
 
                 override fun onNothingSelected() {
                     binding?.launchRateKey?.visibility = View.GONE
+
+                    keys.clear()
+                    keyAdapter.notifyDataSetChanged()
                 }
             })
+        }
+
+        if (statsList.isEmpty()) {
+            presenter?.getLaunchList()
+        } else {
+            presenter?.addLaunchList(statsList)
         }
     }
 
