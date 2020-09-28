@@ -42,11 +42,11 @@ class StatisticsAdapter :
 
             graphics.setImageResource(
                 when (position) {
-                    0 -> R.drawable.ic_version_control_amico
-                    1 -> R.drawable.ic_browser_stats
-                    2 -> R.drawable.ic_world
-                    3 -> R.drawable.ic_launch_stats
-                    4 -> R.drawable.ic_astronaut_bro
+                    0 -> R.drawable.ic_launch_history
+                    1 -> R.drawable.ic_launch_rate
+                    2 -> R.drawable.ic_mass_to_orbit
+                    3 -> R.drawable.ic_launchpads
+                    4 -> R.drawable.ic_landing_pads
                     else -> R.drawable.ic_baseline_error_outline_24
                 }
             )
