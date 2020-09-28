@@ -10,6 +10,8 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
 import uk.co.zac_h.spacex.model.spacex.CoreExtendedModel
+import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
+import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.VehiclesContract
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
@@ -25,6 +27,7 @@ class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
     private lateinit var coreAdapter: CoreAdapter
     private lateinit var coresArray: ArrayList<CoreExtendedModel>
 
+    private lateinit var orderSharedPreferences: OrderSharedPreferencesHelper
     private var sortNew = false
     private lateinit var searchView: SearchView
 
@@ -49,7 +52,10 @@ class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
 
         hideProgress()
 
+        orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(context)
         presenter = CorePresenterImpl(this, CoreInteractorImpl())
+
+        sortNew = orderSharedPreferences.isSortedNew("cores")
 
         coreAdapter = CoreAdapter(context, coresArray)
 
@@ -102,6 +108,7 @@ class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
             R.id.sort_new -> {
                 if (!sortNew) {
                     sortNew = true
+                    orderSharedPreferences.setSortOrder("cores", sortNew)
                     coresArray.reverse()
                     coreAdapter.notifyDataSetChanged()
                 }
@@ -110,6 +117,7 @@ class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
             R.id.sort_old -> {
                 if (sortNew) {
                     sortNew = false
+                    orderSharedPreferences.setSortOrder("cores", sortNew)
                     coresArray.reverse()
                     coreAdapter.notifyDataSetChanged()
                 }

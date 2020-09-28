@@ -41,3 +41,7 @@ data class QueryLaunchesSortModel(
 data class QueryLaunchesSortByDate(
     private var date_unix: String
 )
+
+data class QueryHistorySort(
+    private var event_date_unix: String
+)
