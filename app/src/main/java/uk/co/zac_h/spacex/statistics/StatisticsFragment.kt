@@ -1,5 +1,7 @@
 package uk.co.zac_h.spacex.statistics
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +19,7 @@ import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentStatisticsBinding
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsAdapter
 
-class StatisticsFragment : Fragment() {
+class StatisticsFragment : Fragment(), StatisticsContract.View {
 
     private var binding: FragmentStatisticsBinding? = null
 
@@ -48,12 +50,16 @@ class StatisticsFragment : Fragment() {
 
         binding?.statisticsRecycler?.apply {
             layoutManager = LinearLayoutManager(this@StatisticsFragment.context)
-            adapter = StatisticsAdapter()
+            adapter = StatisticsAdapter(this@StatisticsFragment)
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    override fun openWebLink(link: String) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 }
