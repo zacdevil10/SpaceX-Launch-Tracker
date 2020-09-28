@@ -127,9 +127,10 @@ class PadStatsTest {
             } doReturn Calls.response(Response.success(launchpadDocsModel))
         }
 
-        presenter.getPads(mockRepo)
+        presenter.getLaunchpads(mockRepo)
+        presenter.getLandingPads(mockRepo)
 
-        verifyBlocking(mView) {
+        verifyBlocking(mView, times(2)) {
             showProgress()
             hideProgress()
         }
@@ -137,7 +138,8 @@ class PadStatsTest {
 
     @Test
     fun `When response from API is unsuccessful`() {
-        interactor.getPads(api = mockRepoError, listener = mListener)
+        interactor.getLaunchpads(api = mockRepoError, listener = mListener)
+        interactor.getLandingPads(api = mockRepoError, listener = mListener)
 
         verifyBlocking(mListener, times(2)) {
             onError("Error: 404")
@@ -146,9 +148,10 @@ class PadStatsTest {
 
     @Test
     fun `Show error in view when response from API fails`() {
-        presenter.getPads(mockRepoError)
+        presenter.getLandingPads(mockRepoError)
+        presenter.getLaunchpads(mockRepoError)
 
-        verifyBlocking(mView) {
+        verifyBlocking(mView, times(2)) {
             showProgress()
             showError("Error: 404")
         }

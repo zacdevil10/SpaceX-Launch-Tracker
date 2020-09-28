@@ -1,21 +1,25 @@
 package uk.co.zac_h.spacex.statistics
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentStatisticsBinding
-import uk.co.zac_h.spacex.statistics.adapters.StatisticsPagerAdapter
+import uk.co.zac_h.spacex.statistics.adapters.StatisticsAdapter
 
-class StatisticsFragment : Fragment() {
+class StatisticsFragment : Fragment(), StatisticsContract.View {
 
     private var binding: FragmentStatisticsBinding? = null
 
@@ -31,6 +35,9 @@ class StatisticsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
+
         (activity as MainActivity).setSupportActionBar(binding?.toolbar)
 
         val navController = NavHostFragment.findNavController(this)
@@ -41,27 +48,18 @@ class StatisticsFragment : Fragment() {
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
-        binding?.statisticsViewPager?.apply {
-            adapter = StatisticsPagerAdapter(childFragmentManager)
-            offscreenPageLimit = 2
-        }
-
-        val tabIcons = listOf(
-            R.drawable.ic_history_black_24dp,
-            R.drawable.ic_baseline_bar_chart_24,
-            R.drawable.ic_baseline_import_export_24
-        )
-
-        binding?.statisticsTabLayout?.apply {
-            setupWithViewPager(binding?.statisticsViewPager)
-            for (position in 0..tabCount) {
-                getTabAt(position)?.setIcon(tabIcons[position])
-            }
+        binding?.statisticsRecycler?.apply {
+            layoutManager = LinearLayoutManager(this@StatisticsFragment.context)
+            adapter = StatisticsAdapter(this@StatisticsFragment)
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    override fun openWebLink(link: String) {
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 }
