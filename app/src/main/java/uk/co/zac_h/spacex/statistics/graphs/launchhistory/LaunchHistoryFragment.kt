@@ -23,6 +23,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchHistoryBinding
+import uk.co.zac_h.spacex.utils.LaunchHistoryFilter
 import uk.co.zac_h.spacex.utils.RocketType
 import uk.co.zac_h.spacex.utils.generateCenterSpannableText
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
@@ -35,9 +36,8 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
 
     private var presenter: LaunchHistoryContract.LaunchHistoryPresenter? = null
 
+    private var filter: LaunchHistoryFilter? = null
     private var filterVisible = false
-    private var filterSuccessful = false
-    private var filterFailed = false
 
     private lateinit var launchStats: ArrayList<HistoryStatsModel>
 
@@ -51,6 +51,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
 
         heading = arguments?.getString("heading")
         launchStats = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
+        filterVisible = savedInstanceState?.getBoolean("filter") ?: false
     }
 
     override fun onCreateView(
@@ -84,17 +85,13 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
 
         presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
 
-        binding?.launchHistoryChipGroup?.setOnCheckedChangeListener { group, _ ->
-            presenter?.updateFilter(
-                launchStats,
-                "success",
-                binding?.launchHistorySuccessToggle?.id == group.checkedChipId
-            )
-            presenter?.updateFilter(
-                launchStats,
-                "failed",
-                binding?.launchHistoryFailureToggle?.id == group.checkedChipId
-            )
+        binding?.launchHistoryChipGroup?.setOnCheckedChangeListener { _, checkedId ->
+            filter = when (checkedId) {
+                binding?.launchHistorySuccessToggle?.id -> LaunchHistoryFilter.SUCCESSES
+                binding?.launchHistoryFailureToggle?.id -> LaunchHistoryFilter.FAILURES
+                else -> null
+            }
+            presenter?.updateFilter(launchStats)
         }
 
         presenter?.apply {
@@ -136,6 +133,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList("launches", launchStats)
+        outState.putBoolean("filter", filterVisible)
         super.onSaveInstanceState(outState)
     }
 
@@ -180,19 +178,19 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
 
         stats.forEach {
             when (it.rocket) {
-                RocketType.FALCON_ONE -> falconOne = when {
-                    filterSuccessful -> it.successes
-                    filterFailed -> it.failures
+                RocketType.FALCON_ONE -> falconOne = when (filter) {
+                    LaunchHistoryFilter.SUCCESSES -> it.successes
+                    LaunchHistoryFilter.FAILURES -> it.failures
                     else -> it.successes + it.failures
                 }
-                RocketType.FALCON_NINE -> falconNine = when {
-                    filterSuccessful -> it.successes
-                    filterFailed -> it.failures
+                RocketType.FALCON_NINE -> falconNine = when (filter) {
+                    LaunchHistoryFilter.SUCCESSES -> it.successes
+                    LaunchHistoryFilter.FAILURES -> it.failures
                     else -> it.successes + it.failures
                 }
-                RocketType.FALCON_HEAVY -> falconHeavy = when {
-                    filterSuccessful -> it.successes
-                    filterFailed -> it.failures
+                RocketType.FALCON_HEAVY -> falconHeavy = when (filter) {
+                    LaunchHistoryFilter.SUCCESSES -> it.successes
+                    LaunchHistoryFilter.FAILURES -> it.failures
                     else -> it.successes + it.failures
                 }
             }
@@ -274,21 +272,13 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
         }
     }
 
-    override fun showFilter(filterVisible: Boolean) {
+    override fun toggleFilterVisibility(filterVisible: Boolean) {
         binding?.launchHistoryFilterConstraint?.visibility = when (filterVisible) {
             true -> View.VISIBLE
             false -> View.GONE
         }
 
         this.filterVisible = filterVisible
-    }
-
-    override fun setFilterSuccessful(isFiltered: Boolean) {
-        filterSuccessful = isFiltered
-    }
-
-    override fun setFilterFailed(isFiltered: Boolean) {
-        filterFailed = isFiltered
     }
 
     override fun showProgress() {

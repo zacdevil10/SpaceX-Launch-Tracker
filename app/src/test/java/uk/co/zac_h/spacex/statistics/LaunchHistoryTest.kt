@@ -96,7 +96,7 @@ class LaunchHistoryTest {
     fun `When toggle filter then show in view`() {
         mPresenter.showFilter(true)
 
-        verify(mView).showFilter(true)
+        verify(mView).toggleFilterVisibility(true)
     }
 
     @Test
@@ -109,17 +109,15 @@ class LaunchHistoryTest {
 
     @Test
     fun `When updating success filter then set filter type in view`() {
-        mPresenter.updateFilter(historyList, "success", true)
+        mPresenter.updateFilter(historyList)
 
-        verify(mView).setFilterSuccessful(true)
         verify(mView).updatePieChart(historyList, false)
     }
 
     @Test
     fun `When updating failure filter then set filter type in view`() {
-        mPresenter.updateFilter(historyList, "failed", true)
+        mPresenter.updateFilter(historyList)
 
-        verify(mView).setFilterFailed(true)
         verify(mView).updatePieChart(historyList, false)
     }
 

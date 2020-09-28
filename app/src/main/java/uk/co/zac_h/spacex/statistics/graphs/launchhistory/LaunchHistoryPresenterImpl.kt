@@ -25,19 +25,10 @@ class LaunchHistoryPresenterImpl(
     }
 
     override fun showFilter(filterVisible: Boolean) {
-        view.showFilter(filterVisible)
+        view.toggleFilterVisibility(filterVisible)
     }
 
-    override fun updateFilter(
-        launches: List<HistoryStatsModel>,
-        filter: String,
-        isFiltered: Boolean
-    ) {
-        when (filter) {
-            "success" -> view.setFilterSuccessful(isFiltered)
-            "failed" -> view.setFilterFailed(isFiltered)
-        }
-
+    override fun updateFilter(launches: List<HistoryStatsModel>) {
         view.updatePieChart(launches, false)
     }
 
