@@ -35,7 +35,7 @@ class LaunchMassPresenter(
         view.updateData(statsList, false)
     }
 
-    override fun populateKey(f1: OrbitMassModel?, f9: OrbitMassModel?, fh: OrbitMassModel?) {
+    override fun populateOrbitKey(f1: OrbitMassModel?, f9: OrbitMassModel?, fh: OrbitMassModel?) {
         view.updateKey(ArrayList<KeysModel>().apply {
             0f.add(f1?.LEO, f9?.LEO, fh?.LEO).apply {
                 if (this > 0) add(KeysModel("LEO", this))
@@ -63,6 +63,21 @@ class LaunchMassPresenter(
             }
             0f.add(f1?.other, f9?.other, fh?.other).apply {
                 if (this > 0) add(KeysModel("Other", this))
+            }
+            add(KeysModel("Total", 0f.add(f1?.total, f9?.total, fh?.total)))
+        })
+    }
+
+    override fun populateRocketKey(f1: OrbitMassModel?, f9: OrbitMassModel?, fh: OrbitMassModel?) {
+        view.updateKey(ArrayList<KeysModel>().apply {
+            f1?.let {
+                if (it.total > 0) add(KeysModel("Falcon 1", it.total))
+            }
+            f9?.let {
+                if (it.total > 0) add(KeysModel("Falcon 9", it.total))
+            }
+            fh?.let {
+                if (it.total > 0) add(KeysModel("Falcon Heavy", it.total))
             }
             add(KeysModel("Total", 0f.add(f1?.total, f9?.total, fh?.total)))
         })

@@ -95,12 +95,6 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
 
         presenter = LaunchMassPresenter(this, LaunchMassInteractor())
 
-        if (statsList.isEmpty()) {
-            presenter?.getLaunchList()
-        } else {
-            presenter?.addLaunchList(statsList)
-        }
-
         binding?.launchMassRocketChipGroup?.setOnCheckedChangeListener { _, checkedId ->
             filterRocket = when (checkedId) {
                 binding?.launchMassFalconOneToggle?.id -> RocketType.FALCON_ONE
@@ -168,34 +162,22 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
                         when (filterType) {
                             LaunchMassViewType.ROCKETS -> {
                                 when (filterRocket) {
-                                    RocketType.FALCON_ONE -> keys.add(
-                                        KeysModel("Falcon 1", stats.falconOne.total)
+                                    RocketType.FALCON_ONE -> presenter?.populateRocketKey(f1 = stats.falconOne)
+                                    RocketType.FALCON_NINE -> presenter?.populateRocketKey(f9 = stats.falconNine)
+                                    RocketType.FALCON_HEAVY -> presenter?.populateRocketKey(fh = stats.falconHeavy)
+                                    else -> presenter?.populateRocketKey(
+                                        stats.falconOne,
+                                        stats.falconNine,
+                                        stats.falconHeavy
                                     )
-                                    RocketType.FALCON_NINE -> keys.add(
-                                        KeysModel("Falcon 9", stats.falconNine.total)
-                                    )
-                                    RocketType.FALCON_HEAVY -> keys.add(
-                                        KeysModel("Falcon Heavy", stats.falconHeavy.total)
-                                    )
-                                    else -> keys.apply {
-                                        add(KeysModel("Falcon 1", stats.falconOne.total))
-                                        add(KeysModel("Falcon 9", stats.falconNine.total))
-                                        add(KeysModel("Falcon Heavy", stats.falconHeavy.total))
-                                        add(
-                                            KeysModel(
-                                                "Total",
-                                                stats.falconOne.total + stats.falconNine.total + stats.falconHeavy.total
-                                            )
-                                        )
-                                    }
                                 }
                             }
                             LaunchMassViewType.ORBIT -> {
                                 when (filterRocket) {
-                                    RocketType.FALCON_ONE -> presenter?.populateKey(f1 = stats.falconOne)
-                                    RocketType.FALCON_NINE -> presenter?.populateKey(f9 = stats.falconNine)
-                                    RocketType.FALCON_HEAVY -> presenter?.populateKey(fh = stats.falconHeavy)
-                                    else -> presenter?.populateKey(
+                                    RocketType.FALCON_ONE -> presenter?.populateOrbitKey(f1 = stats.falconOne)
+                                    RocketType.FALCON_NINE -> presenter?.populateOrbitKey(f9 = stats.falconNine)
+                                    RocketType.FALCON_HEAVY -> presenter?.populateOrbitKey(fh = stats.falconHeavy)
+                                    else -> presenter?.populateOrbitKey(
                                         stats.falconOne,
                                         stats.falconNine,
                                         stats.falconHeavy
@@ -215,6 +197,12 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
                     keyAdapter.notifyDataSetChanged()
                 }
             })
+        }
+
+        if (statsList.isEmpty()) {
+            presenter?.getLaunchList()
+        } else {
+            presenter?.addLaunchList(statsList)
         }
     }
 

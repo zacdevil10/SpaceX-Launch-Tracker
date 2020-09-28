@@ -22,7 +22,13 @@ interface LaunchMassContract {
         fun addLaunchList(statsList: ArrayList<LaunchMassStatsModel>)
         fun showFilter(filterVisible: Boolean)
         fun updateFilter(statsList: ArrayList<LaunchMassStatsModel>)
-        fun populateKey(
+        fun populateOrbitKey(
+            f1: OrbitMassModel? = null,
+            f9: OrbitMassModel? = null,
+            fh: OrbitMassModel? = null
+        )
+
+        fun populateRocketKey(
             f1: OrbitMassModel? = null,
             f9: OrbitMassModel? = null,
             fh: OrbitMassModel? = null
