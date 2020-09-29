@@ -13,7 +13,10 @@ class PadStatsInteractorImpl : BaseNetwork(), PadStatsContract.PadStatsInteracto
     private var launchCall: Call<LaunchpadDocsModel>? = null
     private var landingCall: Call<LandingPadDocsModel>? = null
 
-    override fun getPads(api: SpaceXInterface, listener: PadStatsContract.InteractorCallback) {
+    override fun getLaunchpads(
+        api: SpaceXInterface,
+        listener: PadStatsContract.InteractorCallback
+    ) {
         val launchQuery = QueryModel(
             "",
             QueryOptionsModel(
@@ -25,6 +28,18 @@ class PadStatsInteractorImpl : BaseNetwork(), PadStatsContract.PadStatsInteracto
             )
         )
 
+        launchCall = api.getQueriedLaunchpads(launchQuery).apply {
+            makeCall {
+                onResponseSuccess = { listener.onGetLaunchpads(it.body()) }
+                onResponseFailure = { listener.onError(it) }
+            }
+        }
+    }
+
+    override fun getLandingPads(
+        api: SpaceXInterface,
+        listener: PadStatsContract.InteractorCallback
+    ) {
         val landQuery = QueryModel(
             "",
             QueryOptionsModel(
@@ -35,13 +50,6 @@ class PadStatsInteractorImpl : BaseNetwork(), PadStatsContract.PadStatsInteracto
                 100000
             )
         )
-
-        launchCall = api.getQueriedLaunchpads(launchQuery).apply {
-            makeCall {
-                onResponseSuccess = { listener.onGetLaunchpads(it.body()) }
-                onResponseFailure = { listener.onError(it) }
-            }
-        }
 
         landingCall = api.getQueriedLandingPads(landQuery).apply {
             makeCall {

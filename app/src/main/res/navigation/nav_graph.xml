@@ -82,7 +82,44 @@
         android:id="@+id/statistics_page_fragment"
         android:name="uk.co.zac_h.spacex.statistics.StatisticsFragment"
         app:enterAnim="@android:anim/fade_in"
-        tools:layout="@layout/fragment_statistics" />
+        tools:layout="@layout/fragment_statistics">
+        <action
+            android:id="@+id/action_statistics_fragment_to_launch_history"
+            app:destination="@id/launch_history_fragment"
+            app:exitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_statistics_fragment_to_launch_rate"
+            app:destination="@id/launch_rate_fragment"
+            app:exitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_statistics_fragment_to_launch_mass"
+            app:destination="@id/launch_mass_fragment"
+            app:exitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_statistics_fragment_to_pad_stats"
+            app:destination="@id/pad_stats_fragment"
+            app:exitAnim="@android:anim/fade_out" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/launch_history_fragment"
+        android:name="uk.co.zac_h.spacex.statistics.graphs.launchhistory.LaunchHistoryFragment"
+        tools:layout="@layout/fragment_launch_history" />
+
+    <fragment
+        android:id="@+id/launch_rate_fragment"
+        android:name="uk.co.zac_h.spacex.statistics.graphs.launchrate.LaunchRateFragment"
+        tools:layout="@layout/fragment_launch_rate" />
+
+    <fragment
+        android:id="@+id/launch_mass_fragment"
+        android:name="uk.co.zac_h.spacex.statistics.graphs.launchmass.LaunchMassFragment"
+        tools:layout="@layout/fragment_launch_mass" />
+
+    <fragment
+        android:id="@+id/pad_stats_fragment"
+        android:name="uk.co.zac_h.spacex.statistics.graphs.padstats.PadStatsFragment"
+        tools:layout="@layout/fragment_pad_stats" />
 
     <fragment
         android:id="@+id/company_page_fragment"
@@ -94,12 +131,8 @@
         android:id="@+id/history_page_fragment"
         android:name="uk.co.zac_h.spacex.about.history.HistoryFragment"
         app:enterAnim="@android:anim/fade_in"
-        tools:layout="@layout/fragment_history">
-        <action
-            android:id="@+id/action_history_fragment_to_launch_details_container_fragment"
-            app:destination="@id/launch_details_container_fragment"
-            app:exitAnim="@android:anim/fade_out" />
-    </fragment>
+        app:exitAnim="@android:anim/fade_out"
+        tools:layout="@layout/fragment_history" />
 
     <fragment
         android:id="@+id/about_page_fragment"
