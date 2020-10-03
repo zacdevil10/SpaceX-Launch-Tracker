@@ -1,5 +1,7 @@
 package uk.co.zac_h.spacex.model.spacex
 
+import com.squareup.moshi.Json
+
 // v4
 
 data class QueryModel(
@@ -44,4 +46,8 @@ data class QueryLaunchesSortByDate(
 
 data class QueryHistorySort(
     private var event_date_unix: String
+)
+
+data class QueryLandingHistory(
+    @field:Json(name = "cores.landing_attempt") var landing_attempt: Boolean
 )

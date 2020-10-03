@@ -88,6 +88,10 @@
             app:destination="@id/launch_history_fragment"
             app:exitAnim="@android:anim/fade_out" />
         <action
+            android:id="@+id/action_statistics_fragment_to_landing_history"
+            app:destination="@id/landing_history_fragment"
+            app:exitAnim="@android:anim/fade_out" />
+        <action
             android:id="@+id/action_statistics_fragment_to_launch_rate"
             app:destination="@id/launch_rate_fragment"
             app:exitAnim="@android:anim/fade_out" />
@@ -105,6 +109,11 @@
         android:id="@+id/launch_history_fragment"
         android:name="uk.co.zac_h.spacex.statistics.graphs.launchhistory.LaunchHistoryFragment"
         tools:layout="@layout/fragment_launch_history" />
+
+    <fragment
+        android:id="@+id/landing_history_fragment"
+        android:name="uk.co.zac_h.spacex.statistics.graphs.landinghistory.LandingHistoryFragment"
+        tools:layout="@layout/fragment_landing_history" />
 
     <fragment
         android:id="@+id/launch_rate_fragment"
