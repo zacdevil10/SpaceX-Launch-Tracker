@@ -2,7 +2,6 @@ package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
 import android.os.Bundle
 import android.view.*
-import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -11,12 +10,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
@@ -88,39 +85,15 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
 
         keyAdapter = StatisticsKeyAdapter(context, keys, false)
 
-        binding?.launchRateKeyRecycler?.apply {
+        binding?.statisticsBarChart?.recycler?.apply {
             layoutManager = LinearLayoutManager(this@LaunchRateFragment.context)
             adapter = keyAdapter
         }
 
-        binding?.launchRateBarChart?.apply {
-            xAxis.apply {
-                position = XAxis.XAxisPosition.BOTTOM
-                textColor = ContextCompat.getColor(context, R.color.color_on_background)
-                valueFormatter = object : ValueFormatter() {
-                    override fun getFormattedValue(value: Float): String {
-                        return "'" + value.toInt().toString().takeLast(2)
-                    }
-                }
-                setDrawGridLines(false)
-            }
-            axisLeft.apply {
-                textColor = ContextCompat.getColor(context, R.color.color_on_background)
-                isGranularityEnabled = true
-                granularity = 1f
-                axisMinimum = 0f
-                setDrawGridLines(false)
-            }
-            axisRight.isEnabled = false
-            setScaleEnabled(false)
-            description.isEnabled = false
-            setDrawBorders(false)
-            isHighlightFullBarEnabled = true
-            legend.apply {
-                textColor = ContextCompat.getColor(context, R.color.color_on_background)
-            }
-
-            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+        binding
+            ?.statisticsBarChart
+            ?.barChart
+            ?.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     e?.let {
                         val stats = statsList[(e.x - 2006).toInt()]
@@ -128,9 +101,9 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
                         keys.clear()
 
                         binding?.apply {
-                            launchRateKey.visibility = View.VISIBLE
+                            statisticsBarChart.key.visibility = View.VISIBLE
 
-                            launchRateYear.text = stats.year.toString()
+                            statisticsBarChart.year.text = stats.year.toString()
 
                             keys.apply {
                                 if (stats.falconOne > 0) {
@@ -157,13 +130,12 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
                 }
 
                 override fun onNothingSelected() {
-                    binding?.launchRateKey?.visibility = View.GONE
+                    binding?.statisticsBarChart?.key?.visibility = View.GONE
 
                     keys.clear()
                     keyAdapter.notifyDataSetChanged()
                 }
             })
-        }
 
         if (statsList.isEmpty()) {
             presenter?.getLaunchList()
@@ -249,7 +221,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
         val dataSets = ArrayList<IBarDataSet>()
         dataSets.add(set)
 
-        binding?.launchRateBarChart?.apply {
+        binding?.statisticsBarChart?.barChart?.apply {
             if (animate) animateY(400, Easing.Linear)
             xAxis.labelCount = stats.size
             axisLeft.apply {
