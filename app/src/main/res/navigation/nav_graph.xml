@@ -100,6 +100,10 @@
             app:destination="@id/launch_mass_fragment"
             app:exitAnim="@android:anim/fade_out" />
         <action
+            android:id="@+id/action_statistics_fragment_to_fairing_recovery"
+            app:destination="@id/fairing_recovery_fragment"
+            app:exitAnim="@android:anim/fade_out" />
+        <action
             android:id="@+id/action_statistics_fragment_to_pad_stats"
             app:destination="@id/pad_stats_fragment"
             app:exitAnim="@android:anim/fade_out" />
@@ -124,6 +128,11 @@
         android:id="@+id/launch_mass_fragment"
         android:name="uk.co.zac_h.spacex.statistics.graphs.launchmass.LaunchMassFragment"
         tools:layout="@layout/fragment_launch_mass" />
+
+    <fragment
+        android:id="@+id/fairing_recovery_fragment"
+        android:name="uk.co.zac_h.spacex.statistics.graphs.fairingrecovery.FairingRecoveryFragment"
+        tools:layout="@layout/fragment_fairing_recovery" />
 
     <fragment
         android:id="@+id/pad_stats_fragment"

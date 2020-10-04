@@ -77,6 +77,7 @@ class StatisticsAdapter(private val view: StatisticsContract.View) :
                             1 -> R.id.action_statistics_fragment_to_landing_history
                             2 -> R.id.action_statistics_fragment_to_launch_rate
                             3 -> R.id.action_statistics_fragment_to_launch_mass
+                            4 -> R.id.action_statistics_fragment_to_fairing_recovery
                             5 -> R.id.action_statistics_fragment_to_pad_stats
                             6 -> R.id.action_statistics_fragment_to_pad_stats
                             else -> R.id.action_statistics_fragment_to_launch_history
