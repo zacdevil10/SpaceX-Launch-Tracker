@@ -62,6 +62,7 @@ class StatisticsAdapter(private val view: StatisticsContract.View) :
                         0 -> R.drawable.ic_launch_history
                         2 -> R.drawable.ic_launch_rate
                         3 -> R.drawable.ic_mass_to_orbit
+                        4 -> R.drawable.ic_fairing_recovery
                         5 -> R.drawable.ic_launchpads
                         6 -> R.drawable.ic_landing_pads
                         else -> R.drawable.ic_baseline_error_outline_24
