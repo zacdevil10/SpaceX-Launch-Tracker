@@ -1,9 +1,7 @@
 package uk.co.zac_h.spacex.statistics.graphs.fairingrecovery
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -153,6 +151,20 @@ class FairingRecoveryFragment : Fragment(), FairingRecoveryContract.View,
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_statistics_reload, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.reload -> {
+            statsList.clear()
+            presenter?.getLaunchList()
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun updateGraph(stats: List<FairingRecoveryModel>, animate: Boolean) {

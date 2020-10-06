@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/statistics_bar_chart"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
 
     <uk.co.zac_h.spacex.utils.views.CustomBarChart
         android:id="@+id/bar_chart"

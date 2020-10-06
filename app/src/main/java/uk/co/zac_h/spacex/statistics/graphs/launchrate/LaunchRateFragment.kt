@@ -166,7 +166,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_statistics_pads, menu)
+        inflater.inflate(R.menu.menu_statistics_reload, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 

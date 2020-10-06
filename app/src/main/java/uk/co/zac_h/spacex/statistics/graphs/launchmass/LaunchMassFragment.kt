@@ -200,7 +200,7 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_statistics, menu)
+        inflater.inflate(R.menu.menu_statistics_filter, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 

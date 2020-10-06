@@ -59,7 +59,7 @@ class StatisticsAdapter(private val view: StatisticsContract.View) :
 
                 graphics.setImageResource(
                     when (position) {
-                        0 -> R.drawable.ic_launch_history
+                        0, 1 -> R.drawable.ic_launch_history
                         2 -> R.drawable.ic_launch_rate
                         3 -> R.drawable.ic_mass_to_orbit
                         4 -> R.drawable.ic_fairing_recovery
