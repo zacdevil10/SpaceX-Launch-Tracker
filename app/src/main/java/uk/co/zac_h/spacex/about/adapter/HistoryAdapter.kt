@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.history.HistoryContract
 import uk.co.zac_h.spacex.utils.formatDateMillisDDMMM
@@ -120,7 +120,7 @@ class HistoryAdapter(
         val date: TextView = itemView.findViewById(R.id.list_item_history_date)
         val title: TextView = itemView.findViewById(R.id.list_item_history_title)
         val details: TextView = itemView.findViewById(R.id.list_item_history_details)
-        val articleButton: ConstraintLayout =
+        val articleButton: MaterialButton =
             itemView.findViewById(R.id.list_item_history_article_button)
         val lineBottom: View = itemView.findViewById(R.id.list_item_history_line_bottom)
     }

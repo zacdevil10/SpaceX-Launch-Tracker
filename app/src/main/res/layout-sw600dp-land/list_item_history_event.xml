@@ -81,48 +81,22 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@id/list_item_history_title"
                 app:layout_constraintTop_toBottomOf="@id/list_item_history_title"
-                tools:text="Falcon 1 becomes the first privately developed liquid fuel rocket to reach Earth orbit." />
+                tools:maxLines="5"
+                tools:text="@tools:sample/lorem/random" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/list_item_history_article_button"
-                android:layout_width="0dp"
+                style="?attr/materialButtonStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="32dp"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="8dp"
+                android:text="@string/article_label"
+                android:textAppearance="?textAppearanceBody2"
                 android:visibility="gone"
+                app:icon="@drawable/ic_assignment_black_24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@id/list_item_history_details"
-                app:layout_constraintTop_toBottomOf="@id/list_item_history_details">
-
-                <ImageView
-                    android:id="@+id/list_item_history_article_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/article_icon_desc"
-                    android:src="@drawable/ic_assignment_black_24dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:tint="@color/color_on_surface" />
-
-                <TextView
-                    android:id="@+id/list_item_history_article_text"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:text="@string/article_label"
-                    android:textAllCaps="true"
-                    android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/list_item_history_article_image"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintStart_toStartOf="@id/list_item_history_title"
+                app:layout_constraintTop_toBottomOf="@id/list_item_history_details" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
