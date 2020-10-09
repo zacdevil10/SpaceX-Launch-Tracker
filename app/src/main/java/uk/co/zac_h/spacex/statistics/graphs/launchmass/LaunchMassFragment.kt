@@ -2,6 +2,7 @@ package uk.co.zac_h.spacex.statistics.graphs.launchmass
 
 import android.os.Bundle
 import android.view.*
+import android.view.animation.AnimationUtils
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -374,14 +375,30 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
     )
 
     override fun showFilter(filterVisible: Boolean) {
-        binding?.launchMassFilterConstraint?.visibility = when (filterVisible) {
-            true -> View.VISIBLE
-            false -> View.GONE
+        binding?.launchMassFilterConstraint?.apply {
+            when (filterVisible) {
+                true -> {
+                    visibility = View.VISIBLE
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_top))
+                }
+                false -> {
+                    visibility = View.GONE
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_top))
+                }
+            }
         }
 
-        binding?.launchMassFilterTint?.visibility = when (filterVisible) {
-            true -> View.VISIBLE
-            false -> View.GONE
+        binding?.launchMassFilterTint?.apply {
+            when (filterVisible) {
+                true -> {
+                    visibility = View.VISIBLE
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in))
+                }
+                false -> {
+                    visibility = View.GONE
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out))
+                }
+            }
         }
 
         this.filterVisible = filterVisible

@@ -5,8 +5,8 @@
     android:id="@+id/launch_history_constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/color_background"
+    android:orientation="vertical"
     tools:context=".statistics.graphs.launchhistory.LaunchHistoryFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -48,60 +48,6 @@
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/launch_history_filter_constraint"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/launch_history_pie_chart"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/launch_history_filters_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="@string/filter"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <HorizontalScrollView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@id/launch_history_filter_constraint"
-                    app:layout_constraintStart_toEndOf="@id/launch_history_filters_text"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <com.google.android.material.chip.ChipGroup
-                        android:id="@+id/launch_history_chip_group"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        app:singleLine="true"
-                        app:singleSelection="true">
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/launch_history_success_toggle"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/filter_successes" />
-
-                        <com.google.android.material.chip.Chip
-                            android:id="@+id/launch_history_failure_toggle"
-                            style="@style/Widget.MaterialComponents.Chip.Choice"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/filter_failures" />
-
-                    </com.google.android.material.chip.ChipGroup>
-
-                </HorizontalScrollView>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/launch_history_pie_chart"
                 android:layout_width="0dp"
@@ -110,7 +56,7 @@
                 app:layout_constraintBottom_toTopOf="@id/launch_history_progress_card"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/launch_history_filter_constraint" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/launch_history_progress_card"
@@ -239,5 +185,72 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <View
+        android:id="@+id/tint"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="#68000000"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/launch_history_filter_constraint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?colorPrimaryDark"
+        android:clickable="true"
+        android:clipToPadding="true"
+        android:focusable="true"
+        android:padding="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/app_bar">
+
+        <TextView
+            android:id="@+id/launch_history_filters_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/filter"
+            android:textColor="?colorOnPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <HorizontalScrollView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/launch_history_filter_constraint"
+            app:layout_constraintStart_toEndOf="@id/launch_history_filters_text"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/launch_history_chip_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                app:singleLine="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/launch_history_success_toggle"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter_successes" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/launch_history_failure_toggle"
+                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter_failures" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+        </HorizontalScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

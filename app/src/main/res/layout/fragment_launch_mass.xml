@@ -5,7 +5,6 @@
     android:id="@+id/launch_mass_constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:background="@color/color_background"
     tools:context=".statistics.graphs.launchmass.LaunchMassFragment">
 
@@ -40,8 +39,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/app_bar"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/app_bar">
 
         <include
             android:id="@+id/statistics_bar_chart"
@@ -63,7 +62,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?colorPrimaryDark"
+        android:clickable="true"
         android:clipToPadding="true"
+        android:focusable="true"
         android:padding="16dp"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/app_bar">
