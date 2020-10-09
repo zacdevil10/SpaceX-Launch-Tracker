@@ -2,11 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/launch_rate_constraint"
+    android:id="@+id/fairing_recovery_constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
-    tools:context=".statistics.graphs.launchrate.LaunchRateFragment">
+    android:background="@color/color_background"
+    tools:context=".statistics.graphs.fairingrecovery.FairingRecoveryFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
@@ -23,7 +23,7 @@
             android:elevation="4dp"
             android:textColor="?colorOnSurface"
             android:theme="@style/AppTheme.AppBarOverlay"
-            app:title="Launch Rate" />
+            app:title="Fairing Recovery" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

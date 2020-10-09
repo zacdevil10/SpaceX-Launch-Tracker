@@ -88,12 +88,20 @@
             app:destination="@id/launch_history_fragment"
             app:exitAnim="@android:anim/fade_out" />
         <action
+            android:id="@+id/action_statistics_fragment_to_landing_history"
+            app:destination="@id/landing_history_fragment"
+            app:exitAnim="@android:anim/fade_out" />
+        <action
             android:id="@+id/action_statistics_fragment_to_launch_rate"
             app:destination="@id/launch_rate_fragment"
             app:exitAnim="@android:anim/fade_out" />
         <action
             android:id="@+id/action_statistics_fragment_to_launch_mass"
             app:destination="@id/launch_mass_fragment"
+            app:exitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_statistics_fragment_to_fairing_recovery"
+            app:destination="@id/fairing_recovery_fragment"
             app:exitAnim="@android:anim/fade_out" />
         <action
             android:id="@+id/action_statistics_fragment_to_pad_stats"
@@ -107,6 +115,11 @@
         tools:layout="@layout/fragment_launch_history" />
 
     <fragment
+        android:id="@+id/landing_history_fragment"
+        android:name="uk.co.zac_h.spacex.statistics.graphs.landinghistory.LandingHistoryFragment"
+        tools:layout="@layout/fragment_landing_history" />
+
+    <fragment
         android:id="@+id/launch_rate_fragment"
         android:name="uk.co.zac_h.spacex.statistics.graphs.launchrate.LaunchRateFragment"
         tools:layout="@layout/fragment_launch_rate" />
@@ -115,6 +128,11 @@
         android:id="@+id/launch_mass_fragment"
         android:name="uk.co.zac_h.spacex.statistics.graphs.launchmass.LaunchMassFragment"
         tools:layout="@layout/fragment_launch_mass" />
+
+    <fragment
+        android:id="@+id/fairing_recovery_fragment"
+        android:name="uk.co.zac_h.spacex.statistics.graphs.fairingrecovery.FairingRecoveryFragment"
+        tools:layout="@layout/fragment_fairing_recovery" />
 
     <fragment
         android:id="@+id/pad_stats_fragment"

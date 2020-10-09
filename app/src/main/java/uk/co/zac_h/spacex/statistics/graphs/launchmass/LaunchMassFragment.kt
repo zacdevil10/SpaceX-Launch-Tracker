@@ -2,7 +2,7 @@ package uk.co.zac_h.spacex.statistics.graphs.launchmass
 
 import android.os.Bundle
 import android.view.*
-import androidx.core.content.ContextCompat
+import android.view.animation.AnimationUtils
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -11,12 +11,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
@@ -116,37 +114,13 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
 
         keyAdapter = StatisticsKeyAdapter(context, keys, true)
 
-        binding?.launchMassKeyRecycler?.apply {
+        binding?.statisticsBarChart?.recycler?.apply {
             layoutManager = LinearLayoutManager(this@LaunchMassFragment.context)
             adapter = keyAdapter
         }
 
-        binding?.launchMassBarChart?.apply {
-            xAxis.apply {
-                position = XAxis.XAxisPosition.BOTTOM
-                textColor = ContextCompat.getColor(context, R.color.color_on_background)
-                valueFormatter = object : ValueFormatter() {
-                    override fun getFormattedValue(value: Float): String {
-                        return "'" + value.toInt().toString().takeLast(2)
-                    }
-                }
-                setDrawGridLines(false)
-            }
-            axisLeft.apply {
-                textColor = ContextCompat.getColor(context, R.color.color_on_background)
-                isGranularityEnabled = true
-                granularity = 1f
-                axisMinimum = 0f
-                setDrawGridLines(false)
-            }
-            axisRight.isEnabled = false
-            setScaleEnabled(false)
-            description.isEnabled = false
-            setDrawBorders(false)
-            isHighlightFullBarEnabled = true
-            legend.apply {
-                textColor = ContextCompat.getColor(context, R.color.color_on_background)
-            }
+        binding?.statisticsBarChart?.barChart?.apply {
+            setup()
 
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
@@ -155,9 +129,9 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
 
                         keys.clear()
 
-                        binding?.launchMassKey?.visibility = View.VISIBLE
+                        binding?.statisticsBarChart?.key?.visibility = View.VISIBLE
 
-                        binding?.launchMassYear?.text = stats.year.toString()
+                        binding?.statisticsBarChart?.year?.text = stats.year.toString()
 
                         when (filterType) {
                             LaunchMassViewType.ROCKETS -> {
@@ -191,7 +165,7 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
                 }
 
                 override fun onNothingSelected() {
-                    binding?.launchMassKey?.visibility = View.GONE
+                    binding?.statisticsBarChart?.key?.visibility = View.GONE
 
                     keys.clear()
                     keyAdapter.notifyDataSetChanged()
@@ -228,14 +202,14 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_statistics, menu)
+        inflater.inflate(R.menu.menu_statistics_filter, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.filter -> {
-            binding?.launchMassKey?.visibility = View.GONE
-            binding?.launchMassBarChart?.apply {
+            binding?.statisticsBarChart?.key?.visibility = View.GONE
+            binding?.statisticsBarChart?.barChart?.apply {
                 onTouchListener.setLastHighlighted(null)
                 highlightValues(null)
             }
@@ -253,7 +227,7 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
     override fun updateData(mass: ArrayList<LaunchMassStatsModel>, animate: Boolean) {
         if (statsList.isEmpty()) statsList.addAll(mass)
 
-        binding?.launchMassKey?.visibility = View.GONE
+        binding?.statisticsBarChart?.key?.visibility = View.GONE
 
         val colors = ArrayList<Int>()
 
@@ -368,7 +342,7 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
         val dataSets = ArrayList<IBarDataSet>()
         dataSets.add(set)
 
-        binding?.launchMassBarChart?.apply {
+        binding?.statisticsBarChart?.barChart?.apply {
             onTouchListener.setLastHighlighted(null)
             highlightValues(null)
             if (animate) animateY(400, Easing.Linear)
@@ -401,14 +375,30 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
     )
 
     override fun showFilter(filterVisible: Boolean) {
-        binding?.launchMassFilterConstraint?.visibility = when (filterVisible) {
-            true -> View.VISIBLE
-            false -> View.GONE
+        binding?.launchMassFilterConstraint?.apply {
+            when (filterVisible) {
+                true -> {
+                    visibility = View.VISIBLE
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_top))
+                }
+                false -> {
+                    visibility = View.GONE
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_top))
+                }
+            }
         }
 
-        binding?.launchMassFilterTint?.visibility = when (filterVisible) {
-            true -> View.VISIBLE
-            false -> View.GONE
+        binding?.launchMassFilterTint?.apply {
+            when (filterVisible) {
+                true -> {
+                    visibility = View.VISIBLE
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in))
+                }
+                false -> {
+                    visibility = View.GONE
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out))
+                }
+            }
         }
 
         this.filterVisible = filterVisible

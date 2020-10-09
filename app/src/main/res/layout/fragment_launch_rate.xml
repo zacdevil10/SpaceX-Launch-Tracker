@@ -5,7 +5,6 @@
     android:id="@+id/launch_rate_constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:background="@color/color_background"
     tools:context=".statistics.graphs.launchrate.LaunchRateFragment">
 
@@ -37,49 +36,16 @@
         app:indicatorColor="?colorSecondary"
         app:layout_constraintTop_toBottomOf="@id/app_bar" />
 
-    <com.github.mikephil.charting.charts.BarChart
-        android:id="@+id/launch_rate_bar_chart"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar" />
+        app:layout_constraintTop_toBottomOf="@id/app_bar"
+        app:layout_constraintBottom_toBottomOf="parent">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/launch_rate_key"
-        android:layout_width="156dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:visibility="gone"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar">
+        <include
+            android:id="@+id/statistics_bar_chart"
+            layout="@layout/statistics_bar_chart" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?colorPrimary"
-            android:padding="8dp">
-
-            <TextView
-                android:id="@+id/launch_rate_year"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?textAppearanceHeadline6"
-                android:textColor="?colorOnPrimary"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="2017" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/launch_rate_key_recycler"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/launch_rate_year" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.google.android.material.card.MaterialCardView>
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

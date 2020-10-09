@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
+import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
@@ -83,6 +84,10 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
 
         hideProgress()
 
+        binding?.tint?.setOnClickListener {
+            toggleFilterVisibility(false)
+        }
+
         presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
 
         binding?.launchHistoryChipGroup?.setOnCheckedChangeListener { _, checkedId ->
@@ -106,6 +111,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
             description.isEnabled = false
             setCenterTextColor(ContextCompat.getColor(context, R.color.color_on_background))
             isRotationEnabled = false
+            setTouchEnabled(false)
 
             legend.apply {
                 verticalAlignment = Legend.LegendVerticalAlignment.TOP
@@ -144,7 +150,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_statistics, menu)
+        inflater.inflate(R.menu.menu_statistics_filter, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -273,9 +279,30 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
     }
 
     override fun toggleFilterVisibility(filterVisible: Boolean) {
-        binding?.launchHistoryFilterConstraint?.visibility = when (filterVisible) {
-            true -> View.VISIBLE
-            false -> View.GONE
+        binding?.launchHistoryFilterConstraint?.apply {
+            when (filterVisible) {
+                true -> {
+                    visibility = View.VISIBLE
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_top))
+                }
+                false -> {
+                    visibility = View.GONE
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_top))
+                }
+            }
+        }
+
+        binding?.tint?.apply {
+            when (filterVisible) {
+                true -> {
+                    visibility = View.VISIBLE
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in))
+                }
+                false -> {
+                    visibility = View.GONE
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out))
+                }
+            }
         }
 
         this.filterVisible = filterVisible
