@@ -118,10 +118,10 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
             adapter = keyAdapter
         }
 
-        binding
-            ?.statisticsBarChart
-            ?.barChart
-            ?.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+        binding?.statisticsBarChart?.barChart?.apply {
+            setup()
+
+            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     e?.let {
                         val stats = statsList[(e.x - 2006).toInt()]
@@ -170,6 +170,7 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
                     keyAdapter.notifyDataSetChanged()
                 }
             })
+        }
 
         if (statsList.isEmpty()) {
             presenter?.getLaunchList()

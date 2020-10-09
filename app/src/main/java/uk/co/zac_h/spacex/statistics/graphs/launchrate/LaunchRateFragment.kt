@@ -90,10 +90,10 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
             adapter = keyAdapter
         }
 
-        binding
-            ?.statisticsBarChart
-            ?.barChart
-            ?.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+        binding?.statisticsBarChart?.barChart?.apply {
+            setup()
+
+            setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     e?.let {
                         val stats = statsList[(e.x - 2006).toInt()]
@@ -136,6 +136,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
                     keyAdapter.notifyDataSetChanged()
                 }
             })
+        }
 
         if (statsList.isEmpty()) {
             presenter?.getLaunchList()

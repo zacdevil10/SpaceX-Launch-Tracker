@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.utils.views
 
 import android.content.Context
-import android.graphics.Canvas
 import android.util.AttributeSet
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.BarChart
@@ -21,9 +20,7 @@ class CustomBarChart : BarChart {
         defStyle
     )
 
-    override fun onDraw(canvas: Canvas?) {
-        super.onDraw(canvas)
-
+    fun setup() {
         xAxis.apply {
             position = XAxis.XAxisPosition.BOTTOM
             textColor = ContextCompat.getColor(context, R.color.color_on_background)
