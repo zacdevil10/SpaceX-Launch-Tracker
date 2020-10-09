@@ -2,6 +2,7 @@ package uk.co.zac_h.spacex.statistics.graphs.padstats
 
 import android.os.Bundle
 import android.view.*
+import android.view.animation.AnimationUtils
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -114,7 +115,7 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_statistics_pads, menu)
+        inflater.inflate(R.menu.menu_statistics_reload, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -135,7 +136,10 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
         this.pads.clear()
         this.pads.addAll(pads)
 
+        binding?.padStatsLaunchSitesRecycler?.layoutAnimation =
+            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
         padsAdapter.notifyDataSetChanged()
+        binding?.padStatsLaunchSitesRecycler?.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {

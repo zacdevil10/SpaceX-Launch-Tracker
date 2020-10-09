@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.statistics.graphs.launchrate
+package uk.co.zac_h.spacex.statistics.graphs.fairingrecovery
 
 import android.os.Bundle
 import android.view.*
@@ -22,25 +22,24 @@ import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
-import uk.co.zac_h.spacex.databinding.FragmentLaunchRateBinding
+import uk.co.zac_h.spacex.databinding.FragmentFairingRecoveryBinding
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
+import uk.co.zac_h.spacex.utils.models.FairingRecoveryModel
 import uk.co.zac_h.spacex.utils.models.KeysModel
-import uk.co.zac_h.spacex.utils.models.RateStatsModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
+class FairingRecoveryFragment : Fragment(), FairingRecoveryContract.View,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private var binding: FragmentLaunchRateBinding? = null
+    private var binding: FragmentFairingRecoveryBinding? = null
 
-    private var heading: String? = null
+    private var presenter: FairingRecoveryContract.Presenter? = null
 
-    private var presenter: LaunchRateContract.LaunchRatePresenter? = null
-
-    private lateinit var statsList: ArrayList<RateStatsModel>
-
+    private lateinit var statsList: ArrayList<FairingRecoveryModel>
     private lateinit var keyAdapter: StatisticsKeyAdapter
     private var keys: ArrayList<KeysModel> = ArrayList()
+
+    private var heading: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,15 +48,14 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
         sharedElementEnterTransition = MaterialContainerTransform()
 
         heading = arguments?.getString("heading")
-        statsList = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
+        statsList = savedInstanceState?.getParcelableArrayList("stats") ?: ArrayList()
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentLaunchRateBinding.inflate(inflater, container, false)
+        binding = FragmentFairingRecoveryBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
@@ -77,16 +75,16 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
-        binding?.launchRateConstraint?.transitionName = heading
+        binding?.fairingRecoveryConstraint?.transitionName = heading
 
         hideProgress()
 
-        presenter = LaunchRatePresenterImpl(this, LaunchRateInteractorImpl())
+        presenter = FairingRecoveryPresenter(this, FairingRecoveryInteractor())
 
         keyAdapter = StatisticsKeyAdapter(context, keys, false)
 
         binding?.statisticsBarChart?.recycler?.apply {
-            layoutManager = LinearLayoutManager(this@LaunchRateFragment.context)
+            layoutManager = LinearLayoutManager(this@FairingRecoveryFragment.context)
             adapter = keyAdapter
         }
 
@@ -96,7 +94,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     e?.let {
-                        val stats = statsList[(e.x - 2006).toInt()]
+                        val stats = statsList[(e.x - 2017).toInt()]
 
                         keys.clear()
 
@@ -106,21 +104,13 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
                             statisticsBarChart.year.text = stats.year.toString()
 
                             keys.apply {
-                                if (stats.falconOne > 0) {
-                                    add(KeysModel("Falcon 1", stats.falconOne))
-                                }
-                                if (stats.falconNine > 0) {
-                                    add(KeysModel("Falcon 9", stats.falconNine))
-                                }
-                                if (stats.falconHeavy > 0) {
-                                    add(KeysModel("Falcon Heavy", stats.falconHeavy))
-                                }
-                                if (stats.failure > 0) {
-                                    add(KeysModel("Failures", stats.failure))
-                                }
-                                if (stats.planned > 0) {
-                                    add(KeysModel("Planned", stats.planned))
-                                }
+                                if (stats.successes > 0) add(
+                                    KeysModel(
+                                        "Successes",
+                                        stats.successes
+                                    )
+                                )
+                                if (stats.failures > 0) add(KeysModel("Failures", stats.failures))
                                 add(KeysModel("Total", e.y))
                             }
                         }
@@ -131,7 +121,6 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
 
                 override fun onNothingSelected() {
                     binding?.statisticsBarChart?.key?.visibility = View.GONE
-
                     keys.clear()
                     keyAdapter.notifyDataSetChanged()
                 }
@@ -156,13 +145,12 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("launches", statsList)
+        outState.putParcelableArrayList("stats", statsList)
         super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter?.cancelRequests()
         binding = null
     }
 
@@ -180,33 +168,27 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updateBarChart(stats: List<RateStatsModel>, animate: Boolean) {
+    override fun updateGraph(stats: List<FairingRecoveryModel>, animate: Boolean) {
         if (statsList.isEmpty()) statsList.addAll(stats)
 
         val colors = ArrayList<Int>()
 
-        colors.add(ColorTemplate.rgb("29b6f6")) //F1
-        colors.add(ColorTemplate.rgb("9ccc65")) //F9
-        colors.add(ColorTemplate.rgb("ff7043")) //FH
-        colors.add(ColorTemplate.rgb("b00020")) //Failures
-        colors.add(ColorTemplate.rgb("66bb6a")) //Future
+        colors.add(ColorTemplate.rgb("29b6f6")) //Success
+        colors.add(ColorTemplate.rgb("b00020")) //Failure
 
         val entries = ArrayList<BarEntry>()
 
         var max = 0f
 
         stats.forEach {
-            val newMax = it.falconOne + it.falconNine + it.falconHeavy + it.failure + it.planned
+            val newMax = it.successes + it.failures
             if (newMax > max) max = newMax
             entries.add(
                 BarEntry(
                     it.year.toFloat(),
                     floatArrayOf(
-                        it.falconOne,
-                        it.falconNine,
-                        it.falconHeavy,
-                        it.failure,
-                        it.planned
+                        it.successes,
+                        it.failures
                     )
                 )
             )
@@ -216,7 +198,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
             setColors(colors)
             setDrawValues(false)
 
-            stackLabels = arrayOf("Falcon 1", "Falcon 9", "Falcon Heavy", "Failures", "Future")
+            stackLabels = arrayOf("Success", "Failure")
         }
 
         val dataSets = ArrayList<IBarDataSet>()

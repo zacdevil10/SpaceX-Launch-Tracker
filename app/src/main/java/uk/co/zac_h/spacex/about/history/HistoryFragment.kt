@@ -161,7 +161,10 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
 
         historyAdapter.notifyDataSetChanged()
 
-        binding?.historyRecycler?.scheduleLayoutAnimation()
+        binding?.historyRecycler?.apply {
+            smoothScrollToPosition(0)
+            scheduleLayoutAnimation()
+        }
     }
 
     override fun openWebLink(link: String) {
