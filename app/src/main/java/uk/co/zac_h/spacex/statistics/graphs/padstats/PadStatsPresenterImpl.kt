@@ -12,10 +12,16 @@ class PadStatsPresenterImpl(
 
     private var padList = ArrayList<StatsPadModel>()
 
-    override fun getPads(api: SpaceXInterface) {
+    override fun getLaunchpads(api: SpaceXInterface) {
         padList.clear()
         view.showProgress()
-        interactor.getPads(api, this)
+        interactor.getLaunchpads(api, this)
+    }
+
+    override fun getLandingPads(api: SpaceXInterface) {
+        padList.clear()
+        view.showProgress()
+        interactor.getLandingPads(api, this)
     }
 
     override fun cancelRequests() {
@@ -23,15 +29,6 @@ class PadStatsPresenterImpl(
     }
 
     override fun onGetLaunchpads(launchpads: LaunchpadDocsModel?) {
-        padList.add(
-            StatsPadModel(
-                "Launch Sites",
-                0,
-                0,
-                "",
-                isHeading = true
-            )
-        )
         launchpads?.docs?.forEach {
             padList.add(
                 StatsPadModel(
@@ -50,15 +47,6 @@ class PadStatsPresenterImpl(
     }
 
     override fun onGetLandingPads(landingPads: LandingPadDocsModel?) {
-        padList.add(
-            StatsPadModel(
-                "Landing Sites",
-                0,
-                0,
-                "",
-                isHeading = true
-            )
-        )
         landingPads?.docs?.forEach {
             padList.add(
                 StatsPadModel(

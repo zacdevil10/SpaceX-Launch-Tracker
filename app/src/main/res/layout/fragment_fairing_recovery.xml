@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fairing_recovery_constraint"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_background"
+    tools:context=".statistics.graphs.fairingrecovery.FairingRecoveryFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            style="@style/Widget.MaterialComponents.Toolbar.Primary"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:elevation="4dp"
+            android:textColor="?colorOnSurface"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:title="Fairing Recovery" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.google.android.material.progressindicator.ProgressIndicator
+        android:id="@+id/progress_indicator"
+        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        app:indicatorColor="?colorSecondary"
+        app:layout_constraintTop_toBottomOf="@id/app_bar" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/app_bar"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <include
+            android:id="@+id/statistics_bar_chart"
+            layout="@layout/statistics_bar_chart" />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

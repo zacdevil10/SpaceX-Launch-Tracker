@@ -4,8 +4,14 @@ import android.animation.ValueAnimator
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
+import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnPreDraw
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
@@ -13,9 +19,12 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
+import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchHistoryBinding
+import uk.co.zac_h.spacex.utils.LaunchHistoryFilter
 import uk.co.zac_h.spacex.utils.RocketType
 import uk.co.zac_h.spacex.utils.generateCenterSpannableText
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
@@ -28,17 +37,22 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
 
     private var presenter: LaunchHistoryContract.LaunchHistoryPresenter? = null
 
+    private var filter: LaunchHistoryFilter? = null
     private var filterVisible = false
-    private var filterSuccessful = false
-    private var filterFailed = false
 
     private lateinit var launchStats: ArrayList<HistoryStatsModel>
+
+    private var heading: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
+        sharedElementEnterTransition = MaterialContainerTransform()
+
+        heading = arguments?.getString("heading")
         launchStats = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
+        filterVisible = savedInstanceState?.getBoolean("filter") ?: false
     }
 
     override fun onCreateView(
@@ -53,21 +67,36 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
+
+        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
+
+        val navController = NavHostFragment.findNavController(this)
+        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
+        val appBarConfig =
+            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
+                .setOpenableLayout(drawerLayout).build()
+
+        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+
+        binding?.launchHistoryConstraint?.transitionName = heading
+
         hideProgress()
+
+        binding?.tint?.setOnClickListener {
+            toggleFilterVisibility(false)
+        }
 
         presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
 
-        binding?.launchHistoryChipGroup?.setOnCheckedChangeListener { group, _ ->
-            presenter?.updateFilter(
-                launchStats,
-                "success",
-                binding?.launchHistorySuccessToggle?.id == group.checkedChipId
-            )
-            presenter?.updateFilter(
-                launchStats,
-                "failed",
-                binding?.launchHistoryFailureToggle?.id == group.checkedChipId
-            )
+        binding?.launchHistoryChipGroup?.setOnCheckedChangeListener { _, checkedId ->
+            filter = when (checkedId) {
+                binding?.launchHistorySuccessToggle?.id -> LaunchHistoryFilter.SUCCESSES
+                binding?.launchHistoryFailureToggle?.id -> LaunchHistoryFilter.FAILURES
+                else -> null
+            }
+            presenter?.updateFilter(launchStats)
         }
 
         presenter?.apply {
@@ -82,6 +111,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
             description.isEnabled = false
             setCenterTextColor(ContextCompat.getColor(context, R.color.color_on_background))
             isRotationEnabled = false
+            setTouchEnabled(false)
 
             legend.apply {
                 verticalAlignment = Legend.LegendVerticalAlignment.TOP
@@ -109,6 +139,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList("launches", launchStats)
+        outState.putBoolean("filter", filterVisible)
         super.onSaveInstanceState(outState)
     }
 
@@ -119,7 +150,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_statistics, menu)
+        inflater.inflate(R.menu.menu_statistics_filter, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -153,19 +184,19 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
 
         stats.forEach {
             when (it.rocket) {
-                RocketType.FALCON_ONE -> falconOne = when {
-                    filterSuccessful -> it.successes
-                    filterFailed -> it.failures
+                RocketType.FALCON_ONE -> falconOne = when (filter) {
+                    LaunchHistoryFilter.SUCCESSES -> it.successes
+                    LaunchHistoryFilter.FAILURES -> it.failures
                     else -> it.successes + it.failures
                 }
-                RocketType.FALCON_NINE -> falconNine = when {
-                    filterSuccessful -> it.successes
-                    filterFailed -> it.failures
+                RocketType.FALCON_NINE -> falconNine = when (filter) {
+                    LaunchHistoryFilter.SUCCESSES -> it.successes
+                    LaunchHistoryFilter.FAILURES -> it.failures
                     else -> it.successes + it.failures
                 }
-                RocketType.FALCON_HEAVY -> falconHeavy = when {
-                    filterSuccessful -> it.successes
-                    filterFailed -> it.failures
+                RocketType.FALCON_HEAVY -> falconHeavy = when (filter) {
+                    LaunchHistoryFilter.SUCCESSES -> it.successes
+                    LaunchHistoryFilter.FAILURES -> it.failures
                     else -> it.successes + it.failures
                 }
             }
@@ -247,21 +278,34 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
         }
     }
 
-    override fun showFilter(filterVisible: Boolean) {
-        binding?.launchHistoryFilterConstraint?.visibility = when (filterVisible) {
-            true -> View.VISIBLE
-            false -> View.GONE
+    override fun toggleFilterVisibility(filterVisible: Boolean) {
+        binding?.launchHistoryFilterConstraint?.apply {
+            when (filterVisible) {
+                true -> {
+                    visibility = View.VISIBLE
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_top))
+                }
+                false -> {
+                    visibility = View.GONE
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_top))
+                }
+            }
+        }
+
+        binding?.tint?.apply {
+            when (filterVisible) {
+                true -> {
+                    visibility = View.VISIBLE
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in))
+                }
+                false -> {
+                    visibility = View.GONE
+                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out))
+                }
+            }
         }
 
         this.filterVisible = filterVisible
-    }
-
-    override fun setFilterSuccessful(isFiltered: Boolean) {
-        filterSuccessful = isFiltered
-    }
-
-    override fun setFilterFailed(isFiltered: Boolean) {
-        filterFailed = isFiltered
     }
 
     override fun showProgress() {

@@ -10,6 +10,8 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentCapsulesBinding
 import uk.co.zac_h.spacex.model.spacex.CapsulesModel
+import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
+import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.VehiclesContract
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
@@ -25,6 +27,7 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
     private lateinit var capsulesAdapter: CapsulesAdapter
     private lateinit var capsulesArray: ArrayList<CapsulesModel>
 
+    private lateinit var orderSharedPreferences: OrderSharedPreferencesHelper
     private var sortNew = false
     private lateinit var searchView: SearchView
 
@@ -50,7 +53,10 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
 
         hideProgress()
 
+        orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(context)
         presenter = CapsulesPresenterImpl(this, CapsulesInteractorImpl())
+
+        sortNew = orderSharedPreferences.isSortedNew("capsules")
 
         capsulesAdapter = CapsulesAdapter(capsulesArray)
 
@@ -103,6 +109,7 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
             R.id.sort_new -> {
                 if (!sortNew) {
                     sortNew = true
+                    orderSharedPreferences.setSortOrder("capsules", sortNew)
                     capsulesArray.reverse()
                     capsulesAdapter.notifyDataSetChanged()
                 }
@@ -111,6 +118,7 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
             R.id.sort_old -> {
                 if (sortNew) {
                     sortNew = false
+                    orderSharedPreferences.setSortOrder("capsules", sortNew)
                     capsulesArray.reverse()
                     capsulesAdapter.notifyDataSetChanged()
                 }

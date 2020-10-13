@@ -13,7 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentHistoryBinding
+import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
+import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.utils.views.HeaderItemDecoration
@@ -28,7 +31,8 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
     private lateinit var history: ArrayList<HistoryHeaderModel>
     private lateinit var historyAdapter: HistoryAdapter
 
-    private var sortNew = true
+    private lateinit var orderSharedPreferences: OrderSharedPreferencesHelper
+    private var sortNew = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +56,8 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
 
         hideProgress()
 
+        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
+
         val navController = NavHostFragment.findNavController(this)
         val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
         val appBarConfig =
@@ -60,7 +66,10 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
+        orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(context)
         presenter = HistoryPresenterImpl(this, HistoryInteractorImpl())
+
+        sortNew = orderSharedPreferences.isSortedNew("history")
 
         historyAdapter = HistoryAdapter(requireContext(), history, this)
 
@@ -130,6 +139,7 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
             R.id.sort_new -> {
                 if (!sortNew) {
                     sortNew = true
+                    orderSharedPreferences.setSortOrder("history", sortNew)
                     presenter?.getHistory(sortNew)
                 }
                 true
@@ -137,6 +147,7 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
             R.id.sort_old -> {
                 if (sortNew) {
                     sortNew = false
+                    orderSharedPreferences.setSortOrder("history", sortNew)
                     presenter?.getHistory(sortNew)
                 }
                 true
@@ -150,7 +161,10 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
 
         historyAdapter.notifyDataSetChanged()
 
-        binding?.historyRecycler?.scheduleLayoutAnimation()
+        binding?.historyRecycler?.apply {
+            smoothScrollToPosition(0)
+            scheduleLayoutAnimation()
+        }
     }
 
     override fun openWebLink(link: String) {

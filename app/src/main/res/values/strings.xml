@@ -95,11 +95,19 @@
     <string name="future_rate_label">Future:</string>
     <string name="total_rate_label">Total:</string>
 
+    <string name="mass_kg">%1$s kg</string>
+
     <string name="status_label">Status</string>
     <string name="successes_label">Successes</string>
     <string name="attempts_label">Attempts</string>
     <string name="launch_pad_status_desc">Launch pad status</string>
     <string name="launch_pad_type_desc">Pad type</string>
+
+    <string name="rockets_label">Rockets</string>
+    <string name="orbits_label">Orbits</string>
+    <string name="type_filter_label">Type:</string>
+
+    <string name="illustration_by_freepik_stories">Illustration by Freepik Stories</string>
 
     <!--About-->
     <string name="powered_by">Powered by the r/SpaceX, Twitter and Reddit API</string>
