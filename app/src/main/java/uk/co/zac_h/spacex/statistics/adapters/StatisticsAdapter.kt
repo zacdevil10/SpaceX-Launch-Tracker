@@ -54,7 +54,7 @@ class StatisticsAdapter(private val view: StatisticsContract.View) :
             is ViewHolder -> holder.apply {
                 val heading = titles[position]
 
-                itemView.transitionName = heading
+                card.transitionName = heading
                 title.text = heading
 
                 graphics.setImageResource(
@@ -92,7 +92,7 @@ class StatisticsAdapter(private val view: StatisticsContract.View) :
                             "heading" to heading
                         ),
                         null,
-                        FragmentNavigatorExtras(itemView to heading)
+                        FragmentNavigatorExtras(card to heading)
                     )
                 }
             }
