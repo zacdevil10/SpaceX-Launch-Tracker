@@ -50,6 +50,6 @@ class ThemePreferenceRepository(private val sharedPreferences: SharedPreferences
     companion object {
         private const val PREFERENCES_NIGHT_MODE = "preferences_night_mode"
         private val PREFERENCES_NIGHT_MODE_DEF_VAL =
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.Q) AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM else AppCompatDelegate.MODE_NIGHT_YES
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM else AppCompatDelegate.MODE_NIGHT_YES
     }
 }

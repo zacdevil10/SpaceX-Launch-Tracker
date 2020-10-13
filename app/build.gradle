@@ -7,11 +7,11 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: "com.hiya.jacoco-android"
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     defaultConfig {
         applicationId "uk.co.zac_h.spacex"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 210010501
         versionName "1.5.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
