@@ -17,8 +17,6 @@ class DashboardPresenterImpl(
     ) {
         view.showPinnedMessage()
 
-        println("Making a call to SpaceX API")
-
         interactor.apply {
             if (next == null) {
                 view.toggleNextProgress(true)
@@ -84,7 +82,6 @@ class DashboardPresenterImpl(
     }
 
     override fun onSuccess(id: String, launchModel: LaunchesExtendedModel?) {
-        println(launchModel)
         launchModel?.let { launch ->
             when (id) {
                 "next" -> {
