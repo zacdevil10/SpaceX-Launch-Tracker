@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--<shortcut
+        android:shortcutId="next"
+        android:enabled="true"
+        android:icon="@drawable/ic_rocket"
+        android:shortcutShortLabel="@string/next_launch"
+        android:shortcutLongLabel="@string/next_launch">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="spacex://launch_details=5eb87d4cffd86e000604b38d"
+            android:targetClass="uk.co.zac_h.spacex.base.MainActivity"
+            android:targetPackage="uk.co.zac_h.spacex" />
+    </shortcut>-->
+
+    <shortcut
+        android:shortcutId="launches"
+        android:enabled="true"
+        android:icon="@drawable/ic_event_black_24dp"
+        android:shortcutShortLabel="@string/menu_launches"
+        android:shortcutLongLabel="@string/menu_launches">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="spacex://launches"
+            android:targetClass="uk.co.zac_h.spacex.base.MainActivity"
+            android:targetPackage="uk.co.zac_h.spacex" />
+    </shortcut>
+
+    <shortcut
+        android:shortcutId="history"
+        android:enabled="true"
+        android:icon="@drawable/ic_history_black_24dp"
+        android:shortcutShortLabel="@string/menu_history"
+        android:shortcutLongLabel="@string/menu_history">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="spacex://history"
+            android:targetClass="uk.co.zac_h.spacex.base.MainActivity"
+            android:targetPackage="uk.co.zac_h.spacex" />
+    </shortcut>
+
+</shortcuts>

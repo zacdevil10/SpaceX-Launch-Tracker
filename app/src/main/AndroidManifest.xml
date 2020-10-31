@@ -31,6 +31,10 @@
                     android:scheme="https" />
             </intent-filter>
 
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+
             <tools:validation testUrl="https://spacex.zac-h.co.uk" />
         </activity>
 
