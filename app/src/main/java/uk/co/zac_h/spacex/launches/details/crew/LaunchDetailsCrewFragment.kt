@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.crew.CrewContract
@@ -26,12 +27,9 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
 
     companion object {
         @JvmStatic
-        fun newInstance(id: String) =
-            LaunchDetailsCrewFragment().apply {
-                arguments = Bundle().apply {
-                    putString("id", id)
-                }
-            }
+        fun newInstance(args: Any) = LaunchDetailsCrewFragment().apply {
+            arguments = bundleOf("id" to args)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

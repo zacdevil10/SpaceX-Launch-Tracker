@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.provider.CalendarContract
 import android.view.*
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
@@ -35,20 +36,15 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
     companion object {
         @JvmStatic
-        fun newInstance(launchShort: LaunchesExtendedModel) =
-            LaunchDetailsFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable("launch_short", launchShort)
-                }
-            }
-
-        @JvmStatic
-        fun newInstance(id: String) =
-            LaunchDetailsFragment().apply {
-                arguments = Bundle().apply {
-                    putString("id", id)
-                }
-            }
+        fun newInstance(args: Any) = LaunchDetailsFragment().apply {
+            arguments = bundleOf(
+                when (args) {
+                    is LaunchesExtendedModel -> "launch_short"
+                    is String -> "id"
+                    else -> throw IllegalArgumentException()
+                } to args
+            )
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

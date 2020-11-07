@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
@@ -27,12 +28,9 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
 
     companion object {
         @JvmStatic
-        fun newInstance(id: String) =
-            LaunchDetailsPayloadsFragment().apply {
-                arguments = Bundle().apply {
-                    putString("id", id)
-                }
-            }
+        fun newInstance(args: Any) = LaunchDetailsPayloadsFragment().apply {
+            arguments = bundleOf("id" to args)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

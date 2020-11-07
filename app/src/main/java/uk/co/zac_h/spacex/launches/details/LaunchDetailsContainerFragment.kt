@@ -110,44 +110,39 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
                 selectedItem = it.itemId
                 when (it.itemId) {
                     R.id.launch_details_details -> {
-                        launchShort?.let { launchShort ->
-                            replaceFragment(LaunchDetailsFragment.newInstance(launchShort))
-                        } ?: id?.let { id ->
-                            replaceFragment(LaunchDetailsFragment.newInstance(id))
-                        }
-                        return@setOnNavigationItemSelectedListener true
+                        replaceFragment(
+                            LaunchDetailsFragment.newInstance(
+                                launchShort ?: id ?: throw IllegalArgumentException()
+                            )
+                        )
                     }
                     R.id.launch_details_cores -> {
-                        launchShort?.let { launchShort ->
-                            replaceFragment(LaunchDetailsCoresFragment.newInstance(launchShort.id))
-                        } ?: id?.let { id ->
-                            replaceFragment(LaunchDetailsCoresFragment.newInstance(id))
-                        }
-                        return@setOnNavigationItemSelectedListener true
+                        replaceFragment(
+                            LaunchDetailsCoresFragment.newInstance(
+                                launchShort?.id ?: id ?: throw IllegalArgumentException()
+                            )
+                        )
                     }
                     R.id.launch_details_payloads -> {
-                        launchShort?.let { launchShort ->
-                            replaceFragment(LaunchDetailsPayloadsFragment.newInstance(launchShort.id))
-                        } ?: id?.let { id ->
-                            replaceFragment(LaunchDetailsPayloadsFragment.newInstance(id))
-                        }
-                        return@setOnNavigationItemSelectedListener true
+                        replaceFragment(
+                            LaunchDetailsPayloadsFragment.newInstance(
+                                launchShort?.id ?: id ?: throw IllegalArgumentException()
+                            )
+                        )
                     }
                     R.id.launch_details_crew -> {
-                        launchShort?.let { launchShort ->
-                            replaceFragment(LaunchDetailsCrewFragment.newInstance(launchShort.id))
-                        } ?: id?.let { id ->
-                            replaceFragment(LaunchDetailsCrewFragment.newInstance(id))
-                        }
-                        return@setOnNavigationItemSelectedListener true
+                        replaceFragment(
+                            LaunchDetailsCrewFragment.newInstance(
+                                launchShort?.id ?: id ?: throw IllegalArgumentException()
+                            )
+                        )
                     }
                     R.id.launch_details_ships -> {
-                        launchShort?.let { launchShort ->
-                            replaceFragment(LaunchDetailsShipsFragment.newInstance(launchShort.id))
-                        } ?: id?.let { id ->
-                            replaceFragment(LaunchDetailsShipsFragment.newInstance(id))
-                        }
-                        return@setOnNavigationItemSelectedListener true
+                        replaceFragment(
+                            LaunchDetailsShipsFragment.newInstance(
+                                launchShort?.id ?: id ?: throw IllegalArgumentException()
+                            )
+                        )
                     }
                 }
             }
@@ -186,7 +181,7 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
         binding?.launchDetailsCountdownText?.text = countdown
     }
 
-    private fun replaceFragment(fragment: Fragment) {
+    private fun replaceFragment(fragment: Fragment): Boolean {
         childFragmentManager
             .beginTransaction()
             .replace(
@@ -194,6 +189,7 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
                 fragment
             )
             .commit()
+        return true
     }
 
     override fun showCountdown() {
