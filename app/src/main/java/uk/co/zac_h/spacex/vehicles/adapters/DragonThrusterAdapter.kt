@@ -7,13 +7,13 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.ThrusterConfigModel
+import uk.co.zac_h.spacex.model.spacex.DragonThrusterConfiguration
 import uk.co.zac_h.spacex.utils.metricFormat
 import java.util.*
 
 class DragonThrusterAdapter(
     private val context: Context?,
-    private val thrusters: List<ThrusterConfigModel>
+    private val thrusters: List<DragonThrusterConfiguration>
 ) : RecyclerView.Adapter<DragonThrusterAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =

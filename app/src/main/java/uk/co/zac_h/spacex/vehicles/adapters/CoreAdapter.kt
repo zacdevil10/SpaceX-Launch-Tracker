@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.vehicles.adapters
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -15,14 +14,16 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.CoreExtendedModel
+import uk.co.zac_h.spacex.model.spacex.Core
+import uk.co.zac_h.spacex.model.spacex.CoreStatus
+import uk.co.zac_h.spacex.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CoreAdapter(private val context: Context?, private val cores: ArrayList<CoreExtendedModel>) :
+class CoreAdapter(private val context: Context?, private val cores: ArrayList<Core>) :
     RecyclerView.Adapter<CoreAdapter.ViewHolder>(), Filterable {
 
-    private var filteredCores: ArrayList<CoreExtendedModel>
+    private var filteredCores: ArrayList<Core>
 
     init {
         filteredCores = cores
@@ -37,7 +38,6 @@ class CoreAdapter(private val context: Context?, private val cores: ArrayList<Co
             )
         )
 
-    @SuppressLint("DefaultLocale")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val core = filteredCores[position]
 
@@ -61,8 +61,16 @@ class CoreAdapter(private val context: Context?, private val cores: ArrayList<Co
             } ?: run {
                 details.visibility = View.GONE
             }
-
-            status.text = core.status?.capitalize()
+            core.status?.let {
+                status.text = when (it) {
+                    CoreStatus.ACTIVE -> SPACEX_CORE_STATUS_ACTIVE
+                    CoreStatus.INACTIVE -> SPACEX_CORE_STATUS_INACTIVE
+                    CoreStatus.UNKNOWN -> SPACEX_CORE_STATUS_UNKNOWN
+                    CoreStatus.EXPENDED -> SPACEX_CORE_STATUS_EXPENDED
+                    CoreStatus.LOST -> SPACEX_CORE_STATUS_LOST
+                    CoreStatus.RETIRED -> SPACEX_CORE_STATUS_RETIRED
+                }.capitalize(Locale.getDefault())
+            }
             flights.text = (core.missions?.size ?: 0).toString()
 
             button.setOnClickListener { bind(core) }
@@ -80,7 +88,7 @@ class CoreAdapter(private val context: Context?, private val cores: ArrayList<Co
                     filteredCores = when {
                         it.isEmpty() -> cores
                         else -> {
-                            val filteredList = ArrayList<CoreExtendedModel>()
+                            val filteredList = ArrayList<Core>()
                             cores.forEach { core ->
                                 core.serial?.let { serial ->
                                     if (serial.toLowerCase(Locale.getDefault()).contains(
@@ -118,7 +126,7 @@ class CoreAdapter(private val context: Context?, private val cores: ArrayList<Co
         val flights: TextView = itemView.findViewById(R.id.list_item_core_flights_text)
         val button: Button = itemView.findViewById(R.id.list_item_core_specs_button)
 
-        fun bind(core: CoreExtendedModel) {
+        fun bind(core: Core) {
             itemView.findNavController().navigate(
                 R.id.action_vehicles_page_fragment_to_core_details_fragment,
                 bundleOf("core" to core, "title" to core.serial),

@@ -1,13 +1,13 @@
 package uk.co.zac_h.spacex.vehicles.ships
 
-import uk.co.zac_h.spacex.model.spacex.ShipExtendedModel
+import uk.co.zac_h.spacex.model.spacex.Ship
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.vehicles.VehiclesContract
 
 class ShipsPresenterImpl(
-    private val view: VehiclesContract.View<ShipExtendedModel>,
-    private val interactor: VehiclesContract.Interactor<ShipExtendedModel>
-) : VehiclesContract.Presenter, VehiclesContract.InteractorCallback<ShipExtendedModel> {
+    private val view: VehiclesContract.View<Ship>,
+    private val interactor: VehiclesContract.Interactor<Ship>
+) : VehiclesContract.Presenter, VehiclesContract.InteractorCallback<Ship> {
 
     override fun getVehicles(api: SpaceXInterface) {
         view.showProgress()
@@ -16,7 +16,7 @@ class ShipsPresenterImpl(
 
     override fun cancelRequest() = interactor.cancelAllRequests()
 
-    override fun onSuccess(vehicles: List<ShipExtendedModel>?) {
+    override fun onSuccess(vehicles: List<Ship>?) {
         vehicles?.let {
             view.updateVehicles(vehicles)
         }

@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.launches.details.cores
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class LaunchDetailsCoresPresenter(
@@ -17,8 +17,8 @@ class LaunchDetailsCoresPresenter(
         interactor.cancelRequest()
     }
 
-    override fun onSuccess(launchModel: LaunchesExtendedDocsModel?) {
-        if (launchModel?.docs?.isNotEmpty() == true) launchModel.docs[0].cores?.let {
+    override fun onSuccess(launch: Launch?) {
+        launch?.cores?.let {
             view.updateCoresRecyclerView(it)
         }
         view.hideProgress()

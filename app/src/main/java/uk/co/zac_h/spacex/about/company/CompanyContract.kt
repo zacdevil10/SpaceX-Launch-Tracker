@@ -1,12 +1,12 @@
 package uk.co.zac_h.spacex.about.company
 
-import uk.co.zac_h.spacex.model.spacex.CompanyModel
+import uk.co.zac_h.spacex.model.spacex.Company
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 interface CompanyContract {
 
     interface CompanyView {
-        fun updateCompanyInfo(companyModel: CompanyModel)
+        fun updateCompanyInfo(company: Company)
         fun showProgress()
         fun hideProgress()
         fun showError(error: String)
@@ -14,9 +14,10 @@ interface CompanyContract {
 
     interface CompanyPresenter {
         fun getCompanyInfo(
-            companyInfo: CompanyModel? = null,
+            companyInfo: Company? = null,
             api: SpaceXInterface = SpaceXInterface.create()
         )
+
         fun cancelRequest()
     }
 
@@ -26,7 +27,7 @@ interface CompanyContract {
     }
 
     interface InteractorCallback {
-        fun onSuccess(companyModel: CompanyModel?)
+        fun onSuccess(company: Company?)
         fun onError(error: String)
     }
 }

@@ -17,7 +17,7 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.crew.adapters.CrewPagerAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewDetailsBinding
-import uk.co.zac_h.spacex.model.spacex.CrewModel
+import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.utils.views.DepthPageTransformer
 
 class CrewPagerFragment : Fragment() {
@@ -26,7 +26,7 @@ class CrewPagerFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var crewPagerAdapter: CrewPagerAdapter
-    private lateinit var crewArray: ArrayList<CrewModel>
+    private lateinit var crewArray: ArrayList<Crew>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +36,7 @@ class CrewPagerFragment : Fragment() {
                 savedInstanceState.getParcelableArrayList("crew") ?: ArrayList()
             }
             arguments != null -> {
-                requireArguments().getParcelableArrayList<CrewModel>("crew") as ArrayList<CrewModel>
+                requireArguments().getParcelableArrayList<Crew>("crew") as ArrayList<Crew>
             }
             else -> {
                 ArrayList()

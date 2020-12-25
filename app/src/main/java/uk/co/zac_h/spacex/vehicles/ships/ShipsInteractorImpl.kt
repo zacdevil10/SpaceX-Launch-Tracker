@@ -6,13 +6,13 @@ import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 import uk.co.zac_h.spacex.vehicles.VehiclesContract
 
-class ShipsInteractorImpl : BaseNetwork(), VehiclesContract.Interactor<ShipExtendedModel> {
+class ShipsInteractorImpl : BaseNetwork(), VehiclesContract.Interactor<Ship> {
 
     private var call: Call<ShipsDocsModel>? = null
 
     override fun getVehicles(
         api: SpaceXInterface,
-        listener: VehiclesContract.InteractorCallback<ShipExtendedModel>
+        listener: VehiclesContract.InteractorCallback<Ship>
     ) {
         val query = QueryModel(
             query = "",
@@ -31,9 +31,11 @@ class ShipsInteractorImpl : BaseNetwork(), VehiclesContract.Interactor<ShipExten
             )
         )
 
-        call = api.getShips(query).apply {
+        call = api.queryShips(query).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(it.body()?.docs) }
+                onResponseSuccess = { response ->
+                    listener.onSuccess(response.body()?.docs?.map { Ship(it) })
+                }
                 onResponseFailure = { listener.onError(it) }
             }
         }

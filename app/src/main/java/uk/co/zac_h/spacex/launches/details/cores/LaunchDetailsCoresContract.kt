@@ -1,13 +1,13 @@
 package uk.co.zac_h.spacex.launches.details.cores
 
-import uk.co.zac_h.spacex.model.spacex.LaunchCoreExtendedModel
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
+import uk.co.zac_h.spacex.model.spacex.Launch
+import uk.co.zac_h.spacex.model.spacex.LaunchCore
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 interface LaunchDetailsCoresContract {
 
     interface View {
-        fun updateCoresRecyclerView(coresList: List<LaunchCoreExtendedModel>?)
+        fun updateCoresRecyclerView(coresList: List<LaunchCore>?)
         fun showProgress()
         fun hideProgress()
         fun showError(error: String)
@@ -24,7 +24,7 @@ interface LaunchDetailsCoresContract {
     }
 
     interface InteractorCallback {
-        fun onSuccess(launchModel: LaunchesExtendedDocsModel?)
+        fun onSuccess(launch: Launch?)
         fun onError(error: String)
     }
 

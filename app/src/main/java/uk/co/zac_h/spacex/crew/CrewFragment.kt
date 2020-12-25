@@ -18,7 +18,7 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewBinding
-import uk.co.zac_h.spacex.model.spacex.CrewModel
+import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class CrewFragment : Fragment(), CrewContract.CrewView,
@@ -29,7 +29,7 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
     private var presenter: CrewContract.CrewPresenter? = null
 
     private lateinit var crewAdapter: CrewAdapter
-    private lateinit var crewArray: ArrayList<CrewModel>
+    private lateinit var crewArray: ArrayList<Crew>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +46,7 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
             }
         }*/
 
-        crewArray = savedInstanceState?.getParcelableArrayList<CrewModel>("crew") ?: ArrayList()
+        crewArray = savedInstanceState?.getParcelableArrayList<Crew>("crew") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -143,7 +143,7 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
         binding = null
     }
 
-    override fun updateCrew(crew: List<CrewModel>) {
+    override fun updateCrew(crew: List<Crew>) {
         crewArray.clear()
         crewArray.addAll(crew)
 

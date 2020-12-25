@@ -15,7 +15,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import java.util.*
@@ -23,10 +23,10 @@ import kotlin.collections.ArrayList
 
 class LaunchesAdapter(
     private val context: Context?,
-    private val launches: ArrayList<LaunchesExtendedModel>
+    private val launches: ArrayList<Launch>
 ) : RecyclerView.Adapter<LaunchesAdapter.ViewHolder>(), Filterable {
 
-    private var filteredLaunches: ArrayList<LaunchesExtendedModel>
+    private var filteredLaunches: ArrayList<Launch>
 
     init {
         filteredLaunches = launches
@@ -103,7 +103,7 @@ class LaunchesAdapter(
                     filteredLaunches = when {
                         it.isEmpty() -> launches
                         else -> {
-                            val filteredList = ArrayList<LaunchesExtendedModel>()
+                            val filteredList = ArrayList<Launch>()
                             launches.forEach { launch ->
                                 if (launch.missionName?.toLowerCase(Locale.getDefault()).toString()
                                         .contains(

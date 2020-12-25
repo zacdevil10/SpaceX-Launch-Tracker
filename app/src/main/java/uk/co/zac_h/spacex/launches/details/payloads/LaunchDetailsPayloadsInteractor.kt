@@ -7,7 +7,7 @@ import uk.co.zac_h.spacex.utils.BaseNetwork
 
 class LaunchDetailsPayloadsInteractor : BaseNetwork(), LaunchDetailsPayloadsContract.Interactor {
 
-    private var call: Call<LaunchesExtendedDocsModel>? = null
+    private var call: Call<LaunchDocsModel>? = null
 
     override fun getPayloads(
         id: String,
@@ -23,7 +23,7 @@ class LaunchDetailsPayloadsInteractor : BaseNetwork(), LaunchDetailsPayloadsCont
             QueryOptionsModel(false, populateList, "", listOf("payloads"), 1000)
         )
 
-        call = api.getQueriedLaunches(query).apply {
+        call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess = { listener.onSuccess(it.body()) }
                 onResponseFailure = { listener.onError(it) }

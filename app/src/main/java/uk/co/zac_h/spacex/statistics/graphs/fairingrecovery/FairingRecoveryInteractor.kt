@@ -7,7 +7,7 @@ import uk.co.zac_h.spacex.utils.BaseNetwork
 
 class FairingRecoveryInteractor : BaseNetwork(), FairingRecoveryContract.Interactor {
 
-    private var call: Call<LaunchesExtendedDocsModel>? = null
+    private var call: Call<LaunchDocsModel>? = null
 
     override fun getLaunches(api: SpaceXInterface, listener: FairingRecoveryContract.Callback) {
         val query = QueryModel(
@@ -21,7 +21,7 @@ class FairingRecoveryInteractor : BaseNetwork(), FairingRecoveryContract.Interac
             )
         )
 
-        call = api.getQueriedLaunches(query).apply {
+        call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess = { listener.onSuccess(it.body(), true) }
                 onResponseFailure = { listener.onError(it) }

@@ -14,9 +14,8 @@ import androidx.navigation.ui.setupWithNavController
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentCompanyBinding
-import uk.co.zac_h.spacex.model.spacex.CompanyModel
+import uk.co.zac_h.spacex.model.spacex.Company
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import java.text.DecimalFormat
 
 class CompanyFragment : Fragment(), CompanyContract.CompanyView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
@@ -25,7 +24,7 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
 
     private var presenter: CompanyContract.CompanyPresenter? = null
 
-    private var companyInfo: CompanyModel? = null
+    private var companyInfo: Company? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,33 +85,30 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
         binding = null
     }
 
-    override fun updateCompanyInfo(companyModel: CompanyModel) {
-        companyInfo = companyModel
+    override fun updateCompanyInfo(company: Company) {
+        companyInfo = company
         binding?.apply {
-            with(companyModel.headquarters) {
+            with(company.headquarters) {
                 companyAddressText.text =
                     context?.getString(R.string.address, address, city, state)
             }
 
-            with(companyModel.links) {
-                companyWebsiteButton.setOnClickListener { openWebLink(website) }
-                companyTwitterButton.setOnClickListener { openWebLink(twitter) }
-                companyAlbumButton.setOnClickListener { openWebLink(flickr) }
-            }
+            companyWebsiteButton.setOnClickListener { openWebLink(company.website) }
+            companyTwitterButton.setOnClickListener { openWebLink(company.twitter) }
+            companyAlbumButton.setOnClickListener { openWebLink(company.flickr) }
 
-            companySummaryText.text = companyModel.summary
+            companySummaryText.text = company.summary
             companyFoundedText.text =
-                context?.getString(R.string.founded, companyModel.founder, companyModel.founded)
-            companyCeoText.text = companyModel.ceo
-            companyCtoText.text = companyModel.cto
-            companyCooText.text = companyModel.coo
-            companyCtoProText.text = companyModel.ctoPropulsion
-            companyValuationText.text =
-                DecimalFormat("#,###.00").format(companyModel.valuation).toString()
-            companyEmployeesText.text = companyModel.employees.toString()
-            companyVehiclesText.text = companyModel.vehicles.toString()
-            companyLaunchSitesText.text = companyModel.launchSites.toString()
-            companyTestSitesText.text = companyModel.testSites.toString()
+                context?.getString(R.string.founded, company.founder, company.founded)
+            companyCeoText.text = company.ceo
+            companyCtoText.text = company.cto
+            companyCooText.text = company.coo
+            companyCtoProText.text = company.ctoPropulsion
+            companyValuationText.text = company.valuation
+            companyEmployeesText.text = company.employees.toString()
+            companyVehiclesText.text = company.vehicles.toString()
+            companyLaunchSitesText.text = company.launchSites.toString()
+            companyTestSitesText.text = company.testSites.toString()
         }
     }
 

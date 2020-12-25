@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.crew
 
-import uk.co.zac_h.spacex.model.spacex.CrewDocsModel
+import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class CrewPresenterImpl(
@@ -17,11 +17,11 @@ class CrewPresenterImpl(
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(crew: CrewDocsModel?) {
+    override fun onSuccess(crew: List<Crew>?) {
         view.apply {
             hideProgress()
             toggleSwipeRefresh(false)
-            crew?.let { updateCrew(it.docs) }
+            crew?.let { updateCrew(it) }
         }
     }
 

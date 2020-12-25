@@ -10,12 +10,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentDragonBinding
-import uk.co.zac_h.spacex.model.spacex.DragonModel
+import uk.co.zac_h.spacex.model.spacex.Dragon
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.VehiclesContract
 import uk.co.zac_h.spacex.vehicles.adapters.DragonAdapter
 
-class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
+class DragonFragment : Fragment(), VehiclesContract.View<Dragon>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var binding: FragmentDragonBinding? = null
@@ -23,7 +23,7 @@ class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
     private var presenter: VehiclesContract.Presenter? = null
 
     private lateinit var dragonAdapter: DragonAdapter
-    private lateinit var dragonArray: ArrayList<DragonModel>
+    private lateinit var dragonArray: ArrayList<Dragon>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +82,7 @@ class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
         binding = null
     }
 
-    override fun updateVehicles(vehicles: List<DragonModel>) {
+    override fun updateVehicles(vehicles: List<Dragon>) {
         dragonArray.clear()
         dragonArray.addAll(vehicles)
 

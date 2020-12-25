@@ -7,7 +7,7 @@ import uk.co.zac_h.spacex.utils.BaseNetwork
 
 class LandingHistoryInteractor : BaseNetwork(), LandingHistoryContract.Interactor {
 
-    private var call: Call<LaunchesExtendedDocsModel>? = null
+    private var call: Call<LaunchDocsModel>? = null
 
     override fun getLaunches(
         api: SpaceXInterface,
@@ -27,7 +27,7 @@ class LandingHistoryInteractor : BaseNetwork(), LandingHistoryContract.Interacto
             )
         )
 
-        call = api.getQueriedLaunches(query).apply {
+        call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess = { listener.onSuccess(it.body(), true) }
                 onResponseFailure = { listener.onError(it) }

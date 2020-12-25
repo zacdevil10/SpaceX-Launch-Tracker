@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.CrewLaunchesModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 
 class CrewLaunchAdapter(
     private val context: Context?,
-    private val launches: List<CrewLaunchesModel>
+    private val launches: List<Launch>
 ) :
     RecyclerView.Adapter<CrewLaunchAdapter.ViewHolder>() {
 
@@ -28,7 +28,7 @@ class CrewLaunchAdapter(
         val launch = launches[position]
 
         holder.apply {
-            name.text = launch.name
+            name.text = launch.missionName
             flight.text = context?.getString(R.string.flight_number, launch.flightNumber)
         }
     }

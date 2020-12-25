@@ -11,7 +11,7 @@ data class SecondStageModel(
     @field:Json(name = "engines") val engines: Int?,
     @field:Json(name = "fuel_amount_tons") val fuelAmountTons: Double?,
     @field:Json(name = "burn_time_sec") val burnTimeSec: Int?,
-    @field:Json(name = "thrust") val thrust: ThrustModel?,
+    @field:Json(name = "thrust") val thrust: Thrust?,
     @field:Json(name = "payloads") val payloads: PayloadConfigModel?
 ) : Parcelable
 
@@ -23,6 +23,6 @@ data class PayloadConfigModel(
 
 @Parcelize
 data class FairingConfigModel(
-    @field:Json(name = "height") val height: DimensModel?,
-    @field:Json(name = "diameter") val diameter: DimensModel?
+    @field:Json(name = "height") val height: Dimens?,
+    @field:Json(name = "diameter") val diameter: Dimens?
 ) : Parcelable

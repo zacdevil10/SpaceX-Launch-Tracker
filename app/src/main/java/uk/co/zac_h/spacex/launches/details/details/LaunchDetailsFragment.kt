@@ -15,7 +15,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
@@ -29,7 +29,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     private var presenter: LaunchDetailsContract.LaunchDetailsPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
-    private var launch: LaunchesExtendedModel? = null
+    private var launch: Launch? = null
     private var id: String? = null
 
     private var pinned: Boolean = false
@@ -39,7 +39,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         fun newInstance(args: Any) = LaunchDetailsFragment().apply {
             arguments = bundleOf(
                 when (args) {
-                    is LaunchesExtendedModel -> "launch_short"
+                    is Launch -> "launch_short"
                     is String -> "id"
                     else -> throw IllegalArgumentException()
                 } to args
@@ -104,7 +104,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable("launch", launch)
+        //outState.putParcelable("launch", launch)
         super.onSaveInstanceState(outState)
     }
 
@@ -149,7 +149,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updateLaunchDataView(launch: LaunchesExtendedModel?, isExt: Boolean) {
+    override fun updateLaunchDataView(launch: Launch?, isExt: Boolean) {
         launch?.let {
             if (isExt) this.launch = launch
 

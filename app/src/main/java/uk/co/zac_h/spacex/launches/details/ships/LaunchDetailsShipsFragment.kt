@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsShipsBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchDetailsShipsAdapter
-import uk.co.zac_h.spacex.model.spacex.ShipExtendedModel
+import uk.co.zac_h.spacex.model.spacex.Ship
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
@@ -21,7 +21,7 @@ class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
     private var presenter: LaunchDetailsShipsContract.Presenter? = null
 
     private lateinit var shipsAdapter: LaunchDetailsShipsAdapter
-    private lateinit var shipsArray: ArrayList<ShipExtendedModel>
+    private lateinit var shipsArray: ArrayList<Ship>
 
     private var id: String? = null
 
@@ -36,7 +36,7 @@ class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
         super.onCreate(savedInstanceState)
 
         shipsArray =
-            savedInstanceState?.getParcelableArrayList<ShipExtendedModel>("ships") ?: ArrayList()
+            savedInstanceState?.getParcelableArrayList("ships") ?: ArrayList()
         id = arguments?.getString("id")
     }
 
@@ -89,7 +89,7 @@ class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
         binding = null
     }
 
-    override fun updateShipsRecyclerView(ships: List<ShipExtendedModel>) {
+    override fun updateShipsRecyclerView(ships: List<Ship>) {
         shipsArray.clear()
         shipsArray.addAll(ships)
 

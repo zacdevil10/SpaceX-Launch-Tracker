@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.launches.details.payloads
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
+import uk.co.zac_h.spacex.model.spacex.LaunchDocsModel
 import uk.co.zac_h.spacex.model.spacex.PayloadModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
@@ -24,7 +24,7 @@ interface LaunchDetailsPayloadsContract {
     }
 
     interface InteractorCallback {
-        fun onSuccess(launchModel: LaunchesExtendedDocsModel?)
+        fun onSuccess(launchModel: LaunchDocsModel?)
         fun onError(error: String)
     }
 

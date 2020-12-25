@@ -6,6 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 // v4
 @Parcelize
-data class PressurizedCapsuleModel(
-    @field:Json(name = "payload_volume") val payloadVolume: VolumeModel?
+data class Dimens(
+    @field:Json(name = "meters") val meters: Double?,
+    @field:Json(name = "feet") val feet: Double?
 ) : Parcelable

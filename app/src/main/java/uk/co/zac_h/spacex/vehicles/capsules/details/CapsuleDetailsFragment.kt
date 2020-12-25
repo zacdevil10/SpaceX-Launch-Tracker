@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.vehicles.capsules.details
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,20 +16,24 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentCapsuleDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
-import uk.co.zac_h.spacex.model.spacex.CapsulesModel
+import uk.co.zac_h.spacex.model.spacex.Capsule
+import uk.co.zac_h.spacex.model.spacex.CapsuleStatus
+import uk.co.zac_h.spacex.model.spacex.CapsuleType
+import uk.co.zac_h.spacex.utils.*
+import java.util.*
 
 class CapsuleDetailsFragment : Fragment() {
 
     private var binding: FragmentCapsuleDetailsBinding? = null
 
-    private var capsule: CapsulesModel? = null
+    private var capsule: Capsule? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        capsule = arguments?.getParcelable("capsule") as CapsulesModel?
+        capsule = arguments?.getParcelable("capsule") as Capsule?
     }
 
     override fun onCreateView(
@@ -41,7 +44,6 @@ class CapsuleDetailsFragment : Fragment() {
         return binding?.root
     }
 
-    @SuppressLint("DefaultLocale")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -56,37 +58,44 @@ class CapsuleDetailsFragment : Fragment() {
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
-        capsule?.let {
-            binding?.capsuleDetailsConstraint?.transitionName = it.id
+        binding?.apply {
+            capsuleDetailsConstraint.transitionName = capsule?.id
 
-            binding?.toolbar?.title = it.serial
+            toolbar.title = capsule?.serial
 
-            it.serial?.let { serial ->
-                binding?.capsuleDetailsTypeText?.text = when {
-                    serial.startsWith("C1") -> "Dragon 1.0"
-                    serial.startsWith("C2") -> "Dragon 2.0"
-                    else -> ""
+            capsule?.type?.let { serial ->
+                capsuleDetailsTypeText.text = when (serial) {
+                    CapsuleType.DRAGON_1 -> SPACEX_CAPSULE_TYPE_DRAGON_1
+                    CapsuleType.DRAGON_1_1 -> SPACEX_CAPSULE_TYPE_DRAGON_1_1
+                    CapsuleType.DRAGON_2 -> SPACEX_CAPSULE_TYPE_DRAGON_2
                 }
             }
 
-            it.lastUpdate?.let { lastUpdate ->
-                binding?.capsuleDetailsText?.text = lastUpdate
+            capsule?.lastUpdate?.let { lastUpdate ->
+                capsuleDetailsText.text = lastUpdate
             } ?: run {
-                binding?.capsuleDetailsText?.visibility = View.GONE
+                capsuleDetailsText.visibility = View.GONE
             }
 
-            binding?.capsuleDetailsStatusText?.text = it.status?.capitalize()
-            binding?.capsuleDetailsReuseText?.text = it.reuseCount.toString()
-            binding?.capsuleDetailsLandingText?.text =
-                ((it.landLandings ?: 0) + (it.waterLandings ?: 0)).toString()
+            capsule?.status?.let { status ->
+                capsuleDetailsStatusText.text = when (status) {
+                    CapsuleStatus.UNKNOWN -> SPACEX_CAPSULE_STATUS_UNKNOWN
+                    CapsuleStatus.ACTIVE -> SPACEX_CAPSULE_STATUS_ACTIVE
+                    CapsuleStatus.RETIRED -> SPACEX_CAPSULE_STATUS_RETIRED
+                    CapsuleStatus.DESTROYED -> SPACEX_CAPSULE_STATUS_DESTROYED
+                }.capitalize(Locale.getDefault())
+            }
+            capsuleDetailsReuseText.text = capsule?.reuseCount.toString()
+            capsuleDetailsLandingText.text =
+                ((capsule?.landLandings ?: 0) + (capsule?.waterLandings ?: 0)).toString()
 
-            it.launches?.let { launches ->
-                binding?.capsuleDetailsMissionsRecycler?.apply {
+            capsule?.launches?.let { launches ->
+                capsuleDetailsMissionsRecycler.apply {
                     layoutManager = LinearLayoutManager(this@CapsuleDetailsFragment.context)
                     setHasFixedSize(true)
                     adapter = MissionsAdapter(context, launches)
                 }
-            } ?: run { binding?.capsuleDetailsNoMissionLabel?.visibility = View.VISIBLE }
+            } ?: run { capsuleDetailsNoMissionLabel.visibility = View.VISIBLE }
         }
     }
 

@@ -7,7 +7,7 @@ import uk.co.zac_h.spacex.utils.BaseNetwork
 
 class LaunchHistoryInteractorImpl : BaseNetwork(), LaunchHistoryContract.LaunchHistoryInteractor {
 
-    private var call: Call<LaunchesExtendedDocsModel>? = null
+    private var call: Call<LaunchDocsModel>? = null
 
     override fun getLaunches(
         api: SpaceXInterface,
@@ -22,7 +22,7 @@ class LaunchHistoryInteractorImpl : BaseNetwork(), LaunchHistoryContract.LaunchH
             QueryOptionsModel(false, populateList, "", listOf("rocket", "success"), 100000)
         )
 
-        call = api.getQueriedLaunches(query).apply {
+        call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess = { listener.onSuccess(it.body(), true) }
                 onResponseFailure = { listener.onError(it) }

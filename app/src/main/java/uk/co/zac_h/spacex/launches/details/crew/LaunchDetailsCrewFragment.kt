@@ -10,7 +10,7 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.crew.CrewContract
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCrewBinding
-import uk.co.zac_h.spacex.model.spacex.CrewModel
+import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
@@ -21,7 +21,7 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
     private var presenter: LaunchDetailsCrewContract.Presenter? = null
 
     private lateinit var crewAdapter: CrewAdapter
-    private lateinit var crewArray: ArrayList<CrewModel>
+    private lateinit var crew: ArrayList<Crew>
 
     private var id: String? = null
 
@@ -35,7 +35,7 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        crewArray = savedInstanceState?.getParcelableArrayList<CrewModel>("crew") ?: ArrayList()
+        crew = savedInstanceState?.getParcelableArrayList<Crew>("crew") ?: ArrayList()
         id = arguments?.getString("id")
     }
 
@@ -54,14 +54,14 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
 
         presenter = LaunchDetailsCrewPresenter(this, LaunchDetailsCrewInteractor())
 
-        crewAdapter = CrewAdapter(this, crewArray)
+        crewAdapter = CrewAdapter(this, crew)
 
         binding?.launchDetailsCrewRecycler?.apply {
             setHasFixedSize(true)
             adapter = crewAdapter
         }
 
-        if (crewArray.isEmpty()) id?.let {
+        if (crew.isEmpty()) id?.let {
             presenter?.getCrew(it)
         }
     }
@@ -77,7 +77,7 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("crew", crewArray)
+        outState.putParcelableArrayList("crew", crew)
         super.onSaveInstanceState(outState)
     }
 
@@ -87,9 +87,9 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
         binding = null
     }
 
-    override fun updateCrew(crew: List<CrewModel>) {
-        crewArray.clear()
-        crewArray.addAll(crew)
+    override fun updateCrew(crew: List<Crew>) {
+        this.crew.clear()
+        this.crew.addAll(crew)
 
         crewAdapter.notifyDataSetChanged()
     }
@@ -117,7 +117,7 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             id?.let {
-                if (crewArray.isEmpty()) presenter?.getCrew(it)
+                if (crew.isEmpty()) presenter?.getCrew(it)
             }
         }
     }

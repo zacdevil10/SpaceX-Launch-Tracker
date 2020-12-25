@@ -15,7 +15,7 @@ import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentDragonDetailsBinding
-import uk.co.zac_h.spacex.model.spacex.DragonModel
+import uk.co.zac_h.spacex.model.spacex.Dragon
 import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.setImageAndTint
 import uk.co.zac_h.spacex.vehicles.adapters.DragonThrusterAdapter
@@ -24,14 +24,14 @@ class DragonDetailsFragment : Fragment() {
 
     private var binding: FragmentDragonDetailsBinding? = null
 
-    private var dragon: DragonModel? = null
+    private var dragon: Dragon? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        dragon = arguments?.getParcelable("dragon") as DragonModel?
+        dragon = arguments?.getParcelable("dragon") as Dragon?
     }
 
     override fun onCreateView(

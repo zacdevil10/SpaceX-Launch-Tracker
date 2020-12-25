@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.dashboard
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import java.util.concurrent.TimeUnit
 
@@ -11,8 +11,8 @@ class DashboardPresenterImpl(
     DashboardContract.InteractorCallback {
 
     override fun getLatestLaunches(
-        next: LaunchesExtendedModel?,
-        latest: LaunchesExtendedModel?,
+        next: Launch?,
+        latest: Launch?,
         api: SpaceXInterface
     ) {
         view.showPinnedMessage()
@@ -81,7 +81,7 @@ class DashboardPresenterImpl(
         }
     }
 
-    override fun onSuccess(id: String, launchModel: LaunchesExtendedModel?) {
+    override fun onSuccess(id: String, launchModel: Launch?) {
         launchModel?.let { launch ->
             when (id) {
                 "next" -> {

@@ -1,10 +1,7 @@
 package uk.co.zac_h.spacex.crew
 
 import retrofit2.Call
-import uk.co.zac_h.spacex.model.spacex.CrewDocsModel
-import uk.co.zac_h.spacex.model.spacex.QueryModel
-import uk.co.zac_h.spacex.model.spacex.QueryOptionsModel
-import uk.co.zac_h.spacex.model.spacex.QueryPopulateModel
+import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
@@ -27,9 +24,9 @@ class CrewInteractorImpl : BaseNetwork(), CrewContract.CrewInteractor {
             )
         )
 
-        call = api.getCrew(query).apply {
+        call = api.queryCrewMembers(query).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(it.body()) }
+                onResponseSuccess = { listener.onSuccess(it.body()?.docs?.map { Crew(it) }) }
                 onResponseFailure = { listener.onError(it) }
             }
         }

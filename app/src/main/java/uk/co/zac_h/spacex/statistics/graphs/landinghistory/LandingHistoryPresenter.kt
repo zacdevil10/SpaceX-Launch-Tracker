@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.statistics.graphs.landinghistory
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
+import uk.co.zac_h.spacex.model.spacex.LaunchDocsModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.models.LandingHistoryModel
 
@@ -22,7 +22,7 @@ class LandingHistoryPresenter(
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(launchDocs: LaunchesExtendedDocsModel?, animate: Boolean) {
+    override fun onSuccess(launchDocs: LaunchDocsModel?, animate: Boolean) {
         launchDocs?.docs?.let { launches ->
             val stats = ArrayList<LandingHistoryModel>()
             var year = 2012

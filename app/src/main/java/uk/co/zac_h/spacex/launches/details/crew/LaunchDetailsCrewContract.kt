@@ -1,16 +1,16 @@
 package uk.co.zac_h.spacex.launches.details.crew
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
+import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 interface LaunchDetailsCrewContract {
 
-    /*interface View {
-        fun updateCrewRecyclerView(crewList: List<CrewModel>?)
+    interface View {
+        fun updateCrewRecyclerView(crewList: List<Crew>?)
         fun showProgress()
         fun hideProgress()
         fun showError(error: String)
-    }*/
+    }
 
     interface Presenter {
         fun getCrew(id: String, api: SpaceXInterface = SpaceXInterface.create())
@@ -23,7 +23,7 @@ interface LaunchDetailsCrewContract {
     }
 
     interface InteractorCallback {
-        fun onSuccess(launchesExtendedDocsModel: LaunchesExtendedDocsModel?)
+        fun onSuccess(crew: List<Crew>?)
         fun onError(error: String)
     }
 }

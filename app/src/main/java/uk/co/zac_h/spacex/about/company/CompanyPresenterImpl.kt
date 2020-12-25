@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.about.company
 
-import uk.co.zac_h.spacex.model.spacex.CompanyModel
+import uk.co.zac_h.spacex.model.spacex.Company
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class CompanyPresenterImpl(
@@ -8,7 +8,7 @@ class CompanyPresenterImpl(
     private val interactor: CompanyContract.CompanyInteractor
 ) : CompanyContract.CompanyPresenter, CompanyContract.InteractorCallback {
 
-    override fun getCompanyInfo(companyInfo: CompanyModel?, api: SpaceXInterface) {
+    override fun getCompanyInfo(companyInfo: Company?, api: SpaceXInterface) {
         view.showProgress()
         companyInfo?.let {
             this.onSuccess(it)
@@ -19,9 +19,9 @@ class CompanyPresenterImpl(
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(companyModel: CompanyModel?) {
+    override fun onSuccess(company: Company?) {
         view.hideProgress()
-        companyModel?.let { view.updateCompanyInfo(it) }
+        company?.let { view.updateCompanyInfo(it) }
     }
 
     override fun onError(error: String) {

@@ -7,7 +7,7 @@ import uk.co.zac_h.spacex.utils.BaseNetwork
 
 class LaunchDetailsCrewInteractor : BaseNetwork(), LaunchDetailsCrewContract.Interactor {
 
-    private var call: Call<LaunchesExtendedDocsModel>? = null
+    private var call: Call<LaunchDocsModel>? = null
 
     override fun getCrew(
         id: String,
@@ -33,9 +33,11 @@ class LaunchDetailsCrewInteractor : BaseNetwork(), LaunchDetailsCrewContract.Int
             QueryOptionsModel(false, populateList, "", listOf("crew"), 1)
         )
 
-        call = api.getQueriedLaunches(query).apply {
+        call = api.queryLaunches(query).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(it.body()) }
+                onResponseSuccess = { response ->
+                    listener.onSuccess(response.body()?.docs?.get(0)?.crew?.map { Crew(it) })
+                }
                 onResponseFailure = { listener.onError(it) }
             }
         }

@@ -16,6 +16,8 @@ import uk.co.zac_h.spacex.model.reddit.SubredditModel
 import uk.co.zac_h.spacex.model.reddit.SubredditPostModel
 import uk.co.zac_h.spacex.news.adapters.RedditAdapter
 import uk.co.zac_h.spacex.utils.PaginationScrollListener
+import uk.co.zac_h.spacex.utils.REDDIT_PARAM_ORDER_HOT
+import uk.co.zac_h.spacex.utils.REDDIT_PARAM_ORDER_NEW
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
@@ -31,14 +33,14 @@ class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
     private var isLastPage = false
     private var isLoading = false
 
-    private var order: String = "hot"
+    private var order: String = REDDIT_PARAM_ORDER_HOT
     private var orderPos: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        order = savedInstanceState?.getString("order") ?: "hot"
+        order = savedInstanceState?.getString("order") ?: REDDIT_PARAM_ORDER_HOT
         orderPos = savedInstanceState?.getInt("orderPos") ?: 0
 
         posts = savedInstanceState?.let {
@@ -144,11 +146,11 @@ class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
                 ) {
                     if (orderPos != position) when (position) {
                         0 -> {
-                            order = "hot"
+                            order = REDDIT_PARAM_ORDER_HOT
                             presenter?.getSub(order)
                         }
                         1 -> {
-                            order = "new"
+                            order = REDDIT_PARAM_ORDER_NEW
                             presenter?.getSub(order)
                         }
                     }

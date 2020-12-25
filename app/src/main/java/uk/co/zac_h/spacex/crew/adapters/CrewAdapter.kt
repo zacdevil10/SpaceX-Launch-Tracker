@@ -19,11 +19,11 @@ import com.bumptech.glide.request.target.Target
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.crew.CrewContract
-import uk.co.zac_h.spacex.model.spacex.CrewModel
+import uk.co.zac_h.spacex.model.spacex.Crew
 
 class CrewAdapter(
     private val view: CrewContract.CrewView,
-    private val crew: List<CrewModel>
+    private val crew: List<Crew>
 ) :
     RecyclerView.Adapter<CrewAdapter.ViewHolder>() {
 
@@ -81,7 +81,7 @@ class CrewAdapter(
         val image: ImageView = itemView.findViewById(R.id.grid_item_crew_image)
         val title: TextView = itemView.findViewById(R.id.grid_item_crew_title)
 
-        fun bind(person: CrewModel) {
+        fun bind(person: Crew) {
             itemView.findNavController().navigate(
                 R.id.action_crew_fragment_to_crew_details_fragment,
                 bundleOf("crew" to crew, "position" to adapterPosition),

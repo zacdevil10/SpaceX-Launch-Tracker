@@ -28,7 +28,7 @@ class HistoryInteractorImpl : BaseNetwork(), HistoryContract.HistoryInteractor {
             )
         )
 
-        call = api.getHistory(query).apply {
+        call = api.queryHistory(query).apply {
             makeCall {
                 onResponseSuccess = { listener.onSuccess(it.body()?.docs) }
                 onResponseFailure = { listener.onError(it) }

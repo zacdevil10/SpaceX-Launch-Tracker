@@ -11,10 +11,10 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.LaunchCoreExtendedModel
+import uk.co.zac_h.spacex.model.spacex.LaunchCore
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
-class FirstStageAdapter(private val cores: List<LaunchCoreExtendedModel>) :
+class FirstStageAdapter(private val cores: List<LaunchCore>) :
     RecyclerView.Adapter<FirstStageAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -91,7 +91,7 @@ class FirstStageAdapter(private val cores: List<LaunchCoreExtendedModel>) :
         val landingImage: ImageView =
             itemView.findViewById(R.id.list_item_first_stage_landing_image)
 
-        fun bind(core: LaunchCoreExtendedModel) {
+        fun bind(core: LaunchCore) {
             itemView.findNavController()
                 .navigate(
                     R.id.action_launch_details_container_fragment_to_core_details_fragment,

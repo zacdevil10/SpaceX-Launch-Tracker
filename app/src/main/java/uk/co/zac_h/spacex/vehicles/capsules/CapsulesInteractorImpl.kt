@@ -4,31 +4,40 @@ import retrofit2.Call
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
+import uk.co.zac_h.spacex.utils.SPACEX_FIELD_CAPSULE_LAUNCHES
+import uk.co.zac_h.spacex.utils.SPACEX_FIELD_LAUNCH_FLIGHT_NUMBER
+import uk.co.zac_h.spacex.utils.SPACEX_FIELD_LAUNCH_NAME
 import uk.co.zac_h.spacex.vehicles.VehiclesContract
 
-class CapsulesInteractorImpl : BaseNetwork(), VehiclesContract.Interactor<CapsulesModel> {
+class CapsulesInteractorImpl : BaseNetwork(), VehiclesContract.Interactor<CapsuleQueriedResponse> {
 
     private var call: Call<CapsulesDocsModel>? = null
 
     override fun getVehicles(
         api: SpaceXInterface,
-        listener: VehiclesContract.InteractorCallback<CapsulesModel>
+        listener: VehiclesContract.InteractorCallback<CapsuleQueriedResponse>
     ) {
-        val populateList: ArrayList<QueryPopulateModel> = ArrayList()
-
-        populateList.add(
-            QueryPopulateModel(
-                "launches",
-                select = listOf("name", "flight_number"),
-                populate = ""
+        val query = QueryModel(
+            "",
+            QueryOptionsModel(
+                false, listOf(
+                    QueryPopulateModel(
+                        SPACEX_FIELD_CAPSULE_LAUNCHES,
+                        select = listOf(
+                            SPACEX_FIELD_LAUNCH_NAME,
+                            SPACEX_FIELD_LAUNCH_FLIGHT_NUMBER
+                        ),
+                        populate = ""
+                    )
+                ), "", "", 100000
             )
         )
 
-        val query = QueryModel("", QueryOptionsModel(false, populateList, "", "", 100000))
-
-        call = api.getCapsules(query).apply {
+        call = api.queryCapsules(query).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(it.body()?.docs) }
+                onResponseSuccess = {
+                    listener.onSuccess(it.body()?.docs)
+                }
                 onResponseFailure = { listener.onError(it) }
             }
         }

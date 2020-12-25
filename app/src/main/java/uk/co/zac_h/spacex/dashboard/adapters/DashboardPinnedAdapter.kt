@@ -13,12 +13,12 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 
 class DashboardPinnedAdapter(
     private val context: Context?,
-    private val launches: ArrayList<LaunchesExtendedModel>
+    private val launches: ArrayList<Launch>
 ) : RecyclerView.Adapter<DashboardPinnedAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =

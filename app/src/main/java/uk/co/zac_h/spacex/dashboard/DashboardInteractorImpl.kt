@@ -7,7 +7,7 @@ import uk.co.zac_h.spacex.utils.BaseNetwork
 
 class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardInteractor {
 
-    private var call: Call<LaunchesExtendedDocsModel>? = null
+    private var call: Call<LaunchDocsModel>? = null
 
     override fun getSingleLaunch(
         id: String,
@@ -67,10 +67,10 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardIntera
             )
         )
 
-        call = api.getQueriedLaunches(query).apply {
+        call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess = {
-                    listener.onSuccess(id, it.body()?.docs?.get(0))
+                    listener.onSuccess(id, it.body()?.docs?.get(0)?.let { it1 -> Launch(it1) })
                 }
                 onResponseFailure = {
                     listener.onError(it)

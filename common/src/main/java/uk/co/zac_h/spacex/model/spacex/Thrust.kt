@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 
 // v4
 @Parcelize
-data class MassModel(
-    @field:Json(name = "kg") var kg: Int?,
-    @field:Json(name = "lb") var lb: Int?
+data class Thrust(
+    @field:Json(name = "kN") val kN: Float?,
+    @field:Json(name = "lbf") val lbf: Float?
 ) : Parcelable

@@ -10,7 +10,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
@@ -20,7 +20,7 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
 
     private var presenter: LaunchesContract.LaunchesPresenter? = null
     private lateinit var launchesAdapter: LaunchesAdapter
-    private lateinit var launchesList: ArrayList<LaunchesExtendedModel>
+    private lateinit var launchesList: ArrayList<Launch>
 
     private lateinit var searchView: SearchView
 
@@ -39,7 +39,7 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
         setHasOptionsMenu(true)
 
         launchesList = savedInstanceState?.let {
-            it.getParcelableArrayList<LaunchesExtendedModel>("launches") as ArrayList<LaunchesExtendedModel>
+            it.getParcelableArrayList<Launch>("launches") as ArrayList<Launch>
         } ?: ArrayList()
     }
 
@@ -99,7 +99,7 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("launches", launchesList)
+        //outState.putParcelableArrayList("launches", launchesList)
         super.onSaveInstanceState(outState)
     }
 
@@ -134,7 +134,7 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
         return false
     }
 
-    override fun updateLaunchesList(launches: List<LaunchesExtendedModel>?) {
+    override fun updateLaunchesList(launches: List<Launch>?) {
         launches?.let {
             launchesList.clear()
             launchesList.addAll(it)

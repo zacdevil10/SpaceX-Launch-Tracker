@@ -13,9 +13,9 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.DragonModel
+import uk.co.zac_h.spacex.model.spacex.Dragon
 
-class DragonAdapter(private val dragonList: List<DragonModel>) :
+class DragonAdapter(private val dragonList: List<Dragon>) :
     RecyclerView.Adapter<DragonAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -55,7 +55,7 @@ class DragonAdapter(private val dragonList: List<DragonModel>) :
         val details: TextView = itemView.findViewById(R.id.list_item_vehicle_details)
         val specs: Button = itemView.findViewById(R.id.list_item_vehicle_specs_button)
 
-        fun bind(dragon: DragonModel) {
+        fun bind(dragon: Dragon) {
             itemView.findNavController().navigate(
                 R.id.action_vehicles_page_fragment_to_dragon_details_fragment,
                 bundleOf("dragon" to dragon, "title" to dragon.name),

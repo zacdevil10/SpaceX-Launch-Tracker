@@ -7,7 +7,7 @@ import uk.co.zac_h.spacex.utils.BaseNetwork
 
 class LaunchesInteractorImpl : BaseNetwork(), LaunchesContract.LaunchesInteractor {
 
-    private var call: Call<LaunchesExtendedDocsModel>? = null
+    private var call: Call<LaunchDocsModel>? = null
 
     override fun getLaunches(
         id: String,
@@ -62,9 +62,11 @@ class LaunchesInteractorImpl : BaseNetwork(), LaunchesContract.LaunchesInteracto
             )
         )
 
-        call = api.getQueriedLaunches(query).apply {
+        call = api.queryLaunches(query).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(it.body()) }
+                onResponseSuccess = { response ->
+                    listener.onSuccess(response.body()?.docs?.map { Launch(it) })
+                }
                 onResponseFailure = { listener.onError(it) }
             }
         }

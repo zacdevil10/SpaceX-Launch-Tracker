@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.utils
 
+import uk.co.zac_h.spacex.model.spacex.DatePrecision
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -7,7 +8,7 @@ private const val SECOND_MILLIS = 1000
 private const val MINUTE_MILLIS = 60 * SECOND_MILLIS
 private const val HOUR_MILLIS = 60 * MINUTE_MILLIS
 
-fun Long.formatDateMillisLong(precision: String? = ""): String =
+fun Long.formatDateMillisLong(precision: DatePrecision? = null): String =
     SimpleDateFormat(
         getFormatFromPrecision(precision),
         Locale.ENGLISH
@@ -23,12 +24,12 @@ fun Long.formatDateMillisShort(tbd: Boolean = false): String =
         timeZone = TimeZone.getDefault()
     }.format(Date(this.times(1000L)))
 
-fun getFormatFromPrecision(precision: String? = ""): String =
+fun getFormatFromPrecision(precision: DatePrecision?): String =
     when (precision) {
-        "year" -> "yyyy"
-        "month" -> "MMM yyyy"
-        "day" -> "dd MMM yyyy"
-        "hour" -> "dd MMM yy - HH:mm zzz"
+        DatePrecision.YEAR -> "yyyy"
+        DatePrecision.MONTH -> "MMM yyyy"
+        DatePrecision.DAY -> "dd MMM yyyy"
+        DatePrecision.HOUR -> "dd MMM yy - HH:mm zzz"
         else -> "dd MMM yy - HH:mm zzz"
     }
 

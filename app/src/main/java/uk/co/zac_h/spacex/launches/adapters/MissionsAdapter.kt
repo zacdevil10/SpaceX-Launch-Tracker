@@ -10,11 +10,11 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.MissionsModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 
 class MissionsAdapter(
     private val context: Context?,
-    private val missions: List<MissionsModel>
+    private val missions: List<Launch>
 ) :
     RecyclerView.Adapter<MissionsAdapter.ViewHolder>() {
 
@@ -31,7 +31,7 @@ class MissionsAdapter(
 
         holder.apply {
             itemView.transitionName = mission.id
-            missionName.text = mission.name
+            missionName.text = mission.missionName
             flightNumber.text = context?.getString(R.string.flight_number, mission.flightNumber)
 
             itemView.setOnClickListener {

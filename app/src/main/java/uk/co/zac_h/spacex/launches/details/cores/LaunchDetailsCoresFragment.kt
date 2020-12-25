@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCoresBinding
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
-import uk.co.zac_h.spacex.model.spacex.LaunchCoreExtendedModel
+import uk.co.zac_h.spacex.model.spacex.LaunchCore
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
@@ -21,7 +21,7 @@ class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
     private var presenter: LaunchDetailsCoresContract.Presenter? = null
 
     private lateinit var coresAdapter: FirstStageAdapter
-    private lateinit var cores: ArrayList<LaunchCoreExtendedModel>
+    private lateinit var cores: ArrayList<LaunchCore>
 
     private var id: String? = null
 
@@ -35,9 +35,9 @@ class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        cores =
-            savedInstanceState?.getParcelableArrayList<LaunchCoreExtendedModel>("cores")
-                ?: ArrayList()
+        cores = ArrayList()
+        /*savedInstanceState?.getParcelableArrayList<LaunchCoreExtendedModel>("cores")
+            ?: ArrayList()*/
         id = arguments?.getString("id")
     }
 
@@ -89,7 +89,7 @@ class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
         binding = null
     }
 
-    override fun updateCoresRecyclerView(coresList: List<LaunchCoreExtendedModel>?) {
+    override fun updateCoresRecyclerView(coresList: List<LaunchCore>?) {
         coresList?.let {
             cores.clear()
             cores.addAll(it)

@@ -9,14 +9,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentCapsulesBinding
-import uk.co.zac_h.spacex.model.spacex.CapsulesModel
+import uk.co.zac_h.spacex.model.spacex.Capsule
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.VehiclesContract
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
 
-class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
+class CapsulesFragment : Fragment(), VehiclesContract.View<Capsule>,
     SearchView.OnQueryTextListener,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
@@ -25,7 +25,7 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
     private var presenter: VehiclesContract.Presenter? = null
 
     private lateinit var capsulesAdapter: CapsulesAdapter
-    private lateinit var capsulesArray: ArrayList<CapsulesModel>
+    private lateinit var capsulesArray: ArrayList<Capsule>
 
     private lateinit var orderSharedPreferences: OrderSharedPreferencesHelper
     private var sortNew = false
@@ -137,7 +137,7 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
         return false
     }
 
-    override fun updateVehicles(vehicles: List<CapsulesModel>) {
+    override fun updateVehicles(vehicles: List<Capsule>) {
         capsulesArray.clear()
         capsulesArray.addAll(if (sortNew) vehicles.reversed() else vehicles)
 

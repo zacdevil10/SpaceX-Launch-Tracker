@@ -7,7 +7,7 @@ import uk.co.zac_h.spacex.utils.BaseNetwork
 
 class LaunchDetailsCoresInteractor : BaseNetwork(), LaunchDetailsCoresContract.Interactor {
 
-    private var call: Call<LaunchesExtendedDocsModel>? = null
+    private var call: Call<LaunchDocsModel>? = null
 
     override fun getCores(
         id: String,
@@ -44,9 +44,11 @@ class LaunchDetailsCoresInteractor : BaseNetwork(), LaunchDetailsCoresContract.I
             QueryOptionsModel(false, populateList, "", listOf("cores"), 10)
         )
 
-        call = api.getQueriedLaunches(query).apply {
+        call = api.queryLaunches(query).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(it.body()) }
+                onResponseSuccess = { response ->
+                    listener.onSuccess(response.body()?.docs?.get(0)?.let { Launch(it) })
+                }
                 onResponseFailure = { listener.onError(it) }
             }
         }

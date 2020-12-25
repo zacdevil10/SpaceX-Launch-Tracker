@@ -10,12 +10,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentShipsBinding
-import uk.co.zac_h.spacex.model.spacex.ShipExtendedModel
+import uk.co.zac_h.spacex.model.spacex.Ship
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.VehiclesContract
 import uk.co.zac_h.spacex.vehicles.adapters.ShipsAdapter
 
-class ShipsFragment : Fragment(), VehiclesContract.View<ShipExtendedModel>,
+class ShipsFragment : Fragment(), VehiclesContract.View<Ship>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var binding: FragmentShipsBinding? = null
@@ -23,7 +23,7 @@ class ShipsFragment : Fragment(), VehiclesContract.View<ShipExtendedModel>,
     private var presenter: VehiclesContract.Presenter? = null
 
     private lateinit var shipsAdapter: ShipsAdapter
-    private lateinit var shipsArray: ArrayList<ShipExtendedModel>
+    private lateinit var shipsArray: ArrayList<Ship>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +82,7 @@ class ShipsFragment : Fragment(), VehiclesContract.View<ShipExtendedModel>,
         binding = null
     }
 
-    override fun updateVehicles(vehicles: List<ShipExtendedModel>) {
+    override fun updateVehicles(vehicles: List<Ship>) {
         shipsArray.clear()
         shipsArray.addAll(vehicles)
 

@@ -21,7 +21,7 @@ import uk.co.zac_h.spacex.launches.details.crew.LaunchDetailsCrewFragment
 import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsFragment
 import uk.co.zac_h.spacex.launches.details.payloads.LaunchDetailsPayloadsFragment
 import uk.co.zac_h.spacex.launches.details.ships.LaunchDetailsShipsFragment
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 
 class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContract.View {
 
@@ -31,7 +31,7 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
 
     private var selectedItem: Int? = null
 
-    private var launchShort: LaunchesExtendedModel? = null
+    private var launchShort: Launch? = null
     private var id: String? = null
 
     private var countdownTimer: CountDownTimer? = null

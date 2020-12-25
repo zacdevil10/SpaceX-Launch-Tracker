@@ -15,8 +15,8 @@ data class EngineConfigModel(
     @field:Json(name = "engine_loss_max") val engine_loss_max: Int?,
     @field:Json(name = "propellant_1") val propellant_1: String?,
     @field:Json(name = "propellant_2") val propellant_2: String?,
-    @field:Json(name = "thrust_sea_level") val thrust_sea_level: ThrustModel?,
-    @field:Json(name = "thrust_vacuum") val thrust_vacuum: ThrustModel?,
+    @field:Json(name = "thrust_sea_level") val thrust_sea_level: Thrust?,
+    @field:Json(name = "thrust_vacuum") val thrust_vacuum: Thrust?,
     @field:Json(name = "thrust_to_weight") val thrust_to_weight: Double?
 ) : Parcelable
 

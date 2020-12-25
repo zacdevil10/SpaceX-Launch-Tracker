@@ -1,13 +1,12 @@
 package uk.co.zac_h.spacex.crew
 
-import uk.co.zac_h.spacex.model.spacex.CrewDocsModel
-import uk.co.zac_h.spacex.model.spacex.CrewModel
+import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 interface CrewContract {
 
     interface CrewView {
-        fun updateCrew(crew: List<CrewModel>)
+        fun updateCrew(crew: List<Crew>)
         fun showProgress()
         fun hideProgress()
         fun toggleSwipeRefresh(refreshing: Boolean)
@@ -26,7 +25,7 @@ interface CrewContract {
     }
 
     interface InteractorCallback {
-        fun onSuccess(crew: CrewDocsModel?)
+        fun onSuccess(crew: List<Crew>?)
         fun onError(error: String)
     }
 

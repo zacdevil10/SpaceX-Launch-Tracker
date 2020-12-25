@@ -17,7 +17,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentShipDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
-import uk.co.zac_h.spacex.model.spacex.ShipExtendedModel
+import uk.co.zac_h.spacex.model.spacex.Ship
 import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
@@ -25,14 +25,14 @@ class ShipDetailsFragment : Fragment() {
 
     private var binding: FragmentShipDetailsBinding? = null
 
-    private var ship: ShipExtendedModel? = null
+    private var ship: Ship? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        ship = arguments?.getParcelable("ship") as ShipExtendedModel?
+        ship = arguments?.getParcelable("ship") as Ship?
     }
 
     override fun onCreateView(

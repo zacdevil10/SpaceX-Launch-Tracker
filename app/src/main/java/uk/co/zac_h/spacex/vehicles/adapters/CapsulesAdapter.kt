@@ -14,14 +14,17 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.CapsulesModel
+import uk.co.zac_h.spacex.model.spacex.Capsule
+import uk.co.zac_h.spacex.model.spacex.CapsuleStatus
+import uk.co.zac_h.spacex.model.spacex.CapsuleType
+import uk.co.zac_h.spacex.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CapsulesAdapter(private val capsules: ArrayList<CapsulesModel>) :
+class CapsulesAdapter(private val capsules: ArrayList<Capsule>) :
     RecyclerView.Adapter<CapsulesAdapter.ViewHolder>(), Filterable {
 
-    private var filteredCapsules: ArrayList<CapsulesModel>
+    private var filteredCapsules: ArrayList<Capsule>
 
     init {
         filteredCapsules = capsules
@@ -44,14 +47,21 @@ class CapsulesAdapter(private val capsules: ArrayList<CapsulesModel>) :
             itemView.transitionName = capsule.id
 
             serial.text = capsule.serial
-            capsule.serial?.let {
-                type.text = when {
-                    it.startsWith("C1") -> "Dragon 1.0"
-                    it.startsWith("C2") -> "Dragon 2.0"
-                    else -> ""
+            capsule.type?.let {
+                type.text = when (it) {
+                    CapsuleType.DRAGON_1 -> SPACEX_CAPSULE_TYPE_DRAGON_1
+                    CapsuleType.DRAGON_1_1 -> SPACEX_CAPSULE_TYPE_DRAGON_1_1
+                    CapsuleType.DRAGON_2 -> SPACEX_CAPSULE_TYPE_DRAGON_2
                 }
             }
-            status.text = capsule.status?.capitalize()
+            capsule.status?.let {
+                status.text = when (it) {
+                    CapsuleStatus.UNKNOWN -> SPACEX_CAPSULE_STATUS_UNKNOWN.capitalize()
+                    CapsuleStatus.ACTIVE -> SPACEX_CAPSULE_STATUS_ACTIVE.capitalize()
+                    CapsuleStatus.RETIRED -> SPACEX_CAPSULE_STATUS_RETIRED.capitalize()
+                    CapsuleStatus.DESTROYED -> SPACEX_CAPSULE_STATUS_DESTROYED.capitalize()
+                }
+            }
 
             capsule.lastUpdate?.let { lastUpdate ->
                 details.text = lastUpdate
@@ -76,7 +86,7 @@ class CapsulesAdapter(private val capsules: ArrayList<CapsulesModel>) :
                     filteredCapsules = when {
                         it.isEmpty() -> capsules
                         else -> {
-                            val filteredList = ArrayList<CapsulesModel>()
+                            val filteredList = ArrayList<Capsule>()
                             capsules.forEach { capsule ->
                                 capsule.serial?.let { serial ->
                                     if (serial.toLowerCase(Locale.getDefault()).contains(
@@ -111,7 +121,7 @@ class CapsulesAdapter(private val capsules: ArrayList<CapsulesModel>) :
         val flightNumber: TextView = itemView.findViewById(R.id.list_item_capsule_flights_text)
         val button: Button = itemView.findViewById(R.id.list_item_capsule_specs_button)
 
-        fun bind(capsule: CapsulesModel) {
+        fun bind(capsule: Capsule) {
             itemView.findNavController().navigate(
                 R.id.action_vehicles_page_fragment_to_capsule_details_fragment,
                 bundleOf("capsule" to capsule),

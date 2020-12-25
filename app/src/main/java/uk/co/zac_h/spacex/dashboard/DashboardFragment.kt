@@ -23,7 +23,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardPinnedAdapter
 import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
@@ -41,12 +41,12 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     private var presenter: DashboardContract.DashboardPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
-    private var nextLaunchModel: LaunchesExtendedModel? = null
-    private var latestLaunchModel: LaunchesExtendedModel? = null
+    private var nextLaunchModel: Launch? = null
+    private var latestLaunchModel: Launch? = null
 
     private lateinit var pinnedAdapter: DashboardPinnedAdapter
 
-    private lateinit var pinnedArray: ArrayList<LaunchesExtendedModel>
+    private lateinit var pinnedArray: ArrayList<Launch>
     private lateinit var pinnedKeysArray: ArrayList<String>
 
     private var countdownTimer: CountDownTimer? = null
@@ -60,7 +60,8 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         }
 
         pinnedArray = savedInstanceState?.let {
-            it.getParcelableArrayList<LaunchesExtendedModel>("pinned") as ArrayList<LaunchesExtendedModel>
+            ArrayList()
+            //it.getParcelableArrayList<LaunchesExtendedModel>("pinned") as ArrayList<LaunchesExtendedModel>
         } ?: ArrayList()
 
         pinnedKeysArray = savedInstanceState?.getStringArrayList("pinned_keys") ?: ArrayList()
@@ -188,9 +189,9 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        nextLaunchModel?.let { outState.putParcelable("next", it) }
-        latestLaunchModel?.let { outState.putParcelable("latest", it) }
-        outState.putParcelableArrayList("pinned", pinnedArray)
+        //nextLaunchModel?.let { outState.putParcelable("next", it) }
+        //latestLaunchModel?.let { outState.putParcelable("latest", it) }
+        //outState.putParcelableArrayList("pinned", pinnedArray)
         outState.putStringArrayList("pinned_keys", pinnedKeysArray)
         super.onSaveInstanceState(outState)
     }
@@ -203,7 +204,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         binding = null
     }
 
-    override fun updateNextLaunch(nextLaunch: LaunchesExtendedModel) {
+    override fun updateNextLaunch(nextLaunch: Launch) {
         nextLaunchModel = nextLaunch
 
         binding?.dashboardNextLayout?.dashboardNextLayout?.transitionName = nextLaunch.id
@@ -246,7 +247,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         }
     }
 
-    override fun updateLatestLaunch(latestLaunch: LaunchesExtendedModel) {
+    override fun updateLatestLaunch(latestLaunch: Launch) {
         latestLaunchModel = latestLaunch
 
         binding?.dashboardLatestLayout?.dashboardLatestLayout?.transitionName = latestLaunch.id
@@ -291,7 +292,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         }
     }
 
-    override fun updatePinnedList(id: String, pinnedLaunch: LaunchesExtendedModel) {
+    override fun updatePinnedList(id: String, pinnedLaunch: Launch) {
         if (!pinnedKeysArray.contains(id)) {
             pinnedArray.add(pinnedLaunch)
             pinnedKeysArray.add(id)

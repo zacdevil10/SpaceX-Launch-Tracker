@@ -28,7 +28,7 @@ class PadStatsInteractorImpl : BaseNetwork(), PadStatsContract.PadStatsInteracto
             )
         )
 
-        launchCall = api.getQueriedLaunchpads(launchQuery).apply {
+        launchCall = api.queryLaunchpads(launchQuery).apply {
             makeCall {
                 onResponseSuccess = { listener.onGetLaunchpads(it.body()) }
                 onResponseFailure = { listener.onError(it) }
@@ -51,7 +51,7 @@ class PadStatsInteractorImpl : BaseNetwork(), PadStatsContract.PadStatsInteracto
             )
         )
 
-        landingCall = api.getQueriedLandingPads(landQuery).apply {
+        landingCall = api.queryLandingPads(landQuery).apply {
             makeCall {
                 onResponseSuccess = { listener.onGetLandingPads(it.body()) }
                 onResponseFailure = { listener.onError(it) }
