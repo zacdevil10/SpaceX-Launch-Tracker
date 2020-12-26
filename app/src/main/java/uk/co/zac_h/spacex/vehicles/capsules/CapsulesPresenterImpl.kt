@@ -1,14 +1,13 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
 import uk.co.zac_h.spacex.model.spacex.Capsule
-import uk.co.zac_h.spacex.model.spacex.CapsuleQueriedResponse
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.vehicles.VehiclesContract
 
 class CapsulesPresenterImpl(
     private val view: VehiclesContract.View<Capsule>,
-    private val interactor: VehiclesContract.Interactor<CapsuleQueriedResponse>
-) : VehiclesContract.Presenter, VehiclesContract.InteractorCallback<CapsuleQueriedResponse> {
+    private val interactor: VehiclesContract.Interactor<Capsule>
+) : VehiclesContract.Presenter, VehiclesContract.InteractorCallback<Capsule> {
 
     override fun getVehicles(api: SpaceXInterface) {
         view.showProgress()
@@ -19,11 +18,13 @@ class CapsulesPresenterImpl(
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(vehicles: List<CapsuleQueriedResponse>?) {
+    override fun onSuccess(vehicles: List<Capsule>?) {
         view.apply {
             hideProgress()
             toggleSwipeRefresh(false)
-            vehicles?.map { Capsule(it) }?.let { updateVehicles(it) }
+            vehicles?.let {
+                updateVehicles(it)
+            }
         }
     }
 

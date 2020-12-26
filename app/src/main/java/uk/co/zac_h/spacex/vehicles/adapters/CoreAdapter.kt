@@ -15,8 +15,6 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.Core
-import uk.co.zac_h.spacex.model.spacex.CoreStatus
-import uk.co.zac_h.spacex.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -62,16 +60,9 @@ class CoreAdapter(private val context: Context?, private val cores: ArrayList<Co
                 details.visibility = View.GONE
             }
             core.status?.let {
-                status.text = when (it) {
-                    CoreStatus.ACTIVE -> SPACEX_CORE_STATUS_ACTIVE
-                    CoreStatus.INACTIVE -> SPACEX_CORE_STATUS_INACTIVE
-                    CoreStatus.UNKNOWN -> SPACEX_CORE_STATUS_UNKNOWN
-                    CoreStatus.EXPENDED -> SPACEX_CORE_STATUS_EXPENDED
-                    CoreStatus.LOST -> SPACEX_CORE_STATUS_LOST
-                    CoreStatus.RETIRED -> SPACEX_CORE_STATUS_RETIRED
-                }.capitalize(Locale.getDefault())
+                status.text = it.status
             }
-            flights.text = (core.missions?.size ?: 0).toString()
+            flights.text = (core.launches?.size ?: 0).toString()
 
             button.setOnClickListener { bind(core) }
             card.setOnClickListener { bind(core) }

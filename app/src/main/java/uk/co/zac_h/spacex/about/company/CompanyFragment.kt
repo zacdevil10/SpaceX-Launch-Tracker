@@ -88,9 +88,9 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
     override fun updateCompanyInfo(company: Company) {
         companyInfo = company
         binding?.apply {
-            with(company.headquarters) {
+            company.headquarters?.let {
                 companyAddressText.text =
-                    context?.getString(R.string.address, address, city, state)
+                    context?.getString(R.string.address, it.address, it.city, it.state)
             }
 
             companyWebsiteButton.setOnClickListener { openWebLink(company.website) }
@@ -112,7 +112,7 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
         }
     }
 
-    fun openWebLink(link: String) {
+    fun openWebLink(link: String?) {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 

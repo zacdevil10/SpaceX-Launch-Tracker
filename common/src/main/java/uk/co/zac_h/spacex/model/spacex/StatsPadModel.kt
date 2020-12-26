@@ -8,7 +8,7 @@ data class StatsPadModel(
     val name: String?,
     val attempts: Int,
     val successes: Int,
-    val status: String?,
+    val status: PadStatus?,
     val type: String? = "RTLS",
     val isHeading: Boolean = false
 ) : Parcelable

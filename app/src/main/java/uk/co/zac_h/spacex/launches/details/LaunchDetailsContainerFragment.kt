@@ -88,7 +88,7 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
                 binding?.launchDetailsBottomNavigation?.inflateMenu(R.menu.launch_details_bottom_nav_menu)
             }
 
-            presenter?.startCountdown(it.launchDateUnix, it.tbd)
+            presenter?.startCountdown(it.launchDate?.dateUnix, it.tbd)
         } ?: id?.let {
             binding?.fragmentLaunchDetailsContainer?.transitionName = it
 

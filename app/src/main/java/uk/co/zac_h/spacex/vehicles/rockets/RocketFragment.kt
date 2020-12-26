@@ -18,6 +18,10 @@ import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 class RocketFragment : Fragment(), VehiclesContract.View<Rocket>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
+    companion object {
+        const val TITLE = "Rockets"
+    }
+
     private var binding: FragmentRocketBinding? = null
 
     private var presenter: VehiclesContract.Presenter? = null

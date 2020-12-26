@@ -23,7 +23,8 @@ class FairingRecoveryInteractor : BaseNetwork(), FairingRecoveryContract.Interac
 
         call = api.queryLaunches(query).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(it.body(), true) }
+                onResponseSuccess =
+                    { listener.onSuccess(it.body()?.docs?.map { Launch(it) }, true) }
                 onResponseFailure = { listener.onError(it) }
             }
         }

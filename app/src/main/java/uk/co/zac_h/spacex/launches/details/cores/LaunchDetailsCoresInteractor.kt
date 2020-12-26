@@ -32,7 +32,13 @@ class LaunchDetailsCoresInteractor : BaseNetwork(), LaunchDetailsCoresContract.I
                     QueryPopulateModel(
                         "landpad",
                         select = "",
-                        populate = ""
+                        populate = listOf(
+                            QueryPopulateModel(
+                                "launches",
+                                select = listOf("id"),
+                                populate = ""
+                            )
+                        )
                     )
                 ),
                 select = ""

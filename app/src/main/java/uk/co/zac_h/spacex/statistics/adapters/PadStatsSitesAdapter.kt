@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.model.spacex.PadStatus
 import uk.co.zac_h.spacex.model.spacex.StatsPadModel
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
@@ -31,9 +32,9 @@ class PadStatsSitesAdapter(private var sites: ArrayList<StatsPadModel>) :
             successText.text = site.successes.toString()
             statusImage.setImageResource(
                 when (site.status) {
-                    "active" -> R.drawable.ic_check_circle_black_24dp
-                    "retired" -> R.drawable.ic_remove_circle_black_24dp
-                    "under construction" -> R.drawable.ic_build_black_24dp
+                    PadStatus.ACTIVE -> R.drawable.ic_check_circle_black_24dp
+                    PadStatus.RETIRED -> R.drawable.ic_remove_circle_black_24dp
+                    PadStatus.UNDER_CONSTRUCTION -> R.drawable.ic_build_black_24dp
                     else -> R.drawable.ic_remove_circle_black_24dp
                 }
             )

@@ -20,6 +20,10 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<Capsule>,
     SearchView.OnQueryTextListener,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
+    companion object {
+        const val TITLE = "Capsules"
+    }
+
     private var binding: FragmentCapsulesBinding? = null
 
     private var presenter: VehiclesContract.Presenter? = null

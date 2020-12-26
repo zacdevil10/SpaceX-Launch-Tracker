@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
-import uk.co.zac_h.spacex.model.spacex.LaunchDocsModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 
@@ -29,7 +29,7 @@ interface LaunchHistoryContract {
     }
 
     interface InteractorCallback {
-        fun onSuccess(launchDocs: LaunchDocsModel?, animate: Boolean)
+        fun onSuccess(launches: List<Launch>?, animate: Boolean)
         fun onError(error: String)
     }
 }

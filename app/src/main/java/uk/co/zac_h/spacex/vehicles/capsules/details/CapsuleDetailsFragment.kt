@@ -17,8 +17,6 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentCapsuleDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
 import uk.co.zac_h.spacex.model.spacex.Capsule
-import uk.co.zac_h.spacex.model.spacex.CapsuleStatus
-import uk.co.zac_h.spacex.model.spacex.CapsuleType
 import uk.co.zac_h.spacex.utils.*
 import java.util.*
 
@@ -63,12 +61,8 @@ class CapsuleDetailsFragment : Fragment() {
 
             toolbar.title = capsule?.serial
 
-            capsule?.type?.let { serial ->
-                capsuleDetailsTypeText.text = when (serial) {
-                    CapsuleType.DRAGON_1 -> SPACEX_CAPSULE_TYPE_DRAGON_1
-                    CapsuleType.DRAGON_1_1 -> SPACEX_CAPSULE_TYPE_DRAGON_1_1
-                    CapsuleType.DRAGON_2 -> SPACEX_CAPSULE_TYPE_DRAGON_2
-                }
+            capsule?.type?.let {
+                capsuleDetailsTypeText.text = it.type
             }
 
             capsule?.lastUpdate?.let { lastUpdate ->
@@ -77,13 +71,8 @@ class CapsuleDetailsFragment : Fragment() {
                 capsuleDetailsText.visibility = View.GONE
             }
 
-            capsule?.status?.let { status ->
-                capsuleDetailsStatusText.text = when (status) {
-                    CapsuleStatus.UNKNOWN -> SPACEX_CAPSULE_STATUS_UNKNOWN
-                    CapsuleStatus.ACTIVE -> SPACEX_CAPSULE_STATUS_ACTIVE
-                    CapsuleStatus.RETIRED -> SPACEX_CAPSULE_STATUS_RETIRED
-                    CapsuleStatus.DESTROYED -> SPACEX_CAPSULE_STATUS_DESTROYED
-                }.capitalize(Locale.getDefault())
+            capsule?.status?.let {
+                capsuleDetailsStatusText.text = it.status
             }
             capsuleDetailsReuseText.text = capsule?.reuseCount.toString()
             capsuleDetailsLandingText.text =

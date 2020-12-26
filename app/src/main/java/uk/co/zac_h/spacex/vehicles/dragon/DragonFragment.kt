@@ -18,6 +18,10 @@ import uk.co.zac_h.spacex.vehicles.adapters.DragonAdapter
 class DragonFragment : Fragment(), VehiclesContract.View<Dragon>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
+    companion object {
+        const val TITLE = "Dragon"
+    }
+
     private var binding: FragmentDragonBinding? = null
 
     private var presenter: VehiclesContract.Presenter? = null

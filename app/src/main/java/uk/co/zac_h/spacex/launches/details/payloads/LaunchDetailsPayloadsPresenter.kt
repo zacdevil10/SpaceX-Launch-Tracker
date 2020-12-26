@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.launches.details.payloads
 
-import uk.co.zac_h.spacex.model.spacex.LaunchDocsModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class LaunchDetailsPayloadsPresenter(
@@ -17,8 +17,8 @@ class LaunchDetailsPayloadsPresenter(
         interactor.cancelRequest()
     }
 
-    override fun onSuccess(launchModel: LaunchDocsModel?) {
-        if (launchModel?.docs?.isNotEmpty() == true) launchModel.docs[0].payloads?.let { payloads ->
+    override fun onSuccess(launch: Launch?) {
+        launch?.payloads?.let { payloads ->
             view.updatePayloadsRecyclerView(payloads)
         }
         view.hideProgress()

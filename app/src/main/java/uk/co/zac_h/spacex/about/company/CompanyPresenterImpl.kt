@@ -20,8 +20,13 @@ class CompanyPresenterImpl(
     }
 
     override fun onSuccess(company: Company?) {
-        view.hideProgress()
-        company?.let { view.updateCompanyInfo(it) }
+        view.apply {
+            hideProgress()
+            company?.let {
+                updateCompanyInfo(it)
+            }
+        }
+
     }
 
     override fun onError(error: String) {

@@ -1,10 +1,7 @@
 package uk.co.zac_h.spacex.about.history
 
 import retrofit2.Call
-import uk.co.zac_h.spacex.model.spacex.HistoryDocsModel
-import uk.co.zac_h.spacex.model.spacex.QueryHistorySort
-import uk.co.zac_h.spacex.model.spacex.QueryModel
-import uk.co.zac_h.spacex.model.spacex.QueryOptionsModel
+import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
@@ -30,7 +27,9 @@ class HistoryInteractorImpl : BaseNetwork(), HistoryContract.HistoryInteractor {
 
         call = api.queryHistory(query).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(it.body()?.docs) }
+                onResponseSuccess = { response ->
+                    listener.onSuccess(response.body()?.docs?.map { History(it) })
+                }
                 onResponseFailure = { listener.onError(it) }
             }
         }

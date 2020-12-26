@@ -40,19 +40,13 @@ class DashboardPresenterImpl(
             "T-%02d:%02d:%02d:%02d",
             TimeUnit.MILLISECONDS.toDays(time),
             TimeUnit.MILLISECONDS.toHours(time) - TimeUnit.DAYS.toHours(
-                TimeUnit.MILLISECONDS.toDays(
-                    time
-                )
+                TimeUnit.MILLISECONDS.toDays(time)
             ),
             TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(
-                TimeUnit.MILLISECONDS.toHours(
-                    time
-                )
+                TimeUnit.MILLISECONDS.toHours(time)
             ),
             TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(
-                TimeUnit.MILLISECONDS.toMinutes(
-                    time
-                )
+                TimeUnit.MILLISECONDS.toMinutes(time)
             )
         )
 
@@ -88,15 +82,11 @@ class DashboardPresenterImpl(
                     view.updateNextLaunch(launch)
                     view.toggleNextProgress(false)
                     val time =
-                        (launch.launchDateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
-                    launch.tbd?.let { tbd ->
-                        if (!tbd && time >= 0) view.apply {
-                            setCountdown(time)
-                            showCountdown()
-                        } else view.hideCountdown()
-                    } ?: run {
-                        view.hideCountdown()
-                    }
+                        (launch.launchDate?.dateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
+                    if (launch.tbd == false && time >= 0) view.apply {
+                        setCountdown(time)
+                        showCountdown()
+                    } else view.hideCountdown()
                 }
                 "latest" -> {
                     view.updateLatestLaunch(launch)

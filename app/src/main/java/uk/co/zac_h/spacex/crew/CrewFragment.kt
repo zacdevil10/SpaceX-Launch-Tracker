@@ -34,28 +34,15 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        /*crewArray = when {
-            savedInstanceState != null -> {
-                savedInstanceState.getParcelableArrayList("crew") ?: ArrayList()
-            }
-            arguments != null -> {
-                requireArguments().getParcelableArrayList<CrewModel>("crew") as ArrayList<CrewModel>
-            }
-            else -> {
-                ArrayList()
-            }
-        }*/
-
-        crewArray = savedInstanceState?.getParcelableArrayList<Crew>("crew") ?: ArrayList()
+        crewArray = savedInstanceState?.getParcelableArrayList("crew") ?: ArrayList()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentCrewBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentCrewBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

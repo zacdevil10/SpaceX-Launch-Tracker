@@ -35,7 +35,7 @@ class LaunchDetailsCrewFragment : Fragment(), CrewContract.CrewView,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        crew = savedInstanceState?.getParcelableArrayList<Crew>("crew") ?: ArrayList()
+        crew = savedInstanceState?.getParcelableArrayList("crew") ?: ArrayList()
         id = arguments?.getString("id")
     }
 

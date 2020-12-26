@@ -89,16 +89,11 @@ class ShipDetailsFragment : Fragment() {
                     shipDetailsBuiltText.visibility = View.GONE
                 }
 
-                if (it.massKg != null && it.massLbs != null) {
-                    shipDetailsMassText.text = context?.getString(
-                        R.string.mass_formatted,
-                        it.massKg?.metricFormat(),
-                        it.massLbs?.metricFormat()
-                    )
-                } else {
-                    shipDetailsMassLabel.visibility = View.GONE
-                    shipDetailsMassText.visibility = View.GONE
-                }
+                shipDetailsMassText.text = context?.getString(
+                    R.string.mass_formatted,
+                    it.mass?.kg?.metricFormat(),
+                    it.mass?.lb?.metricFormat()
+                )
 
                 it.launches?.let {
                     shipDetailsMissionRecycler.apply {

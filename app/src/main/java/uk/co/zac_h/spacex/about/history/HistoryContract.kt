@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.about.history
 
-import uk.co.zac_h.spacex.model.spacex.HistoryModel
+import uk.co.zac_h.spacex.model.spacex.History
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 
@@ -26,7 +26,7 @@ interface HistoryContract {
     }
 
     interface InteractorCallback {
-        fun onSuccess(history: List<HistoryModel>?)
+        fun onSuccess(history: List<History>?)
         fun onError(error: String)
     }
 

@@ -90,13 +90,11 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
         binding = null
     }
 
-    override fun updatePayloadsRecyclerView(payloadsList: List<Payload>?) {
-        payloadsList?.let {
-            payloads.clear()
-            payloads.addAll(it)
+    override fun updatePayloadsRecyclerView(payloads: List<Payload>) {
+        this.payloads.clear()
+        this.payloads.addAll(payloads)
 
-            payloadAdapter.notifyDataSetChanged()
-        }
+        payloadAdapter.notifyDataSetChanged()
     }
 
     override fun showProgress() {

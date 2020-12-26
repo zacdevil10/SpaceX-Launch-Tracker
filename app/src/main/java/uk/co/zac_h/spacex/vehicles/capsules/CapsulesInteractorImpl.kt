@@ -9,13 +9,13 @@ import uk.co.zac_h.spacex.utils.SPACEX_FIELD_LAUNCH_FLIGHT_NUMBER
 import uk.co.zac_h.spacex.utils.SPACEX_FIELD_LAUNCH_NAME
 import uk.co.zac_h.spacex.vehicles.VehiclesContract
 
-class CapsulesInteractorImpl : BaseNetwork(), VehiclesContract.Interactor<CapsuleQueriedResponse> {
+class CapsulesInteractorImpl : BaseNetwork(), VehiclesContract.Interactor<Capsule> {
 
     private var call: Call<CapsulesDocsModel>? = null
 
     override fun getVehicles(
         api: SpaceXInterface,
-        listener: VehiclesContract.InteractorCallback<CapsuleQueriedResponse>
+        listener: VehiclesContract.InteractorCallback<Capsule>
     ) {
         val query = QueryModel(
             "",
@@ -35,8 +35,8 @@ class CapsulesInteractorImpl : BaseNetwork(), VehiclesContract.Interactor<Capsul
 
         call = api.queryCapsules(query).apply {
             makeCall {
-                onResponseSuccess = {
-                    listener.onSuccess(it.body()?.docs)
+                onResponseSuccess = { response ->
+                    listener.onSuccess(response.body()?.docs?.map { Capsule(it) })
                 }
                 onResponseFailure = { listener.onError(it) }
             }

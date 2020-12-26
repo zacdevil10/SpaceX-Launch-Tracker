@@ -179,10 +179,10 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 launchDetailsSiteNameText.text = launch.launchpad?.name
 
                 launchDetailsDateText.text = launch.datePrecision?.let { datePrecision ->
-                    launch.launchDateUnix?.formatDateMillisLong(datePrecision)
+                    launch.launchDate?.dateUnix?.formatDateMillisLong(datePrecision)
                 }
 
-                launch.staticFireDateUnix?.let { date ->
+                launch.staticFireDate?.dateUnix?.let { date ->
                     launchDetailsStaticFireDateLabel.visibility = View.VISIBLE
                     launchDetailsStaticFireDateText.visibility = View.VISIBLE
                     launchDetailsStaticFireDateText.text = date.formatDateMillisLong()
@@ -256,11 +256,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 data = CalendarContract.Events.CONTENT_URI
                 putExtra(
                     CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                    it.launchDateUnix?.times(1000L)
+                    it.launchDate?.dateUnix?.times(1000L)
                 )
                 putExtra(
                     CalendarContract.EXTRA_EVENT_END_TIME,
-                    it.launchDateUnix?.times(1000L)?.plus(3600000)
+                    it.launchDate?.dateUnix?.times(1000L)?.plus(3600000)
                 )
                 putExtra(
                     CalendarContract.Events.TITLE,

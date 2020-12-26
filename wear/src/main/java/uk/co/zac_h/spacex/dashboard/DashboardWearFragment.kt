@@ -9,8 +9,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
-import uk.co.zac_h.spacex.utils.formatDateMillisShort
 
 class DashboardWearFragment : Fragment(), DashboardWearView {
 

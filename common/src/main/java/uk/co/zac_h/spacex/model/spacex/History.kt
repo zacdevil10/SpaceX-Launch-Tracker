@@ -6,10 +6,10 @@ import kotlinx.android.parcel.Parcelize
 import uk.co.zac_h.spacex.utils.*
 
 data class HistoryDocsModel(
-    @field:Json(name = "docs") val docs: List<HistoryQueriedResponse>
+    @field:Json(name = "docs") val docs: List<HistoryResponse>
 )
 
-data class HistoryQueriedResponse(
+data class HistoryResponse(
     @field:Json(name = SPACEX_FIELD_HISTORY_LINKS) val links: HistoryLinksModel?,
     @field:Json(name = SPACEX_FIELD_HISTORY_TITLE) val title: String?,
     @field:Json(name = SPACEX_FIELD_HISTORY_EVENT_DATE_UTC) val dateUtc: String?,
@@ -32,7 +32,7 @@ data class History(
 ) : Parcelable {
 
     constructor(
-        response: HistoryQueriedResponse
+        response: HistoryResponse
     ) : this(
         article = response.links?.article,
         title = response.title,

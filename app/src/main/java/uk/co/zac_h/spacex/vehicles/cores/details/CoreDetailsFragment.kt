@@ -17,7 +17,6 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
 import uk.co.zac_h.spacex.model.spacex.Core
-import uk.co.zac_h.spacex.model.spacex.CoreStatus
 import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import java.util.*
@@ -102,14 +101,7 @@ class CoreDetailsFragment : Fragment(), OnNetworkStateChangeListener.NetworkStat
                 coreDetailsBlockText.text = block ?: "TBD"
                 coreDetailsDetailsText.text = lastUpdate
                 status?.let {
-                    coreDetailsStatusText.text = when (it) {
-                        CoreStatus.ACTIVE -> SPACEX_CORE_STATUS_ACTIVE
-                        CoreStatus.INACTIVE -> SPACEX_CORE_STATUS_INACTIVE
-                        CoreStatus.UNKNOWN -> SPACEX_CORE_STATUS_UNKNOWN
-                        CoreStatus.EXPENDED -> SPACEX_CORE_STATUS_EXPENDED
-                        CoreStatus.LOST -> SPACEX_CORE_STATUS_LOST
-                        CoreStatus.RETIRED -> SPACEX_CORE_STATUS_RETIRED
-                    }.capitalize(Locale.getDefault())
+                    coreDetailsStatusText.text = it.status
                 }
                 coreDetailsReuseText.text = reuseCount.toString()
                 coreDetailsRtlsAttemptsText.text = attemptsRtls.toString()
@@ -117,7 +109,7 @@ class CoreDetailsFragment : Fragment(), OnNetworkStateChangeListener.NetworkStat
                 coreDetailsAsdsAttemptsText.text = attemptsAsds.toString()
                 coreDetailsAsdsLandingsText.text = landingsAsds.toString()
 
-                missions?.let {
+                launches?.let {
                     coreDetailsMissionRecycler.apply {
                         layoutManager = LinearLayoutManager(this@CoreDetailsFragment.context)
                         setHasFixedSize(true)

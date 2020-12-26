@@ -15,9 +15,6 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.model.spacex.Capsule
-import uk.co.zac_h.spacex.model.spacex.CapsuleStatus
-import uk.co.zac_h.spacex.model.spacex.CapsuleType
-import uk.co.zac_h.spacex.utils.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -48,19 +45,10 @@ class CapsulesAdapter(private val capsules: ArrayList<Capsule>) :
 
             serial.text = capsule.serial
             capsule.type?.let {
-                type.text = when (it) {
-                    CapsuleType.DRAGON_1 -> SPACEX_CAPSULE_TYPE_DRAGON_1
-                    CapsuleType.DRAGON_1_1 -> SPACEX_CAPSULE_TYPE_DRAGON_1_1
-                    CapsuleType.DRAGON_2 -> SPACEX_CAPSULE_TYPE_DRAGON_2
-                }
+                type.text = it.type
             }
             capsule.status?.let {
-                status.text = when (it) {
-                    CapsuleStatus.UNKNOWN -> SPACEX_CAPSULE_STATUS_UNKNOWN.capitalize()
-                    CapsuleStatus.ACTIVE -> SPACEX_CAPSULE_STATUS_ACTIVE.capitalize()
-                    CapsuleStatus.RETIRED -> SPACEX_CAPSULE_STATUS_RETIRED.capitalize()
-                    CapsuleStatus.DESTROYED -> SPACEX_CAPSULE_STATUS_DESTROYED.capitalize()
-                }
+                status.text = it.status
             }
 
             capsule.lastUpdate?.let { lastUpdate ->

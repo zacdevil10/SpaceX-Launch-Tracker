@@ -19,7 +19,7 @@ data class CoreQueriedResponse(
     @field:Json(name = SPACEX_FIELD_CORE_ASDS_ATTEMPTS) val attemptsAsds: Int?,
     @field:Json(name = SPACEX_FIELD_CORE_ASDS_LANDINGS) val landingsAsds: Int?,
     @field:Json(name = SPACEX_FIELD_CORE_LAST_UPDATE) val lastUpdate: String?,
-    @field:Json(name = SPACEX_FIELD_CORE_LAUNCHES) val missions: List<Launch>?,
+    @field:Json(name = SPACEX_FIELD_CORE_LAUNCHES) val launches: List<LaunchResponse>?,
     @field:Json(name = SPACEX_FIELD_ID) val id: String
 )
 
@@ -33,7 +33,7 @@ data class CoreResponse(
     @field:Json(name = SPACEX_FIELD_CORE_ASDS_ATTEMPTS) val attemptsAsds: Int?,
     @field:Json(name = SPACEX_FIELD_CORE_ASDS_LANDINGS) val landingsAsds: Int?,
     @field:Json(name = SPACEX_FIELD_CORE_LAST_UPDATE) val lastUpdate: String?,
-    @field:Json(name = SPACEX_FIELD_CORE_LAUNCHES) val missions: List<String>?,
+    @field:Json(name = SPACEX_FIELD_CORE_LAUNCHES) val launches: List<String>?,
     @field:Json(name = SPACEX_FIELD_ID) val id: String
 )
 
@@ -65,7 +65,7 @@ data class Core(
         attemptsAsds = response.attemptsAsds,
         landingsAsds = response.landingsAsds,
         lastUpdate = response.lastUpdate,
-        launchIds = response.missions,
+        launchIds = response.launches,
         id = response.id
     )
 
@@ -81,7 +81,7 @@ data class Core(
         attemptsAsds = response.attemptsAsds,
         landingsAsds = response.landingsAsds,
         lastUpdate = response.lastUpdate,
-        launches = response.missions,
+        launches = response.launches?.map { Launch(it) },
         id = response.id
     )
 

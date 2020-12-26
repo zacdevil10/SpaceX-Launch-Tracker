@@ -60,8 +60,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         }
 
         pinnedArray = savedInstanceState?.let {
-            ArrayList()
-            //it.getParcelableArrayList<LaunchesExtendedModel>("pinned") as ArrayList<LaunchesExtendedModel>
+            it.getParcelableArrayList<Launch>("pinned") as ArrayList<Launch>
         } ?: ArrayList()
 
         pinnedKeysArray = savedInstanceState?.getStringArrayList("pinned_keys") ?: ArrayList()
@@ -189,9 +188,9 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        //nextLaunchModel?.let { outState.putParcelable("next", it) }
-        //latestLaunchModel?.let { outState.putParcelable("latest", it) }
-        //outState.putParcelableArrayList("pinned", pinnedArray)
+        nextLaunchModel?.let { outState.putParcelable("next", it) }
+        latestLaunchModel?.let { outState.putParcelable("latest", it) }
+        outState.putParcelableArrayList("pinned", pinnedArray)
         outState.putStringArrayList("pinned_keys", pinnedKeysArray)
         super.onSaveInstanceState(outState)
     }
@@ -231,7 +230,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         binding?.dashboardNextLayout?.dashboardNextMissionNameText?.text = nextLaunch.missionName
         binding?.dashboardNextLayout?.dashboardNextDateText?.text =
-            nextLaunch.datePrecision?.let { nextLaunch.launchDateUnix?.formatDateMillisLong(it) }
+            nextLaunch.datePrecision?.let { nextLaunch.launchDate?.dateUnix?.formatDateMillisLong(it) }
 
         binding?.dashboardNextLayout?.dashboardNextLayout?.let { card ->
             card.setOnClickListener {
@@ -276,7 +275,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
             latestLaunch.missionName
 
         binding?.dashboardLatestLayout?.dashboardLatestDateText?.text =
-            latestLaunch.launchDateUnix?.formatDateMillisLong(latestLaunch.datePrecision)
+            latestLaunch.launchDate?.dateUnix?.formatDateMillisLong(latestLaunch.datePrecision)
 
         binding?.dashboardLatestLayout?.dashboardLatestLayout?.let { card ->
             card.setOnClickListener {

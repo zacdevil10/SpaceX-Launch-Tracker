@@ -69,7 +69,7 @@ class DashboardPinnedAdapter(
                 flightNumber.text = context?.getString(R.string.flight_number, it.flightNumber)
                 vehicle.text = it.rocket?.name
                 missionName.text = it.missionName
-                date.text = it.launchDateUnix?.formatDateMillisLong(it.datePrecision)
+                date.text = it.launchDate?.dateUnix?.formatDateMillisLong(it.datePrecision)
 
                 itemView.setOnClickListener { _ ->
                     itemView.findNavController().navigate(

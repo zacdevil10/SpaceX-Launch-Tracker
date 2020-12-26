@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.launches.details.ships
 
-import uk.co.zac_h.spacex.model.spacex.LaunchDocsModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class LaunchDetailsShipsPresenter(
@@ -15,11 +15,9 @@ class LaunchDetailsShipsPresenter(
 
     override fun cancelRequest() = interactor.cancelRequest()
 
-    override fun onSuccess(launches: LaunchDocsModel?) {
-        if (launches?.docs?.isNotEmpty() == true) {
-            launches.docs[0].ships?.let {
-                view.updateShipsRecyclerView(it)
-            }
+    override fun onSuccess(launch: Launch?) {
+        launch?.ships?.let {
+            view.updateShipsRecyclerView(it)
         }
         view.hideProgress()
     }

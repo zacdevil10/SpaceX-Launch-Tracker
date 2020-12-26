@@ -47,7 +47,7 @@ data class LandingPadQueriedResponse(
 data class LandingPad(
     val name: String?,
     val fullName: String?,
-    val status: LandingPadStatus?,
+    val status: PadStatus?,
     val type: String?,
     val locality: String?,
     val region: String?,
@@ -102,21 +102,13 @@ data class LandingPad(
 
     companion object {
         private fun String?.toLandingPadStatus() = when (this) {
-            SPACEX_LANDING_PAD_STATUS_ACTIVE -> LandingPadStatus.ACTIVE
-            SPACEX_LANDING_PAD_STATUS_INACTIVE -> LandingPadStatus.INACTIVE
-            SPACEX_LANDING_PAD_STATUS_RETIRED -> LandingPadStatus.RETIRED
-            SPACEX_LANDING_PAD_STATUS_LOST -> LandingPadStatus.LOST
-            SPACEX_LANDING_PAD_STATUS_UNDER_CONSTRUCTION -> LandingPadStatus.UNDER_CONSTRUCTION
-            else -> LandingPadStatus.UNKNOWN
+            SPACEX_LANDING_PAD_STATUS_ACTIVE -> PadStatus.ACTIVE
+            SPACEX_LANDING_PAD_STATUS_INACTIVE -> PadStatus.INACTIVE
+            SPACEX_LANDING_PAD_STATUS_RETIRED -> PadStatus.RETIRED
+            SPACEX_LANDING_PAD_STATUS_LOST -> PadStatus.LOST
+            SPACEX_LANDING_PAD_STATUS_UNDER_CONSTRUCTION -> PadStatus.UNDER_CONSTRUCTION
+            else -> PadStatus.UNKNOWN
         }
     }
 }
 
-enum class LandingPadStatus(val status: String) {
-    ACTIVE(SPACEX_ACTIVE),
-    INACTIVE(SPACEX_INACTIVE),
-    UNKNOWN(SPACEX_UNKNOWN),
-    RETIRED(SPACEX_RETIRED),
-    LOST(SPACEX_LOST),
-    UNDER_CONSTRUCTION(SPACEX_UNDER_CONSTRUCTION)
-}

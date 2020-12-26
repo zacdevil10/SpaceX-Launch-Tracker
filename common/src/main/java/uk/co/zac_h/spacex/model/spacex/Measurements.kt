@@ -46,4 +46,4 @@ data class Distance(
     val feet: String? = null,
     val mi: String? = null,
     val km: String? = null
-)
+) : Parcelable

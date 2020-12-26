@@ -69,8 +69,8 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardIntera
 
         call = api.queryLaunches(query).apply {
             makeCall {
-                onResponseSuccess = {
-                    listener.onSuccess(id, it.body()?.docs?.get(0)?.let { it1 -> Launch(it1) })
+                onResponseSuccess = { response ->
+                    listener.onSuccess(id, response.body()?.docs?.get(0)?.let { Launch(it) })
                 }
                 onResponseFailure = {
                     listener.onError(it)

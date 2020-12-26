@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchmass
 
-import uk.co.zac_h.spacex.model.spacex.LaunchDocsModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.RocketIds
 import uk.co.zac_h.spacex.utils.add
@@ -83,45 +83,43 @@ class LaunchMassPresenter(
         })
     }
 
-    override fun onSuccess(launchDocs: LaunchDocsModel?, animate: Boolean) {
-        launchDocs?.docs?.let { launches ->
-            val massStats = ArrayList<LaunchMassStatsModel>()
+    override fun onSuccess(launches: List<Launch>?, animate: Boolean) {
+        val massStats = ArrayList<LaunchMassStatsModel>()
+        var year = 2005
 
-            var year = 2005
-            launches.forEach {
-                val newYear =
-                    it.launchDateLocal?.substring(0, 4).toString().toIntOrNull() ?: return@forEach
+        launches?.forEach {
+            val newYear =
+                it.launchDate?.dateLocal?.substring(0, 4).toString().toIntOrNull() ?: return@forEach
 
-                if (newYear > year) {
-                    if (newYear != year++) {
-                        for (y in year until newYear) massStats.add(LaunchMassStatsModel(y))
-                    }
-                    massStats.add(LaunchMassStatsModel(newYear))
-                    year = newYear
+            if (newYear > year) {
+                if (newYear != year++) {
+                    for (y in year until newYear) massStats.add(LaunchMassStatsModel(y))
                 }
+                massStats.add(LaunchMassStatsModel(newYear))
+                year = newYear
+            }
 
-                when (it.rocket?.id) {
-                    RocketIds.FALCON_ONE -> it.payloads?.forEach { payload ->
-                        updateOrbitMass(
-                            massStats[massStats.lastIndex].falconOne,
-                            payload.orbit,
-                            payload.massKg
-                        )
-                    }
-                    RocketIds.FALCON_NINE -> it.payloads?.forEach { payload ->
-                        updateOrbitMass(
-                            massStats[massStats.lastIndex].falconNine,
-                            payload.orbit,
-                            payload.massKg
-                        )
-                    }
-                    RocketIds.FALCON_HEAVY -> it.payloads?.forEach { payload ->
-                        updateOrbitMass(
-                            massStats[massStats.lastIndex].falconHeavy,
-                            payload.orbit,
-                            payload.massKg
-                        )
-                    }
+            when (it.rocket?.id) {
+                RocketIds.FALCON_ONE -> it.payloads?.forEach { payload ->
+                    updateOrbitMass(
+                        massStats[massStats.lastIndex].falconOne,
+                        payload.orbit,
+                        payload.mass?.kg
+                    )
+                }
+                RocketIds.FALCON_NINE -> it.payloads?.forEach { payload ->
+                    updateOrbitMass(
+                        massStats[massStats.lastIndex].falconNine,
+                        payload.orbit,
+                        payload.mass?.kg
+                    )
+                }
+                RocketIds.FALCON_HEAVY -> it.payloads?.forEach { payload ->
+                    updateOrbitMass(
+                        massStats[massStats.lastIndex].falconHeavy,
+                        payload.orbit,
+                        payload.mass?.kg
+                    )
                 }
             }
 

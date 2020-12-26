@@ -35,9 +35,7 @@ class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        cores = ArrayList()
-        /*savedInstanceState?.getParcelableArrayList<LaunchCoreExtendedModel>("cores")
-            ?: ArrayList()*/
+        cores = savedInstanceState?.getParcelableArrayList("cores") ?: ArrayList()
         id = arguments?.getString("id")
     }
 

@@ -25,7 +25,9 @@ class LaunchDetailsPayloadsInteractor : BaseNetwork(), LaunchDetailsPayloadsCont
 
         call = api.queryLaunches(query).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(it.body()) }
+                onResponseSuccess = { response ->
+                    listener.onSuccess(response.body()?.docs?.get(0)?.let { Launch(it) })
+                }
                 onResponseFailure = { listener.onError(it) }
             }
         }

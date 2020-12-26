@@ -6,6 +6,10 @@ import kotlinx.android.parcel.Parcelize
 import uk.co.zac_h.spacex.utils.*
 import java.text.DecimalFormat
 
+data class RocketDocsModel(
+    @field:Json(name = "docs") val docs: List<RocketResponse>
+)
+
 data class RocketResponse(
     @field:Json(name = SPACEX_FIELD_ROCKET_NAME) val name: String?,
     @field:Json(name = SPACEX_FIELD_ROCKET_TYPE) val type: String?,
@@ -125,7 +129,7 @@ data class Rocket(
         isActive = response.isActive,
         stages = response.stages,
         boosters = response.boosters,
-        costPerLaunch = DecimalFormat("$#,###.00").format(response.costPerLaunch),
+        costPerLaunch = response.costPerLaunch?.let { DecimalFormat("$#,###.00").format(it) },
         successRate = response.successRate,
         firstFlight = response.firstFlight,
         country = response.country,

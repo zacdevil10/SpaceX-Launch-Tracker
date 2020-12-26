@@ -14,7 +14,7 @@ import uk.co.zac_h.spacex.model.spacex.Launch
 
 class MissionsAdapter(
     private val context: Context?,
-    private val missions: List<Launch>
+    private val launches: List<Launch>
 ) :
     RecyclerView.Adapter<MissionsAdapter.ViewHolder>() {
 
@@ -27,26 +27,26 @@ class MissionsAdapter(
     )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val mission = missions[position]
+        val launch = launches[position]
 
         holder.apply {
-            itemView.transitionName = mission.id
-            missionName.text = mission.missionName
-            flightNumber.text = context?.getString(R.string.flight_number, mission.flightNumber)
+            itemView.transitionName = launch.id
+            missionName.text = launch.missionName
+            flightNumber.text = context?.getString(R.string.flight_number, launch.flightNumber)
 
             itemView.setOnClickListener {
                 itemView.findNavController()
                     .navigate(
                         R.id.missions_to_launch_details_container_fragment,
-                        bundleOf("launch_id" to mission.id),
+                        bundleOf("launch_id" to launch.id),
                         null,
-                        FragmentNavigatorExtras(itemView to mission.id)
+                        FragmentNavigatorExtras(itemView to launch.id)
                     )
             }
         }
     }
 
-    override fun getItemCount(): Int = missions.size
+    override fun getItemCount(): Int = launches.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val missionName: TextView = itemView.findViewById(R.id.list_item_mission_name_text)

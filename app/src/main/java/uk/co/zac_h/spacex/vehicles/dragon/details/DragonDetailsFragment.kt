@@ -87,8 +87,8 @@ class DragonDetailsFragment : Fragment() {
                 dragonDetailsFirstFlightText.text = it.firstFlight
                 dragonDetailsDryMassText.text = context?.getString(
                     R.string.mass_formatted,
-                    it.dryMassKg?.metricFormat(),
-                    it.dryMassLb?.metricFormat()
+                    it.dryMass?.kg?.metricFormat(),
+                    it.dryMass?.lb?.metricFormat()
                 )
                 it.heightWithTrunk?.let { heightWithTrunk ->
                     dragonDetailsHeightText.text = context?.getString(

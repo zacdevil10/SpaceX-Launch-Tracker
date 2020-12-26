@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
-import uk.co.zac_h.spacex.model.spacex.LaunchDocsModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.RocketIds
 import uk.co.zac_h.spacex.utils.models.RateStatsModel
@@ -23,45 +23,43 @@ class LaunchRatePresenterImpl(
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(launchDocs: LaunchDocsModel?, animate: Boolean) {
-        launchDocs?.docs?.let { launches ->
-            val rateStatsList = ArrayList<RateStatsModel>()
+    override fun onSuccess(launches: List<Launch>?, animate: Boolean) {
+        val rateStatsList = ArrayList<RateStatsModel>()
 
-            var year = 2005
-            launches.forEach {
-                val newYear =
-                    it.launchDateLocal?.substring(0, 4).toString().toIntOrNull() ?: return@forEach
-                if (newYear > year) {
-                    if (newYear != year++) {
-                        for (y in year until newYear) rateStatsList.add(RateStatsModel(y))
-                    }
-                    rateStatsList.add(RateStatsModel(newYear))
-                    year = newYear
+        var year = 2005
+        launches?.forEach {
+            val newYear =
+                it.launchDate?.dateLocal?.substring(0, 4).toString().toIntOrNull() ?: return@forEach
+            if (newYear > year) {
+                if (newYear != year++) {
+                    for (y in year until newYear) rateStatsList.add(RateStatsModel(y))
                 }
-                if (!it.upcoming!!) {
-                    it.success?.let { success ->
-                        if (success) {
-                            when (it.rocket?.id) {
-                                RocketIds.FALCON_ONE -> {
-                                    rateStatsList[rateStatsList.lastIndex].falconOne++
-                                }
-                                RocketIds.FALCON_NINE -> {
-                                    rateStatsList[rateStatsList.lastIndex].falconNine++
-                                }
-                                RocketIds.FALCON_HEAVY -> {
-                                    rateStatsList[rateStatsList.lastIndex].falconHeavy++
-                                }
-                                else -> {
-                                    return@forEach
-                                }
+                rateStatsList.add(RateStatsModel(newYear))
+                year = newYear
+            }
+            if (!it.upcoming!!) {
+                it.success?.let { success ->
+                    if (success) {
+                        when (it.rocket?.id) {
+                            RocketIds.FALCON_ONE -> {
+                                rateStatsList[rateStatsList.lastIndex].falconOne++
                             }
-                        } else {
-                            rateStatsList[rateStatsList.lastIndex].failure++
+                            RocketIds.FALCON_NINE -> {
+                                rateStatsList[rateStatsList.lastIndex].falconNine++
+                            }
+                            RocketIds.FALCON_HEAVY -> {
+                                rateStatsList[rateStatsList.lastIndex].falconHeavy++
+                            }
+                            else -> {
+                                return@forEach
+                            }
                         }
+                    } else {
+                        rateStatsList[rateStatsList.lastIndex].failure++
                     }
-                } else {
-                    rateStatsList[rateStatsList.lastIndex].planned++
                 }
+            } else {
+                rateStatsList[rateStatsList.lastIndex].planned++
             }
 
             view.apply {

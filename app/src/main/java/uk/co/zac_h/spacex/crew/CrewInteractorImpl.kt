@@ -26,7 +26,9 @@ class CrewInteractorImpl : BaseNetwork(), CrewContract.CrewInteractor {
 
         call = api.queryCrewMembers(query).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(it.body()?.docs?.map { Crew(it) }) }
+                onResponseSuccess = { response ->
+                    listener.onSuccess(response.body()?.docs?.map { Crew(it) })
+                }
                 onResponseFailure = { listener.onError(it) }
             }
         }

@@ -57,7 +57,7 @@ class HistoryAdapter(
                     )
                 )
 
-                date.text = event.historyModel?.dateUnix?.formatDateMillisDDMMM()
+                date.text = event.historyModel?.event?.dateUnix?.formatDateMillisDDMMM()
                 date.startAnimation(
                     AnimationUtils.loadAnimation(
                         context,
@@ -80,7 +80,7 @@ class HistoryAdapter(
                     ).apply { startOffset = 80 })
 
                 articleButton.apply {
-                    event.historyModel?.links?.article?.let { link ->
+                    event.historyModel?.article?.let { link ->
                         visibility = View.VISIBLE
                         startAnimation(
                             AnimationUtils.loadAnimation(

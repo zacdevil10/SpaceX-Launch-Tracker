@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
-import uk.co.zac_h.spacex.model.spacex.LaunchDocsModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.RocketIds
 import uk.co.zac_h.spacex.utils.RocketType
@@ -36,48 +36,46 @@ class LaunchHistoryPresenterImpl(
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(launchDocs: LaunchDocsModel?, animate: Boolean) {
+    override fun onSuccess(launches: List<Launch>?, animate: Boolean) {
         val falconOne = HistoryStatsModel(RocketType.FALCON_ONE)
         val falconNine = HistoryStatsModel(RocketType.FALCON_NINE)
         val falconHeavy = HistoryStatsModel(RocketType.FALCON_HEAVY)
 
-        launchDocs?.docs?.let { launches ->
-            launches.forEach {
-                when (it.rocket?.id) {
-                    RocketIds.FALCON_ONE -> {
-                        it.success?.let { success ->
-                            if (success) falconOne.successes++ else falconOne.failures++
-                        }
-                        it.rocket?.successRate?.let { successRate ->
-                            falconOne.successRate = successRate
-                        }
+        launches?.forEach {
+            when (it.rocket?.id) {
+                RocketIds.FALCON_ONE -> {
+                    it.success?.let { success ->
+                        if (success) falconOne.successes++ else falconOne.failures++
                     }
-                    RocketIds.FALCON_NINE -> {
-                        it.success?.let { success ->
-                            if (success) falconNine.successes++ else falconNine.failures++
-                        }
-                        it.rocket?.successRate?.let { successRate ->
-                            falconNine.successRate = successRate
-                        }
+                    it.rocket?.successRate?.let { successRate ->
+                        falconOne.successRate = successRate
                     }
-                    RocketIds.FALCON_HEAVY -> {
-                        it.success?.let { success ->
-                            if (success) falconHeavy.successes++ else falconHeavy.failures++
-                        }
-                        it.rocket?.successRate?.let { successRate ->
-                            falconHeavy.successRate = successRate
-                        }
+                }
+                RocketIds.FALCON_NINE -> {
+                    it.success?.let { success ->
+                        if (success) falconNine.successes++ else falconNine.failures++
+                    }
+                    it.rocket?.successRate?.let { successRate ->
+                        falconNine.successRate = successRate
+                    }
+                }
+                RocketIds.FALCON_HEAVY -> {
+                    it.success?.let { success ->
+                        if (success) falconHeavy.successes++ else falconHeavy.failures++
+                    }
+                    it.rocket?.successRate?.let { successRate ->
+                        falconHeavy.successRate = successRate
                     }
                 }
             }
+        }
 
-            launchesList = listOf(falconOne, falconNine, falconHeavy)
+        launchesList = listOf(falconOne, falconNine, falconHeavy)
 
-            view.apply {
-                hideProgress()
-                updatePieChart(launchesList, animate)
-                setSuccessRate(launchesList, animate)
-            }
+        view.apply {
+            hideProgress()
+            updatePieChart(launchesList, animate)
+            setSuccessRate(launchesList, animate)
         }
     }
 

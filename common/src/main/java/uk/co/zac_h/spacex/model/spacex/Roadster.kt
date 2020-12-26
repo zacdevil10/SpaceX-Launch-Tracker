@@ -6,6 +6,10 @@ import kotlinx.android.parcel.Parcelize
 import uk.co.zac_h.spacex.utils.*
 import java.text.DecimalFormat
 
+data class RoadsterDocsModel(
+    @field:Json(name = "docs") val docs: List<RoadsterResponse>
+)
+
 data class RoadsterResponse(
     @field:Json(name = SPACEX_FIELD_ROADSTER_NAME) val name: String?,
     @field:Json(name = SPACEX_FIELD_ROADSTER_LAUNCH_DATE_UTC) val launchDateUtc: String?,

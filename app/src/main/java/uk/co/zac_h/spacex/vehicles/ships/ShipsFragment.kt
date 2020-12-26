@@ -18,6 +18,10 @@ import uk.co.zac_h.spacex.vehicles.adapters.ShipsAdapter
 class ShipsFragment : Fragment(), VehiclesContract.View<Ship>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
+    companion object {
+        const val TITLE = "Ships"
+    }
+
     private var binding: FragmentShipsBinding? = null
 
     private var presenter: VehiclesContract.Presenter? = null

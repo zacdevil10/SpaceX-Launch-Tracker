@@ -99,7 +99,7 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        //outState.putParcelableArrayList("launches", launchesList)
+        outState.putParcelableArrayList("launches", launchesList)
         super.onSaveInstanceState(outState)
     }
 

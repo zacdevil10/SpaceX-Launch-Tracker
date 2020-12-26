@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.PayloadWeightsResponse
+import uk.co.zac_h.spacex.model.spacex.PayloadWeights
 import uk.co.zac_h.spacex.utils.metricFormat
 
 class RocketPayloadAdapter(
     private val context: Context?,
-    private val payloads: List<PayloadWeightsResponse>
+    private val payloads: List<PayloadWeights>
 ) : RecyclerView.Adapter<RocketPayloadAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
@@ -31,8 +31,8 @@ class RocketPayloadAdapter(
             orbitType.text = payload.name
             mass.text = context?.getString(
                 R.string.mass,
-                payload.kg?.metricFormat(),
-                payload.lb?.metricFormat()
+                payload.mass?.kg?.metricFormat(),
+                payload.mass?.lb?.metricFormat()
             )
         }
     }

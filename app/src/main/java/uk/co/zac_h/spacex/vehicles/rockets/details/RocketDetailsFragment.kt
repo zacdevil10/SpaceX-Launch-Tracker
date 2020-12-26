@@ -19,7 +19,6 @@ import uk.co.zac_h.spacex.model.spacex.Rocket
 import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.setImageAndTint
 import uk.co.zac_h.spacex.vehicles.adapters.RocketPayloadAdapter
-import java.text.DecimalFormat
 
 class RocketDetailsFragment : Fragment() {
 
@@ -83,8 +82,7 @@ class RocketDetailsFragment : Fragment() {
                     )
                 }
 
-                rocketDetailsCostText.text =
-                    DecimalFormat("$#,###.00").format(it.costPerLaunch).toString()
+                rocketDetailsCostText.text = it.costPerLaunch
                 rocketDetailsSuccessText.text =
                     context?.getString(R.string.percentage, it.successRate)
                 rocketDetailsFirstFlightText.text = it.firstFlight

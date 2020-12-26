@@ -45,7 +45,7 @@ data class LaunchpadQueriedResponse(
 data class Launchpad(
     val name: String?,
     val fullName: String?,
-    val status: String?,
+    val status: PadStatus?,
     val locality: String?,
     val region: String?,
     val timezone: String?,
@@ -65,7 +65,7 @@ data class Launchpad(
     ) : this(
         name = response.name,
         fullName = response.fullName,
-        status = response.status,
+        status = response.status.toLaunchpadStatus(),
         locality = response.locality,
         region = response.region,
         timezone = response.timezone,
@@ -83,7 +83,7 @@ data class Launchpad(
     ) : this(
         name = response.name,
         fullName = response.fullName,
-        status = response.status,
+        status = response.status.toLaunchpadStatus(),
         locality = response.locality,
         region = response.region,
         timezone = response.timezone,
@@ -96,4 +96,14 @@ data class Launchpad(
         id = response.id
     )
 
+    companion object {
+        private fun String?.toLaunchpadStatus() = when (this) {
+            SPACEX_LANDING_PAD_STATUS_ACTIVE -> PadStatus.ACTIVE
+            SPACEX_LANDING_PAD_STATUS_INACTIVE -> PadStatus.INACTIVE
+            SPACEX_LANDING_PAD_STATUS_RETIRED -> PadStatus.RETIRED
+            SPACEX_LANDING_PAD_STATUS_LOST -> PadStatus.LOST
+            SPACEX_LANDING_PAD_STATUS_UNDER_CONSTRUCTION -> PadStatus.UNDER_CONSTRUCTION
+            else -> PadStatus.UNKNOWN
+        }
+    }
 }

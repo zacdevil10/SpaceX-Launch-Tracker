@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.about.history
 
-import uk.co.zac_h.spacex.model.spacex.HistoryModel
+import uk.co.zac_h.spacex.model.spacex.History
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.splitHistoryListByDate
@@ -21,7 +21,7 @@ class HistoryPresenterImpl(
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(history: List<HistoryModel>?) {
+    override fun onSuccess(history: List<History>?) {
         history?.let {
             historyHeaders.splitHistoryListByDate(it)
 

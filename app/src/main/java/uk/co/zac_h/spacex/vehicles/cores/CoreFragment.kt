@@ -20,6 +20,10 @@ class CoreFragment : Fragment(), VehiclesContract.View<Core>,
     SearchView.OnQueryTextListener,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
+    companion object {
+        const val TITLE = "Cores"
+    }
+
     private var binding: FragmentCoreBinding? = null
 
     private var presenter: VehiclesContract.Presenter? = null
