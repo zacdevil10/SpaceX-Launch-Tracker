@@ -5,7 +5,6 @@ import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 import uk.co.zac_h.spacex.utils.*
 
-//v4
 data class CoreDocsModel(
     @field:Json(name = "docs") val docs: List<CoreQueriedResponse>
 )
@@ -49,8 +48,8 @@ data class Core(
     val attemptsAsds: Int?,
     val landingsAsds: Int?,
     val lastUpdate: String?,
-    val missionIds: List<String>?,
-    val missions: List<Launch>?,
+    val launchIds: List<String>? = null,
+    val launches: List<Launch>? = null,
     val id: String
 ) : Parcelable {
 
@@ -59,15 +58,14 @@ data class Core(
     ) : this(
         serial = response.serial,
         block = response.block,
-        status = response.status?.toCoreStatus(),
+        status = response.status.toCoreStatus(),
         reuseCount = response.reuseCount,
         attemptsRtls = response.attemptsRtls,
         landingsRtls = response.landingsRtls,
         attemptsAsds = response.attemptsAsds,
         landingsAsds = response.landingsAsds,
         lastUpdate = response.lastUpdate,
-        missionIds = response.missions,
-        missions = null,
+        launchIds = response.missions,
         id = response.id
     )
 
@@ -76,36 +74,34 @@ data class Core(
     ) : this(
         serial = response.serial,
         block = response.block,
-        status = response.status?.toCoreStatus(),
+        status = response.status.toCoreStatus(),
         reuseCount = response.reuseCount,
         attemptsRtls = response.attemptsRtls,
         landingsRtls = response.landingsRtls,
         attemptsAsds = response.attemptsAsds,
         landingsAsds = response.landingsAsds,
         lastUpdate = response.lastUpdate,
-        missionIds = null,
-        missions = response.missions,
+        launches = response.missions,
         id = response.id
     )
 
     companion object {
-        private fun String.toCoreStatus() = when (this) {
+        private fun String?.toCoreStatus() = when (this) {
             SPACEX_CORE_STATUS_ACTIVE -> CoreStatus.ACTIVE
             SPACEX_CORE_STATUS_INACTIVE -> CoreStatus.INACTIVE
-            SPACEX_CORE_STATUS_UNKNOWN -> CoreStatus.UNKNOWN
             SPACEX_CORE_STATUS_EXPENDED -> CoreStatus.EXPENDED
             SPACEX_CORE_STATUS_LOST -> CoreStatus.LOST
             SPACEX_CORE_STATUS_RETIRED -> CoreStatus.RETIRED
-            else -> throw IllegalStateException()
+            else -> CoreStatus.UNKNOWN
         }
     }
 }
 
-enum class CoreStatus {
-    ACTIVE,
-    INACTIVE,
-    UNKNOWN,
-    EXPENDED,
-    LOST,
-    RETIRED
+enum class CoreStatus(val status: String) {
+    ACTIVE(SPACEX_ACTIVE),
+    INACTIVE(SPACEX_INACTIVE),
+    UNKNOWN(SPACEX_UNKNOWN),
+    EXPENDED(SPACEX_EXPENDED),
+    LOST(SPACEX_LOST),
+    RETIRED(SPACEX_RETIRED)
 }

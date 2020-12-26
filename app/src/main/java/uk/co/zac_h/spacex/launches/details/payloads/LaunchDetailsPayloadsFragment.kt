@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsPayloadsBinding
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
-import uk.co.zac_h.spacex.model.spacex.PayloadModel
+import uk.co.zac_h.spacex.model.spacex.Payload
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.View,
@@ -22,7 +22,7 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
     private var presenter: LaunchDetailsPayloadsContract.Presenter? = null
 
     private lateinit var payloadAdapter: PayloadAdapter
-    private lateinit var payloads: ArrayList<PayloadModel>
+    private lateinit var payloads: ArrayList<Payload>
 
     private var id: String? = null
 
@@ -37,7 +37,7 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
         super.onCreate(savedInstanceState)
 
         payloads =
-            savedInstanceState?.getParcelableArrayList<PayloadModel>("payloads") ?: ArrayList()
+            savedInstanceState?.getParcelableArrayList<Payload>("payloads") ?: ArrayList()
         id = arguments?.getString("id")
     }
 
@@ -90,7 +90,7 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
         binding = null
     }
 
-    override fun updatePayloadsRecyclerView(payloadsList: List<PayloadModel>?) {
+    override fun updatePayloadsRecyclerView(payloadsList: List<Payload>?) {
         payloadsList?.let {
             payloads.clear()
             payloads.addAll(it)

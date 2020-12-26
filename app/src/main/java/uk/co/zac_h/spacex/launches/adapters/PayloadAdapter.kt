@@ -9,11 +9,10 @@ import android.widget.ToggleButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.PayloadModel
+import uk.co.zac_h.spacex.model.spacex.Payload
 import uk.co.zac_h.spacex.utils.formatCustomers
-import uk.co.zac_h.spacex.utils.metricFormat
 
-class PayloadAdapter(private var context: Context?, private var payloads: List<PayloadModel>?) :
+class PayloadAdapter(private var context: Context?, private var payloads: List<Payload>?) :
     RecyclerView.Adapter<PayloadAdapter.ViewHolder>() {
 
     private var expandedPosition = 0

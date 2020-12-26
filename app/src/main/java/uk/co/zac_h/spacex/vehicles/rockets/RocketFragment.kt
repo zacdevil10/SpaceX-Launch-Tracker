@@ -10,12 +10,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentRocketBinding
-import uk.co.zac_h.spacex.model.spacex.RocketsModel
+import uk.co.zac_h.spacex.model.spacex.Rocket
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.VehiclesContract
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 
-class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
+class RocketFragment : Fragment(), VehiclesContract.View<Rocket>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var binding: FragmentRocketBinding? = null
@@ -23,7 +23,7 @@ class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
     private var presenter: VehiclesContract.Presenter? = null
 
     private lateinit var rocketsAdapter: RocketsAdapter
-    private lateinit var rocketsArray: ArrayList<RocketsModel>
+    private lateinit var rocketsArray: ArrayList<Rocket>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,7 +82,7 @@ class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
         binding = null
     }
 
-    override fun updateVehicles(vehicles: List<RocketsModel>) {
+    override fun updateVehicles(vehicles: List<Rocket>) {
         rocketsArray.clear()
         rocketsArray.addAll(vehicles)
 

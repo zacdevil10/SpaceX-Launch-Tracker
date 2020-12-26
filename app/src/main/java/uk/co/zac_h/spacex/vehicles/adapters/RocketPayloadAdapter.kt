@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.PayloadWeightsModel
+import uk.co.zac_h.spacex.model.spacex.PayloadWeightsResponse
 import uk.co.zac_h.spacex.utils.metricFormat
 
 class RocketPayloadAdapter(
     private val context: Context?,
-    private val payloads: List<PayloadWeightsModel>
+    private val payloads: List<PayloadWeightsResponse>
 ) : RecyclerView.Adapter<RocketPayloadAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =

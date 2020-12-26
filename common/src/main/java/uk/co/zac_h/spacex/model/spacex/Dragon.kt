@@ -5,9 +5,7 @@ import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 import uk.co.zac_h.spacex.utils.*
 
-// v4
-@Parcelize
-data class Dragon(
+data class DragonResponse(
     @field:Json(name = SPACEX_FIELD_DRAGON_NAME) val name: String?,
     @field:Json(name = SPACEX_FIELD_DRAGON_TYPE) val type: String?,
     @field:Json(name = SPACEX_FIELD_DRAGON_ACTIVE) val active: Boolean?,
@@ -31,36 +29,36 @@ data class Dragon(
     @field:Json(name = SPACEX_FIELD_DRAGON_WIKIPEDIA) val wikipedia: String?,
     @field:Json(name = SPACEX_FIELD_DRAGON_DESCRIPTION) val description: String?,
     @field:Json(name = SPACEX_FIELD_ID) val id: String
-) : Parcelable
+)
 
 @Parcelize
 data class HeatShieldModel(
-    @field:Json(name = SPACEX_FIELD_DRAGON_MATERIAL) val material: String,
-    @field:Json(name = SPACEX_FIELD_DRAGON_SIZE_METERS) val size: Float,
-    @field:Json(name = SPACEX_FIELD_DRAGON_TEMP_DEGREES) val temp: Int,
-    @field:Json(name = SPACEX_FIELD_DRAGON_DEV_PARTNER) val developmentPartner: String
+    @field:Json(name = SPACEX_FIELD_DRAGON_MATERIAL) val material: String?,
+    @field:Json(name = SPACEX_FIELD_DRAGON_SIZE_METERS) val size: Float?,
+    @field:Json(name = SPACEX_FIELD_DRAGON_TEMP_DEGREES) val temp: Int?,
+    @field:Json(name = SPACEX_FIELD_DRAGON_DEV_PARTNER) val developmentPartner: String?
 ) : Parcelable
 
 @Parcelize
 data class DragonThrusterConfiguration(
-    @field:Json(name = SPACEX_FIELD_DRAGON_THRUSTERS_TYPE) val type: String,
-    @field:Json(name = SPACEX_FIELD_DRAGON_THRUSTERS_AMOUNT) val amount: Int,
-    @field:Json(name = SPACEX_FIELD_DRAGON_THRUSTERS_PODS) val pods: Int,
-    @field:Json(name = SPACEX_FIELD_DRAGON_THRUSTERS_FUEL_1) val fuelType1: String,
-    @field:Json(name = SPACEX_FIELD_DRAGON_THRUSTERS_FUEL_2) val fuelType2: String,
-    @field:Json(name = SPACEX_FIELD_DRAGON_THRUSTERS_ISP) val specificImpulse: Int,
-    @field:Json(name = SPACEX_FIELD_DRAGON_THRUSTERS_THRUST) val thrust: Thrust
+    @field:Json(name = SPACEX_FIELD_DRAGON_THRUSTERS_TYPE) val type: String?,
+    @field:Json(name = SPACEX_FIELD_DRAGON_THRUSTERS_AMOUNT) val amount: Int?,
+    @field:Json(name = SPACEX_FIELD_DRAGON_THRUSTERS_PODS) val pods: Int?,
+    @field:Json(name = SPACEX_FIELD_DRAGON_THRUSTERS_FUEL_1) val fuelType1: String?,
+    @field:Json(name = SPACEX_FIELD_DRAGON_THRUSTERS_FUEL_2) val fuelType2: String?,
+    @field:Json(name = SPACEX_FIELD_DRAGON_THRUSTERS_ISP) val specificImpulse: Int?,
+    @field:Json(name = SPACEX_FIELD_DRAGON_THRUSTERS_THRUST) val thrust: Thrust?
 ) : Parcelable
 
 @Parcelize
 data class PressurizedCapsule(
-    @field:Json(name = SPACEX_FIELD_DRAGON_PAYLOAD_VOLUME) val payloadVolume: Volume
+    @field:Json(name = SPACEX_FIELD_DRAGON_PAYLOAD_VOLUME) val payloadVolume: Volume?
 ) : Parcelable
 
 @Parcelize
 data class Trunk(
-    @field:Json(name = SPACEX_FIELD_DRAGON_TRUNK_VOLUME) val trunkVolume: Volume,
-    @field:Json(name = SPACEX_FIELD_DRAGON_CARGO) val cargo: Cargo
+    @field:Json(name = SPACEX_FIELD_DRAGON_TRUNK_VOLUME) val trunkVolume: Volume?,
+    @field:Json(name = SPACEX_FIELD_DRAGON_CARGO) val cargo: Cargo?
 ) : Parcelable
 
 @Parcelize
@@ -68,3 +66,58 @@ data class Cargo(
     @field:Json(name = SPACEX_FIELD_DRAGON_SOLAR_ARRAY) val solarArray: Int?,
     @field:Json(name = SPACEX_FIELD_DRAGON_UNPRESSURIZED_CARGO) val unpressurizedCargo: Boolean?
 ) : Parcelable
+
+@Parcelize
+data class Dragon(
+    val name: String?,
+    val type: String?,
+    val active: Boolean?,
+    val crewCapacity: Int?,
+    val sidewallAngleDeg: Int?,
+    val orbitDuration: Int?,
+    val dryMass: Mass?,
+    val firstFlight: String?,
+    val heatShield: HeatShieldModel?,
+    val thrusters: List<DragonThrusterConfiguration>?,
+    val launchPayloadMass: Mass?,
+    val launchPayloadVolume: Volume?,
+    val returnPayloadMass: Mass?,
+    val returnPayloadVol: Volume?,
+    val pressurizedCapsule: PressurizedCapsule?,
+    val trunk: Trunk?,
+    val heightWithTrunk: Dimens?,
+    val diameter: Dimens?,
+    val flickr: List<String>?,
+    val wikipedia: String?,
+    val description: String?,
+    val id: String
+) : Parcelable {
+
+    constructor(
+        response: DragonResponse
+    ) : this(
+        name = response.name,
+        type = response.type,
+        active = response.active,
+        crewCapacity = response.crewCapacity,
+        sidewallAngleDeg = response.sidewallAngleDeg,
+        orbitDuration = response.orbitDuration,
+        dryMass = Mass(kg = response.dryMassKg, lb = response.dryMassLb),
+        firstFlight = response.firstFlight,
+        heatShield = response.heatShield,
+        thrusters = response.thrusters,
+        launchPayloadMass = response.launchPayloadMass,
+        launchPayloadVolume = response.launchPayloadVolume,
+        returnPayloadMass = response.returnPayloadMass,
+        returnPayloadVol = response.returnPayloadVol,
+        pressurizedCapsule = response.pressurizedCapsule,
+        trunk = response.trunk,
+        heightWithTrunk = response.heightWithTrunk,
+        diameter = response.diameter,
+        flickr = response.flickr,
+        wikipedia = response.wikipedia,
+        description = response.description,
+        id = response.id
+    )
+
+}

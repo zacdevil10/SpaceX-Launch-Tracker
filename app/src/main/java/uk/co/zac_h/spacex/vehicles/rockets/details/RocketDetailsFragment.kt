@@ -15,7 +15,7 @@ import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentRocketDetailsBinding
-import uk.co.zac_h.spacex.model.spacex.RocketsModel
+import uk.co.zac_h.spacex.model.spacex.Rocket
 import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.setImageAndTint
 import uk.co.zac_h.spacex.vehicles.adapters.RocketPayloadAdapter
@@ -25,14 +25,14 @@ class RocketDetailsFragment : Fragment() {
 
     private var binding: FragmentRocketDetailsBinding? = null
 
-    private var rocket: RocketsModel? = null
+    private var rocket: Rocket? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        rocket = arguments?.getParcelable("rocket") as RocketsModel?
+        rocket = arguments?.getParcelable("rocket") as Rocket?
     }
 
     override fun onCreateView(

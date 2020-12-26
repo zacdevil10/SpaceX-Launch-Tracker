@@ -10,68 +10,68 @@ data class LaunchDocsModel(
 )
 
 data class LaunchResponse(
-    @field:Json(name = SPACEX_FIELD_LAUNCH_FLIGHT_NUMBER) val flightNumber: Int,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_NAME) val missionName: String,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_DATE_UTC) val launchDateUtc: String,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_DATE_UNIX) val launchDateUnix: Long,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_DATE_LOCAL) val launchDateLocal: String,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_DATE_PRECISION) val datePrecision: String,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FLIGHT_NUMBER) val flightNumber: Int?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_NAME) val missionName: String?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_DATE_UTC) val launchDateUtc: String?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_DATE_UNIX) val launchDateUnix: Long?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_DATE_LOCAL) val launchDateLocal: String?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_DATE_PRECISION) val datePrecision: String?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_STATIC_FIRE_DATE_UTC) val staticFireDateUtc: String?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_STATIC_FIRE_DATE_UNIX) val staticFireDateUnix: Long?,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_TBD) val tbd: Boolean,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_NET) val net: Boolean,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_TBD) val tbd: Boolean?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_NET) val net: Boolean?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_WINDOW) val window: Int?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_ROCKET) val rocket: String?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_SUCCESS) val success: Boolean?,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_FAILURES) val failures: List<LaunchFailures>,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_UPCOMING) val upcoming: Boolean,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FAILURES) val failures: List<LaunchFailures>?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_UPCOMING) val upcoming: Boolean?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_DETAILS) val details: String?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRINGS) val fairings: Fairings?,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW) val crew: List<String>,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_SHIPS) val ships: List<String>,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_CAPSULES) val capsules: List<String>,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_PAYLOADS) val payloads: List<String>,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW) val crew: List<String>?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_SHIPS) val ships: List<String>?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CAPSULES) val capsules: List<String>?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_PAYLOADS) val payloads: List<String>?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_LAUNCHPAD) val launchpad: String?,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_CORES) val cores: List<LaunchCoreResponse>,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CORES) val cores: List<LaunchCoreResponse>?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_LINKS) val links: LaunchLinks?,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_AUTO_UPDATE) val autoUpdate: Boolean,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_AUTO_UPDATE) val autoUpdate: Boolean?,
     @field:Json(name = SPACEX_FIELD_ID) val id: String
 )
 
 data class LaunchQueriedResponse(
-    @field:Json(name = "flight_number") val flightNumber: Int?,
-    @field:Json(name = "name") val missionName: String?,
-    @field:Json(name = "date_utc") val launchDateUtc: String?,
-    @field:Json(name = "date_unix") val launchDateUnix: Long?,
-    @field:Json(name = "date_local") val launchDateLocal: String?,
-    @field:Json(name = "date_precision") val datePrecision: String?,
-    @field:Json(name = "static_fire_date_utc") val staticFireDateUtc: String?,
-    @field:Json(name = "static_fire_date_unix") val staticFireDateUnix: Long?,
-    @field:Json(name = "tbd") val tbd: Boolean?,
-    @field:Json(name = "net") val net: Boolean?,
-    @field:Json(name = "window") val window: Int?,
-    @field:Json(name = "rocket") val rocket: RocketsModel?,
-    @field:Json(name = "success") val success: Boolean?,
-    @field:Json(name = "failures") val failures: List<LaunchFailures>?,
-    @field:Json(name = "upcoming") val upcoming: Boolean?,
-    @field:Json(name = "details") val details: String?,
-    @field:Json(name = "fairings") val fairings: Fairings?,
-    @field:Json(name = "crew") val crew: List<CrewResponse>?,
-    @field:Json(name = "ships") val ships: List<Ship>?,
-    @field:Json(name = "capsules") val capsules: List<String>?,
-    @field:Json(name = "payloads") val payloads: List<PayloadModel>?,
-    @field:Json(name = "launchpad") val launchpad: LaunchpadModel?,
-    @field:Json(name = "cores") val cores: List<LaunchCoreQueriedResponse>?,
-    @field:Json(name = "links") val links: LaunchLinks?,
-    @field:Json(name = "auto_update") val autoUpdate: Boolean?,
-    @field:Json(name = "id") val id: String
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FLIGHT_NUMBER) val flightNumber: Int?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_NAME) val missionName: String?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_DATE_UTC) val launchDateUtc: String?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_DATE_UNIX) val launchDateUnix: Long?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_DATE_LOCAL) val launchDateLocal: String?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_DATE_PRECISION) val datePrecision: String?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_STATIC_FIRE_DATE_UTC) val staticFireDateUtc: String?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_STATIC_FIRE_DATE_UNIX) val staticFireDateUnix: Long?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_TBD) val tbd: Boolean?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_NET) val net: Boolean?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_WINDOW) val window: Int?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_ROCKET) val rocket: RocketResponse?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_SUCCESS) val success: Boolean?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FAILURES) val failures: List<LaunchFailures>?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_UPCOMING) val upcoming: Boolean?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_DETAILS) val details: String?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRINGS) val fairings: Fairings?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW) val crew: List<CrewResponse>?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_SHIPS) val ships: List<Ship>?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CAPSULES) val capsules: List<String>?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_PAYLOADS) val payloads: List<PayloadResponse>?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_LAUNCHPAD) val launchpad: LaunchpadResponse?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CORES) val cores: List<LaunchCoreQueriedResponse>?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_LINKS) val links: LaunchLinks?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_AUTO_UPDATE) val autoUpdate: Boolean?,
+    @field:Json(name = SPACEX_FIELD_ID) val id: String
 )
 
 @Parcelize
 data class LaunchFailures(
-    @field:Json(name = SPACEX_FIELD_LAUNCH_FAILURES_TIME) val time: Int,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_FAILURES_ALTITUDE) val altitude: Int,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_FAILURES_REASON) val reason: String
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FAILURES_TIME) val time: Int?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FAILURES_ALTITUDE) val altitude: Int?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FAILURES_REASON) val reason: String?
 ) : Parcelable
 
 @Parcelize
@@ -95,15 +95,15 @@ data class LaunchCoreResponse(
 )
 
 data class LaunchCoreQueriedResponse(
-    @field:Json(name = "core") var core: CoreQueriedResponse?,
-    @field:Json(name = "flight") var flight: Int?,
-    @field:Json(name = "gridfins") var gridfins: Boolean?,
-    @field:Json(name = "legs") var legs: Boolean?,
-    @field:Json(name = "reused") var reused: Boolean?,
-    @field:Json(name = "landing_attempt") var landingAttempt: Boolean?,
-    @field:Json(name = "landing_success") var landingSuccess: Boolean?,
-    @field:Json(name = "landing_type") var landingType: String?,
-    @field:Json(name = "landpad") var landingPad: LandingPadQueriedResponse?
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CORES_CORE) var core: CoreQueriedResponse?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CORES_FLIGHT) var flight: Int?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CORES_GRIDFINS) var gridfins: Boolean?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CORES_LEGS) var legs: Boolean?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CORES_REUSED) var reused: Boolean?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CORES_LANDING_ATTEMPT) var landingAttempt: Boolean?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CORES_LANDING_SUCCESS) var landingSuccess: Boolean?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CORES_LANDING_TYPE) var landingType: String?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CORES_LANDING_PAD) var landingPad: LandingPadQueriedResponse?
 )
 
 @Parcelize
@@ -142,17 +142,14 @@ data class MissionFlickr(
 data class Launch(
     val flightNumber: Int?,
     val missionName: String?,
-    val launchDateUtc: String?,
-    val launchDateUnix: Long?,
-    val launchDateLocal: String?,
+    val launchDate: EventDate?,
     val datePrecision: DatePrecision?,
-    val staticFireDateUtc: String?,
-    val staticFireDateUnix: Long?,
+    val staticFireDate: EventDate?,
     val tbd: Boolean?,
     val net: Boolean?,
     val window: Int?,
     val rocketId: String? = null,
-    val rocket: RocketsModel? = null,
+    val rocket: Rocket? = null,
     val success: Boolean?,
     val failures: List<LaunchFailures>?,
     val upcoming: Boolean?,
@@ -164,9 +161,9 @@ data class Launch(
     val ships: List<Ship>? = null,
     val capsules: List<String>?,
     val payloadIds: List<String>? = null,
-    val payloads: List<PayloadModel>? = null,
+    val payloads: List<Payload>? = null,
     val launchpadId: String? = null,
-    val launchpad: LaunchpadModel? = null,
+    val launchpad: Launchpad? = null,
     val cores: List<LaunchCore>?,
     val links: LaunchLinks?,
     val autoUpdate: Boolean?,
@@ -178,12 +175,16 @@ data class Launch(
     ) : this(
         flightNumber = response.flightNumber,
         missionName = response.missionName,
-        launchDateUtc = response.launchDateUtc,
-        launchDateUnix = response.launchDateUnix,
-        launchDateLocal = response.launchDateLocal,
+        launchDate = EventDate(
+            dateUtc = response.launchDateUtc,
+            dateUnix = response.launchDateUnix,
+            dateLocal = response.launchDateLocal
+        ),
         datePrecision = response.datePrecision.toDatePrecision(),
-        staticFireDateUtc = response.staticFireDateUtc,
-        staticFireDateUnix = response.staticFireDateUnix,
+        staticFireDate = EventDate(
+            dateUtc = response.staticFireDateUtc,
+            dateUnix = response.staticFireDateUnix
+        ),
         tbd = response.tbd,
         net = response.net,
         window = response.window,
@@ -198,7 +199,7 @@ data class Launch(
         capsules = response.capsules,
         payloadIds = response.payloads,
         launchpadId = response.launchpad,
-        cores = response.cores.map { LaunchCore(it) },
+        cores = response.cores?.map { LaunchCore(it) },
         links = response.links,
         autoUpdate = response.autoUpdate,
         id = response.id
@@ -209,17 +210,21 @@ data class Launch(
     ) : this(
         flightNumber = response.flightNumber,
         missionName = response.missionName,
-        launchDateUtc = response.launchDateUtc,
-        launchDateUnix = response.launchDateUnix,
-        launchDateLocal = response.launchDateLocal,
+        launchDate = EventDate(
+            dateUtc = response.launchDateUtc,
+            dateUnix = response.launchDateUnix,
+            dateLocal = response.launchDateLocal
+        ),
         datePrecision = response.datePrecision.toDatePrecision(),
-        staticFireDateUtc = response.staticFireDateUtc,
-        staticFireDateUnix = response.staticFireDateUnix,
+        staticFireDate = EventDate(
+            dateUtc = response.staticFireDateUtc,
+            dateUnix = response.staticFireDateUnix
+        ),
         tbd = response.tbd,
         net = response.net,
         window = response.window,
         rocketId = response.rocket?.id,
-        rocket = response.rocket,
+        rocket = response.rocket?.let { Rocket(it) },
         success = response.success,
         failures = response.failures,
         upcoming = response.upcoming,
@@ -228,8 +233,8 @@ data class Launch(
         crew = response.crew?.map { Crew(it) },
         ships = response.ships,
         capsules = response.capsules,
-        payloads = response.payloads,
-        launchpad = response.launchpad,
+        payloads = response.payloads?.map { Payload(it) },
+        launchpad = response.launchpad?.let { Launchpad(it) },
         cores = response.cores?.map { LaunchCore(it) },
         links = response.links,
         autoUpdate = response.autoUpdate,
@@ -295,11 +300,11 @@ data class LaunchCore(
 
 }
 
-enum class DatePrecision {
-    HALF,
-    QUARTER,
-    YEAR,
-    MONTH,
-    DAY,
-    HOUR
+enum class DatePrecision(val precision: String) {
+    HALF("yyyy"),
+    QUARTER("yyyy"),
+    YEAR("yyyy"),
+    MONTH("MMM yyyy"),
+    DAY("dd MMM yyyy"),
+    HOUR("dd MMM yy - HH:mm zzz")
 }

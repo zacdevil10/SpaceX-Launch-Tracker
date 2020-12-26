@@ -1,13 +1,13 @@
 package uk.co.zac_h.spacex.vehicles.rockets
 
-import uk.co.zac_h.spacex.model.spacex.RocketsModel
+import uk.co.zac_h.spacex.model.spacex.Rocket
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.vehicles.VehiclesContract
 
 class RocketPresenterImpl(
-    private val view: VehiclesContract.View<RocketsModel>,
-    private val interactor: VehiclesContract.Interactor<RocketsModel>
-) : VehiclesContract.Presenter, VehiclesContract.InteractorCallback<RocketsModel> {
+    private val view: VehiclesContract.View<Rocket>,
+    private val interactor: VehiclesContract.Interactor<Rocket>
+) : VehiclesContract.Presenter, VehiclesContract.InteractorCallback<Rocket> {
 
     override fun getVehicles(api: SpaceXInterface) {
         view.showProgress()
@@ -18,7 +18,7 @@ class RocketPresenterImpl(
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(vehicles: List<RocketsModel>?) {
+    override fun onSuccess(vehicles: List<Rocket>?) {
         view.apply {
             hideProgress()
             toggleSwipeRefresh(false)

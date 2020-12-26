@@ -91,13 +91,13 @@ interface SpaceXInterface {
     fun queryLaunchpads(@Body body: QueryModel): Call<LaunchpadDocsModel>
 
     @GET(SPACEX_PAYLOADS)
-    fun getPayloads(): Call<List<PayloadModel>>
+    fun getPayloads(): Call<List<Payload>>
 
     @GET(SPACEX_PAYLOADS + SPACEX_GET_BY_PARAM_ID)
-    fun getPayload(): Call<PayloadModel>
+    fun getPayload(): Call<Payload>
 
     @POST(SPACEX_PAYLOADS_QUERY)
-    fun queryPayloads(@Body body: QueryModel): Call<PayloadModel>
+    fun queryPayloads(@Body body: QueryModel): Call<Payload>
 
     @GET(SPACEX_ROADSTER)
     fun getRoadsterInfo(): Call<Any>
@@ -106,13 +106,13 @@ interface SpaceXInterface {
     fun queryRoadsterInfo(): Call<Any>
 
     @GET(SPACEX_ROCKETS)
-    fun getRockets(): Call<List<RocketsModel>>
+    fun getRockets(): Call<List<Rocket>>
 
     @GET(SPACEX_ROCKETS + SPACEX_GET_BY_PARAM_ID)
-    fun getRocket(@Path(SPACEX_PARAM_ID) id: String): Call<RocketsModel>
+    fun getRocket(@Path(SPACEX_PARAM_ID) id: String): Call<Rocket>
 
     @GET(SPACEX_ROCKETS_QUERY)
-    fun queryRockets(@Body body: QueryModel): Call<RocketsModel>
+    fun queryRockets(@Body body: QueryModel): Call<Rocket>
 
     @GET(SPACEX_SHIPS)
     fun getShips(): Call<List<Ship>>

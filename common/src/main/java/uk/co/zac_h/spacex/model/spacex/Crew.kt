@@ -5,7 +5,6 @@ import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 import uk.co.zac_h.spacex.utils.*
 
-// v4
 data class CrewDocsModel(
     @field:Json(name = "docs") val docs: List<CrewQueriedResponse>
 )
@@ -16,7 +15,7 @@ data class CrewResponse(
     @field:Json(name = SPACEX_FIELD_CREW_AGENCY) val agency: String?,
     @field:Json(name = SPACEX_FIELD_CREW_IMAGE) val image: String?,
     @field:Json(name = SPACEX_FIELD_CREW_WIKI) val wikipedia: String?,
-    @field:Json(name = SPACEX_FIELD_CREW_LAUNCHES) val launches: List<String>,
+    @field:Json(name = SPACEX_FIELD_CREW_LAUNCHES) val launches: List<String>?,
     @field:Json(name = SPACEX_FIELD_ID) val id: String
 )
 
@@ -37,8 +36,8 @@ data class Crew(
     val agency: String?,
     val image: String?,
     val wikipedia: String?,
-    val launchIds: List<String>?,
-    val launches: List<Launch>?,
+    val launchIds: List<String>? = null,
+    val launches: List<Launch>? = null,
     val id: String
 ) : Parcelable {
 
@@ -51,7 +50,6 @@ data class Crew(
         image = response.image,
         wikipedia = response.wikipedia,
         launchIds = response.launches,
-        launches = null,
         id = response.id
     )
 
@@ -63,7 +61,6 @@ data class Crew(
         agency = response.agency,
         image = response.image,
         wikipedia = response.wikipedia,
-        launchIds = null,
         launches = response.launches?.map { Launch(it) },
         id = response.id
     )
@@ -73,16 +70,14 @@ data class Crew(
             SPACEX_CREW_STATUS_ACTIVE -> CrewStatus.ACTIVE
             SPACEX_CREW_STATUS_INACTIVE -> CrewStatus.INACTIVE
             SPACEX_CREW_STATUS_RETIRED -> CrewStatus.RETIRED
-            SPACEX_CREW_STATUS_UNKNOWN -> CrewStatus.UNKNOWN
-            else -> null
+            else -> CrewStatus.UNKNOWN
         }
     }
-
 }
 
-enum class CrewStatus {
-    ACTIVE,
-    INACTIVE,
-    RETIRED,
-    UNKNOWN
+enum class CrewStatus(val status: String) {
+    ACTIVE(SPACEX_ACTIVE),
+    INACTIVE(SPACEX_INACTIVE),
+    RETIRED(SPACEX_RETIRED),
+    UNKNOWN(SPACEX_UNKNOWN)
 }
