@@ -27,13 +27,13 @@ class LandingHistoryInteractor : BaseNetwork(), LandingHistoryContract.Interacto
             )
         )
 
-        call = api.queryLaunches(query).apply {
+        /*call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess =
                     { listener.onSuccess(it.body()?.docs?.map { Launch(it) }, true) }
                 onResponseFailure = { listener.onError(it) }
             }
-        }
+        }*/
     }
 
     override fun cancelAllRequests() = terminateAll()

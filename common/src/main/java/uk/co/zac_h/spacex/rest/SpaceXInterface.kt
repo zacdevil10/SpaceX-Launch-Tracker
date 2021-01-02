@@ -79,7 +79,7 @@ interface SpaceXInterface {
     fun getLaunch(@Path(SPACEX_PARAM_ID) id: String): Call<LaunchResponse>
 
     @POST(SPACEX_LAUNCHES_QUERY)
-    fun queryLaunches(@Body body: QueryModel): Call<LaunchDocsModel>
+    suspend fun queryLaunches(@Body body: QueryModel): LaunchDocsModel
 
     @GET(SPACEX_LAUNCHPADS)
     fun getLaunchpads(): Call<List<LaunchpadResponse>>

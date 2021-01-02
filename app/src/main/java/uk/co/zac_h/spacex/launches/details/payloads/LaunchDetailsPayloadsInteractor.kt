@@ -23,14 +23,14 @@ class LaunchDetailsPayloadsInteractor : BaseNetwork(), LaunchDetailsPayloadsCont
             QueryOptionsModel(false, populateList, "", listOf("payloads"), 1000)
         )
 
-        call = api.queryLaunches(query).apply {
+        /*call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess = { response ->
                     listener.onSuccess(response.body()?.docs?.get(0)?.let { Launch(it) })
                 }
                 onResponseFailure = { listener.onError(it) }
             }
-        }
+        }*/
     }
 
     override fun cancelRequest() = terminateAll()

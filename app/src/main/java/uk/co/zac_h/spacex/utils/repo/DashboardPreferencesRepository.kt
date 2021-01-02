@@ -3,9 +3,11 @@ package uk.co.zac_h.spacex.utils.repo
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_SECTION
+import uk.co.zac_h.spacex.utils.repo.DashboardObject.PREFERENCES_SECTION
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object DashboardObj {
+object DashboardObject {
     var PREFERENCES_SECTION = ""
 
     const val PREFERENCES_NEXT_LAUNCH = "next_launch"
@@ -14,22 +16,21 @@ object DashboardObj {
     const val PREFERENCES_LATEST_NEWS = "latest_news"
 }
 
-class DashboardPreferencesRepository(private val sharedPreferences: SharedPreferences) {
+class DashboardPreferencesRepository constructor(
+    private val sharedPreferences: SharedPreferences
+) : DashboardSharedPreferencesService {
 
-    fun visible(section: String): MutableMap<String, *> = mutableMapOf(
-        section to sharedPreferences.getBoolean(
-            section,
-            true
-        )
+    override fun visible(section: String): MutableMap<String, *> = mutableMapOf(
+        section to sharedPreferences.getBoolean(section, true)
     )
 
-    private val allVisible: MutableMap<String, *>
+    override val allVisible: MutableMap<String, *>
         get() = sharedPreferences.all
 
-    private val visibleLiveData: MutableLiveData<MutableMap<String, *>> = MutableLiveData()
-    val visibleLive: LiveData<MutableMap<String, *>> get() = visibleLiveData
+    private val _visibleLiveData: MutableLiveData<MutableMap<String, *>> = MutableLiveData()
+    override val visibleLiveData: LiveData<MutableMap<String, *>> get() = _visibleLiveData
 
-    var isVisible: MutableMap<String, *> = mutableMapOf(PREFERENCES_SECTION to true)
+    override var isVisible: MutableMap<String, *> = mutableMapOf(PREFERENCES_SECTION to true)
         get() = visible(PREFERENCES_SECTION)
         set(value) {
             sharedPreferences.edit().putBoolean(
@@ -38,13 +39,13 @@ class DashboardPreferencesRepository(private val sharedPreferences: SharedPrefer
             field = value
         }
 
-    private val preferenceChangedListener =
+    override val preferenceChangedListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _, _ ->
-            visibleLiveData.value = allVisible
+            _visibleLiveData.value = allVisible
         }
 
     init {
-        visibleLiveData.value = allVisible
+        _visibleLiveData.value = allVisible
 
         sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangedListener)
     }
