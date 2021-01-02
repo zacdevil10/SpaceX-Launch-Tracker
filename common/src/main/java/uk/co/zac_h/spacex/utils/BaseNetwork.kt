@@ -9,13 +9,6 @@ import java.net.UnknownHostException
 
 open class BaseNetwork {
 
-    interface ResponseCallback<T> {
-
-        fun onSuccess(response: T, id: String)
-        fun onError()
-
-    }
-
     private val listeners: MutableSet<BaseNetworkListener> = HashSet()
 
     interface BaseNetworkListener {

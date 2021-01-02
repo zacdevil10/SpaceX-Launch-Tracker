@@ -1,141 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dashboard_next_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="8dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardElevation="4dp"
     tools:showIn="@layout/fragment_dashboard">
 
-    <data>
+    <com.google.android.material.progressindicator.ProgressIndicator
+        android:id="@+id/next_progress_indicator"
+        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="4dp"
+        android:layout_gravity="bottom"
+        app:indicatorColor="?colorSecondary"
+        app:layout_constraintBottom_toBottomOf="@id/toolbar" />
 
-        <import type="android.view.View" />
-
-        <import type="uk.co.zac_h.spacex.utils.DateUtilsKt" />
-
-        <import type="uk.co.zac_h.spacex.utils.repo.DashboardObject" />
-
-        <variable
-            name="viewModel"
-            type="uk.co.zac_h.spacex.dashboard.DashboardViewModel" />
-
-    </data>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/dashboard_next_layout"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:transitionName="@{viewModel.nextLaunch.id}"
-        android:visibility="@{viewModel.visible.get(DashboardObject.PREFERENCES_NEXT_LAUNCH) ? View.VISIBLE : View.GONE}"
-        app:cardElevation="4dp">
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp">
 
-        <com.google.android.material.progressindicator.ProgressIndicator
-            android:id="@+id/next_progress_indicator"
-            style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
+        <TextView
+            android:id="@+id/dashboard_countdown_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:elevation="4dp"
-            android:visibility="@{viewModel.nextLoading ? View.VISIBLE : View.GONE}"
-            app:indicatorColor="?colorSecondary"
-            app:layout_constraintBottom_toBottomOf="@id/toolbar" />
+            android:letterSpacing="0.1"
+            android:paddingBottom="8dp"
+            android:textAlignment="center"
+            android:textAppearance="?textAppearanceHeadline4"
+            android:textColor="?colorSecondary"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="T-43:13:23:55" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <TextView
+            android:id="@+id/dashboard_next_heading_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:paddingBottom="8dp"
+            android:text="@string/next_launch"
+            android:textAppearance="?textAppearanceHeadline5"
+            app:layout_constraintTop_toBottomOf="@id/dashboard_countdown_text" />
+
+        <TextView
+            android:id="@+id/dashboard_next_flight_no_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@id/dashboard_next_mission_patch_image"
+            app:layout_constraintTop_toBottomOf="@id/dashboard_next_heading_text"
+            tools:text="Flight 73" />
+
+        <TextView
+            android:id="@+id/dashboard_next_vehicle_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/dashboard_next_flight_no_text"
+            tools:text="Falcon 9" />
+
+        <ImageView
+            android:id="@+id/dashboard_next_mission_patch_image"
+            android:layout_width="72dp"
+            android:layout_height="0dp"
+            android:contentDescription="@string/mission_patch"
+            android:paddingEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="@id/dashboard_next_date_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/dashboard_next_heading_text"
+            tools:ignore="RtlSymmetry"
+            tools:src="@drawable/ic_check_circle_black_24dp" />
+
+        <TextView
+            android:id="@+id/dashboard_next_mission_name_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="16dp">
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textAppearance="?textAppearanceHeadline6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/dashboard_next_mission_patch_image"
+            app:layout_constraintTop_toBottomOf="@id/dashboard_next_flight_no_text"
+            tools:text="Nusantara Satu (PSN-6) / GTO-1 / Beresheet" />
 
-            <TextView
-                android:id="@+id/dashboard_countdown_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:letterSpacing="0.1"
-                android:paddingBottom="8dp"
-                android:text="@{viewModel.countdown}"
-                android:textAlignment="center"
-                android:textAppearance="?textAppearanceHeadline4"
-                android:textColor="?colorSecondary"
-                android:visibility="@{viewModel.countdown == null ? View.GONE : View.VISIBLE}"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="T-43:13:23:55" />
+        <TextView
+            android:id="@+id/dashboard_next_date_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:singleLine="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/dashboard_next_mission_patch_image"
+            app:layout_constraintTop_toBottomOf="@id/dashboard_next_mission_name_text"
+            tools:text="14 Oct 2019 - 12:35" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <TextView
-                android:id="@+id/dashboard_next_heading_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="8dp"
-                android:text="@string/next_launch"
-                android:textAppearance="?textAppearanceHeadline5"
-                android:visibility="@{viewModel.countdown == null ? View.VISIBLE : View.GONE}"
-                app:layout_constraintTop_toBottomOf="@id/dashboard_countdown_text" />
-
-            <TextView
-                android:id="@+id/dashboard_next_flight_no_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{@string/flight_number(viewModel.nextLaunch.flightNumber)}"
-                android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@id/dashboard_next_mission_patch_image"
-                app:layout_constraintTop_toBottomOf="@id/dashboard_next_heading_text"
-                tools:text="Flight 73" />
-
-            <TextView
-                android:id="@+id/dashboard_next_vehicle_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.nextLaunch.rocket.name}"
-                android:textSize="12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/dashboard_next_flight_no_text"
-                tools:text="Falcon 9" />
-
-            <ImageView
-                android:id="@+id/dashboard_next_mission_patch_image"
-                loadMissionPatch="@{viewModel.nextLaunch.links.missionPatch.patchSmall}"
-                android:layout_width="72dp"
-                android:layout_height="0dp"
-                android:contentDescription="@string/mission_patch"
-                android:paddingEnd="16dp"
-                app:layout_constraintBottom_toBottomOf="@id/dashboard_next_date_text"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dashboard_next_heading_text"
-                tools:ignore="RtlSymmetry"
-                tools:src="@drawable/ic_mission_patch" />
-
-            <TextView
-                android:id="@+id/dashboard_next_mission_name_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:ellipsize="end"
-                android:singleLine="true"
-                android:text="@{viewModel.nextLaunch.missionName}"
-                android:textAppearance="?textAppearanceHeadline6"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/dashboard_next_mission_patch_image"
-                app:layout_constraintTop_toBottomOf="@id/dashboard_next_flight_no_text"
-                tools:text="Nusantara Satu (PSN-6) / GTO-1 / Beresheet" />
-
-            <TextView
-                android:id="@+id/dashboard_next_date_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:singleLine="true"
-                android:text="@{DateUtilsKt.formatDateMillisLong(viewModel.nextLaunch.launchDate.dateUnix, viewModel.nextLaunch.datePrecision)}"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/dashboard_next_mission_patch_image"
-                app:layout_constraintTop_toBottomOf="@id/dashboard_next_mission_name_text"
-                tools:text="14 Oct 2019 - 12:35" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-</layout>
+</com.google.android.material.card.MaterialCardView>

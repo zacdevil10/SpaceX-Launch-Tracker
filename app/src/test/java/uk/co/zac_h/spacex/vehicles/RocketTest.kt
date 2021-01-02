@@ -13,7 +13,7 @@ import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 import retrofit2.mock.Calls
-import uk.co.zac_h.spacex.model.spacex.Rocket
+import uk.co.zac_h.spacex.model.spacex.RocketsModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.vehicles.rockets.RocketInteractorImpl
 import uk.co.zac_h.spacex.vehicles.rockets.RocketPresenterImpl
@@ -22,21 +22,21 @@ class RocketTest {
 
     private lateinit var mPresenter: VehiclesContract.Presenter
     private lateinit var presenter: VehiclesContract.Presenter
-    private lateinit var interactor: VehiclesContract.Interactor<Rocket>
+    private lateinit var interactor: VehiclesContract.Interactor<RocketsModel>
 
     @Mock
-    val mInteractor: VehiclesContract.Interactor<Rocket> = mock()
+    val mInteractor: VehiclesContract.Interactor<RocketsModel> = mock()
 
     @Mock
-    val mView: VehiclesContract.View<Rocket> = mock()
+    val mView: VehiclesContract.View<RocketsModel> = mock()
 
     @Mock
-    val mListener: VehiclesContract.InteractorCallback<Rocket> = mock()
+    val mListener: VehiclesContract.InteractorCallback<RocketsModel> = mock()
 
     @Mock
-    val mRocketsModel: Rocket = mock(Rocket::class.java)
+    val mRocketsModel: RocketsModel = mock(RocketsModel::class.java)
 
-    private lateinit var rocketsList: List<Rocket>
+    private lateinit var rocketsList: List<RocketsModel>
 
     inline fun <reified T : Any> mock(): T = mock(T::class.java)
 

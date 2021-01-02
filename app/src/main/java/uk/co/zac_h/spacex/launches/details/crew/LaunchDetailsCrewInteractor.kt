@@ -33,14 +33,14 @@ class LaunchDetailsCrewInteractor : BaseNetwork(), LaunchDetailsCrewContract.Int
             QueryOptionsModel(false, populateList, "", listOf("crew"), 1)
         )
 
-        /*call = api.queryLaunches(query).apply {
+        call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess = { response ->
                     listener.onSuccess(response.body()?.docs?.get(0)?.crew?.map { Crew(it) })
                 }
                 onResponseFailure = { listener.onError(it) }
             }
-        }*/
+        }
     }
 
     override fun cancelRequest() = terminateAll()

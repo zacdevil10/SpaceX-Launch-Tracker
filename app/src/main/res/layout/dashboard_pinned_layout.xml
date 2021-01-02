@@ -5,8 +5,8 @@
     android:id="@+id/dashboard_pinned_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="16dp"
     android:layout_marginTop="8dp"
+    android:layout_marginStart="16dp"
     android:layout_marginEnd="16dp"
     android:layout_marginBottom="8dp"
     app:cardElevation="4dp"
@@ -17,8 +17,8 @@
         style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
         android:elevation="4dp"
+        android:layout_gravity="bottom"
         app:indicatorColor="?colorSecondary"
         app:layout_constraintBottom_toBottomOf="@id/toolbar" />
 
@@ -52,12 +52,12 @@
             android:id="@+id/dashboard_pinned_message_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
             android:text="@string/no_pinned_launches_found_label"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="@id/dashboard_pinned_launches_recycler" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

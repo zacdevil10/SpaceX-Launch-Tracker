@@ -9,7 +9,23 @@ interface DashboardContract {
         fun updateNextLaunch(nextLaunch: Launch)
         fun updateLatestLaunch(latestLaunch: Launch)
         fun updatePinnedList(id: String, pinnedLaunch: Launch)
+        fun updateCountdown(countdown: String)
+        fun setCountdown(time: Long)
+        fun showPinnedMessage()
+        fun hidePinnedMessage()
+        fun toggleNextProgress(isShown: Boolean): Unit?
+        fun toggleLatestProgress(isShown: Boolean): Unit?
+        fun togglePinnedProgress(isShown: Boolean): Unit?
+        fun showCountdown()
+        fun hideCountdown()
+        fun showNextLaunch()
+        fun hideNextLaunch()
+        fun showLatestLaunch()
+        fun hideLatestLaunch()
+        fun showPinnedList()
+        fun hidePinnedList()
         fun toggleSwipeProgress(isRefreshing: Boolean)
+        fun showError(error: String)
     }
 
     interface DashboardPresenter {

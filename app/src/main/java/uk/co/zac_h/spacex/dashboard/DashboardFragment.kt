@@ -1,20 +1,24 @@
 package uk.co.zac_h.spacex.dashboard
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import dagger.hilt.android.AndroidEntryPoint
+import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardPinnedAdapter
@@ -22,20 +26,17 @@ import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
 import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
+import uk.co.zac_h.spacex.utils.formatDateMillisLong
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.utils.repo.DashboardObject.PREFERENCES_LATEST_NEWS
-import uk.co.zac_h.spacex.utils.repo.DashboardObject.PREFERENCES_NEXT_LAUNCH
-import uk.co.zac_h.spacex.utils.repo.DashboardObject.PREFERENCES_PINNED_LAUNCH
-import uk.co.zac_h.spacex.utils.repo.DashboardObject.PREFERENCES_PREVIOUS_LAUNCH
-import java.util.concurrent.TimeUnit
+import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_LATEST_NEWS
+import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_NEXT_LAUNCH
+import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_PINNED_LAUNCH
+import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_PREVIOUS_LAUNCH
 
-@AndroidEntryPoint
 class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    private val viewModel: DashboardViewModel by viewModels()
-
-    private lateinit var binding: FragmentDashboardBinding
+    private var binding: FragmentDashboardBinding? = null
 
     private var presenter: DashboardContract.DashboardPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
@@ -69,11 +70,10 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentDashboardBinding.inflate(inflater, container, false).apply {
-        viewModel = this@DashboardFragment.viewModel
-        lifecycleOwner = viewLifecycleOwner
-        binding = this
-    }.root
+    ): View? {
+        binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        return binding?.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -84,9 +84,9 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
             AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
                 .setOpenableLayout(drawerLayout).build()
 
-        binding.toolbar.setupWithNavController(navController, appBarConfig)
+        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
-        binding.toolbar.setOnMenuItemClickListener {
+        binding?.toolbar?.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.edit -> {
                     findNavController().navigate(R.id.action_dashboard_page_fragment_to_dashboard_edit_dialog)
@@ -96,6 +96,10 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
             }
         }
 
+        togglePinnedProgress(false)
+
+        val pinnedPrefs = (context?.applicationContext as App).pinnedPreferencesRepo
+
         pinnedSharedPreferences = PinnedSharedPreferencesHelperImpl(
             context?.getSharedPreferences("pinned", Context.MODE_PRIVATE)
         )
@@ -104,12 +108,31 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         pinnedAdapter = DashboardPinnedAdapter(context, pinnedArray)
 
-        binding.dashboardPinned.dashboardPinnedLaunchesRecycler.apply {
+        binding?.dashboardPinnedLayout?.dashboardPinnedLaunchesRecycler?.apply {
             layoutManager = LinearLayoutManager(this@DashboardFragment.context)
             adapter = pinnedAdapter
         }
 
-        viewModel.pinnedIds.observe(viewLifecycleOwner, { mode ->
+        val prefs = (context?.applicationContext as App).dashboardPreferencesRepo
+
+        prefs.visibleLive.observe(viewLifecycleOwner, { mode ->
+            mode?.let {
+                it.forEach { elements ->
+                    when (elements.key) {
+                        PREFERENCES_NEXT_LAUNCH ->
+                            presenter?.toggleNextLaunchVisibility(elements.value as Boolean)
+                        PREFERENCES_PREVIOUS_LAUNCH ->
+                            presenter?.toggleLatestLaunchVisibility(elements.value as Boolean)
+                        PREFERENCES_PINNED_LAUNCH ->
+                            presenter?.togglePinnedList(elements.value as Boolean)
+                        PREFERENCES_LATEST_NEWS -> {
+                        }
+                    }
+                }
+            }
+        })
+
+        pinnedPrefs.pinnedLive.observe(viewLifecycleOwner, { mode ->
             mode?.let {
                 it.forEach { e ->
                     if (e.key.length < 4) {
@@ -117,7 +140,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
                         return@forEach
                     }
 
-                    if (e.value) {
+                    if (e.value as Boolean) {
                         if (!pinnedKeysArray.contains(e.key)) {
                             presenter?.getSingleLaunch(e.key)
                         }
@@ -137,20 +160,11 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
             }
         })
 
-        viewModel.nextLaunch.observe(viewLifecycleOwner, {
-            it.tbd?.let { tbd ->
-                val time = (it.launchDate?.dateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
-                if (!tbd && time >= 0) {
-                    setCountdown(time)
-                } else viewModel.countdown.value = null
-            } ?: run {
-                viewModel.countdown.value = null
-            }
-        })
-
-        binding.dashboardSwipeRefresh.setOnRefreshListener {
-            viewModel.refreshing.value = true
+        binding?.dashboardSwipeRefresh?.setOnRefreshListener {
+            presenter?.getLatestLaunches()
         }
+
+        presenter?.getLatestLaunches(nextLaunchModel, latestLaunchModel)
     }
 
     override fun onStart() {
@@ -160,12 +174,12 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
     override fun onResume() {
         super.onResume()
-        binding.dashboardSwipeRefresh.isEnabled = true
+        binding?.dashboardSwipeRefresh?.isEnabled = true
     }
 
     override fun onPause() {
         super.onPause()
-        binding.dashboardSwipeRefresh.isEnabled = false
+        binding?.dashboardSwipeRefresh?.isEnabled = false
     }
 
     override fun onStop() {
@@ -174,6 +188,8 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        nextLaunchModel?.let { outState.putParcelable("next", it) }
+        latestLaunchModel?.let { outState.putParcelable("latest", it) }
         outState.putParcelableArrayList("pinned", pinnedArray)
         outState.putStringArrayList("pinned_keys", pinnedKeysArray)
         super.onSaveInstanceState(outState)
@@ -183,10 +199,40 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         super.onDestroyView()
         countdownTimer?.cancel()
         countdownTimer = null
+        presenter?.cancelRequests()
+        binding = null
     }
 
     override fun updateNextLaunch(nextLaunch: Launch) {
-        /*binding?.dashboardNext?.dashboardNextLayout?.let { card ->
+        nextLaunchModel = nextLaunch
+
+        binding?.dashboardNextLayout?.dashboardNextLayout?.transitionName = nextLaunch.id
+
+        binding?.dashboardNextLayout?.dashboardNextMissionPatchImage?.let {
+            Glide.with(this)
+                .load(nextLaunch.links?.missionPatch?.patchSmall)
+                .error(context?.let { ctx ->
+                    ContextCompat.getDrawable(ctx, R.drawable.ic_mission_patch)
+                })
+                .fallback(context?.let { ctx ->
+                    ContextCompat.getDrawable(ctx, R.drawable.ic_mission_patch)
+                })
+                .placeholder(context?.let { ctx ->
+                    ContextCompat.getDrawable(ctx, R.drawable.ic_mission_patch)
+                })
+                .into(it)
+        }
+
+        binding?.dashboardNextLayout?.dashboardNextFlightNoText?.text =
+            context?.getString(R.string.flight_number, nextLaunch.flightNumber)
+
+        binding?.dashboardNextLayout?.dashboardNextVehicleText?.text = nextLaunch.rocket?.name
+
+        binding?.dashboardNextLayout?.dashboardNextMissionNameText?.text = nextLaunch.missionName
+        binding?.dashboardNextLayout?.dashboardNextDateText?.text =
+            nextLaunch.datePrecision?.let { nextLaunch.launchDate?.dateUnix?.formatDateMillisLong(it) }
+
+        binding?.dashboardNextLayout?.dashboardNextLayout?.let { card ->
             card.setOnClickListener {
                 findNavController().navigate(
                     R.id.action_dashboard_page_fragment_to_launch_details_container_fragment,
@@ -197,11 +243,41 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
                     FragmentNavigatorExtras(card to nextLaunch.id)
                 )
             }
-        }*/
+        }
     }
 
     override fun updateLatestLaunch(latestLaunch: Launch) {
-        /*binding?.dashboardLatest?.dashboardLatestLayout?.let { card ->
+        latestLaunchModel = latestLaunch
+
+        binding?.dashboardLatestLayout?.dashboardLatestLayout?.transitionName = latestLaunch.id
+
+        binding?.dashboardLatestLayout?.dashboardLatestMissionPatchImage?.let {
+            Glide.with(this)
+                .load(latestLaunch.links?.missionPatch?.patchSmall)
+                .error(context?.let { ctx ->
+                    ContextCompat.getDrawable(ctx, R.drawable.ic_mission_patch)
+                })
+                .fallback(context?.let { ctx ->
+                    ContextCompat.getDrawable(ctx, R.drawable.ic_mission_patch)
+                })
+                .placeholder(context?.let { ctx ->
+                    ContextCompat.getDrawable(ctx, R.drawable.ic_mission_patch)
+                })
+                .into(it)
+        }
+
+        binding?.dashboardLatestLayout?.dashboardLatestFlightNoText?.text =
+            context?.getString(R.string.flight_number, latestLaunch.flightNumber)
+
+        binding?.dashboardLatestLayout?.dashboardLatestVehicleText?.text = latestLaunch.rocket?.name
+
+        binding?.dashboardLatestLayout?.dashboardLatestMissionNameText?.text =
+            latestLaunch.missionName
+
+        binding?.dashboardLatestLayout?.dashboardLatestDateText?.text =
+            latestLaunch.launchDate?.dateUnix?.formatDateMillisLong(latestLaunch.datePrecision)
+
+        binding?.dashboardLatestLayout?.dashboardLatestLayout?.let { card ->
             card.setOnClickListener {
                 findNavController().navigate(
                     R.id.action_dashboard_page_fragment_to_launch_details_container_fragment,
@@ -212,7 +288,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
                     FragmentNavigatorExtras(card to latestLaunch.id)
                 )
             }
-        }*/
+        }
     }
 
     override fun updatePinnedList(id: String, pinnedLaunch: Launch) {
@@ -227,32 +303,21 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         pinnedAdapter.notifyDataSetChanged()
     }
 
-    private fun setCountdown(time: Long) {
+    override fun setCountdown(time: Long) {
         countdownTimer?.cancel()
         countdownTimer = object : CountDownTimer(time, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                viewModel.countdown.value = String.format(
-                    "T-%02d:%02d:%02d:%02d",
-                    TimeUnit.MILLISECONDS.toDays(millisUntilFinished),
-                    TimeUnit.MILLISECONDS.toHours(millisUntilFinished) - TimeUnit.DAYS.toHours(
-                        TimeUnit.MILLISECONDS.toDays(millisUntilFinished)
-                    ),
-                    TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) - TimeUnit.HOURS.toMinutes(
-                        TimeUnit.MILLISECONDS.toHours(millisUntilFinished)
-                    ),
-                    TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) - TimeUnit.MINUTES.toSeconds(
-                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)
-                    )
-                )
+                presenter?.updateCountdown(millisUntilFinished)
             }
 
             override fun onFinish() {
                 nextLaunchModel?.links?.webcast?.let { link ->
-                    viewModel.countdown.value =
-                        requireContext().getString(R.string.watch_live_label)
-                    /*setOnClickListener {
-                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
-                    }*/
+                    binding?.dashboardNextLayout?.dashboardCountdownText?.apply {
+                        text = context.getString(R.string.watch_live_label)
+                        setOnClickListener {
+                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
+                        }
+                    }
                 }
             }
         }
@@ -260,9 +325,84 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         countdownTimer?.start()
     }
 
+    override fun updateCountdown(countdown: String) {
+        binding?.dashboardNextLayout?.dashboardCountdownText?.text = countdown
+    }
+
+    override fun showPinnedMessage() {
+        if (pinnedArray.isEmpty())
+            binding?.dashboardPinnedLayout?.dashboardPinnedMessageText?.visibility = View.VISIBLE
+    }
+
+    override fun hidePinnedMessage() {
+        binding?.dashboardPinnedLayout?.dashboardPinnedMessageText?.visibility = View.GONE
+    }
+
+    override fun toggleNextProgress(isShown: Boolean) = when {
+        isShown -> binding?.dashboardNextLayout?.nextProgressIndicator?.show()
+        else -> binding?.dashboardNextLayout?.nextProgressIndicator?.hide()
+    }
+
+    override fun toggleLatestProgress(isShown: Boolean) = when {
+        isShown -> binding?.dashboardLatestLayout?.latestProgressIndicator?.show()
+        else -> binding?.dashboardLatestLayout?.latestProgressIndicator?.hide()
+    }
+
+    override fun togglePinnedProgress(isShown: Boolean) = when {
+        isShown -> binding?.dashboardPinnedLayout?.pinnedProgressIndicator?.show()
+        else -> binding?.dashboardPinnedLayout?.pinnedProgressIndicator?.hide()
+    }
+
+    override fun showCountdown() {
+        binding?.dashboardNextLayout?.dashboardCountdownText?.visibility = View.VISIBLE
+    }
+
+    override fun hideCountdown() {
+        binding?.dashboardNextLayout?.dashboardCountdownText?.visibility = View.GONE
+    }
+
+    override fun showNextLaunch() {
+        binding?.dashboardNextLayout?.dashboardNextLayout?.visibility = View.VISIBLE
+    }
+
+    override fun hideNextLaunch() {
+        binding?.dashboardNextLayout?.dashboardNextLayout?.visibility = View.GONE
+    }
+
+    override fun showLatestLaunch() {
+        binding?.dashboardLatestLayout?.dashboardLatestLayout?.visibility = View.VISIBLE
+    }
+
+    override fun hideLatestLaunch() {
+        binding?.dashboardLatestLayout?.dashboardLatestLayout?.visibility = View.GONE
+    }
+
+    override fun showPinnedList() {
+        binding?.dashboardPinnedLayout?.dashboardPinnedCard?.visibility = View.VISIBLE
+    }
+
+    override fun hidePinnedList() {
+        binding?.dashboardPinnedLayout?.dashboardPinnedCard?.visibility = View.GONE
+    }
+
+    override fun toggleSwipeProgress(isRefreshing: Boolean) {
+        binding?.dashboardSwipeRefresh?.isRefreshing = isRefreshing
+    }
+
+    override fun showError(error: String) {
+
+    }
+
     override fun networkAvailable() {
         activity?.runOnUiThread {
-
+            binding?.let { binding ->
+                if (nextLaunchModel == null
+                    || latestLaunchModel == null
+                    || pinnedArray.isEmpty()
+                    || binding.dashboardNextLayout.nextProgressIndicator.isShown
+                    || binding.dashboardLatestLayout.latestProgressIndicator.isShown
+                ) presenter?.getLatestLaunches()
+            }
         }
     }
 }

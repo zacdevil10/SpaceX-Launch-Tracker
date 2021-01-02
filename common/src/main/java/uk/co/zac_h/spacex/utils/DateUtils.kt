@@ -10,7 +10,6 @@ private const val SECOND_MILLIS = 1000
 private const val MINUTE_MILLIS = 60 * SECOND_MILLIS
 private const val HOUR_MILLIS = 60 * MINUTE_MILLIS
 
-@JvmOverloads
 fun Long.formatDateMillisLong(precision: DatePrecision? = null): String =
     SimpleDateFormat(
         precision?.precision ?: "dd MMM yy - HH:mm zzz",

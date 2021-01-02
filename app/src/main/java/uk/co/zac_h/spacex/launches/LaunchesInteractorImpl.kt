@@ -62,14 +62,14 @@ class LaunchesInteractorImpl : BaseNetwork(), LaunchesContract.LaunchesInteracto
             )
         )
 
-        /*call = api.queryLaunches(query).apply {
+        call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess = { response ->
                     listener.onSuccess(response.body()?.docs?.map { Launch(it) })
                 }
                 onResponseFailure = { listener.onError(it) }
             }
-        }*/
+        }
     }
 
     override fun cancelAllRequests() = terminateAll()

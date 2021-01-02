@@ -67,7 +67,7 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardIntera
             )
         )
 
-        /*call = api.queryLaunches(query).apply {
+        call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess = { response ->
                     listener.onSuccess(id, response.body()?.docs?.get(0)?.let { Launch(it) })
@@ -76,7 +76,7 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardIntera
                     listener.onError(it)
                 }
             }
-        }*/
+        }
     }
 
     override fun cancelAllRequests() = terminateAll()
