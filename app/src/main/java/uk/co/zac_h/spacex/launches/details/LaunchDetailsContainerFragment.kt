@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -146,7 +147,7 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
                     }
                 }
             }
-            false
+            true
         }
     }
 
@@ -182,13 +183,13 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
     }
 
     private fun replaceFragment(fragment: Fragment): Boolean {
-        childFragmentManager
-            .beginTransaction()
-            .replace(
-                R.id.launch_details_fragment,
-                fragment
+        childFragmentManager.commit {
+            setCustomAnimations(
+                R.anim.fade_in,
+                R.anim.fade_out
             )
-            .commit()
+            replace(R.id.launch_details_fragment, fragment)
+        }
         return true
     }
 
