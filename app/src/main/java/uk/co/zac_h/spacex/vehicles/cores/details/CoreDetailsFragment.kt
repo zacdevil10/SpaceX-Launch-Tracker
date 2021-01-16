@@ -116,6 +116,8 @@ class CoreDetailsFragment : Fragment(), OnNetworkStateChangeListener.NetworkStat
                         adapter = MissionsAdapter(context, it)
                     }
                 }
+
+                progressIndicator.hide()
             }
         }
     }

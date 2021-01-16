@@ -73,7 +73,7 @@ class CrewItemFragment : Fragment() {
                         )?.let {
                             val actionBarHeight = TypedValue.complexToDimensionPixelSize(
                                 typedVal.data,
-                                context!!.resources.displayMetrics
+                                requireContext().resources.displayMetrics
                             )
 
                             itemCrewIndicator.layoutParams =

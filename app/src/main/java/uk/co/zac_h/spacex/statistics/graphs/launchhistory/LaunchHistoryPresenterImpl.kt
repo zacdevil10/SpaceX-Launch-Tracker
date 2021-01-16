@@ -72,8 +72,6 @@ class LaunchHistoryPresenterImpl(
 
         launchesList = listOf(falconOne, falconNine, falconHeavy)
 
-        println(launchesList)
-
         view.apply {
             hideProgress()
             updatePieChart(launchesList, animate)
