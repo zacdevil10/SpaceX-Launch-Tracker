@@ -16,15 +16,16 @@ class FairingRecoveryInteractor : BaseNetwork(), FairingRecoveryContract.Interac
                 false,
                 "",
                 QueryLaunchesSortByDate("asc"),
-                listOf("fairings", "date_local", "date_unix"),
+                listOf("fairings", "date_unix"),
                 1000000
             )
         )
 
         call = api.queryLaunches(query).apply {
             makeCall {
-                onResponseSuccess =
-                    { listener.onSuccess(it.body()?.docs?.map { Launch(it) }, true) }
+                onResponseSuccess = { response ->
+                    listener.onSuccess(response.body()?.docs?.map { Launch(it) }, true)
+                }
                 onResponseFailure = { listener.onError(it) }
             }
         }

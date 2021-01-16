@@ -2,6 +2,7 @@ package uk.co.zac_h.spacex.statistics.graphs.fairingrecovery
 
 import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.FairingRecoveryModel
 
 class FairingRecoveryPresenter(
@@ -24,21 +25,17 @@ class FairingRecoveryPresenter(
 
     override fun onSuccess(launches: List<Launch>?, animate: Boolean) {
         val stats = ArrayList<FairingRecoveryModel>()
-        var year = 2016
 
         launches?.forEach { launch ->
-            val newYear = launch.launchDate?.dateLocal?.substring(0, 4).toString().toIntOrNull()
-                ?: return@forEach
-            if (newYear > year) {
-                if (newYear != year++) {
-                    for (y in year until newYear) stats.add(FairingRecoveryModel(y))
-                }
-                stats.add(FairingRecoveryModel(newYear))
-                year = newYear
-            }
-            when (launch.fairings?.isRecovered) {
-                true -> stats[stats.lastIndex].successes++
-                false -> stats[stats.lastIndex].failures++
+            val year = launch.launchDate?.dateUnix?.formatDateMillisYYYY() ?: return@forEach
+
+            if (stats.none { it.year == year }) stats.add(FairingRecoveryModel(year))
+
+            val stat = stats.filter { it.year == year }[0]
+
+            when (launch.fairings?.recoveryAttempt == true && launch.fairings?.isRecovered == true) {
+                true -> stat.successes++
+                false -> stat.failures++
             }
         }
 

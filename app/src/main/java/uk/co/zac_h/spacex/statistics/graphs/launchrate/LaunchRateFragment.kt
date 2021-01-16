@@ -96,7 +96,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     e?.let {
-                        val stats = statsList[(e.x - 2006).toInt()]
+                        val stats = statsList.filter { it.year == e.x.toInt() }[0]
 
                         keys.clear()
 

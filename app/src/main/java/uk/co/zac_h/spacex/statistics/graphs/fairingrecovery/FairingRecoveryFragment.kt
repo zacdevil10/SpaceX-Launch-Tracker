@@ -94,7 +94,7 @@ class FairingRecoveryFragment : Fragment(), FairingRecoveryContract.View,
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     e?.let {
-                        val stats = statsList[(e.x - 2017).toInt()]
+                        val stats = statsList.filter { it.year == e.x.toInt() }[0]
 
                         keys.clear()
 

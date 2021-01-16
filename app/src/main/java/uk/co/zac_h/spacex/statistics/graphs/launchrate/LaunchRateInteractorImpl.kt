@@ -23,7 +23,7 @@ class LaunchRateInteractorImpl : BaseNetwork(), LaunchRateContract.LaunchRateInt
                 false,
                 populateList,
                 QueryLaunchesSortByDate("asc"),
-                listOf("rocket", "success", "upcoming", "date_local"),
+                listOf("rocket", "success", "upcoming", "date_unix"),
                 100000
             )
         )
