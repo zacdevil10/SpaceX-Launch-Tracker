@@ -89,11 +89,16 @@ class ShipDetailsFragment : Fragment() {
                     shipDetailsBuiltText.visibility = View.GONE
                 }
 
-                shipDetailsMassText.text = context?.getString(
-                    R.string.mass_formatted,
-                    it.mass?.kg?.metricFormat(),
-                    it.mass?.lb?.metricFormat()
-                )
+                it.mass?.let { mass ->
+                    shipDetailsMassText.text = context?.getString(
+                        R.string.mass_formatted,
+                        mass.kg,
+                        mass.lb
+                    )
+                } ?: run {
+                    shipDetailsMassLabel.visibility = View.GONE
+                    shipDetailsMassText.visibility = View.GONE
+                }
 
                 it.launches?.let {
                     shipDetailsMissionRecycler.apply {
@@ -101,6 +106,8 @@ class ShipDetailsFragment : Fragment() {
                         setHasFixedSize(true)
                         adapter = MissionsAdapter(context, it)
                     }
+                } ?: run {
+                    shipDetailsMissionLabel.visibility = View.GONE
                 }
 
             }

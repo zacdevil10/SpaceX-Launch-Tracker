@@ -75,7 +75,7 @@ data class Ship(
     val mmsi: Int?,
     val abs: Int?,
     val shipClass: Int?,
-    val mass: Mass?,
+    val mass: MassFormatted?,
     val yearBuilt: Int?,
     val homePort: String?,
     val status: String?,
@@ -104,7 +104,7 @@ data class Ship(
         mmsi = response.mmsi,
         abs = response.abs,
         shipClass = response.shipClass,
-        mass = Mass(kg = response.massKg, lb = response.massLbs),
+        mass = formatMass(response.massKg, response.massLbs),
         yearBuilt = response.yearBuilt,
         homePort = response.homePort,
         status = response.status,
@@ -132,7 +132,7 @@ data class Ship(
         mmsi = response.mmsi,
         abs = response.abs,
         shipClass = response.shipClass,
-        mass = Mass(kg = response.massKg, lb = response.massLbs),
+        mass = formatMass(response.massKg, response.massLbs),
         yearBuilt = response.yearBuilt,
         homePort = response.homePort,
         status = response.status,
@@ -146,5 +146,6 @@ data class Ship(
         launches = response.launches?.map { Launch(it) },
         id = response.id
     )
+
 
 }

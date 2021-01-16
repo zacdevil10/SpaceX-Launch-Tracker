@@ -17,6 +17,12 @@ data class Mass(
 ) : Parcelable
 
 @Parcelize
+data class MassFormatted(
+    val kg: String,
+    val lb: String
+) : Parcelable
+
+@Parcelize
 data class Volume(
     @field:Json(name = "cubic_meters") val cubicMeters: Int?,
     @field:Json(name = "cubic_feet") val cubicFeet: Int?
