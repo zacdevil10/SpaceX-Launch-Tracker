@@ -31,8 +31,8 @@ class RocketPayloadAdapter(
             orbitType.text = payload.name
             mass.text = context?.getString(
                 R.string.mass,
-                payload.mass?.kg?.metricFormat(),
-                payload.mass?.lb?.metricFormat()
+                payload.mass?.kg,
+                payload.mass?.lb
             )
         }
     }

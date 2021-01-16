@@ -105,8 +105,8 @@ class RocketDetailsFragment : Fragment() {
                 it.mass?.let { mass ->
                     rocketDetailsMassText.text = context?.getString(
                         R.string.mass_formatted,
-                        mass.kg?.metricFormat(),
-                        mass.lb?.metricFormat()
+                        mass.kg,
+                        mass.lb
                     )
                 }
 

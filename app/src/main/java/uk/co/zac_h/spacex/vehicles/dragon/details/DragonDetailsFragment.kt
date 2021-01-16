@@ -87,8 +87,8 @@ class DragonDetailsFragment : Fragment() {
                 dragonDetailsFirstFlightText.text = it.firstFlight
                 dragonDetailsDryMassText.text = context?.getString(
                     R.string.mass_formatted,
-                    it.dryMass?.kg?.metricFormat(),
-                    it.dryMass?.lb?.metricFormat()
+                    it.dryMass?.kg,
+                    it.dryMass?.lb
                 )
                 it.heightWithTrunk?.let { heightWithTrunk ->
                     dragonDetailsHeightText.text = context?.getString(
@@ -122,16 +122,16 @@ class DragonDetailsFragment : Fragment() {
                 it.launchPayloadMass?.let { launchPayloadMass ->
                     dragonDetailsLaunchMassText.text = context?.getString(
                         R.string.mass_formatted,
-                        launchPayloadMass.kg?.metricFormat(),
-                        launchPayloadMass.lb?.metricFormat()
+                        launchPayloadMass.kg,
+                        launchPayloadMass.lb
                     )
                 }
 
                 it.returnPayloadMass?.let { returnPayloadMass ->
                     dragonDetailsReturnMassText.text = context?.getString(
                         R.string.mass_formatted,
-                        returnPayloadMass.kg?.metricFormat(),
-                        returnPayloadMass.lb?.metricFormat()
+                        returnPayloadMass.kg,
+                        returnPayloadMass.lb
                     )
                 }
 

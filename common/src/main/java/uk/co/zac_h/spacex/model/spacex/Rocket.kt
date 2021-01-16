@@ -109,7 +109,7 @@ data class Rocket(
     val company: String?,
     val height: Dimens?,
     val diameter: Dimens?,
-    val mass: Mass?,
+    val mass: MassFormatted?,
     val payloadWeights: List<PayloadWeights>?,
     val firstStage: FirstStageResponse?,
     val secondStage: SecondStageResponse?,
@@ -136,7 +136,7 @@ data class Rocket(
         company = response.company,
         height = response.height,
         diameter = response.diameter,
-        mass = response.mass,
+        mass = formatMass(response.mass?.kg, response.mass?.lb),
         payloadWeights = response.payloadWeights?.map { PayloadWeights(it) },
         firstStage = response.firstStage,
         secondStage = response.secondStage,
@@ -154,7 +154,7 @@ data class Rocket(
 data class PayloadWeights(
     val id: String?,
     val name: String?,
-    val mass: Mass?
+    val mass: MassFormatted?
 ) : Parcelable {
 
     constructor(
@@ -162,7 +162,7 @@ data class PayloadWeights(
     ) : this(
         id = response.id,
         name = response.name,
-        mass = Mass(kg = response.kg, lb = response.lb)
+        mass = formatMass(response.kg, response.lb)
     )
 
 }

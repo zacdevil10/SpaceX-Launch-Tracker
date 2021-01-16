@@ -43,7 +43,7 @@ data class RoadsterResponse(
 data class Roadster(
     val name: String?,
     val launchDate: EventDate?,
-    val launchMass: Mass?,
+    val launchMass: MassFormatted?,
     val noradId: Int?,
     val epochJd: Int?,
     val orbitType: String?,
@@ -72,7 +72,7 @@ data class Roadster(
             dateUtc = response.launchDateUtc,
             dateUnix = response.launchDateUnix
         ),
-        launchMass = Mass(kg = response.launchMassKg, lb = response.launchMassLbs),
+        launchMass = formatMass(response.launchMassKg, response.launchMassLbs),
         noradId = response.noradId,
         epochJd = response.epochJd,
         orbitType = response.orbitType,

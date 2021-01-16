@@ -93,6 +93,7 @@ data class Payload(
     val nationalities: List<String>?,
     val manufacturers: List<String>?,
     val mass: Mass?,
+    val formattedMass: MassFormatted?,
     val orbit: String?,
     val referenceSystem: String?,
     val regime: String?,
@@ -125,6 +126,7 @@ data class Payload(
         nationalities = response.nationalities,
         manufacturers = response.manufacturers,
         mass = Mass(kg = response.massKg, lb = response.massLbs),
+        formattedMass = formatMass(response.massKg, response.massLbs),
         orbit = response.orbit,
         referenceSystem = response.referenceSystem,
         regime = response.regime,
@@ -157,6 +159,7 @@ data class Payload(
         nationalities = response.nationalities,
         manufacturers = response.manufacturers,
         mass = Mass(kg = response.massKg, lb = response.massLbs),
+        formattedMass = formatMass(response.massKg, response.massLbs),
         orbit = response.orbit,
         referenceSystem = response.referenceSystem,
         regime = response.regime,
@@ -181,7 +184,7 @@ data class Payload(
 @Parcelize
 data class PayloadDragon(
     val capsule: String?,
-    val massReturned: Mass?,
+    val massReturned: MassFormatted?,
     val flightTime: Int?,
     val manifest: String?,
     val waterLanding: Boolean?,
@@ -192,7 +195,7 @@ data class PayloadDragon(
         response: PayloadDragonResponse
     ) : this(
         capsule = response.capsule,
-        massReturned = Mass(kg = response.massReturnedKg, lb = response.massReturnedLbs),
+        massReturned = formatMass(response.massReturnedKg, response.massReturnedLbs),
         flightTime = response.flightTime,
         manifest = response.manifest,
         waterLanding = response.waterLanding,

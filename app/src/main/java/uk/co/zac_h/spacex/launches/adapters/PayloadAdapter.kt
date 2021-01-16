@@ -51,11 +51,16 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
                 payloadLifespan.visibility = View.GONE
             }
 
-            payloadMass.text = context?.getString(
-                R.string.mass,
-                payload?.mass?.kg?.metricFormat() ?: 0,
-                payload?.mass?.lb?.metricFormat() ?: 0
-            )
+            payload?.formattedMass?.let {
+                payloadMass.text = context?.getString(
+                    R.string.mass,
+                    it.kg,
+                    it.lb
+                )
+            } ?: run {
+                payloadMass.visibility = View.GONE
+                payloadMassLabel.visibility = View.GONE
+            }
 
             payload?.type?.let {
                 payloadType.text = it
@@ -171,6 +176,7 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
         //Payload labels
         val payloadLifespanLabel: TextView =
             itemView.findViewById(R.id.list_item_payload_lifespan_label)
+        val payloadMassLabel: TextView = itemView.findViewById(R.id.list_item_payload_mass_label)
         val payloadTypeLabel: TextView = itemView.findViewById(R.id.list_item_payload_type_label)
         val payloadRefSystemLabel: TextView =
             itemView.findViewById(R.id.list_item_payload_refsystem_label)
