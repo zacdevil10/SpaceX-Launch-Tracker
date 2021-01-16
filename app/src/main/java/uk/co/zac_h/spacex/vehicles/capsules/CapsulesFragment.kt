@@ -88,8 +88,10 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<Capsule>,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("capsules", capsulesArray)
-        outState.putBoolean("sort", sortNew)
+        outState.apply {
+            putParcelableArrayList("capsules", capsulesArray)
+            putBoolean("sort", sortNew)
+        }
         super.onSaveInstanceState(outState)
     }
 

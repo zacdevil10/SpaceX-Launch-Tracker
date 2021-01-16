@@ -104,7 +104,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        //outState.putParcelable("launch", launch)
+        outState.putParcelable("launch", launch)
         super.onSaveInstanceState(outState)
     }
 

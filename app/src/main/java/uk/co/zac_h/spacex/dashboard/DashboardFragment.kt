@@ -188,10 +188,12 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        nextLaunchModel?.let { outState.putParcelable("next", it) }
-        latestLaunchModel?.let { outState.putParcelable("latest", it) }
-        outState.putParcelableArrayList("pinned", pinnedArray)
-        outState.putStringArrayList("pinned_keys", pinnedKeysArray)
+        outState.apply {
+            nextLaunchModel?.let { putParcelable("next", it) }
+            latestLaunchModel?.let { putParcelable("latest", it) }
+            putParcelableArrayList("pinned", pinnedArray)
+            putStringArrayList("pinned_keys", pinnedKeysArray)
+        }
         super.onSaveInstanceState(outState)
     }
 

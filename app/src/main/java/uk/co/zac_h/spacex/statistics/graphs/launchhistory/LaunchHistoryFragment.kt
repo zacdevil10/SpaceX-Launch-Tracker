@@ -138,8 +138,10 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("launches", launchStats)
-        outState.putBoolean("filter", filterVisible)
+        outState.apply {
+            putParcelableArrayList("launches", launchStats)
+            putBoolean("filter", filterVisible)
+        }
         super.onSaveInstanceState(outState)
     }
 
