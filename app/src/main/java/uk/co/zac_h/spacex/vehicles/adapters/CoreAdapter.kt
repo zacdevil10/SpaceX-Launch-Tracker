@@ -14,6 +14,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.databinding.ListItemCoreBinding
 import uk.co.zac_h.spacex.model.spacex.Core
 import java.util.*
 import kotlin.collections.ArrayList
@@ -29,43 +30,38 @@ class CoreAdapter(private val context: Context?, private val cores: ArrayList<Co
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_core,
-                parent,
-                false
-            )
+            ListItemCoreBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val core = filteredCores[position]
 
-        holder.apply {
-            itemView.transitionName = core.id
+        holder.binding.apply {
+            listItemCoreCard.transitionName = core.id
 
-            serial.text = core.serial
-            block.text = core.block?.let { context?.getString(R.string.block, it) } ?: ""
+            listItemCoreSerial.text = core.serial
 
             core.block?.let {
-                block.text = context?.getString(R.string.block, it)
-                separator.visibility = View.VISIBLE
+                listItemCoreBlockText.text = context?.getString(R.string.block, it)
+                listItemCoreTitleSeparator.visibility = View.VISIBLE
             } ?: run {
-                block.text = ""
-                separator.visibility = View.GONE
+                listItemCoreBlockText.text = ""
+                listItemCoreTitleSeparator.visibility = View.GONE
             }
 
             core.lastUpdate?.let {
-                details.text = it
-                details.visibility = View.VISIBLE
+                listItemCoreDetails.text = it
+                listItemCoreDetails.visibility = View.VISIBLE
             } ?: run {
-                details.visibility = View.GONE
+                listItemCoreDetails.visibility = View.GONE
             }
             core.status?.let {
-                status.text = it.status
+                listItemCoreStatusText.text = it.status
             }
-            flights.text = (core.launches?.size ?: 0).toString()
+            listItemCoreFlightsText.text = (core.launches?.size ?: 0).toString()
 
-            button.setOnClickListener { bind(core) }
-            card.setOnClickListener { bind(core) }
+            listItemCoreSpecsButton.setOnClickListener { holder.bind(core) }
+            listItemCoreCard.setOnClickListener { holder.bind(core) }
         }
     }
 
@@ -107,22 +103,13 @@ class CoreAdapter(private val context: Context?, private val cores: ArrayList<Co
         }
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val card: CardView = itemView.findViewById(R.id.list_item_core_card)
-        val serial: TextView = itemView.findViewById(R.id.list_item_core_serial)
-        val separator: View = itemView.findViewById(R.id.list_item_core_title_separator)
-        val block: TextView = itemView.findViewById(R.id.list_item_core_block_text)
-        val details: TextView = itemView.findViewById(R.id.list_item_core_details)
-        val status: TextView = itemView.findViewById(R.id.list_item_core_status_text)
-        val flights: TextView = itemView.findViewById(R.id.list_item_core_flights_text)
-        val button: Button = itemView.findViewById(R.id.list_item_core_specs_button)
-
+    class ViewHolder(val binding: ListItemCoreBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(core: Core) {
-            itemView.findNavController().navigate(
+            binding.root.findNavController().navigate(
                 R.id.action_vehicles_page_fragment_to_core_details_fragment,
                 bundleOf("core" to core, "title" to core.serial),
                 null,
-                FragmentNavigatorExtras(itemView to core.id)
+                FragmentNavigatorExtras(binding.listItemCoreCard to core.id)
             )
         }
     }

@@ -9,6 +9,7 @@ import android.widget.ToggleButton
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.databinding.ListItemPayloadBinding
 import uk.co.zac_h.spacex.model.spacex.Payload
 import uk.co.zac_h.spacex.utils.formatCustomers
 import uk.co.zac_h.spacex.utils.metricFormat
@@ -20,11 +21,7 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_payload,
-                parent,
-                false
-            )
+            ListItemPayloadBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -32,108 +29,107 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
 
         val isExpanded = position == expandedPosition
 
-        holder.apply {
-            details.visibility = if (isExpanded) View.VISIBLE else View.GONE
-            itemView.isActivated = isExpanded
-            expandIndicator.isChecked = isExpanded
+        holder.binding.apply {
+            listItemPayloadDetailsLayout.visibility = if (isExpanded) View.VISIBLE else View.GONE
+            root.isActivated = isExpanded
+            listItemPayloadExpandCollapseToggle.isChecked = isExpanded
 
-            payloadName.text = payload?.name
-            payloadManufacturer.text = payload?.manufacturers?.formatCustomers()
+            listItemPayloadNameText.text = payload?.name
+            listItemPayloadManufacturerText.text = payload?.manufacturers?.formatCustomers()
 
             //Payload specs
-            payloadCustomer.text = payload?.customers?.formatCustomers()
-            payloadOrbit.text = payload?.orbit
+            listItemPayloadCustomerText.text = payload?.customers?.formatCustomers()
+            listItemPayloadOrbitText.text = payload?.orbit
 
             payload?.lifespan?.let {
-                payloadLifespan.text = it.toString()
+                listItemPayloadLifespanText.text = it.toString()
             } ?: run {
-                payloadLifespanLabel.visibility = View.GONE
-                payloadLifespan.visibility = View.GONE
+                listItemPayloadLifespanLabel.visibility = View.GONE
+                listItemPayloadLifespanText.visibility = View.GONE
             }
 
             payload?.formattedMass?.let {
-                payloadMass.text = context?.getString(
+                listItemPayloadMassText.text = context?.getString(
                     R.string.mass,
                     it.kg,
                     it.lb
                 )
             } ?: run {
-                payloadMass.visibility = View.GONE
-                payloadMassLabel.visibility = View.GONE
+                listItemPayloadMassText.visibility = View.GONE
+                listItemPayloadMassLabel.visibility = View.GONE
             }
 
             payload?.type?.let {
-                payloadType.text = it
+                listItemPayloadTypeText.text = it
             } ?: run {
-                payloadType.visibility = View.GONE
-                payloadTypeLabel.visibility = View.GONE
+                listItemPayloadTypeText.visibility = View.GONE
+                listItemPayloadTypeLabel.visibility = View.GONE
             }
 
             payload?.referenceSystem?.let {
-                payloadRefSystem.text = it
+                listItemPayloadRefsystemText.text = it
             } ?: run {
-                payloadRefSystem.visibility = View.GONE
-                payloadRefSystemLabel.visibility = View.GONE
+                listItemPayloadRefsystemText.visibility = View.GONE
+                listItemPayloadRefsystemLabel.visibility = View.GONE
             }
 
             payload?.regime?.let {
-                payloadRegime.text = it
+                listItemPayloadRegimeText.text = it
             } ?: run {
-                payloadRegime.visibility = View.GONE
-                payloadRegimeLabel.visibility = View.GONE
+                listItemPayloadRegimeText.visibility = View.GONE
+                listItemPayloadRegimeLabel.visibility = View.GONE
             }
 
             payload?.longitude?.let {
-                payloadLong.text = it.toString()
+                listItemPayloadLongText.text = it.toString()
             } ?: run {
-                payloadLong.visibility = View.GONE
-                payloadLongLabel.visibility = View.GONE
+                listItemPayloadLongText.visibility = View.GONE
+                listItemPayloadLongLabel.visibility = View.GONE
             }
 
             payload?.semiMajorAxisKm?.let {
-                payloadSemiMajor.text = it.toString()
+                listItemPayloadSemimajorText.text = it.toString()
             } ?: run {
-                payloadSemiMajor.visibility = View.GONE
-                payloadSemiMajorLabel.visibility = View.GONE
+                listItemPayloadSemimajorText.visibility = View.GONE
+                listItemPayloadSemimajorLabel.visibility = View.GONE
             }
 
-            payloadEccentricity.text = payload?.eccentricity?.toString() ?: "0"
             payload?.eccentricity?.let {
-                payloadEccentricity.text = it.toString()
+                listItemPayloadEccentricityText.text = it.toString()
             } ?: run {
-                payloadEccentricity.visibility = View.GONE
-                payloadEccentricityLabel.visibility = View.GONE
+                listItemPayloadEccentricityText.visibility = View.GONE
+                listItemPayloadEccentricityLabel.visibility = View.GONE
             }
 
             payload?.periapsisKm?.let {
-                payloadPeriapsis.text = it.toString()
+                listItemPayloadPeriapsisText.text = it.toString()
             } ?: run {
-                payloadPeriapsis.visibility = View.GONE
-                payloadPeriapsisLabel.visibility = View.GONE
+                listItemPayloadPeriapsisText.visibility = View.GONE
+                listItemPayloadPeriapsisLabel.visibility = View.GONE
             }
 
             payload?.apoapsisKm?.let {
-                payloadApoapsis.text = it.toString()
+                listItemPayloadApoapsisText.text = it.toString()
             } ?: run {
-                payloadApoapsis.visibility = View.GONE
-                payloadApoapsisLabel.visibility = View.GONE
+                listItemPayloadApoapsisText.visibility = View.GONE
+                listItemPayloadApoapsisLabel.visibility = View.GONE
             }
 
             payload?.inclination?.let {
-                payloadInclination.text = it.toString()
+                listItemPayloadInclinationText.text = it.toString()
             } ?: run {
-                payloadInclination.visibility = View.GONE
-                payloadInclinationLabel.visibility = View.GONE
+                listItemPayloadInclinationText.visibility = View.GONE
+                listItemPayloadInclinationLabel.visibility = View.GONE
             }
 
             payload?.period?.let {
-                payloadPeriod.text = it.toString()
+                listItemPayloadPeriodText.text = it.toString()
             } ?: run {
-                payloadPeriod.visibility = View.GONE
-                payloadPeriodLabel.visibility = View.GONE
+                listItemPayloadPeriodText.visibility = View.GONE
+                listItemPayloadPeriodLabel.visibility = View.GONE
             }
 
-            itemView.setOnClickListener {
+            root.setOnClickListener {
                 expandedPosition = if (isExpanded) -1 else position
                 notifyItemChanged(position)
             }
@@ -142,58 +138,5 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
 
     override fun getItemCount(): Int = payloads?.size ?: 0
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val root: ConstraintLayout = itemView.findViewById(R.id.root)
-
-        val payloadName: TextView = itemView.findViewById(R.id.list_item_payload_name_text)
-        val payloadManufacturer: TextView =
-            itemView.findViewById(R.id.list_item_payload_manufacturer_text)
-        val details: ConstraintLayout = itemView.findViewById(R.id.list_item_payload_details_layout)
-        val expandIndicator: ToggleButton =
-            itemView.findViewById(R.id.list_item_payload_expand_collapse_toggle)
-
-        //Payload specs
-        val payloadCustomer: TextView = itemView.findViewById(R.id.list_item_payload_customer_text)
-        val payloadOrbit: TextView = itemView.findViewById(R.id.list_item_payload_orbit_text)
-        val payloadLifespan: TextView = itemView.findViewById(R.id.list_item_payload_lifespan_text)
-        val payloadMass: TextView = itemView.findViewById(R.id.list_item_payload_mass_text)
-        val payloadType: TextView = itemView.findViewById(R.id.list_item_payload_type_text)
-        val payloadRefSystem: TextView =
-            itemView.findViewById(R.id.list_item_payload_refsystem_text)
-        val payloadRegime: TextView = itemView.findViewById(R.id.list_item_payload_regime_text)
-        val payloadLong: TextView = itemView.findViewById(R.id.list_item_payload_long_text)
-        val payloadSemiMajor: TextView =
-            itemView.findViewById(R.id.list_item_payload_semimajor_text)
-        val payloadEccentricity: TextView =
-            itemView.findViewById(R.id.list_item_payload_eccentricity_text)
-        val payloadPeriapsis: TextView =
-            itemView.findViewById(R.id.list_item_payload_periapsis_text)
-        val payloadApoapsis: TextView = itemView.findViewById(R.id.list_item_payload_apoapsis_text)
-        val payloadInclination: TextView =
-            itemView.findViewById(R.id.list_item_payload_inclination_text)
-        val payloadPeriod: TextView = itemView.findViewById(R.id.list_item_payload_period_text)
-
-        //Payload labels
-        val payloadLifespanLabel: TextView =
-            itemView.findViewById(R.id.list_item_payload_lifespan_label)
-        val payloadMassLabel: TextView = itemView.findViewById(R.id.list_item_payload_mass_label)
-        val payloadTypeLabel: TextView = itemView.findViewById(R.id.list_item_payload_type_label)
-        val payloadRefSystemLabel: TextView =
-            itemView.findViewById(R.id.list_item_payload_refsystem_label)
-        val payloadRegimeLabel: TextView =
-            itemView.findViewById(R.id.list_item_payload_regime_label)
-        val payloadLongLabel: TextView = itemView.findViewById(R.id.list_item_payload_long_label)
-        val payloadSemiMajorLabel: TextView =
-            itemView.findViewById(R.id.list_item_payload_semimajor_label)
-        val payloadEccentricityLabel: TextView =
-            itemView.findViewById(R.id.list_item_payload_eccentricity_label)
-        val payloadPeriapsisLabel: TextView =
-            itemView.findViewById(R.id.list_item_payload_periapsis_label)
-        val payloadApoapsisLabel: TextView =
-            itemView.findViewById(R.id.list_item_payload_apoapsis_label)
-        val payloadInclinationLabel: TextView =
-            itemView.findViewById(R.id.list_item_payload_inclination_label)
-        val payloadPeriodLabel: TextView =
-            itemView.findViewById(R.id.list_item_payload_period_label)
-    }
+    class ViewHolder(val binding: ListItemPayloadBinding) : RecyclerView.ViewHolder(binding.root)
 }

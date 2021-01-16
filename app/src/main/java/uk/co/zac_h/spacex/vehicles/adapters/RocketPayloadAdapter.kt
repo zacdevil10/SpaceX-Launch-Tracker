@@ -2,13 +2,11 @@ package uk.co.zac_h.spacex.vehicles.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.databinding.ListItemRocketPayloadBinding
 import uk.co.zac_h.spacex.model.spacex.PayloadWeights
-import uk.co.zac_h.spacex.utils.metricFormat
 
 class RocketPayloadAdapter(
     private val context: Context?,
@@ -17,19 +15,15 @@ class RocketPayloadAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_rocket_payload,
-                parent,
-                false
-            )
+            ListItemRocketPayloadBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val payload = payloads[position]
 
-        holder.apply {
-            orbitType.text = payload.name
-            mass.text = context?.getString(
+        holder.binding.apply {
+            listItemRocketPayloadOrbitTypeText.text = payload.name
+            listItemRocketPayloadMassText.text = context?.getString(
                 R.string.mass,
                 payload.mass?.kg,
                 payload.mass?.lb
@@ -39,9 +33,6 @@ class RocketPayloadAdapter(
 
     override fun getItemCount(): Int = payloads.size
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val orbitType: TextView =
-            itemView.findViewById(R.id.list_item_rocket_payload_orbit_type_text)
-        val mass: TextView = itemView.findViewById(R.id.list_item_rocket_payload_mass_text)
-    }
+    class ViewHolder(val binding: ListItemRocketPayloadBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

@@ -13,6 +13,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.databinding.ListItemVehicleBinding
 import uk.co.zac_h.spacex.model.spacex.Ship
 
 class LaunchDetailsShipsAdapter(private val ships: List<Ship>) :
@@ -20,46 +21,37 @@ class LaunchDetailsShipsAdapter(private val ships: List<Ship>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_vehicle,
-                parent, false
-            )
+            ListItemVehicleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val ship = ships[position]
 
-        holder.apply {
-            itemView.transitionName = ship.id
+        holder.binding.apply {
+            listItemVehicleCard.transitionName = ship.id
 
-            Glide.with(itemView)
+            Glide.with(root)
                 .load(ship.image)
                 .error(R.drawable.ic_baseline_error_outline_24)
-                .into(image)
+                .into(listItemVehicleImage)
 
-            title.text = ship.name
-            details.visibility = View.GONE
+            listItemVehicleTitle.text = ship.name
+            listItemVehicleDetails.visibility = View.GONE
 
-            card.setOnClickListener { bind(ship) }
-            specs.setOnClickListener { bind(ship) }
+            listItemVehicleCard.setOnClickListener { holder.bind(ship) }
+            listItemVehicleSpecsButton.setOnClickListener { holder.bind(ship) }
         }
     }
 
     override fun getItemCount(): Int = ships.size
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val card: CardView = itemView.findViewById(R.id.list_item_vehicle_card)
-        val image: ImageView = itemView.findViewById(R.id.list_item_vehicle_image)
-        val title: TextView = itemView.findViewById(R.id.list_item_vehicle_title)
-        val details: TextView = itemView.findViewById(R.id.list_item_vehicle_details)
-        val specs: Button = itemView.findViewById(R.id.list_item_vehicle_specs_button)
-
+    class ViewHolder(val binding: ListItemVehicleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(ship: Ship) {
-            itemView.findNavController().navigate(
+            binding.root.findNavController().navigate(
                 R.id.action_launch_details_container_fragment_to_ship_details_fragment,
                 bundleOf("ship" to ship),
                 null,
-                FragmentNavigatorExtras(itemView to ship.id)
+                FragmentNavigatorExtras(binding.listItemVehicleCard to ship.id)
             )
         }
     }

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.databinding.ListItemCrewMissionBinding
 import uk.co.zac_h.spacex.model.spacex.Launch
 
 class CrewLaunchAdapter(
@@ -17,26 +18,20 @@ class CrewLaunchAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_crew_mission,
-                parent,
-                false
-            )
+            ListItemCrewMissionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val launch = launches[position]
 
-        holder.apply {
-            name.text = launch.missionName
-            flight.text = context?.getString(R.string.flight_number, launch.flightNumber)
+        holder.binding.apply {
+            listItemCrewMissionNameText.text = launch.missionName
+            listItemCrewMissionFlightText.text = context?.getString(R.string.flight_number, launch.flightNumber)
         }
     }
 
     override fun getItemCount(): Int = launches.size
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val name: TextView = itemView.findViewById(R.id.list_item_crew_mission_name_text)
-        val flight: TextView = itemView.findViewById(R.id.list_item_crew_mission_flight_text)
-    }
+    class ViewHolder(val binding: ListItemCrewMissionBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

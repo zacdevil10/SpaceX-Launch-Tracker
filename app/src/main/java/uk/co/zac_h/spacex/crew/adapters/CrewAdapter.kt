@@ -19,6 +19,7 @@ import com.bumptech.glide.request.target.Target
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.crew.CrewContract
+import uk.co.zac_h.spacex.databinding.GridItemCrewBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
 
 class CrewAdapter(
@@ -29,20 +30,16 @@ class CrewAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.grid_item_crew,
-                parent,
-                false
-            )
+            GridItemCrewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val person = crew[position]
 
-        holder.apply {
-            itemView.transitionName = person.id
+        holder.binding.apply {
+            root.transitionName = person.id
 
-            Glide.with(itemView).load(person.image).listener(object : RequestListener<Drawable> {
+            Glide.with(root).load(person.image).listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
@@ -63,30 +60,28 @@ class CrewAdapter(
                     view.startTransition()
                     return false
                 }
-            }).into(image)
+            }).into(gridItemCrewImage)
 
-            title.text = person.name
+            gridItemCrewTitle.text = person.name
 
-            card.setOnClickListener {
+            gridItemCrewCard.setOnClickListener {
                 MainActivity.currentPosition = position
-                bind(person)
+                holder.bind(person)
             }
         }
     }
 
     override fun getItemCount(): Int = crew.size
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val card: CardView = itemView.findViewById(R.id.grid_item_crew_card)
-        val image: ImageView = itemView.findViewById(R.id.grid_item_crew_image)
-        val title: TextView = itemView.findViewById(R.id.grid_item_crew_title)
+    inner class ViewHolder(val binding: GridItemCrewBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(person: Crew) {
-            itemView.findNavController().navigate(
+            binding.root.findNavController().navigate(
                 R.id.action_crew_fragment_to_crew_details_fragment,
                 bundleOf("crew" to crew, "position" to adapterPosition),
                 null,
-                FragmentNavigatorExtras(itemView to person.id)
+                FragmentNavigatorExtras(binding.root to person.id)
             )
         }
     }
