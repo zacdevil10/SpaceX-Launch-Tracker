@@ -55,10 +55,9 @@ class LandingHistoryFragment : Fragment(), NetworkInterface.View<List<LandingHis
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentLandingHistoryBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentLandingHistoryBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

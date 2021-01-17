@@ -55,10 +55,9 @@ class FairingRecoveryFragment : Fragment(), NetworkInterface.View<List<FairingRe
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentFairingRecoveryBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentFairingRecoveryBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

@@ -48,10 +48,9 @@ class LaunchesListFragment : Fragment(), NetworkInterface.View<List<Launch>>,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentLaunchesListBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentLaunchesListBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

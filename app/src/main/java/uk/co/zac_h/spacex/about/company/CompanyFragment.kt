@@ -38,10 +38,9 @@ class CompanyFragment : Fragment(), NetworkInterface.View<Company>,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentCompanyBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentCompanyBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -121,10 +120,6 @@ class CompanyFragment : Fragment(), NetworkInterface.View<Company>,
 
     override fun hideProgress() {
         binding?.progressIndicator?.hide()
-    }
-
-    override fun showError(error: String) {
-
     }
 
     override fun networkAvailable() {

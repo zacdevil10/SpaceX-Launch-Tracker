@@ -38,10 +38,9 @@ class RocketFragment : Fragment(), NetworkInterface.View<List<Rocket>>,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentRocketBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentRocketBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

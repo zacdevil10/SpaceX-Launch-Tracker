@@ -57,10 +57,9 @@ class LaunchRateFragment : Fragment(), NetworkInterface.View<List<RateStatsModel
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentLaunchRateBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentLaunchRateBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

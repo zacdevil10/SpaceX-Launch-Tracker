@@ -47,10 +47,9 @@ class CapsulesFragment : Fragment(), NetworkInterface.View<List<Capsule>>,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentCapsulesBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentCapsulesBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

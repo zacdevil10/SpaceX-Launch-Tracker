@@ -38,10 +38,9 @@ class DragonFragment : Fragment(), NetworkInterface.View<List<Dragon>>,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentDragonBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentDragonBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

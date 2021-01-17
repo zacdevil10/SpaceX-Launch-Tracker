@@ -43,10 +43,9 @@ class CoreDetailsFragment : Fragment(), OnNetworkStateChangeListener.NetworkStat
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentCoreDetailsBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentCoreDetailsBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
