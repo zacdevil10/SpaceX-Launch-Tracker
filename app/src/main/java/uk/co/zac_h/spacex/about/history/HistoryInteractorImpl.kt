@@ -1,25 +1,26 @@
 package uk.co.zac_h.spacex.about.history
 
 import retrofit2.Call
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class HistoryInteractorImpl : BaseNetwork(), HistoryContract.HistoryInteractor {
+class HistoryInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<History>?> {
 
     private var call: Call<HistoryDocsModel>? = null
 
-    override fun getAllHistoricEvents(
-        order: String,
+    override fun get(
+        data: Any,
         api: SpaceXInterface,
-        listener: HistoryContract.InteractorCallback
+        listener: NetworkInterface.Callback<List<History>?>
     ) {
         val query = QueryModel(
             "",
             QueryOptionsModel(
                 false,
                 "",
-                QueryHistorySort(order),
+                QueryHistorySort(data as String),
                 "",
                 1000000
             )

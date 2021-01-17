@@ -2,8 +2,8 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/dashboard_next_layout"
-    android:layout_width="400dp"
+    android:id="@+id/dashboard_launch_layout"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
     android:layout_marginTop="8dp"
@@ -12,12 +12,10 @@
     android:clickable="true"
     android:focusable="true"
     app:cardElevation="4dp"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
     tools:showIn="@layout/fragment_dashboard">
 
     <com.google.android.material.progressindicator.ProgressIndicator
-        android:id="@+id/next_progress_indicator"
+        android:id="@+id/progress_indicator"
         style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,7 +33,7 @@
         android:layout_marginBottom="16dp">
 
         <TextView
-            android:id="@+id/dashboard_countdown_text"
+            android:id="@+id/countdown_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:letterSpacing="0.1"
@@ -48,46 +46,45 @@
             tools:text="T-43:13:23:55" />
 
         <TextView
-            android:id="@+id/dashboard_next_heading_text"
+            android:id="@+id/heading_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="8dp"
-            android:text="@string/next_launch"
             android:textAppearance="?textAppearanceHeadline5"
-            app:layout_constraintTop_toBottomOf="@id/dashboard_countdown_text" />
+            app:layout_constraintTop_toBottomOf="@id/countdown_text" />
 
         <TextView
-            android:id="@+id/dashboard_next_flight_no_text"
+            android:id="@+id/flight_no_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@id/dashboard_next_mission_patch_image"
-            app:layout_constraintTop_toBottomOf="@id/dashboard_next_heading_text"
+            app:layout_constraintStart_toEndOf="@id/mission_patch_image"
+            app:layout_constraintTop_toBottomOf="@id/heading_text"
             tools:text="Flight 73" />
 
         <TextView
-            android:id="@+id/dashboard_next_vehicle_text"
+            android:id="@+id/vehicle_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/dashboard_next_flight_no_text"
-            tools:text="Block 5" />
+            app:layout_constraintTop_toTopOf="@+id/flight_no_text"
+            tools:text="Falcon 9" />
 
         <ImageView
-            android:id="@+id/dashboard_next_mission_patch_image"
+            android:id="@+id/mission_patch_image"
             android:layout_width="72dp"
             android:layout_height="0dp"
             android:contentDescription="@string/mission_patch"
             android:paddingEnd="16dp"
-            app:layout_constraintBottom_toBottomOf="@id/dashboard_next_date_text"
+            app:layout_constraintBottom_toBottomOf="@id/date_text"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/dashboard_next_heading_text"
+            app:layout_constraintTop_toBottomOf="@id/heading_text"
             tools:ignore="RtlSymmetry"
             tools:src="@drawable/ic_check_circle_black_24dp" />
 
         <TextView
-            android:id="@+id/dashboard_next_mission_name_text"
+            android:id="@+id/mission_name_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -95,19 +92,19 @@
             android:singleLine="true"
             android:textAppearance="?textAppearanceHeadline6"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/dashboard_next_mission_patch_image"
-            app:layout_constraintTop_toBottomOf="@id/dashboard_next_flight_no_text"
+            app:layout_constraintStart_toEndOf="@id/mission_patch_image"
+            app:layout_constraintTop_toBottomOf="@id/flight_no_text"
             tools:text="Nusantara Satu (PSN-6) / GTO-1 / Beresheet" />
 
         <TextView
-            android:id="@+id/dashboard_next_date_text"
+            android:id="@+id/date_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:singleLine="true"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/dashboard_next_mission_patch_image"
-            app:layout_constraintTop_toBottomOf="@id/dashboard_next_mission_name_text"
+            app:layout_constraintStart_toEndOf="@id/mission_patch_image"
+            app:layout_constraintTop_toBottomOf="@id/mission_name_text"
             tools:text="14 Oct 2019 - 12:35" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

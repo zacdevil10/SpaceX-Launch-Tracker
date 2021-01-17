@@ -8,15 +8,15 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCapsulesBinding
 import uk.co.zac_h.spacex.model.spacex.Capsule
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.vehicles.VehiclesContract
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
 
-class CapsulesFragment : Fragment(), VehiclesContract.View<Capsule>,
+class CapsulesFragment : Fragment(), NetworkInterface.View<List<Capsule>>,
     SearchView.OnQueryTextListener,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
@@ -26,7 +26,7 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<Capsule>,
 
     private var binding: FragmentCapsulesBinding? = null
 
-    private var presenter: VehiclesContract.Presenter? = null
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
     private lateinit var capsulesAdapter: CapsulesAdapter
     private lateinit var capsulesArray: ArrayList<Capsule>
@@ -71,10 +71,10 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<Capsule>,
         }
 
         binding?.capsulesSwipeRefresh?.setOnRefreshListener {
-            presenter?.getVehicles()
+            presenter?.get()
         }
 
-        if (capsulesArray.isEmpty()) presenter?.getVehicles()
+        if (capsulesArray.isEmpty()) presenter?.get()
     }
 
     override fun onStart() {
@@ -143,9 +143,9 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<Capsule>,
         return false
     }
 
-    override fun updateVehicles(vehicles: List<Capsule>) {
+    override fun update(response: List<Capsule>) {
         capsulesArray.clear()
-        capsulesArray.addAll(if (sortNew) vehicles.reversed() else vehicles)
+        capsulesArray.addAll(if (sortNew) response.reversed() else response)
 
         binding?.capsulesRecycler?.layoutAnimation =
             AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
@@ -161,8 +161,8 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<Capsule>,
         binding?.progressIndicator?.hide()
     }
 
-    override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding?.capsulesSwipeRefresh?.isRefreshing = refreshing
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding?.capsulesSwipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {
@@ -172,7 +172,7 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<Capsule>,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (capsulesArray.isEmpty() || it.progressIndicator.isShown) presenter?.getVehicles()
+                if (capsulesArray.isEmpty() || it.progressIndicator.isShown) presenter?.get()
             }
         }
     }

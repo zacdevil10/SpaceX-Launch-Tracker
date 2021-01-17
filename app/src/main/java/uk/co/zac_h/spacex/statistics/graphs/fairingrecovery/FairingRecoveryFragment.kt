@@ -22,18 +22,19 @@ import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentFairingRecoveryBinding
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
 import uk.co.zac_h.spacex.utils.models.FairingRecoveryModel
 import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class FairingRecoveryFragment : Fragment(), FairingRecoveryContract.View,
+class FairingRecoveryFragment : Fragment(), NetworkInterface.View<List<FairingRecoveryModel>>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var binding: FragmentFairingRecoveryBinding? = null
 
-    private var presenter: FairingRecoveryContract.Presenter? = null
+    private var presenter: NetworkInterface.Presenter<List<FairingRecoveryModel>?>? = null
 
     private lateinit var statsList: ArrayList<FairingRecoveryModel>
     private lateinit var keyAdapter: StatisticsKeyAdapter
@@ -127,11 +128,7 @@ class FairingRecoveryFragment : Fragment(), FairingRecoveryContract.View,
             })
         }
 
-        if (statsList.isEmpty()) {
-            presenter?.getLaunchList()
-        } else {
-            presenter?.addLaunchList(statsList)
-        }
+        presenter?.getOrUpdate(statsList)
     }
 
     override fun onStart() {
@@ -162,14 +159,14 @@ class FairingRecoveryFragment : Fragment(), FairingRecoveryContract.View,
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.reload -> {
             statsList.clear()
-            presenter?.getLaunchList()
+            presenter?.getOrUpdate(null)
             true
         }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updateGraph(stats: List<FairingRecoveryModel>, animate: Boolean) {
-        if (statsList.isEmpty()) statsList.addAll(stats)
+    override fun update(data: Any, response: List<FairingRecoveryModel>) {
+        if (statsList.isEmpty()) statsList.addAll(response)
 
         val colors = ArrayList<Int>()
 
@@ -180,7 +177,7 @@ class FairingRecoveryFragment : Fragment(), FairingRecoveryContract.View,
 
         var max = 0f
 
-        stats.forEach {
+        response.forEach {
             val newMax = it.successes + it.failures
             if (newMax > max) max = newMax
             entries.add(
@@ -205,15 +202,15 @@ class FairingRecoveryFragment : Fragment(), FairingRecoveryContract.View,
         dataSets.add(set)
 
         binding?.statisticsBarChart?.barChart?.apply {
-            if (animate) animateY(400, Easing.Linear)
-            xAxis.labelCount = stats.size
+            if (data == true) animateY(400, Easing.Linear)
+            xAxis.labelCount = response.size
             axisLeft.apply {
                 axisMinimum = 0f
                 axisMaximum = if ((max.toInt() % 2) == 0) max else max.plus(1)
                 labelCount =
                     if ((max.toInt() % 2) == 0) max.toInt() / 2 else max.toInt().plus(1) / 2
             }
-            data = BarData(dataSets)
+            this.data = BarData(dataSets)
             invalidate()
         }
     }
@@ -226,14 +223,10 @@ class FairingRecoveryFragment : Fragment(), FairingRecoveryContract.View,
         binding?.progressIndicator?.hide()
     }
 
-    override fun showError(error: String) {
-
-    }
-
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (statsList.isEmpty() || it.progressIndicator.isShown) presenter?.getLaunchList()
+                if (statsList.isEmpty() || it.progressIndicator.isShown) presenter?.getOrUpdate(null)
             }
         }
     }

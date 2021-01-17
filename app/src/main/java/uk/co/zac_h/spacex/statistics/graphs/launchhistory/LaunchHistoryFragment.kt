@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.*
 import android.view.animation.AnimationUtils
+import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
@@ -99,9 +100,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
             presenter?.updateFilter(launchStats)
         }
 
-        presenter?.apply {
-            if (launchStats.isEmpty()) getLaunchList() else addLaunchList(launchStats)
-        }
+        presenter?.getOrUpdate(launchStats)
 
         //Pie chart appearance
         binding?.launchHistoryPieChart?.apply {
@@ -147,7 +146,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter?.cancelRequests()
+        presenter?.cancelRequest()
         binding = null
     }
 
@@ -163,14 +162,14 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
         }
         R.id.reload -> {
             launchStats.clear()
-            presenter?.getLaunchList()
+            presenter?.getOrUpdate(null)
             true
         }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updatePieChart(stats: List<HistoryStatsModel>, animate: Boolean) {
-        if (launchStats.isEmpty()) launchStats.addAll(stats)
+    override fun update(data: Any, response: List<HistoryStatsModel>) {
+        if (launchStats.isEmpty()) launchStats.addAll(response)
 
         val colors = ArrayList<Int>()
 
@@ -184,7 +183,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
         var falconNine = 0
         var falconHeavy = 0
 
-        stats.forEach {
+        response.forEach {
             when (it.rocket) {
                 RocketType.FALCON_ONE -> falconOne = when (filter) {
                     LaunchHistoryFilter.SUCCESSES -> it.successes
@@ -220,17 +219,16 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
             }
         }
 
-        val data = PieData(dataSet).apply {
+        val pieData = PieData(dataSet).apply {
             setValueTextColor(Color.WHITE)
             setValueTextSize(11f)
         }
 
         binding?.launchHistoryPieChart?.apply {
-            if (animate) animateY(1400, Easing.EaseInOutCubic)
             this.centerText = context?.getString(R.string.pie_chart_title, "2006 - 2020")
                 ?.generateCenterSpannableText()
-            this.data = data
-            invalidate()
+            this.data = pieData
+            if (data == true) animateY(1400, Easing.EaseInOutCubic) else invalidate()
         }
     }
 
@@ -238,46 +236,34 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
         stats.forEach {
             when (it.rocket) {
                 RocketType.FALCON_ONE -> {
-                    if (animate) ValueAnimator.ofInt(0, it.successRate).apply {
-                        duration = 1000
-                        addUpdateListener { valueAnim ->
-                            binding?.launchHistoryFalconOneRateProgress?.progress =
-                                valueAnim.animatedValue as Int
-                        }
-                    }.start() else binding?.launchHistoryFalconOneRateProgress?.progress =
-                        it.successRate
+                    animateProgress(animate, it.successRate, binding?.falconOneRateProgress)
 
-                    binding?.launchHistoryFalconOnePercentText?.text =
+                    binding?.falconOnePercentText?.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }
                 RocketType.FALCON_NINE -> {
-                    if (animate) ValueAnimator.ofInt(0, it.successRate).apply {
-                        duration = 1000
-                        addUpdateListener { valueAnim ->
-                            binding?.launchHistoryFalconNineRateProgress?.progress =
-                                valueAnim.animatedValue as Int
-                        }
-                    }.start() else binding?.launchHistoryFalconNineRateProgress?.progress =
-                        it.successRate
+                    animateProgress(animate, it.successRate, binding?.falconNineRateProgress)
 
-                    binding?.launchHistoryFalconNinePercentText?.text =
+                    binding?.falconNinePercentText?.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }
                 RocketType.FALCON_HEAVY -> {
-                    if (animate) ValueAnimator.ofInt(0, it.successRate).apply {
-                        duration = 1000
-                        addUpdateListener { valueAnim ->
-                            binding?.launchHistoryFalconHeavyRateProgress?.progress =
-                                valueAnim.animatedValue as Int
-                        }
-                    }.start() else binding?.launchHistoryFalconHeavyRateProgress?.progress =
-                        it.successRate
+                    animateProgress(animate, it.successRate, binding?.falconHeavyRateProgress)
 
-                    binding?.launchHistoryFalconHeavyPercentText?.text =
+                    binding?.falconHeavyPercentText?.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }
             }
         }
+    }
+
+    private fun animateProgress(animate: Boolean, successRate: Int, progressBar: ProgressBar?) {
+        if (animate) ValueAnimator.ofInt(0, successRate).apply {
+            duration = 1000
+            addUpdateListener { valueAnim ->
+                progressBar?.progress = valueAnim.animatedValue as Int
+            }
+        }.start() else progressBar?.progress = successRate
     }
 
     override fun toggleFilterVisibility(filterVisible: Boolean) {
@@ -325,7 +311,9 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (launchStats.isEmpty() || it.progressIndicator.isShown) presenter?.getLaunchList()
+                if (launchStats.isEmpty() || it.progressIndicator.isShown) presenter?.getOrUpdate(
+                    null
+                )
             }
         }
     }

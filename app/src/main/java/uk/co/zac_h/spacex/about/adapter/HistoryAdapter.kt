@@ -5,11 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.about.history.HistoryContract
+import uk.co.zac_h.spacex.about.history.HistoryView
 import uk.co.zac_h.spacex.databinding.ListItemHistoryEventBinding
 import uk.co.zac_h.spacex.databinding.ListItemHistoryHeadingBinding
 import uk.co.zac_h.spacex.utils.formatDateMillisDDMMM
@@ -18,7 +16,7 @@ import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 class HistoryAdapter(
     private var context: Context,
     private var events: ArrayList<HistoryHeaderModel>,
-    private var view: HistoryContract.HistoryView
+    private var view: HistoryView
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -48,7 +46,7 @@ class HistoryAdapter(
         val event = events[position]
 
         when (holder) {
-            is ViewHolder -> holder.binding.apply {
+            is ViewHolder -> with(holder.binding) {
                 listItemHistoryLineBottom.visibility =
                     if (position == events.size - 1) View.INVISIBLE else View.VISIBLE
 
@@ -97,7 +95,7 @@ class HistoryAdapter(
                     }
                 }
             }
-            is HeaderViewHolder -> holder.binding.apply {
+            is HeaderViewHolder -> with(holder.binding) {
                 listItemHistoryLineTop.visibility =
                     if (position == 0) View.INVISIBLE else View.VISIBLE
 

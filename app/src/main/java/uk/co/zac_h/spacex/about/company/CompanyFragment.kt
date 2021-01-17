@@ -13,16 +13,17 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCompanyBinding
 import uk.co.zac_h.spacex.model.spacex.Company
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class CompanyFragment : Fragment(), CompanyContract.CompanyView,
+class CompanyFragment : Fragment(), NetworkInterface.View<Company>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var binding: FragmentCompanyBinding? = null
 
-    private var presenter: CompanyContract.CompanyPresenter? = null
+    private var presenter: NetworkInterface.Presenter<Company?>? = null
 
     private var companyInfo: Company? = null
 
@@ -57,9 +58,7 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
 
         presenter = CompanyPresenterImpl(this, CompanyInteractorImpl())
 
-        companyInfo?.let {
-            presenter?.getCompanyInfo(it)
-        } ?: presenter?.getCompanyInfo()
+        presenter?.getOrUpdate(companyInfo)
     }
 
     override fun onResume() {
@@ -85,30 +84,30 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
         binding = null
     }
 
-    override fun updateCompanyInfo(company: Company) {
-        companyInfo = company
+    override fun update(response: Company) {
+        companyInfo = response
         binding?.apply {
-            company.headquarters?.let {
+            response.headquarters?.let {
                 companyAddressText.text =
                     context?.getString(R.string.address, it.address, it.city, it.state)
             }
 
-            companyWebsiteButton.setOnClickListener { openWebLink(company.website) }
-            companyTwitterButton.setOnClickListener { openWebLink(company.twitter) }
-            companyAlbumButton.setOnClickListener { openWebLink(company.flickr) }
+            companyWebsiteButton.setOnClickListener { openWebLink(response.website) }
+            companyTwitterButton.setOnClickListener { openWebLink(response.twitter) }
+            companyAlbumButton.setOnClickListener { openWebLink(response.flickr) }
 
-            companySummaryText.text = company.summary
+            companySummaryText.text = response.summary
             companyFoundedText.text =
-                context?.getString(R.string.founded, company.founder, company.founded)
-            companyCeoText.text = company.ceo
-            companyCtoText.text = company.cto
-            companyCooText.text = company.coo
-            companyCtoProText.text = company.ctoPropulsion
-            companyValuationText.text = company.valuation
-            companyEmployeesText.text = company.employees.toString()
-            companyVehiclesText.text = company.vehicles.toString()
-            companyLaunchSitesText.text = company.launchSites.toString()
-            companyTestSitesText.text = company.testSites.toString()
+                context?.getString(R.string.founded, response.founder, response.founded)
+            companyCeoText.text = response.ceo
+            companyCtoText.text = response.cto
+            companyCooText.text = response.coo
+            companyCtoProText.text = response.ctoPropulsion
+            companyValuationText.text = response.valuation
+            companyEmployeesText.text = response.employees.toString()
+            companyVehiclesText.text = response.vehicles.toString()
+            companyLaunchSitesText.text = response.launchSites.toString()
+            companyTestSitesText.text = response.testSites.toString()
         }
     }
 
@@ -130,7 +129,7 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (companyInfo == null) presenter?.getCompanyInfo()
+            if (companyInfo == null) presenter?.getOrUpdate(null)
         }
     }
 

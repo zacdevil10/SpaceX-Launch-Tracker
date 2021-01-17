@@ -8,15 +8,15 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
 import uk.co.zac_h.spacex.model.spacex.Core
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.vehicles.VehiclesContract
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
 
-class CoreFragment : Fragment(), VehiclesContract.View<Core>,
+class CoreFragment : Fragment(), NetworkInterface.View<List<Core>>,
     SearchView.OnQueryTextListener,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
@@ -26,7 +26,7 @@ class CoreFragment : Fragment(), VehiclesContract.View<Core>,
 
     private var binding: FragmentCoreBinding? = null
 
-    private var presenter: VehiclesContract.Presenter? = null
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
     private lateinit var coreAdapter: CoreAdapter
     private lateinit var coresArray: ArrayList<Core>
@@ -70,10 +70,10 @@ class CoreFragment : Fragment(), VehiclesContract.View<Core>,
         }
 
         binding?.coreSwipeRefresh?.setOnRefreshListener {
-            presenter?.getVehicles()
+            presenter?.get()
         }
 
-        if (coresArray.isEmpty()) presenter?.getVehicles()
+        if (coresArray.isEmpty()) presenter?.get()
     }
 
     override fun onStart() {
@@ -140,9 +140,9 @@ class CoreFragment : Fragment(), VehiclesContract.View<Core>,
         return false
     }
 
-    override fun updateVehicles(vehicles: List<Core>) {
+    override fun update(response: List<Core>) {
         coresArray.clear()
-        coresArray.addAll(if (sortNew) vehicles.reversed() else vehicles)
+        coresArray.addAll(if (sortNew) response.reversed() else response)
 
         binding?.coreRecycler?.layoutAnimation =
             AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
@@ -158,8 +158,8 @@ class CoreFragment : Fragment(), VehiclesContract.View<Core>,
         binding?.progressIndicator?.hide()
     }
 
-    override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding?.coreSwipeRefresh?.isRefreshing = refreshing
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding?.coreSwipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {
@@ -169,8 +169,7 @@ class CoreFragment : Fragment(), VehiclesContract.View<Core>,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (coresArray.isEmpty() || it.progressIndicator.isShown)
-                    presenter?.getVehicles()
+                if (coresArray.isEmpty() || it.progressIndicator.isShown) presenter?.get()
             }
         }
     }

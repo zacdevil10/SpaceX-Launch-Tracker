@@ -1,17 +1,18 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
 import retrofit2.Call
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class LaunchRateInteractorImpl : BaseNetwork(), LaunchRateContract.LaunchRateInteractor {
+class LaunchRateInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<Launch>?> {
 
     private var call: Call<LaunchDocsModel>? = null
 
-    override fun getLaunches(
+    override fun get(
         api: SpaceXInterface,
-        listener: LaunchRateContract.InteractorCallback
+        listener: NetworkInterface.Callback<List<Launch>?>
     ) {
         val populateList = listOf(
             QueryPopulateModel("rocket", populate = "", select = listOf("id"))
@@ -31,7 +32,7 @@ class LaunchRateInteractorImpl : BaseNetwork(), LaunchRateContract.LaunchRateInt
         call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess = { response ->
-                    listener.onSuccess(response.body()?.docs?.map { Launch(it) }, true)
+                    listener.onSuccess(true, response.body()?.docs?.map { Launch(it) })
                 }
                 onResponseFailure = { listener.onError(it) }
             }

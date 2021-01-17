@@ -1,25 +1,27 @@
 package uk.co.zac_h.spacex.launches.details.ships
 
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.Launch
+import uk.co.zac_h.spacex.model.spacex.Ship
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class LaunchDetailsShipsPresenter(
-    private val view: LaunchDetailsShipsContract.View,
-    private val interactor: LaunchDetailsShipsContract.Interactor
-) : LaunchDetailsShipsContract.Presenter, LaunchDetailsShipsContract.InteractorCallback {
+    private val view: NetworkInterface.View<List<Ship>>,
+    private val interactor: NetworkInterface.Interactor<Launch?>
+) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<Launch?> {
 
-    override fun getShips(id: String, api: SpaceXInterface) {
+    override fun get(data: Any, api: SpaceXInterface) {
         view.showProgress()
-        interactor.getShips(id, api, this)
+        interactor.get(data, api, this)
     }
 
-    override fun cancelRequest() = interactor.cancelRequest()
+    override fun cancelRequest() = interactor.cancelAllRequests()
 
-    override fun onSuccess(launch: Launch?) {
-        launch?.ships?.let {
-            view.updateShipsRecyclerView(it)
+    override fun onSuccess(response: Launch?) {
+        response?.ships?.let {
+            view.update(it)
+            view.hideProgress()
         }
-        view.hideProgress()
     }
 
     override fun onError(error: String) {

@@ -1,27 +1,30 @@
 package uk.co.zac_h.spacex.crew
 
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class CrewPresenterImpl(
-    private val view: CrewContract.CrewView,
-    private val interactor: CrewContract.CrewInteractor
-) : CrewContract.CrewPresenter, CrewContract.InteractorCallback {
+    private val view: CrewView,
+    private val interactor: NetworkInterface.Interactor<List<Crew>?>
+) : NetworkInterface.Presenter<List<Crew>?>, NetworkInterface.Callback<List<Crew>?> {
 
-    override fun getCrew(api: SpaceXInterface) {
+    override fun get(api: SpaceXInterface) {
         view.showProgress()
-        interactor.getCrew(api, this)
+        interactor.get(api, this)
     }
 
     override fun cancelRequest() {
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(crew: List<Crew>?) {
-        view.apply {
-            hideProgress()
-            toggleSwipeRefresh(false)
-            crew?.let { updateCrew(it) }
+    override fun onSuccess(response: List<Crew>?) {
+        response?.let {
+            view.apply {
+                hideProgress()
+                toggleSwipeRefresh(false)
+                update(it)
+            }
         }
     }
 

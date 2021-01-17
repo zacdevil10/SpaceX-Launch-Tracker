@@ -1,32 +1,31 @@
 package uk.co.zac_h.spacex.statistics.graphs.landinghistory
 
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.LandingHistoryModel
 
 class LandingHistoryPresenter(
-    private val view: LandingHistoryContract.View,
-    private val interactor: LandingHistoryContract.Interactor
-) : LandingHistoryContract.Presenter, LandingHistoryContract.Callback {
+    private val view: NetworkInterface.View<List<LandingHistoryModel>>,
+    private val interactor: NetworkInterface.Interactor<List<Launch>?>
+) : NetworkInterface.Presenter<List<LandingHistoryModel>?>, NetworkInterface.Callback<List<Launch>?> {
 
-    override fun getLaunchList(api: SpaceXInterface) {
-        view.showProgress()
-        interactor.getLaunches(api, this)
+    override fun getOrUpdate(response: List<LandingHistoryModel>?, api: SpaceXInterface) {
+        if (response.isNullOrEmpty()) {
+            view.showProgress()
+            interactor.get(api, this)
+        } else view.update(false, response)
     }
 
-    override fun addLaunchList(stats: List<LandingHistoryModel>) {
-        view.updateGraph(stats, false)
-    }
-
-    override fun cancelRequests() {
+    override fun cancelRequest() {
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(launches: List<Launch>?, animate: Boolean) {
+    override fun onSuccess(data: Any, response: List<Launch>?) {
         val stats = ArrayList<LandingHistoryModel>()
 
-        launches?.forEach { launch ->
+        response?.forEach { launch ->
             val year = launch.launchDate?.dateUnix?.formatDateMillisYYYY() ?: return@forEach
 
             if (stats.none { it.year == year }) stats.add(LandingHistoryModel(year))
@@ -47,7 +46,7 @@ class LandingHistoryPresenter(
 
         view.apply {
             hideProgress()
-            updateGraph(stats, animate)
+            update(data, stats)
         }
     }
 

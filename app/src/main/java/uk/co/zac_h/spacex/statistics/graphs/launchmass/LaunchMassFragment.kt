@@ -173,11 +173,7 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
             })
         }
 
-        if (statsList.isEmpty()) {
-            presenter?.getLaunchList()
-        } else {
-            presenter?.addLaunchList(statsList)
-        }
+        presenter?.getOrUpdate(statsList)
     }
 
     override fun onStart() {
@@ -218,14 +214,14 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
         }
         R.id.reload -> {
             statsList.clear()
-            presenter?.getLaunchList()
+            presenter?.getOrUpdate(null)
             true
         }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updateData(mass: ArrayList<LaunchMassStatsModel>, animate: Boolean) {
-        if (statsList.isEmpty()) statsList.addAll(mass)
+    override fun update(data: Any, response: List<LaunchMassStatsModel>) {
+        if (statsList.isEmpty()) statsList.addAll(response)
 
         binding?.statisticsBarChart?.key?.visibility = View.GONE
 
@@ -259,7 +255,7 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
         var max = 0f
         var c = 0
 
-        mass.forEach {
+        response.forEach {
             val newMax = when (filterRocket) {
                 RocketType.FALCON_ONE -> it.falconOne.total
                 RocketType.FALCON_NINE -> it.falconNine.total
@@ -345,7 +341,7 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
         binding?.statisticsBarChart?.barChart?.apply {
             onTouchListener.setLastHighlighted(null)
             highlightValues(null)
-            if (animate) animateY(400, Easing.Linear)
+            if (data == true) animateY(400, Easing.Linear)
             xAxis.labelCount = c
             axisLeft.apply {
                 axisMinimum = 0f
@@ -353,7 +349,7 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
                 labelCount =
                     if ((max.toInt() % 2) == 0) max.toInt() / 2 else max.toInt().plus(1) / 2
             }
-            data = BarData(dataSets)
+            this.data = BarData(dataSets)
             invalidate()
         }
     }
@@ -419,7 +415,7 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (statsList.isEmpty() || it.progressIndicator.isShown) presenter?.getLaunchList()
+                if (statsList.isEmpty() || it.progressIndicator.isShown) presenter?.getOrUpdate(null)
             }
         }
     }

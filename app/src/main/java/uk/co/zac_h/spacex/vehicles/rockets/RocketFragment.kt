@@ -9,13 +9,13 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentRocketBinding
 import uk.co.zac_h.spacex.model.spacex.Rocket
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.vehicles.VehiclesContract
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 
-class RocketFragment : Fragment(), VehiclesContract.View<Rocket>,
+class RocketFragment : Fragment(), NetworkInterface.View<List<Rocket>>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     companion object {
@@ -24,7 +24,7 @@ class RocketFragment : Fragment(), VehiclesContract.View<Rocket>,
 
     private var binding: FragmentRocketBinding? = null
 
-    private var presenter: VehiclesContract.Presenter? = null
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
     private lateinit var rocketsAdapter: RocketsAdapter
     private lateinit var rocketsArray: ArrayList<Rocket>
@@ -59,10 +59,10 @@ class RocketFragment : Fragment(), VehiclesContract.View<Rocket>,
         }
 
         binding?.rocketSwipeRefresh?.setOnRefreshListener {
-            presenter?.getVehicles()
+            presenter?.get()
         }
 
-        if (rocketsArray.isEmpty()) presenter?.getVehicles()
+        if (rocketsArray.isEmpty()) presenter?.get()
     }
 
     override fun onStart() {
@@ -86,9 +86,9 @@ class RocketFragment : Fragment(), VehiclesContract.View<Rocket>,
         binding = null
     }
 
-    override fun updateVehicles(vehicles: List<Rocket>) {
+    override fun update(response: List<Rocket>) {
         rocketsArray.clear()
-        rocketsArray.addAll(vehicles)
+        rocketsArray.addAll(response)
 
         binding?.rocketRecycler?.layoutAnimation =
             AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
@@ -104,8 +104,8 @@ class RocketFragment : Fragment(), VehiclesContract.View<Rocket>,
         binding?.progressIndicator?.hide()
     }
 
-    override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding?.rocketSwipeRefresh?.isRefreshing = refreshing
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding?.rocketSwipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {
@@ -116,7 +116,7 @@ class RocketFragment : Fragment(), VehiclesContract.View<Rocket>,
         activity?.runOnUiThread {
             binding?.let {
                 if (rocketsArray.isEmpty() || it.progressIndicator.isShown)
-                    presenter?.getVehicles()
+                    presenter?.get()
             }
         }
     }

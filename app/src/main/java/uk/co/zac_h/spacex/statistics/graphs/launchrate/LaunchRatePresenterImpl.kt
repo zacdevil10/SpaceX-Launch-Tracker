@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.RocketIds
@@ -7,29 +8,25 @@ import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.RateStatsModel
 
 class LaunchRatePresenterImpl(
-    private val view: LaunchRateContract.LaunchRateView,
-    private val interactor: LaunchRateContract.LaunchRateInteractor
-) : LaunchRateContract.LaunchRatePresenter, LaunchRateContract.InteractorCallback {
+    private val view: NetworkInterface.View<List<RateStatsModel>>,
+    private val interactor: NetworkInterface.Interactor<List<Launch>?>
+) : NetworkInterface.Presenter<List<RateStatsModel>?>, NetworkInterface.Callback<List<Launch>?> {
 
-    override fun getLaunchList(api: SpaceXInterface) {
-        view.showProgress()
-        interactor.getLaunches(api, this)
+    override fun getOrUpdate(response: List<RateStatsModel>?, api: SpaceXInterface) {
+        if (response.isNullOrEmpty()) {
+            view.showProgress()
+            interactor.get(api, this)
+        } else view.update(false, response)
     }
 
-    override fun addLaunchList(launches: List<RateStatsModel>) {
-        view.updateBarChart(launches, false)
-    }
-
-    override fun cancelRequests() {
+    override fun cancelRequest() {
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(launches: List<Launch>?, animate: Boolean) {
+    override fun onSuccess(data: Any, response: List<Launch>?) {
         val rateStatsList = ArrayList<RateStatsModel>()
 
-        println(launches)
-
-        launches?.forEach { launch ->
+        response?.forEach { launch ->
             val year = launch.launchDate?.dateUnix?.formatDateMillisYYYY() ?: return@forEach
 
             if (rateStatsList.none { it.year == year }) rateStatsList.add(RateStatsModel(year))
@@ -66,7 +63,7 @@ class LaunchRatePresenterImpl(
 
         view.apply {
             hideProgress()
-            updateBarChart(rateStatsList, animate)
+            update(data, rateStatsList)
         }
     }
 

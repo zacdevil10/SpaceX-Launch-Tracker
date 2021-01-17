@@ -8,17 +8,18 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsShipsBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchDetailsShipsAdapter
 import uk.co.zac_h.spacex.model.spacex.Ship
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
+class LaunchDetailsShipsFragment : Fragment(), NetworkInterface.View<List<Ship>>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var binding: FragmentLaunchDetailsShipsBinding? = null
 
-    private var presenter: LaunchDetailsShipsContract.Presenter? = null
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
     private lateinit var shipsAdapter: LaunchDetailsShipsAdapter
     private lateinit var shipsArray: ArrayList<Ship>
@@ -64,7 +65,7 @@ class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
         }
 
         if (shipsArray.isEmpty()) id?.let {
-            presenter?.getShips(it)
+            presenter?.get(it)
         }
     }
 
@@ -89,9 +90,9 @@ class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
         binding = null
     }
 
-    override fun updateShipsRecyclerView(ships: List<Ship>) {
+    override fun update(response: List<Ship>) {
         shipsArray.clear()
-        shipsArray.addAll(ships)
+        shipsArray.addAll(response)
 
         shipsAdapter.notifyDataSetChanged()
     }
@@ -111,7 +112,7 @@ class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             id?.let {
-                if (shipsArray.isEmpty()) presenter?.getShips(it)
+                if (shipsArray.isEmpty()) presenter?.get(it)
             }
         }
     }

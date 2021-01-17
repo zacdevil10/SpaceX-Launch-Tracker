@@ -1,32 +1,31 @@
 package uk.co.zac_h.spacex.statistics.graphs.fairingrecovery
 
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.FairingRecoveryModel
 
 class FairingRecoveryPresenter(
-    private val view: FairingRecoveryContract.View,
-    private val interactor: FairingRecoveryContract.Interactor
-) : FairingRecoveryContract.Presenter, FairingRecoveryContract.Callback {
+    private val view: NetworkInterface.View<List<FairingRecoveryModel>>,
+    private val interactor: NetworkInterface.Interactor<List<Launch>?>
+) : NetworkInterface.Presenter<List<FairingRecoveryModel>?>, NetworkInterface.Callback<List<Launch>?> {
 
-    override fun getLaunchList(api: SpaceXInterface) {
-        view.showProgress()
-        interactor.getLaunches(api, this)
+    override fun getOrUpdate(response: List<FairingRecoveryModel>?, api: SpaceXInterface) {
+        if (response.isNullOrEmpty()) {
+            view.showProgress()
+            interactor.get(api, this)
+        } else view.update(false, response)
     }
 
-    override fun addLaunchList(stats: List<FairingRecoveryModel>) {
-        view.updateGraph(stats, false)
-    }
-
-    override fun cancelRequests() {
+    override fun cancelRequest() {
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(launches: List<Launch>?, animate: Boolean) {
+    override fun onSuccess(data: Any, response: List<Launch>?) {
         val stats = ArrayList<FairingRecoveryModel>()
 
-        launches?.forEach { launch ->
+        response?.forEach { launch ->
             val year = launch.launchDate?.dateUnix?.formatDateMillisYYYY() ?: return@forEach
 
             if (stats.none { it.year == year }) stats.add(FairingRecoveryModel(year))
@@ -41,7 +40,7 @@ class FairingRecoveryPresenter(
 
         view.apply {
             hideProgress()
-            updateGraph(stats, animate)
+            update(data, stats)
         }
     }
 

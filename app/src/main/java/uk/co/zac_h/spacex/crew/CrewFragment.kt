@@ -16,17 +16,18 @@ import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class CrewFragment : Fragment(), CrewContract.CrewView,
+class CrewFragment : Fragment(), CrewView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var binding: FragmentCrewBinding? = null
 
-    private var presenter: CrewContract.CrewPresenter? = null
+    private var presenter: NetworkInterface.Presenter<List<Crew>?>? = null
 
     private lateinit var crewAdapter: CrewAdapter
     private lateinit var crewArray: ArrayList<Crew>
@@ -75,10 +76,10 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
         postponeEnterTransition()
 
         binding?.crewSwipeRefresh?.setOnRefreshListener {
-            presenter?.getCrew()
+            presenter?.get()
         }
 
-        if (crewArray.isEmpty()) presenter?.getCrew()
+        if (crewArray.isEmpty()) presenter?.get()
     }
 
     private fun prepareTransitions() {
@@ -89,12 +90,12 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
                 names: MutableList<String>?,
                 sharedElements: MutableMap<String, View>?
             ) {
-                val selectedViewHolder: RecyclerView.ViewHolder? =
+                val selectedViewHolder: RecyclerView.ViewHolder =
                     binding?.crewRecycler?.findViewHolderForAdapterPosition(MainActivity.currentPosition)
                         ?: return
 
                 names?.get(0)?.let { name ->
-                    selectedViewHolder?.itemView?.let { itemView ->
+                    selectedViewHolder.itemView.let { itemView ->
                         sharedElements?.put(
                             name,
                             itemView.findViewById(R.id.grid_item_crew_constraint)
@@ -130,9 +131,9 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
         binding = null
     }
 
-    override fun updateCrew(crew: List<Crew>) {
+    override fun update(response: List<Crew>) {
         crewArray.clear()
-        crewArray.addAll(crew)
+        crewArray.addAll(response)
 
         crewAdapter.notifyDataSetChanged()
     }
@@ -145,8 +146,8 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
         binding?.crewProgressBar?.hide()
     }
 
-    override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding?.crewSwipeRefresh?.isRefreshing = refreshing
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding?.crewSwipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {
@@ -156,7 +157,7 @@ class CrewFragment : Fragment(), CrewContract.CrewView,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (crewArray.isEmpty() || it.crewProgressBar.isShown) presenter?.getCrew()
+                if (crewArray.isEmpty() || it.crewProgressBar.isShown) presenter?.get()
             }
         }
     }

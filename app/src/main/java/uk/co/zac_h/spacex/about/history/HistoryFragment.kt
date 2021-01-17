@@ -14,6 +14,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentHistoryBinding
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
@@ -21,12 +22,12 @@ import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.utils.views.HeaderItemDecoration
 
-class HistoryFragment : Fragment(), HistoryContract.HistoryView,
+class HistoryFragment : Fragment(), HistoryView,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var binding: FragmentHistoryBinding? = null
 
-    private var presenter: HistoryContract.HistoryPresenter? = null
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
     private lateinit var history: ArrayList<HistoryHeaderModel>
     private lateinit var historyAdapter: HistoryAdapter
@@ -99,11 +100,11 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
         }
 
         binding?.historySwipeRefresh?.setOnRefreshListener {
-            presenter?.getHistory(sortNew)
+            presenter?.get(sortNew)
         }
 
         if (history.isEmpty()) {
-            presenter?.getHistory(sortNew)
+            presenter?.get(sortNew)
         }
     }
 
@@ -140,7 +141,7 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
                 if (!sortNew) {
                     sortNew = true
                     orderSharedPreferences.setSortOrder("history", sortNew)
-                    presenter?.getHistory(sortNew)
+                    presenter?.get(sortNew)
                 }
                 true
             }
@@ -148,16 +149,16 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
                 if (sortNew) {
                     sortNew = false
                     orderSharedPreferences.setSortOrder("history", sortNew)
-                    presenter?.getHistory(sortNew)
+                    presenter?.get(sortNew)
                 }
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
 
-    override fun addHistory(history: ArrayList<HistoryHeaderModel>) {
-        this.history.clear()
-        this.history.addAll(history)
+    override fun update(response: ArrayList<HistoryHeaderModel>) {
+        history.clear()
+        history.addAll(response)
 
         historyAdapter.notifyDataSetChanged()
 
@@ -179,7 +180,7 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
         binding?.progressIndicator?.hide()
     }
 
-    override fun toggleSwipeProgress(isRefreshing: Boolean) {
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
         binding?.historySwipeRefresh?.isRefreshing = isRefreshing
     }
 
@@ -191,7 +192,7 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
         activity?.runOnUiThread {
             binding?.let {
                 if (history.isEmpty() || it.progressIndicator.isShown)
-                    presenter?.getHistory(sortNew)
+                    presenter?.get(sortNew)
             }
         }
     }

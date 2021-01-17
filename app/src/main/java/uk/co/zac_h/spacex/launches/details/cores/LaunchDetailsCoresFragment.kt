@@ -8,17 +8,18 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCoresBinding
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.model.spacex.LaunchCore
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
+class LaunchDetailsCoresFragment : Fragment(), NetworkInterface.View<List<LaunchCore>>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var binding: FragmentLaunchDetailsCoresBinding? = null
 
-    private var presenter: LaunchDetailsCoresContract.Presenter? = null
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
     private lateinit var coresAdapter: FirstStageAdapter
     private lateinit var cores: ArrayList<LaunchCore>
@@ -62,7 +63,7 @@ class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
         }
 
         if (cores.isEmpty()) id?.let {
-            presenter?.getLaunch(it)
+            presenter?.get(it)
         }
     }
 
@@ -87,13 +88,11 @@ class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
         binding = null
     }
 
-    override fun updateCoresRecyclerView(coresList: List<LaunchCore>?) {
-        coresList?.let {
-            cores.clear()
-            cores.addAll(it)
+    override fun update(response: List<LaunchCore>) {
+        cores.clear()
+        cores.addAll(response)
 
-            coresAdapter.notifyDataSetChanged()
-        }
+        coresAdapter.notifyDataSetChanged()
     }
 
     override fun showProgress() {
@@ -111,7 +110,7 @@ class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             id?.let {
-                if (cores.isEmpty()) presenter?.getLaunch(it)
+                if (cores.isEmpty()) presenter?.get(it)
             }
         }
     }

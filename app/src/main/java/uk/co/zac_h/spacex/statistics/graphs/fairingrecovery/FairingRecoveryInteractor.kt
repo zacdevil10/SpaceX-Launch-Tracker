@@ -1,15 +1,16 @@
 package uk.co.zac_h.spacex.statistics.graphs.fairingrecovery
 
 import retrofit2.Call
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class FairingRecoveryInteractor : BaseNetwork(), FairingRecoveryContract.Interactor {
+class FairingRecoveryInteractor : BaseNetwork(), NetworkInterface.Interactor<List<Launch>?> {
 
     private var call: Call<LaunchDocsModel>? = null
 
-    override fun getLaunches(api: SpaceXInterface, listener: FairingRecoveryContract.Callback) {
+    override fun get(api: SpaceXInterface, listener: NetworkInterface.Callback<List<Launch>?>) {
         val query = QueryModel(
             QueryFairingRecovery(true),
             QueryOptionsModel(
@@ -24,7 +25,7 @@ class FairingRecoveryInteractor : BaseNetwork(), FairingRecoveryContract.Interac
         call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess = { response ->
-                    listener.onSuccess(response.body()?.docs?.map { Launch(it) }, true)
+                    listener.onSuccess(true, response.body()?.docs?.map { Launch(it) })
                 }
                 onResponseFailure = { listener.onError(it) }
             }

@@ -9,17 +9,18 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsPayloadsBinding
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
 import uk.co.zac_h.spacex.model.spacex.Payload
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.View,
+class LaunchDetailsPayloadsFragment : Fragment(), NetworkInterface.View<List<Payload>>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var binding: FragmentLaunchDetailsPayloadsBinding? = null
 
-    private var presenter: LaunchDetailsPayloadsContract.Presenter? = null
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
     private lateinit var payloadAdapter: PayloadAdapter
     private lateinit var payloads: ArrayList<Payload>
@@ -66,7 +67,7 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
         }
 
         if (payloads.isEmpty()) id?.let {
-            presenter?.getLaunch(it)
+            presenter?.get(it)
         }
     }
 
@@ -90,9 +91,9 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
         binding = null
     }
 
-    override fun updatePayloadsRecyclerView(payloads: List<Payload>) {
-        this.payloads.clear()
-        this.payloads.addAll(payloads)
+    override fun update(response: List<Payload>) {
+        payloads.clear()
+        payloads.addAll(response)
 
         payloadAdapter.notifyDataSetChanged()
     }
@@ -112,7 +113,7 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
     override fun networkAvailable() {
         activity?.runOnUiThread {
             id?.let {
-                if (payloads.isEmpty()) presenter?.getLaunch(it)
+                if (payloads.isEmpty()) presenter?.get(it)
             }
         }
     }

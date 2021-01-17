@@ -22,18 +22,19 @@ import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLandingHistoryBinding
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
 import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.LandingHistoryModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LandingHistoryFragment : Fragment(), LandingHistoryContract.View,
+class LandingHistoryFragment : Fragment(), NetworkInterface.View<List<LandingHistoryModel>>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var binding: FragmentLandingHistoryBinding? = null
 
-    private var presenter: LandingHistoryContract.Presenter? = null
+    private var presenter: NetworkInterface.Presenter<List<LandingHistoryModel>?>? = null
 
     private lateinit var statsList: ArrayList<LandingHistoryModel>
     private lateinit var keyAdapter: StatisticsKeyAdapter
@@ -124,11 +125,7 @@ class LandingHistoryFragment : Fragment(), LandingHistoryContract.View,
             })
         }
 
-        if (statsList.isEmpty()) {
-            presenter?.getLaunchList()
-        } else {
-            presenter?.addLaunchList(statsList)
-        }
+        presenter?.getOrUpdate(statsList)
     }
 
     override fun onStart() {
@@ -159,14 +156,14 @@ class LandingHistoryFragment : Fragment(), LandingHistoryContract.View,
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.reload -> {
             statsList.clear()
-            presenter?.getLaunchList()
+            presenter?.getOrUpdate(null)
             true
         }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updateGraph(stats: List<LandingHistoryModel>, animate: Boolean) {
-        if (statsList.isEmpty()) statsList.addAll(stats)
+    override fun update(data: Any, response: List<LandingHistoryModel>) {
+        if (statsList.isEmpty()) statsList.addAll(response)
 
         val colors = ArrayList<Int>()
 
@@ -179,7 +176,7 @@ class LandingHistoryFragment : Fragment(), LandingHistoryContract.View,
 
         var max = 0f
 
-        stats.forEach {
+        response.forEach {
             val newMax = it.ocean + it.asds + it.rtls + it.failures
             if (newMax > max) max = newMax
             entries.add(
@@ -206,15 +203,15 @@ class LandingHistoryFragment : Fragment(), LandingHistoryContract.View,
         dataSets.add(set)
 
         binding?.statisticsBarChart?.barChart?.apply {
-            if (animate) animateY(400, Easing.Linear)
-            xAxis.labelCount = stats.size
+            if (data == true) animateY(400, Easing.Linear)
+            xAxis.labelCount = response.size
             axisLeft.apply {
                 axisMinimum = 0f
                 axisMaximum = if ((max.toInt() % 2) == 0) max else max.plus(1)
                 labelCount =
                     if ((max.toInt() % 2) == 0) max.toInt() / 2 else max.toInt().plus(1) / 2
             }
-            data = BarData(dataSets)
+            this.data = BarData(dataSets)
             invalidate()
         }
     }
@@ -234,7 +231,7 @@ class LandingHistoryFragment : Fragment(), LandingHistoryContract.View,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (statsList.isEmpty() || it.progressIndicator.isShown) presenter?.getLaunchList()
+                if (statsList.isEmpty() || it.progressIndicator.isShown) presenter?.getOrUpdate(null)
             }
         }
     }

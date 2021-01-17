@@ -1,17 +1,18 @@
 package uk.co.zac_h.spacex.statistics.graphs.landinghistory
 
 import retrofit2.Call
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class LandingHistoryInteractor : BaseNetwork(), LandingHistoryContract.Interactor {
+class LandingHistoryInteractor : BaseNetwork(), NetworkInterface.Interactor<List<Launch>?> {
 
     private var call: Call<LaunchDocsModel>? = null
 
-    override fun getLaunches(
+    override fun get(
         api: SpaceXInterface,
-        listener: LandingHistoryContract.Callback
+        listener: NetworkInterface.Callback<List<Launch>?>
     ) {
         val query = QueryModel(
             QueryLandingHistory(true),
@@ -29,10 +30,9 @@ class LandingHistoryInteractor : BaseNetwork(), LandingHistoryContract.Interacto
 
         call = api.queryLaunches(query).apply {
             makeCall {
-                onResponseSuccess =
-                    { response ->
-                        listener.onSuccess(response.body()?.docs?.map { Launch(it) }, true)
-                    }
+                onResponseSuccess = { response ->
+                    listener.onSuccess(true, response.body()?.docs?.map { Launch(it) })
+                }
                 onResponseFailure = { listener.onError(it) }
             }
         }

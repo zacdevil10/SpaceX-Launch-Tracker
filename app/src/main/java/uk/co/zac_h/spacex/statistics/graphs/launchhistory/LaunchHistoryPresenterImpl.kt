@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.RocketIds
@@ -8,20 +9,20 @@ import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 
 class LaunchHistoryPresenterImpl(
     private val view: LaunchHistoryContract.LaunchHistoryView,
-    private val interactor: LaunchHistoryContract.LaunchHistoryInteractor
+    private val interactor: NetworkInterface.Interactor<List<Launch>?>
 ) : LaunchHistoryContract.LaunchHistoryPresenter,
-    LaunchHistoryContract.InteractorCallback {
+    NetworkInterface.Callback<List<Launch>?> {
 
     private lateinit var launchesList: List<HistoryStatsModel>
 
-    override fun getLaunchList(api: SpaceXInterface) {
-        view.showProgress()
-        interactor.getLaunches(api, this)
-    }
-
-    override fun addLaunchList(stats: List<HistoryStatsModel>) {
-        view.updatePieChart(stats, false)
-        view.setSuccessRate(stats, false)
+    override fun getOrUpdate(response: List<HistoryStatsModel>?, api: SpaceXInterface) {
+        if (response.isNullOrEmpty()) {
+            view.showProgress()
+            interactor.get(api, this)
+        } else {
+            view.update(false, response)
+            view.setSuccessRate(response, false)
+        }
     }
 
     override fun showFilter(filterVisible: Boolean) {
@@ -29,19 +30,19 @@ class LaunchHistoryPresenterImpl(
     }
 
     override fun updateFilter(launches: List<HistoryStatsModel>) {
-        view.updatePieChart(launches, false)
+        view.update(false, launches)
     }
 
-    override fun cancelRequests() {
+    override fun cancelRequest() {
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(launches: List<Launch>?, animate: Boolean) {
+    override fun onSuccess(data: Any, response: List<Launch>?) {
         val falconOne = HistoryStatsModel(RocketType.FALCON_ONE)
         val falconNine = HistoryStatsModel(RocketType.FALCON_NINE)
         val falconHeavy = HistoryStatsModel(RocketType.FALCON_HEAVY)
 
-        launches?.forEach {
+        response?.forEach {
             when (it.rocket?.id) {
                 RocketIds.FALCON_ONE -> {
                     it.success?.let { success ->
@@ -74,8 +75,8 @@ class LaunchHistoryPresenterImpl(
 
         view.apply {
             hideProgress()
-            updatePieChart(launchesList, animate)
-            setSuccessRate(launchesList, animate)
+            update(data, launchesList)
+            setSuccessRate(launchesList, data as Boolean)
         }
     }
 

@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchmass
 
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.RocketIds
@@ -11,17 +12,17 @@ import uk.co.zac_h.spacex.utils.models.OrbitMassModel
 
 class LaunchMassPresenter(
     private val view: LaunchMassContract.View,
-    private val interactor: LaunchMassContract.Interactor
-) : LaunchMassContract.Presenter, LaunchMassContract.Callback {
+    private val interactor: NetworkInterface.Interactor<List<Launch>?>
+) : LaunchMassContract.Presenter, NetworkInterface.Callback<List<Launch>?> {
 
-    override fun getLaunchList(api: SpaceXInterface) {
-        view.showProgress()
-        interactor.getLaunches(api, this)
-    }
-
-    override fun addLaunchList(statsList: ArrayList<LaunchMassStatsModel>) {
-        view.hideProgress()
-        view.updateData(statsList, false)
+    override fun getOrUpdate(response: List<LaunchMassStatsModel>?, api: SpaceXInterface) {
+        if (response.isNullOrEmpty()) {
+            view.showProgress()
+            interactor.get(api, this)
+        } else {
+            view.hideProgress()
+            view.update(false, response)
+        }
     }
 
     override fun cancelRequest() {
@@ -33,7 +34,7 @@ class LaunchMassPresenter(
     }
 
     override fun updateFilter(statsList: ArrayList<LaunchMassStatsModel>) {
-        view.updateData(statsList, false)
+        view.update(false, statsList)
     }
 
     override fun populateOrbitKey(f1: OrbitMassModel?, f9: OrbitMassModel?, fh: OrbitMassModel?) {
@@ -84,10 +85,10 @@ class LaunchMassPresenter(
         })
     }
 
-    override fun onSuccess(launches: List<Launch>?, animate: Boolean) {
+    override fun onSuccess(data: Any, response: List<Launch>?) {
         val massStats = ArrayList<LaunchMassStatsModel>()
 
-        launches?.forEach { launch ->
+        response?.forEach { launch ->
             val year = launch.launchDate?.dateUnix?.formatDateMillisYYYY() ?: return@forEach
 
             if (massStats.none { it.year == year }) massStats.add(LaunchMassStatsModel(year))
@@ -121,7 +122,7 @@ class LaunchMassPresenter(
 
         view.apply {
             hideProgress()
-            updateData(massStats, animate)
+            update(data, massStats)
         }
     }
 

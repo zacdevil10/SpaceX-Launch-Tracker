@@ -1,18 +1,18 @@
 package uk.co.zac_h.spacex.vehicles.ships
 
 import retrofit2.Call
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
-import uk.co.zac_h.spacex.vehicles.VehiclesContract
 
-class ShipsInteractorImpl : BaseNetwork(), VehiclesContract.Interactor<Ship> {
+class ShipsInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<Ship>?> {
 
     private var call: Call<ShipsDocsModel>? = null
 
-    override fun getVehicles(
+    override fun get(
         api: SpaceXInterface,
-        listener: VehiclesContract.InteractorCallback<Ship>
+        listener: NetworkInterface.Callback<List<Ship>?>
     ) {
         val query = QueryModel(
             query = "",

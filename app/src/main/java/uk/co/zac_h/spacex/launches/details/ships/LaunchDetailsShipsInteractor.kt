@@ -1,21 +1,22 @@
 package uk.co.zac_h.spacex.launches.details.ships
 
 import retrofit2.Call
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class LaunchDetailsShipsInteractor : BaseNetwork(), LaunchDetailsShipsContract.Interactor {
+class LaunchDetailsShipsInteractor : BaseNetwork(), NetworkInterface.Interactor<Launch?> {
 
     private var call: Call<LaunchDocsModel>? = null
 
-    override fun getShips(
-        id: String,
+    override fun get(
+        data: Any,
         api: SpaceXInterface,
-        listener: LaunchDetailsShipsContract.InteractorCallback
+        listener: NetworkInterface.Callback<Launch?>
     ) {
         val query = QueryModel(
-            QueryLaunchesQueryModel(id),
+            QueryLaunchesQueryModel(data as String),
             QueryOptionsModel(
                 false,
                 listOf(
@@ -44,5 +45,5 @@ class LaunchDetailsShipsInteractor : BaseNetwork(), LaunchDetailsShipsContract.I
         }
     }
 
-    override fun cancelRequest() = terminateAll()
+    override fun cancelAllRequests() = terminateAll()
 }

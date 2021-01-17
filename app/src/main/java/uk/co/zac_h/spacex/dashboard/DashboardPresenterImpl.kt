@@ -1,38 +1,37 @@
 package uk.co.zac_h.spacex.dashboard
 
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import java.util.concurrent.TimeUnit
 
 class DashboardPresenterImpl(
-    private val view: DashboardContract.DashboardView,
-    private val interactor: DashboardContract.DashboardInteractor
-) : DashboardContract.DashboardPresenter,
-    DashboardContract.InteractorCallback {
+    private val view: DashboardContract.View,
+    private val interactor: NetworkInterface.Interactor<Launch?>
+) : DashboardContract.Presenter,
+    NetworkInterface.Callback<Launch?> {
 
     override fun getLatestLaunches(
         next: Launch?,
         latest: Launch?,
         api: SpaceXInterface
     ) {
-        view.showPinnedMessage()
-
         interactor.apply {
             if (next == null) {
                 view.toggleNextProgress(true)
-                getSingleLaunch("next", api, this@DashboardPresenterImpl)
+                get("next", api, this@DashboardPresenterImpl)
             } else onSuccess("next", next)
 
             if (latest == null) {
                 view.toggleLatestProgress(true)
-                getSingleLaunch("latest", api, this@DashboardPresenterImpl)
+                get("latest", api, this@DashboardPresenterImpl)
             } else onSuccess("latest", latest)
         }
     }
 
-    override fun getSingleLaunch(id: String, api: SpaceXInterface) {
+    override fun get(data: Any, api: SpaceXInterface) {
         view.togglePinnedProgress(true)
-        interactor.getSingleLaunch(id, api, this)
+        interactor.get(data, api, this)
     }
 
     override fun updateCountdown(time: Long) {
@@ -53,7 +52,7 @@ class DashboardPresenterImpl(
         view.updateCountdown(remaining)
     }
 
-    override fun cancelRequests() {
+    override fun cancelRequest() {
         interactor.cancelAllRequests()
     }
 
@@ -75,37 +74,39 @@ class DashboardPresenterImpl(
         }
     }
 
-    override fun onSuccess(id: String, launchModel: Launch?) {
-        launchModel?.let { launch ->
-            when (id) {
+    override fun onSuccess(data: Any, response: Launch?) {
+        response?.let { launch ->
+            when (data as String) {
                 "next" -> {
-                    view.updateNextLaunch(launch)
                     view.toggleNextProgress(false)
                     val time =
                         (launch.launchDate?.dateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
                     if (launch.tbd == false && time >= 0) view.apply {
                         setCountdown(time)
                         showCountdown()
-                    } else view.hideCountdown()
+                        hideNextHeading()
+                    } else view.apply {
+                        hideCountdown()
+                        showNextHeading()
+                    }
                 }
                 "latest" -> {
-                    view.updateLatestLaunch(launch)
                     view.toggleLatestProgress(false)
                 }
                 else -> {
                     view.hidePinnedMessage()
-                    view.updatePinnedList(id, launch)
                     view.togglePinnedProgress(false)
                 }
             }
+            view.update(data, launch)
         }
-        view.toggleSwipeProgress(false)
+        view.toggleSwipeRefresh(false)
     }
 
     override fun onError(error: String) {
         view.apply {
             showError(error)
-            toggleSwipeProgress(false)
+            toggleSwipeRefresh(false)
         }
     }
 }

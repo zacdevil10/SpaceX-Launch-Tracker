@@ -89,7 +89,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
             pinned = presenter?.isPinned(it.id) ?: false
         } ?: id?.let { id ->
             pinned = presenter?.isPinned(id) ?: false
-            presenter?.getLaunch(id)
+            presenter?.get(id)
         }
     }
 
@@ -294,7 +294,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     override fun networkAvailable() {
         activity?.runOnUiThread {
             if (launch == null) launch?.id?.let {
-                presenter?.getLaunch(it)
+                presenter?.get(it)
             }
         }
     }

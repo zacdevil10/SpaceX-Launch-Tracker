@@ -1,18 +1,18 @@
 package uk.co.zac_h.spacex.vehicles.cores
 
 import retrofit2.Call
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
-import uk.co.zac_h.spacex.vehicles.VehiclesContract
 
-class CoreInteractorImpl : BaseNetwork(), VehiclesContract.Interactor<Core> {
+class CoreInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<Core>?> {
 
     private var call: Call<CoreDocsModel>? = null
 
-    override fun getVehicles(
+    override fun get(
         api: SpaceXInterface,
-        listener: VehiclesContract.InteractorCallback<Core>
+        listener: NetworkInterface.Callback<List<Core>?>
     ) {
         val populateList: ArrayList<QueryPopulateModel> = ArrayList()
 

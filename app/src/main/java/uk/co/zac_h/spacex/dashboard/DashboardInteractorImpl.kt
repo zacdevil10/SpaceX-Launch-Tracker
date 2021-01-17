@@ -1,23 +1,24 @@
 package uk.co.zac_h.spacex.dashboard
 
 import retrofit2.Call
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardInteractor {
+class DashboardInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<Launch?> {
 
     private var call: Call<LaunchDocsModel>? = null
 
-    override fun getSingleLaunch(
-        id: String,
+    override fun get(
+        data: Any,
         api: SpaceXInterface,
-        listener: DashboardContract.InteractorCallback
+        listener: NetworkInterface.Callback<Launch?>
     ) {
         val query = QueryModel(
-            query = when (id) {
-                "next", "latest" -> QueryUpcomingLaunchesModel(id == "next")
-                else -> QueryLaunchesQueryModel(id)
+            query = when (data) {
+                "next", "latest" -> QueryUpcomingLaunchesModel(data == "next")
+                else -> QueryLaunchesQueryModel(data as String)
             },
             options = QueryOptionsModel(
                 pagination = true,
@@ -43,7 +44,7 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardIntera
                         select = ""
                     )
                 ),
-                sort = when (id) {
+                sort = when (data) {
                     "next" -> QueryLaunchesSortModel("asc")
                     "latest" -> QueryLaunchesSortModel("desc")
                     else -> ""
@@ -61,7 +62,8 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardIntera
                     "static_fire_date_unix",
                     "details",
                     "launchpad",
-                    "date_precision"
+                    "date_precision",
+                    "upcoming"
                 ),
                 limit = 1
             )
@@ -70,7 +72,7 @@ class DashboardInteractorImpl : BaseNetwork(), DashboardContract.DashboardIntera
         call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess = { response ->
-                    listener.onSuccess(id, response.body()?.docs?.get(0)?.let { Launch(it) })
+                    listener.onSuccess(data, response.body()?.docs?.get(0)?.let { Launch(it) })
                 }
                 onResponseFailure = {
                     listener.onError(it)

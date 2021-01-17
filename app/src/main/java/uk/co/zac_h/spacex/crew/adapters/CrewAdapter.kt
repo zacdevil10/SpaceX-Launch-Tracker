@@ -2,11 +2,7 @@ package uk.co.zac_h.spacex.crew.adapters
 
 import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -18,12 +14,12 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.MainActivity
-import uk.co.zac_h.spacex.crew.CrewContract
+import uk.co.zac_h.spacex.crew.CrewView
 import uk.co.zac_h.spacex.databinding.GridItemCrewBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
 
 class CrewAdapter(
-    private val view: CrewContract.CrewView,
+    private val view: CrewView,
     private val crew: List<Crew>
 ) :
     RecyclerView.Adapter<CrewAdapter.ViewHolder>() {

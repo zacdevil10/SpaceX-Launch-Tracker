@@ -23,6 +23,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardPinnedAdapter
 import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
+import uk.co.zac_h.spacex.databinding.ListItemDashboardLaunchBinding
 import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
@@ -33,12 +34,13 @@ import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_NEXT_LAUNCH
 import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_PINNED_LAUNCH
 import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_PREVIOUS_LAUNCH
 
-class DashboardFragment : Fragment(), DashboardContract.DashboardView,
+class DashboardFragment : Fragment(),
+    DashboardContract.View,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var binding: FragmentDashboardBinding? = null
 
-    private var presenter: DashboardContract.DashboardPresenter? = null
+    private var presenter: DashboardContract.Presenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
     private var nextLaunchModel: Launch? = null
@@ -47,7 +49,6 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     private lateinit var pinnedAdapter: DashboardPinnedAdapter
 
     private lateinit var pinnedArray: ArrayList<Launch>
-    private lateinit var pinnedKeysArray: ArrayList<String>
 
     private var countdownTimer: CountDownTimer? = null
 
@@ -62,8 +63,6 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         pinnedArray = savedInstanceState?.let {
             it.getParcelableArrayList<Launch>("pinned") as ArrayList<Launch>
         } ?: ArrayList()
-
-        pinnedKeysArray = savedInstanceState?.getStringArrayList("pinned_keys") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -108,7 +107,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
         pinnedAdapter = DashboardPinnedAdapter(context, pinnedArray)
 
-        binding?.dashboardPinnedLayout?.dashboardPinnedLaunchesRecycler?.apply {
+        binding?.pinnedLayout?.dashboardPinnedLaunchesRecycler?.apply {
             layoutManager = LinearLayoutManager(this@DashboardFragment.context)
             adapter = pinnedAdapter
         }
@@ -133,30 +132,25 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         })
 
         pinnedPrefs.pinnedLive.observe(viewLifecycleOwner, { mode ->
-            mode?.let {
-                it.forEach { e ->
+            mode?.let { map ->
+                map.forEach { e ->
                     if (e.key.length < 4) {
                         pinnedSharedPreferences.removePinnedLaunch(e.key)
                         return@forEach
                     }
 
                     if (e.value as Boolean) {
-                        if (!pinnedKeysArray.contains(e.key)) {
-                            presenter?.getSingleLaunch(e.key)
+                        if (pinnedArray.none { it.id == e.key }) {
+                            presenter?.get(e.key)
                         }
                     } else {
-                        if (pinnedKeysArray.contains(e.key)) {
-                            if (pinnedArray.size >= pinnedKeysArray.indexOf(e.key)) {
-                                pinnedArray.removeAt(pinnedKeysArray.indexOf(e.key))
-                                pinnedAdapter.notifyItemRemoved(pinnedKeysArray.indexOf(e.key))
-                            }
-                            pinnedKeysArray.remove(e.key)
-                        }
+                        pinnedArray.removeAll { it.id == e.key }
+                        pinnedAdapter.notifyDataSetChanged()
                         pinnedSharedPreferences.removePinnedLaunch(e.key)
                     }
                 }
 
-                if (it.isNullOrEmpty()) showPinnedMessage()
+                if (map.isNullOrEmpty()) showPinnedMessage()
             }
         })
 
@@ -192,7 +186,6 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
             nextLaunchModel?.let { putParcelable("next", it) }
             latestLaunchModel?.let { putParcelable("latest", it) }
             putParcelableArrayList("pinned", pinnedArray)
-            putStringArrayList("pinned_keys", pinnedKeysArray)
         }
         super.onSaveInstanceState(outState)
     }
@@ -201,18 +194,35 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
         super.onDestroyView()
         countdownTimer?.cancel()
         countdownTimer = null
-        presenter?.cancelRequests()
+        presenter?.cancelRequest()
         binding = null
     }
 
-    override fun updateNextLaunch(nextLaunch: Launch) {
-        nextLaunchModel = nextLaunch
+    override fun update(data: Any, response: Launch) {
+        when (data as String) {
+            "next" -> {
+                nextLaunchModel = response
+                update(binding?.nextLayout, response)
+            }
+            "latest" -> {
+                latestLaunchModel = response
+                update(binding?.latestLayout, response)
+            }
+            else -> updatePinnedList(data, response)
+        }
+    }
 
-        binding?.dashboardNextLayout?.dashboardNextLayout?.transitionName = nextLaunch.id
+    fun update(binding: ListItemDashboardLaunchBinding?, response: Launch) {
+        binding?.dashboardLaunchLayout?.transitionName = response.id
 
-        binding?.dashboardNextLayout?.dashboardNextMissionPatchImage?.let {
+        when (response.upcoming) {
+            true -> binding?.headingText?.text = context?.getString(R.string.next_launch)
+            false -> binding?.headingText?.text = context?.getString(R.string.latest_launch)
+        }
+
+        binding?.missionPatchImage?.let {
             Glide.with(this)
-                .load(nextLaunch.links?.missionPatch?.patchSmall)
+                .load(response.links?.missionPatch?.patchSmall)
                 .error(context?.let { ctx ->
                     ContextCompat.getDrawable(ctx, R.drawable.ic_mission_patch)
                 })
@@ -225,81 +235,34 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
                 .into(it)
         }
 
-        binding?.dashboardNextLayout?.dashboardNextFlightNoText?.text =
-            context?.getString(R.string.flight_number, nextLaunch.flightNumber)
+        binding?.flightNoText?.text =
+            context?.getString(R.string.flight_number, response.flightNumber)
 
-        binding?.dashboardNextLayout?.dashboardNextVehicleText?.text = nextLaunch.rocket?.name
+        binding?.vehicleText?.text = response.rocket?.name
 
-        binding?.dashboardNextLayout?.dashboardNextMissionNameText?.text = nextLaunch.missionName
-        binding?.dashboardNextLayout?.dashboardNextDateText?.text =
-            nextLaunch.datePrecision?.let { nextLaunch.launchDate?.dateUnix?.formatDateMillisLong(it) }
+        binding?.missionNameText?.text = response.missionName
+        binding?.dateText?.text =
+            response.datePrecision?.let { response.launchDate?.dateUnix?.formatDateMillisLong(it) }
 
-        binding?.dashboardNextLayout?.dashboardNextLayout?.let { card ->
+        binding?.dashboardLaunchLayout?.let { card ->
             card.setOnClickListener {
                 findNavController().navigate(
                     R.id.action_dashboard_page_fragment_to_launch_details_container_fragment,
                     bundleOf(
-                        "launch_short" to nextLaunch
+                        "launch_short" to response
                     ),
                     null,
-                    FragmentNavigatorExtras(card to nextLaunch.id)
+                    FragmentNavigatorExtras(card to response.id)
                 )
             }
         }
     }
 
-    override fun updateLatestLaunch(latestLaunch: Launch) {
-        latestLaunchModel = latestLaunch
-
-        binding?.dashboardLatestLayout?.dashboardLatestLayout?.transitionName = latestLaunch.id
-
-        binding?.dashboardLatestLayout?.dashboardLatestMissionPatchImage?.let {
-            Glide.with(this)
-                .load(latestLaunch.links?.missionPatch?.patchSmall)
-                .error(context?.let { ctx ->
-                    ContextCompat.getDrawable(ctx, R.drawable.ic_mission_patch)
-                })
-                .fallback(context?.let { ctx ->
-                    ContextCompat.getDrawable(ctx, R.drawable.ic_mission_patch)
-                })
-                .placeholder(context?.let { ctx ->
-                    ContextCompat.getDrawable(ctx, R.drawable.ic_mission_patch)
-                })
-                .into(it)
-        }
-
-        binding?.dashboardLatestLayout?.dashboardLatestFlightNoText?.text =
-            context?.getString(R.string.flight_number, latestLaunch.flightNumber)
-
-        binding?.dashboardLatestLayout?.dashboardLatestVehicleText?.text = latestLaunch.rocket?.name
-
-        binding?.dashboardLatestLayout?.dashboardLatestMissionNameText?.text =
-            latestLaunch.missionName
-
-        binding?.dashboardLatestLayout?.dashboardLatestDateText?.text =
-            latestLaunch.launchDate?.dateUnix?.formatDateMillisLong(latestLaunch.datePrecision)
-
-        binding?.dashboardLatestLayout?.dashboardLatestLayout?.let { card ->
-            card.setOnClickListener {
-                findNavController().navigate(
-                    R.id.action_dashboard_page_fragment_to_launch_details_container_fragment,
-                    bundleOf(
-                        "launch_short" to latestLaunch
-                    ),
-                    null,
-                    FragmentNavigatorExtras(card to latestLaunch.id)
-                )
-            }
-        }
-    }
-
-    override fun updatePinnedList(id: String, pinnedLaunch: Launch) {
-        if (!pinnedKeysArray.contains(id)) {
+    private fun updatePinnedList(id: String, pinnedLaunch: Launch) {
+        if (pinnedArray.none { it.id == id }) {
             pinnedArray.add(pinnedLaunch)
-            pinnedKeysArray.add(id)
         }
 
-        pinnedKeysArray.sortDescending()
         pinnedArray.sortByDescending { it.flightNumber }
 
         pinnedAdapter.notifyDataSetChanged()
@@ -314,7 +277,7 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
 
             override fun onFinish() {
                 nextLaunchModel?.links?.webcast?.let { link ->
-                    binding?.dashboardNextLayout?.dashboardCountdownText?.apply {
+                    binding?.nextLayout?.countdownText?.apply {
                         text = context.getString(R.string.watch_live_label)
                         setOnClickListener {
                             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
@@ -328,66 +291,74 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
     }
 
     override fun updateCountdown(countdown: String) {
-        binding?.dashboardNextLayout?.dashboardCountdownText?.text = countdown
+        binding?.nextLayout?.countdownText?.text = countdown
     }
 
     override fun showPinnedMessage() {
         if (pinnedArray.isEmpty())
-            binding?.dashboardPinnedLayout?.dashboardPinnedMessageText?.visibility = View.VISIBLE
+            binding?.pinnedLayout?.dashboardPinnedMessageText?.visibility = View.VISIBLE
     }
 
     override fun hidePinnedMessage() {
-        binding?.dashboardPinnedLayout?.dashboardPinnedMessageText?.visibility = View.GONE
+        binding?.pinnedLayout?.dashboardPinnedMessageText?.visibility = View.GONE
     }
 
     override fun toggleNextProgress(isShown: Boolean) = when {
-        isShown -> binding?.dashboardNextLayout?.nextProgressIndicator?.show()
-        else -> binding?.dashboardNextLayout?.nextProgressIndicator?.hide()
+        isShown -> binding?.nextLayout?.progressIndicator?.show()
+        else -> binding?.nextLayout?.progressIndicator?.hide()
     }
 
     override fun toggleLatestProgress(isShown: Boolean) = when {
-        isShown -> binding?.dashboardLatestLayout?.latestProgressIndicator?.show()
-        else -> binding?.dashboardLatestLayout?.latestProgressIndicator?.hide()
+        isShown -> binding?.latestLayout?.progressIndicator?.show()
+        else -> binding?.latestLayout?.progressIndicator?.hide()
     }
 
     override fun togglePinnedProgress(isShown: Boolean) = when {
-        isShown -> binding?.dashboardPinnedLayout?.pinnedProgressIndicator?.show()
-        else -> binding?.dashboardPinnedLayout?.pinnedProgressIndicator?.hide()
+        isShown -> binding?.pinnedLayout?.pinnedProgressIndicator?.show()
+        else -> binding?.pinnedLayout?.pinnedProgressIndicator?.hide()
     }
 
     override fun showCountdown() {
-        binding?.dashboardNextLayout?.dashboardCountdownText?.visibility = View.VISIBLE
+        binding?.nextLayout?.countdownText?.visibility = View.VISIBLE
     }
 
     override fun hideCountdown() {
-        binding?.dashboardNextLayout?.dashboardCountdownText?.visibility = View.GONE
+        binding?.nextLayout?.countdownText?.visibility = View.GONE
+    }
+
+    override fun showNextHeading() {
+        binding?.nextLayout?.headingText?.visibility = View.VISIBLE
+    }
+
+    override fun hideNextHeading() {
+        binding?.nextLayout?.headingText?.visibility = View.GONE
     }
 
     override fun showNextLaunch() {
-        binding?.dashboardNextLayout?.dashboardNextLayout?.visibility = View.VISIBLE
+        binding?.nextLayout?.dashboardLaunchLayout?.visibility = View.VISIBLE
     }
 
     override fun hideNextLaunch() {
-        binding?.dashboardNextLayout?.dashboardNextLayout?.visibility = View.GONE
+        binding?.nextLayout?.dashboardLaunchLayout?.visibility = View.GONE
     }
 
     override fun showLatestLaunch() {
-        binding?.dashboardLatestLayout?.dashboardLatestLayout?.visibility = View.VISIBLE
+        binding?.latestLayout?.dashboardLaunchLayout?.visibility = View.VISIBLE
     }
 
     override fun hideLatestLaunch() {
-        binding?.dashboardLatestLayout?.dashboardLatestLayout?.visibility = View.GONE
+        binding?.latestLayout?.dashboardLaunchLayout?.visibility = View.GONE
     }
 
     override fun showPinnedList() {
-        binding?.dashboardPinnedLayout?.dashboardPinnedCard?.visibility = View.VISIBLE
+        binding?.pinnedLayout?.dashboardPinnedCard?.visibility = View.VISIBLE
     }
 
     override fun hidePinnedList() {
-        binding?.dashboardPinnedLayout?.dashboardPinnedCard?.visibility = View.GONE
+        binding?.pinnedLayout?.dashboardPinnedCard?.visibility = View.GONE
     }
 
-    override fun toggleSwipeProgress(isRefreshing: Boolean) {
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
         binding?.dashboardSwipeRefresh?.isRefreshing = isRefreshing
     }
 
@@ -401,8 +372,8 @@ class DashboardFragment : Fragment(), DashboardContract.DashboardView,
                 if (nextLaunchModel == null
                     || latestLaunchModel == null
                     || pinnedArray.isEmpty()
-                    || binding.dashboardNextLayout.nextProgressIndicator.isShown
-                    || binding.dashboardLatestLayout.latestProgressIndicator.isShown
+                    || binding.nextLayout.progressIndicator.isShown
+                    || binding.latestLayout.progressIndicator.isShown
                 ) presenter?.getLatestLaunches()
             }
         }

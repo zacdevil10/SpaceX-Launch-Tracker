@@ -1,23 +1,22 @@
 package uk.co.zac_h.spacex.launches
 
 import retrofit2.Call
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class LaunchesInteractorImpl : BaseNetwork(), LaunchesContract.LaunchesInteractor {
+class LaunchesInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<Launch>?> {
 
     private var call: Call<LaunchDocsModel>? = null
 
-    override fun getLaunches(
-        id: String,
-        order: String,
+    override fun get(
+        data: Any,
         api: SpaceXInterface,
-        listener: LaunchesContract.InteractorCallback
+        listener: NetworkInterface.Callback<List<Launch>?>
     ) {
-
         val query = QueryModel(
-            query = QueryUpcomingLaunchesModel(id == "upcoming"),
+            query = QueryUpcomingLaunchesModel(data == "upcoming"),
             options = QueryOptionsModel(
                 pagination = false,
                 populate = listOf(
@@ -42,7 +41,7 @@ class LaunchesInteractorImpl : BaseNetwork(), LaunchesContract.LaunchesInteracto
                         select = ""
                     )
                 ),
-                sort = QueryLaunchesSortModel(order),
+                sort = QueryLaunchesSortModel(if (data == "past") "desc" else "asc"),
                 select = listOf(
                     "flight_number",
                     "name",

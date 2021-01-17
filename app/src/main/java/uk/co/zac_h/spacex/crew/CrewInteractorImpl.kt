@@ -1,15 +1,16 @@
 package uk.co.zac_h.spacex.crew
 
 import retrofit2.Call
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class CrewInteractorImpl : BaseNetwork(), CrewContract.CrewInteractor {
+class CrewInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<Crew>?> {
 
     private var call: Call<CrewDocsModel>? = null
 
-    override fun getCrew(api: SpaceXInterface, listener: CrewContract.InteractorCallback) {
+    override fun get(api: SpaceXInterface, listener: NetworkInterface.Callback<List<Crew>?>) {
         val query = QueryModel(
             "",
             QueryOptionsModel(

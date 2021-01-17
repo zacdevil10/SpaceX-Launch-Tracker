@@ -1,18 +1,19 @@
 package uk.co.zac_h.spacex.launches.details.cores
 
 import retrofit2.Call
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class LaunchDetailsCoresInteractor : BaseNetwork(), LaunchDetailsCoresContract.Interactor {
+class LaunchDetailsCoresInteractor : BaseNetwork(), NetworkInterface.Interactor<Launch?> {
 
     private var call: Call<LaunchDocsModel>? = null
 
-    override fun getCores(
-        id: String,
+    override fun get(
+        data: Any,
         api: SpaceXInterface,
-        listener: LaunchDetailsCoresContract.InteractorCallback
+        listener: NetworkInterface.Callback<Launch?>
     ) {
         val populateList = listOf(
             QueryPopulateModel(
@@ -46,7 +47,7 @@ class LaunchDetailsCoresInteractor : BaseNetwork(), LaunchDetailsCoresContract.I
         )
 
         val query = QueryModel(
-            QueryLaunchesQueryModel(id),
+            QueryLaunchesQueryModel(data as String),
             QueryOptionsModel(false, populateList, "", listOf("cores"), 10)
         )
 
@@ -60,6 +61,6 @@ class LaunchDetailsCoresInteractor : BaseNetwork(), LaunchDetailsCoresContract.I
         }
     }
 
-    override fun cancelRequest() = terminateAll()
+    override fun cancelAllRequests() = terminateAll()
 
 }
