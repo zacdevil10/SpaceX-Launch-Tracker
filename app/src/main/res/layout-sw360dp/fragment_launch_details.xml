@@ -23,8 +23,8 @@
         android:id="@+id/launch_details_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingBottom="?attr/actionBarSize"
         android:clipToPadding="false"
+        android:paddingBottom="?attr/actionBarSize"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -127,6 +127,15 @@
                         android:text="@string/watch_label"
                         android:textAppearance="?textAppearanceBody2"
                         app:icon="@drawable/ic_play_arrow_black_24dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/launch_details_calendar_button"
+                        style="?attr/materialButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/create_event_label"
+                        android:textAppearance="?textAppearanceBody2"
+                        app:icon="@drawable/ic_calendar_plus" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/launch_details_press_kit_button"

@@ -8,10 +8,4 @@
         android:title="@string/pin"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/create_event"
-        android:icon="@drawable/ic_calendar_plus"
-        android:title="@string/create_event_label"
-        app:showAsAction="ifRoom" />
-
 </menu>

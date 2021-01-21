@@ -15,6 +15,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
+import uk.co.zac_h.spacex.model.spacex.DatePrecision
 import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
@@ -141,10 +142,6 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
             activity?.invalidateOptionsMenu()
             true
         }
-        R.id.create_event -> {
-            presenter?.createEvent()
-            true
-        }
         else -> super.onOptionsItemSelected(item)
     }
 
@@ -193,11 +190,20 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
                 launch.links?.webcast?.let { link ->
                     launchDetailsWatchButton.visibility = View.VISIBLE
+                    launchDetailsCalendarButton.visibility = View.GONE
                     launchDetailsWatchButton.setOnClickListener {
                         openWebLink(link)
                     }
                 } ?: run {
                     launchDetailsWatchButton.visibility = View.GONE
+                }
+
+                if (launch.datePrecision == DatePrecision.HOUR) {
+                    launchDetailsCalendarButton.setOnClickListener {
+                        presenter?.createEvent()
+                    }
+                } else {
+                    launchDetailsCalendarButton.visibility = View.GONE
                 }
 
                 launch.links?.presskit?.let { link ->
