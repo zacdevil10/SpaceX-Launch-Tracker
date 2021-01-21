@@ -75,10 +75,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:contentDescription="@string/reused_status_desc"
+                android:src="@drawable/ic_help_outline_black_24dp"
                 app:layout_constraintEnd_toEndOf="@+id/list_item_first_stage_reused_text"
                 app:layout_constraintStart_toStartOf="@+id/list_item_first_stage_reused_text"
                 app:layout_constraintTop_toBottomOf="@+id/list_item_first_stage_reused_text"
-                tools:src="@drawable/ic_check_circle_black_24dp" />
+                app:tint="?colorControlNormal" />
 
             <TextView
                 android:id="@+id/list_item_pad_success_label"

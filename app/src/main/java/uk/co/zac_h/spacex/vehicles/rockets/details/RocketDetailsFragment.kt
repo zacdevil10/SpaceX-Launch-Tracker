@@ -15,33 +15,31 @@ import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentRocketDetailsBinding
-import uk.co.zac_h.spacex.model.spacex.RocketsModel
+import uk.co.zac_h.spacex.model.spacex.Rocket
 import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.setImageAndTint
 import uk.co.zac_h.spacex.vehicles.adapters.RocketPayloadAdapter
-import java.text.DecimalFormat
 
 class RocketDetailsFragment : Fragment() {
 
-    private var binding: FragmentRocketDetailsBinding? = null
+    private lateinit var binding: FragmentRocketDetailsBinding
 
-    private var rocket: RocketsModel? = null
+    private var rocket: Rocket? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        rocket = arguments?.getParcelable("rocket") as RocketsModel?
+        rocket = arguments?.getParcelable("rocket") as Rocket?
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentRocketDetailsBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentRocketDetailsBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -52,7 +50,7 @@ class RocketDetailsFragment : Fragment() {
             AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
                 .setOpenableLayout(drawerLayout).build()
 
-        binding?.apply {
+        with(binding) {
             NavigationUI.setupWithNavController(
                 toolbarLayout,
                 toolbar,
@@ -83,8 +81,7 @@ class RocketDetailsFragment : Fragment() {
                     )
                 }
 
-                rocketDetailsCostText.text =
-                    DecimalFormat("$#,###.00").format(it.costPerLaunch).toString()
+                rocketDetailsCostText.text = it.costPerLaunch
                 rocketDetailsSuccessText.text =
                     context?.getString(R.string.percentage, it.successRate)
                 rocketDetailsFirstFlightText.text = it.firstFlight
@@ -107,8 +104,8 @@ class RocketDetailsFragment : Fragment() {
                 it.mass?.let { mass ->
                     rocketDetailsMassText.text = context?.getString(
                         R.string.mass_formatted,
-                        mass.kg?.metricFormat(),
-                        mass.lb?.metricFormat()
+                        mass.kg,
+                        mass.lb
                     )
                 }
 
@@ -172,10 +169,5 @@ class RocketDetailsFragment : Fragment() {
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
     }
 }

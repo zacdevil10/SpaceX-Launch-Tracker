@@ -30,10 +30,9 @@ class VehiclesFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentVehiclesBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentVehiclesBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

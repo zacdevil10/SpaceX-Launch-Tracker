@@ -86,7 +86,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <ProgressBar
-                        android:id="@+id/launch_history_falcon_one_rate_progress"
+                        android:id="@+id/falcon_one_rate_progress"
                         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
@@ -94,30 +94,30 @@
                         android:max="100"
                         android:progressDrawable="@drawable/circular_progress"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/launch_history_falcon_nine_rate_progress"
+                        app:layout_constraintEnd_toStartOf="@id/falcon_nine_rate_progress"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/launch_history_success_title_text" />
 
                     <TextView
-                        android:id="@+id/launch_history_falcon_one_percent_text"
+                        android:id="@+id/falcon_one_percent_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="@id/launch_history_falcon_one_rate_progress"
-                        app:layout_constraintEnd_toEndOf="@id/launch_history_falcon_one_rate_progress"
-                        app:layout_constraintStart_toStartOf="@id/launch_history_falcon_one_rate_progress"
-                        app:layout_constraintTop_toTopOf="@id/launch_history_falcon_one_rate_progress"
+                        app:layout_constraintBottom_toBottomOf="@id/falcon_one_rate_progress"
+                        app:layout_constraintEnd_toEndOf="@id/falcon_one_rate_progress"
+                        app:layout_constraintStart_toStartOf="@id/falcon_one_rate_progress"
+                        app:layout_constraintTop_toTopOf="@id/falcon_one_rate_progress"
                         tools:text="100%" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/falcon_1"
-                        app:layout_constraintEnd_toEndOf="@id/launch_history_falcon_one_rate_progress"
-                        app:layout_constraintStart_toStartOf="@id/launch_history_falcon_one_rate_progress"
-                        app:layout_constraintTop_toBottomOf="@id/launch_history_falcon_one_rate_progress" />
+                        app:layout_constraintEnd_toEndOf="@id/falcon_one_rate_progress"
+                        app:layout_constraintStart_toStartOf="@id/falcon_one_rate_progress"
+                        app:layout_constraintTop_toBottomOf="@id/falcon_one_rate_progress" />
 
                     <ProgressBar
-                        android:id="@+id/launch_history_falcon_nine_rate_progress"
+                        android:id="@+id/falcon_nine_rate_progress"
                         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
@@ -125,30 +125,30 @@
                         android:max="100"
                         android:progressDrawable="@drawable/circular_progress"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@id/launch_history_falcon_heavy_rate_progress"
-                        app:layout_constraintStart_toEndOf="@id/launch_history_falcon_one_rate_progress"
+                        app:layout_constraintEnd_toStartOf="@id/falcon_heavy_rate_progress"
+                        app:layout_constraintStart_toEndOf="@id/falcon_one_rate_progress"
                         app:layout_constraintTop_toBottomOf="@id/launch_history_success_title_text" />
 
                     <TextView
-                        android:id="@+id/launch_history_falcon_nine_percent_text"
+                        android:id="@+id/falcon_nine_percent_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="@id/launch_history_falcon_nine_rate_progress"
-                        app:layout_constraintEnd_toEndOf="@id/launch_history_falcon_nine_rate_progress"
-                        app:layout_constraintStart_toStartOf="@id/launch_history_falcon_nine_rate_progress"
-                        app:layout_constraintTop_toTopOf="@id/launch_history_falcon_nine_rate_progress"
+                        app:layout_constraintBottom_toBottomOf="@id/falcon_nine_rate_progress"
+                        app:layout_constraintEnd_toEndOf="@id/falcon_nine_rate_progress"
+                        app:layout_constraintStart_toStartOf="@id/falcon_nine_rate_progress"
+                        app:layout_constraintTop_toTopOf="@id/falcon_nine_rate_progress"
                         tools:text="100%" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/falcon_9"
-                        app:layout_constraintEnd_toEndOf="@id/launch_history_falcon_nine_rate_progress"
-                        app:layout_constraintStart_toStartOf="@id/launch_history_falcon_nine_rate_progress"
-                        app:layout_constraintTop_toBottomOf="@id/launch_history_falcon_nine_rate_progress" />
+                        app:layout_constraintEnd_toEndOf="@id/falcon_nine_rate_progress"
+                        app:layout_constraintStart_toStartOf="@id/falcon_nine_rate_progress"
+                        app:layout_constraintTop_toBottomOf="@id/falcon_nine_rate_progress" />
 
                     <ProgressBar
-                        android:id="@+id/launch_history_falcon_heavy_rate_progress"
+                        android:id="@+id/falcon_heavy_rate_progress"
                         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
@@ -157,26 +157,26 @@
                         android:progressDrawable="@drawable/circular_progress"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@id/launch_history_falcon_nine_rate_progress"
+                        app:layout_constraintStart_toEndOf="@id/falcon_nine_rate_progress"
                         app:layout_constraintTop_toBottomOf="@id/launch_history_success_title_text" />
 
                     <TextView
-                        android:id="@+id/launch_history_falcon_heavy_percent_text"
+                        android:id="@+id/falcon_heavy_percent_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintBottom_toBottomOf="@id/launch_history_falcon_heavy_rate_progress"
-                        app:layout_constraintEnd_toEndOf="@id/launch_history_falcon_heavy_rate_progress"
-                        app:layout_constraintStart_toStartOf="@id/launch_history_falcon_heavy_rate_progress"
-                        app:layout_constraintTop_toTopOf="@id/launch_history_falcon_heavy_rate_progress"
+                        app:layout_constraintBottom_toBottomOf="@id/falcon_heavy_rate_progress"
+                        app:layout_constraintEnd_toEndOf="@id/falcon_heavy_rate_progress"
+                        app:layout_constraintStart_toStartOf="@id/falcon_heavy_rate_progress"
+                        app:layout_constraintTop_toTopOf="@id/falcon_heavy_rate_progress"
                         tools:text="100%" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/falcon_heavy"
-                        app:layout_constraintEnd_toEndOf="@id/launch_history_falcon_heavy_rate_progress"
-                        app:layout_constraintStart_toStartOf="@id/launch_history_falcon_heavy_rate_progress"
-                        app:layout_constraintTop_toBottomOf="@id/launch_history_falcon_heavy_rate_progress" />
+                        app:layout_constraintEnd_toEndOf="@id/falcon_heavy_rate_progress"
+                        app:layout_constraintStart_toStartOf="@id/falcon_heavy_rate_progress"
+                        app:layout_constraintTop_toBottomOf="@id/falcon_heavy_rate_progress" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

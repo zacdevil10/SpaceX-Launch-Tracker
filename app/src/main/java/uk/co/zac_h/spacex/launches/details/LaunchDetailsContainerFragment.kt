@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -21,7 +22,7 @@ import uk.co.zac_h.spacex.launches.details.crew.LaunchDetailsCrewFragment
 import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsFragment
 import uk.co.zac_h.spacex.launches.details.payloads.LaunchDetailsPayloadsFragment
 import uk.co.zac_h.spacex.launches.details.ships.LaunchDetailsShipsFragment
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 
 class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContract.View {
 
@@ -31,7 +32,7 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
 
     private var selectedItem: Int? = null
 
-    private var launchShort: LaunchesExtendedModel? = null
+    private var launchShort: Launch? = null
     private var id: String? = null
 
     private var countdownTimer: CountDownTimer? = null
@@ -49,10 +50,9 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentLaunchDetailsContainerBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentLaunchDetailsContainerBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -88,7 +88,7 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
                 binding?.launchDetailsBottomNavigation?.inflateMenu(R.menu.launch_details_bottom_nav_menu)
             }
 
-            presenter?.startCountdown(it.launchDateUnix, it.tbd)
+            presenter?.startCountdown(it.launchDate?.dateUnix, it.tbd)
         } ?: id?.let {
             binding?.fragmentLaunchDetailsContainer?.transitionName = it
 
@@ -146,7 +146,7 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
                     }
                 }
             }
-            false
+            true
         }
     }
 
@@ -182,13 +182,13 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
     }
 
     private fun replaceFragment(fragment: Fragment): Boolean {
-        childFragmentManager
-            .beginTransaction()
-            .replace(
-                R.id.launch_details_fragment,
-                fragment
+        childFragmentManager.commit {
+            setCustomAnimations(
+                R.anim.fade_in,
+                R.anim.fade_out
             )
-            .commit()
+            replace(R.id.launch_details_fragment, fragment)
+        }
         return true
     }
 

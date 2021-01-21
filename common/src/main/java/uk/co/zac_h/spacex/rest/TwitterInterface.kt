@@ -8,24 +8,24 @@ import retrofit2.http.Query
 import uk.co.zac_h.BuildConfig
 import uk.co.zac_h.spacex.model.twitter.OAuthKeys
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
-import uk.co.zac_h.spacex.utils.OAuthSigningInterceptor
+import uk.co.zac_h.spacex.utils.*
 
 interface TwitterInterface {
 
-    @GET("statuses/user_timeline.json")
+    @GET(TWITTER_TIMELINE)
     fun getTweets(
-        @Query("screen_name") screenName: String,
-        @Query("include_rts") rts: Boolean,
-        @Query("trim_user") trim: Boolean,
-        @Query("tweet_mode") mode: String,
-        @Query("count") count: Int,
-        @Query("max_id") maxId: Long? = null
+        @Query(TWITTER_QUERY_SCREEN_NAME) screenName: String,
+        @Query(TWITTER_QUERY_INCLUDE_RTS) rts: Boolean,
+        @Query(TWITTER_QUERY_TRIM_USER) trim: Boolean,
+        @Query(TWITTER_QUERY_TWEET_MODE) mode: String,
+        @Query(TWITTER_QUERY_COUNT) count: Int,
+        @Query(TWITTER_QUERY_MAX_ID) maxId: Long? = null
     ): Call<List<TimelineTweetModel>>
 
     companion object RetrofitSetup {
 
         fun create(): TwitterInterface = Retrofit.Builder().apply {
-            baseUrl("https://api.twitter.com/1.1/")
+            baseUrl(TWITTER_BASE_URL)
             addConverterFactory(MoshiConverterFactory.create())
             client(
                 OAuthSigningInterceptor.addKeys(

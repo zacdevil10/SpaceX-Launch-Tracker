@@ -2,7 +2,6 @@ package uk.co.zac_h.spacex.statistics.graphs.launchmass
 
 import android.os.Bundle
 import android.view.*
-import android.view.animation.AnimationUtils
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -25,8 +24,7 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchMassBinding
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
-import uk.co.zac_h.spacex.utils.LaunchMassViewType
-import uk.co.zac_h.spacex.utils.RocketType
+import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.LaunchMassStatsModel
 import uk.co.zac_h.spacex.utils.models.OrbitMassModel
@@ -62,10 +60,9 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentLaunchMassBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentLaunchMassBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -125,7 +122,7 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     e?.let {
-                        val stats = statsList[(e.x - 2006).toInt()]
+                        val stats = statsList.filter { it.year == e.x.toInt() }[0]
 
                         keys.clear()
 
@@ -173,11 +170,7 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
             })
         }
 
-        if (statsList.isEmpty()) {
-            presenter?.getLaunchList()
-        } else {
-            presenter?.addLaunchList(statsList)
-        }
+        presenter?.getOrUpdate(statsList)
     }
 
     override fun onStart() {
@@ -218,14 +211,14 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
         }
         R.id.reload -> {
             statsList.clear()
-            presenter?.getLaunchList()
+            presenter?.getOrUpdate(null)
             true
         }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updateData(mass: ArrayList<LaunchMassStatsModel>, animate: Boolean) {
-        if (statsList.isEmpty()) statsList.addAll(mass)
+    override fun update(data: Any, response: List<LaunchMassStatsModel>) {
+        if (statsList.isEmpty()) statsList.addAll(response)
 
         binding?.statisticsBarChart?.key?.visibility = View.GONE
 
@@ -259,7 +252,7 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
         var max = 0f
         var c = 0
 
-        mass.forEach {
+        response.forEach {
             val newMax = when (filterRocket) {
                 RocketType.FALCON_ONE -> it.falconOne.total
                 RocketType.FALCON_NINE -> it.falconNine.total
@@ -345,7 +338,7 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
         binding?.statisticsBarChart?.barChart?.apply {
             onTouchListener.setLastHighlighted(null)
             highlightValues(null)
-            if (animate) animateY(400, Easing.Linear)
+            if (data == true) animateY(400, Easing.Linear)
             xAxis.labelCount = c
             axisLeft.apply {
                 axisMinimum = 0f
@@ -353,7 +346,7 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
                 labelCount =
                     if ((max.toInt() % 2) == 0) max.toInt() / 2 else max.toInt().plus(1) / 2
             }
-            data = BarData(dataSets)
+            this.data = BarData(dataSets)
             invalidate()
         }
     }
@@ -379,11 +372,11 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
             when (filterVisible) {
                 true -> {
                     visibility = View.VISIBLE
-                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_top))
+                    startAnimation(animateEnterFromTop(context))
                 }
                 false -> {
                     visibility = View.GONE
-                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_top))
+                    startAnimation(animateExitToTop(context))
                 }
             }
         }
@@ -392,11 +385,11 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
             when (filterVisible) {
                 true -> {
                     visibility = View.VISIBLE
-                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in))
+                    startAnimation(animateFadeIn(context))
                 }
                 false -> {
                     visibility = View.GONE
-                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out))
+                    startAnimation(animateFadeOut(context))
                 }
             }
         }
@@ -419,7 +412,7 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (statsList.isEmpty() || it.progressIndicator.isShown) presenter?.getLaunchList()
+                if (statsList.isEmpty() || it.progressIndicator.isShown) presenter?.getOrUpdate(null)
             }
         }
     }

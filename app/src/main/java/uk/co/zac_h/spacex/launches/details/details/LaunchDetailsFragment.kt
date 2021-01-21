@@ -15,7 +15,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
@@ -29,7 +29,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     private var presenter: LaunchDetailsContract.LaunchDetailsPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
-    private var launch: LaunchesExtendedModel? = null
+    private var launch: Launch? = null
     private var id: String? = null
 
     private var pinned: Boolean = false
@@ -39,7 +39,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         fun newInstance(args: Any) = LaunchDetailsFragment().apply {
             arguments = bundleOf(
                 when (args) {
-                    is LaunchesExtendedModel -> "launch_short"
+                    is Launch -> "launch_short"
                     is String -> "id"
                     else -> throw IllegalArgumentException()
                 } to args
@@ -60,10 +60,9 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentLaunchDetailsBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentLaunchDetailsBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -89,7 +88,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
             pinned = presenter?.isPinned(it.id) ?: false
         } ?: id?.let { id ->
             pinned = presenter?.isPinned(id) ?: false
-            presenter?.getLaunch(id)
+            presenter?.get(id)
         }
     }
 
@@ -149,7 +148,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updateLaunchDataView(launch: LaunchesExtendedModel?, isExt: Boolean) {
+    override fun updateLaunchDataView(launch: Launch?, isExt: Boolean) {
         launch?.let {
             if (isExt) this.launch = launch
 
@@ -179,10 +178,10 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 launchDetailsSiteNameText.text = launch.launchpad?.name
 
                 launchDetailsDateText.text = launch.datePrecision?.let { datePrecision ->
-                    launch.launchDateUnix?.formatDateMillisLong(datePrecision)
+                    launch.launchDate?.dateUnix?.formatDateMillisLong(datePrecision)
                 }
 
-                launch.staticFireDateUnix?.let { date ->
+                launch.staticFireDate?.dateUnix?.let { date ->
                     launchDetailsStaticFireDateLabel.visibility = View.VISIBLE
                     launchDetailsStaticFireDateText.visibility = View.VISIBLE
                     launchDetailsStaticFireDateText.text = date.formatDateMillisLong()
@@ -256,11 +255,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 data = CalendarContract.Events.CONTENT_URI
                 putExtra(
                     CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                    it.launchDateUnix?.times(1000L)
+                    it.launchDate?.dateUnix?.times(1000L)
                 )
                 putExtra(
                     CalendarContract.EXTRA_EVENT_END_TIME,
-                    it.launchDateUnix?.times(1000L)?.plus(3600000)
+                    it.launchDate?.dateUnix?.times(1000L)?.plus(3600000)
                 )
                 putExtra(
                     CalendarContract.Events.TITLE,
@@ -294,7 +293,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     override fun networkAvailable() {
         activity?.runOnUiThread {
             if (launch == null) launch?.id?.let {
-                presenter?.getLaunch(it)
+                presenter?.get(it)
             }
         }
     }

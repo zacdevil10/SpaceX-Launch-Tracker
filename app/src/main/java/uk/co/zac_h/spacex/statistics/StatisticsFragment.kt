@@ -27,10 +27,9 @@ class StatisticsFragment : Fragment(), StatisticsContract.View {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentStatisticsBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentStatisticsBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

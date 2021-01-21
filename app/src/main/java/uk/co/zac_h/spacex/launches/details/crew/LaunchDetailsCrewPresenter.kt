@@ -1,28 +1,27 @@
 package uk.co.zac_h.spacex.launches.details.crew
 
-import uk.co.zac_h.spacex.crew.CrewContract
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
+import uk.co.zac_h.spacex.base.NetworkInterface
+import uk.co.zac_h.spacex.crew.CrewView
+import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class LaunchDetailsCrewPresenter(
-    private val view: CrewContract.CrewView,
-    private val interactor: LaunchDetailsCrewContract.Interactor
-) : LaunchDetailsCrewContract.Presenter, LaunchDetailsCrewContract.InteractorCallback {
+    private val view: CrewView,
+    private val interactor: NetworkInterface.Interactor<List<Crew>?>
+) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<List<Crew>?> {
 
-    override fun getCrew(id: String, api: SpaceXInterface) {
+    override fun get(data: Any, api: SpaceXInterface) {
         view.showProgress()
-        interactor.getCrew(id, api, this)
+        interactor.get(data, api, this)
     }
 
-    override fun cancelRequest() = interactor.cancelRequest()
+    override fun cancelRequest() = interactor.cancelAllRequests()
 
-    override fun onSuccess(launchesExtendedDocsModel: LaunchesExtendedDocsModel?) {
-        if (launchesExtendedDocsModel?.docs?.isNotEmpty() == true) {
-            launchesExtendedDocsModel.docs[0].crew?.let {
-                view.updateCrew(it)
-            }
+    override fun onSuccess(response: List<Crew>?) {
+        response?.let {
+            view.update(it)
+            view.hideProgress()
         }
-        view.hideProgress()
     }
 
     override fun onError(error: String) {

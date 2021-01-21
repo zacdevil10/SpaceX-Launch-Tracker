@@ -7,8 +7,6 @@ import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import uk.co.zac_h.spacex.model.spacex.CoreExtendedModel
-import uk.co.zac_h.spacex.vehicles.cores.details.CoreDetailsContract
-import uk.co.zac_h.spacex.vehicles.cores.details.CoreDetailsPresenterImpl
 
 class CoreDetailsTest {
 

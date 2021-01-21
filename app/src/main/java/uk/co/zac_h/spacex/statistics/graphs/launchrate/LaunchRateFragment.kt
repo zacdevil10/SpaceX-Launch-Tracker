@@ -22,20 +22,21 @@ import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchRateBinding
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
 import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.RateStatsModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
+class LaunchRateFragment : Fragment(), NetworkInterface.View<List<RateStatsModel>>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var binding: FragmentLaunchRateBinding? = null
 
     private var heading: String? = null
 
-    private var presenter: LaunchRateContract.LaunchRatePresenter? = null
+    private var presenter: NetworkInterface.Presenter<List<RateStatsModel>?>? = null
 
     private lateinit var statsList: ArrayList<RateStatsModel>
 
@@ -56,10 +57,9 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentLaunchRateBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentLaunchRateBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -96,7 +96,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     e?.let {
-                        val stats = statsList[(e.x - 2006).toInt()]
+                        val stats = statsList.filter { it.year == e.x.toInt() }[0]
 
                         keys.clear()
 
@@ -138,11 +138,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
             })
         }
 
-        if (statsList.isEmpty()) {
-            presenter?.getLaunchList()
-        } else {
-            presenter?.addLaunchList(statsList)
-        }
+        presenter?.getOrUpdate(statsList)
     }
 
     override fun onStart() {
@@ -162,7 +158,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter?.cancelRequests()
+        presenter?.cancelRequest()
         binding = null
     }
 
@@ -174,14 +170,14 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.reload -> {
             statsList.clear()
-            presenter?.getLaunchList()
+            presenter?.getOrUpdate(null)
             true
         }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updateBarChart(stats: List<RateStatsModel>, animate: Boolean) {
-        if (statsList.isEmpty()) statsList.addAll(stats)
+    override fun update(data: Any, response: List<RateStatsModel>) {
+        if (statsList.isEmpty()) statsList.addAll(response)
 
         val colors = ArrayList<Int>()
 
@@ -195,7 +191,7 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
 
         var max = 0f
 
-        stats.forEach {
+        response.forEach {
             val newMax = it.falconOne + it.falconNine + it.falconHeavy + it.failure + it.planned
             if (newMax > max) max = newMax
             entries.add(
@@ -223,15 +219,15 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
         dataSets.add(set)
 
         binding?.statisticsBarChart?.barChart?.apply {
-            if (animate) animateY(400, Easing.Linear)
-            xAxis.labelCount = stats.size
+            if (data == true) animateY(400, Easing.Linear)
+            xAxis.labelCount = response.size
             axisLeft.apply {
                 axisMinimum = 0f
                 axisMaximum = if ((max.toInt() % 2) == 0) max else max.plus(1)
                 labelCount =
                     if ((max.toInt() % 2) == 0) max.toInt() / 2 else max.toInt().plus(1) / 2
             }
-            data = BarData(dataSets)
+            this.data = BarData(dataSets)
             invalidate()
         }
     }
@@ -244,14 +240,10 @@ class LaunchRateFragment : Fragment(), LaunchRateContract.LaunchRateView,
         binding?.progressIndicator?.hide()
     }
 
-    override fun showError(error: String) {
-
-    }
-
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (statsList.isEmpty() || it.progressIndicator.isShown) presenter?.getLaunchList()
+                if (statsList.isEmpty() || it.progressIndicator.isShown) presenter?.getOrUpdate(null)
             }
         }
     }

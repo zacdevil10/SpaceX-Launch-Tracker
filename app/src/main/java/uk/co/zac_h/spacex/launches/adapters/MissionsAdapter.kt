@@ -10,46 +10,40 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.MissionsModel
+import uk.co.zac_h.spacex.databinding.ListItemMissionBinding
+import uk.co.zac_h.spacex.model.spacex.Launch
 
 class MissionsAdapter(
     private val context: Context?,
-    private val missions: List<MissionsModel>
+    private val launches: List<Launch>
 ) :
     RecyclerView.Adapter<MissionsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
-        LayoutInflater.from(parent.context).inflate(
-            R.layout.list_item_mission,
-            parent,
-            false
-        )
+        ListItemMissionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val mission = missions[position]
+        val launch = launches[position]
 
-        holder.apply {
-            itemView.transitionName = mission.id
-            missionName.text = mission.name
-            flightNumber.text = context?.getString(R.string.flight_number, mission.flightNumber)
+        holder.binding.apply {
+            root.transitionName = launch.id
+            listItemMissionNameText.text = launch.missionName
+            listItemMissionFlightText.text =
+                context?.getString(R.string.flight_number, launch.flightNumber)
 
-            itemView.setOnClickListener {
-                itemView.findNavController()
-                    .navigate(
-                        R.id.missions_to_launch_details_container_fragment,
-                        bundleOf("launch_id" to mission.id),
-                        null,
-                        FragmentNavigatorExtras(itemView to mission.id)
-                    )
+            root.setOnClickListener {
+                root.findNavController().navigate(
+                    R.id.missions_to_launch_details_container_fragment,
+                    bundleOf("launch_id" to launch.id),
+                    null,
+                    FragmentNavigatorExtras(root to launch.id)
+                )
             }
         }
     }
 
-    override fun getItemCount(): Int = missions.size
+    override fun getItemCount(): Int = launches.size
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val missionName: TextView = itemView.findViewById(R.id.list_item_mission_name_text)
-        val flightNumber: TextView = itemView.findViewById(R.id.list_item_mission_flight_text)
-    }
+    class ViewHolder(val binding: ListItemMissionBinding) : RecyclerView.ViewHolder(binding.root)
 }

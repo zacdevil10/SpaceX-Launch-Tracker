@@ -14,13 +14,15 @@ import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentPadStatsBinding
 import uk.co.zac_h.spacex.model.spacex.StatsPadModel
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
 import uk.co.zac_h.spacex.utils.PadType
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
+class PadStatsFragment : Fragment(), NetworkInterface.View<List<StatsPadModel>>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var binding: FragmentPadStatsBinding? = null
@@ -50,10 +52,9 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentPadStatsBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentPadStatsBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -110,7 +111,7 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter?.cancelRequests()
+        presenter?.cancelRequest()
         binding = null
     }
 
@@ -132,12 +133,11 @@ class PadStatsFragment : Fragment(), PadStatsContract.PadStatsView,
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updateRecycler(pads: ArrayList<StatsPadModel>) {
-        this.pads.clear()
-        this.pads.addAll(pads)
+    override fun update(response: List<StatsPadModel>) {
+        pads.clear()
+        pads.addAll(response)
 
-        binding?.padStatsLaunchSitesRecycler?.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
+        binding?.padStatsLaunchSitesRecycler?.layoutAnimation = animateLayoutFromBottom(context)
         padsAdapter.notifyDataSetChanged()
         binding?.padStatsLaunchSitesRecycler?.scheduleLayoutAnimation()
     }

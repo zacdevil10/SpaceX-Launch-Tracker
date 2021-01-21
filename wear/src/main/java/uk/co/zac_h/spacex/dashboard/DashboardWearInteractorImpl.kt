@@ -10,7 +10,7 @@ class DashboardWearInteractorImpl : BaseNetwork(), DashboardWearInteractor {
     private var call: Call<LaunchesModel>? = null
 
     override fun getSingleLaunch(id: String, listener: DashboardWearInteractor.Callback) {
-        call = SpaceXInterface.create().getSingleLaunch(id).apply {
+        call = SpaceXInterface.create().getLaunch(id).apply {
             makeCall {
                 onResponseSuccess = {
                     when (id) {

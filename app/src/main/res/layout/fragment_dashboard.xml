@@ -40,15 +40,15 @@
                 android:orientation="vertical">
 
                 <include
-                    android:id="@+id/dashboard_next_layout"
-                    layout="@layout/list_item_next_launch" />
+                    android:id="@+id/next_layout"
+                    layout="@layout/list_item_dashboard_launch" />
 
                 <include
-                    android:id="@+id/dashboard_latest_layout"
-                    layout="@layout/list_item_latest_launch" />
+                    android:id="@+id/latest_layout"
+                    layout="@layout/list_item_dashboard_launch" />
 
                 <include
-                    android:id="@+id/dashboard_pinned_layout"
+                    android:id="@+id/pinned_layout"
                     layout="@layout/dashboard_pinned_layout" />
 
             </LinearLayout>

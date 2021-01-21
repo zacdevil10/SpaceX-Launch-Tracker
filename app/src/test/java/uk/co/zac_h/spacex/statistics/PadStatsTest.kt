@@ -37,7 +37,7 @@ class PadStatsTest {
         mock(PadStatsContract.InteractorCallback::class.java)
 
     @Mock
-    val mLandingPadModel: LandingPadModel = mock(LandingPadModel::class.java)
+    val mLandingPadModel: LandingPadQueriedResponse = mock(LandingPadQueriedResponse::class.java)
 
     @Mock
     val mLaunchpadModel: LaunchpadModel = mock(LaunchpadModel::class.java)

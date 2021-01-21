@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.vehicles.capsules.details
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,31 +16,31 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentCapsuleDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
-import uk.co.zac_h.spacex.model.spacex.CapsulesModel
+import uk.co.zac_h.spacex.model.spacex.Capsule
+import uk.co.zac_h.spacex.utils.*
+import java.util.*
 
 class CapsuleDetailsFragment : Fragment() {
 
     private var binding: FragmentCapsuleDetailsBinding? = null
 
-    private var capsule: CapsulesModel? = null
+    private var capsule: Capsule? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        capsule = arguments?.getParcelable("capsule") as CapsulesModel?
+        capsule = arguments?.getParcelable("capsule") as Capsule?
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentCapsuleDetailsBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentCapsuleDetailsBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
-    @SuppressLint("DefaultLocale")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -56,37 +55,35 @@ class CapsuleDetailsFragment : Fragment() {
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
-        capsule?.let {
-            binding?.capsuleDetailsConstraint?.transitionName = it.id
+        binding?.apply {
+            capsuleDetailsConstraint.transitionName = capsule?.id
 
-            binding?.toolbar?.title = it.serial
+            toolbar.title = capsule?.serial
 
-            it.serial?.let { serial ->
-                binding?.capsuleDetailsTypeText?.text = when {
-                    serial.startsWith("C1") -> "Dragon 1.0"
-                    serial.startsWith("C2") -> "Dragon 2.0"
-                    else -> ""
-                }
+            capsule?.type?.let {
+                capsuleDetailsTypeText.text = it.type
             }
 
-            it.lastUpdate?.let { lastUpdate ->
-                binding?.capsuleDetailsText?.text = lastUpdate
+            capsule?.lastUpdate?.let { lastUpdate ->
+                capsuleDetailsText.text = lastUpdate
             } ?: run {
-                binding?.capsuleDetailsText?.visibility = View.GONE
+                capsuleDetailsText.visibility = View.GONE
             }
 
-            binding?.capsuleDetailsStatusText?.text = it.status?.capitalize()
-            binding?.capsuleDetailsReuseText?.text = it.reuseCount.toString()
-            binding?.capsuleDetailsLandingText?.text =
-                ((it.landLandings ?: 0) + (it.waterLandings ?: 0)).toString()
+            capsule?.status?.let {
+                capsuleDetailsStatusText.text = it.status
+            }
+            capsuleDetailsReuseText.text = capsule?.reuseCount.toString()
+            capsuleDetailsLandingText.text =
+                ((capsule?.landLandings ?: 0) + (capsule?.waterLandings ?: 0)).toString()
 
-            it.launches?.let { launches ->
-                binding?.capsuleDetailsMissionsRecycler?.apply {
+            capsule?.launches?.let { launches ->
+                capsuleDetailsMissionsRecycler.apply {
                     layoutManager = LinearLayoutManager(this@CapsuleDetailsFragment.context)
                     setHasFixedSize(true)
                     adapter = MissionsAdapter(context, launches)
                 }
-            } ?: run { binding?.capsuleDetailsNoMissionLabel?.visibility = View.VISIBLE }
+            } ?: run { capsuleDetailsNoMissionLabel.visibility = View.VISIBLE }
         }
     }
 

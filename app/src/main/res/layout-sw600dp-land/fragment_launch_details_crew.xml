@@ -21,7 +21,7 @@
         android:layout_height="match_parent"
         android:paddingStart="16dp"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="4"
+        app:spanCount="5"
         tools:listitem="@layout/grid_item_crew"
         tools:ignore="RtlSymmetry" />
 

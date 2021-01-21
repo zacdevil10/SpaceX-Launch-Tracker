@@ -9,21 +9,26 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentDragonBinding
-import uk.co.zac_h.spacex.model.spacex.DragonModel
+import uk.co.zac_h.spacex.model.spacex.Dragon
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.vehicles.VehiclesContract
 import uk.co.zac_h.spacex.vehicles.adapters.DragonAdapter
 
-class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
+class DragonFragment : Fragment(), NetworkInterface.View<List<Dragon>>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
+
+    companion object {
+        const val TITLE = "Dragon"
+    }
 
     private var binding: FragmentDragonBinding? = null
 
-    private var presenter: VehiclesContract.Presenter? = null
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
     private lateinit var dragonAdapter: DragonAdapter
-    private lateinit var dragonArray: ArrayList<DragonModel>
+    private lateinit var dragonArray: ArrayList<Dragon>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,10 +39,9 @@ class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentDragonBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentDragonBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -55,10 +59,10 @@ class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
         }
 
         binding?.dragonSwipeRefresh?.setOnRefreshListener {
-            presenter?.getVehicles()
+            presenter?.get()
         }
 
-        if (dragonArray.isEmpty()) presenter?.getVehicles()
+        if (dragonArray.isEmpty()) presenter?.get()
     }
 
     override fun onStart() {
@@ -82,12 +86,11 @@ class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
         binding = null
     }
 
-    override fun updateVehicles(vehicles: List<DragonModel>) {
+    override fun update(response: List<Dragon>) {
         dragonArray.clear()
-        dragonArray.addAll(vehicles)
+        dragonArray.addAll(response)
 
-        binding?.dragonRecycler?.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
+        binding?.dragonRecycler?.layoutAnimation = animateLayoutFromBottom(context)
         dragonAdapter.notifyDataSetChanged()
         binding?.dragonRecycler?.scheduleLayoutAnimation()
     }
@@ -100,8 +103,8 @@ class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
         binding?.progressIndicator?.hide()
     }
 
-    override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding?.dragonSwipeRefresh?.isRefreshing = refreshing
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding?.dragonSwipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {
@@ -111,7 +114,7 @@ class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (dragonArray.isEmpty() || it.progressIndicator.isShown) presenter?.getVehicles()
+                if (dragonArray.isEmpty() || it.progressIndicator.isShown) presenter?.get()
             }
         }
     }
