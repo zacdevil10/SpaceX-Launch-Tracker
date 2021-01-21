@@ -4,24 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentRocketBinding
 import uk.co.zac_h.spacex.model.spacex.Rocket
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.vehicles.FragmentTitleInterface
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 
 class RocketFragment : Fragment(), NetworkInterface.View<List<Rocket>>,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
-
-    companion object {
-        const val TITLE = "Rockets"
-    }
+    OnNetworkStateChangeListener.NetworkStateReceiverListener, FragmentTitleInterface {
 
     private var binding: FragmentRocketBinding? = null
 
@@ -29,6 +24,8 @@ class RocketFragment : Fragment(), NetworkInterface.View<List<Rocket>>,
 
     private lateinit var rocketsAdapter: RocketsAdapter
     private lateinit var rocketsArray: ArrayList<Rocket>
+
+    override var title: String = "Rockets"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

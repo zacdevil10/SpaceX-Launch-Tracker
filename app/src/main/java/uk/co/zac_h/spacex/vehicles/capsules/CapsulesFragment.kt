@@ -2,7 +2,6 @@ package uk.co.zac_h.spacex.vehicles.capsules
 
 import android.os.Bundle
 import android.view.*
-import android.view.animation.AnimationUtils
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,15 +14,12 @@ import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.vehicles.FragmentTitleInterface
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
 
 class CapsulesFragment : Fragment(), NetworkInterface.View<List<Capsule>>,
-    SearchView.OnQueryTextListener,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
-
-    companion object {
-        const val TITLE = "Capsules"
-    }
+    SearchView.OnQueryTextListener, OnNetworkStateChangeListener.NetworkStateReceiverListener,
+    FragmentTitleInterface {
 
     private var binding: FragmentCapsulesBinding? = null
 
@@ -31,6 +27,8 @@ class CapsulesFragment : Fragment(), NetworkInterface.View<List<Capsule>>,
 
     private lateinit var capsulesAdapter: CapsulesAdapter
     private lateinit var capsulesArray: ArrayList<Capsule>
+
+    override var title: String = "Capsules"
 
     private lateinit var orderSharedPreferences: OrderSharedPreferencesHelper
     private var sortNew = false

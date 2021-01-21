@@ -3,24 +3,19 @@ package uk.co.zac_h.spacex.launches.adapters
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.Lifecycle
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import uk.co.zac_h.spacex.launches.LaunchesListFragment
 
-class LaunchesPagerAdapter(fragmentManager: FragmentManager) :
-    FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class LaunchesPagerAdapter(
+    fragmentManager: FragmentManager,
+    lifecycle: Lifecycle,
+    private val fragments: List<Fragment>
+) :
+    FragmentStateAdapter(fragmentManager, lifecycle) {
 
-    override fun getItem(position: Int): Fragment =
-        when (position) {
-            0 -> LaunchesListFragment.newInstance("upcoming")
-            1 -> LaunchesListFragment.newInstance("past")
-            else -> throw IllegalArgumentException("Invalid position: $position")
-        }
+    override fun createFragment(position: Int): Fragment = fragments[position]
 
-    override fun getCount(): Int = 2
-
-    override fun getPageTitle(position: Int): CharSequence? = when (position) {
-        0 -> "Upcoming"
-        1 -> "Past"
-        else -> super.getPageTitle(position)
-    }
+    override fun getItemCount(): Int = 2
 
 }

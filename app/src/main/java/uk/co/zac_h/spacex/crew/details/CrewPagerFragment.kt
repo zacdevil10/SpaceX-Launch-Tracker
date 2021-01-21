@@ -10,7 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
@@ -26,6 +26,7 @@ class CrewPagerFragment : Fragment() {
 
     private lateinit var crewPagerAdapter: CrewPagerAdapter
     private lateinit var crewArray: ArrayList<Crew>
+    private lateinit var crew: List<Fragment>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +42,8 @@ class CrewPagerFragment : Fragment() {
                 ArrayList()
             }
         }
+
+        crew = crewArray.map { CrewItemFragment.newInstance(it) }
     }
 
     override fun onCreateView(
@@ -61,21 +64,14 @@ class CrewPagerFragment : Fragment() {
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
-        crewPagerAdapter = CrewPagerAdapter(childFragmentManager, crewArray)
+        crewPagerAdapter = CrewPagerAdapter(childFragmentManager, lifecycle, crew)
 
         binding?.crewPager?.apply {
             adapter = crewPagerAdapter
             currentItem = MainActivity.currentPosition
-            setPageTransformer(
-                true,
-                DepthPageTransformer()
-            )
+            setPageTransformer(DepthPageTransformer())
 
-            addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                override fun onPageScrollStateChanged(state: Int) {}
-
-                override fun onPageScrolled(p: Int, pOffset: Float, pOffsetPixels: Int) {}
-
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     activity?.title = crewArray[position].name
                     MainActivity.currentPosition = position
@@ -97,10 +93,7 @@ class CrewPagerFragment : Fragment() {
                     names: MutableList<String>?,
                     sharedElements: MutableMap<String, View>?
                 ) {
-                    val currentFragment = crewPager.adapter?.instantiateItem(
-                        crewPager,
-                        MainActivity.currentPosition
-                    ) as Fragment
+                    val currentFragment = crew[MainActivity.currentPosition]
                     val view = currentFragment.view
                     view?.let {
                         names?.get(0)?.let { name ->

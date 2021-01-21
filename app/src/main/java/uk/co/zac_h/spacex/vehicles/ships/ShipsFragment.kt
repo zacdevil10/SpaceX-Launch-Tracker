@@ -4,24 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentShipsBinding
 import uk.co.zac_h.spacex.model.spacex.Ship
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.vehicles.FragmentTitleInterface
 import uk.co.zac_h.spacex.vehicles.adapters.ShipsAdapter
 
 class ShipsFragment : Fragment(), NetworkInterface.View<List<Ship>>,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
-
-    companion object {
-        const val TITLE = "Ships"
-    }
+    OnNetworkStateChangeListener.NetworkStateReceiverListener, FragmentTitleInterface {
 
     private var binding: FragmentShipsBinding? = null
 
@@ -29,6 +24,8 @@ class ShipsFragment : Fragment(), NetworkInterface.View<List<Ship>>,
 
     private lateinit var shipsAdapter: ShipsAdapter
     private lateinit var shipsArray: ArrayList<Ship>
+
+    override var title: String = "Ships"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

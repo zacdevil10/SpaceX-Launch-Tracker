@@ -4,24 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentDragonBinding
 import uk.co.zac_h.spacex.model.spacex.Dragon
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.vehicles.FragmentTitleInterface
 import uk.co.zac_h.spacex.vehicles.adapters.DragonAdapter
 
 class DragonFragment : Fragment(), NetworkInterface.View<List<Dragon>>,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
-
-    companion object {
-        const val TITLE = "Dragon"
-    }
+    OnNetworkStateChangeListener.NetworkStateReceiverListener, FragmentTitleInterface {
 
     private var binding: FragmentDragonBinding? = null
 
@@ -29,6 +24,8 @@ class DragonFragment : Fragment(), NetworkInterface.View<List<Dragon>>,
 
     private lateinit var dragonAdapter: DragonAdapter
     private lateinit var dragonArray: ArrayList<Dragon>
+
+    override var title: String = "Dragon"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

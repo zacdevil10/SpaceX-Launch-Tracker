@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.tabs.TabLayoutMediator
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
@@ -19,6 +20,11 @@ import uk.co.zac_h.spacex.launches.adapters.LaunchesPagerAdapter
 class LaunchesFragment : Fragment() {
 
     private var binding: FragmentLaunchesBinding? = null
+
+    private val fragments: List<Fragment> = listOf(
+        LaunchesListFragment.newInstance("upcoming"),
+        LaunchesListFragment.newInstance("past")
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,15 +49,25 @@ class LaunchesFragment : Fragment() {
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
-        binding?.launchesViewPager?.adapter = LaunchesPagerAdapter(childFragmentManager)
+        binding?.launchesViewPager?.adapter =
+            LaunchesPagerAdapter(childFragmentManager, lifecycle, fragments)
 
         val tabIcons = listOf(
             R.drawable.ic_baseline_schedule_24,
             R.drawable.ic_history_black_24dp
         )
 
+        binding?.let {
+            TabLayoutMediator(it.launchesTabLayout, it.launchesViewPager) { tab, position ->
+                tab.text = when (position) {
+                    0 -> "Upcoming"
+                    1 -> "Past"
+                    else -> "Page $position"
+                }
+            }.attach()
+        }
+
         binding?.launchesTabLayout?.apply {
-            setupWithViewPager(binding?.launchesViewPager)
             for (position in 0..tabCount) {
                 getTabAt(position)?.setIcon(tabIcons[position])
             }

@@ -2,7 +2,6 @@ package uk.co.zac_h.spacex.vehicles.cores
 
 import android.os.Bundle
 import android.view.*
-import android.view.animation.AnimationUtils
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,15 +14,11 @@ import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.vehicles.FragmentTitleInterface
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
 
-class CoreFragment : Fragment(), NetworkInterface.View<List<Core>>,
-    SearchView.OnQueryTextListener,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
-
-    companion object {
-        const val TITLE = "Cores"
-    }
+class CoreFragment : Fragment(), NetworkInterface.View<List<Core>>, SearchView.OnQueryTextListener,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener, FragmentTitleInterface {
 
     private var binding: FragmentCoreBinding? = null
 
@@ -31,6 +26,8 @@ class CoreFragment : Fragment(), NetworkInterface.View<List<Core>>,
 
     private lateinit var coreAdapter: CoreAdapter
     private lateinit var coresArray: ArrayList<Core>
+
+    override var title: String = "Cores"
 
     private lateinit var orderSharedPreferences: OrderSharedPreferencesHelper
     private var sortNew = false
