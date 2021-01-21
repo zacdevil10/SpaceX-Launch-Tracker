@@ -13,6 +13,7 @@ import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
 import uk.co.zac_h.spacex.model.spacex.Core
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
 
@@ -143,8 +144,7 @@ class CoreFragment : Fragment(), NetworkInterface.View<List<Core>>,
         coresArray.clear()
         coresArray.addAll(if (sortNew) response.reversed() else response)
 
-        binding?.coreRecycler?.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
+        binding?.coreRecycler?.layoutAnimation = animateLayoutFromBottom(context)
         coreAdapter.notifyDataSetChanged()
         binding?.coreRecycler?.scheduleLayoutAnimation()
     }

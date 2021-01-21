@@ -4,7 +4,6 @@ import android.animation.ValueAnimator
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
-import android.view.animation.AnimationUtils
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
@@ -25,9 +24,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchHistoryBinding
-import uk.co.zac_h.spacex.utils.LaunchHistoryFilter
-import uk.co.zac_h.spacex.utils.RocketType
-import uk.co.zac_h.spacex.utils.generateCenterSpannableText
+import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
@@ -270,11 +267,11 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
             when (filterVisible) {
                 true -> {
                     visibility = View.VISIBLE
-                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_top))
+                    startAnimation(animateEnterFromTop(context))
                 }
                 false -> {
                     visibility = View.GONE
-                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_top))
+                    startAnimation(animateExitToTop(context))
                 }
             }
         }
@@ -283,11 +280,11 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
             when (filterVisible) {
                 true -> {
                     visibility = View.VISIBLE
-                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in))
+                    startAnimation(animateFadeIn(context))
                 }
                 false -> {
                     visibility = View.GONE
-                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out))
+                    startAnimation(animateFadeOut(context))
                 }
             }
         }

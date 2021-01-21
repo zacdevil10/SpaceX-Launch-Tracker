@@ -12,6 +12,7 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentRocketBinding
 import uk.co.zac_h.spacex.model.spacex.Rocket
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 
@@ -89,8 +90,7 @@ class RocketFragment : Fragment(), NetworkInterface.View<List<Rocket>>,
         rocketsArray.clear()
         rocketsArray.addAll(response)
 
-        binding?.rocketRecycler?.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
+        binding?.rocketRecycler?.layoutAnimation = animateLayoutFromBottom(context)
         rocketsAdapter.notifyDataSetChanged()
         binding?.rocketRecycler?.scheduleLayoutAnimation()
     }

@@ -22,7 +22,7 @@ import uk.co.zac_h.spacex.vehicles.adapters.RocketPayloadAdapter
 
 class RocketDetailsFragment : Fragment() {
 
-    private var binding: FragmentRocketDetailsBinding? = null
+    private lateinit var binding: FragmentRocketDetailsBinding
 
     private var rocket: Rocket? = null
 
@@ -50,7 +50,7 @@ class RocketDetailsFragment : Fragment() {
             AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
                 .setOpenableLayout(drawerLayout).build()
 
-        binding?.apply {
+        with(binding) {
             NavigationUI.setupWithNavController(
                 toolbarLayout,
                 toolbar,
@@ -169,10 +169,5 @@ class RocketDetailsFragment : Fragment() {
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
     }
 }

@@ -2,7 +2,6 @@ package uk.co.zac_h.spacex.launches
 
 import android.os.Bundle
 import android.view.*
-import android.view.animation.AnimationUtils
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +11,7 @@ import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.model.spacex.Launch
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class LaunchesListFragment : Fragment(), NetworkInterface.View<List<Launch>>,
@@ -139,8 +139,7 @@ class LaunchesListFragment : Fragment(), NetworkInterface.View<List<Launch>>,
         launches.addAll(response)
 
 
-        binding?.launchesRecycler?.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
+        binding?.launchesRecycler?.layoutAnimation = animateLayoutFromBottom(context)
         launchesAdapter.notifyDataSetChanged()
         binding?.launchesRecycler?.scheduleLayoutAnimation()
     }

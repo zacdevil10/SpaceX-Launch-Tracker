@@ -12,6 +12,7 @@ import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCoresBinding
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.model.spacex.LaunchCore
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class LaunchDetailsCoresFragment : Fragment(), NetworkInterface.View<List<LaunchCore>>,
@@ -91,7 +92,9 @@ class LaunchDetailsCoresFragment : Fragment(), NetworkInterface.View<List<Launch
         cores.clear()
         cores.addAll(response)
 
+        binding?.launchDetailsCoresRecycler?.layoutAnimation = animateLayoutFromBottom(context)
         coresAdapter.notifyDataSetChanged()
+        binding?.launchDetailsCoresRecycler?.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {

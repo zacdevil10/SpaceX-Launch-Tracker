@@ -19,6 +19,7 @@ import uk.co.zac_h.spacex.databinding.FragmentPadStatsBinding
 import uk.co.zac_h.spacex.model.spacex.StatsPadModel
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
 import uk.co.zac_h.spacex.utils.PadType
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class PadStatsFragment : Fragment(), NetworkInterface.View<List<StatsPadModel>>,
@@ -136,8 +137,7 @@ class PadStatsFragment : Fragment(), NetworkInterface.View<List<StatsPadModel>>,
         pads.clear()
         pads.addAll(response)
 
-        binding?.padStatsLaunchSitesRecycler?.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
+        binding?.padStatsLaunchSitesRecycler?.layoutAnimation = animateLayoutFromBottom(context)
         padsAdapter.notifyDataSetChanged()
         binding?.padStatsLaunchSitesRecycler?.scheduleLayoutAnimation()
     }

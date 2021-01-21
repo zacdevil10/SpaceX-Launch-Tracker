@@ -12,6 +12,7 @@ import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsShipsBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchDetailsShipsAdapter
 import uk.co.zac_h.spacex.model.spacex.Ship
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class LaunchDetailsShipsFragment : Fragment(), NetworkInterface.View<List<Ship>>,
@@ -93,7 +94,9 @@ class LaunchDetailsShipsFragment : Fragment(), NetworkInterface.View<List<Ship>>
         shipsArray.clear()
         shipsArray.addAll(response)
 
+        binding?.launchDetailsShipsRecycler?.layoutAnimation = animateLayoutFromBottom(context)
         shipsAdapter.notifyDataSetChanged()
+        binding?.launchDetailsShipsRecycler?.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {

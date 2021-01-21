@@ -12,6 +12,7 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentDragonBinding
 import uk.co.zac_h.spacex.model.spacex.Dragon
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.adapters.DragonAdapter
 
@@ -89,8 +90,7 @@ class DragonFragment : Fragment(), NetworkInterface.View<List<Dragon>>,
         dragonArray.clear()
         dragonArray.addAll(response)
 
-        binding?.dragonRecycler?.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
+        binding?.dragonRecycler?.layoutAnimation = animateLayoutFromBottom(context)
         dragonAdapter.notifyDataSetChanged()
         binding?.dragonRecycler?.scheduleLayoutAnimation()
     }

@@ -12,6 +12,7 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentShipsBinding
 import uk.co.zac_h.spacex.model.spacex.Ship
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.adapters.ShipsAdapter
 
@@ -89,8 +90,7 @@ class ShipsFragment : Fragment(), NetworkInterface.View<List<Ship>>,
         shipsArray.clear()
         shipsArray.addAll(response)
 
-        binding?.recycler?.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
+        binding?.recycler?.layoutAnimation = animateLayoutFromBottom(context)
         shipsAdapter.notifyDataSetChanged()
         binding?.recycler?.scheduleLayoutAnimation()
     }

@@ -4,12 +4,12 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.history.HistoryView
 import uk.co.zac_h.spacex.databinding.ListItemHistoryEventBinding
 import uk.co.zac_h.spacex.databinding.ListItemHistoryHeadingBinding
+import uk.co.zac_h.spacex.utils.animateFromRightWithOffset
+import uk.co.zac_h.spacex.utils.animationScaleUpWithOffset
 import uk.co.zac_h.spacex.utils.formatDateMillisDDMMM
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 
@@ -17,8 +17,7 @@ class HistoryAdapter(
     private var context: Context,
     private var events: ArrayList<HistoryHeaderModel>,
     private var view: HistoryView
-) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
@@ -50,42 +49,22 @@ class HistoryAdapter(
                 listItemHistoryLineBottom.visibility =
                     if (position == events.size - 1) View.INVISIBLE else View.VISIBLE
 
-                listItemHistoryMarker.startAnimation(
-                    AnimationUtils.loadAnimation(
-                        context,
-                        R.anim.scale_up
-                    ).apply {
-                        startOffset = 240
-                    }
-                )
+                listItemHistoryMarker.startAnimation(animationScaleUpWithOffset(context, 240))
 
-                listItemHistoryDate.text = event.historyModel?.event?.dateUnix?.formatDateMillisDDMMM()
-                listItemHistoryDate.startAnimation(
-                    AnimationUtils.loadAnimation(context, R.anim.item_animation_from_right)
-                )
+                listItemHistoryDate.text =
+                    event.historyModel?.event?.dateUnix?.formatDateMillisDDMMM()
+                listItemHistoryDate.startAnimation(animateFromRightWithOffset(context, 0))
 
                 listItemHistoryTitle.text = event.historyModel?.title
-                listItemHistoryTitle.startAnimation(
-                    AnimationUtils.loadAnimation(
-                        context,
-                        R.anim.item_animation_from_right
-                    ).apply { startOffset = 40 })
+                listItemHistoryTitle.startAnimation(animateFromRightWithOffset(context, 40))
 
                 listItemHistoryDetails.text = event.historyModel?.details
-                listItemHistoryDetails.startAnimation(
-                    AnimationUtils.loadAnimation(
-                        context,
-                        R.anim.item_animation_from_right
-                    ).apply { startOffset = 80 })
+                listItemHistoryDetails.startAnimation(animateFromRightWithOffset(context, 80))
 
                 listItemHistoryArticleButton.apply {
                     event.historyModel?.article?.let { link ->
                         visibility = View.VISIBLE
-                        startAnimation(
-                            AnimationUtils.loadAnimation(
-                                context,
-                                R.anim.item_animation_from_right
-                            ).apply { startOffset = 240 })
+                        startAnimation(animateFromRightWithOffset(this@HistoryAdapter.context, 240))
 
                         setOnClickListener {
                             view.openWebLink(link)

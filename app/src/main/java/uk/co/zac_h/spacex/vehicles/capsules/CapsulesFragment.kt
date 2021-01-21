@@ -13,6 +13,7 @@ import uk.co.zac_h.spacex.databinding.FragmentCapsulesBinding
 import uk.co.zac_h.spacex.model.spacex.Capsule
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
 
@@ -146,8 +147,7 @@ class CapsulesFragment : Fragment(), NetworkInterface.View<List<Capsule>>,
         capsulesArray.clear()
         capsulesArray.addAll(if (sortNew) response.reversed() else response)
 
-        binding?.capsulesRecycler?.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
+        binding?.capsulesRecycler?.layoutAnimation = animateLayoutFromBottom(context)
         capsulesAdapter.notifyDataSetChanged()
         binding?.capsulesRecycler?.scheduleLayoutAnimation()
     }
