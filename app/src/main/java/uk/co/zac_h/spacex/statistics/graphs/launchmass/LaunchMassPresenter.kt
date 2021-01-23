@@ -1,26 +1,28 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchmass
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
+import uk.co.zac_h.spacex.base.NetworkInterface
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.RocketIds
 import uk.co.zac_h.spacex.utils.add
+import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.LaunchMassStatsModel
 import uk.co.zac_h.spacex.utils.models.OrbitMassModel
 
 class LaunchMassPresenter(
     private val view: LaunchMassContract.View,
-    private val interactor: LaunchMassContract.Interactor
-) : LaunchMassContract.Presenter, LaunchMassContract.Callback {
+    private val interactor: NetworkInterface.Interactor<List<Launch>?>
+) : LaunchMassContract.Presenter, NetworkInterface.Callback<List<Launch>?> {
 
-    override fun getLaunchList(api: SpaceXInterface) {
-        view.showProgress()
-        interactor.getLaunches(api, this)
-    }
-
-    override fun addLaunchList(statsList: ArrayList<LaunchMassStatsModel>) {
-        view.hideProgress()
-        view.updateData(statsList, false)
+    override fun getOrUpdate(response: List<LaunchMassStatsModel>?, api: SpaceXInterface) {
+        if (response.isNullOrEmpty()) {
+            view.showProgress()
+            interactor.get(api, this)
+        } else {
+            view.hideProgress()
+            view.update(false, response)
+        }
     }
 
     override fun cancelRequest() {
@@ -32,7 +34,7 @@ class LaunchMassPresenter(
     }
 
     override fun updateFilter(statsList: ArrayList<LaunchMassStatsModel>) {
-        view.updateData(statsList, false)
+        view.update(false, statsList)
     }
 
     override fun populateOrbitKey(f1: OrbitMassModel?, f9: OrbitMassModel?, fh: OrbitMassModel?) {
@@ -83,53 +85,44 @@ class LaunchMassPresenter(
         })
     }
 
-    override fun onSuccess(launchDocs: LaunchesExtendedDocsModel?, animate: Boolean) {
-        launchDocs?.docs?.let { launches ->
-            val massStats = ArrayList<LaunchMassStatsModel>()
+    override fun onSuccess(data: Any, response: List<Launch>?) {
+        val massStats = ArrayList<LaunchMassStatsModel>()
 
-            var year = 2005
-            launches.forEach {
-                val newYear =
-                    it.launchDateLocal?.substring(0, 4).toString().toIntOrNull() ?: return@forEach
+        response?.forEach { launch ->
+            val year = launch.launchDate?.dateUnix?.formatDateMillisYYYY() ?: return@forEach
 
-                if (newYear > year) {
-                    if (newYear != year++) {
-                        for (y in year until newYear) massStats.add(LaunchMassStatsModel(y))
-                    }
-                    massStats.add(LaunchMassStatsModel(newYear))
-                    year = newYear
+            if (massStats.none { it.year == year }) massStats.add(LaunchMassStatsModel(year))
+
+            val stat = massStats.filter { it.year == year }[0]
+
+            when (launch.rocket?.id) {
+                RocketIds.FALCON_ONE -> launch.payloads?.forEach { payload ->
+                    updateOrbitMass(
+                        stat.falconOne,
+                        payload.orbit,
+                        payload.mass?.kg
+                    )
                 }
-
-                when (it.rocket?.id) {
-                    RocketIds.FALCON_ONE -> it.payloads?.forEach { payload ->
-                        updateOrbitMass(
-                            massStats[massStats.lastIndex].falconOne,
-                            payload.orbit,
-                            payload.massKg
-                        )
-                    }
-                    RocketIds.FALCON_NINE -> it.payloads?.forEach { payload ->
-                        updateOrbitMass(
-                            massStats[massStats.lastIndex].falconNine,
-                            payload.orbit,
-                            payload.massKg
-                        )
-                    }
-                    RocketIds.FALCON_HEAVY -> it.payloads?.forEach { payload ->
-                        updateOrbitMass(
-                            massStats[massStats.lastIndex].falconHeavy,
-                            payload.orbit,
-                            payload.massKg
-                        )
-                    }
+                RocketIds.FALCON_NINE -> launch.payloads?.forEach { payload ->
+                    updateOrbitMass(
+                        stat.falconNine,
+                        payload.orbit,
+                        payload.mass?.kg
+                    )
+                }
+                RocketIds.FALCON_HEAVY -> launch.payloads?.forEach { payload ->
+                    updateOrbitMass(
+                        stat.falconHeavy,
+                        payload.orbit,
+                        payload.mass?.kg
+                    )
                 }
             }
+        }
 
-
-            view.apply {
-                hideProgress()
-                updateData(massStats, animate)
-            }
+        view.apply {
+            hideProgress()
+            update(data, massStats)
         }
     }
 

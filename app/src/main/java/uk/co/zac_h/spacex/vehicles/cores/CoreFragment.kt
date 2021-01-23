@@ -2,30 +2,32 @@ package uk.co.zac_h.spacex.vehicles.cores
 
 import android.os.Bundle
 import android.view.*
-import android.view.animation.AnimationUtils
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
-import uk.co.zac_h.spacex.model.spacex.CoreExtendedModel
+import uk.co.zac_h.spacex.model.spacex.Core
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.vehicles.VehiclesContract
+import uk.co.zac_h.spacex.vehicles.FragmentTitleInterface
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
 
-class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
-    SearchView.OnQueryTextListener,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class CoreFragment : Fragment(), NetworkInterface.View<List<Core>>, SearchView.OnQueryTextListener,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener, FragmentTitleInterface {
 
     private var binding: FragmentCoreBinding? = null
 
-    private var presenter: VehiclesContract.Presenter? = null
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
     private lateinit var coreAdapter: CoreAdapter
-    private lateinit var coresArray: ArrayList<CoreExtendedModel>
+    private lateinit var coresArray: ArrayList<Core>
+
+    override var title: String = "Cores"
 
     private lateinit var orderSharedPreferences: OrderSharedPreferencesHelper
     private var sortNew = false
@@ -42,10 +44,9 @@ class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentCoreBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentCoreBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,10 +67,10 @@ class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
         }
 
         binding?.coreSwipeRefresh?.setOnRefreshListener {
-            presenter?.getVehicles()
+            presenter?.get()
         }
 
-        if (coresArray.isEmpty()) presenter?.getVehicles()
+        if (coresArray.isEmpty()) presenter?.get()
     }
 
     override fun onStart() {
@@ -136,12 +137,11 @@ class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
         return false
     }
 
-    override fun updateVehicles(vehicles: List<CoreExtendedModel>) {
+    override fun update(response: List<Core>) {
         coresArray.clear()
-        coresArray.addAll(if (sortNew) vehicles.reversed() else vehicles)
+        coresArray.addAll(if (sortNew) response.reversed() else response)
 
-        binding?.coreRecycler?.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
+        binding?.coreRecycler?.layoutAnimation = animateLayoutFromBottom(context)
         coreAdapter.notifyDataSetChanged()
         binding?.coreRecycler?.scheduleLayoutAnimation()
     }
@@ -154,8 +154,8 @@ class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
         binding?.progressIndicator?.hide()
     }
 
-    override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding?.coreSwipeRefresh?.isRefreshing = refreshing
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding?.coreSwipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {
@@ -165,8 +165,7 @@ class CoreFragment : Fragment(), VehiclesContract.View<CoreExtendedModel>,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (coresArray.isEmpty() || it.progressIndicator.isShown)
-                    presenter?.getVehicles()
+                if (coresArray.isEmpty() || it.progressIndicator.isShown) presenter?.get()
             }
         }
     }

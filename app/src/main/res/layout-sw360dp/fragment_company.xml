@@ -46,8 +46,8 @@
                 android:layout_marginEnd="16dp"
                 android:contentDescription="@string/spacex_logo_desc"
                 android:src="@drawable/ic_spacex_logo"
-                app:tint="@color/color_on_surface"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@color/color_on_surface" />
 
             <TextView
                 android:id="@+id/company_address_text"
@@ -70,7 +70,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_address_text">
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/company_website_button"
                     style="?attr/materialButtonStyle"
                     android:layout_width="wrap_content"
@@ -79,7 +79,7 @@
                     android:textAppearance="?textAppearanceBody2"
                     app:icon="@drawable/ic_baseline_web_24" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/company_twitter_button"
                     style="?attr/materialButtonStyle"
                     android:layout_width="wrap_content"
@@ -88,7 +88,7 @@
                     android:textAppearance="?textAppearanceBody2"
                     app:icon="@drawable/ic_twitter" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/company_album_button"
                     style="?attr/materialButtonStyle"
                     android:layout_width="wrap_content"

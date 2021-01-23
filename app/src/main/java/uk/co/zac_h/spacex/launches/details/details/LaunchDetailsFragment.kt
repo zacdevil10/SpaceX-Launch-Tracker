@@ -8,13 +8,15 @@ import android.os.Bundle
 import android.provider.CalendarContract
 import android.view.*
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
+import uk.co.zac_h.spacex.model.spacex.DatePrecision
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
@@ -28,27 +30,22 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     private var presenter: LaunchDetailsContract.LaunchDetailsPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
-    private var launch: LaunchesExtendedModel? = null
+    private var launch: Launch? = null
     private var id: String? = null
 
     private var pinned: Boolean = false
 
     companion object {
         @JvmStatic
-        fun newInstance(launchShort: LaunchesExtendedModel) =
-            LaunchDetailsFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable("launch_short", launchShort)
-                }
-            }
-
-        @JvmStatic
-        fun newInstance(id: String) =
-            LaunchDetailsFragment().apply {
-                arguments = Bundle().apply {
-                    putString("id", id)
-                }
-            }
+        fun newInstance(args: Any) = LaunchDetailsFragment().apply {
+            arguments = bundleOf(
+                when (args) {
+                    is Launch -> "launch_short"
+                    is String -> "id"
+                    else -> throw IllegalArgumentException()
+                } to args
+            )
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,10 +61,9 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentLaunchDetailsBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentLaunchDetailsBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -93,7 +89,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
             pinned = presenter?.isPinned(it.id) ?: false
         } ?: id?.let { id ->
             pinned = presenter?.isPinned(id) ?: false
-            presenter?.getLaunch(id)
+            presenter?.get(id)
         }
     }
 
@@ -146,14 +142,10 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
             activity?.invalidateOptionsMenu()
             true
         }
-        R.id.create_event -> {
-            presenter?.createEvent()
-            true
-        }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updateLaunchDataView(launch: LaunchesExtendedModel?, isExt: Boolean) {
+    override fun updateLaunchDataView(launch: Launch?, isExt: Boolean) {
         launch?.let {
             if (isExt) this.launch = launch
 
@@ -183,10 +175,10 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 launchDetailsSiteNameText.text = launch.launchpad?.name
 
                 launchDetailsDateText.text = launch.datePrecision?.let { datePrecision ->
-                    launch.launchDateUnix?.formatDateMillisLong(datePrecision)
+                    launch.launchDate?.dateUnix?.formatDateMillisLong(datePrecision)
                 }
 
-                launch.staticFireDateUnix?.let { date ->
+                launch.staticFireDate?.dateUnix?.let { date ->
                     launchDetailsStaticFireDateLabel.visibility = View.VISIBLE
                     launchDetailsStaticFireDateText.visibility = View.VISIBLE
                     launchDetailsStaticFireDateText.text = date.formatDateMillisLong()
@@ -198,11 +190,20 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
                 launch.links?.webcast?.let { link ->
                     launchDetailsWatchButton.visibility = View.VISIBLE
+                    launchDetailsCalendarButton.visibility = View.GONE
                     launchDetailsWatchButton.setOnClickListener {
                         openWebLink(link)
                     }
                 } ?: run {
                     launchDetailsWatchButton.visibility = View.GONE
+                }
+
+                if (launch.datePrecision == DatePrecision.DAY || launch.datePrecision == DatePrecision.HOUR) {
+                    launchDetailsCalendarButton.setOnClickListener {
+                        presenter?.createEvent()
+                    }
+                } else {
+                    launchDetailsCalendarButton.visibility = View.GONE
                 }
 
                 launch.links?.presskit?.let { link ->
@@ -260,11 +261,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 data = CalendarContract.Events.CONTENT_URI
                 putExtra(
                     CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                    it.launchDateUnix?.times(1000L)
+                    it.launchDate?.dateUnix?.times(1000L)
                 )
                 putExtra(
                     CalendarContract.EXTRA_EVENT_END_TIME,
-                    it.launchDateUnix?.times(1000L)?.plus(3600000)
+                    it.launchDate?.dateUnix?.times(1000L)?.plus(3600000)
                 )
                 putExtra(
                     CalendarContract.Events.TITLE,
@@ -298,7 +299,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     override fun networkAvailable() {
         activity?.runOnUiThread {
             if (launch == null) launch?.id?.let {
-                presenter?.getLaunch(it)
+                presenter?.get(it)
             }
         }
     }

@@ -13,31 +13,28 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
+import uk.co.zac_h.spacex.databinding.ListItemLaunchesBinding
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 
 class DashboardPinnedAdapter(
     private val context: Context?,
-    private val launches: ArrayList<LaunchesExtendedModel>
+    private val launches: ArrayList<Launch>
 ) : RecyclerView.Adapter<DashboardPinnedAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_launches,
-                parent,
-                false
-            )
+            ListItemLaunchesBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val launch = launches[position]
 
-        holder.apply {
-            itemView.transitionName = launch.id
+        holder.binding.apply {
+            root.transitionName = launch.id
 
             launch.let {
-                Glide.with(itemView)
+                Glide.with(root)
                     .load(launch.links?.missionPatch?.patchSmall)
                     .error(context?.let { context ->
                         ContextCompat.getDrawable(context, R.drawable.ic_mission_patch)
@@ -48,37 +45,39 @@ class DashboardPinnedAdapter(
                     .placeholder(context?.let { context ->
                         ContextCompat.getDrawable(context, R.drawable.ic_mission_patch)
                     })
-                    .into(missionPatch)
+                    .into(launchesMissionPatchImage)
 
                 if (launch.rocket?.name == "Falcon 9") {
-                    reusedTag.visibility = launch.cores?.get(0)?.reused?.let { reused ->
+                    launchesReusedText.visibility = launch.cores?.get(0)?.reused?.let { reused ->
                         if (reused) View.VISIBLE else View.GONE
                     } ?: View.GONE
 
-                    landingVehicleTag.visibility =
+                    launchesLandingVehicleText.visibility =
                         launch.cores?.get(0)?.landingSuccess?.let { landingSuccess ->
                             if (landingSuccess) View.VISIBLE else View.GONE
                         } ?: View.GONE
 
-                    landingVehicleTag.text = launch.cores?.get(0)?.landingPad?.name
+                    launchesLandingVehicleText.text = launch.cores?.get(0)?.landingPad?.name
                 } else {
-                    reusedTag.visibility = View.GONE
-                    landingVehicleTag.visibility = View.GONE
+                    launchesReusedText.visibility = View.GONE
+                    launchesLandingVehicleText.visibility = View.GONE
                 }
 
-                flightNumber.text = context?.getString(R.string.flight_number, it.flightNumber)
-                vehicle.text = it.rocket?.name
-                missionName.text = it.missionName
-                date.text = it.launchDateUnix?.formatDateMillisLong(it.datePrecision)
+                launchesFlightNoText.text =
+                    context?.getString(R.string.flight_number, it.flightNumber)
+                launchesVehicleText.text = it.rocket?.name
+                launchesMissionNameText.text = it.missionName
+                launchesDateText.text =
+                    it.launchDate?.dateUnix?.formatDateMillisLong(it.datePrecision)
 
-                itemView.setOnClickListener { _ ->
-                    itemView.findNavController().navigate(
+                root.setOnClickListener { _ ->
+                    root.findNavController().navigate(
                         R.id.action_dashboard_page_fragment_to_launch_details_container_fragment,
                         bundleOf(
                             "launch_short" to it
                         ),
                         null,
-                        FragmentNavigatorExtras(itemView to launch.id)
+                        FragmentNavigatorExtras(root to launch.id)
                     )
                 }
             }
@@ -87,13 +86,5 @@ class DashboardPinnedAdapter(
 
     override fun getItemCount(): Int = launches.size
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val missionPatch: ImageView = itemView.findViewById(R.id.launches_mission_patch_image)
-        val flightNumber: TextView = itemView.findViewById(R.id.launches_flight_no_text)
-        val vehicle: TextView = itemView.findViewById(R.id.launches_vehicle_text)
-        val missionName: TextView = itemView.findViewById(R.id.launches_mission_name_text)
-        val date: TextView = itemView.findViewById(R.id.launches_date_text)
-        val reusedTag: TextView = itemView.findViewById(R.id.launches_reused_text)
-        val landingVehicleTag: TextView = itemView.findViewById(R.id.launches_landing_vehicle_text)
-    }
+    class ViewHolder(val binding: ListItemLaunchesBinding) : RecyclerView.ViewHolder(binding.root)
 }

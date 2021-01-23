@@ -57,7 +57,7 @@ class SpaceXAPITest : BaseNetwork() {
     @Test
     fun getSingleLaunchFromSpaceXAPI() {
         runBlocking {
-            spaceXInterface.getSingleLaunch("1").makeCall {
+            spaceXInterface.getLaunch("1").makeCall {
                 onResponseSuccess = {
                     assert(it.isSuccessful)
 
@@ -80,7 +80,7 @@ class SpaceXAPITest : BaseNetwork() {
                 }
             }
 
-            spaceXInterface.getSingleLaunch("0").makeCall {
+            spaceXInterface.getLaunch("0").makeCall {
                 onResponseFailure = {
                     assert(it == "Error: 404")
                 }

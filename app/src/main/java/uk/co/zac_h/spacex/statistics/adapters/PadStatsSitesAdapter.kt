@@ -7,6 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.databinding.ListItemPadStatsBinding
+import uk.co.zac_h.spacex.model.spacex.PadStatus
 import uk.co.zac_h.spacex.model.spacex.StatsPadModel
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
@@ -15,43 +17,36 @@ class PadStatsSitesAdapter(private var sites: ArrayList<StatsPadModel>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_pad_stats,
-                parent,
-                false
-            )
+            ListItemPadStatsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val site = sites[position]
 
-        holder.apply {
-            nameText.text = site.name
-            attemptedText.text = site.attempts.toString()
-            successText.text = site.successes.toString()
-            statusImage.setImageResource(
+        holder.binding.apply {
+            listItemPadNameText.text = site.name
+            listItemPadAttemptedText.text = site.attempts.toString()
+            listItemPadSuccessText.text = site.successes.toString()
+            listItemPadStatusImage.setImageResource(
                 when (site.status) {
-                    "active" -> R.drawable.ic_check_circle_black_24dp
-                    "retired" -> R.drawable.ic_remove_circle_black_24dp
-                    "under construction" -> R.drawable.ic_build_black_24dp
+                    PadStatus.ACTIVE -> R.drawable.ic_check_circle_black_24dp
+                    PadStatus.RETIRED -> R.drawable.ic_remove_circle_black_24dp
+                    PadStatus.UNDER_CONSTRUCTION -> R.drawable.ic_build_black_24dp
                     else -> R.drawable.ic_remove_circle_black_24dp
                 }
             )
 
             when (site.type) {
-                "ASDS" -> type.setImageAndTint(R.drawable.ic_waves, R.color.ocean)
-                "RTLS" -> type.setImageAndTint(R.drawable.ic_landscape, R.color.landscape)
+                "ASDS" -> listItemPadTypeImage.setImageAndTint(R.drawable.ic_waves, R.color.ocean)
+                "RTLS" -> listItemPadTypeImage.setImageAndTint(
+                    R.drawable.ic_landscape,
+                    R.color.landscape
+                )
             }
         }
     }
 
     override fun getItemCount(): Int = sites.size
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var type: ImageView = itemView.findViewById(R.id.list_item_pad_type_image)
-        var nameText: TextView = itemView.findViewById(R.id.list_item_pad_name_text)
-        var attemptedText: TextView = itemView.findViewById(R.id.list_item_pad_attempted_text)
-        var successText: TextView = itemView.findViewById(R.id.list_item_pad_success_text)
-        var statusImage: ImageView = itemView.findViewById(R.id.list_item_pad_status_image)
-    }
+    class ViewHolder(val binding: ListItemPadStatsBinding) : RecyclerView.ViewHolder(binding.root)
 }

@@ -7,19 +7,20 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 import uk.co.zac_h.spacex.model.reddit.SubredditModel
+import uk.co.zac_h.spacex.utils.*
 
 interface RedditInterface {
 
-    @GET("r/{subreddit}/{order}/.json?raw_json=1&limit=15")
+    @GET(REDDIT_SUBREDDIT)
     fun getRedditFeed(
-        @Path("subreddit") subreddit: String,
-        @Path("order") order: String = "hot",
-        @Query("after") id: String? = null
+        @Path(REDDIT_PARAM_SUBREDDIT) subreddit: String,
+        @Path(REDDIT_PARAM_ORDER) order: String = REDDIT_PARAM_ORDER_HOT,
+        @Query(REDDIT_QUERY_AFTER) id: String? = null
     ): Call<SubredditModel>
 
     companion object RetrofitSetup {
         fun create(): RedditInterface = Retrofit.Builder().apply {
-            baseUrl("https://reddit.com/")
+            baseUrl(REDDIT_BASE_URL)
             addConverterFactory(MoshiConverterFactory.create())
         }.build().create(RedditInterface::class.java)
     }

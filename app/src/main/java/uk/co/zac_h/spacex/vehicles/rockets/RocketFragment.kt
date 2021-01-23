@@ -4,26 +4,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentRocketBinding
-import uk.co.zac_h.spacex.model.spacex.RocketsModel
+import uk.co.zac_h.spacex.model.spacex.Rocket
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.vehicles.VehiclesContract
+import uk.co.zac_h.spacex.vehicles.FragmentTitleInterface
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 
-class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class RocketFragment : Fragment(), NetworkInterface.View<List<Rocket>>,
+    OnNetworkStateChangeListener.NetworkStateReceiverListener, FragmentTitleInterface {
 
     private var binding: FragmentRocketBinding? = null
 
-    private var presenter: VehiclesContract.Presenter? = null
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
     private lateinit var rocketsAdapter: RocketsAdapter
-    private lateinit var rocketsArray: ArrayList<RocketsModel>
+    private lateinit var rocketsArray: ArrayList<Rocket>
+
+    override var title: String = "Rockets"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,10 +36,9 @@ class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentRocketBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentRocketBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -55,10 +56,10 @@ class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
         }
 
         binding?.rocketSwipeRefresh?.setOnRefreshListener {
-            presenter?.getVehicles()
+            presenter?.get()
         }
 
-        if (rocketsArray.isEmpty()) presenter?.getVehicles()
+        if (rocketsArray.isEmpty()) presenter?.get()
     }
 
     override fun onStart() {
@@ -82,12 +83,11 @@ class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
         binding = null
     }
 
-    override fun updateVehicles(vehicles: List<RocketsModel>) {
+    override fun update(response: List<Rocket>) {
         rocketsArray.clear()
-        rocketsArray.addAll(vehicles)
+        rocketsArray.addAll(response)
 
-        binding?.rocketRecycler?.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
+        binding?.rocketRecycler?.layoutAnimation = animateLayoutFromBottom(context)
         rocketsAdapter.notifyDataSetChanged()
         binding?.rocketRecycler?.scheduleLayoutAnimation()
     }
@@ -100,8 +100,8 @@ class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
         binding?.progressIndicator?.hide()
     }
 
-    override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding?.rocketSwipeRefresh?.isRefreshing = refreshing
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding?.rocketSwipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {
@@ -112,7 +112,7 @@ class RocketFragment : Fragment(), VehiclesContract.View<RocketsModel>,
         activity?.runOnUiThread {
             binding?.let {
                 if (rocketsArray.isEmpty() || it.progressIndicator.isShown)
-                    presenter?.getVehicles()
+                    presenter?.get()
             }
         }
     }

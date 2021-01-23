@@ -10,12 +10,18 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.android.material.transition.Hold
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentVehiclesBinding
 import uk.co.zac_h.spacex.vehicles.adapters.VehiclesPagerAdapter
+import uk.co.zac_h.spacex.vehicles.capsules.CapsulesFragment
+import uk.co.zac_h.spacex.vehicles.cores.CoreFragment
+import uk.co.zac_h.spacex.vehicles.dragon.DragonFragment
+import uk.co.zac_h.spacex.vehicles.rockets.RocketFragment
+import uk.co.zac_h.spacex.vehicles.ships.ShipsFragment
 
 class VehiclesFragment : Fragment() {
 
@@ -30,13 +36,22 @@ class VehiclesFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentVehiclesBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentVehiclesBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val fragments: List<Fragment> = listOf(
+            RocketFragment(),
+            DragonFragment(),
+            ShipsFragment(),
+            CoreFragment(),
+            CapsulesFragment()
+        )
+
+        println("TITLE: ${(fragments[0] as FragmentTitleInterface).title}")
 
         (activity as MainActivity).setSupportActionBar(binding?.toolbar)
 
@@ -53,7 +68,7 @@ class VehiclesFragment : Fragment() {
             view.doOnPreDraw { startPostponedEnterTransition() }
 
             vehiclesViewPager.apply {
-                adapter = VehiclesPagerAdapter(childFragmentManager)
+                adapter = VehiclesPagerAdapter(childFragmentManager, lifecycle, fragments)
             }
 
             val tabIcons = listOf(
@@ -64,8 +79,11 @@ class VehiclesFragment : Fragment() {
                 R.drawable.ic_dragon
             )
 
+            TabLayoutMediator(vehiclesTabLayout, vehiclesViewPager) { tab, position ->
+                tab.text = (fragments[position] as FragmentTitleInterface).title
+            }.attach()
+
             vehiclesTabLayout.apply {
-                setupWithViewPager(vehiclesViewPager)
                 for (position in 0..tabCount) {
                     getTabAt(position)?.setIcon(tabIcons[position])
                 }

@@ -4,52 +4,50 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsPayloadsBinding
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
-import uk.co.zac_h.spacex.model.spacex.PayloadModel
+import uk.co.zac_h.spacex.model.spacex.Payload
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.View,
+class LaunchDetailsPayloadsFragment : Fragment(), NetworkInterface.View<List<Payload>>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var binding: FragmentLaunchDetailsPayloadsBinding? = null
 
-    private var presenter: LaunchDetailsPayloadsContract.Presenter? = null
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
     private lateinit var payloadAdapter: PayloadAdapter
-    private lateinit var payloads: ArrayList<PayloadModel>
+    private lateinit var payloads: ArrayList<Payload>
 
     private var id: String? = null
 
     companion object {
         @JvmStatic
-        fun newInstance(id: String) =
-            LaunchDetailsPayloadsFragment().apply {
-                arguments = Bundle().apply {
-                    putString("id", id)
-                }
-            }
+        fun newInstance(args: Any) = LaunchDetailsPayloadsFragment().apply {
+            arguments = bundleOf("id" to args)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         payloads =
-            savedInstanceState?.getParcelableArrayList<PayloadModel>("payloads") ?: ArrayList()
+            savedInstanceState?.getParcelableArrayList<Payload>("payloads") ?: ArrayList()
         id = arguments?.getString("id")
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentLaunchDetailsPayloadsBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentLaunchDetailsPayloadsBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -68,7 +66,7 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
         }
 
         if (payloads.isEmpty()) id?.let {
-            presenter?.getLaunch(it)
+            presenter?.get(it)
         }
     }
 
@@ -92,13 +90,11 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
         binding = null
     }
 
-    override fun updatePayloadsRecyclerView(payloadsList: List<PayloadModel>?) {
-        payloadsList?.let {
-            payloads.clear()
-            payloads.addAll(it)
+    override fun update(response: List<Payload>) {
+        payloads.clear()
+        payloads.addAll(response)
 
-            payloadAdapter.notifyDataSetChanged()
-        }
+        payloadAdapter.notifyDataSetChanged()
     }
 
     override fun showProgress() {
@@ -116,7 +112,7 @@ class LaunchDetailsPayloadsFragment : Fragment(), LaunchDetailsPayloadsContract.
     override fun networkAvailable() {
         activity?.runOnUiThread {
             id?.let {
-                if (payloads.isEmpty()) presenter?.getLaunch(it)
+                if (payloads.isEmpty()) presenter?.get(it)
             }
         }
     }

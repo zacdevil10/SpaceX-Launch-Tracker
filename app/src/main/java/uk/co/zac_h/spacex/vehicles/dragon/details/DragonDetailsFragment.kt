@@ -15,7 +15,7 @@ import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentDragonDetailsBinding
-import uk.co.zac_h.spacex.model.spacex.DragonModel
+import uk.co.zac_h.spacex.model.spacex.Dragon
 import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.setImageAndTint
 import uk.co.zac_h.spacex.vehicles.adapters.DragonThrusterAdapter
@@ -24,24 +24,23 @@ class DragonDetailsFragment : Fragment() {
 
     private var binding: FragmentDragonDetailsBinding? = null
 
-    private var dragon: DragonModel? = null
+    private var dragon: Dragon? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        dragon = arguments?.getParcelable("dragon") as DragonModel?
+        dragon = arguments?.getParcelable("dragon") as Dragon?
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentDragonDetailsBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentDragonDetailsBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -87,8 +86,8 @@ class DragonDetailsFragment : Fragment() {
                 dragonDetailsFirstFlightText.text = it.firstFlight
                 dragonDetailsDryMassText.text = context?.getString(
                     R.string.mass_formatted,
-                    it.dryMassKg?.metricFormat(),
-                    it.dryMassLb?.metricFormat()
+                    it.dryMass?.kg,
+                    it.dryMass?.lb
                 )
                 it.heightWithTrunk?.let { heightWithTrunk ->
                     dragonDetailsHeightText.text = context?.getString(
@@ -122,16 +121,16 @@ class DragonDetailsFragment : Fragment() {
                 it.launchPayloadMass?.let { launchPayloadMass ->
                     dragonDetailsLaunchMassText.text = context?.getString(
                         R.string.mass_formatted,
-                        launchPayloadMass.kg?.metricFormat(),
-                        launchPayloadMass.lb?.metricFormat()
+                        launchPayloadMass.kg,
+                        launchPayloadMass.lb
                     )
                 }
 
                 it.returnPayloadMass?.let { returnPayloadMass ->
                     dragonDetailsReturnMassText.text = context?.getString(
                         R.string.mass_formatted,
-                        returnPayloadMass.kg?.metricFormat(),
-                        returnPayloadMass.lb?.metricFormat()
+                        returnPayloadMass.kg,
+                        returnPayloadMass.lb
                     )
                 }
 

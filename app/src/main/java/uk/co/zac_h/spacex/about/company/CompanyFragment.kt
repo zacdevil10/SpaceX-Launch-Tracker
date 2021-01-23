@@ -13,19 +13,19 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCompanyBinding
-import uk.co.zac_h.spacex.model.spacex.CompanyModel
+import uk.co.zac_h.spacex.model.spacex.Company
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import java.text.DecimalFormat
 
-class CompanyFragment : Fragment(), CompanyContract.CompanyView,
+class CompanyFragment : Fragment(), NetworkInterface.View<Company>,
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var binding: FragmentCompanyBinding? = null
 
-    private var presenter: CompanyContract.CompanyPresenter? = null
+    private var presenter: NetworkInterface.Presenter<Company?>? = null
 
-    private var companyInfo: CompanyModel? = null
+    private var companyInfo: Company? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,10 +38,9 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentCompanyBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentCompanyBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -58,9 +57,7 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
 
         presenter = CompanyPresenterImpl(this, CompanyInteractorImpl())
 
-        companyInfo?.let {
-            presenter?.getCompanyInfo(it)
-        } ?: presenter?.getCompanyInfo()
+        presenter?.getOrUpdate(companyInfo)
     }
 
     override fun onResume() {
@@ -86,37 +83,34 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
         binding = null
     }
 
-    override fun updateCompanyInfo(companyModel: CompanyModel) {
-        companyInfo = companyModel
+    override fun update(response: Company) {
+        companyInfo = response
         binding?.apply {
-            with(companyModel.headquarters) {
+            response.headquarters?.let {
                 companyAddressText.text =
-                    context?.getString(R.string.address, address, city, state)
+                    context?.getString(R.string.address, it.address, it.city, it.state)
             }
 
-            with(companyModel.links) {
-                companyWebsiteButton.setOnClickListener { openWebLink(website) }
-                companyTwitterButton.setOnClickListener { openWebLink(twitter) }
-                companyAlbumButton.setOnClickListener { openWebLink(flickr) }
-            }
+            companyWebsiteButton.setOnClickListener { openWebLink(response.website) }
+            companyTwitterButton.setOnClickListener { openWebLink(response.twitter) }
+            companyAlbumButton.setOnClickListener { openWebLink(response.flickr) }
 
-            companySummaryText.text = companyModel.summary
+            companySummaryText.text = response.summary
             companyFoundedText.text =
-                context?.getString(R.string.founded, companyModel.founder, companyModel.founded)
-            companyCeoText.text = companyModel.ceo
-            companyCtoText.text = companyModel.cto
-            companyCooText.text = companyModel.coo
-            companyCtoProText.text = companyModel.ctoPropulsion
-            companyValuationText.text =
-                DecimalFormat("#,###.00").format(companyModel.valuation).toString()
-            companyEmployeesText.text = companyModel.employees.toString()
-            companyVehiclesText.text = companyModel.vehicles.toString()
-            companyLaunchSitesText.text = companyModel.launchSites.toString()
-            companyTestSitesText.text = companyModel.testSites.toString()
+                context?.getString(R.string.founded, response.founder, response.founded)
+            companyCeoText.text = response.ceo
+            companyCtoText.text = response.cto
+            companyCooText.text = response.coo
+            companyCtoProText.text = response.ctoPropulsion
+            companyValuationText.text = response.valuation
+            companyEmployeesText.text = response.employees.toString()
+            companyVehiclesText.text = response.vehicles.toString()
+            companyLaunchSitesText.text = response.launchSites.toString()
+            companyTestSitesText.text = response.testSites.toString()
         }
     }
 
-    fun openWebLink(link: String) {
+    fun openWebLink(link: String?) {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 
@@ -128,13 +122,9 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
         binding?.progressIndicator?.hide()
     }
 
-    override fun showError(error: String) {
-
-    }
-
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (companyInfo == null) presenter?.getCompanyInfo()
+            if (companyInfo == null) presenter?.getOrUpdate(null)
         }
     }
 

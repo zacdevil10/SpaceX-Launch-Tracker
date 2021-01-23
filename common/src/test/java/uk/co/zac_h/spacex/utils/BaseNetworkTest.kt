@@ -21,11 +21,11 @@ class BaseNetworkTest : BaseNetwork() {
     fun `When make network call return response`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
-                getSingleLaunch("1")
+                getLaunch("1")
             } doReturn Calls.response(Response.success(mLaunchModel))
         }
 
-        mockRepo.getSingleLaunch("1").makeCall {
+        mockRepo.getLaunch("1").makeCall {
             onResponseSuccess = { assert(mLaunchModel == it.body()) }
         }
     }
@@ -34,7 +34,7 @@ class BaseNetworkTest : BaseNetwork() {
     fun `When make network call return error`() {
         val mockRepo = mock<SpaceXInterface> {
             onBlocking {
-                getSingleLaunch("1")
+                getLaunch("1")
             } doReturn Calls.response(
                 Response.error(
                     404,
@@ -43,7 +43,7 @@ class BaseNetworkTest : BaseNetwork() {
             )
         }
 
-        mockRepo.getSingleLaunch("1").makeCall {
+        mockRepo.getLaunch("1").makeCall {
             onResponseFailure = { assert(it == "Error: 404") }
         }
     }

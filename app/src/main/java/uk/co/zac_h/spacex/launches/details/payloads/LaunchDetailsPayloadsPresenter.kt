@@ -1,27 +1,30 @@
 package uk.co.zac_h.spacex.launches.details.payloads
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
+import uk.co.zac_h.spacex.base.NetworkInterface
+import uk.co.zac_h.spacex.model.spacex.Launch
+import uk.co.zac_h.spacex.model.spacex.Payload
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class LaunchDetailsPayloadsPresenter(
-    private val view: LaunchDetailsPayloadsContract.View,
-    private val interactor: LaunchDetailsPayloadsContract.Interactor
-) : LaunchDetailsPayloadsContract.Presenter, LaunchDetailsPayloadsContract.InteractorCallback {
+    private val view: NetworkInterface.View<List<Payload>>,
+    private val interactor: NetworkInterface.Interactor<Launch?>
+) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<Launch?> {
 
-    override fun getLaunch(id: String, api: SpaceXInterface) {
+    override fun get(data: Any, api: SpaceXInterface) {
         view.showProgress()
-        interactor.getPayloads(id, api, this)
+        interactor.get(data, api, this)
     }
 
     override fun cancelRequest() {
-        interactor.cancelRequest()
+        interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(launchModel: LaunchesExtendedDocsModel?) {
-        if (launchModel?.docs?.isNotEmpty() == true) launchModel.docs[0].payloads?.let { payloads ->
-            view.updatePayloadsRecyclerView(payloads)
+    override fun onSuccess(response: Launch?) {
+        response?.payloads?.let { payloads ->
+            view.update(payloads)
+            view.hideProgress()
         }
-        view.hideProgress()
+
     }
 
     override fun onError(error: String) {

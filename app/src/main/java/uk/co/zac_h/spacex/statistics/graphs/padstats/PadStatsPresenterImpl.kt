@@ -1,12 +1,13 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
-import uk.co.zac_h.spacex.model.spacex.LandingPadDocsModel
-import uk.co.zac_h.spacex.model.spacex.LaunchpadDocsModel
+import uk.co.zac_h.spacex.base.NetworkInterface
+import uk.co.zac_h.spacex.model.spacex.LandingPad
+import uk.co.zac_h.spacex.model.spacex.Launchpad
 import uk.co.zac_h.spacex.model.spacex.StatsPadModel
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class PadStatsPresenterImpl(
-    private val view: PadStatsContract.PadStatsView,
+    private val view: NetworkInterface.View<List<StatsPadModel>>,
     private val interactor: PadStatsContract.PadStatsInteractor
 ) : PadStatsContract.PadStatsPresenter, PadStatsContract.InteractorCallback {
 
@@ -24,12 +25,12 @@ class PadStatsPresenterImpl(
         interactor.getLandingPads(api, this)
     }
 
-    override fun cancelRequests() {
+    override fun cancelRequest() {
         interactor.cancelAllRequests()
     }
 
-    override fun onGetLaunchpads(launchpads: LaunchpadDocsModel?) {
-        launchpads?.docs?.forEach {
+    override fun onGetLaunchpads(launchpads: List<Launchpad>?) {
+        launchpads?.forEach {
             padList.add(
                 StatsPadModel(
                     it.fullName,
@@ -42,12 +43,12 @@ class PadStatsPresenterImpl(
 
         view.apply {
             hideProgress()
-            updateRecycler(padList)
+            update(padList)
         }
     }
 
-    override fun onGetLandingPads(landingPads: LandingPadDocsModel?) {
-        landingPads?.docs?.forEach {
+    override fun onGetLandingPads(landingPads: List<LandingPad>?) {
+        landingPads?.forEach {
             padList.add(
                 StatsPadModel(
                     it.fullName,
@@ -61,7 +62,7 @@ class PadStatsPresenterImpl(
 
         view.apply {
             hideProgress()
-            updateRecycler(padList)
+            update(padList)
         }
     }
 

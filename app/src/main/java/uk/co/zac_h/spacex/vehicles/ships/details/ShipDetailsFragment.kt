@@ -17,31 +17,29 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentShipDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
-import uk.co.zac_h.spacex.model.spacex.ShipExtendedModel
-import uk.co.zac_h.spacex.utils.metricFormat
+import uk.co.zac_h.spacex.model.spacex.Ship
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
 class ShipDetailsFragment : Fragment() {
 
     private var binding: FragmentShipDetailsBinding? = null
 
-    private var ship: ShipExtendedModel? = null
+    private var ship: Ship? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        ship = arguments?.getParcelable("ship") as ShipExtendedModel?
+        ship = arguments?.getParcelable("ship") as Ship?
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentShipDetailsBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentShipDetailsBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -89,13 +87,13 @@ class ShipDetailsFragment : Fragment() {
                     shipDetailsBuiltText.visibility = View.GONE
                 }
 
-                if (it.massKg != null && it.massLbs != null) {
+                it.mass?.let { mass ->
                     shipDetailsMassText.text = context?.getString(
                         R.string.mass_formatted,
-                        it.massKg?.metricFormat(),
-                        it.massLbs?.metricFormat()
+                        mass.kg,
+                        mass.lb
                     )
-                } else {
+                } ?: run {
                     shipDetailsMassLabel.visibility = View.GONE
                     shipDetailsMassText.visibility = View.GONE
                 }
@@ -106,6 +104,8 @@ class ShipDetailsFragment : Fragment() {
                         setHasFixedSize(true)
                         adapter = MissionsAdapter(context, it)
                     }
+                } ?: run {
+                    shipDetailsMissionLabel.visibility = View.GONE
                 }
 
             }

@@ -2,7 +2,6 @@ package uk.co.zac_h.spacex.launches
 
 import retrofit2.Call
 import uk.co.zac_h.spacex.model.spacex.LaunchesModel
-import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
 class LaunchesWearInteractorImpl : BaseNetwork(), LaunchesWearInteractor {
@@ -14,12 +13,12 @@ class LaunchesWearInteractorImpl : BaseNetwork(), LaunchesWearInteractor {
         order: String,
         listener: LaunchesWearInteractor.Callback
     ) {
-        call = SpaceXInterface.create().getLaunches(id, order).apply {
+        /*call = SpaceXInterface.create().getLaunches(id, order).apply {
             makeCall {
                 onResponseSuccess = { listener.onSuccess(it.body()) }
                 onResponseFailure = { listener.onError(it) }
             }
-        }
+        }*/
     }
 
     override fun cancelRequest() = call?.cancel()

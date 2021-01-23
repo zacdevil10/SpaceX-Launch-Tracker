@@ -16,17 +16,16 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
-import uk.co.zac_h.spacex.model.spacex.CoreExtendedModel
+import uk.co.zac_h.spacex.model.spacex.Core
+import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import java.util.*
 
-class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class CoreDetailsFragment : Fragment(), OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private var binding: FragmentCoreDetailsBinding? = null
 
-    private var presenter: CoreDetailsContract.CoreDetailsPresenter? = null
-
-    private var core: CoreExtendedModel? = null
+    private var core: Core? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,15 +43,12 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentCoreDetailsBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentCoreDetailsBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        hideProgress()
 
         postponeEnterTransition()
 
@@ -64,10 +60,8 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
-        presenter = CoreDetailsPresenterImpl(this)
-
         core?.let {
-            presenter?.addCoreModel(it)
+            updateCoreDetails(it)
         }
 
         view.doOnPreDraw { startPostponedEnterTransition() }
@@ -93,9 +87,9 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
         binding = null
     }
 
-    override fun updateCoreDetails(coreModel: CoreExtendedModel) {
-        coreModel.apply {
-            core = coreModel
+    private fun updateCoreDetails(core: Core) {
+        core.apply {
+            this@CoreDetailsFragment.core = core
 
             binding?.apply {
                 coreDetailsScrollview.transitionName = id
@@ -105,33 +99,25 @@ class CoreDetailsFragment : Fragment(), CoreDetailsContract.CoreDetailsView,
                 coreDetailsSerialText.text = serial
                 coreDetailsBlockText.text = block ?: "TBD"
                 coreDetailsDetailsText.text = lastUpdate
-                coreDetailsStatusText.text = status
+                status?.let {
+                    coreDetailsStatusText.text = it.status
+                }
                 coreDetailsReuseText.text = reuseCount.toString()
                 coreDetailsRtlsAttemptsText.text = attemptsRtls.toString()
                 coreDetailsRtlsLandingsText.text = landingsRtls.toString()
                 coreDetailsAsdsAttemptsText.text = attemptsAsds.toString()
                 coreDetailsAsdsLandingsText.text = landingsAsds.toString()
+
+                launches?.let {
+                    coreDetailsMissionRecycler.apply {
+                        layoutManager = LinearLayoutManager(this@CoreDetailsFragment.context)
+                        setHasFixedSize(true)
+                        adapter = MissionsAdapter(context, it)
+                    }
+                }
+
+                progressIndicator.hide()
             }
         }
-
-        coreModel.missions?.let {
-            binding?.coreDetailsMissionRecycler?.apply {
-                layoutManager = LinearLayoutManager(this@CoreDetailsFragment.context)
-                setHasFixedSize(true)
-                adapter = MissionsAdapter(context, it)
-            }
-        }
-    }
-
-    override fun showProgress() {
-        binding?.progressIndicator?.show()
-    }
-
-    override fun hideProgress() {
-        binding?.progressIndicator?.hide()
-    }
-
-    override fun showError(error: String) {
-
     }
 }
