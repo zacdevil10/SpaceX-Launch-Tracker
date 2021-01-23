@@ -212,8 +212,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/launch_label"
-                        android:textAppearance="?textAppearanceBody2"
-                        app:icon="@drawable/reddit" />
+                        android:textAppearance="?textAppearanceBody2" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/launch_details_media_button"
@@ -221,8 +220,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/media_label"
-                        android:textAppearance="?textAppearanceBody2"
-                        app:icon="@drawable/reddit" />
+                        android:textAppearance="?textAppearanceBody2" />
 
                 </com.google.android.material.button.MaterialButtonToggleGroup>
 

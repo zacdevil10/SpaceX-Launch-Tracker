@@ -198,7 +198,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                     launchDetailsWatchButton.visibility = View.GONE
                 }
 
-                if (launch.datePrecision == DatePrecision.HOUR) {
+                if (launch.datePrecision == DatePrecision.DAY || launch.datePrecision == DatePrecision.HOUR) {
                     launchDetailsCalendarButton.setOnClickListener {
                         presenter?.createEvent()
                     }
