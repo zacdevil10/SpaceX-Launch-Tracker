@@ -68,7 +68,7 @@ class CrewPagerFragment : Fragment() {
 
         binding?.crewPager?.apply {
             adapter = crewPagerAdapter
-            currentItem = MainActivity.currentPosition
+            setCurrentItem(MainActivity.currentPosition, false)
             setPageTransformer(DepthPageTransformer())
 
             registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
