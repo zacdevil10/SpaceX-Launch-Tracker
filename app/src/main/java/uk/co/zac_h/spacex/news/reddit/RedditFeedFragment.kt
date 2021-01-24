@@ -15,13 +15,14 @@ import uk.co.zac_h.spacex.databinding.FragmentRedditFeedBinding
 import uk.co.zac_h.spacex.model.reddit.SubredditModel
 import uk.co.zac_h.spacex.model.reddit.SubredditPostModel
 import uk.co.zac_h.spacex.news.adapters.RedditAdapter
+import uk.co.zac_h.spacex.utils.FragmentTitleInterface
 import uk.co.zac_h.spacex.utils.PaginationScrollListener
 import uk.co.zac_h.spacex.utils.REDDIT_PARAM_ORDER_HOT
 import uk.co.zac_h.spacex.utils.REDDIT_PARAM_ORDER_NEW
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+    OnNetworkStateChangeListener.NetworkStateReceiverListener, FragmentTitleInterface {
 
     private var binding: FragmentRedditFeedBinding? = null
 
@@ -29,6 +30,8 @@ class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
 
     private lateinit var redditAdapter: RedditAdapter
     private lateinit var posts: ArrayList<SubredditPostModel>
+
+    override var title: String = "Reddit"
 
     private var isLastPage = false
     private var isLoading = false

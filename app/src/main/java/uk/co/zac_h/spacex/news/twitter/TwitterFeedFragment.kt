@@ -12,14 +12,11 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentTwitterFeedBinding
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.news.adapters.TwitterFeedAdapter
-import uk.co.zac_h.spacex.utils.PaginationScrollListener
-import uk.co.zac_h.spacex.utils.addAllExcludingPosition
-import uk.co.zac_h.spacex.utils.animateEnterFromTop
-import uk.co.zac_h.spacex.utils.animateExitToTop
+import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 class TwitterFeedFragment : Fragment(), TwitterFeedContract.TwitterFeedView,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+    OnNetworkStateChangeListener.NetworkStateReceiverListener, FragmentTitleInterface {
 
     private var binding: FragmentTwitterFeedBinding? = null
 
@@ -27,6 +24,8 @@ class TwitterFeedFragment : Fragment(), TwitterFeedContract.TwitterFeedView,
 
     private lateinit var twitterAdapter: TwitterFeedAdapter
     private lateinit var tweetsList: ArrayList<TimelineTweetModel>
+
+    override var title: String = "Twitter"
 
     private var isLastPage = false
     private var isLoading = false

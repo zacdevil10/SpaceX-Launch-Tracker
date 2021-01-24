@@ -1,14 +1,14 @@
 package uk.co.zac_h.spacex.dashboard
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 
 interface DashboardWearView {
 
-    fun updateNextLaunch(launch: LaunchesModel)
+    fun updateNextLaunch(launch: Launch)
 
-    fun updateLatestLaunch(launch: LaunchesModel)
+    fun updateLatestLaunch(launch: Launch)
 
-    fun setCountdown(launchDateUnix: Long)
+    fun setCountdown(launchDateUnix: Long?)
 
     fun updateCountdown(countdown: String)
 

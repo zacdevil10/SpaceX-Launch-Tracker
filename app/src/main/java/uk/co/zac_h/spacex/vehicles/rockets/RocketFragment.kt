@@ -12,7 +12,7 @@ import uk.co.zac_h.spacex.databinding.FragmentRocketBinding
 import uk.co.zac_h.spacex.model.spacex.Rocket
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.vehicles.FragmentTitleInterface
+import uk.co.zac_h.spacex.utils.FragmentTitleInterface
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 
 class RocketFragment : Fragment(), NetworkInterface.View<List<Rocket>>,

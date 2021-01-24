@@ -16,6 +16,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentVehiclesBinding
+import uk.co.zac_h.spacex.utils.FragmentTitleInterface
 import uk.co.zac_h.spacex.vehicles.adapters.VehiclesPagerAdapter
 import uk.co.zac_h.spacex.vehicles.capsules.CapsulesFragment
 import uk.co.zac_h.spacex.vehicles.cores.CoreFragment
@@ -51,8 +52,6 @@ class VehiclesFragment : Fragment() {
             CapsulesFragment()
         )
 
-        println("TITLE: ${(fragments[0] as FragmentTitleInterface).title}")
-
         (activity as MainActivity).setSupportActionBar(binding?.toolbar)
 
         val navController = NavHostFragment.findNavController(this)
@@ -68,7 +67,7 @@ class VehiclesFragment : Fragment() {
             view.doOnPreDraw { startPostponedEnterTransition() }
 
             vehiclesViewPager.apply {
-                adapter = VehiclesPagerAdapter(childFragmentManager, lifecycle, fragments)
+                adapter = VehiclesPagerAdapter(childFragmentManager, fragments)
             }
 
             val tabIcons = listOf(
@@ -79,11 +78,8 @@ class VehiclesFragment : Fragment() {
                 R.drawable.ic_dragon
             )
 
-            TabLayoutMediator(vehiclesTabLayout, vehiclesViewPager) { tab, position ->
-                tab.text = (fragments[position] as FragmentTitleInterface).title
-            }.attach()
-
             vehiclesTabLayout.apply {
+                setupWithViewPager(vehiclesViewPager)
                 for (position in 0..tabCount) {
                     getTabAt(position)?.setIcon(tabIcons[position])
                 }

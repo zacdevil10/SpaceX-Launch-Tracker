@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
@@ -64,14 +65,18 @@ class CrewPagerFragment : Fragment() {
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
-        crewPagerAdapter = CrewPagerAdapter(childFragmentManager, lifecycle, crew)
+        crewPagerAdapter = CrewPagerAdapter(childFragmentManager, crew)
 
         binding?.crewPager?.apply {
             adapter = crewPagerAdapter
             setCurrentItem(MainActivity.currentPosition, false)
-            setPageTransformer(DepthPageTransformer())
+            setPageTransformer(true, DepthPageTransformer())
 
-            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageScrollStateChanged(state: Int) {}
+
+                override fun onPageScrolled(p: Int, pOffset: Float, pOffsetPixels: Int) {}
+
                 override fun onPageSelected(position: Int) {
                     activity?.title = crewArray[position].name
                     MainActivity.currentPosition = position

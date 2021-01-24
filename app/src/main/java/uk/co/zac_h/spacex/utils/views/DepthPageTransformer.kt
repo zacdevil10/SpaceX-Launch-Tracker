@@ -1,9 +1,9 @@
 package uk.co.zac_h.spacex.utils.views
 
 import android.view.View
-import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager.widget.ViewPager
 
-class DepthPageTransformer : ViewPager2.PageTransformer {
+class DepthPageTransformer : ViewPager.PageTransformer {
 
     override fun transformPage(view: View, position: Float) {
         view.apply {

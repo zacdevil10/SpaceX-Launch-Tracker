@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.dashboard
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 import java.util.concurrent.TimeUnit
 
 class DashboardWearPresenterImpl(
@@ -8,8 +8,8 @@ class DashboardWearPresenterImpl(
     private val interactor: DashboardWearInteractor
 ) : DashboardWearPresenter, DashboardWearInteractor.Callback {
 
-    private lateinit var next: LaunchesModel
-    private lateinit var latest: LaunchesModel
+    private lateinit var next: Launch
+    private lateinit var latest: Launch
 
     override fun getLaunch(id: String) {
         when (id) {
@@ -60,19 +60,19 @@ class DashboardWearPresenterImpl(
         interactor.cancelAllRequests()
     }
 
-    override fun onNextSuccess(launch: LaunchesModel?) {
+    override fun onNextSuccess(launch: Launch?) {
         launch?.let {
             if (!::next.isInitialized) next = launch
 
             view.apply {
                 updateNextLaunch(it)
                 hideNextProgress()
-                setCountdown(it.launchDateUnix)
+                setCountdown(it.launchDate?.dateUnix)
             }
         }
     }
 
-    override fun onLatestSuccess(launch: LaunchesModel?) {
+    override fun onLatestSuccess(launch: Launch?) {
         launch?.let {
             if (!::latest.isInitialized) latest = launch
 
