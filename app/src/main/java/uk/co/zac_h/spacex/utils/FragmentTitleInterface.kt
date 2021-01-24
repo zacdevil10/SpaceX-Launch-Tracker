@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.vehicles
+package uk.co.zac_h.spacex.utils
 
 interface FragmentTitleInterface {
 

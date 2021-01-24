@@ -9,11 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.tabs.TabLayoutMediator
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.FragmentNewsBinding
 import uk.co.zac_h.spacex.news.adapters.NewsPagerAdapter
+import uk.co.zac_h.spacex.news.reddit.RedditFeedFragment
+import uk.co.zac_h.spacex.news.twitter.TwitterFeedFragment
 
 class NewsFragment : Fragment() {
 
@@ -38,24 +39,18 @@ class NewsFragment : Fragment() {
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
-        binding?.newsViewPager?.adapter = NewsPagerAdapter(childFragmentManager, lifecycle)
+        binding?.newsViewPager?.adapter = NewsPagerAdapter(
+            childFragmentManager,
+            listOf(TwitterFeedFragment(), RedditFeedFragment())
+        )
 
         val tabIcons = listOf(
             R.drawable.ic_twitter,
             R.drawable.reddit
         )
 
-        binding?.let {
-            TabLayoutMediator(it.newsTabLayout, it.newsViewPager) { tab, position ->
-                tab.text = when(position) {
-                    0 -> "Twitter"
-                    1 -> "Reddit"
-                    else -> "Page $position"
-                }
-            }.attach()
-        }
-
         binding?.newsTabLayout?.apply {
+            setupWithViewPager(binding?.newsViewPager)
             for (position in 0..tabCount) {
                 getTabAt(position)?.setIcon(tabIcons[position])
             }

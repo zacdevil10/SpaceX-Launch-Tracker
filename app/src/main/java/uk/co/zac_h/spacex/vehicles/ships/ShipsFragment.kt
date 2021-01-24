@@ -12,7 +12,7 @@ import uk.co.zac_h.spacex.databinding.FragmentShipsBinding
 import uk.co.zac_h.spacex.model.spacex.Ship
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.vehicles.FragmentTitleInterface
+import uk.co.zac_h.spacex.utils.FragmentTitleInterface
 import uk.co.zac_h.spacex.vehicles.adapters.ShipsAdapter
 
 class ShipsFragment : Fragment(), NetworkInterface.View<List<Ship>>,
