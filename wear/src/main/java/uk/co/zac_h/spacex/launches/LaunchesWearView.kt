@@ -1,10 +1,10 @@
 package uk.co.zac_h.spacex.launches
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 
 interface LaunchesWearView {
 
-    fun updateLaunches(launches: List<LaunchesModel>)
+    fun updateLaunches(launches: List<Launch>)
 
     fun showProgress()
 

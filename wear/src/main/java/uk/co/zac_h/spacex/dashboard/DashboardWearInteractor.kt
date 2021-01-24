@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.dashboard
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.Launch
+
 
 interface DashboardWearInteractor {
 
@@ -9,8 +10,8 @@ interface DashboardWearInteractor {
     fun cancelAllRequests(): Unit?
 
     interface Callback {
-        fun onNextSuccess(launch: LaunchesModel?)
-        fun onLatestSuccess(launch: LaunchesModel?)
+        fun onNextSuccess(launch: Launch?)
+        fun onLatestSuccess(launch: Launch?)
         fun onError(error: String)
     }
 }

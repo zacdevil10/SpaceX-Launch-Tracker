@@ -9,6 +9,8 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_dashboard.*
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.model.spacex.Launch
+import uk.co.zac_h.spacex.utils.formatDateMillisShort
 
 class DashboardWearFragment : Fragment(), DashboardWearView {
 
@@ -38,26 +40,26 @@ class DashboardWearFragment : Fragment(), DashboardWearView {
         presenter.cancelRequests()
     }
 
-    override fun updateNextLaunch(launch: LaunchesModel) {
+    override fun updateNextLaunch(launch: Launch) {
         dashboard_name_text.text = launch.missionName
         dashboard_date_text.text = launch.tbd?.let {
-            launch.launchDateUnix.formatDateMillisShort(it)
-        } ?: launch.launchDateUnix.formatDateMillisShort()
+            launch.launchDate?.dateUnix?.formatDateMillisShort(it)
+        } ?: launch.launchDate?.dateUnix?.formatDateMillisShort()
         dashboard_flight_text.text =
             context?.getString(R.string.flight_number, launch.flightNumber)
     }
 
-    override fun updateLatestLaunch(launch: LaunchesModel) {
+    override fun updateLatestLaunch(launch: Launch) {
         dashboard_latest_name_text.text = launch.missionName
         dashboard_latest_date_text.text = launch.tbd?.let {
-            launch.launchDateUnix.formatDateMillisShort(it)
-        } ?: launch.launchDateUnix.formatDateMillisShort()
+            launch.launchDate?.dateUnix?.formatDateMillisShort(it)
+        } ?: launch.launchDate?.dateUnix?.formatDateMillisShort()
         dashboard_latest_flight_text.text =
             context?.getString(R.string.flight_number, launch.flightNumber)
     }
 
-    override fun setCountdown(launchDateUnix: Long) {
-        val time = launchDateUnix.times(1000) - System.currentTimeMillis()
+    override fun setCountdown(launchDateUnix: Long?) {
+        val time = (launchDateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
 
         countdown = object : CountDownTimer(time, 1000) {
             override fun onTick(millisUntilFinished: Long) {

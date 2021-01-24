@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.utils.formatDateMillisShort
 
 class LaunchesWearAdapter(
     private val context: Context?,
-    private val launches: List<LaunchesModel>
+    private val launches: List<Launch>
 ) : RecyclerView.Adapter<LaunchesWearAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
@@ -27,7 +27,8 @@ class LaunchesWearAdapter(
         holder.apply {
             missionName.text = launch.missionName
             flightNumber.text = context?.getString(R.string.flight_number, launch.flightNumber)
-            date.text = launch.launchDateUnix.formatDateMillisShort(launch.tbd?.let { it } ?: false)
+            date.text =
+                launch.launchDate?.dateUnix?.formatDateMillisShort(launch.tbd ?: false)
         }
     }
 
