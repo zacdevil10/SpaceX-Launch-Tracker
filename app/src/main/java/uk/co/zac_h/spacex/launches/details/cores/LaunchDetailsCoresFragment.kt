@@ -5,18 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCoresBinding
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.model.spacex.LaunchCore
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchDetailsCoresFragment : Fragment(), NetworkInterface.View<List<LaunchCore>>,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<LaunchCore>> {
+
+    override var title: String = "Launch Details Cores"
 
     private var binding: FragmentLaunchDetailsCoresBinding? = null
 
@@ -67,16 +66,6 @@ class LaunchDetailsCoresFragment : Fragment(), NetworkInterface.View<List<Launch
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList("cores", cores)
         super.onSaveInstanceState(outState)
@@ -103,10 +92,6 @@ class LaunchDetailsCoresFragment : Fragment(), NetworkInterface.View<List<Launch
 
     override fun hideProgress() {
         binding?.progressIndicator?.hide()
-    }
-
-    override fun showError(error: String) {
-
     }
 
     override fun networkAvailable() {

@@ -14,13 +14,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentCapsuleDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
 import uk.co.zac_h.spacex.model.spacex.Capsule
 import uk.co.zac_h.spacex.utils.*
 import java.util.*
 
-class CapsuleDetailsFragment : Fragment() {
+class CapsuleDetailsFragment : BaseFragment() {
+
+    override var title: String = ""
 
     private var binding: FragmentCapsuleDetailsBinding? = null
 
@@ -46,12 +49,6 @@ class CapsuleDetailsFragment : Fragment() {
 
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
-
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 

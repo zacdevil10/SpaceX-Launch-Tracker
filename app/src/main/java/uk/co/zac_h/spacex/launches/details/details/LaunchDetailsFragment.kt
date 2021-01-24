@@ -9,10 +9,9 @@ import android.provider.CalendarContract
 import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
 import uk.co.zac_h.spacex.model.spacex.DatePrecision
@@ -20,10 +19,10 @@ import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsView,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetailsView {
+
+    override var title: String = "Launch Details"
 
     private var binding: FragmentLaunchDetailsBinding? = null
 
@@ -91,16 +90,6 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
             pinned = presenter?.isPinned(id) ?: false
             presenter?.get(id)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -290,10 +279,6 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
     override fun hideProgress() {
         binding?.progressIndicator?.hide()
-    }
-
-    override fun showError(error: String) {
-
     }
 
     override fun networkAvailable() {

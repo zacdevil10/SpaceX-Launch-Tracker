@@ -2,9 +2,7 @@ package uk.co.zac_h.spacex.launches.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras

@@ -2,7 +2,6 @@ package uk.co.zac_h.spacex.launches.details.details
 
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.Launch
-import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 interface LaunchDetailsContract {
 

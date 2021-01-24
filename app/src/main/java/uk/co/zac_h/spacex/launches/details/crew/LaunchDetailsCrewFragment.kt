@@ -5,17 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.crew.CrewView
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCrewBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchDetailsCrewFragment : Fragment(), CrewView,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class LaunchDetailsCrewFragment : BaseFragment(), CrewView {
+
+    override var title: String = "Launch Details Crew"
 
     private var binding: FragmentLaunchDetailsCrewBinding? = null
 
@@ -64,16 +63,6 @@ class LaunchDetailsCrewFragment : Fragment(), CrewView,
         if (crew.isEmpty()) id?.let {
             presenter?.get(it)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

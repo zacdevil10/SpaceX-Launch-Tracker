@@ -3,31 +3,27 @@ package uk.co.zac_h.spacex.launches
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.model.spacex.Launch
-import uk.co.zac_h.spacex.utils.FragmentTitleInterface
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import java.util.*
 import kotlin.collections.ArrayList
 
-class LaunchesListFragment : Fragment(), NetworkInterface.View<List<Launch>>,
-    FragmentTitleInterface, SearchView.OnQueryTextListener,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
-
-    private var binding: FragmentLaunchesListBinding? = null
-
-    private var presenter: NetworkInterface.Presenter<Nothing>? = null
-    private lateinit var launchesAdapter: LaunchesAdapter
-    private lateinit var launches: ArrayList<Launch>
+class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>,
+    SearchView.OnQueryTextListener {
 
     override var title: String = ""
+
+    private var binding: FragmentLaunchesListBinding? = null
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
+    private lateinit var launchesAdapter: LaunchesAdapter
+
+    private lateinit var launches: ArrayList<Launch>
 
     private lateinit var searchView: SearchView
 
@@ -37,7 +33,7 @@ class LaunchesListFragment : Fragment(), NetworkInterface.View<List<Launch>>,
         fun newInstance(launchParam: String) = LaunchesListFragment().apply {
             arguments = Bundle().apply {
                 putString("launchParam", launchParam)
-                title = launchParam.capitalize(Locale.ENGLISH)
+                title = launchParam
             }
         }
     }
@@ -85,11 +81,6 @@ class LaunchesListFragment : Fragment(), NetworkInterface.View<List<Launch>>,
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
     override fun onResume() {
         super.onResume()
         binding?.launchesSwipeRefresh?.isEnabled = true
@@ -98,11 +89,6 @@ class LaunchesListFragment : Fragment(), NetworkInterface.View<List<Launch>>,
     override fun onPause() {
         super.onPause()
         binding?.launchesSwipeRefresh?.isEnabled = false
-    }
-
-    override fun onStop() {
-        super.onStop()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

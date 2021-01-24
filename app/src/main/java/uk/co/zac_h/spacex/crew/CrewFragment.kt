@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.core.app.SharedElementCallback
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -15,15 +14,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class CrewFragment : Fragment(), CrewView,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class CrewFragment : BaseFragment(), CrewView {
+
+    override var title: String = "Crew"
 
     private var binding: FragmentCrewBinding? = null
 
@@ -53,13 +53,6 @@ class CrewFragment : Fragment(), CrewView,
         if (savedInstanceState == null) {
             startTransition()
         }
-
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout)
-                .build()
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
@@ -110,16 +103,6 @@ class CrewFragment : Fragment(), CrewView,
         binding?.root?.doOnPreDraw { startPostponedEnterTransition() }
     }
 
-    override fun onStart() {
-        super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList("crew", crewArray)
         super.onSaveInstanceState(outState)
@@ -148,10 +131,6 @@ class CrewFragment : Fragment(), CrewView,
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
         binding?.crewSwipeRefresh?.isRefreshing = isRefreshing
-    }
-
-    override fun showError(error: String) {
-
     }
 
     override fun networkAvailable() {

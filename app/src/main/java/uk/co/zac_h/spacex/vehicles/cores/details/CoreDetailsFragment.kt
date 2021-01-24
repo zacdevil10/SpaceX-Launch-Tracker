@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -14,14 +13,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
 import uk.co.zac_h.spacex.model.spacex.Core
 import uk.co.zac_h.spacex.utils.*
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import java.util.*
 
-class CoreDetailsFragment : Fragment(), OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class CoreDetailsFragment : BaseFragment() {
+
+    override var title: String = "Core Details"
 
     private var binding: FragmentCoreDetailsBinding? = null
 
@@ -52,12 +53,6 @@ class CoreDetailsFragment : Fragment(), OnNetworkStateChangeListener.NetworkStat
 
         postponeEnterTransition()
 
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
-
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
         core?.let {
@@ -65,16 +60,6 @@ class CoreDetailsFragment : Fragment(), OnNetworkStateChangeListener.NetworkStat
         }
 
         view.doOnPreDraw { startPostponedEnterTransition() }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

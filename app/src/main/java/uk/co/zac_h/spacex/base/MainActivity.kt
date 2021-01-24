@@ -2,7 +2,6 @@ package uk.co.zac_h.spacex.base
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
@@ -19,7 +18,7 @@ class MainActivity : AppCompatActivity(),
     private var snackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        (application as App).preferencesRepo.themeModeLive.observe(this, Observer { mode ->
+        (application as App).preferencesRepo.themeModeLive.observe(this, { mode ->
             mode?.let { delegate.localNightMode = it }
         })
 

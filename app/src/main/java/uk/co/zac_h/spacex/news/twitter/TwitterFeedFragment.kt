@@ -6,26 +6,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentTwitterFeedBinding
 import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.news.adapters.TwitterFeedAdapter
 import uk.co.zac_h.spacex.utils.*
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class TwitterFeedFragment : Fragment(), TwitterFeedContract.TwitterFeedView,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener, FragmentTitleInterface {
+class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView {
+
+    override var title: String = "Twitter"
 
     private var binding: FragmentTwitterFeedBinding? = null
 
     private var presenter: TwitterFeedContract.TwitterFeedPresenter? = null
-
     private lateinit var twitterAdapter: TwitterFeedAdapter
-    private lateinit var tweetsList: ArrayList<TimelineTweetModel>
 
-    override var title: String = "Twitter"
+    private lateinit var tweetsList: ArrayList<TimelineTweetModel>
 
     private var isLastPage = false
     private var isLoading = false
@@ -94,16 +91,6 @@ class TwitterFeedFragment : Fragment(), TwitterFeedContract.TwitterFeedView,
         }
 
         if (tweetsList.isEmpty()) presenter?.getTweets()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

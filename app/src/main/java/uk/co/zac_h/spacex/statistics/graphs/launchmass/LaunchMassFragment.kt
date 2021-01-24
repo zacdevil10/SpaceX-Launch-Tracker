@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -21,6 +20,7 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchMassBinding
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
@@ -28,10 +28,10 @@ import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.LaunchMassStatsModel
 import uk.co.zac_h.spacex.utils.models.OrbitMassModel
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchMassFragment : Fragment(), LaunchMassContract.View,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
+
+    override var title: String = "Launch Mass"
 
     private var binding: FragmentLaunchMassBinding? = null
 
@@ -71,12 +71,6 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
         view.doOnPreDraw { startPostponedEnterTransition() }
 
         (activity as MainActivity).setSupportActionBar(binding?.toolbar)
-
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
@@ -171,16 +165,6 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
         }
 
         presenter?.getOrUpdate(statsList)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -403,10 +387,6 @@ class LaunchMassFragment : Fragment(), LaunchMassContract.View,
 
     override fun hideProgress() {
         binding?.progressIndicator?.hide()
-    }
-
-    override fun showError(error: String) {
-
     }
 
     override fun networkAvailable() {

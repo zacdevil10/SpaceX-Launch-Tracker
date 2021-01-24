@@ -15,12 +15,15 @@ import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentShipDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
 import uk.co.zac_h.spacex.model.spacex.Ship
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
-class ShipDetailsFragment : Fragment() {
+class ShipDetailsFragment : BaseFragment() {
+
+    override var title: String = ""
 
     private var binding: FragmentShipDetailsBinding? = null
 
@@ -47,17 +50,12 @@ class ShipDetailsFragment : Fragment() {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
-
         binding?.apply {
             toolbar.setupWithNavController(navController, appBarConfig)
 
             ship?.let {
                 shipDetailsCoordinator.transitionName = it.id
+                title = it.name ?: ""
                 toolbar.title = it.name
 
                 Glide.with(view)

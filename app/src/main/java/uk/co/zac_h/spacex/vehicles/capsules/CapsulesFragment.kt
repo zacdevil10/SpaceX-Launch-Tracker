@@ -3,32 +3,28 @@ package uk.co.zac_h.spacex.vehicles.capsules
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCapsulesBinding
 import uk.co.zac_h.spacex.model.spacex.Capsule
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.utils.FragmentTitleInterface
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
 
-class CapsulesFragment : Fragment(), NetworkInterface.View<List<Capsule>>,
-    SearchView.OnQueryTextListener, OnNetworkStateChangeListener.NetworkStateReceiverListener,
-    FragmentTitleInterface {
+class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
+    SearchView.OnQueryTextListener {
+
+    override var title: String = "Capsules"
 
     private var binding: FragmentCapsulesBinding? = null
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
-
     private lateinit var capsulesAdapter: CapsulesAdapter
-    private lateinit var capsulesArray: ArrayList<Capsule>
 
-    override var title: String = "Capsules"
+    private lateinit var capsulesArray: ArrayList<Capsule>
 
     private lateinit var orderSharedPreferences: OrderSharedPreferencesHelper
     private var sortNew = false
@@ -73,16 +69,6 @@ class CapsulesFragment : Fragment(), NetworkInterface.View<List<Capsule>>,
         }
 
         if (capsulesArray.isEmpty()) presenter?.get()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -160,10 +146,6 @@ class CapsulesFragment : Fragment(), NetworkInterface.View<List<Capsule>>,
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
         binding?.capsulesSwipeRefresh?.isRefreshing = isRefreshing
-    }
-
-    override fun showError(error: String) {
-
     }
 
     override fun networkAvailable() {

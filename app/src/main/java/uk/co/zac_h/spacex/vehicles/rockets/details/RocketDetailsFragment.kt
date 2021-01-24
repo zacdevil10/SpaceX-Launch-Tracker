@@ -14,13 +14,16 @@ import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentRocketDetailsBinding
 import uk.co.zac_h.spacex.model.spacex.Rocket
 import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.setImageAndTint
 import uk.co.zac_h.spacex.vehicles.adapters.RocketPayloadAdapter
 
-class RocketDetailsFragment : Fragment() {
+class RocketDetailsFragment : BaseFragment() {
+
+    override var title: String = ""
 
     private lateinit var binding: FragmentRocketDetailsBinding
 
@@ -44,12 +47,6 @@ class RocketDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
-
         with(binding) {
             NavigationUI.setupWithNavController(
                 toolbarLayout,
@@ -61,6 +58,7 @@ class RocketDetailsFragment : Fragment() {
             rocket?.let {
                 rocketDetailsCoordinator.transitionName = it.id
 
+                title = it.name ?: ""
                 toolbar.title = it.name
 
                 Glide.with(view)

@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -21,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.dashboard.adapters.DashboardPinnedAdapter
 import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
 import uk.co.zac_h.spacex.databinding.ListItemDashboardLaunchBinding
@@ -28,15 +28,14 @@ import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_LATEST_NEWS
 import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_NEXT_LAUNCH
 import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_PINNED_LAUNCH
 import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_PREVIOUS_LAUNCH
 
-class DashboardFragment : Fragment(),
-    DashboardContract.View,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class DashboardFragment : BaseFragment(), DashboardContract.View {
+
+    override var title: String = "Dashboard"
 
     private var binding: FragmentDashboardBinding? = null
 
@@ -75,12 +74,6 @@ class DashboardFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
@@ -160,11 +153,6 @@ class DashboardFragment : Fragment(),
         presenter?.getLatestLaunches(nextLaunchModel, latestLaunchModel)
     }
 
-    override fun onStart() {
-        super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
     override fun onResume() {
         super.onResume()
         binding?.dashboardSwipeRefresh?.isEnabled = true
@@ -173,11 +161,6 @@ class DashboardFragment : Fragment(),
     override fun onPause() {
         super.onPause()
         binding?.dashboardSwipeRefresh?.isEnabled = false
-    }
-
-    override fun onStop() {
-        super.onStop()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -359,10 +342,6 @@ class DashboardFragment : Fragment(),
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
         binding?.dashboardSwipeRefresh?.isRefreshing = isRefreshing
-    }
-
-    override fun showError(error: String) {
-
     }
 
     override fun networkAvailable() {

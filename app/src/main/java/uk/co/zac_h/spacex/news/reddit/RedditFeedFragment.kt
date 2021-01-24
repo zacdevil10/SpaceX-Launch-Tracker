@@ -7,31 +7,28 @@ import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentRedditFeedBinding
 import uk.co.zac_h.spacex.model.reddit.SubredditModel
 import uk.co.zac_h.spacex.model.reddit.SubredditPostModel
 import uk.co.zac_h.spacex.news.adapters.RedditAdapter
-import uk.co.zac_h.spacex.utils.FragmentTitleInterface
 import uk.co.zac_h.spacex.utils.PaginationScrollListener
 import uk.co.zac_h.spacex.utils.REDDIT_PARAM_ORDER_HOT
 import uk.co.zac_h.spacex.utils.REDDIT_PARAM_ORDER_NEW
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener, FragmentTitleInterface {
+class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
+
+    override var title: String = "Reddit"
 
     private var binding: FragmentRedditFeedBinding? = null
 
     private var presenter: RedditFeedContract.RedditFeedPresenter? = null
-
     private lateinit var redditAdapter: RedditAdapter
-    private lateinit var posts: ArrayList<SubredditPostModel>
 
-    override var title: String = "Reddit"
+    private lateinit var posts: ArrayList<SubredditPostModel>
 
     private var isLastPage = false
     private var isLoading = false

@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -13,23 +12,24 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentHistoryBinding
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.utils.views.HeaderItemDecoration
 
-class HistoryFragment : Fragment(), HistoryView,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class HistoryFragment : BaseFragment(), HistoryView {
+
+    override var title: String = "History"
 
     private var binding: FragmentHistoryBinding? = null
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
-
     private lateinit var history: ArrayList<HistoryHeaderModel>
+
     private lateinit var historyAdapter: HistoryAdapter
 
     private lateinit var orderSharedPreferences: OrderSharedPreferencesHelper
@@ -57,12 +57,6 @@ class HistoryFragment : Fragment(), HistoryView,
         hideProgress()
 
         (activity as MainActivity).setSupportActionBar(binding?.toolbar)
-
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
@@ -105,16 +99,6 @@ class HistoryFragment : Fragment(), HistoryView,
         if (history.isEmpty()) {
             presenter?.get(sortNew)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -181,10 +165,6 @@ class HistoryFragment : Fragment(), HistoryView,
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
         binding?.historySwipeRefresh?.isRefreshing = isRefreshing
-    }
-
-    override fun showError(error: String) {
-
     }
 
     override fun networkAvailable() {

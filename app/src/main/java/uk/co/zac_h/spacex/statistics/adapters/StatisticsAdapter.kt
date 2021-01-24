@@ -1,15 +1,11 @@
 package uk.co.zac_h.spacex.statistics.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.card.MaterialCardView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemIllustrationsFooterBinding
 import uk.co.zac_h.spacex.databinding.ListItemStatisticsBinding

@@ -5,18 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsShipsBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchDetailsShipsAdapter
 import uk.co.zac_h.spacex.model.spacex.Ship
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchDetailsShipsFragment : Fragment(), NetworkInterface.View<List<Ship>>,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
+
+    override var title: String = "Launch Details Ships"
 
     private var binding: FragmentLaunchDetailsShipsBinding? = null
 
@@ -69,16 +68,6 @@ class LaunchDetailsShipsFragment : Fragment(), NetworkInterface.View<List<Ship>>
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList("ships", shipsArray)
         super.onSaveInstanceState(outState)
@@ -105,10 +94,6 @@ class LaunchDetailsShipsFragment : Fragment(), NetworkInterface.View<List<Ship>>
 
     override fun hideProgress() {
         binding?.launchDetailsShipsProgress?.hide()
-    }
-
-    override fun showError(error: String) {
-
     }
 
     override fun networkAvailable() {
