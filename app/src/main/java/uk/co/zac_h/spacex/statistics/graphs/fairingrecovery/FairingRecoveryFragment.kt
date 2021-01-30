@@ -199,17 +199,17 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (statsList.isEmpty() || it.progressIndicator.isShown) presenter?.getOrUpdate(null)
+                if (statsList.isEmpty() || it.progress.isShown) presenter?.getOrUpdate(null)
             }
         }
     }

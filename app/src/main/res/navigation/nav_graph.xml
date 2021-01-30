@@ -11,7 +11,7 @@
         app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_dashboard">
         <action
-            android:id="@+id/action_dashboard_page_fragment_to_launch_details_container_fragment"
+            android:id="@+id/action_launch_item_to_launch_details_container_fragment"
             app:destination="@id/launch_details_container_fragment"
             app:exitAnim="@android:anim/fade_out" />
         <action
@@ -31,7 +31,7 @@
         app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_launches">
         <action
-            android:id="@+id/action_launches_page_fragment_to_launch_details_container_fragment"
+            android:id="@+id/action_launch_item_to_launch_details_container_fragment"
             app:destination="@id/launch_details_container_fragment"
             app:exitAnim="@android:anim/fade_out" />
     </fragment>

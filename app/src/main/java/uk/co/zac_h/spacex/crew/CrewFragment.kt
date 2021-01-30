@@ -6,14 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.SharedElementCallback
 import androidx.core.view.doOnPreDraw
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.base.NetworkInterface
@@ -22,6 +18,10 @@ import uk.co.zac_h.spacex.databinding.FragmentCrewBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
 
 class CrewFragment : BaseFragment(), CrewView {
+
+    companion object {
+        const val CREW_KEY = "crew"
+    }
 
     override var title: String = "Crew"
 
@@ -35,7 +35,7 @@ class CrewFragment : BaseFragment(), CrewView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        crewArray = savedInstanceState?.getParcelableArrayList("crew") ?: ArrayList()
+        crewArray = savedInstanceState?.getParcelableArrayList(CREW_KEY) ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -68,7 +68,7 @@ class CrewFragment : BaseFragment(), CrewView {
         prepareTransitions()
         postponeEnterTransition()
 
-        binding?.crewSwipeRefresh?.setOnRefreshListener {
+        binding?.swipeRefresh?.setOnRefreshListener {
             presenter?.get()
         }
 
@@ -104,7 +104,7 @@ class CrewFragment : BaseFragment(), CrewView {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("crew", crewArray)
+        outState.putParcelableArrayList(CREW_KEY, crewArray)
         super.onSaveInstanceState(outState)
     }
 
@@ -122,21 +122,21 @@ class CrewFragment : BaseFragment(), CrewView {
     }
 
     override fun showProgress() {
-        binding?.crewProgressBar?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.crewProgressBar?.hide()
+        binding?.progress?.hide()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding?.crewSwipeRefresh?.isRefreshing = isRefreshing
+        binding?.swipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (crewArray.isEmpty() || it.crewProgressBar.isShown) presenter?.get()
+                if (crewArray.isEmpty() || it.progress.isShown) presenter?.get()
             }
         }
     }

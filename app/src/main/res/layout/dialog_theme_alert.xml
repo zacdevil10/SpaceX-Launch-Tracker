@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="@dimen/medium_margin">
 
     <TextView
         android:id="@+id/dialog_theme_title"
@@ -21,7 +21,7 @@
         android:id="@+id/dialog_theme_radio_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/small_margin"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/dialog_theme_title">
 
@@ -29,7 +29,7 @@
             android:id="@+id/dialog_theme_always"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="16dp"
+            android:paddingStart="@dimen/medium_margin"
             android:textAppearance="?textAppearanceListItem"
             tools:ignore="RtlSymmetry" />
 
@@ -37,7 +37,7 @@
             android:id="@+id/dialog_theme_system"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="16dp"
+            android:paddingStart="@dimen/medium_margin"
             android:textAppearance="?textAppearanceListItem"
             tools:ignore="RtlSymmetry" />
 
@@ -45,7 +45,7 @@
             android:id="@+id/dialog_theme_never"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="16dp"
+            android:paddingStart="@dimen/medium_margin"
             android:textAppearance="?textAppearanceListItem"
             tools:ignore="RtlSymmetry" />
     </RadioGroup>

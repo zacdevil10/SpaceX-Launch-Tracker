@@ -80,7 +80,7 @@ class CapsuleDetailsFragment : BaseFragment() {
                     setHasFixedSize(true)
                     adapter = MissionsAdapter(context, launches)
                 }
-            } ?: run { capsuleDetailsNoMissionLabel.visibility = View.VISIBLE }
+            } ?: run { capsuleDetailsMissionLabel.visibility = View.GONE }
         }
     }
 

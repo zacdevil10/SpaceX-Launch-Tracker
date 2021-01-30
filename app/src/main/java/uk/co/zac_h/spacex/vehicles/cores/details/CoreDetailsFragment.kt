@@ -101,7 +101,7 @@ class CoreDetailsFragment : BaseFragment() {
                     }
                 }
 
-                progressIndicator.hide()
+                progress.hide()
             }
         }
     }

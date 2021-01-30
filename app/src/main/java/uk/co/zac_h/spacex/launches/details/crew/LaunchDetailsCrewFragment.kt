@@ -26,17 +26,20 @@ class LaunchDetailsCrewFragment : BaseFragment(), CrewView {
     private var id: String? = null
 
     companion object {
+        const val CREW_KEY = "crew"
+        const val ID_KEY = "id"
+
         @JvmStatic
         fun newInstance(args: Any) = LaunchDetailsCrewFragment().apply {
-            arguments = bundleOf("id" to args)
+            arguments = bundleOf(ID_KEY to args)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        crew = savedInstanceState?.getParcelableArrayList("crew") ?: ArrayList()
-        id = arguments?.getString("id")
+        crew = savedInstanceState?.getParcelableArrayList(CREW_KEY) ?: ArrayList()
+        id = arguments?.getString(ID_KEY)
     }
 
     override fun onCreateView(
@@ -66,7 +69,7 @@ class LaunchDetailsCrewFragment : BaseFragment(), CrewView {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("crew", crew)
+        outState.putParcelableArrayList(CREW_KEY, crew)
         super.onSaveInstanceState(outState)
     }
 
@@ -84,11 +87,11 @@ class LaunchDetailsCrewFragment : BaseFragment(), CrewView {
     }
 
     override fun showProgress() {
-        binding?.launchDetailsCrewProgress?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.launchDetailsCrewProgress?.hide()
+        binding?.progress?.hide()
     }
 
     override fun networkAvailable() {

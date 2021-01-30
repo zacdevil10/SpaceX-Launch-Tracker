@@ -20,7 +20,7 @@
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:elevation="4dp"
+            android:elevation="@dimen/toolbar_elevation"
             android:textColor="?colorOnSurface"
             android:theme="@style/AppTheme.AppBarOverlay"
             app:title="Mass to Orbit" />
@@ -28,11 +28,11 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.progressindicator.ProgressIndicator
-        android:id="@+id/progress_indicator"
+        android:id="@+id/progress"
         style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="4dp"
+        android:elevation="@dimen/toolbar_elevation"
         app:indicatorColor="?colorSecondary"
         app:layout_constraintTop_toBottomOf="@id/app_bar" />
 
@@ -65,7 +65,7 @@
         android:clickable="true"
         android:clipToPadding="true"
         android:focusable="true"
-        android:padding="16dp"
+        android:padding="@dimen/medium_margin"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/app_bar">
 
@@ -92,7 +92,7 @@
                 android:id="@+id/launch_mass_rocket_chip_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="@dimen/small_margin"
                 app:singleLine="true"
                 app:singleSelection="true">
 
@@ -144,7 +144,7 @@
                 android:id="@+id/launch_mass_type_chip_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="@dimen/small_margin"
                 app:selectionRequired="true"
                 app:singleLine="true"
                 app:singleSelection="true">

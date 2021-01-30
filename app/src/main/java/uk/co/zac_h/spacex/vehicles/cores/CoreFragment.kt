@@ -63,7 +63,7 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
             adapter = coreAdapter
         }
 
-        binding?.coreSwipeRefresh?.setOnRefreshListener {
+        binding?.swipeRefresh?.setOnRefreshListener {
             presenter?.get()
         }
 
@@ -134,21 +134,21 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding?.coreSwipeRefresh?.isRefreshing = isRefreshing
+        binding?.swipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (coresArray.isEmpty() || it.progressIndicator.isShown) presenter?.get()
+                if (coresArray.isEmpty() || it.progress.isShown) presenter?.get()
             }
         }
     }

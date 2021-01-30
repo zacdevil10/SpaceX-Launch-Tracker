@@ -6,7 +6,6 @@ import uk.co.zac_h.spacex.model.spacex.Launch
 interface LaunchDetailsContract {
 
     interface LaunchDetailsView : NetworkInterface.View<Launch?> {
-        fun updateLaunchDataView(launch: Launch?, isExt: Boolean)
         fun newCalendarEvent()
         fun openWebLink(link: String)
     }

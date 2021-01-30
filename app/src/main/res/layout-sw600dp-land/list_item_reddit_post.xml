@@ -10,13 +10,13 @@
         android:id="@+id/list_item_reddit_card"
         android:layout_width="400dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="@dimen/medium_margin"
+        android:layout_marginTop="@dimen/small_margin"
+        android:layout_marginEnd="@dimen/medium_margin"
+        android:layout_marginBottom="@dimen/small_margin"
         android:clickable="true"
         android:focusable="true"
-        app:cardElevation="4dp"
+        app:cardElevation="@dimen/card_elevation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,24 +25,24 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="16dp"
-            android:paddingBottom="8dp">
+            android:paddingTop="@dimen/medium_margin"
+            android:paddingBottom="@dimen/small_margin">
 
             <TextView
                 android:id="@+id/list_item_reddit_author"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
                 android:textAppearance="?textAppearanceCaption"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="zacdevil10" />
 
             <View
-                android:id="@+id/list_item_separator"
+                android:id="@+id/separator"
                 android:layout_width="1dp"
                 android:layout_height="1dp"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="@dimen/xsmall_margin"
                 android:background="?colorOnBackground"
                 app:layout_constraintBottom_toBottomOf="@id/list_item_reddit_author"
                 app:layout_constraintStart_toEndOf="@id/list_item_reddit_author"
@@ -52,9 +52,9 @@
                 android:id="@+id/list_item_reddit_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="@dimen/xsmall_margin"
                 android:textAppearance="?textAppearanceCaption"
-                app:layout_constraintStart_toEndOf="@id/list_item_separator"
+                app:layout_constraintStart_toEndOf="@id/separator"
                 app:layout_constraintTop_toTopOf="@id/list_item_reddit_author"
                 tools:text="4d" />
 
@@ -62,21 +62,21 @@
                 android:id="@+id/list_item_reddit_pinned"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="@dimen/medium_margin"
                 android:src="@drawable/ic_pin"
                 app:layout_constraintBottom_toBottomOf="@id/list_item_reddit_date"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/list_item_reddit_date"
-                tools:ignore="ContentDescription"
-                app:tint="?colorSecondary" />
+                app:tint="?colorSecondary"
+                tools:ignore="ContentDescription" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/list_item_reddit_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingStart="16dp"
-                android:paddingEnd="24dp"
+                android:paddingStart="@dimen/medium_margin"
+                android:paddingEnd="@dimen/large_margin"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_reddit_author">
 
@@ -84,8 +84,8 @@
                     android:id="@+id/list_item_reddit_thumbnail_card"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:layout_marginEnd="@dimen/small_margin"
                     android:visibility="gone"
                     app:cardElevation="0dp"
                     app:layout_constraintEnd_toStartOf="@id/list_item_reddit_title"
@@ -127,11 +127,11 @@
                     android:id="@+id/list_item_reddit_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/small_margin"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:minLines="1"
-                    android:textAppearance="?textAppearanceSearchResultTitle"
+                    android:textAppearance="?textAppearanceHeadline6"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -154,9 +154,9 @@
                     android:id="@+id/list_item_reddit_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="24dp"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:layout_marginEnd="@dimen/large_margin"
                     android:ellipsize="end"
                     android:maxLines="3"
                     android:textAppearance="?textAppearanceBody2"
@@ -167,7 +167,7 @@
                     android:id="@+id/list_item_reddit_preview"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/small_margin"
                     android:scaleType="centerCrop"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -178,7 +178,7 @@
                     android:id="@+id/list_item_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/small_margin"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:paddingStart="16dp"
@@ -195,13 +195,13 @@
                         android:id="@+id/list_item_reddit_score"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
+                        android:layout_marginStart="@dimen/xsmall_margin"
                         tools:text="231" />
 
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="16dp"
+                        android:layout_marginStart="@dimen/medium_margin"
                         android:src="@drawable/ic_comment_black_24dp"
                         tools:ignore="ContentDescription" />
 
@@ -209,7 +209,7 @@
                         android:id="@+id/list_item_reddit_comments"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
+                        android:layout_marginStart="@dimen/xsmall_margin"
                         tools:text="231" />
 
                 </LinearLayout>

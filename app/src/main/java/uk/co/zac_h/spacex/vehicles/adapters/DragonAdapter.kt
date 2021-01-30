@@ -23,18 +23,18 @@ class DragonAdapter(private val dragonList: List<Dragon>) :
         val dragon = dragonList[position]
 
         holder.binding.apply {
-            listItemVehicleCard.transitionName = dragon.id
+            vehicleCard.transitionName = dragon.id
 
             Glide.with(root)
                 .load(dragon.flickr?.random())
                 .error(R.drawable.ic_baseline_error_outline_24)
-                .into(listItemVehicleImage)
+                .into(vehicleImage)
 
-            listItemVehicleTitle.text = dragon.name
-            listItemVehicleDetails.text = dragon.description
+            vehicleName.text = dragon.name
+            vehicleDetails.text = dragon.description
 
-            listItemVehicleCard.setOnClickListener { holder.bind(dragon) }
-            listItemVehicleSpecsButton.setOnClickListener { holder.bind(dragon) }
+            vehicleCard.setOnClickListener { holder.bind(dragon) }
+            vehicleSpecs.setOnClickListener { holder.bind(dragon) }
         }
     }
 
@@ -46,7 +46,7 @@ class DragonAdapter(private val dragonList: List<Dragon>) :
                 R.id.action_vehicles_page_fragment_to_dragon_details_fragment,
                 bundleOf("dragon" to dragon, "title" to dragon.name),
                 null,
-                FragmentNavigatorExtras(binding.listItemVehicleCard to dragon.id)
+                FragmentNavigatorExtras(binding.vehicleCard to dragon.id)
             )
         }
     }

@@ -30,5 +30,5 @@ fun animateFadeIn(context: Context?): Animation =
 fun animateFadeOut(context: Context?): Animation =
     AnimationUtils.loadAnimation(context, R.anim.fade_out)
 
-fun animationScaleUpWithOffset(context: Context?, offset: Long): Animation =
-    AnimationUtils.loadAnimation(context, R.anim.scale_up).apply { startOffset = offset }
+fun animationScaleUpWithOffset(context: Context?): Animation =
+    AnimationUtils.loadAnimation(context, R.anim.scale_up)

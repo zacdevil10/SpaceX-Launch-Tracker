@@ -73,7 +73,7 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
         }
 
         launchParam?.let { launchId ->
-            binding?.launchesSwipeRefresh?.setOnRefreshListener {
+            binding?.swipeRefresh?.setOnRefreshListener {
                 presenter?.get(launchId)
             }
 
@@ -83,12 +83,12 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
 
     override fun onResume() {
         super.onResume()
-        binding?.launchesSwipeRefresh?.isEnabled = true
+        binding?.swipeRefresh?.isEnabled = true
     }
 
     override fun onPause() {
         super.onPause()
-        binding?.launchesSwipeRefresh?.isEnabled = false
+        binding?.swipeRefresh?.isEnabled = false
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -138,21 +138,21 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding?.launchesSwipeRefresh?.isRefreshing = isRefreshing
+        binding?.swipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (launches.isEmpty() || it.progressIndicator.isShown)
+                if (launches.isEmpty() || it.progress.isShown)
                     launchParam?.let { launchId ->
                         presenter?.get(launchId)
                     }

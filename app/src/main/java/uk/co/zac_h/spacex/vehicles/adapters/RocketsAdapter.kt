@@ -23,18 +23,18 @@ class RocketsAdapter(private val rockets: List<Rocket>) :
         val rocket = rockets[position]
 
         holder.binding.apply {
-            listItemVehicleCard.transitionName = rocket.id
+            vehicleCard.transitionName = rocket.id
 
             Glide.with(root)
                 .load(rocket.flickr?.random())
                 .error(R.drawable.ic_baseline_error_outline_24)
-                .into(listItemVehicleImage)
+                .into(vehicleImage)
 
-            listItemVehicleTitle.text = rocket.name
-            listItemVehicleDetails.text = rocket.description
+            vehicleName.text = rocket.name
+            vehicleDetails.text = rocket.description
 
-            listItemVehicleCard.setOnClickListener { holder.bind(rocket) }
-            listItemVehicleSpecsButton.setOnClickListener { holder.bind(rocket) }
+            vehicleCard.setOnClickListener { holder.bind(rocket) }
+            vehicleSpecs.setOnClickListener { holder.bind(rocket) }
         }
     }
 
@@ -46,7 +46,7 @@ class RocketsAdapter(private val rockets: List<Rocket>) :
                 R.id.action_vehicles_page_fragment_to_rocket_details_fragment,
                 bundleOf("rocket" to rocket),
                 null,
-                FragmentNavigatorExtras(binding.listItemVehicleCard to rocket.id)
+                FragmentNavigatorExtras(binding.vehicleCard to rocket.id)
             )
         }
     }

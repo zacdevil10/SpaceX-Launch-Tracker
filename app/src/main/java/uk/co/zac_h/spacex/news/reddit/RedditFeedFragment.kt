@@ -95,7 +95,7 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
             })
         }
 
-        binding?.redditSwipeRefresh?.setOnRefreshListener {
+        binding?.swipeRefresh?.setOnRefreshListener {
             presenter?.getSub(order)
         }
     }
@@ -186,15 +186,15 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding?.redditSwipeRefresh?.isRefreshing = refreshing
+        binding?.swipeRefresh?.isRefreshing = refreshing
     }
 
     override fun showPagingProgress() {
@@ -212,7 +212,7 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (posts.isEmpty() || it.progressIndicator.isShown)
+                if (posts.isEmpty() || it.progress.isShown)
                     presenter?.getSub(order)
             }
 

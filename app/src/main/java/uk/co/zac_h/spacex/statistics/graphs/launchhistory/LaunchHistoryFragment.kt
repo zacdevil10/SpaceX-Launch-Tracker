@@ -277,17 +277,17 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (launchStats.isEmpty() || it.progressIndicator.isShown) presenter?.getOrUpdate(
+                if (launchStats.isEmpty() || it.progress.isShown) presenter?.getOrUpdate(
                     null
                 )
             }

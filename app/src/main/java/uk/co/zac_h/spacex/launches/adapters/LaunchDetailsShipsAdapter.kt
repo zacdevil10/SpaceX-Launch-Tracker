@@ -24,18 +24,18 @@ class LaunchDetailsShipsAdapter(private val ships: List<Ship>) :
         val ship = ships[position]
 
         holder.binding.apply {
-            listItemVehicleCard.transitionName = ship.id
+            vehicleCard.transitionName = ship.id
 
             Glide.with(root)
                 .load(ship.image)
-                .error(R.drawable.ic_baseline_error_outline_24)
-                .into(listItemVehicleImage)
+                .error(R.drawable.ic_baseline_directions_boat_24)
+                .into(vehicleImage)
 
-            listItemVehicleTitle.text = ship.name
-            listItemVehicleDetails.visibility = View.GONE
+            vehicleName.text = ship.name
+            vehicleDetails.visibility = View.GONE
 
-            listItemVehicleCard.setOnClickListener { holder.bind(ship) }
-            listItemVehicleSpecsButton.setOnClickListener { holder.bind(ship) }
+            vehicleCard.setOnClickListener { holder.bind(ship) }
+            vehicleSpecs.setOnClickListener { holder.bind(ship) }
         }
     }
 
@@ -47,7 +47,7 @@ class LaunchDetailsShipsAdapter(private val ships: List<Ship>) :
                 R.id.action_launch_details_container_fragment_to_ship_details_fragment,
                 bundleOf("ship" to ship),
                 null,
-                FragmentNavigatorExtras(binding.listItemVehicleCard to ship.id)
+                FragmentNavigatorExtras(binding.vehicleCard to ship.id)
             )
         }
     }

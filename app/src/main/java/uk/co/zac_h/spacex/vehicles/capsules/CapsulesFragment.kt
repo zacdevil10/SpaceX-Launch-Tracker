@@ -64,7 +64,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
             adapter = capsulesAdapter
         }
 
-        binding?.capsulesSwipeRefresh?.setOnRefreshListener {
+        binding?.swipeRefresh?.setOnRefreshListener {
             presenter?.get()
         }
 
@@ -137,21 +137,21 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding?.capsulesSwipeRefresh?.isRefreshing = isRefreshing
+        binding?.swipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (capsulesArray.isEmpty() || it.progressIndicator.isShown) presenter?.get()
+                if (capsulesArray.isEmpty() || it.progress.isShown) presenter?.get()
             }
         }
     }

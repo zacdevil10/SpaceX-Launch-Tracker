@@ -14,11 +14,14 @@ import uk.co.zac_h.spacex.model.spacex.Launch
 class MissionsAdapter(
     private val context: Context?,
     private val launches: List<Launch>
-) :
-    RecyclerView.Adapter<MissionsAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<MissionsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
-        ListItemMissionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        ListItemMissionBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
     )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -26,8 +29,8 @@ class MissionsAdapter(
 
         holder.binding.apply {
             root.transitionName = launch.id
-            listItemMissionNameText.text = launch.missionName
-            listItemMissionFlightText.text =
+            missionName.text = launch.missionName
+            missionFlightNumber.text =
                 context?.getString(R.string.flight_number, launch.flightNumber)
 
             root.setOnClickListener {

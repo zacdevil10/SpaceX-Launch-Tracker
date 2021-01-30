@@ -27,17 +27,20 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
     private var id: String? = null
 
     companion object {
+        const val CORES_KEY = "cores"
+        const val ID_KEY = "id"
+
         @JvmStatic
         fun newInstance(args: Any) = LaunchDetailsCoresFragment().apply {
-            arguments = bundleOf("id" to args)
+            arguments = bundleOf(ID_KEY to args)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        cores = savedInstanceState?.getParcelableArrayList("cores") ?: ArrayList()
-        id = arguments?.getString("id")
+        cores = savedInstanceState?.getParcelableArrayList(CORES_KEY) ?: ArrayList()
+        id = arguments?.getString(ID_KEY)
     }
 
     override fun onCreateView(
@@ -67,7 +70,7 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("cores", cores)
+        outState.putParcelableArrayList(CORES_KEY, cores)
         super.onSaveInstanceState(outState)
     }
 
@@ -87,11 +90,11 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
     override fun networkAvailable() {

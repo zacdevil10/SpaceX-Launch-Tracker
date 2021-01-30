@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity(),
         setContentView(binding.root)
 
         savedInstanceState?.let {
-            currentPosition = it.getInt("crew_pager_position")
+            currentPosition = it.getInt(CREW_POSITION_KEY)
         }
 
         (application as App).networkStateChangeListener.apply {
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt("crew_pager_position", currentPosition)
+        outState.putInt(CREW_POSITION_KEY, currentPosition)
         super.onSaveInstanceState(outState)
     }
 
@@ -79,6 +79,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     companion object {
+        const val CREW_POSITION_KEY = "crew_pager_position"
         var currentPosition: Int = 0
     }
 }

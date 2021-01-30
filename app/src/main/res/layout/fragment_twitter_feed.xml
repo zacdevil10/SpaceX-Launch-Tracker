@@ -7,16 +7,16 @@
     tools:context=".news.twitter.TwitterFeedFragment">
 
     <com.google.android.material.progressindicator.ProgressIndicator
-        android:id="@+id/progress_indicator"
+        android:id="@+id/progress"
         style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="4dp"
+        android:elevation="@dimen/toolbar_elevation"
         app:indicatorColor="?colorSecondary"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/twitter_feed_swipe_refresh"
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".news.twitter.TwitterFeedFragment">
@@ -25,8 +25,9 @@
             android:id="@+id/twitter_feed_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="16dp"
-            android:clipToPadding="false" />
+            android:paddingBottom="@dimen/medium_margin"
+            android:clipToPadding="false"
+            tools:listitem="@layout/list_item_tweet"/>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -35,7 +36,7 @@
         style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="4dp"
+        android:elevation="@dimen/toolbar_elevation"
         app:indicatorColor="?colorSecondary"
         app:layout_constraintBottom_toBottomOf="parent" />
 

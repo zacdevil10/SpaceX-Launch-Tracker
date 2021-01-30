@@ -126,17 +126,17 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (pads.isEmpty() || it.progressIndicator.isShown) type?.let { padType ->
+                if (pads.isEmpty() || it.progress.isShown) type?.let { padType ->
                     when (padType) {
                         PadType.LANDING_PAD -> presenter?.getLandingPads()
                         PadType.LAUNCHPAD -> presenter?.getLaunchpads()

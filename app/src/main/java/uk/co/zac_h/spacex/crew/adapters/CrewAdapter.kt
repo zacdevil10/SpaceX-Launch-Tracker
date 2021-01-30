@@ -21,13 +21,11 @@ import uk.co.zac_h.spacex.model.spacex.Crew
 class CrewAdapter(
     private val view: CrewView,
     private val crew: List<Crew>
-) :
-    RecyclerView.Adapter<CrewAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<CrewAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(
-            GridItemCrewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
+        GridItemCrewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val person = crew[position]
@@ -56,11 +54,11 @@ class CrewAdapter(
                     view.startTransition()
                     return false
                 }
-            }).into(gridItemCrewImage)
+            }).into(image)
 
-            gridItemCrewTitle.text = person.name
+            title.text = person.name
 
-            gridItemCrewCard.setOnClickListener {
+            crewCard.setOnClickListener {
                 MainActivity.currentPosition = position
                 holder.bind(person)
             }

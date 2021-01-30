@@ -11,21 +11,22 @@
         style="@style/Widget.MaterialComponents.Toolbar.Primary"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:elevation="@dimen/toolbar_elevation"
         android:textColor="?colorOnSurface"
         app:layout_constraintTop_toTopOf="parent"
         app:title="@string/menu_history" />
 
     <com.google.android.material.progressindicator.ProgressIndicator
-        android:id="@+id/progress_indicator"
+        android:id="@+id/progress"
         style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="4dp"
+        android:elevation="@dimen/toolbar_elevation"
         app:indicatorColor="?colorSecondary"
         app:layout_constraintBottom_toBottomOf="@id/toolbar" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/history_swipe_refresh"
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,7 +35,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/history_recycler"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            tools:listitem="@layout/list_item_history_event" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

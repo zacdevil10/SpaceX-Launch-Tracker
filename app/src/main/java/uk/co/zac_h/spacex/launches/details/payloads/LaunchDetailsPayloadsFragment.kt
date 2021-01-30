@@ -27,9 +27,12 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
     private var id: String? = null
 
     companion object {
+        const val ID_KEY = "id"
+        const val PAYLOADS_KEY = "payloads"
+
         @JvmStatic
         fun newInstance(args: Any) = LaunchDetailsPayloadsFragment().apply {
-            arguments = bundleOf("id" to args)
+            arguments = bundleOf(ID_KEY to args)
         }
     }
 
@@ -37,7 +40,7 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
         super.onCreate(savedInstanceState)
 
         payloads =
-            savedInstanceState?.getParcelableArrayList("payloads") ?: ArrayList()
+            savedInstanceState?.getParcelableArrayList(PAYLOADS_KEY) ?: ArrayList()
         id = arguments?.getString("id")
     }
 
@@ -70,7 +73,7 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("payloads", payloads)
+        outState.putParcelableArrayList(PAYLOADS_KEY, payloads)
         super.onSaveInstanceState(outState)
     }
 
@@ -87,11 +90,11 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
     override fun networkAvailable() {

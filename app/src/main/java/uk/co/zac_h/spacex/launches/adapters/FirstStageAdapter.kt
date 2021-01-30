@@ -24,11 +24,11 @@ class FirstStageAdapter(private val cores: List<LaunchCore>) :
         val core = cores[position]
 
         holder.binding.apply {
-            listItemFirstStageCard.transitionName = core.core?.id ?: ""
+            firstStageCard.transitionName = core.core?.id
 
-            listItemFirstStageCoreSerialText.text = core.core?.serial ?: "Unknown"
+            firstStageCoreSerial.text = core.core?.serial ?: "Unknown"
 
-            listItemFirstStageReusedImage.apply {
+            firstStageReusedImage.apply {
                 core.reused?.let { reused ->
                     if (reused) {
                         setImageAndTint(R.drawable.ic_check_circle_black_24dp, R.color.success)
@@ -38,7 +38,7 @@ class FirstStageAdapter(private val cores: List<LaunchCore>) :
                 }
             }
 
-            listItemFirstStageLandedImage.apply {
+            firstStageLandedImage.apply {
                 core.landingSuccess?.let { landingSuccess ->
                     if (landingSuccess) {
                         setImageAndTint(R.drawable.ic_check_circle_black_24dp, R.color.success)
@@ -48,7 +48,7 @@ class FirstStageAdapter(private val cores: List<LaunchCore>) :
                 }
             }
 
-            listItemFirstStageLandingImage.apply {
+            firstStageLandingImage.apply {
                 core.landingAttempt?.let { landingIntent ->
                     if (landingIntent) {
                         when (core.landingType) {
@@ -62,17 +62,17 @@ class FirstStageAdapter(private val cores: List<LaunchCore>) :
             }
 
             core.core?.let {
-                listItemFirstStageDetailsImage.visibility = View.VISIBLE
-                listItemFirstStageCard.setOnClickListener {
+                firstStageDetailsIndicator.visibility = View.VISIBLE
+                firstStageCard.setOnClickListener {
                     root.findNavController().navigate(
                         R.id.action_launch_details_container_fragment_to_core_details_fragment,
                         bundleOf("core" to core.core),
                         null,
-                        FragmentNavigatorExtras(listItemFirstStageCard to (core.core?.id ?: ""))
+                        FragmentNavigatorExtras(firstStageCard to (core.core?.id ?: ""))
                     )
                 }
             } ?: run {
-                listItemFirstStageDetailsImage.visibility = View.GONE
+                firstStageDetailsIndicator.visibility = View.GONE
             }
         }
     }

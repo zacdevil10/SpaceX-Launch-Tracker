@@ -17,7 +17,7 @@ import uk.co.zac_h.spacex.databinding.FragmentAboutBinding
 
 class AboutFragment : BaseFragment() {
 
-    override var title: String = ""
+    override var title: String = "About"
 
     private lateinit var binding: FragmentAboutBinding
 

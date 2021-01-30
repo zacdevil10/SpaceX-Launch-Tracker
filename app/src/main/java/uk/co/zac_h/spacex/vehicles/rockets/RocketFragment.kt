@@ -79,11 +79,11 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
@@ -93,7 +93,7 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (rocketsArray.isEmpty() || it.progressIndicator.isShown)
+                if (rocketsArray.isEmpty() || it.progress.isShown)
                     presenter?.get()
             }
         }

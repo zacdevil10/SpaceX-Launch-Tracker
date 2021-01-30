@@ -20,7 +20,7 @@
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:elevation="4dp"
+            android:elevation="@dimen/toolbar_elevation"
             android:textColor="?colorOnSurface"
             android:theme="@style/AppTheme.AppBarOverlay"
             app:title="Launch Pads" />
@@ -28,11 +28,11 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.progressindicator.ProgressIndicator
-        android:id="@+id/progress_indicator"
+        android:id="@+id/progress"
         style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="4dp"
+        android:elevation="@dimen/toolbar_elevation"
         app:indicatorColor="?colorSecondary"
         app:layout_constraintTop_toBottomOf="@id/app_bar" />
 
@@ -41,10 +41,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
-        android:paddingTop="8dp"
-        android:paddingBottom="32dp"
+        android:paddingTop="@dimen/small_margin"
+        android:paddingBottom="@dimen/xlarge_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/app_bar"
-        tools:listitem="@layout/list_item_pad_stats"/>
+        tools:listitem="@layout/list_item_pad_stats" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

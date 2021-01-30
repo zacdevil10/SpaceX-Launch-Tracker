@@ -8,11 +8,11 @@
     tools:context=".launches.details.crew.LaunchDetailsCrewFragment">
 
     <com.google.android.material.progressindicator.ProgressIndicator
-        android:id="@+id/launch_details_crew_progress"
+        android:id="@+id/progress"
         style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="4dp"
+        android:elevation="@dimen/toolbar_elevation"
         app:indicatorColor="?colorSecondary"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -20,11 +20,10 @@
         android:id="@+id/launch_details_crew_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="16dp"
         android:clipToPadding="false"
+        android:paddingStart="@dimen/medium_margin"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"
-        tools:context=".launches.details.crew.LaunchDetailsCrewFragment"
         tools:ignore="RtlSymmetry"
         tools:listitem="@layout/grid_item_crew" />
 

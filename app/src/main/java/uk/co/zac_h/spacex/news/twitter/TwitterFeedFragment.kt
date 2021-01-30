@@ -82,7 +82,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
             })
         }
 
-        binding?.twitterFeedSwipeRefresh?.setOnRefreshListener {
+        binding?.swipeRefresh?.setOnRefreshListener {
             presenter?.getTweets()
         }
 
@@ -140,7 +140,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun showPagingProgress() {
@@ -148,7 +148,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
     override fun hidePagingProgress() {
@@ -156,7 +156,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {
-        binding?.twitterFeedSwipeRefresh?.isRefreshing = isRefreshing
+        binding?.swipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {
@@ -166,7 +166,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (tweetsList.isEmpty() || it.progressIndicator.isShown)
+                if (tweetsList.isEmpty() || it.progress.isShown)
                     presenter?.getTweets()
             }
 

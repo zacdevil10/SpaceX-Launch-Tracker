@@ -15,10 +15,13 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
 
     private var expandedPosition = 0
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(
-            ListItemPayloadBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
+        ListItemPayloadBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
+    )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val payload = payloads?.get(position)
