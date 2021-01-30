@@ -12,7 +12,7 @@ class FairingRecoveryInteractor : BaseNetwork(), NetworkInterface.Interactor<Lis
 
     override fun get(api: SpaceXInterface, listener: NetworkInterface.Callback<List<Launch>?>) {
         val query = QueryModel(
-            QueryFairingRecovery(true),
+            QueryUpcomingLaunchesModel(false),
             QueryOptionsModel(
                 false,
                 "",
