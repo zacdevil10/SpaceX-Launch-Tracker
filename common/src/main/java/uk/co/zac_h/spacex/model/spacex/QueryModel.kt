@@ -51,7 +51,3 @@ data class QueryHistorySort(
 data class QueryLandingHistory(
     @field:Json(name = "cores.landing_attempt") var landing_attempt: Boolean
 )
-
-data class QueryFairingRecovery(
-    @field:Json(name = "fairings.recovery_attempt") var recovery_attempt: Boolean
-)

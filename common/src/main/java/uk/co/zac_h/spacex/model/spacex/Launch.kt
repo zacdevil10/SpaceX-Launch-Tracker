@@ -26,7 +26,7 @@ data class LaunchResponse(
     @field:Json(name = SPACEX_FIELD_LAUNCH_FAILURES) val failures: List<LaunchFailures>?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_UPCOMING) val upcoming: Boolean?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_DETAILS) val details: String?,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRINGS) val fairings: Fairings?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRINGS) val fairings: List<Fairings>?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_CREW) val crew: List<LaunchCrewResponse>?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_SHIPS) val ships: List<String>?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_CAPSULES) val capsules: List<String>?,
@@ -55,7 +55,7 @@ data class LaunchQueriedResponse(
     @field:Json(name = SPACEX_FIELD_LAUNCH_FAILURES) val failures: List<LaunchFailures>?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_UPCOMING) val upcoming: Boolean?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_DETAILS) val details: String?,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRINGS) val fairings: Fairings?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRINGS) val fairings: List<Fairings>?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_CREW) val crew: List<LaunchCrewQueriedResponse>?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_SHIPS) val ships: List<ShipQueriedResponse>?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_CAPSULES) val capsules: List<String>?,
@@ -76,21 +76,26 @@ data class LaunchFailures(
 
 @Parcelize
 data class Fairings(
-    @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRINGS_REUSED) val reused: Boolean?,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRINGS_RECOVERY_ATTEMPT) val recoveryAttempt: Boolean?,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRINGS_RECOVERED) val isRecovered: Boolean?,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRINGS_SHIPS) val ships: List<String>?
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRING) val fairing: String?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRING_FLIGHT) val flight: Int?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRING_REUSED) val reused: Boolean?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRING_NET_ATTEMPT) val netAttempt: Boolean?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRING_NET_LANDING) val netLanding: Boolean?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRING_WATER_ATTEMPT) val waterAttempt: Boolean?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRING_WATER_LANDING) val waterLanding: Boolean?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRING_RECOVERED) val recovered: Boolean?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRING_SHIPS) val ships: List<String>?
 ) : Parcelable
 
 data class LaunchCrewResponse(
     @field:Json(name = SPACEX_FIELD_LAUNCH_CREW) val crew: String,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW_ROLE) val role: String?
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW_ROLE) val role: String
 )
 
 
 data class LaunchCrewQueriedResponse(
     @field:Json(name = SPACEX_FIELD_LAUNCH_CREW) val crew: CrewQueriedResponse,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW_ROLE) val role: String?
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW_ROLE) val role: String
 )
 
 data class LaunchCoreResponse(
@@ -165,8 +170,8 @@ data class Launch(
     val failures: List<LaunchFailures>?,
     val upcoming: Boolean?,
     val details: String?,
-    val fairings: Fairings?,
-    val crew: List<Crew>? = null,
+    val fairings: List<Fairings>?,
+    val crew: List<Crew>?,
     val shipIds: List<String>? = null,
     val ships: List<Ship>? = null,
     val capsules: List<String>?,

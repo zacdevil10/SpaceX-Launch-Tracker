@@ -5,6 +5,7 @@ import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
+import uk.co.zac_h.spacex.utils.SPACEX_FIELD_CREW_LAUNCHES
 
 class LaunchDetailsCrewInteractor : BaseNetwork(), NetworkInterface.Interactor<List<Crew>?> {
 
@@ -20,7 +21,7 @@ class LaunchDetailsCrewInteractor : BaseNetwork(), NetworkInterface.Interactor<L
                 "crew.crew",
                 populate = listOf(
                     QueryPopulateModel(
-                        "launches",
+                        "crew.launches",
                         populate = "",
                         select = listOf("flight_number", "name", "date_unix")
                     )
