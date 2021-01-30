@@ -7,48 +7,49 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.view.*
+import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
+import androidx.core.os.bundleOf
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
+import uk.co.zac_h.spacex.model.spacex.DatePrecision
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsView,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetailsView {
+
+    override var title: String = "Launch Details"
 
     private var binding: FragmentLaunchDetailsBinding? = null
 
     private var presenter: LaunchDetailsContract.LaunchDetailsPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
-    private var launch: LaunchesExtendedModel? = null
+    private var launch: Launch? = null
     private var id: String? = null
 
     private var pinned: Boolean = false
 
     companion object {
-        @JvmStatic
-        fun newInstance(launchShort: LaunchesExtendedModel) =
-            LaunchDetailsFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable("launch_short", launchShort)
-                }
-            }
+        const val LAUNCH_KEY = "launch"
+        const val LAUNCH_KEY_SHORT = "launch_short"
+        const val ID_KEY = "id"
 
         @JvmStatic
-        fun newInstance(id: String) =
-            LaunchDetailsFragment().apply {
-                arguments = Bundle().apply {
-                    putString("id", id)
-                }
-            }
+        fun newInstance(args: Any) = LaunchDetailsFragment().apply {
+            arguments = bundleOf(
+                when (args) {
+                    is Launch -> LAUNCH_KEY_SHORT
+                    is String -> ID_KEY
+                    else -> throw IllegalArgumentException()
+                } to args
+            )
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,18 +57,17 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
         setHasOptionsMenu(true)
 
         launch =
-            savedInstanceState?.getParcelable("launch") ?: arguments?.getParcelable("launch_short")
-        id = arguments?.getString("id")
+            savedInstanceState?.getParcelable(LAUNCH_KEY) ?: arguments?.getParcelable(LAUNCH_KEY_SHORT)
+        id = arguments?.getString(ID_KEY)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentLaunchDetailsBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentLaunchDetailsBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -93,22 +93,12 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
             pinned = presenter?.isPinned(it.id) ?: false
         } ?: id?.let { id ->
             pinned = presenter?.isPinned(id) ?: false
-            presenter?.getLaunch(id)
+            presenter?.get(id)
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable("launch", launch)
+        outState.putParcelable(LAUNCH_KEY, launch)
         super.onSaveInstanceState(outState)
     }
 
@@ -146,22 +136,18 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
             activity?.invalidateOptionsMenu()
             true
         }
-        R.id.create_event -> {
-            presenter?.createEvent()
-            true
-        }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updateLaunchDataView(launch: LaunchesExtendedModel?, isExt: Boolean) {
+    override fun update(data: Any, response: Launch?) {
         launch?.let {
-            if (isExt) this.launch = launch
+            if (data as Boolean) this.launch = response
 
-            (activity as MainActivity).supportActionBar?.title = launch.missionName
+            (activity as MainActivity).supportActionBar?.title = it.missionName
 
             binding?.apply {
                 Glide.with(this@LaunchDetailsFragment)
-                    .load(launch.links?.missionPatch?.patchSmall)
+                    .load(it.links?.missionPatch?.patchSmall)
                     .error(context?.let {
                         ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
                     })
@@ -175,29 +161,30 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
 
                 launchDetailsNumberText.text = context?.getString(
                     R.string.flight_number,
-                    launch.flightNumber
+                    it.flightNumber
                 )
-                launchDetailsRocketTypeText.text = launch.rocket?.name
-                launchDetailsMissionNameText.text = launch.missionName
+                launchDetailsRocketTypeText.text = it.rocket?.name
+                launchDetailsMissionNameText.text = it.missionName
 
-                launchDetailsSiteNameText.text = launch.launchpad?.name
+                launchDetailsSiteNameText.text = it.launchpad?.name
 
-                launchDetailsDateText.text = launch.datePrecision?.let { datePrecision ->
-                    launch.launchDateUnix?.formatDateMillisLong(datePrecision)
+                launchDetailsDateText.text = it.datePrecision?.let { datePrecision ->
+                    it.launchDate?.dateUnix?.formatDateMillisLong(datePrecision)
                 }
 
-                launch.staticFireDateUnix?.let { date ->
+                it.staticFireDate?.dateUnix?.let { date ->
                     launchDetailsStaticFireDateLabel.visibility = View.VISIBLE
                     launchDetailsStaticFireDateText.visibility = View.VISIBLE
                     launchDetailsStaticFireDateText.text = date.formatDateMillisLong()
                 }
 
                 launchDetailsDetailsText.visibility =
-                    if (launch.details.isNullOrEmpty()) View.GONE else View.VISIBLE
-                launchDetailsDetailsText.text = launch.details
+                    if (it.details.isNullOrEmpty()) View.GONE else View.VISIBLE
+                launchDetailsDetailsText.text = it.details
 
-                launch.links?.webcast?.let { link ->
+                it.links?.webcast?.let { link ->
                     launchDetailsWatchButton.visibility = View.VISIBLE
+                    launchDetailsCalendarButton.visibility = View.GONE
                     launchDetailsWatchButton.setOnClickListener {
                         openWebLink(link)
                     }
@@ -205,7 +192,15 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                     launchDetailsWatchButton.visibility = View.GONE
                 }
 
-                launch.links?.presskit?.let { link ->
+                if (it.datePrecision == DatePrecision.DAY || it.datePrecision == DatePrecision.HOUR) {
+                    launchDetailsCalendarButton.setOnClickListener {
+                        presenter?.createEvent()
+                    }
+                } else {
+                    launchDetailsCalendarButton.visibility = View.GONE
+                }
+
+                it.links?.presskit?.let { link ->
                     launchDetailsPressKitButton.visibility = View.VISIBLE
                     launchDetailsPressKitButton.setOnClickListener {
                         openWebLink(link)
@@ -214,7 +209,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                     launchDetailsPressKitButton.visibility = View.GONE
                 }
 
-                launch.links?.wikipedia?.let { link ->
+                it.links?.wikipedia?.let { link ->
                     launchDetailsWikiButton.visibility = View.VISIBLE
                     launchDetailsWikiButton.setOnClickListener {
                         launchDetailsWikiButton.visibility = View.VISIBLE
@@ -224,7 +219,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                     launchDetailsWikiButton.visibility = View.GONE
                 }
 
-                launch.links?.redditLinks?.campaign?.let { link ->
+                it.links?.redditLinks?.campaign?.let { link ->
                     launchDetailsCampaignButton.visibility = View.VISIBLE
                     launchDetailsCampaignButton.setOnClickListener {
                         openWebLink(link)
@@ -233,7 +228,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                     launchDetailsCampaignButton.visibility = View.GONE
                 }
 
-                launch.links?.redditLinks?.launch?.let { link ->
+                it.links?.redditLinks?.launch?.let { link ->
                     launchDetailsLaunchButton.visibility = View.VISIBLE
                     launchDetailsLaunchButton.setOnClickListener {
                         openWebLink(link)
@@ -242,7 +237,7 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                     launchDetailsLaunchButton.visibility = View.GONE
                 }
 
-                launch.links?.redditLinks?.media?.let { link ->
+                it.links?.redditLinks?.media?.let { link ->
                     launchDetailsMediaButton.visibility = View.VISIBLE
                     launchDetailsMediaButton.setOnClickListener {
                         openWebLink(link)
@@ -260,11 +255,11 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
                 data = CalendarContract.Events.CONTENT_URI
                 putExtra(
                     CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                    it.launchDateUnix?.times(1000L)
+                    it.launchDate?.dateUnix?.times(1000L)
                 )
                 putExtra(
                     CalendarContract.EXTRA_EVENT_END_TIME,
-                    it.launchDateUnix?.times(1000L)?.plus(3600000)
+                    it.launchDate?.dateUnix?.times(1000L)?.plus(3600000)
                 )
                 putExtra(
                     CalendarContract.Events.TITLE,
@@ -284,21 +279,21 @@ class LaunchDetailsFragment : Fragment(), LaunchDetailsContract.LaunchDetailsVie
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
     override fun showError(error: String) {
-
+        Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             if (launch == null) launch?.id?.let {
-                presenter?.getLaunch(it)
+                presenter?.get(it)
             }
         }
     }

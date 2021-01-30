@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp">
+    android:paddingTop="@dimen/small_margin"
+    android:paddingBottom="@dimen/small_margin">
 
     <TextView
         android:id="@+id/list_item_key_label"

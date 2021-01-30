@@ -13,7 +13,7 @@ import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 import retrofit2.mock.Calls
-import uk.co.zac_h.spacex.model.spacex.DragonModel
+import uk.co.zac_h.spacex.model.spacex.Dragon
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.vehicles.dragon.DragonInteractorImpl
 import uk.co.zac_h.spacex.vehicles.dragon.DragonPresenterImpl
@@ -22,21 +22,21 @@ class DragonTest {
 
     private lateinit var mPresenter: VehiclesContract.Presenter
     private lateinit var presenter: VehiclesContract.Presenter
-    private lateinit var interactor: VehiclesContract.Interactor<DragonModel>
+    private lateinit var interactor: VehiclesContract.Interactor<Dragon>
 
     @Mock
-    val mInteractor: VehiclesContract.Interactor<DragonModel> = mock()
+    val mInteractor: VehiclesContract.Interactor<Dragon> = mock()
 
     @Mock
-    val mView: VehiclesContract.View<DragonModel> = mock()
+    val mView: VehiclesContract.View<Dragon> = mock()
 
     @Mock
-    val mListener: VehiclesContract.InteractorCallback<DragonModel> = mock()
+    val mListener: VehiclesContract.InteractorCallback<Dragon> = mock()
 
     @Mock
-    val mDragonModel: DragonModel = mock(DragonModel::class.java)
+    val mDragonModel: Dragon = mock(Dragon::class.java)
 
-    private lateinit var dragonList: List<DragonModel>
+    private lateinit var dragonList: List<Dragon>
 
     inline fun <reified T : Any> mock(): T = mock(T::class.java)
 

@@ -1,18 +1,19 @@
 package uk.co.zac_h.spacex.launches.details.details
 
 import retrofit2.Call
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class LaunchDetailsInteractorImpl : BaseNetwork(), LaunchDetailsContract.LaunchDetailsInteractor {
+class LaunchDetailsInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<Launch?> {
 
-    private var call: Call<LaunchesExtendedDocsModel>? = null
+    private var call: Call<LaunchDocsModel>? = null
 
-    override fun getSingleLaunch(
-        id: String,
+    override fun get(
+        data: Any,
         api: SpaceXInterface,
-        listener: LaunchDetailsContract.InteractorCallback
+        listener: NetworkInterface.Callback<Launch?>
     ) {
         val populateList = listOf(
             QueryPopulateModel("launchpad", select = listOf("name"), populate = ""),
@@ -20,7 +21,7 @@ class LaunchDetailsInteractorImpl : BaseNetwork(), LaunchDetailsContract.LaunchD
         )
 
         val query = QueryModel(
-            QueryLaunchesQueryModel(id),
+            QueryLaunchesQueryModel(data as String),
             QueryOptionsModel(
                 true,
                 populate = populateList,
@@ -42,13 +43,15 @@ class LaunchDetailsInteractorImpl : BaseNetwork(), LaunchDetailsContract.LaunchD
             )
         )
 
-        call = api.getQueriedLaunches(query).apply {
+        call = api.queryLaunches(query).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(it.body()) }
+                onResponseSuccess = { response ->
+                    listener.onSuccess(response.body()?.docs?.get(0)?.let { Launch(it) })
+                }
                 onResponseFailure = { listener.onError(it) }
             }
         }
     }
 
-    override fun cancelRequest() = terminateAll()
+    override fun cancelAllRequests() = terminateAll()
 }

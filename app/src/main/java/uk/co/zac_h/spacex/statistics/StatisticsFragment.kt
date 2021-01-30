@@ -15,11 +15,14 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentStatisticsBinding
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsAdapter
 
-class StatisticsFragment : Fragment(), StatisticsContract.View {
+class StatisticsFragment : BaseFragment(), StatisticsContract.View {
+
+    override var title: String = "Statistics"
 
     private var binding: FragmentStatisticsBinding? = null
 
@@ -27,10 +30,9 @@ class StatisticsFragment : Fragment(), StatisticsContract.View {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentStatisticsBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentStatisticsBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -39,12 +41,6 @@ class StatisticsFragment : Fragment(), StatisticsContract.View {
         view.doOnPreDraw { startPostponedEnterTransition() }
 
         (activity as MainActivity).setSupportActionBar(binding?.toolbar)
-
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 

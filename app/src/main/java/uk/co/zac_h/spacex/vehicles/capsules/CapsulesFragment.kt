@@ -2,30 +2,29 @@ package uk.co.zac_h.spacex.vehicles.capsules
 
 import android.os.Bundle
 import android.view.*
-import android.view.animation.AnimationUtils
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCapsulesBinding
-import uk.co.zac_h.spacex.model.spacex.CapsulesModel
+import uk.co.zac_h.spacex.model.spacex.Capsule
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.vehicles.VehiclesContract
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
 
-class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
-    SearchView.OnQueryTextListener,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
+    SearchView.OnQueryTextListener {
+
+    override var title: String = "Capsules"
 
     private var binding: FragmentCapsulesBinding? = null
 
-    private var presenter: VehiclesContract.Presenter? = null
-
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var capsulesAdapter: CapsulesAdapter
-    private lateinit var capsulesArray: ArrayList<CapsulesModel>
+
+    private lateinit var capsulesArray: ArrayList<Capsule>
 
     private lateinit var orderSharedPreferences: OrderSharedPreferencesHelper
     private var sortNew = false
@@ -43,10 +42,9 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentCapsulesBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentCapsulesBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,26 +64,18 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
             adapter = capsulesAdapter
         }
 
-        binding?.capsulesSwipeRefresh?.setOnRefreshListener {
-            presenter?.getVehicles()
+        binding?.swipeRefresh?.setOnRefreshListener {
+            presenter?.get()
         }
 
-        if (capsulesArray.isEmpty()) presenter?.getVehicles()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+        if (capsulesArray.isEmpty()) presenter?.get()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("capsules", capsulesArray)
-        outState.putBoolean("sort", sortNew)
+        outState.apply {
+            putParcelableArrayList("capsules", capsulesArray)
+            putBoolean("sort", sortNew)
+        }
         super.onSaveInstanceState(outState)
     }
 
@@ -137,36 +127,31 @@ class CapsulesFragment : Fragment(), VehiclesContract.View<CapsulesModel>,
         return false
     }
 
-    override fun updateVehicles(vehicles: List<CapsulesModel>) {
+    override fun update(response: List<Capsule>) {
         capsulesArray.clear()
-        capsulesArray.addAll(if (sortNew) vehicles.reversed() else vehicles)
+        capsulesArray.addAll(if (sortNew) response.reversed() else response)
 
-        binding?.capsulesRecycler?.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
+        binding?.capsulesRecycler?.layoutAnimation = animateLayoutFromBottom(context)
         capsulesAdapter.notifyDataSetChanged()
         binding?.capsulesRecycler?.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
-    override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding?.capsulesSwipeRefresh?.isRefreshing = refreshing
-    }
-
-    override fun showError(error: String) {
-
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding?.swipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (capsulesArray.isEmpty() || it.progressIndicator.isShown) presenter?.getVehicles()
+                if (capsulesArray.isEmpty() || it.progress.isShown) presenter?.get()
             }
         }
     }

@@ -1,17 +1,18 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 
 import retrofit2.Call
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class LaunchHistoryInteractorImpl : BaseNetwork(), LaunchHistoryContract.LaunchHistoryInteractor {
+class LaunchHistoryInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<Launch>?> {
 
-    private var call: Call<LaunchesExtendedDocsModel>? = null
+    private var call: Call<LaunchDocsModel>? = null
 
-    override fun getLaunches(
+    override fun get(
         api: SpaceXInterface,
-        listener: LaunchHistoryContract.InteractorCallback
+        listener: NetworkInterface.Callback<List<Launch>?>
     ) {
         val populateList = listOf(
             QueryPopulateModel("rocket", populate = "", select = listOf("success_rate_pct"))
@@ -22,9 +23,11 @@ class LaunchHistoryInteractorImpl : BaseNetwork(), LaunchHistoryContract.LaunchH
             QueryOptionsModel(false, populateList, "", listOf("rocket", "success"), 100000)
         )
 
-        call = api.getQueriedLaunches(query).apply {
+        call = api.queryLaunches(query).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(it.body(), true) }
+                onResponseSuccess = { response ->
+                    listener.onSuccess(true, response.body()?.docs?.map { Launch(it) })
+                }
                 onResponseFailure = { listener.onError(it) }
             }
         }

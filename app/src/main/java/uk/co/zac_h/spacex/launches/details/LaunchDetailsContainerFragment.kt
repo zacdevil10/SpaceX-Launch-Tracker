@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsContainerBinding
 import uk.co.zac_h.spacex.launches.details.cores.LaunchDetailsCoresFragment
@@ -21,9 +23,11 @@ import uk.co.zac_h.spacex.launches.details.crew.LaunchDetailsCrewFragment
 import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsFragment
 import uk.co.zac_h.spacex.launches.details.payloads.LaunchDetailsPayloadsFragment
 import uk.co.zac_h.spacex.launches.details.ships.LaunchDetailsShipsFragment
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 
-class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContract.View {
+class LaunchDetailsContainerFragment : BaseFragment(), LaunchDetailsContainerContract.View {
+
+    override var title: String = ""
 
     private var binding: FragmentLaunchDetailsContainerBinding? = null
 
@@ -31,7 +35,7 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
 
     private var selectedItem: Int? = null
 
-    private var launchShort: LaunchesExtendedModel? = null
+    private var launchShort: Launch? = null
     private var id: String? = null
 
     private var countdownTimer: CountDownTimer? = null
@@ -49,10 +53,9 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentLaunchDetailsContainerBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentLaunchDetailsContainerBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -62,17 +65,12 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
 
         (activity as MainActivity).setSupportActionBar(binding?.toolbar)
 
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
-
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
         presenter = LaunchDetailsContainerPresenter(this)
 
         launchShort?.let {
+            title = it.missionName ?: ""
             binding?.toolbar?.title = it.missionName
             binding?.fragmentLaunchDetailsContainer?.transitionName = it.id
 
@@ -88,7 +86,7 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
                 binding?.launchDetailsBottomNavigation?.inflateMenu(R.menu.launch_details_bottom_nav_menu)
             }
 
-            presenter?.startCountdown(it.launchDateUnix, it.tbd)
+            presenter?.startCountdown(it.launchDate?.dateUnix, it.tbd)
         } ?: id?.let {
             binding?.fragmentLaunchDetailsContainer?.transitionName = it
 
@@ -110,48 +108,43 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
                 selectedItem = it.itemId
                 when (it.itemId) {
                     R.id.launch_details_details -> {
-                        launchShort?.let { launchShort ->
-                            replaceFragment(LaunchDetailsFragment.newInstance(launchShort))
-                        } ?: id?.let { id ->
-                            replaceFragment(LaunchDetailsFragment.newInstance(id))
-                        }
-                        return@setOnNavigationItemSelectedListener true
+                        replaceFragment(
+                            LaunchDetailsFragment.newInstance(
+                                launchShort ?: id ?: throw IllegalArgumentException()
+                            )
+                        )
                     }
                     R.id.launch_details_cores -> {
-                        launchShort?.let { launchShort ->
-                            replaceFragment(LaunchDetailsCoresFragment.newInstance(launchShort.id))
-                        } ?: id?.let { id ->
-                            replaceFragment(LaunchDetailsCoresFragment.newInstance(id))
-                        }
-                        return@setOnNavigationItemSelectedListener true
+                        replaceFragment(
+                            LaunchDetailsCoresFragment.newInstance(
+                                launchShort?.id ?: id ?: throw IllegalArgumentException()
+                            )
+                        )
                     }
                     R.id.launch_details_payloads -> {
-                        launchShort?.let { launchShort ->
-                            replaceFragment(LaunchDetailsPayloadsFragment.newInstance(launchShort.id))
-                        } ?: id?.let { id ->
-                            replaceFragment(LaunchDetailsPayloadsFragment.newInstance(id))
-                        }
-                        return@setOnNavigationItemSelectedListener true
+                        replaceFragment(
+                            LaunchDetailsPayloadsFragment.newInstance(
+                                launchShort?.id ?: id ?: throw IllegalArgumentException()
+                            )
+                        )
                     }
                     R.id.launch_details_crew -> {
-                        launchShort?.let { launchShort ->
-                            replaceFragment(LaunchDetailsCrewFragment.newInstance(launchShort.id))
-                        } ?: id?.let { id ->
-                            replaceFragment(LaunchDetailsCrewFragment.newInstance(id))
-                        }
-                        return@setOnNavigationItemSelectedListener true
+                        replaceFragment(
+                            LaunchDetailsCrewFragment.newInstance(
+                                launchShort?.id ?: id ?: throw IllegalArgumentException()
+                            )
+                        )
                     }
                     R.id.launch_details_ships -> {
-                        launchShort?.let { launchShort ->
-                            replaceFragment(LaunchDetailsShipsFragment.newInstance(launchShort.id))
-                        } ?: id?.let { id ->
-                            replaceFragment(LaunchDetailsShipsFragment.newInstance(id))
-                        }
-                        return@setOnNavigationItemSelectedListener true
+                        replaceFragment(
+                            LaunchDetailsShipsFragment.newInstance(
+                                launchShort?.id ?: id ?: throw IllegalArgumentException()
+                            )
+                        )
                     }
                 }
             }
-            false
+            true
         }
     }
 
@@ -186,14 +179,15 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
         binding?.launchDetailsCountdownText?.text = countdown
     }
 
-    private fun replaceFragment(fragment: Fragment) {
-        childFragmentManager
-            .beginTransaction()
-            .replace(
-                R.id.launch_details_fragment,
-                fragment
+    private fun replaceFragment(fragment: Fragment): Boolean {
+        childFragmentManager.commit {
+            setCustomAnimations(
+                R.anim.fade_in,
+                R.anim.fade_out
             )
-            .commit()
+            replace(R.id.launch_details_fragment, fragment)
+        }
+        return true
     }
 
     override fun showCountdown() {

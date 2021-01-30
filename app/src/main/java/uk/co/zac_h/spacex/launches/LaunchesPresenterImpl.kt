@@ -1,34 +1,37 @@
 package uk.co.zac_h.spacex.launches
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
+import uk.co.zac_h.spacex.base.NetworkInterface
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class LaunchesPresenterImpl(
-    private val view: LaunchesContract.LaunchesView,
-    private val interactor: LaunchesContract.LaunchesInteractor
-) : LaunchesContract.LaunchesPresenter, LaunchesContract.InteractorCallback {
+    private val view: NetworkInterface.View<List<Launch>>,
+    private val interactor: NetworkInterface.Interactor<List<Launch>?>
+) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<List<Launch>?> {
 
-    override fun getLaunchList(id: String, api: SpaceXInterface) {
+    override fun get(data: Any, api: SpaceXInterface) {
         view.showProgress()
-        interactor.getLaunches(id, if (id == "past") "desc" else "asc", api, this)
+        interactor.get(data, api, this)
     }
 
-    override fun cancelRequests() {
+    override fun cancelRequest() {
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(launches: LaunchesExtendedDocsModel?) {
-        view.apply {
-            hideProgress()
-            updateLaunchesList(launches?.docs)
-            toggleSwipeProgress(false)
+    override fun onSuccess(response: List<Launch>?) {
+        response?.let {
+            view.apply {
+                hideProgress()
+                update(it)
+                toggleSwipeRefresh(false)
+            }
         }
     }
 
     override fun onError(error: String) {
         view.apply {
             showError(error)
-            toggleSwipeProgress(false)
+            toggleSwipeRefresh(false)
         }
     }
 

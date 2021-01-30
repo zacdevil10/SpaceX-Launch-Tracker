@@ -10,7 +10,7 @@ import androidx.wear.widget.WearableLinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_launches_wear.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.launches.adapter.LaunchesWearAdapter
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 
 class LaunchesWearFragment : Fragment(), LaunchesWearView {
 
@@ -48,7 +48,7 @@ class LaunchesWearFragment : Fragment(), LaunchesWearView {
         presenter.cancelRequests()
     }
 
-    override fun updateLaunches(launches: List<LaunchesModel>) {
+    override fun updateLaunches(launches: List<Launch>) {
         launches_recycler.apply {
             layoutManager = WearableLinearLayoutManager(this@LaunchesWearFragment.context)
             setHasFixedSize(true)

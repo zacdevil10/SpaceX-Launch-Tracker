@@ -4,89 +4,63 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.button.MaterialButton
-import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.about.history.HistoryContract
+import uk.co.zac_h.spacex.about.history.HistoryView
+import uk.co.zac_h.spacex.databinding.ListItemHistoryEventBinding
+import uk.co.zac_h.spacex.databinding.ListItemHistoryHeadingBinding
+import uk.co.zac_h.spacex.utils.animateFromRightWithOffset
+import uk.co.zac_h.spacex.utils.animationScaleUpWithOffset
 import uk.co.zac_h.spacex.utils.formatDateMillisDDMMM
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 
 class HistoryAdapter(
     private var context: Context,
-    private var events: ArrayList<HistoryHeaderModel>,
-    private var view: HistoryContract.HistoryView
-) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private var events: List<HistoryHeaderModel>,
+    private var view: HistoryView
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
-            0 -> {
-                HeaderViewHolder(
-                    LayoutInflater.from(parent.context).inflate(
-                        R.layout.list_item_history_heading,
-                        parent,
-                        false
-                    )
+            0 -> HeaderViewHolder(
+                ListItemHistoryHeadingBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
                 )
-            }
-            else -> {
-                ViewHolder(
-                    LayoutInflater.from(parent.context).inflate(
-                        R.layout.list_item_history_event,
-                        parent,
-                        false
-                    )
+            )
+            else -> ViewHolder(
+                ListItemHistoryEventBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
                 )
-            }
+            )
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val event = events[position]
 
         when (holder) {
-            is ViewHolder -> holder.apply {
+            is ViewHolder -> with(holder.binding) {
                 lineBottom.visibility =
                     if (position == events.size - 1) View.INVISIBLE else View.VISIBLE
 
-                marker.startAnimation(
-                    AnimationUtils.loadAnimation(
-                        context,
-                        R.anim.scale_up
-                    )
-                )
+                marker.startAnimation(animationScaleUpWithOffset(context))
 
-                date.text = event.historyModel?.dateUnix?.formatDateMillisDDMMM()
-                date.startAnimation(
-                    AnimationUtils.loadAnimation(
-                        context,
-                        R.anim.item_animation_from_right
-                    )
-                )
+                date.text =
+                    event.historyModel?.event?.dateUnix?.formatDateMillisDDMMM()
+                date.startAnimation(animateFromRightWithOffset(context, 0))
 
                 title.text = event.historyModel?.title
-                title.startAnimation(
-                    AnimationUtils.loadAnimation(
-                        context,
-                        R.anim.item_animation_from_right
-                    ).apply { startOffset = 40 })
+                title.startAnimation(animateFromRightWithOffset(context, 40))
 
                 details.text = event.historyModel?.details
-                details.startAnimation(
-                    AnimationUtils.loadAnimation(
-                        context,
-                        R.anim.item_animation_from_right
-                    ).apply { startOffset = 80 })
+                details.startAnimation(animateFromRightWithOffset(context, 80))
 
-                articleButton.apply {
-                    event.historyModel?.links?.article?.let { link ->
+                article.apply {
+                    event.historyModel?.article?.let { link ->
                         visibility = View.VISIBLE
-                        startAnimation(
-                            AnimationUtils.loadAnimation(
-                                context,
-                                R.anim.item_animation_from_right
-                            ).apply { startOffset = 240 })
+                        startAnimation(animateFromRightWithOffset(this@HistoryAdapter.context, 240))
 
                         setOnClickListener {
                             view.openWebLink(link)
@@ -96,7 +70,7 @@ class HistoryAdapter(
                     }
                 }
             }
-            is HeaderViewHolder -> holder.apply {
+            is HeaderViewHolder -> with(holder.binding) {
                 lineTop.visibility =
                     if (position == 0) View.INVISIBLE else View.VISIBLE
 
@@ -105,28 +79,15 @@ class HistoryAdapter(
         }
     }
 
-    fun isHeader(): (itemPosition: Int) -> Boolean {
-        return {
-            events[it].isHeader
-        }
-    }
+    fun isHeader(): (itemPosition: Int) -> Boolean = { events[it].isHeader }
 
     override fun getItemCount(): Int = events.size
 
     override fun getItemViewType(position: Int): Int = if (events[position].isHeader) 0 else 1
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val marker: View = itemView.findViewById(R.id.list_item_history_marker)
-        val date: TextView = itemView.findViewById(R.id.list_item_history_date)
-        val title: TextView = itemView.findViewById(R.id.list_item_history_title)
-        val details: TextView = itemView.findViewById(R.id.list_item_history_details)
-        val articleButton: MaterialButton =
-            itemView.findViewById(R.id.list_item_history_article_button)
-        val lineBottom: View = itemView.findViewById(R.id.list_item_history_line_bottom)
-    }
+    inner class ViewHolder(val binding: ListItemHistoryEventBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
-    class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val heading: TextView = itemView.findViewById(R.id.list_item_history_heading)
-        val lineTop: View = itemView.findViewById(R.id.list_item_history_line_top)
-    }
+    inner class HeaderViewHolder(val binding: ListItemHistoryHeadingBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

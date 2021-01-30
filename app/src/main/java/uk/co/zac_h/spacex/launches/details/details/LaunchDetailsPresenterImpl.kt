@@ -1,24 +1,24 @@
 package uk.co.zac_h.spacex.launches.details.details
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedDocsModel
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
+import uk.co.zac_h.spacex.base.NetworkInterface
+import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 
 class LaunchDetailsPresenterImpl(
     private val view: LaunchDetailsContract.LaunchDetailsView,
     private val helper: PinnedSharedPreferencesHelper,
-    private val interactor: LaunchDetailsContract.LaunchDetailsInteractor
+    private val interactor: NetworkInterface.Interactor<Launch?>
 ) : LaunchDetailsContract.LaunchDetailsPresenter,
-    LaunchDetailsContract.InteractorCallback {
+    NetworkInterface.Callback<Launch?> {
 
-    override fun getLaunch(id: String, api: SpaceXInterface) {
+    override fun get(data: Any, api: SpaceXInterface) {
         view.showProgress()
-        interactor.getSingleLaunch(id, api, this)
+        interactor.get(data, api, this)
     }
 
-    override fun addLaunchModel(launchModel: LaunchesExtendedModel?, isExt: Boolean) {
-        view.updateLaunchDataView(launchModel, isExt)
+    override fun addLaunchModel(launch: Launch?, isExt: Boolean) {
+        view.update(isExt, launch)
     }
 
     override fun pinLaunch(id: String, pin: Boolean) {
@@ -32,14 +32,14 @@ class LaunchDetailsPresenterImpl(
     }
 
     override fun cancelRequest() {
-        interactor.cancelRequest()
+        interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(launchModel: LaunchesExtendedDocsModel?) {
-        view.apply {
-            hideProgress()
-            launchModel?.docs?.get(0)?.let { launch ->
-                updateLaunchDataView(launch, true)
+    override fun onSuccess(response: Launch?) {
+        response?.let { launch ->
+            view.apply {
+                update(true, launch)
+                hideProgress()
             }
         }
     }

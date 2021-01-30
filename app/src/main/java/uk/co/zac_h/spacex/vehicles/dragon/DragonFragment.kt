@@ -4,26 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentDragonBinding
-import uk.co.zac_h.spacex.model.spacex.DragonModel
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.vehicles.VehiclesContract
+import uk.co.zac_h.spacex.model.spacex.Dragon
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.DragonAdapter
 
-class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
+
+    override var title: String = "Dragon"
 
     private var binding: FragmentDragonBinding? = null
 
-    private var presenter: VehiclesContract.Presenter? = null
-
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var dragonAdapter: DragonAdapter
-    private lateinit var dragonArray: ArrayList<DragonModel>
+
+    private lateinit var dragonArray: ArrayList<Dragon>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,10 +32,9 @@ class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentDragonBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentDragonBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -54,21 +51,11 @@ class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
             adapter = dragonAdapter
         }
 
-        binding?.dragonSwipeRefresh?.setOnRefreshListener {
-            presenter?.getVehicles()
+        binding?.swipeRefresh?.setOnRefreshListener {
+            presenter?.get()
         }
 
-        if (dragonArray.isEmpty()) presenter?.getVehicles()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+        if (dragonArray.isEmpty()) presenter?.get()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -82,36 +69,31 @@ class DragonFragment : Fragment(), VehiclesContract.View<DragonModel>,
         binding = null
     }
 
-    override fun updateVehicles(vehicles: List<DragonModel>) {
+    override fun update(response: List<Dragon>) {
         dragonArray.clear()
-        dragonArray.addAll(vehicles)
+        dragonArray.addAll(response)
 
-        binding?.dragonRecycler?.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
+        binding?.dragonRecycler?.layoutAnimation = animateLayoutFromBottom(context)
         dragonAdapter.notifyDataSetChanged()
         binding?.dragonRecycler?.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
-    override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding?.dragonSwipeRefresh?.isRefreshing = refreshing
-    }
-
-    override fun showError(error: String) {
-
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding?.swipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (dragonArray.isEmpty() || it.progressIndicator.isShown) presenter?.getVehicles()
+                if (dragonArray.isEmpty() || it.progress.isShown) presenter?.get()
             }
         }
     }

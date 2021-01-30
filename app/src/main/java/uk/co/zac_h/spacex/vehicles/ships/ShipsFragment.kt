@@ -4,26 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentShipsBinding
-import uk.co.zac_h.spacex.model.spacex.ShipExtendedModel
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.vehicles.VehiclesContract
+import uk.co.zac_h.spacex.model.spacex.Ship
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.ShipsAdapter
 
-class ShipsFragment : Fragment(), VehiclesContract.View<ShipExtendedModel>,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class ShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
+
+    override var title: String = "Ships"
 
     private var binding: FragmentShipsBinding? = null
 
-    private var presenter: VehiclesContract.Presenter? = null
-
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var shipsAdapter: ShipsAdapter
-    private lateinit var shipsArray: ArrayList<ShipExtendedModel>
+
+    private lateinit var shipsArray: ArrayList<Ship>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,10 +32,9 @@ class ShipsFragment : Fragment(), VehiclesContract.View<ShipExtendedModel>,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentShipsBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentShipsBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -55,20 +52,10 @@ class ShipsFragment : Fragment(), VehiclesContract.View<ShipExtendedModel>,
         }
 
         binding?.swipeRefresh?.setOnRefreshListener {
-            presenter?.getVehicles()
+            presenter?.get()
         }
 
-        if (shipsArray.isEmpty()) presenter?.getVehicles()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+        if (shipsArray.isEmpty()) presenter?.get()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -82,36 +69,31 @@ class ShipsFragment : Fragment(), VehiclesContract.View<ShipExtendedModel>,
         binding = null
     }
 
-    override fun updateVehicles(vehicles: List<ShipExtendedModel>) {
+    override fun update(response: List<Ship>) {
         shipsArray.clear()
-        shipsArray.addAll(vehicles)
+        shipsArray.addAll(response)
 
-        binding?.recycler?.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
+        binding?.recycler?.layoutAnimation = animateLayoutFromBottom(context)
         shipsAdapter.notifyDataSetChanged()
         binding?.recycler?.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
-    override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding?.swipeRefresh?.isRefreshing = refreshing
-    }
-
-    override fun showError(error: String) {
-
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding?.swipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (shipsArray.isEmpty() || it.progressIndicator.isShown) presenter?.getVehicles()
+                if (shipsArray.isEmpty() || it.progress.isShown) presenter?.get()
             }
         }
     }

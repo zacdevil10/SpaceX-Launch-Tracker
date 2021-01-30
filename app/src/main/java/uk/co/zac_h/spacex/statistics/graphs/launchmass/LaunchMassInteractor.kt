@@ -1,15 +1,19 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchmass
 
 import retrofit2.Call
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class LaunchMassInteractor : BaseNetwork(), LaunchMassContract.Interactor {
+class LaunchMassInteractor : BaseNetwork(), NetworkInterface.Interactor<List<Launch>?> {
 
-    private var call: Call<LaunchesExtendedDocsModel>? = null
+    private var call: Call<LaunchDocsModel>? = null
 
-    override fun getLaunches(api: SpaceXInterface, listener: LaunchMassContract.Callback) {
+    override fun get(
+        api: SpaceXInterface,
+        listener: NetworkInterface.Callback<List<Launch>?>
+    ) {
         val query = QueryModel(
             QueryUpcomingSuccessLaunchesModel(upcoming = false, success = true),
             QueryOptionsModel(
@@ -23,14 +27,16 @@ class LaunchMassInteractor : BaseNetwork(), LaunchMassContract.Interactor {
                     QueryPopulateModel("rocket", populate = "", select = listOf("id"))
                 ),
                 QueryLaunchesSortByDate("asc"),
-                listOf("payloads", "name", "date_local", "date_unix", "rocket"),
+                listOf("payloads", "name", "date_unix", "rocket"),
                 1000000
             )
         )
 
-        call = api.getQueriedLaunches(query).apply {
+        call = api.queryLaunches(query).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(it.body(), true) }
+                onResponseSuccess = { response ->
+                    listener.onSuccess(true, response.body()?.docs?.map { Launch(it) })
+                }
                 onResponseFailure = { listener.onError(it) }
             }
         }

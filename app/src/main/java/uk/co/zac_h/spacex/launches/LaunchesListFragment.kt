@@ -2,25 +2,28 @@ package uk.co.zac_h.spacex.launches
 
 import android.os.Bundle
 import android.view.*
-import android.view.animation.AnimationUtils
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
-import uk.co.zac_h.spacex.model.spacex.LaunchesExtendedModel
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.model.spacex.Launch
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
+import java.util.*
+import kotlin.collections.ArrayList
 
-class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
-    SearchView.OnQueryTextListener, OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>,
+    SearchView.OnQueryTextListener {
+
+    override var title: String = ""
 
     private var binding: FragmentLaunchesListBinding? = null
-
-    private var presenter: LaunchesContract.LaunchesPresenter? = null
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var launchesAdapter: LaunchesAdapter
-    private lateinit var launchesList: ArrayList<LaunchesExtendedModel>
+
+    private lateinit var launches: ArrayList<Launch>
 
     private lateinit var searchView: SearchView
 
@@ -30,6 +33,7 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
         fun newInstance(launchParam: String) = LaunchesListFragment().apply {
             arguments = Bundle().apply {
                 putString("launchParam", launchParam)
+                title = launchParam
             }
         }
     }
@@ -38,8 +42,8 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        launchesList = savedInstanceState?.let {
-            it.getParcelableArrayList<LaunchesExtendedModel>("launches") as ArrayList<LaunchesExtendedModel>
+        launches = savedInstanceState?.let {
+            it.getParcelableArrayList<Launch>("launches") as ArrayList<Launch>
         } ?: ArrayList()
     }
 
@@ -47,10 +51,9 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentLaunchesListBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentLaunchesListBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,7 +64,7 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
 
         presenter = LaunchesPresenterImpl(this, LaunchesInteractorImpl())
 
-        launchesAdapter = LaunchesAdapter(context, launchesList)
+        launchesAdapter = LaunchesAdapter(context, launches)
 
         binding?.launchesRecycler?.apply {
             layoutManager = LinearLayoutManager(this@LaunchesListFragment.context)
@@ -70,42 +73,32 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
         }
 
         launchParam?.let { launchId ->
-            binding?.launchesSwipeRefresh?.setOnRefreshListener {
-                presenter?.getLaunchList(launchId)
+            binding?.swipeRefresh?.setOnRefreshListener {
+                presenter?.get(launchId)
             }
 
-            if (launchesList.isEmpty()) presenter?.getLaunchList(launchId)
+            if (launches.isEmpty()) presenter?.get(launchId)
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
     override fun onResume() {
         super.onResume()
-        binding?.launchesSwipeRefresh?.isEnabled = true
+        binding?.swipeRefresh?.isEnabled = true
     }
 
     override fun onPause() {
         super.onPause()
-        binding?.launchesSwipeRefresh?.isEnabled = false
-    }
-
-    override fun onStop() {
-        super.onStop()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+        binding?.swipeRefresh?.isEnabled = false
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("launches", launchesList)
+        outState.putParcelableArrayList("launches", launches)
         super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter?.cancelRequests()
+        presenter?.cancelRequest()
         binding = null
     }
 
@@ -134,40 +127,34 @@ class LaunchesListFragment : Fragment(), LaunchesContract.LaunchesView,
         return false
     }
 
-    override fun updateLaunchesList(launches: List<LaunchesExtendedModel>?) {
-        launches?.let {
-            launchesList.clear()
-            launchesList.addAll(it)
-        }
+    override fun update(response: List<Launch>) {
+        launches.clear()
+        launches.addAll(response)
 
-        binding?.launchesRecycler?.layoutAnimation =
-            AnimationUtils.loadLayoutAnimation(context, R.anim.layout_animation_from_bottom)
+
+        binding?.launchesRecycler?.layoutAnimation = animateLayoutFromBottom(context)
         launchesAdapter.notifyDataSetChanged()
         binding?.launchesRecycler?.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
-    override fun toggleSwipeProgress(isRefreshing: Boolean) {
-        binding?.launchesSwipeRefresh?.isRefreshing = isRefreshing
-    }
-
-    override fun showError(error: String) {
-
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding?.swipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (launchesList.isEmpty() || it.progressIndicator.isShown)
+                if (launches.isEmpty() || it.progress.isShown)
                     launchParam?.let { launchId ->
-                        presenter?.getLaunchList(launchId)
+                        presenter?.get(launchId)
                     }
             }
         }

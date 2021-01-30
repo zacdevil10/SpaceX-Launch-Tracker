@@ -12,22 +12,29 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesPagerAdapter
 
-class LaunchesFragment : Fragment() {
+class LaunchesFragment : BaseFragment() {
+
+    override var title: String = ""
 
     private var binding: FragmentLaunchesBinding? = null
+
+    private val fragments: List<BaseFragment> = listOf(
+        LaunchesListFragment.newInstance("upcoming"),
+        LaunchesListFragment.newInstance("past")
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentLaunchesBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentLaunchesBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,15 +43,9 @@ class LaunchesFragment : Fragment() {
 
         (activity as MainActivity).setSupportActionBar(binding?.toolbar)
 
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
-
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
-        binding?.launchesViewPager?.adapter = LaunchesPagerAdapter(childFragmentManager)
+        binding?.launchesViewPager?.adapter = LaunchesPagerAdapter(childFragmentManager, fragments)
 
         val tabIcons = listOf(
             R.drawable.ic_baseline_schedule_24,

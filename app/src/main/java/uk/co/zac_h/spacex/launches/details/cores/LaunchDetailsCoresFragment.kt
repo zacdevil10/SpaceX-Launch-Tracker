@@ -4,52 +4,51 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCoresBinding
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
-import uk.co.zac_h.spacex.model.spacex.LaunchCoreExtendedModel
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.model.spacex.LaunchCore
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 
-class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<LaunchCore>> {
+
+    override var title: String = "Launch Details Cores"
 
     private var binding: FragmentLaunchDetailsCoresBinding? = null
 
-    private var presenter: LaunchDetailsCoresContract.Presenter? = null
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
     private lateinit var coresAdapter: FirstStageAdapter
-    private lateinit var cores: ArrayList<LaunchCoreExtendedModel>
+    private lateinit var cores: ArrayList<LaunchCore>
 
     private var id: String? = null
 
     companion object {
+        const val CORES_KEY = "cores"
+        const val ID_KEY = "id"
+
         @JvmStatic
-        fun newInstance(id: String) =
-            LaunchDetailsCoresFragment().apply {
-                arguments = Bundle().apply {
-                    putString("id", id)
-                }
-            }
+        fun newInstance(args: Any) = LaunchDetailsCoresFragment().apply {
+            arguments = bundleOf(ID_KEY to args)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        cores =
-            savedInstanceState?.getParcelableArrayList<LaunchCoreExtendedModel>("cores")
-                ?: ArrayList()
-        id = arguments?.getString("id")
+        cores = savedInstanceState?.getParcelableArrayList(CORES_KEY) ?: ArrayList()
+        id = arguments?.getString(ID_KEY)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentLaunchDetailsCoresBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentLaunchDetailsCoresBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,22 +65,12 @@ class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
         }
 
         if (cores.isEmpty()) id?.let {
-            presenter?.getLaunch(it)
+            presenter?.get(it)
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("cores", cores)
+        outState.putParcelableArrayList(CORES_KEY, cores)
         super.onSaveInstanceState(outState)
     }
 
@@ -91,31 +80,27 @@ class LaunchDetailsCoresFragment : Fragment(), LaunchDetailsCoresContract.View,
         binding = null
     }
 
-    override fun updateCoresRecyclerView(coresList: List<LaunchCoreExtendedModel>?) {
-        coresList?.let {
-            cores.clear()
-            cores.addAll(it)
+    override fun update(response: List<LaunchCore>) {
+        cores.clear()
+        cores.addAll(response)
 
-            coresAdapter.notifyDataSetChanged()
-        }
+        binding?.launchDetailsCoresRecycler?.layoutAnimation = animateLayoutFromBottom(context)
+        coresAdapter.notifyDataSetChanged()
+        binding?.launchDetailsCoresRecycler?.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
-    }
-
-    override fun showError(error: String) {
-
+        binding?.progress?.hide()
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             id?.let {
-                if (cores.isEmpty()) presenter?.getLaunch(it)
+                if (cores.isEmpty()) presenter?.get(it)
             }
         }
     }

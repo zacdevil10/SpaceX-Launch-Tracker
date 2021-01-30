@@ -4,51 +4,49 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsShipsBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchDetailsShipsAdapter
-import uk.co.zac_h.spacex.model.spacex.ShipExtendedModel
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.model.spacex.Ship
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 
-class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
+
+    override var title: String = "Launch Details Ships"
 
     private var binding: FragmentLaunchDetailsShipsBinding? = null
 
-    private var presenter: LaunchDetailsShipsContract.Presenter? = null
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
     private lateinit var shipsAdapter: LaunchDetailsShipsAdapter
-    private lateinit var shipsArray: ArrayList<ShipExtendedModel>
+    private lateinit var shipsArray: ArrayList<Ship>
 
     private var id: String? = null
 
     companion object {
         @JvmStatic
-        fun newInstance(id: String) =
-            LaunchDetailsShipsFragment().apply {
-                arguments = Bundle().apply {
-                    putString("id", id)
-                }
-            }
+        fun newInstance(args: Any) = LaunchDetailsShipsFragment().apply {
+            arguments = bundleOf("id" to args)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         shipsArray =
-            savedInstanceState?.getParcelableArrayList<ShipExtendedModel>("ships") ?: ArrayList()
+            savedInstanceState?.getParcelableArrayList("ships") ?: ArrayList()
         id = arguments?.getString("id")
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentLaunchDetailsShipsBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentLaunchDetailsShipsBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,18 +64,8 @@ class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
         }
 
         if (shipsArray.isEmpty()) id?.let {
-            presenter?.getShips(it)
+            presenter?.get(it)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -91,11 +79,13 @@ class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
         binding = null
     }
 
-    override fun updateShipsRecyclerView(ships: List<ShipExtendedModel>) {
+    override fun update(response: List<Ship>) {
         shipsArray.clear()
-        shipsArray.addAll(ships)
+        shipsArray.addAll(response)
 
+        binding?.launchDetailsShipsRecycler?.layoutAnimation = animateLayoutFromBottom(context)
         shipsAdapter.notifyDataSetChanged()
+        binding?.launchDetailsShipsRecycler?.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
@@ -106,14 +96,10 @@ class LaunchDetailsShipsFragment : Fragment(), LaunchDetailsShipsContract.View,
         binding?.launchDetailsShipsProgress?.hide()
     }
 
-    override fun showError(error: String) {
-
-    }
-
     override fun networkAvailable() {
         activity?.runOnUiThread {
             id?.let {
-                if (shipsArray.isEmpty()) presenter?.getShips(it)
+                if (shipsArray.isEmpty()) presenter?.get(it)
             }
         }
     }

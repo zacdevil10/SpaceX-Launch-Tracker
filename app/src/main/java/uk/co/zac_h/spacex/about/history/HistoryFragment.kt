@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -13,22 +12,28 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentHistoryBinding
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.utils.views.HeaderItemDecoration
 
-class HistoryFragment : Fragment(), HistoryContract.HistoryView,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class HistoryFragment : BaseFragment(), HistoryView {
+
+    companion object {
+        const val HISTORY_KEY = "history"
+    }
+
+    override var title: String = "History"
 
     private var binding: FragmentHistoryBinding? = null
 
-    private var presenter: HistoryContract.HistoryPresenter? = null
-
+    private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var history: ArrayList<HistoryHeaderModel>
+
     private lateinit var historyAdapter: HistoryAdapter
 
     private lateinit var orderSharedPreferences: OrderSharedPreferencesHelper
@@ -39,17 +44,16 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
         setHasOptionsMenu(true)
 
         history = savedInstanceState?.let {
-            it.getParcelableArrayList<HistoryHeaderModel>("history") as ArrayList<HistoryHeaderModel>
+            it.getParcelableArrayList<HistoryHeaderModel>(HISTORY_KEY) as ArrayList<HistoryHeaderModel>
         } ?: ArrayList()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentHistoryBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentHistoryBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -58,18 +62,12 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
 
         (activity as MainActivity).setSupportActionBar(binding?.toolbar)
 
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
-
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
         orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(context)
         presenter = HistoryPresenterImpl(this, HistoryInteractorImpl())
 
-        sortNew = orderSharedPreferences.isSortedNew("history")
+        sortNew = orderSharedPreferences.isSortedNew(HISTORY_KEY)
 
         historyAdapter = HistoryAdapter(requireContext(), history, this)
 
@@ -98,27 +96,17 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
             )
         }
 
-        binding?.historySwipeRefresh?.setOnRefreshListener {
-            presenter?.getHistory(sortNew)
+        binding?.swipeRefresh?.setOnRefreshListener {
+            presenter?.get(sortNew)
         }
 
         if (history.isEmpty()) {
-            presenter?.getHistory(sortNew)
+            presenter?.get(sortNew)
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("history", history)
+        outState.putParcelableArrayList(HISTORY_KEY, history)
         super.onSaveInstanceState(outState)
     }
 
@@ -139,25 +127,25 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
             R.id.sort_new -> {
                 if (!sortNew) {
                     sortNew = true
-                    orderSharedPreferences.setSortOrder("history", sortNew)
-                    presenter?.getHistory(sortNew)
+                    orderSharedPreferences.setSortOrder(HISTORY_KEY, sortNew)
+                    presenter?.get(sortNew)
                 }
                 true
             }
             R.id.sort_old -> {
                 if (sortNew) {
                     sortNew = false
-                    orderSharedPreferences.setSortOrder("history", sortNew)
-                    presenter?.getHistory(sortNew)
+                    orderSharedPreferences.setSortOrder(HISTORY_KEY, sortNew)
+                    presenter?.get(sortNew)
                 }
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
 
-    override fun addHistory(history: ArrayList<HistoryHeaderModel>) {
-        this.history.clear()
-        this.history.addAll(history)
+    override fun update(response: ArrayList<HistoryHeaderModel>) {
+        history.clear()
+        history.addAll(response)
 
         historyAdapter.notifyDataSetChanged()
 
@@ -172,26 +160,22 @@ class HistoryFragment : Fragment(), HistoryContract.HistoryView,
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
-    override fun toggleSwipeProgress(isRefreshing: Boolean) {
-        binding?.historySwipeRefresh?.isRefreshing = isRefreshing
-    }
-
-    override fun showError(error: String) {
-
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding?.swipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (history.isEmpty() || it.progressIndicator.isShown)
-                    presenter?.getHistory(sortNew)
+                if (history.isEmpty() || it.progress.isShown)
+                    presenter?.get(sortNew)
             }
         }
     }

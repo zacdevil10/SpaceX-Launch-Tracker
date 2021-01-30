@@ -3,19 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    tools:showIn="@layout/fragment_launch_details_ships">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/list_item_vehicle_card"
+        android:id="@+id/vehicle_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="@dimen/xlarge_margin"
+        android:layout_marginTop="@dimen/small_margin"
+        android:layout_marginEnd="@dimen/xlarge_margin"
+        android:layout_marginBottom="@dimen/small_margin"
         android:clickable="true"
         android:focusable="true"
-        app:cardElevation="4dp"
+        app:cardElevation="@dimen/card_elevation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -26,58 +27,56 @@
             android:layout_height="wrap_content">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/list_item_vehicle_image"
+                android:id="@+id/vehicle_image"
                 android:layout_width="0dp"
                 android:layout_height="192dp"
                 android:contentDescription="@string/rocket_image_desc"
-                android:scaleType="centerCrop"
+                android:scaleType="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/list_item_vehicle_title"
+                android:id="@+id/vehicle_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="24dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/large_margin"
                 android:gravity="bottom"
                 android:textAppearance="?textAppearanceHeadline6"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/list_item_vehicle_image"
+                app:layout_constraintTop_toBottomOf="@id/vehicle_image"
                 tools:text="Falcon 9" />
 
             <TextView
-                android:id="@+id/list_item_vehicle_details"
+                android:id="@+id/vehicle_details"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="24dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginEnd="@dimen/large_margin"
                 android:ellipsize="end"
                 android:maxLines="5"
-                android:textAppearance="?textAppearanceBody2"
+                android:textAppearance="?textAppearanceBody1"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/list_item_vehicle_title"
-                tools:maxLines="6"
+                app:layout_constraintTop_toBottomOf="@id/vehicle_name"
                 tools:text="@tools:sample/lorem/random" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/list_item_vehicle_specs_button"
+                android:id="@+id/vehicle_specs"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="2dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginStart="@dimen/small_margin"
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginBottom="@dimen/small_margin"
                 android:text="@string/vehicle_specs_label"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/list_item_vehicle_details" />
+                app:layout_constraintTop_toBottomOf="@id/vehicle_details" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

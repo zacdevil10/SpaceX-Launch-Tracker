@@ -7,38 +7,40 @@ import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentRedditFeedBinding
 import uk.co.zac_h.spacex.model.reddit.SubredditModel
 import uk.co.zac_h.spacex.model.reddit.SubredditPostModel
 import uk.co.zac_h.spacex.news.adapters.RedditAdapter
 import uk.co.zac_h.spacex.utils.PaginationScrollListener
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.utils.REDDIT_PARAM_ORDER_HOT
+import uk.co.zac_h.spacex.utils.REDDIT_PARAM_ORDER_NEW
 
-class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
+
+    override var title: String = "Reddit"
 
     private var binding: FragmentRedditFeedBinding? = null
 
     private var presenter: RedditFeedContract.RedditFeedPresenter? = null
-
     private lateinit var redditAdapter: RedditAdapter
+
     private lateinit var posts: ArrayList<SubredditPostModel>
 
     private var isLastPage = false
     private var isLoading = false
 
-    private var order: String = "hot"
+    private var order: String = REDDIT_PARAM_ORDER_HOT
     private var orderPos: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        order = savedInstanceState?.getString("order") ?: "hot"
+        order = savedInstanceState?.getString("order") ?: REDDIT_PARAM_ORDER_HOT
         orderPos = savedInstanceState?.getInt("orderPos") ?: 0
 
         posts = savedInstanceState?.let {
@@ -93,7 +95,7 @@ class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
             })
         }
 
-        binding?.redditSwipeRefresh?.setOnRefreshListener {
+        binding?.swipeRefresh?.setOnRefreshListener {
             presenter?.getSub(order)
         }
     }
@@ -144,11 +146,11 @@ class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
                 ) {
                     if (orderPos != position) when (position) {
                         0 -> {
-                            order = "hot"
+                            order = REDDIT_PARAM_ORDER_HOT
                             presenter?.getSub(order)
                         }
                         1 -> {
-                            order = "new"
+                            order = REDDIT_PARAM_ORDER_NEW
                             presenter?.getSub(order)
                         }
                     }
@@ -184,15 +186,15 @@ class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding?.redditSwipeRefresh?.isRefreshing = refreshing
+        binding?.swipeRefresh?.isRefreshing = refreshing
     }
 
     override fun showPagingProgress() {
@@ -210,7 +212,7 @@ class RedditFeedFragment : Fragment(), RedditFeedContract.RedditFeedView,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (posts.isEmpty() || it.progressIndicator.isShown)
+                if (posts.isEmpty() || it.progress.isShown)
                     presenter?.getSub(order)
             }
 

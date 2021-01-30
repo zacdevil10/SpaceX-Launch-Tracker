@@ -1,18 +1,19 @@
 package uk.co.zac_h.spacex.launches.details.crew
 
 import retrofit2.Call
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class LaunchDetailsCrewInteractor : BaseNetwork(), LaunchDetailsCrewContract.Interactor {
+class LaunchDetailsCrewInteractor : BaseNetwork(), NetworkInterface.Interactor<List<Crew>?> {
 
-    private var call: Call<LaunchesExtendedDocsModel>? = null
+    private var call: Call<LaunchDocsModel>? = null
 
-    override fun getCrew(
-        id: String,
+    override fun get(
+        data: Any,
         api: SpaceXInterface,
-        listener: LaunchDetailsCrewContract.InteractorCallback
+        listener: NetworkInterface.Callback<List<Crew>?>
     ) {
         val populateList = listOf(
             QueryPopulateModel(
@@ -29,17 +30,19 @@ class LaunchDetailsCrewInteractor : BaseNetwork(), LaunchDetailsCrewContract.Int
         )
 
         val query = QueryModel(
-            QueryLaunchesQueryModel(id),
+            QueryLaunchesQueryModel(data as String),
             QueryOptionsModel(false, populateList, "", listOf("crew"), 1)
         )
 
-        call = api.getQueriedLaunches(query).apply {
+        call = api.queryLaunches(query).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(it.body()) }
+                onResponseSuccess = { response ->
+                    listener.onSuccess(response.body()?.docs?.get(0)?.crew?.map { Crew(it) })
+                }
                 onResponseFailure = { listener.onError(it) }
             }
         }
     }
 
-    override fun cancelRequest() = terminateAll()
+    override fun cancelAllRequests() = terminateAll()
 }

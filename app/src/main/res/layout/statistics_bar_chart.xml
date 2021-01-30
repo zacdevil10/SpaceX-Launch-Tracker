@@ -18,8 +18,8 @@
         android:id="@+id/key"
         android:layout_width="156dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="@dimen/xlarge_margin"
+        android:layout_marginTop="@dimen/medium_margin"
         android:visibility="gone"
         app:cardCornerRadius="0dp"
         app:cardElevation="8dp"
@@ -30,7 +30,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?colorPrimary"
-            android:padding="8dp">
+            android:padding="@dimen/small_margin">
 
             <TextView
                 android:id="@+id/year"

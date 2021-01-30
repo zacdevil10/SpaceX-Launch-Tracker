@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.launches
 
-import uk.co.zac_h.spacex.model.spacex.LaunchesModel
+import uk.co.zac_h.spacex.model.spacex.Launch
 
 class LaunchesWearPresenterImpl(
     private val view: LaunchesWearView,
@@ -19,7 +19,7 @@ class LaunchesWearPresenterImpl(
         interactor.cancelRequest()
     }
 
-    override fun onSuccess(launches: List<LaunchesModel>?) {
+    override fun onSuccess(launches: List<Launch>?) {
         launches?.let {
             view.apply {
                 updateLaunches(launches)

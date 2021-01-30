@@ -1,34 +1,43 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
 import retrofit2.Call
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
-import uk.co.zac_h.spacex.vehicles.VehiclesContract
+import uk.co.zac_h.spacex.utils.SPACEX_FIELD_CAPSULE_LAUNCHES
+import uk.co.zac_h.spacex.utils.SPACEX_FIELD_LAUNCH_FLIGHT_NUMBER
+import uk.co.zac_h.spacex.utils.SPACEX_FIELD_LAUNCH_NAME
 
-class CapsulesInteractorImpl : BaseNetwork(), VehiclesContract.Interactor<CapsulesModel> {
+class CapsulesInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<Capsule>?> {
 
     private var call: Call<CapsulesDocsModel>? = null
 
-    override fun getVehicles(
+    override fun get(
         api: SpaceXInterface,
-        listener: VehiclesContract.InteractorCallback<CapsulesModel>
+        listener: NetworkInterface.Callback<List<Capsule>?>
     ) {
-        val populateList: ArrayList<QueryPopulateModel> = ArrayList()
-
-        populateList.add(
-            QueryPopulateModel(
-                "launches",
-                select = listOf("name", "flight_number"),
-                populate = ""
+        val query = QueryModel(
+            "",
+            QueryOptionsModel(
+                false, listOf(
+                    QueryPopulateModel(
+                        SPACEX_FIELD_CAPSULE_LAUNCHES,
+                        select = listOf(
+                            SPACEX_FIELD_LAUNCH_NAME,
+                            SPACEX_FIELD_LAUNCH_FLIGHT_NUMBER
+                        ),
+                        populate = ""
+                    )
+                ), "", "", 100000
             )
         )
 
-        val query = QueryModel("", QueryOptionsModel(false, populateList, "", "", 100000))
-
-        call = api.getCapsules(query).apply {
+        call = api.queryCapsules(query).apply {
             makeCall {
-                onResponseSuccess = { listener.onSuccess(it.body()?.docs) }
+                onResponseSuccess = { response ->
+                    listener.onSuccess(response.body()?.docs?.map { Capsule(it) })
+                }
                 onResponseFailure = { listener.onError(it) }
             }
         }

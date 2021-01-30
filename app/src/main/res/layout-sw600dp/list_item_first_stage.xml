@@ -6,16 +6,16 @@
     android:layout_height="wrap_content">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/list_item_first_stage_card"
+        android:id="@+id/first_stage_card"
         android:layout_width="344dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="@dimen/medium_margin"
+        android:layout_marginTop="@dimen/small_margin"
+        android:layout_marginEnd="@dimen/medium_margin"
+        android:layout_marginBottom="@dimen/small_margin"
         android:clickable="true"
         android:focusable="true"
-        app:cardElevation="4dp"
+        app:cardElevation="@dimen/card_elevation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,10 +24,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="@dimen/medium_margin">
 
             <TextView
-                android:id="@+id/list_item_first_stage_core_serial_text"
+                android:id="@+id/first_stage_core_serial"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?textAppearanceHeadline5"
@@ -36,93 +36,92 @@
                 tools:text="B1047" />
 
             <ImageView
-                android:id="@+id/list_item_first_stage_details_image"
+                android:id="@+id/first_stage_details_indicator"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/more_icon_desc"
                 android:src="@drawable/ic_keyboard_arrow_right_black_24dp"
-                app:layout_constraintBottom_toBottomOf="@id/list_item_first_stage_core_serial_text"
+                app:layout_constraintBottom_toBottomOf="@id/first_stage_core_serial"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/list_item_first_stage_core_serial_text"
+                app:layout_constraintTop_toTopOf="@id/first_stage_core_serial"
                 app:tint="?colorOnBackground" />
 
             <View
-                android:id="@+id/list_item_separator"
+                android:id="@+id/separator"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_marginStart="-8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="-8dp"
+                android:layout_marginTop="@dimen/small_margin"
                 android:background="@color/divider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/list_item_first_stage_core_serial_text" />
+                app:layout_constraintTop_toBottomOf="@id/first_stage_core_serial" />
 
             <TextView
-                android:id="@+id/list_item_first_stage_reused_text"
+                android:id="@+id/first_stage_reused_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/medium_margin"
                 android:text="@string/reused"
                 android:textAlignment="center"
-                app:layout_constraintEnd_toStartOf="@id/list_item_pad_success_label"
+                app:layout_constraintEnd_toStartOf="@id/first_stage_landed_label"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/list_item_separator" />
+                app:layout_constraintTop_toBottomOf="@id/separator" />
 
             <ImageView
-                android:id="@+id/list_item_first_stage_reused_image"
+                android:id="@+id/first_stage_reused_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/small_margin"
                 android:contentDescription="@string/reused_status_desc"
-                app:layout_constraintEnd_toEndOf="@+id/list_item_first_stage_reused_text"
-                app:layout_constraintStart_toStartOf="@+id/list_item_first_stage_reused_text"
-                app:layout_constraintTop_toBottomOf="@+id/list_item_first_stage_reused_text"
-                tools:src="@drawable/ic_check_circle_black_24dp" />
-
-            <TextView
-                android:id="@+id/list_item_pad_success_label"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/landed_label"
-                android:textAlignment="center"
-                app:layout_constraintEnd_toStartOf="@id/list_item_first_stage_landing_text"
-                app:layout_constraintStart_toEndOf="@id/list_item_first_stage_reused_text"
-                app:layout_constraintTop_toBottomOf="@id/list_item_separator" />
-
-            <ImageView
-                android:id="@+id/list_item_first_stage_landed_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:contentDescription="@string/landed_status_desc"
                 android:src="@drawable/ic_help_outline_black_24dp"
-                app:layout_constraintEnd_toEndOf="@+id/list_item_pad_success_label"
-                app:layout_constraintStart_toStartOf="@+id/list_item_pad_success_label"
-                app:layout_constraintTop_toBottomOf="@+id/list_item_pad_success_label"
+                app:layout_constraintEnd_toEndOf="@+id/first_stage_reused_label"
+                app:layout_constraintStart_toStartOf="@+id/first_stage_reused_label"
+                app:layout_constraintTop_toBottomOf="@+id/first_stage_reused_label"
                 app:tint="?colorControlNormal" />
 
             <TextView
-                android:id="@+id/list_item_first_stage_landing_text"
+                android:id="@+id/first_stage_landed_label"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:text="@string/landed_label"
+                android:textAlignment="center"
+                app:layout_constraintEnd_toStartOf="@id/first_stage_landing_text"
+                app:layout_constraintStart_toEndOf="@id/first_stage_reused_label"
+                app:layout_constraintTop_toBottomOf="@id/separator" />
+
+            <ImageView
+                android:id="@+id/first_stage_landed_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_margin"
+                android:contentDescription="@string/landed_status_desc"
+                android:src="@drawable/ic_help_outline_black_24dp"
+                app:layout_constraintEnd_toEndOf="@+id/first_stage_landed_label"
+                app:layout_constraintStart_toStartOf="@+id/first_stage_landed_label"
+                app:layout_constraintTop_toBottomOf="@+id/first_stage_landed_label"
+                app:tint="?colorControlNormal" />
+
+            <TextView
+                android:id="@+id/first_stage_landing_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_margin"
                 android:text="@string/landing_label"
                 android:textAlignment="center"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/list_item_pad_success_label"
-                app:layout_constraintTop_toBottomOf="@id/list_item_separator" />
+                app:layout_constraintStart_toEndOf="@id/first_stage_landed_label"
+                app:layout_constraintTop_toBottomOf="@id/separator" />
 
             <ImageView
-                android:id="@+id/list_item_first_stage_landing_image"
+                android:id="@+id/first_stage_landing_image"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:contentDescription="@string/launch_pad_status_desc"
                 android:src="@drawable/ic_help_outline_black_24dp"
-                app:layout_constraintEnd_toEndOf="@+id/list_item_first_stage_landing_text"
-                app:layout_constraintStart_toStartOf="@+id/list_item_first_stage_landing_text"
-                app:layout_constraintTop_toTopOf="@+id/list_item_first_stage_landed_image"
+                app:layout_constraintEnd_toEndOf="@+id/first_stage_landing_text"
+                app:layout_constraintStart_toStartOf="@+id/first_stage_landing_text"
+                app:layout_constraintTop_toTopOf="@+id/first_stage_landed_image"
                 app:tint="?colorControlNormal" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

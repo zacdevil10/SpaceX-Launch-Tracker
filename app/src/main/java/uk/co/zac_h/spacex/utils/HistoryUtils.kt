@@ -1,13 +1,13 @@
 package uk.co.zac_h.spacex.utils
 
-import uk.co.zac_h.spacex.model.spacex.HistoryModel
+import uk.co.zac_h.spacex.model.spacex.History
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 
-fun ArrayList<HistoryHeaderModel>.splitHistoryListByDate(it: List<HistoryModel>) {
+fun ArrayList<HistoryHeaderModel>.splitHistoryListByDate(it: List<History>) {
     this.clear()
     var year = 0
     it.forEach { model ->
-        val newYear = model.dateUtc.subSequence(0, 4).toString().toInt()
+        val newYear = model.event?.dateUtc?.subSequence(0, 4).toString().toInt()
         if (year != newYear) {
             this.add(
                 HistoryHeaderModel(

@@ -16,7 +16,7 @@ import retrofit2.mock.Calls
 import uk.co.zac_h.spacex.about.company.CompanyContract
 import uk.co.zac_h.spacex.about.company.CompanyInteractorImpl
 import uk.co.zac_h.spacex.about.company.CompanyPresenterImpl
-import uk.co.zac_h.spacex.model.spacex.CompanyModel
+import uk.co.zac_h.spacex.model.spacex.CompanyResponse
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class CompanyTest {
@@ -37,7 +37,7 @@ class CompanyTest {
         mock(CompanyContract.InteractorCallback::class.java)
 
     @Mock
-    val mCompanyModel: CompanyModel = mock(CompanyModel::class.java)
+    val mCompany: CompanyResponse = mock(CompanyResponse::class.java)
 
     private lateinit var mockRepoError: SpaceXInterface
 
@@ -61,21 +61,21 @@ class CompanyTest {
 
     @Test
     fun `When mCompanyModel is not null then add to view`() {
-        mPresenter.getCompanyInfo(mCompanyModel)
+        mPresenter.getCompanyInfo(mCompany)
 
         verify(mView).hideProgress()
-        verify(mView).updateCompanyInfo(mCompanyModel)
+        verify(mView).updateCompanyInfo(mCompany)
     }
 
     @Test
     fun `When mCompanyModel is null then get data from API`() {
         val mockRepo = mock<SpaceXInterface> {
-            onBlocking { getCompanyInfo() } doReturn Calls.response(Response.success(mCompanyModel))
+            onBlocking { getCompanyInfo() } doReturn Calls.response(Response.success(mCompany))
         }
 
         interactor.getCompanyInfo(mockRepo, mListener)
 
-        verifyBlocking(mListener) { onSuccess(mCompanyModel) }
+        verifyBlocking(mListener) { onSuccess(mCompany) }
     }
 
     @Test

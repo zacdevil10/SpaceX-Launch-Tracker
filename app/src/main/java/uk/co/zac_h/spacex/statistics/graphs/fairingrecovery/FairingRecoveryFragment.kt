@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -21,19 +20,21 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentFairingRecoveryBinding
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
 import uk.co.zac_h.spacex.utils.models.FairingRecoveryModel
 import uk.co.zac_h.spacex.utils.models.KeysModel
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class FairingRecoveryFragment : Fragment(), FairingRecoveryContract.View,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<FairingRecoveryModel>> {
+
+    override var title: String = "Fairing Recovery"
 
     private var binding: FragmentFairingRecoveryBinding? = null
 
-    private var presenter: FairingRecoveryContract.Presenter? = null
+    private var presenter: NetworkInterface.Presenter<List<FairingRecoveryModel>?>? = null
 
     private lateinit var statsList: ArrayList<FairingRecoveryModel>
     private lateinit var keyAdapter: StatisticsKeyAdapter
@@ -54,10 +55,9 @@ class FairingRecoveryFragment : Fragment(), FairingRecoveryContract.View,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentFairingRecoveryBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentFairingRecoveryBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -66,12 +66,6 @@ class FairingRecoveryFragment : Fragment(), FairingRecoveryContract.View,
         view.doOnPreDraw { startPostponedEnterTransition() }
 
         (activity as MainActivity).setSupportActionBar(binding?.toolbar)
-
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
@@ -94,7 +88,7 @@ class FairingRecoveryFragment : Fragment(), FairingRecoveryContract.View,
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     e?.let {
-                        val stats = statsList[(e.x - 2017).toInt()]
+                        val stats = statsList.filter { it.year == e.x.toInt() }[0]
 
                         keys.clear()
 
@@ -127,21 +121,7 @@ class FairingRecoveryFragment : Fragment(), FairingRecoveryContract.View,
             })
         }
 
-        if (statsList.isEmpty()) {
-            presenter?.getLaunchList()
-        } else {
-            presenter?.addLaunchList(statsList)
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+        presenter?.getOrUpdate(statsList)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -162,14 +142,14 @@ class FairingRecoveryFragment : Fragment(), FairingRecoveryContract.View,
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.reload -> {
             statsList.clear()
-            presenter?.getLaunchList()
+            presenter?.getOrUpdate(null)
             true
         }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updateGraph(stats: List<FairingRecoveryModel>, animate: Boolean) {
-        if (statsList.isEmpty()) statsList.addAll(stats)
+    override fun update(data: Any, response: List<FairingRecoveryModel>) {
+        if (statsList.isEmpty()) statsList.addAll(response)
 
         val colors = ArrayList<Int>()
 
@@ -180,7 +160,7 @@ class FairingRecoveryFragment : Fragment(), FairingRecoveryContract.View,
 
         var max = 0f
 
-        stats.forEach {
+        response.forEach {
             val newMax = it.successes + it.failures
             if (newMax > max) max = newMax
             entries.add(
@@ -205,35 +185,31 @@ class FairingRecoveryFragment : Fragment(), FairingRecoveryContract.View,
         dataSets.add(set)
 
         binding?.statisticsBarChart?.barChart?.apply {
-            if (animate) animateY(400, Easing.Linear)
-            xAxis.labelCount = stats.size
+            if (data == true) animateY(400, Easing.Linear)
+            xAxis.labelCount = response.size
             axisLeft.apply {
                 axisMinimum = 0f
                 axisMaximum = if ((max.toInt() % 2) == 0) max else max.plus(1)
                 labelCount =
                     if ((max.toInt() % 2) == 0) max.toInt() / 2 else max.toInt().plus(1) / 2
             }
-            data = BarData(dataSets)
+            this.data = BarData(dataSets)
             invalidate()
         }
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
-    }
-
-    override fun showError(error: String) {
-
+        binding?.progress?.hide()
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (statsList.isEmpty() || it.progressIndicator.isShown) presenter?.getLaunchList()
+                if (statsList.isEmpty() || it.progress.isShown) presenter?.getOrUpdate(null)
             }
         }
     }

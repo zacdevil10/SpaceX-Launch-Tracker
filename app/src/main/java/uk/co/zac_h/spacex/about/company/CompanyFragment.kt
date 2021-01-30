@@ -7,75 +7,60 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCompanyBinding
-import uk.co.zac_h.spacex.model.spacex.CompanyModel
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import java.text.DecimalFormat
+import uk.co.zac_h.spacex.model.spacex.Company
 
-class CompanyFragment : Fragment(), CompanyContract.CompanyView,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
+
+    companion object {
+        const val COMPANY_KEY = "company_info"
+    }
+
+    override var title: String = "Company"
 
     private var binding: FragmentCompanyBinding? = null
 
-    private var presenter: CompanyContract.CompanyPresenter? = null
+    private var presenter: NetworkInterface.Presenter<Company?>? = null
 
-    private var companyInfo: CompanyModel? = null
+    private var companyInfo: Company? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         savedInstanceState?.let {
-            companyInfo = it.getParcelable("info")
+            companyInfo = it.getParcelable(COMPANY_KEY)
         }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentCompanyBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentCompanyBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         hideProgress()
 
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
-
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
         presenter = CompanyPresenterImpl(this, CompanyInteractorImpl())
 
-        companyInfo?.let {
-            presenter?.getCompanyInfo(it)
-        } ?: presenter?.getCompanyInfo()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+        presenter?.getOrUpdate(companyInfo)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         companyInfo?.let {
-            outState.putParcelable("info", it)
+            outState.putParcelable(COMPANY_KEY, it)
         }
         super.onSaveInstanceState(outState)
     }
@@ -86,55 +71,48 @@ class CompanyFragment : Fragment(), CompanyContract.CompanyView,
         binding = null
     }
 
-    override fun updateCompanyInfo(companyModel: CompanyModel) {
-        companyInfo = companyModel
+    override fun update(response: Company) {
+        companyInfo = response
         binding?.apply {
-            with(companyModel.headquarters) {
-                companyAddressText.text =
-                    context?.getString(R.string.address, address, city, state)
+            response.headquarters?.let {
+                companyAddress.text =
+                    context?.getString(R.string.address, it.address, it.city, it.state)
             }
 
-            with(companyModel.links) {
-                companyWebsiteButton.setOnClickListener { openWebLink(website) }
-                companyTwitterButton.setOnClickListener { openWebLink(twitter) }
-                companyAlbumButton.setOnClickListener { openWebLink(flickr) }
-            }
+            companyWebsite.setOnClickListener { openWebLink(response.website) }
+            companyTwitter.setOnClickListener { openWebLink(response.twitter) }
+            companyAlbum.setOnClickListener { openWebLink(response.flickr) }
 
-            companySummaryText.text = companyModel.summary
-            companyFoundedText.text =
-                context?.getString(R.string.founded, companyModel.founder, companyModel.founded)
-            companyCeoText.text = companyModel.ceo
-            companyCtoText.text = companyModel.cto
-            companyCooText.text = companyModel.coo
-            companyCtoProText.text = companyModel.ctoPropulsion
-            companyValuationText.text =
-                DecimalFormat("#,###.00").format(companyModel.valuation).toString()
-            companyEmployeesText.text = companyModel.employees.toString()
-            companyVehiclesText.text = companyModel.vehicles.toString()
-            companyLaunchSitesText.text = companyModel.launchSites.toString()
-            companyTestSitesText.text = companyModel.testSites.toString()
+            companySummary.text = response.summary
+            companyFounded.text =
+                context?.getString(R.string.founded, response.founder, response.founded)
+            companyCeo.text = response.ceo
+            companyCto.text = response.cto
+            companyCoo.text = response.coo
+            companyCtoPro.text = response.ctoPropulsion
+            companyValuation.text = response.valuation
+            companyEmployees.text = response.employees.toString()
+            companyVehicles.text = response.vehicles.toString()
+            companyLaunchSites.text = response.launchSites.toString()
+            companyTestSites.text = response.testSites.toString()
         }
     }
 
-    fun openWebLink(link: String) {
+    fun openWebLink(link: String?) {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
-    }
-
-    override fun showError(error: String) {
-
+        binding?.progress?.hide()
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            if (companyInfo == null) presenter?.getCompanyInfo()
+            if (companyInfo == null) presenter?.getOrUpdate(null)
         }
     }
 

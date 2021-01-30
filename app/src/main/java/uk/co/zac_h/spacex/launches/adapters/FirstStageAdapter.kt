@@ -3,38 +3,32 @@ package uk.co.zac_h.spacex.launches.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.card.MaterialCardView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.spacex.LaunchCoreExtendedModel
+import uk.co.zac_h.spacex.databinding.ListItemFirstStageBinding
+import uk.co.zac_h.spacex.model.spacex.LaunchCore
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
-class FirstStageAdapter(private val cores: List<LaunchCoreExtendedModel>) :
+class FirstStageAdapter(private val cores: List<LaunchCore>) :
     RecyclerView.Adapter<FirstStageAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_first_stage,
-                parent,
-                false
-            )
+            ListItemFirstStageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val core = cores[position]
 
-        holder.apply {
-            cardView.transitionName = core.core?.id ?: ""
+        holder.binding.apply {
+            firstStageCard.transitionName = core.core?.id
 
-            coreSerial.text = core.core?.serial ?: "Unknown"
+            firstStageCoreSerial.text = core.core?.serial ?: "Unknown"
 
-            reusedImage.apply {
+            firstStageReusedImage.apply {
                 core.reused?.let { reused ->
                     if (reused) {
                         setImageAndTint(R.drawable.ic_check_circle_black_24dp, R.color.success)
@@ -44,7 +38,7 @@ class FirstStageAdapter(private val cores: List<LaunchCoreExtendedModel>) :
                 }
             }
 
-            landedImage.apply {
+            firstStageLandedImage.apply {
                 core.landingSuccess?.let { landingSuccess ->
                     if (landingSuccess) {
                         setImageAndTint(R.drawable.ic_check_circle_black_24dp, R.color.success)
@@ -54,7 +48,7 @@ class FirstStageAdapter(private val cores: List<LaunchCoreExtendedModel>) :
                 }
             }
 
-            landingImage.apply {
+            firstStageLandingImage.apply {
                 core.landingAttempt?.let { landingIntent ->
                     if (landingIntent) {
                         when (core.landingType) {
@@ -68,37 +62,22 @@ class FirstStageAdapter(private val cores: List<LaunchCoreExtendedModel>) :
             }
 
             core.core?.let {
-                detailsImage.visibility = View.VISIBLE
-                cardView.setOnClickListener {
-                    bind(core)
+                firstStageDetailsIndicator.visibility = View.VISIBLE
+                firstStageCard.setOnClickListener {
+                    root.findNavController().navigate(
+                        R.id.action_launch_details_container_fragment_to_core_details_fragment,
+                        bundleOf("core" to core.core),
+                        null,
+                        FragmentNavigatorExtras(firstStageCard to (core.core?.id ?: ""))
+                    )
                 }
             } ?: run {
-                detailsImage.visibility = View.GONE
+                firstStageDetailsIndicator.visibility = View.GONE
             }
         }
     }
 
     override fun getItemCount(): Int = cores.size
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val cardView: MaterialCardView = itemView.findViewById(R.id.list_item_first_stage_card)
-        val detailsImage: ImageView =
-            itemView.findViewById(R.id.list_item_first_stage_details_image)
-        val coreSerial: TextView =
-            itemView.findViewById(R.id.list_item_first_stage_core_serial_text)
-        val reusedImage: ImageView = itemView.findViewById(R.id.list_item_first_stage_reused_image)
-        val landedImage: ImageView = itemView.findViewById(R.id.list_item_first_stage_landed_image)
-        val landingImage: ImageView =
-            itemView.findViewById(R.id.list_item_first_stage_landing_image)
-
-        fun bind(core: LaunchCoreExtendedModel) {
-            itemView.findNavController()
-                .navigate(
-                    R.id.action_launch_details_container_fragment_to_core_details_fragment,
-                    bundleOf("core" to core.core),
-                    null,
-                    FragmentNavigatorExtras(cardView to (core.core?.id ?: ""))
-                )
-        }
-    }
+    class ViewHolder(val binding: ListItemFirstStageBinding) : RecyclerView.ViewHolder(binding.root)
 }

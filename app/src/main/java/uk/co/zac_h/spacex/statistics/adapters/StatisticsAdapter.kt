@@ -1,16 +1,14 @@
 package uk.co.zac_h.spacex.statistics.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.card.MaterialCardView
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.databinding.ListItemIllustrationsFooterBinding
+import uk.co.zac_h.spacex.databinding.ListItemStatisticsBinding
 import uk.co.zac_h.spacex.statistics.StatisticsContract
 import uk.co.zac_h.spacex.utils.PadType
 
@@ -31,8 +29,8 @@ class StatisticsAdapter(private val view: StatisticsContract.View) :
         when (viewType) {
             1 -> {
                 FooterViewHolder(
-                    LayoutInflater.from(parent.context).inflate(
-                        R.layout.list_item_illustrations_footer,
+                    ListItemIllustrationsFooterBinding.inflate(
+                        LayoutInflater.from(parent.context),
                         parent,
                         false
                     )
@@ -40,8 +38,8 @@ class StatisticsAdapter(private val view: StatisticsContract.View) :
             }
             else -> {
                 ViewHolder(
-                    LayoutInflater.from(parent.context).inflate(
-                        R.layout.list_item_statistics,
+                    ListItemStatisticsBinding.inflate(
+                        LayoutInflater.from(parent.context),
                         parent,
                         false
                     )
@@ -51,13 +49,13 @@ class StatisticsAdapter(private val view: StatisticsContract.View) :
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ViewHolder -> holder.apply {
+            is ViewHolder -> holder.binding.apply {
                 val heading = titles[position]
 
-                card.transitionName = heading
-                title.text = heading
+                listItemStatisticsCard.transitionName = heading
+                listItemStatisticsTitle.text = heading
 
-                graphics.setImageResource(
+                listItemStatisticsGraphic.setImageResource(
                     when (position) {
                         0, 1 -> R.drawable.ic_launch_history
                         2 -> R.drawable.ic_launch_rate
@@ -69,10 +67,10 @@ class StatisticsAdapter(private val view: StatisticsContract.View) :
                     }
                 )
 
-                if (position == 0) graphics.scaleX = -1f
+                if (position == 0) listItemStatisticsGraphic.scaleX = -1f
 
-                card.setOnClickListener {
-                    itemView.findNavController().navigate(
+                listItemStatisticsCard.setOnClickListener {
+                    root.findNavController().navigate(
                         when (position) {
                             0 -> R.id.action_statistics_fragment_to_launch_history
                             1 -> R.id.action_statistics_fragment_to_landing_history
@@ -92,12 +90,12 @@ class StatisticsAdapter(private val view: StatisticsContract.View) :
                             "heading" to heading
                         ),
                         null,
-                        FragmentNavigatorExtras(card to heading)
+                        FragmentNavigatorExtras(listItemStatisticsCard to heading)
                     )
                 }
             }
-            is FooterViewHolder -> holder.apply {
-                itemView.setOnClickListener {
+            is FooterViewHolder -> holder.binding.apply {
+                root.setOnClickListener {
                     view.openWebLink("https://stories.freepik.com/")
                 }
             }
@@ -108,11 +106,8 @@ class StatisticsAdapter(private val view: StatisticsContract.View) :
 
     override fun getItemViewType(position: Int): Int = if (position == titles.size) 1 else 0
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var card: MaterialCardView = itemView.findViewById(R.id.list_item_statistics_card)
-        var title: TextView = itemView.findViewById(R.id.list_item_statistics_title)
-        val graphics: ImageView = itemView.findViewById(R.id.list_item_statistics_graphic)
-    }
+    class ViewHolder(val binding: ListItemStatisticsBinding) : RecyclerView.ViewHolder(binding.root)
 
-    class FooterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    class FooterViewHolder(val binding: ListItemIllustrationsFooterBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

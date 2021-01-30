@@ -4,11 +4,10 @@ import android.animation.ValueAnimator
 import android.graphics.Color
 import android.os.Bundle
 import android.view.*
-import android.view.animation.AnimationUtils
+import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -22,16 +21,15 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchHistoryBinding
-import uk.co.zac_h.spacex.utils.LaunchHistoryFilter
-import uk.co.zac_h.spacex.utils.RocketType
-import uk.co.zac_h.spacex.utils.generateCenterSpannableText
+import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryView,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistoryView {
+
+    override var title: String = "Launch History"
 
     private var binding: FragmentLaunchHistoryBinding? = null
 
@@ -59,10 +57,9 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentLaunchHistoryBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentLaunchHistoryBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -71,12 +68,6 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
         view.doOnPreDraw { startPostponedEnterTransition() }
 
         (activity as MainActivity).setSupportActionBar(binding?.toolbar)
-
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
@@ -99,9 +90,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
             presenter?.updateFilter(launchStats)
         }
 
-        presenter?.apply {
-            if (launchStats.isEmpty()) getLaunchList() else addLaunchList(launchStats)
-        }
+        presenter?.getOrUpdate(launchStats)
 
         //Pie chart appearance
         binding?.launchHistoryPieChart?.apply {
@@ -122,30 +111,22 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
     override fun onResume() {
         super.onResume()
         presenter?.showFilter(filterVisible)
     }
 
-    override fun onStop() {
-        super.onStop()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("launches", launchStats)
-        outState.putBoolean("filter", filterVisible)
+        outState.apply {
+            putParcelableArrayList("launches", launchStats)
+            putBoolean("filter", filterVisible)
+        }
         super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter?.cancelRequests()
+        presenter?.cancelRequest()
         binding = null
     }
 
@@ -161,14 +142,14 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
         }
         R.id.reload -> {
             launchStats.clear()
-            presenter?.getLaunchList()
+            presenter?.getOrUpdate(null)
             true
         }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun updatePieChart(stats: List<HistoryStatsModel>, animate: Boolean) {
-        if (launchStats.isEmpty()) launchStats.addAll(stats)
+    override fun update(data: Any, response: List<HistoryStatsModel>) {
+        if (launchStats.isEmpty()) launchStats.addAll(response)
 
         val colors = ArrayList<Int>()
 
@@ -182,7 +163,7 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
         var falconNine = 0
         var falconHeavy = 0
 
-        stats.forEach {
+        response.forEach {
             when (it.rocket) {
                 RocketType.FALCON_ONE -> falconOne = when (filter) {
                     LaunchHistoryFilter.SUCCESSES -> it.successes
@@ -218,17 +199,16 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
             }
         }
 
-        val data = PieData(dataSet).apply {
+        val pieData = PieData(dataSet).apply {
             setValueTextColor(Color.WHITE)
             setValueTextSize(11f)
         }
 
         binding?.launchHistoryPieChart?.apply {
-            if (animate) animateY(1400, Easing.EaseInOutCubic)
             this.centerText = context?.getString(R.string.pie_chart_title, "2006 - 2020")
                 ?.generateCenterSpannableText()
-            this.data = data
-            invalidate()
+            this.data = pieData
+            if (data == true) animateY(1400, Easing.EaseInOutCubic) else invalidate()
         }
     }
 
@@ -236,46 +216,34 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
         stats.forEach {
             when (it.rocket) {
                 RocketType.FALCON_ONE -> {
-                    if (animate) ValueAnimator.ofInt(0, it.successRate).apply {
-                        duration = 1000
-                        addUpdateListener { valueAnim ->
-                            binding?.launchHistoryFalconOneRateProgress?.progress =
-                                valueAnim.animatedValue as Int
-                        }
-                    }.start() else binding?.launchHistoryFalconOneRateProgress?.progress =
-                        it.successRate
+                    animateProgress(animate, it.successRate, binding?.falconOneRateProgress)
 
-                    binding?.launchHistoryFalconOnePercentText?.text =
+                    binding?.falconOnePercentText?.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }
                 RocketType.FALCON_NINE -> {
-                    if (animate) ValueAnimator.ofInt(0, it.successRate).apply {
-                        duration = 1000
-                        addUpdateListener { valueAnim ->
-                            binding?.launchHistoryFalconNineRateProgress?.progress =
-                                valueAnim.animatedValue as Int
-                        }
-                    }.start() else binding?.launchHistoryFalconNineRateProgress?.progress =
-                        it.successRate
+                    animateProgress(animate, it.successRate, binding?.falconNineRateProgress)
 
-                    binding?.launchHistoryFalconNinePercentText?.text =
+                    binding?.falconNinePercentText?.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }
                 RocketType.FALCON_HEAVY -> {
-                    if (animate) ValueAnimator.ofInt(0, it.successRate).apply {
-                        duration = 1000
-                        addUpdateListener { valueAnim ->
-                            binding?.launchHistoryFalconHeavyRateProgress?.progress =
-                                valueAnim.animatedValue as Int
-                        }
-                    }.start() else binding?.launchHistoryFalconHeavyRateProgress?.progress =
-                        it.successRate
+                    animateProgress(animate, it.successRate, binding?.falconHeavyRateProgress)
 
-                    binding?.launchHistoryFalconHeavyPercentText?.text =
+                    binding?.falconHeavyPercentText?.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }
             }
         }
+    }
+
+    private fun animateProgress(animate: Boolean, successRate: Int, progressBar: ProgressBar?) {
+        if (animate) ValueAnimator.ofInt(0, successRate).apply {
+            duration = 1000
+            addUpdateListener { valueAnim ->
+                progressBar?.progress = valueAnim.animatedValue as Int
+            }
+        }.start() else progressBar?.progress = successRate
     }
 
     override fun toggleFilterVisibility(filterVisible: Boolean) {
@@ -283,11 +251,11 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
             when (filterVisible) {
                 true -> {
                     visibility = View.VISIBLE
-                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_top))
+                    startAnimation(animateEnterFromTop(context))
                 }
                 false -> {
                     visibility = View.GONE
-                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_top))
+                    startAnimation(animateExitToTop(context))
                 }
             }
         }
@@ -296,11 +264,11 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
             when (filterVisible) {
                 true -> {
                     visibility = View.VISIBLE
-                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in))
+                    startAnimation(animateFadeIn(context))
                 }
                 false -> {
                     visibility = View.GONE
-                    startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out))
+                    startAnimation(animateFadeOut(context))
                 }
             }
         }
@@ -309,21 +277,19 @@ class LaunchHistoryFragment : Fragment(), LaunchHistoryContract.LaunchHistoryVie
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
-    }
-
-    override fun showError(error: String) {
-
+        binding?.progress?.hide()
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (launchStats.isEmpty() || it.progressIndicator.isShown) presenter?.getLaunchList()
+                if (launchStats.isEmpty() || it.progress.isShown) presenter?.getOrUpdate(
+                    null
+                )
             }
         }
     }

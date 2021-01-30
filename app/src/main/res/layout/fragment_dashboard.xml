@@ -11,14 +11,14 @@
         style="@style/Widget.MaterialComponents.Toolbar.Primary"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:elevation="4dp"
+        android:elevation="@dimen/toolbar_elevation"
         android:textColor="?colorOnSurface"
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/menu_dashboard"
         app:title="@string/menu_home" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/dashboard_swipe_refresh"
+        android:id="@+id/refresh"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -26,12 +26,12 @@
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <androidx.core.widget.NestedScrollView
-            android:id="@+id/dashboard_scroll_view"
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp">
+            android:paddingTop="@dimen/small_margin"
+            android:paddingBottom="@dimen/small_margin">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -40,15 +40,15 @@
                 android:orientation="vertical">
 
                 <include
-                    android:id="@+id/dashboard_next_layout"
-                    layout="@layout/list_item_next_launch" />
+                    android:id="@+id/next"
+                    layout="@layout/list_item_dashboard_launch" />
 
                 <include
-                    android:id="@+id/dashboard_latest_layout"
-                    layout="@layout/list_item_latest_launch" />
+                    android:id="@+id/latest"
+                    layout="@layout/list_item_dashboard_launch" />
 
                 <include
-                    android:id="@+id/dashboard_pinned_layout"
+                    android:id="@+id/pinned"
                     layout="@layout/dashboard_pinned_layout" />
 
             </LinearLayout>

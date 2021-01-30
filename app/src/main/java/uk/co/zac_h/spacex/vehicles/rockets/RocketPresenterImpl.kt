@@ -1,28 +1,28 @@
 package uk.co.zac_h.spacex.vehicles.rockets
 
-import uk.co.zac_h.spacex.model.spacex.RocketsModel
+import uk.co.zac_h.spacex.base.NetworkInterface
+import uk.co.zac_h.spacex.model.spacex.Rocket
 import uk.co.zac_h.spacex.rest.SpaceXInterface
-import uk.co.zac_h.spacex.vehicles.VehiclesContract
 
 class RocketPresenterImpl(
-    private val view: VehiclesContract.View<RocketsModel>,
-    private val interactor: VehiclesContract.Interactor<RocketsModel>
-) : VehiclesContract.Presenter, VehiclesContract.InteractorCallback<RocketsModel> {
+    private val view: NetworkInterface.View<List<Rocket>>,
+    private val interactor: NetworkInterface.Interactor<List<Rocket>?>
+) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<List<Rocket>?> {
 
-    override fun getVehicles(api: SpaceXInterface) {
+    override fun get(api: SpaceXInterface) {
         view.showProgress()
-        interactor.getVehicles(api, this)
+        interactor.get(api, this)
     }
 
     override fun cancelRequest() {
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(vehicles: List<RocketsModel>?) {
+    override fun onSuccess(response: List<Rocket>?) {
         view.apply {
             hideProgress()
             toggleSwipeRefresh(false)
-            vehicles?.let { updateVehicles(it.reversed()) }
+            response?.let { update(it.reversed()) }
         }
     }
 
