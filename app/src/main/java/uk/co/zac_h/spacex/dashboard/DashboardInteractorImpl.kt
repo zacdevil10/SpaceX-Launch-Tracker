@@ -25,7 +25,7 @@ class DashboardInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<Launc
                 populate = listOf(
                     QueryPopulateModel(path = "rocket", populate = "", select = listOf("name")),
                     QueryPopulateModel("launchpad", select = listOf("name"), populate = ""),
-                    QueryPopulateModel("crew", populate = "", select = listOf("id")),
+                    //QueryPopulateModel("crew", populate = "", select = listOf("id")),
                     QueryPopulateModel("ships", populate = "", select = listOf("id")),
                     QueryPopulateModel(
                         path = "cores",
@@ -56,7 +56,7 @@ class DashboardInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<Launc
                     "tbd",
                     "rocket",
                     "cores",
-                    "crew",
+                    //"crew",
                     "ships",
                     "links",
                     "static_fire_date_unix",

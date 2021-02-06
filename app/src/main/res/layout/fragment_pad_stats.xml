@@ -22,8 +22,7 @@
             android:layout_height="?attr/actionBarSize"
             android:elevation="@dimen/toolbar_elevation"
             android:textColor="?colorOnSurface"
-            android:theme="@style/AppTheme.AppBarOverlay"
-            app:title="Launch Pads" />
+            android:theme="@style/AppTheme.AppBarOverlay" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
