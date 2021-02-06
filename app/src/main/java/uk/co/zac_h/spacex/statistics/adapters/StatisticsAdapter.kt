@@ -20,7 +20,7 @@ class StatisticsAdapter(private val view: StatisticsContract.View) :
         Statistics.LANDING_HISTORY,
         Statistics.LAUNCH_RATE,
         Statistics.MASS_TO_ORBIT,
-        //Statistics.FAIRING_RECOVERY,
+        Statistics.FAIRING_RECOVERY,
         Statistics.LAUNCHPADS,
         Statistics.LANDING_PADS
     )
