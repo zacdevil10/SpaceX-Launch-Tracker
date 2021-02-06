@@ -23,6 +23,7 @@ class LaunchesInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<L
                     QueryPopulateModel(path = "rocket", populate = "", select = listOf("name")),
                     QueryPopulateModel("launchpad", select = listOf("name"), populate = ""),
                     QueryPopulateModel("crew.crew", populate = "", select = listOf("id")),
+
                     QueryPopulateModel("ships", populate = "", select = listOf("id")),
                     QueryPopulateModel(
                         path = "cores",
@@ -49,7 +50,7 @@ class LaunchesInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<L
                     "tbd",
                     "rocket",
                     "cores",
-                    "crew",
+                    //"crew",
                     "ships",
                     "links",
                     "static_fire_date_unix",

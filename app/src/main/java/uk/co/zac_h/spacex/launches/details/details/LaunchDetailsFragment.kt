@@ -140,22 +140,22 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
     }
 
     override fun update(data: Any, response: Launch?) {
-        launch?.let {
-            if (data as Boolean) this.launch = response
+        response?.let {
+            if (data as Boolean) launch = response
 
             (activity as MainActivity).supportActionBar?.title = it.missionName
 
             binding?.apply {
                 Glide.with(this@LaunchDetailsFragment)
                     .load(it.links?.missionPatch?.patchSmall)
-                    .error(context?.let {
-                        ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
+                    .error(context?.let { context ->
+                        ContextCompat.getDrawable(context, R.drawable.ic_mission_patch)
                     })
-                    .fallback(context?.let {
-                        ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
+                    .fallback(context?.let { context ->
+                        ContextCompat.getDrawable(context, R.drawable.ic_mission_patch)
                     })
-                    .placeholder(context?.let {
-                        ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
+                    .placeholder(context?.let { context ->
+                        ContextCompat.getDrawable(context, R.drawable.ic_mission_patch)
                     })
                     .into(launchDetailsMissionPatchImage)
 

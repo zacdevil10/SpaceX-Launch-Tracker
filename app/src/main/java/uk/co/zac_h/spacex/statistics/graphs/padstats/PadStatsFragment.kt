@@ -65,6 +65,8 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
+        binding?.toolbar?.title = heading
+
         binding?.padStatsConstraint?.transitionName = heading
 
         hideProgress()
