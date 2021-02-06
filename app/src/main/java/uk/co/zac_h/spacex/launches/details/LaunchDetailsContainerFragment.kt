@@ -15,6 +15,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsContainerBinding
 import uk.co.zac_h.spacex.launches.details.cores.LaunchDetailsCoresFragment
@@ -24,7 +25,9 @@ import uk.co.zac_h.spacex.launches.details.payloads.LaunchDetailsPayloadsFragmen
 import uk.co.zac_h.spacex.launches.details.ships.LaunchDetailsShipsFragment
 import uk.co.zac_h.spacex.model.spacex.Launch
 
-class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContract.View {
+class LaunchDetailsContainerFragment : BaseFragment(), LaunchDetailsContainerContract.View {
+
+    override var title: String = ""
 
     private var binding: FragmentLaunchDetailsContainerBinding? = null
 
@@ -62,17 +65,12 @@ class LaunchDetailsContainerFragment : Fragment(), LaunchDetailsContainerContrac
 
         (activity as MainActivity).setSupportActionBar(binding?.toolbar)
 
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
-
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
         presenter = LaunchDetailsContainerPresenter(this)
 
         launchShort?.let {
+            title = it.missionName ?: ""
             binding?.toolbar?.title = it.missionName
             binding?.fragmentLaunchDetailsContainer?.transitionName = it.id
 

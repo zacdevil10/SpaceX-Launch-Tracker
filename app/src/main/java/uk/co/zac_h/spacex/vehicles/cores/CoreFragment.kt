@@ -3,31 +3,28 @@ package uk.co.zac_h.spacex.vehicles.cores
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
 import uk.co.zac_h.spacex.model.spacex.Core
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.utils.FragmentTitleInterface
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
 
-class CoreFragment : Fragment(), NetworkInterface.View<List<Core>>, SearchView.OnQueryTextListener,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener, FragmentTitleInterface {
+class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
+    SearchView.OnQueryTextListener {
+
+    override var title: String = "Cores"
 
     private var binding: FragmentCoreBinding? = null
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
-
     private lateinit var coreAdapter: CoreAdapter
-    private lateinit var coresArray: ArrayList<Core>
 
-    override var title: String = "Cores"
+    private lateinit var coresArray: ArrayList<Core>
 
     private lateinit var orderSharedPreferences: OrderSharedPreferencesHelper
     private var sortNew = false
@@ -66,21 +63,11 @@ class CoreFragment : Fragment(), NetworkInterface.View<List<Core>>, SearchView.O
             adapter = coreAdapter
         }
 
-        binding?.coreSwipeRefresh?.setOnRefreshListener {
+        binding?.swipeRefresh?.setOnRefreshListener {
             presenter?.get()
         }
 
         if (coresArray.isEmpty()) presenter?.get()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this@CoreFragment)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -147,25 +134,21 @@ class CoreFragment : Fragment(), NetworkInterface.View<List<Core>>, SearchView.O
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding?.coreSwipeRefresh?.isRefreshing = isRefreshing
-    }
-
-    override fun showError(error: String) {
-
+        binding?.swipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (coresArray.isEmpty() || it.progressIndicator.isShown) presenter?.get()
+                if (coresArray.isEmpty() || it.progress.isShown) presenter?.get()
             }
         }
     }

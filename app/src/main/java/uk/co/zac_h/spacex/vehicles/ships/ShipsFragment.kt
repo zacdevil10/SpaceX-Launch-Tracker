@@ -4,28 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentShipsBinding
 import uk.co.zac_h.spacex.model.spacex.Ship
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.utils.FragmentTitleInterface
 import uk.co.zac_h.spacex.vehicles.adapters.ShipsAdapter
 
-class ShipsFragment : Fragment(), NetworkInterface.View<List<Ship>>,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener, FragmentTitleInterface {
+class ShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
+
+    override var title: String = "Ships"
 
     private var binding: FragmentShipsBinding? = null
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
-
     private lateinit var shipsAdapter: ShipsAdapter
-    private lateinit var shipsArray: ArrayList<Ship>
 
-    override var title: String = "Ships"
+    private lateinit var shipsArray: ArrayList<Ship>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,16 +58,6 @@ class ShipsFragment : Fragment(), NetworkInterface.View<List<Ship>>,
         if (shipsArray.isEmpty()) presenter?.get()
     }
 
-    override fun onStart() {
-        super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList("ships", shipsArray)
         super.onSaveInstanceState(outState)
@@ -93,25 +79,21 @@ class ShipsFragment : Fragment(), NetworkInterface.View<List<Ship>>,
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
         binding?.swipeRefresh?.isRefreshing = isRefreshing
     }
 
-    override fun showError(error: String) {
-
-    }
-
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (shipsArray.isEmpty() || it.progressIndicator.isShown) presenter?.get()
+                if (shipsArray.isEmpty() || it.progress.isShown) presenter?.get()
             }
         }
     }

@@ -17,12 +17,12 @@
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:elevation="4dp"
+            android:elevation="@dimen/toolbar_elevation"
             android:textColor="?colorOnSurface"
             android:theme="@style/AppTheme.AppBarOverlay"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
             app:layout_collapseMode="parallax"
             app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
             app:title="@string/menu_vehicles" />
 
         <com.google.android.material.tabs.TabLayout
@@ -30,7 +30,7 @@
             style="@style/Widget.MaterialComponents.TabLayout.Colored"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:elevation="4dp"
+            android:elevation="@dimen/toolbar_elevation"
             android:textColor="?colorOnSurface"
             android:theme="@style/AppTheme.AppBarOverlay"
             app:tabIndicatorColor="?colorSecondary"

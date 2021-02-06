@@ -4,28 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentDragonBinding
 import uk.co.zac_h.spacex.model.spacex.Dragon
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.utils.FragmentTitleInterface
 import uk.co.zac_h.spacex.vehicles.adapters.DragonAdapter
 
-class DragonFragment : Fragment(), NetworkInterface.View<List<Dragon>>,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener, FragmentTitleInterface {
+class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
+
+    override var title: String = "Dragon"
 
     private var binding: FragmentDragonBinding? = null
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
-
     private lateinit var dragonAdapter: DragonAdapter
-    private lateinit var dragonArray: ArrayList<Dragon>
 
-    override var title: String = "Dragon"
+    private lateinit var dragonArray: ArrayList<Dragon>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,21 +51,11 @@ class DragonFragment : Fragment(), NetworkInterface.View<List<Dragon>>,
             adapter = dragonAdapter
         }
 
-        binding?.dragonSwipeRefresh?.setOnRefreshListener {
+        binding?.swipeRefresh?.setOnRefreshListener {
             presenter?.get()
         }
 
         if (dragonArray.isEmpty()) presenter?.get()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -93,25 +79,21 @@ class DragonFragment : Fragment(), NetworkInterface.View<List<Dragon>>,
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding?.dragonSwipeRefresh?.isRefreshing = isRefreshing
-    }
-
-    override fun showError(error: String) {
-
+        binding?.swipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (dragonArray.isEmpty() || it.progressIndicator.isShown) presenter?.get()
+                if (dragonArray.isEmpty() || it.progress.isShown) presenter?.get()
             }
         }
     }

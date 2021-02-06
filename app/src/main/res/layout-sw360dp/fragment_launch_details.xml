@@ -11,11 +11,11 @@
     tools:ignore="Overdraw">
 
     <com.google.android.material.progressindicator.ProgressIndicator
-        android:id="@+id/progress_indicator"
+        android:id="@+id/progress"
         style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="4dp"
+        android:elevation="@dimen/xsmall_margin"
         app:indicatorColor="?colorSecondary"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -37,17 +37,17 @@
                 android:id="@+id/launch_details_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_margin="@dimen/medium_margin"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
                     android:id="@+id/launch_details_mission_patch_image"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
+                    android:layout_width="@dimen/mission_patch_width"
+                    android:layout_height="@dimen/mission_patch_width"
                     android:contentDescription="@string/mission_patch"
-                    android:paddingEnd="16dp"
+                    android:paddingEnd="@dimen/medium_margin"
                     android:src="@drawable/ic_mission_patch"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -92,7 +92,7 @@
                     android:id="@+id/launch_details_static_fire_date_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginEnd="@dimen/xsmall_margin"
                     android:text="@string/static_fire_label"
                     android:textStyle="italic"
                     android:visibility="gone"
@@ -114,7 +114,7 @@
                     android:id="@+id/launch_details_button_bar_main"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/small_margin"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/launch_details_static_fire_date_label">
@@ -161,19 +161,19 @@
                     android:id="@+id/launch_details_details_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textAppearance="?textAppearanceBody2"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:textAppearance="@style/Details"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/launch_details_button_bar_main"
-                    tools:lines="10"
+                    tools:lines="4"
                     tools:text="@tools:sample/lorem/random" />
 
                 <TextView
                     android:id="@+id/launch_details_site_name_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="@dimen/xsmall_margin"
                     android:text="@string/launch_site_label"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/launch_details_details_text" />
@@ -182,7 +182,7 @@
                     android:id="@+id/launch_details_site_name_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginStart="@dimen/small_margin"
                     app:layout_constraintBottom_toBottomOf="@id/launch_details_site_name_label"
                     app:layout_constraintStart_toEndOf="@id/launch_details_site_name_label"
                     app:layout_constraintTop_toTopOf="@id/launch_details_site_name_label"
@@ -192,7 +192,7 @@
                     android:id="@+id/launch_details_button_bar_reddit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/small_margin"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/launch_details_site_name_label">

@@ -10,36 +10,35 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:elevation="4dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:elevation="@dimen/toolbar_elevation"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             style="@style/Widget.MaterialComponents.Toolbar.Primary"
-            app:title="@string/menu_about"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize" />
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/menu_about" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_height="0dp"
         android:layout_width="match_parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/app_bar">
 
         <ImageView
             android:id="@+id/about_app_icon_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/xlarge_margin"
             android:contentDescription="@string/spacex_launch_tracker_icon_desc"
-            android:src="@mipmap/ic_launcher_round"
+            android:src="@mipmap/ic_launcher"
             app:layout_constraintBottom_toTopOf="@id/about_app_name_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,9 +48,9 @@
             android:id="@+id/about_app_name_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/medium_margin"
             android:text="@string/nav_header_title"
-            android:textAppearance="?textAppearanceHeadline6"
+            android:textAppearance="?textAppearanceHeadline5"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/about_app_icon_image" />
@@ -60,9 +59,9 @@
             android:id="@+id/about_author_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/small_margin"
             android:text="@string/nav_header_subtitle"
-            android:textAppearance="?textAppearanceSubtitle2"
+            android:textAppearance="?textAppearanceSubtitle1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/about_app_name_text" />
@@ -71,7 +70,8 @@
             android:id="@+id/about_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:textAppearance="?textAppearanceCaption"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/about_author_text"
@@ -80,12 +80,12 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginStart="@dimen/xlarge_margin"
+            android:layout_marginTop="@dimen/small_margin"
+            android:layout_marginEnd="@dimen/xlarge_margin"
             android:text="@string/powered_by"
-            android:textAppearance="?textAppearanceBody2"
             android:textAlignment="center"
+            android:textAppearance="?textAppearanceBody2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/about_version" />

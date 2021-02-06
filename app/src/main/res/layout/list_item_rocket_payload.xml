@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="8dp">
+    android:paddingBottom="@dimen/small_margin">
 
     <TextView
         android:id="@+id/list_item_rocket_payload_orbit_type_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/small_margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Low Earth" />
@@ -19,7 +19,7 @@
         android:id="@+id/list_item_rocket_payload_mass_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/medium_margin"
         android:textAlignment="textEnd"
         app:layout_constraintBottom_toBottomOf="@id/list_item_rocket_payload_orbit_type_text"
         app:layout_constraintEnd_toEndOf="parent"

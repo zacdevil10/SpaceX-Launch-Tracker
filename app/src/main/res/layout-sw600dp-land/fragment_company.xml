@@ -12,17 +12,17 @@
         style="@style/Widget.MaterialComponents.Toolbar.Primary"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:elevation="4dp"
+        android:elevation="@dimen/toolbar_elevation"
         android:textColor="?colorOnSurface"
         app:layout_constraintTop_toTopOf="parent"
         app:title="@string/menu_company" />
 
     <com.google.android.material.progressindicator.ProgressIndicator
-        android:id="@+id/progress_indicator"
+        android:id="@+id/progress"
         style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="4dp"
+        android:elevation="@dimen/toolbar_elevation"
         app:indicatorColor="?colorSecondary"
         app:layout_constraintBottom_toBottomOf="@id/toolbar" />
 
@@ -36,43 +36,43 @@
             android:layout_width="600dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="@dimen/medium_margin">
 
             <ImageView
-                android:id="@+id/company_logo_image"
+                android:id="@+id/company_logo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="32dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/xlarge_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
                 android:contentDescription="@string/spacex_logo_desc"
                 android:src="@drawable/ic_spacex_logo"
                 app:layout_constraintTop_toTopOf="parent"
                 app:tint="@color/color_on_surface" />
 
             <TextView
-                android:id="@+id/company_address_text"
+                android:id="@+id/company_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/small_margin"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/company_logo_image"
-                tools:text="Rocket Road, Hawthorne, California" />
+                app:layout_constraintTop_toBottomOf="@id/company_logo"
+                tools:text="@tools:sample/cities" />
 
             <com.google.android.material.button.MaterialButtonToggleGroup
                 android:id="@+id/company_button_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/company_address_text">
+                app:layout_constraintTop_toBottomOf="@id/company_address">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/company_website_button"
+                    android:id="@+id/company_website"
                     style="?attr/materialButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -81,7 +81,7 @@
                     app:icon="@drawable/ic_baseline_web_24" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/company_twitter_button"
+                    android:id="@+id/company_twitter"
                     style="?attr/materialButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
                     app:icon="@drawable/ic_twitter" />
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/company_album_button"
+                    android:id="@+id/company_album"
                     style="?attr/materialButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -101,35 +101,36 @@
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
             <TextView
-                android:id="@+id/company_summary_text"
+                android:id="@+id/company_summary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
                 android:textAlignment="center"
-                android:textAppearance="?textAppearanceBody2"
+                android:textAppearance="@style/Details"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_button_bar"
-                tools:text="SpaceX designs, manufactures and launches advanced rockets and spacecraft. The company was founded in 2002 to revolutionize space technology, with the ultimate goal of enabling people to live on other planets." />
+                tools:lines="5"
+                tools:text="@tools:sample/lorem/random" />
 
             <TextView
                 android:id="@+id/company_founded_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/xlarge_margin"
                 android:text="@string/founded_label"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/company_summary_text" />
+                app:layout_constraintTop_toBottomOf="@id/company_summary" />
 
             <TextView
-                android:id="@+id/company_founded_text"
+                android:id="@+id/company_founded"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_founded_label"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -141,110 +142,110 @@
                 android:id="@+id/company_ceo_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
                 android:text="@string/ceo_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_founded_label" />
 
             <TextView
-                android:id="@+id/company_ceo_text"
+                android:id="@+id/company_ceo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_ceo_label"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/company_ceo_label"
                 app:layout_constraintTop_toTopOf="@id/company_ceo_label"
-                tools:text="Elon Musk" />
+                tools:text="@tools:sample/full_names" />
 
             <TextView
                 android:id="@+id/company_cto_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
                 android:text="@string/cto_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_ceo_label" />
 
             <TextView
-                android:id="@+id/company_cto_text"
+                android:id="@+id/company_cto"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_cto_label"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/company_cto_label"
                 app:layout_constraintTop_toTopOf="@id/company_cto_label"
-                tools:text="Elon Musk" />
+                tools:text="@tools:sample/full_names" />
 
             <TextView
                 android:id="@+id/company_coo_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
                 android:text="@string/coo_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_cto_label" />
 
             <TextView
-                android:id="@+id/company_coo_text"
+                android:id="@+id/company_coo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_coo_label"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/company_coo_label"
                 app:layout_constraintTop_toTopOf="@id/company_coo_label"
-                tools:text="Gwynne Shotwell" />
+                tools:text="@tools:sample/full_names" />
 
             <TextView
                 android:id="@+id/company_cto_pro_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
                 android:text="@string/cto_propulsion_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_coo_label" />
 
             <TextView
-                android:id="@+id/company_cto_pro_text"
+                android:id="@+id/company_cto_pro"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_cto_pro_label"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/company_cto_pro_label"
                 app:layout_constraintTop_toTopOf="@id/company_cto_pro_label"
-                tools:text="Tom Mueller" />
+                tools:text="@tools:sample/full_names" />
 
             <TextView
                 android:id="@+id/company_valuation_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
                 android:text="@string/valuation_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_cto_pro_label" />
 
             <TextView
-                android:id="@+id/company_valuation_text"
+                android:id="@+id/company_valuation"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_valuation_label"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -256,18 +257,18 @@
                 android:id="@+id/company_employees_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
                 android:text="@string/employees_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_valuation_label" />
 
             <TextView
-                android:id="@+id/company_employees_text"
+                android:id="@+id/company_employees"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_employees_label"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -279,18 +280,18 @@
                 android:id="@+id/company_vehicles_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
                 android:text="@string/vehicles_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_employees_label" />
 
             <TextView
-                android:id="@+id/company_vehicles_text"
+                android:id="@+id/company_vehicles"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_vehicles_label"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -302,18 +303,18 @@
                 android:id="@+id/company_launch_sites_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
                 android:text="@string/launch_sites_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_vehicles_label" />
 
             <TextView
-                android:id="@+id/company_launch_sites_text"
+                android:id="@+id/company_launch_sites"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_launch_sites_label"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -325,18 +326,18 @@
                 android:id="@+id/company_test_sites_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
                 android:text="@string/test_sites_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/company_launch_sites_label" />
 
             <TextView
-                android:id="@+id/company_test_sites_text"
+                android:id="@+id/company_test_sites"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
                 android:textAlignment="textEnd"
                 app:layout_constraintBottom_toBottomOf="@id/company_test_sites_label"
                 app:layout_constraintEnd_toEndOf="parent"

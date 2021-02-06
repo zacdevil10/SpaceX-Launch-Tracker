@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemLaunchesBinding
 import uk.co.zac_h.spacex.model.spacex.Launch
+import uk.co.zac_h.spacex.utils.LAUNCH_SHORT_KEY
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import java.util.*
@@ -31,10 +32,13 @@ class LaunchesAdapter(
         filteredLaunches = launches
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(
-            ListItemLaunchesBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
+        ListItemLaunchesBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
+    )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val launch = filteredLaunches[position]
@@ -51,36 +55,36 @@ class LaunchesAdapter(
                 .placeholder(context?.let {
                     ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
                 })
-                .into(launchesMissionPatchImage)
+                .into(missionPatch)
 
             if (launch.rocket?.name == "Falcon 9") {
-                launchesReusedText.visibility = launch.cores?.get(0)?.reused?.let {
+                reused.visibility = launch.cores?.get(0)?.reused?.let {
                     if (it) View.VISIBLE else View.GONE
                 } ?: View.GONE
 
-                launchesLandingVehicleText.visibility =
+                landingVehicle.visibility =
                     launch.cores?.get(0)?.landingSuccess?.let {
                         if (it) View.VISIBLE else View.GONE
                     } ?: View.GONE
 
-                launchesLandingVehicleText.text = launch.cores?.get(0)?.landingPad?.name
+                landingVehicle.text = launch.cores?.get(0)?.landingPad?.name
             } else {
-                launchesReusedText.visibility = View.GONE
-                launchesLandingVehicleText.visibility = View.GONE
+                reused.visibility = View.GONE
+                landingVehicle.visibility = View.GONE
             }
 
-            launchesFlightNoText.text =
+            flightNumber.text =
                 context?.getString(R.string.flight_number, launch.flightNumber)
-            launchesVehicleText.text = launch.rocket?.name
-            launchesMissionNameText.text = launch.missionName
-            launchesDateText.text =
+            vehicle.text = launch.rocket?.name
+            missionName.text = launch.missionName
+            date.text =
                 launch.launchDate?.dateUnix?.formatDateMillisLong(launch.datePrecision)
 
             root.setOnClickListener {
                 root.findNavController().navigate(
-                    R.id.action_launches_page_fragment_to_launch_details_container_fragment,
+                    R.id.action_launch_item_to_launch_details_container_fragment,
                     bundleOf(
-                        "launch_short" to launch
+                        LAUNCH_SHORT_KEY to launch
                     ),
                     null,
                     FragmentNavigatorExtras(root to launch.id)

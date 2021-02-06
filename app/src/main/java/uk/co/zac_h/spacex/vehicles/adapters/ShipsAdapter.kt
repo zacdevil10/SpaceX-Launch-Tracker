@@ -3,10 +3,6 @@ package uk.co.zac_h.spacex.vehicles.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -19,27 +15,30 @@ import uk.co.zac_h.spacex.model.spacex.Ship
 class ShipsAdapter(private val ships: List<Ship>) :
     RecyclerView.Adapter<ShipsAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(
-            ListItemVehicleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
+        ListItemVehicleBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
+    )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val ship = ships[position]
 
         holder.binding.apply {
-            listItemVehicleCard.transitionName = ship.id
+            vehicleCard.transitionName = ship.id
 
             Glide.with(root)
                 .load(ship.image)
-                .error(R.drawable.ic_baseline_error_outline_24)
-                .into(listItemVehicleImage)
+                .error(R.drawable.ic_baseline_directions_boat_24)
+                .into(vehicleImage)
 
-            listItemVehicleTitle.text = ship.name
-            listItemVehicleDetails.visibility = View.GONE
+            vehicleName.text = ship.name
+            vehicleDetails.visibility = View.GONE
 
-            listItemVehicleCard.setOnClickListener { holder.bind(ship) }
-            listItemVehicleSpecsButton.setOnClickListener { holder.bind(ship) }
+            vehicleCard.setOnClickListener { holder.bind(ship) }
+            vehicleSpecs.setOnClickListener { holder.bind(ship) }
         }
     }
 
@@ -51,7 +50,7 @@ class ShipsAdapter(private val ships: List<Ship>) :
                 R.id.action_vehicles_page_fragment_to_ship_details_fragment,
                 bundleOf("ship" to ship),
                 null,
-                FragmentNavigatorExtras(binding.listItemVehicleCard to ship.id)
+                FragmentNavigatorExtras(binding.vehicleCard to ship.id)
             )
         }
     }

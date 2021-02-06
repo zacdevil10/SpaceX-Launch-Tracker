@@ -16,7 +16,8 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import uk.co.zac_h.spacex.crew.adapters.CrewLaunchAdapter
+import kotlinx.android.synthetic.main.grid_item_crew.*
+import uk.co.zac_h.spacex.crew.adapters.CrewMissionsAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewItemBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.model.spacex.CrewStatus
@@ -32,10 +33,12 @@ class CrewItemFragment : Fragment() {
     private var binding: FragmentCrewItemBinding? = null
 
     companion object {
+        const val CREW_KEY = "crew"
+
         fun newInstance(crew: Crew): Fragment {
             return CrewItemFragment().apply {
                 arguments = Bundle().apply {
-                    putParcelable("crew", crew)
+                    putParcelable(CREW_KEY, crew)
                 }
             }
         }
@@ -51,14 +54,14 @@ class CrewItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val person = arguments?.getParcelable<Crew>("crew")
+        val person = arguments?.getParcelable<Crew>(CREW_KEY)
 
         binding?.apply {
             itemCrewConstraint.transitionName = person?.id
 
             val typedVal = TypedValue()
-            val initialMargin = itemCrewIndicator.marginTop
-            val bottomSheetBehavior = BottomSheetBehavior.from(itemCrewBottomSheet)
+            val initialMargin = indicator.marginTop
+            val bottomSheetBehavior = BottomSheetBehavior.from(crewBottomSheet)
 
             bottomSheetBehavior.apply {
                 state = BottomSheetBehavior.STATE_COLLAPSED
@@ -75,8 +78,8 @@ class CrewItemFragment : Fragment() {
                                 requireContext().resources.displayMetrics
                             )
 
-                            itemCrewIndicator.layoutParams =
-                                (itemCrewIndicator.layoutParams as ConstraintLayout.LayoutParams).apply {
+                            indicator.layoutParams =
+                                (indicator.layoutParams as ConstraintLayout.LayoutParams).apply {
                                     topMargin =
                                         (initialMargin + (actionBarHeight * slideOffset)).roundToInt()
                                 }
@@ -111,25 +114,25 @@ class CrewItemFragment : Fragment() {
                     parentFragment?.startPostponedEnterTransition()
                     return false
                 }
-            }).into(itemCrewImage)
+            }).into(crewImage)
 
-            itemCrewTitle.text = person?.name
+            crewName.text = person?.name
             person?.status?.let { status ->
-                itemCrewStatus.text = when (status) {
+                crewStatus.text = when (status) {
                     CrewStatus.ACTIVE -> SPACEX_CREW_STATUS_ACTIVE
                     CrewStatus.INACTIVE -> SPACEX_CREW_STATUS_INACTIVE
                     CrewStatus.RETIRED -> SPACEX_CREW_STATUS_RETIRED
                     CrewStatus.UNKNOWN -> SPACEX_CREW_STATUS_UNKNOWN
                 }.capitalize(Locale.getDefault())
             }
-            itemCrewAgencyText.text = person?.agency
+            crewAgency.text = person?.agency
 
             person?.launches?.let {
-                itemCrewRecycler.apply {
+                missionsRecycler.apply {
                     layoutManager = LinearLayoutManager(context)
-                    adapter = CrewLaunchAdapter(context, it)
+                    adapter = CrewMissionsAdapter(context, it)
                 }
-                if (it.isEmpty()) itemCrewMissionLabel.visibility = View.GONE
+                if (it.isEmpty()) crewMissionLabel.visibility = View.GONE
             }
         }
     }

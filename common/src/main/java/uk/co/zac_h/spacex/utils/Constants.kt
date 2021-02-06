@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.utils
 
+const val SPACEX_STAGE_BASE_URL = "https://stage.spacexdata.com/v4/"
 const val SPACEX_BASE_URL = "https://api.spacexdata.com/v4/"
 const val TWITTER_BASE_URL = "https://api.twitter.com/1.1/"
 const val REDDIT_BASE_URL = "https://reddit.com/"
@@ -493,7 +494,9 @@ const val REDDIT_PARAM_ORDER_NEW = "new"
 const val REDDIT_QUERY_AFTER = "after"
 
 /*<=======================================================================================
-====================================================================================Reddit*/
+====================================================================================Reddit
 
+Navigation ===============================================================================
+=========================================================================================>*/
 
-
+const val LAUNCH_SHORT_KEY = "launch_short"

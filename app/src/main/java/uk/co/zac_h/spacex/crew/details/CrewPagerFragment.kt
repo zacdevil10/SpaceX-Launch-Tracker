@@ -11,17 +11,19 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.viewpager.widget.ViewPager
-import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.crew.adapters.CrewPagerAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewDetailsBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.utils.views.DepthPageTransformer
 
-class CrewPagerFragment : Fragment() {
+class CrewPagerFragment : BaseFragment() {
+
+    override var title: String = ""
 
     private var binding: FragmentCrewDetailsBinding? = null
 
@@ -56,12 +58,6 @@ class CrewPagerFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 

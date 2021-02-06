@@ -2,10 +2,8 @@ package uk.co.zac_h.spacex.statistics.graphs.padstats
 
 import android.os.Bundle
 import android.view.*
-import android.view.animation.AnimationUtils
 import androidx.core.view.doOnPreDraw
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -13,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentPadStatsBinding
@@ -20,10 +19,10 @@ import uk.co.zac_h.spacex.model.spacex.StatsPadModel
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
 import uk.co.zac_h.spacex.utils.PadType
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class PadStatsFragment : Fragment(), NetworkInterface.View<List<StatsPadModel>>,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadModel>> {
+
+    override var title: String = "Pad Stats"
 
     private var binding: FragmentPadStatsBinding? = null
 
@@ -64,13 +63,9 @@ class PadStatsFragment : Fragment(), NetworkInterface.View<List<StatsPadModel>>,
 
         (activity as MainActivity).setSupportActionBar(binding?.toolbar)
 
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
-
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+
+        binding?.toolbar?.title = heading
 
         binding?.padStatsConstraint?.transitionName = heading
 
@@ -92,16 +87,6 @@ class PadStatsFragment : Fragment(), NetworkInterface.View<List<StatsPadModel>>,
                 PadType.LAUNCHPAD -> presenter?.getLaunchpads()
             }
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -143,21 +128,17 @@ class PadStatsFragment : Fragment(), NetworkInterface.View<List<StatsPadModel>>,
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
-    }
-
-    override fun showError(error: String) {
-
+        binding?.progress?.hide()
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (pads.isEmpty() || it.progressIndicator.isShown) type?.let { padType ->
+                if (pads.isEmpty() || it.progress.isShown) type?.let { padType ->
                     when (padType) {
                         PadType.LANDING_PAD -> presenter?.getLandingPads()
                         PadType.LAUNCHPAD -> presenter?.getLaunchpads()

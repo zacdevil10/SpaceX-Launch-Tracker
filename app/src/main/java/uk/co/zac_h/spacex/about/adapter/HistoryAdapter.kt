@@ -15,30 +15,26 @@ import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 
 class HistoryAdapter(
     private var context: Context,
-    private var events: ArrayList<HistoryHeaderModel>,
+    private var events: List<HistoryHeaderModel>,
     private var view: HistoryView
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
-            0 -> {
-                HeaderViewHolder(
-                    ListItemHistoryHeadingBinding.inflate(
-                        LayoutInflater.from(parent.context),
-                        parent,
-                        false
-                    )
+            0 -> HeaderViewHolder(
+                ListItemHistoryHeadingBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
                 )
-            }
-            else -> {
-                ViewHolder(
-                    ListItemHistoryEventBinding.inflate(
-                        LayoutInflater.from(parent.context),
-                        parent,
-                        false
-                    )
+            )
+            else -> ViewHolder(
+                ListItemHistoryEventBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
                 )
-            }
+            )
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -46,22 +42,22 @@ class HistoryAdapter(
 
         when (holder) {
             is ViewHolder -> with(holder.binding) {
-                listItemHistoryLineBottom.visibility =
+                lineBottom.visibility =
                     if (position == events.size - 1) View.INVISIBLE else View.VISIBLE
 
-                listItemHistoryMarker.startAnimation(animationScaleUpWithOffset(context, 240))
+                marker.startAnimation(animationScaleUpWithOffset(context))
 
-                listItemHistoryDate.text =
+                date.text =
                     event.historyModel?.event?.dateUnix?.formatDateMillisDDMMM()
-                listItemHistoryDate.startAnimation(animateFromRightWithOffset(context, 0))
+                date.startAnimation(animateFromRightWithOffset(context, 0))
 
-                listItemHistoryTitle.text = event.historyModel?.title
-                listItemHistoryTitle.startAnimation(animateFromRightWithOffset(context, 40))
+                title.text = event.historyModel?.title
+                title.startAnimation(animateFromRightWithOffset(context, 40))
 
-                listItemHistoryDetails.text = event.historyModel?.details
-                listItemHistoryDetails.startAnimation(animateFromRightWithOffset(context, 80))
+                details.text = event.historyModel?.details
+                details.startAnimation(animateFromRightWithOffset(context, 80))
 
-                listItemHistoryArticleButton.apply {
+                article.apply {
                     event.historyModel?.article?.let { link ->
                         visibility = View.VISIBLE
                         startAnimation(animateFromRightWithOffset(this@HistoryAdapter.context, 240))
@@ -75,19 +71,15 @@ class HistoryAdapter(
                 }
             }
             is HeaderViewHolder -> with(holder.binding) {
-                listItemHistoryLineTop.visibility =
+                lineTop.visibility =
                     if (position == 0) View.INVISIBLE else View.VISIBLE
 
-                listItemHistoryHeading.text = event.header
+                heading.text = event.header
             }
         }
     }
 
-    fun isHeader(): (itemPosition: Int) -> Boolean {
-        return {
-            events[it].isHeader
-        }
-    }
+    fun isHeader(): (itemPosition: Int) -> Boolean = { events[it].isHeader }
 
     override fun getItemCount(): Int = events.size
 

@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
@@ -13,23 +12,28 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentHistoryBinding
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.utils.views.HeaderItemDecoration
 
-class HistoryFragment : Fragment(), HistoryView,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class HistoryFragment : BaseFragment(), HistoryView {
+
+    companion object {
+        const val HISTORY_KEY = "history"
+    }
+
+    override var title: String = "History"
 
     private var binding: FragmentHistoryBinding? = null
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
-
     private lateinit var history: ArrayList<HistoryHeaderModel>
+
     private lateinit var historyAdapter: HistoryAdapter
 
     private lateinit var orderSharedPreferences: OrderSharedPreferencesHelper
@@ -40,7 +44,7 @@ class HistoryFragment : Fragment(), HistoryView,
         setHasOptionsMenu(true)
 
         history = savedInstanceState?.let {
-            it.getParcelableArrayList<HistoryHeaderModel>("history") as ArrayList<HistoryHeaderModel>
+            it.getParcelableArrayList<HistoryHeaderModel>(HISTORY_KEY) as ArrayList<HistoryHeaderModel>
         } ?: ArrayList()
     }
 
@@ -58,18 +62,12 @@ class HistoryFragment : Fragment(), HistoryView,
 
         (activity as MainActivity).setSupportActionBar(binding?.toolbar)
 
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
-
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 
         orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(context)
         presenter = HistoryPresenterImpl(this, HistoryInteractorImpl())
 
-        sortNew = orderSharedPreferences.isSortedNew("history")
+        sortNew = orderSharedPreferences.isSortedNew(HISTORY_KEY)
 
         historyAdapter = HistoryAdapter(requireContext(), history, this)
 
@@ -98,7 +96,7 @@ class HistoryFragment : Fragment(), HistoryView,
             )
         }
 
-        binding?.historySwipeRefresh?.setOnRefreshListener {
+        binding?.swipeRefresh?.setOnRefreshListener {
             presenter?.get(sortNew)
         }
 
@@ -107,18 +105,8 @@ class HistoryFragment : Fragment(), HistoryView,
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("history", history)
+        outState.putParcelableArrayList(HISTORY_KEY, history)
         super.onSaveInstanceState(outState)
     }
 
@@ -139,7 +127,7 @@ class HistoryFragment : Fragment(), HistoryView,
             R.id.sort_new -> {
                 if (!sortNew) {
                     sortNew = true
-                    orderSharedPreferences.setSortOrder("history", sortNew)
+                    orderSharedPreferences.setSortOrder(HISTORY_KEY, sortNew)
                     presenter?.get(sortNew)
                 }
                 true
@@ -147,7 +135,7 @@ class HistoryFragment : Fragment(), HistoryView,
             R.id.sort_old -> {
                 if (sortNew) {
                     sortNew = false
-                    orderSharedPreferences.setSortOrder("history", sortNew)
+                    orderSharedPreferences.setSortOrder(HISTORY_KEY, sortNew)
                     presenter?.get(sortNew)
                 }
                 true
@@ -172,25 +160,21 @@ class HistoryFragment : Fragment(), HistoryView,
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
+        binding?.progress?.hide()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding?.historySwipeRefresh?.isRefreshing = isRefreshing
-    }
-
-    override fun showError(error: String) {
-
+        binding?.swipeRefresh?.isRefreshing = isRefreshing
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (history.isEmpty() || it.progressIndicator.isShown)
+                if (history.isEmpty() || it.progress.isShown)
                     presenter?.get(sortNew)
             }
         }

@@ -12,9 +12,12 @@ import androidx.navigation.ui.setupWithNavController
 import uk.co.zac_h.spacex.BuildConfig
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentAboutBinding
 
-class AboutFragment : Fragment() {
+class AboutFragment : BaseFragment() {
+
+    override var title: String = "About"
 
     private lateinit var binding: FragmentAboutBinding
 
@@ -27,12 +30,6 @@ class AboutFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
 
         binding.toolbar.setupWithNavController(navController, appBarConfig)
 

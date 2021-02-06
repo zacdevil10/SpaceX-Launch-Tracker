@@ -18,7 +18,7 @@ class LaunchDetailsPresenterImpl(
     }
 
     override fun addLaunchModel(launch: Launch?, isExt: Boolean) {
-        view.updateLaunchDataView(launch, isExt)
+        view.update(isExt, launch)
     }
 
     override fun pinLaunch(id: String, pin: Boolean) {
@@ -38,7 +38,7 @@ class LaunchDetailsPresenterImpl(
     override fun onSuccess(response: Launch?) {
         response?.let { launch ->
             view.apply {
-                updateLaunchDataView(launch, true)
+                update(true, launch)
                 hideProgress()
             }
         }

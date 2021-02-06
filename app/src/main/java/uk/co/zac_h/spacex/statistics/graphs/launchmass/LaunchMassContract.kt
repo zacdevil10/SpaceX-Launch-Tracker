@@ -1,8 +1,6 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchmass
 
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.model.spacex.Launch
-import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.LaunchMassStatsModel
 import uk.co.zac_h.spacex.utils.models.OrbitMassModel

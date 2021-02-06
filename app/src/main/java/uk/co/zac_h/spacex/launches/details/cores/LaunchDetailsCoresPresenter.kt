@@ -22,8 +22,8 @@ class LaunchDetailsCoresPresenter(
     override fun onSuccess(response: Launch?) {
         response?.cores?.let {
             view.update(it)
+            view.hideProgress()
         }
-        view.hideProgress()
     }
 
     override fun onError(error: String) {

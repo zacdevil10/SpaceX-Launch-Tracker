@@ -7,7 +7,7 @@
     tools:context=".vehicles.capsules.CapsulesFragment">
 
     <com.google.android.material.progressindicator.ProgressIndicator
-        android:id="@+id/progress_indicator"
+        android:id="@+id/progress"
         style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/capsules_swipe_refresh"
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -24,8 +24,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingTop="8dp"
-            android:paddingBottom="32dp"
+            android:paddingTop="@dimen/small_margin"
+            android:paddingBottom="@dimen/xlarge_margin"
             tools:listitem="@layout/list_item_capsule" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

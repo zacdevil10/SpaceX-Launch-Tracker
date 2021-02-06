@@ -6,27 +6,28 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
-    android:background="?attr/selectableItemBackground"
+    android:background="@color/color_background"
     android:clickable="true"
-    android:focusable="true"
-    android:paddingBottom="16dp">
+    android:focusable="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="600dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
+        android:background="?attr/selectableItemBackground"
+        android:paddingBottom="@dimen/medium_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/list_item_payload_name_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:textAppearance="?textAppearanceSubtitle1"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:layout_marginEnd="@dimen/medium_margin"
+            android:textAppearance="?textAppearanceHeadline6"
             app:layout_constraintBottom_toTopOf="@id/list_item_payload_manufacturer_text"
             app:layout_constraintEnd_toStartOf="@id/list_item_payload_expand_collapse_toggle"
             app:layout_constraintStart_toStartOf="parent"
@@ -37,10 +38,10 @@
             android:id="@+id/list_item_payload_manufacturer_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginEnd="@dimen/medium_margin"
+            android:textAppearance="?textAppearanceSubtitle1"
+            app:layout_constraintEnd_toStartOf="@id/list_item_payload_expand_collapse_toggle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/list_item_payload_name_text"
             tools:text="Boeing Satellite Systems" />
@@ -49,7 +50,7 @@
             android:id="@+id/list_item_payload_expand_collapse_toggle"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="@dimen/medium_margin"
             android:background="@drawable/expand_collapse_toggle"
             android:backgroundTint="@color/color_on_surface"
             android:checked="false"
@@ -57,7 +58,7 @@
             android:text=""
             android:textOff=""
             android:textOn=""
-            app:layout_constraintBottom_toBottomOf="@id/list_item_payload_name_text"
+            app:layout_constraintBottom_toBottomOf="@id/list_item_payload_manufacturer_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/list_item_payload_name_text" />
 
@@ -65,9 +66,9 @@
             android:id="@+id/list_item_payload_details_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/small_margin"
+            android:layout_marginEnd="@dimen/medium_margin"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -86,7 +87,7 @@
                 android:id="@+id/list_item_payload_customer_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="@dimen/small_margin"
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:textAlignment="textEnd"
@@ -100,7 +101,7 @@
                 android:id="@+id/list_item_payload_orbit_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/small_margin"
                 android:text="@string/orbit_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_customer_label" />
@@ -118,7 +119,7 @@
                 android:id="@+id/list_item_payload_lifespan_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/small_margin"
                 android:text="@string/lifespan_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_orbit_label" />
@@ -135,7 +136,7 @@
                 android:id="@+id/list_item_payload_mass_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/small_margin"
                 android:text="@string/mass_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_lifespan_label" />
@@ -152,7 +153,7 @@
                 android:id="@+id/list_item_payload_type_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/small_margin"
                 android:text="@string/payload_type_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_mass_label" />
@@ -169,7 +170,7 @@
                 android:id="@+id/list_item_payload_refsystem_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/small_margin"
                 android:text="@string/reference_system_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_type_label" />
@@ -186,7 +187,7 @@
                 android:id="@+id/list_item_payload_regime_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/small_margin"
                 android:text="@string/regime_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_refsystem_label" />
@@ -203,7 +204,7 @@
                 android:id="@+id/list_item_payload_long_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/small_margin"
                 android:text="@string/longitude_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_regime_label" />
@@ -220,7 +221,7 @@
                 android:id="@+id/list_item_payload_semimajor_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/small_margin"
                 android:text="@string/semi_major_axis_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_long_label" />
@@ -237,7 +238,7 @@
                 android:id="@+id/list_item_payload_eccentricity_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/small_margin"
                 android:text="@string/eccentricity_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_semimajor_label" />
@@ -254,7 +255,7 @@
                 android:id="@+id/list_item_payload_periapsis_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/small_margin"
                 android:text="@string/periapsis_km_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_eccentricity_label" />
@@ -271,7 +272,7 @@
                 android:id="@+id/list_item_payload_apoapsis_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/small_margin"
                 android:text="@string/apoapsis_km_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_periapsis_label" />
@@ -288,7 +289,7 @@
                 android:id="@+id/list_item_payload_inclination_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/small_margin"
                 android:text="@string/inclination_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_apoapsis_label" />
@@ -305,7 +306,7 @@
                 android:id="@+id/list_item_payload_period_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/small_margin"
                 android:text="@string/period_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_payload_inclination_label" />

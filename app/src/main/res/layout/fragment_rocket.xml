@@ -7,11 +7,11 @@
     tools:context=".vehicles.rockets.RocketFragment">
 
     <com.google.android.material.progressindicator.ProgressIndicator
-        android:id="@+id/progress_indicator"
+        android:id="@+id/progress"
         style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="4dp"
+        android:elevation="@dimen/toolbar_elevation"
         app:indicatorColor="?colorSecondary"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -25,8 +25,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
-            android:paddingTop="8dp"
-            android:paddingBottom="32dp"
+            android:paddingTop="@dimen/small_margin"
+            android:paddingBottom="@dimen/xlarge_margin"
             tools:listitem="@layout/list_item_vehicle" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

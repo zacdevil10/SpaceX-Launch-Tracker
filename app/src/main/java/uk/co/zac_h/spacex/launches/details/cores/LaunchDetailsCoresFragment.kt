@@ -5,18 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCoresBinding
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.model.spacex.LaunchCore
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchDetailsCoresFragment : Fragment(), NetworkInterface.View<List<LaunchCore>>,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<LaunchCore>> {
+
+    override var title: String = "Launch Details Cores"
 
     private var binding: FragmentLaunchDetailsCoresBinding? = null
 
@@ -28,17 +27,20 @@ class LaunchDetailsCoresFragment : Fragment(), NetworkInterface.View<List<Launch
     private var id: String? = null
 
     companion object {
+        const val CORES_KEY = "cores"
+        const val ID_KEY = "id"
+
         @JvmStatic
         fun newInstance(args: Any) = LaunchDetailsCoresFragment().apply {
-            arguments = bundleOf("id" to args)
+            arguments = bundleOf(ID_KEY to args)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        cores = savedInstanceState?.getParcelableArrayList("cores") ?: ArrayList()
-        id = arguments?.getString("id")
+        cores = savedInstanceState?.getParcelableArrayList(CORES_KEY) ?: ArrayList()
+        id = arguments?.getString(ID_KEY)
     }
 
     override fun onCreateView(
@@ -67,18 +69,8 @@ class LaunchDetailsCoresFragment : Fragment(), NetworkInterface.View<List<Launch
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("cores", cores)
+        outState.putParcelableArrayList(CORES_KEY, cores)
         super.onSaveInstanceState(outState)
     }
 
@@ -98,15 +90,11 @@ class LaunchDetailsCoresFragment : Fragment(), NetworkInterface.View<List<Launch
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
-    }
-
-    override fun showError(error: String) {
-
+        binding?.progress?.hide()
     }
 
     override fun networkAvailable() {

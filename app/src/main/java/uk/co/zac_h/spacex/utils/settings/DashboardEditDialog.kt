@@ -14,17 +14,15 @@ import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_SECTION
 
 class DashboardEditDialog : BottomSheetDialogFragment() {
 
-    private var _binding: DialogDashboardEditBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: DialogDashboardEditBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        _binding = DialogDashboardEditBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    ): View = DialogDashboardEditBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

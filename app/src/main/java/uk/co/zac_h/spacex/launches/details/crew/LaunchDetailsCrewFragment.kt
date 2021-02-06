@@ -5,17 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.crew.CrewView
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCrewBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchDetailsCrewFragment : Fragment(), CrewView,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class LaunchDetailsCrewFragment : BaseFragment(), CrewView {
+
+    override var title: String = "Launch Details Crew"
 
     private var binding: FragmentLaunchDetailsCrewBinding? = null
 
@@ -27,17 +26,20 @@ class LaunchDetailsCrewFragment : Fragment(), CrewView,
     private var id: String? = null
 
     companion object {
+        const val CREW_KEY = "crew"
+        const val ID_KEY = "id"
+
         @JvmStatic
         fun newInstance(args: Any) = LaunchDetailsCrewFragment().apply {
-            arguments = bundleOf("id" to args)
+            arguments = bundleOf(ID_KEY to args)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        crew = savedInstanceState?.getParcelableArrayList("crew") ?: ArrayList()
-        id = arguments?.getString("id")
+        crew = savedInstanceState?.getParcelableArrayList(CREW_KEY) ?: ArrayList()
+        id = arguments?.getString(ID_KEY)
     }
 
     override fun onCreateView(
@@ -66,18 +68,8 @@ class LaunchDetailsCrewFragment : Fragment(), CrewView,
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("crew", crew)
+        outState.putParcelableArrayList(CREW_KEY, crew)
         super.onSaveInstanceState(outState)
     }
 
@@ -95,11 +87,11 @@ class LaunchDetailsCrewFragment : Fragment(), CrewView,
     }
 
     override fun showProgress() {
-        binding?.launchDetailsCrewProgress?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.launchDetailsCrewProgress?.hide()
+        binding?.progress?.hide()
     }
 
     override fun networkAvailable() {

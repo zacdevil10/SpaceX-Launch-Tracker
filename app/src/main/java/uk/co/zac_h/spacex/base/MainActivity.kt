@@ -2,7 +2,6 @@ package uk.co.zac_h.spacex.base
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
@@ -19,7 +18,7 @@ class MainActivity : AppCompatActivity(),
     private var snackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        (application as App).preferencesRepo.themeModeLive.observe(this, Observer { mode ->
+        (application as App).preferencesRepo.themeModeLive.observe(this, { mode ->
             mode?.let { delegate.localNightMode = it }
         })
 
@@ -29,7 +28,7 @@ class MainActivity : AppCompatActivity(),
         setContentView(binding.root)
 
         savedInstanceState?.let {
-            currentPosition = it.getInt("crew_pager_position")
+            currentPosition = it.getInt(CREW_POSITION_KEY)
         }
 
         (application as App).networkStateChangeListener.apply {
@@ -58,7 +57,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt("crew_pager_position", currentPosition)
+        outState.putInt(CREW_POSITION_KEY, currentPosition)
         super.onSaveInstanceState(outState)
     }
 
@@ -80,6 +79,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     companion object {
+        const val CREW_POSITION_KEY = "crew_pager_position"
         var currentPosition: Int = 0
     }
 }

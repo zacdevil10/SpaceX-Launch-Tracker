@@ -11,12 +11,15 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentNewsBinding
 import uk.co.zac_h.spacex.news.adapters.NewsPagerAdapter
 import uk.co.zac_h.spacex.news.reddit.RedditFeedFragment
 import uk.co.zac_h.spacex.news.twitter.TwitterFeedFragment
 
-class NewsFragment : Fragment() {
+class NewsFragment : BaseFragment() {
+
+    override var title: String = ""
 
     private var binding: FragmentNewsBinding? = null
 
@@ -30,12 +33,6 @@ class NewsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val navController = NavHostFragment.findNavController(this)
-        val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        val appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
 
         binding?.toolbar?.setupWithNavController(navController, appBarConfig)
 

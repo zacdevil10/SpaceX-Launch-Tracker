@@ -5,18 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
-import uk.co.zac_h.spacex.base.App
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsPayloadsBinding
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
 import uk.co.zac_h.spacex.model.spacex.Payload
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
-class LaunchDetailsPayloadsFragment : Fragment(), NetworkInterface.View<List<Payload>>,
-    OnNetworkStateChangeListener.NetworkStateReceiverListener {
+class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List<Payload>> {
+
+    override var title: String = "Launch Details Payloads"
 
     private var binding: FragmentLaunchDetailsPayloadsBinding? = null
 
@@ -28,9 +27,12 @@ class LaunchDetailsPayloadsFragment : Fragment(), NetworkInterface.View<List<Pay
     private var id: String? = null
 
     companion object {
+        const val ID_KEY = "id"
+        const val PAYLOADS_KEY = "payloads"
+
         @JvmStatic
         fun newInstance(args: Any) = LaunchDetailsPayloadsFragment().apply {
-            arguments = bundleOf("id" to args)
+            arguments = bundleOf(ID_KEY to args)
         }
     }
 
@@ -38,7 +40,7 @@ class LaunchDetailsPayloadsFragment : Fragment(), NetworkInterface.View<List<Pay
         super.onCreate(savedInstanceState)
 
         payloads =
-            savedInstanceState?.getParcelableArrayList<Payload>("payloads") ?: ArrayList()
+            savedInstanceState?.getParcelableArrayList(PAYLOADS_KEY) ?: ArrayList()
         id = arguments?.getString("id")
     }
 
@@ -70,18 +72,8 @@ class LaunchDetailsPayloadsFragment : Fragment(), NetworkInterface.View<List<Pay
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("payloads", payloads)
+        outState.putParcelableArrayList(PAYLOADS_KEY, payloads)
         super.onSaveInstanceState(outState)
     }
 
@@ -98,15 +90,11 @@ class LaunchDetailsPayloadsFragment : Fragment(), NetworkInterface.View<List<Pay
     }
 
     override fun showProgress() {
-        binding?.progressIndicator?.show()
+        binding?.progress?.show()
     }
 
     override fun hideProgress() {
-        binding?.progressIndicator?.hide()
-    }
-
-    override fun showError(error: String) {
-
+        binding?.progress?.hide()
     }
 
     override fun networkAvailable() {
