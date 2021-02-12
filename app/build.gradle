@@ -96,7 +96,7 @@ dependencies {
     //LeakCanary
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0'
 
-    //debugImplementation 'com.gu.android:toolargetool:0.2.1@aar'
+    debugImplementation 'com.gu.android:toolargetool:0.3.0@aar'
 
     testImplementation 'junit:junit:4.13'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
