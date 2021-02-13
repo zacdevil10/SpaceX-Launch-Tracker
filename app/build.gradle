@@ -68,8 +68,6 @@ dependencies {
 
     implementation project(":common")
 
-    wearApp project(":wear")
-
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.0'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.0'
 
