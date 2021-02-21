@@ -66,20 +66,20 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
         view.doOnPreDraw { startPostponedEnterTransition() }
 
         (activity as MainActivity).setSupportActionBar(binding.toolbarLayout.toolbar)
-        binding.toolbarLayout.toolbar?.setup()
+        binding.toolbarLayout.toolbar.setup()
 
-        binding?.launchRateConstraint?.transitionName = heading
+        binding.launchRateConstraint.transitionName = heading
 
         presenter = LaunchRatePresenterImpl(this, LaunchRateInteractorImpl())
 
         keyAdapter = StatisticsKeyAdapter(context, keys, false)
 
-        binding?.statisticsBarChart?.recycler?.apply {
+        binding.statisticsBarChart.recycler.apply {
             layoutManager = LinearLayoutManager(this@LaunchRateFragment.context)
             adapter = keyAdapter
         }
 
-        binding?.statisticsBarChart?.barChart?.apply {
+        binding.statisticsBarChart.barChart.apply {
             setup()
 
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
@@ -89,7 +89,7 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
 
                         keys.clear()
 
-                        binding?.apply {
+                        binding.apply {
                             statisticsBarChart.key.visibility = View.VISIBLE
 
                             statisticsBarChart.year.text = stats.year.toString()
@@ -119,7 +119,7 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
                 }
 
                 override fun onNothingSelected() {
-                    binding?.statisticsBarChart?.key?.visibility = View.GONE
+                    binding.statisticsBarChart.key.visibility = View.GONE
 
                     keys.clear()
                     keyAdapter.notifyDataSetChanged()
@@ -199,7 +199,7 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
         val dataSets = ArrayList<IBarDataSet>()
         dataSets.add(set)
 
-        binding?.statisticsBarChart?.barChart?.apply {
+        binding.statisticsBarChart.barChart.apply {
             if (data == true) animateY(400, Easing.Linear)
             xAxis.labelCount = response.size
             axisLeft.apply {
@@ -214,11 +214,11 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
     }
 
     override fun showProgress() {
-        binding.toolbarLayout.progress?.show()
+        binding.toolbarLayout.progress.show()
     }
 
     override fun hideProgress() {
-        binding.toolbarLayout.progress?.hide()
+        binding.toolbarLayout.progress.hide()
     }
 
     override fun showError(error: String) {

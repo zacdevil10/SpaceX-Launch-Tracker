@@ -81,13 +81,13 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
             })
         }
 
-        binding?.swipeRefresh?.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
             apiState = ApiState.PENDING
             presenter?.getTweets()
         }
 
-        binding?.twitterFeedScrollUp?.setOnClickListener {
-            binding?.twitterFeedRecycler?.smoothScrollToPosition(0)
+        binding.twitterFeedScrollUp.setOnClickListener {
+            binding.twitterFeedRecycler.smoothScrollToPosition(0)
         }
 
         if (tweetsList.isEmpty()) presenter?.getTweets()
@@ -125,7 +125,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
 
     override fun showScrollUp() {
         isFabVisible = true
-        binding?.twitterFeedScrollUp?.apply {
+        binding.twitterFeedScrollUp.apply {
             startAnimation(animateEnterFromTop(context))
             visibility = View.VISIBLE
         }
@@ -134,7 +134,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
 
     override fun hideScrollUp() {
         isFabVisible = false
-        binding?.twitterFeedScrollUp?.apply {
+        binding.twitterFeedScrollUp.apply {
             startAnimation(animateExitToTop(context))
             visibility = View.INVISIBLE
         }
@@ -145,7 +145,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
     }
 
     override fun showPagingProgress() {
-        binding?.pagingProgressIndicator?.show()
+        binding.pagingProgressIndicator.show()
     }
 
     override fun hideProgress() {
@@ -153,11 +153,11 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
     }
 
     override fun hidePagingProgress() {
-        binding?.pagingProgressIndicator?.hide()
+        binding.pagingProgressIndicator.hide()
     }
 
     override fun toggleSwipeProgress(isRefreshing: Boolean) {
-        binding?.swipeRefresh?.isRefreshing = isRefreshing
+        binding.swipeRefresh.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {

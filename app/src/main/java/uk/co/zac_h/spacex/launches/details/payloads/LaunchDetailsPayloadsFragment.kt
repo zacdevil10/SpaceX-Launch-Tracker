@@ -30,7 +30,7 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
     private var id: String? = null
 
     companion object {
-        const val ID_KEY = "id"
+        private const val ID_KEY = "id"
         const val PAYLOADS_KEY = "payloads"
 
         @JvmStatic
