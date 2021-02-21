@@ -14,7 +14,7 @@ import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
 
-class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
+class CapsulesFragment() : BaseFragment(), NetworkInterface.View<List<Capsule>>,
     SearchView.OnQueryTextListener {
 
     override var title: String = "Capsules"
@@ -137,11 +137,11 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
     }
 
     override fun showProgress() {
-        binding?.progress?.show()
+
     }
 
     override fun hideProgress() {
-        binding?.progress?.hide()
+
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
@@ -151,7 +151,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (capsulesArray.isEmpty() || it.progress.isShown) presenter?.get()
+                if (capsulesArray.isEmpty()) presenter?.get()
             }
         }
     }

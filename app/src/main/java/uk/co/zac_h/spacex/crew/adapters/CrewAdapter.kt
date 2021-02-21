@@ -14,14 +14,11 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.MainActivity
-import uk.co.zac_h.spacex.crew.CrewView
 import uk.co.zac_h.spacex.databinding.GridItemCrewBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
 
-class CrewAdapter(
-    private val view: CrewView,
-    private val crew: List<Crew>
-) : RecyclerView.Adapter<CrewAdapter.ViewHolder>() {
+class CrewAdapter(var crew: List<Crew>, val startTransition: (() -> Unit)? = null) :
+    RecyclerView.Adapter<CrewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
         GridItemCrewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -40,7 +37,7 @@ class CrewAdapter(
                     target: Target<Drawable>?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    view.startTransition()
+                    startTransition?.invoke()
                     return false
                 }
 
@@ -51,7 +48,7 @@ class CrewAdapter(
                     dataSource: DataSource?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    view.startTransition()
+                    startTransition?.invoke()
                     return false
                 }
             }).into(image)
@@ -66,6 +63,11 @@ class CrewAdapter(
     }
 
     override fun getItemCount(): Int = crew.size
+
+    fun update(list: List<Crew>) {
+        crew = list
+        notifyDataSetChanged()
+    }
 
     inner class ViewHolder(val binding: GridItemCrewBinding) :
         RecyclerView.ViewHolder(binding.root) {

@@ -79,11 +79,11 @@ class ShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
     }
 
     override fun showProgress() {
-        binding?.progress?.show()
+
     }
 
     override fun hideProgress() {
-        binding?.progress?.hide()
+
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
@@ -93,7 +93,7 @@ class ShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (shipsArray.isEmpty() || it.progress.isShown) presenter?.get()
+                if (shipsArray.isEmpty()) presenter?.get()
             }
         }
     }

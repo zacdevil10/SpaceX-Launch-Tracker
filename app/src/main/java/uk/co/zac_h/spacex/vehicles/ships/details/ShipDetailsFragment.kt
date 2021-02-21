@@ -16,6 +16,7 @@ import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.databinding.CollapsingToolbarBinding
 import uk.co.zac_h.spacex.databinding.FragmentShipDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
 import uk.co.zac_h.spacex.model.spacex.Ship
@@ -25,7 +26,10 @@ class ShipDetailsFragment : BaseFragment() {
 
     override var title: String = ""
 
-    private var binding: FragmentShipDetailsBinding? = null
+    private var _binding: FragmentShipDetailsBinding? = null
+    private val binding get() = _binding!!
+    private var _toolbarBinding: CollapsingToolbarBinding? = null
+    private val toolbarBinding get() = _toolbarBinding!!
 
     private var ship: Ship? = null
 
@@ -41,7 +45,8 @@ class ShipDetailsFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentShipDetailsBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _toolbarBinding = CollapsingToolbarBinding.bind(this.root)
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,18 +55,18 @@ class ShipDetailsFragment : BaseFragment() {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        binding?.apply {
-            toolbar.setupWithNavController(navController, appBarConfig)
+        title = ship?.name ?: ""
+        setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
+
+        with(binding) {
 
             ship?.let {
                 shipDetailsCoordinator.transitionName = it.id
-                title = it.name ?: ""
-                toolbar.title = it.name
 
                 Glide.with(view)
                     .load(it.image)
                     .error(R.drawable.ic_baseline_error_outline_24)
-                    .into(header)
+                    .into(toolbarBinding.header)
 
                 when (it.active) {
                     true -> shipDetailsStatusImage.setImageAndTint(
@@ -112,6 +117,7 @@ class ShipDetailsFragment : BaseFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding = null
+        _toolbarBinding = null
+        _binding = null
     }
 }

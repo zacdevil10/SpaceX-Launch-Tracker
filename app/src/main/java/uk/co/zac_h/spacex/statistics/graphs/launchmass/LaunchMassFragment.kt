@@ -3,10 +3,6 @@ package uk.co.zac_h.spacex.statistics.graphs.launchmass
 import android.os.Bundle
 import android.view.*
 import androidx.core.view.doOnPreDraw
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.BarData
@@ -19,10 +15,10 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchMassBinding
+import uk.co.zac_h.spacex.statistics.adapters.Statistics
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
 import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.models.KeysModel
@@ -31,9 +27,10 @@ import uk.co.zac_h.spacex.utils.models.OrbitMassModel
 
 class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
 
-    override var title: String = "Launch Mass"
+    override val title: String by lazy { Statistics.MASS_TO_ORBIT.title }
 
-    private var binding: FragmentLaunchMassBinding? = null
+    private var _binding: FragmentLaunchMassBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: LaunchMassContract.Presenter? = null
 
@@ -61,7 +58,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchMassBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,15 +67,15 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
+        (activity as MainActivity).setSupportActionBar(binding.toolbarLayout.toolbar)
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+        binding.toolbarLayout.toolbar.setup()
 
-        binding?.launchMassConstraint?.transitionName = heading
+        binding.launchMassConstraint.transitionName = heading
 
         hideProgress()
 
-        binding?.launchMassFilterTint?.setOnClickListener {
+        binding.launchMassFilterTint.setOnClickListener {
             showFilter(false)
         }
 
@@ -175,7 +172,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        binding = null
+        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -194,6 +191,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
             true
         }
         R.id.reload -> {
+            apiState = ApiState.PENDING
             statsList.clear()
             presenter?.getOrUpdate(null)
             true
@@ -202,6 +200,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
     }
 
     override fun update(data: Any, response: List<LaunchMassStatsModel>) {
+        apiState = ApiState.SUCCESS
         if (statsList.isEmpty()) statsList.addAll(response)
 
         binding?.statisticsBarChart?.key?.visibility = View.GONE
@@ -382,18 +381,21 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
     }
 
     override fun showProgress() {
-        binding?.progress?.show()
+        binding.toolbarLayout.progress.show()
     }
 
     override fun hideProgress() {
-        binding?.progress?.hide()
+        binding.toolbarLayout.progress.hide()
+    }
+
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (statsList.isEmpty() || it.progress.isShown) presenter?.getOrUpdate(null)
-            }
+        when(apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.getOrUpdate(null)
+            ApiState.SUCCESS -> {}
         }
     }
 }

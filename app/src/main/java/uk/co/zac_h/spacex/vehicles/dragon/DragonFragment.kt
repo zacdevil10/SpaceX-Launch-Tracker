@@ -79,11 +79,11 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
     }
 
     override fun showProgress() {
-        binding?.progress?.show()
+
     }
 
     override fun hideProgress() {
-        binding?.progress?.hide()
+
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
@@ -93,7 +93,7 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (dragonArray.isEmpty() || it.progress.isShown) presenter?.get()
+                if (dragonArray.isEmpty()) presenter?.get()
             }
         }
     }

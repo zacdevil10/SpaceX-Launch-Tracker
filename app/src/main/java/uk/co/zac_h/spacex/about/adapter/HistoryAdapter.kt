@@ -15,9 +15,10 @@ import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 
 class HistoryAdapter(
     private var context: Context,
-    private var events: List<HistoryHeaderModel>,
     private var view: HistoryView
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var events: List<HistoryHeaderModel> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
@@ -77,6 +78,11 @@ class HistoryAdapter(
                 heading.text = event.header
             }
         }
+    }
+
+    fun update(list: List<HistoryHeaderModel>) {
+        events = list
+        notifyDataSetChanged()
     }
 
     fun isHeader(): (itemPosition: Int) -> Boolean = { events[it].isHeader }

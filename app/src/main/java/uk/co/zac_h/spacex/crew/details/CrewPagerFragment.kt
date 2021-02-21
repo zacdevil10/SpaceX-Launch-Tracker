@@ -25,7 +25,8 @@ class CrewPagerFragment : BaseFragment() {
 
     override var title: String = ""
 
-    private var binding: FragmentCrewDetailsBinding? = null
+    private var _binding: FragmentCrewDetailsBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var crewPagerAdapter: CrewPagerAdapter
     private lateinit var crewArray: ArrayList<Crew>
@@ -34,17 +35,8 @@ class CrewPagerFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        crewArray = when {
-            savedInstanceState != null -> {
-                savedInstanceState.getParcelableArrayList("crew") ?: ArrayList()
-            }
-            arguments != null -> {
-                requireArguments().getParcelableArrayList<Crew>("crew") as ArrayList<Crew>
-            }
-            else -> {
-                ArrayList()
-            }
-        }
+        crewArray = savedInstanceState?.getParcelableArrayList("crew")
+            ?: arguments?.getParcelableArrayList<Crew>("crew") as ArrayList<Crew> ?: ArrayList()
 
         crew = crewArray.map { CrewItemFragment.newInstance(it) }
     }
@@ -53,13 +45,13 @@ class CrewPagerFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentCrewDetailsBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+        binding?.toolbar?.setup()
 
         crewPagerAdapter = CrewPagerAdapter(childFragmentManager, crew)
 
@@ -88,22 +80,20 @@ class CrewPagerFragment : BaseFragment() {
     private fun prepareSharedElementTransition() {
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        binding?.apply {
-            setEnterSharedElementCallback(object : SharedElementCallback() {
-                override fun onMapSharedElements(
-                    names: MutableList<String>?,
-                    sharedElements: MutableMap<String, View>?
-                ) {
-                    val currentFragment = crew[MainActivity.currentPosition]
-                    val view = currentFragment.view
-                    view?.let {
-                        names?.get(0)?.let { name ->
-                            sharedElements?.put(name, view.findViewById(R.id.item_crew_constraint))
-                        }
-                    } ?: return
-                }
-            })
-        }
+        setEnterSharedElementCallback(object : SharedElementCallback() {
+            override fun onMapSharedElements(
+                names: MutableList<String>?,
+                sharedElements: MutableMap<String, View>?
+            ) {
+                val currentFragment = crew[MainActivity.currentPosition]
+                val view = currentFragment.view
+                view?.let {
+                    names?.get(0)?.let { name ->
+                        sharedElements?.put(name, view.findViewById(R.id.item_crew_constraint))
+                    }
+                } ?: return
+            }
+        })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -113,6 +103,6 @@ class CrewPagerFragment : BaseFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding = null
+        _binding = null
     }
 }
