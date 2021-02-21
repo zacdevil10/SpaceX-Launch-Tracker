@@ -3,14 +3,9 @@ package uk.co.zac_h.spacex.statistics.graphs.padstats
 import android.os.Bundle
 import android.view.*
 import androidx.core.view.doOnPreDraw
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.base.NetworkInterface
@@ -67,7 +62,7 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
         (activity as MainActivity).setSupportActionBar(binding.toolbarLayout.toolbar)
         binding.toolbarLayout.toolbar.setup()
 
-        binding?.padStatsConstraint?.transitionName = heading
+        binding.padStatsConstraint.transitionName = heading
 
         hideProgress()
 
@@ -75,7 +70,7 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
 
         padsAdapter = PadStatsSitesAdapter(pads)
 
-        binding?.padStatsLaunchSitesRecycler?.apply {
+        binding.padStatsLaunchSitesRecycler.apply {
             layoutManager = LinearLayoutManager(this@PadStatsFragment.context)
             setHasFixedSize(true)
             adapter = padsAdapter
@@ -121,17 +116,17 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
         apiState = ApiState.SUCCESS
         pads.clearAndAdd(response)
 
-        binding?.padStatsLaunchSitesRecycler?.layoutAnimation = animateLayoutFromBottom(context)
+        binding.padStatsLaunchSitesRecycler.layoutAnimation = animateLayoutFromBottom(context)
         padsAdapter.notifyDataSetChanged()
-        binding?.padStatsLaunchSitesRecycler?.scheduleLayoutAnimation()
+        binding.padStatsLaunchSitesRecycler.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        binding.toolbarLayout.progress?.show()
+        binding.toolbarLayout.progress.show()
     }
 
     override fun hideProgress() {
-        binding.toolbarLayout.progress?.hide()
+        binding.toolbarLayout.progress.hide()
     }
 
     override fun showError(error: String) {

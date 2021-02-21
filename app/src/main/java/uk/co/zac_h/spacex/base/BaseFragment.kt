@@ -11,7 +11,6 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.CollapsingToolbarLayout
-import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.tabs.TabLayout
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.utils.ApiState
@@ -24,9 +23,9 @@ abstract class BaseFragment : Fragment(),
 
     var apiState: ApiState = ApiState.PENDING
 
-    lateinit var navController: NavController
+    private lateinit var navController: NavController
 
-    lateinit var appBarConfig: AppBarConfiguration
+    private lateinit var appBarConfig: AppBarConfiguration
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

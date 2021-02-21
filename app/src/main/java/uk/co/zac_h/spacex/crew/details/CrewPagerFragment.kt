@@ -5,15 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.SharedElementCallback
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.crew.adapters.CrewPagerAdapter
@@ -51,11 +46,11 @@ class CrewPagerFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding?.toolbar?.setup()
+        binding.toolbar.setup()
 
         crewPagerAdapter = CrewPagerAdapter(childFragmentManager, crew)
 
-        binding?.crewPager?.apply {
+        binding.crewPager.apply {
             adapter = crewPagerAdapter
             setCurrentItem(MainActivity.currentPosition, false)
             setPageTransformer(true, DepthPageTransformer())
