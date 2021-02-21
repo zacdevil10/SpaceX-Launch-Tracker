@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.databinding.CollapsingToolbarBinding
 import uk.co.zac_h.spacex.databinding.FragmentDragonDetailsBinding
 import uk.co.zac_h.spacex.model.spacex.Dragon
 import uk.co.zac_h.spacex.utils.metricFormat
@@ -18,9 +19,13 @@ import uk.co.zac_h.spacex.vehicles.adapters.DragonThrusterAdapter
 
 class DragonDetailsFragment : BaseFragment() {
 
-    override var title: String = ""
+    override var title: String = "Dragon"
 
-    private var binding: FragmentDragonDetailsBinding? = null
+    private var _binding: FragmentDragonDetailsBinding? = null
+    private val binding get() = _binding!!
+
+    private var _toolbarBinding: CollapsingToolbarBinding? = null
+    private val toolbarBinding get() = _toolbarBinding!!
 
     private var dragon: Dragon? = null
 
@@ -37,29 +42,25 @@ class DragonDetailsFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentDragonDetailsBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
+        _toolbarBinding = CollapsingToolbarBinding.bind(this.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding?.apply {
-            NavigationUI.setupWithNavController(
-                toolbarLayout,
-                toolbar,
-                navController,
-                appBarConfig
-            )
+        setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
 
+        title = dragon?.name ?: title
+
+        with(binding) {
             dragon?.let {
                 dragonDetailsCoordinator.transitionName = it.id
-
-                toolbar.title = it.name
 
                 Glide.with(view)
                     .load(it.flickr?.random())
                     .error(R.drawable.ic_baseline_error_outline_24)
-                    .into(header)
+                    .into(toolbarBinding.header)
 
                 dragonDetailsText.text = it.description
 
@@ -176,7 +177,8 @@ class DragonDetailsFragment : BaseFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding = null
+        _toolbarBinding = null
+        _binding = null
     }
 
 }

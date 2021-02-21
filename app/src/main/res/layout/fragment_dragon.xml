@@ -6,15 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".vehicles.dragon.DragonFragment">
 
-    <com.google.android.material.progressindicator.ProgressIndicator
-        android:id="@+id/progress"
-        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/toolbar_elevation"
-        app:indicatorColor="?colorSecondary"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"

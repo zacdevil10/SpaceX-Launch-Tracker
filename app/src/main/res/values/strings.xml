@@ -15,12 +15,14 @@
     <string name="menu_history">History</string>
     <string name="menu_ships">Ships</string>
 
+    <string name="detail_capsule">Capsule</string>
+
 
     <string name="flight_number">Flight %1$d</string>
     <string name="reused">Reused</string>
 
     <!-- Dashboard -->
-    <string name="no_pinned_launches_found_label">No pinned launches found.</string>
+    <string name="no_pinned_launches_found_label">No pinned launches found</string>
     <string name="next_launch">Next</string>
     <string name="latest_launch">Previous</string>
     <string name="customise_dashboard_label">Customise dashboard</string>

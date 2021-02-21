@@ -7,16 +7,18 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.crew.CrewView
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCrewBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
+import uk.co.zac_h.spacex.utils.ApiState
+import uk.co.zac_h.spacex.utils.clearAndAdd
 
-class LaunchDetailsCrewFragment : BaseFragment(), CrewView {
+class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
 
     override var title: String = "Launch Details Crew"
 
-    private var binding: FragmentLaunchDetailsCrewBinding? = null
+    private var _binding: FragmentLaunchDetailsCrewBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
@@ -46,7 +48,7 @@ class LaunchDetailsCrewFragment : BaseFragment(), CrewView {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchDetailsCrewBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,9 +58,9 @@ class LaunchDetailsCrewFragment : BaseFragment(), CrewView {
 
         presenter = LaunchDetailsCrewPresenter(this, LaunchDetailsCrewInteractor())
 
-        crewAdapter = CrewAdapter(this, crew)
+        crewAdapter = CrewAdapter(crew)
 
-        binding?.launchDetailsCrewRecycler?.apply {
+        binding.launchDetailsCrewRecycler.apply {
             setHasFixedSize(true)
             adapter = crewAdapter
         }
@@ -76,29 +78,32 @@ class LaunchDetailsCrewFragment : BaseFragment(), CrewView {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        binding = null
+        _binding = null
     }
 
     override fun update(response: List<Crew>) {
-        crew.clear()
-        crew.addAll(response)
+        apiState = ApiState.SUCCESS
 
+        crew.clearAndAdd(response)
         crewAdapter.notifyDataSetChanged()
     }
 
     override fun showProgress() {
-        binding?.progress?.show()
+
     }
 
     override fun hideProgress() {
-        binding?.progress?.hide()
+
+    }
+
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            id?.let {
-                if (crew.isEmpty()) presenter?.get(it)
-            }
+        when(apiState) {
+            ApiState.PENDING, ApiState.FAILED -> id?.let { presenter?.get(it) }
+            ApiState.SUCCESS -> {}
         }
     }
 }

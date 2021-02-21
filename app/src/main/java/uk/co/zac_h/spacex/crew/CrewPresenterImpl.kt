@@ -5,7 +5,7 @@ import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class CrewPresenterImpl(
-    private val view: CrewView,
+    private val view: NetworkInterface.View<List<Crew>>,
     private val interactor: NetworkInterface.Interactor<List<Crew>?>
 ) : NetworkInterface.Presenter<List<Crew>?>, NetworkInterface.Callback<List<Crew>?> {
 

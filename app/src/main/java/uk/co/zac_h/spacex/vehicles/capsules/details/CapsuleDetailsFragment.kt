@@ -25,7 +25,7 @@ class CapsuleDetailsFragment : BaseFragment() {
 
     override var title: String = ""
 
-    private var binding: FragmentCapsuleDetailsBinding? = null
+    private lateinit var binding: FragmentCapsuleDetailsBinding
 
     private var capsule: Capsule? = null
 
@@ -34,7 +34,7 @@ class CapsuleDetailsFragment : BaseFragment() {
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        capsule = arguments?.getParcelable("capsule") as Capsule?
+        capsule = arguments?.getParcelable("capsule")
     }
 
     override fun onCreateView(
@@ -50,12 +50,11 @@ class CapsuleDetailsFragment : BaseFragment() {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+        with(binding) {
+            title = capsule?.serial ?: requireContext().getString(R.string.detail_capsule)
+            toolbarLayout.toolbar.setup()
 
-        binding?.apply {
             capsuleDetailsConstraint.transitionName = capsule?.id
-
-            toolbar.title = capsule?.serial
 
             capsule?.type?.let {
                 capsuleDetailsTypeText.text = it.type
@@ -81,11 +80,8 @@ class CapsuleDetailsFragment : BaseFragment() {
                     adapter = MissionsAdapter(context, launches)
                 }
             } ?: run { capsuleDetailsMissionLabel.visibility = View.GONE }
-        }
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
+            toolbarLayout.progress.hide()
+        }
     }
 }
