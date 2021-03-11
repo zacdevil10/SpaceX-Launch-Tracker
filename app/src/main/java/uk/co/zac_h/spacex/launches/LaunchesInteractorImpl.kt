@@ -47,6 +47,7 @@ class LaunchesInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<L
                     "name",
                     "date_unix",
                     "tbd",
+                    "upcoming",
                     "rocket",
                     "cores",
                     //"crew",
