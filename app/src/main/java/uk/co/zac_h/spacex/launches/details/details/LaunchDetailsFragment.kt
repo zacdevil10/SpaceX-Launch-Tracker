@@ -184,7 +184,6 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
 
                 it.links?.webcast?.let { link ->
                     launchDetailsWatchButton.visibility = View.VISIBLE
-                    launchDetailsCalendarButton.visibility = View.GONE
                     launchDetailsWatchButton.setOnClickListener {
                         openWebLink(link)
                     }
@@ -192,7 +191,8 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
                     launchDetailsWatchButton.visibility = View.GONE
                 }
 
-                if (it.datePrecision == DatePrecision.DAY || it.datePrecision == DatePrecision.HOUR) {
+                if (it.datePrecision == DatePrecision.DAY || it.datePrecision == DatePrecision.HOUR && it.upcoming == true) {
+                    launchDetailsCalendarButton.visibility = View.VISIBLE
                     launchDetailsCalendarButton.setOnClickListener {
                         presenter?.createEvent()
                     }
