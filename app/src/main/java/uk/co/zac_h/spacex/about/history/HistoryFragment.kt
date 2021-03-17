@@ -10,10 +10,9 @@ import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentHistoryBinding
+import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
-import uk.co.zac_h.spacex.utils.ApiState
-import uk.co.zac_h.spacex.utils.clearAndAdd
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.views.HeaderItemDecoration
 
@@ -30,7 +29,6 @@ class HistoryFragment : BaseFragment(), HistoryView {
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
-    private lateinit var history: ArrayList<HistoryHeaderModel>
     private lateinit var historyAdapter: HistoryAdapter
 
     private lateinit var orderSharedPreferences: OrderSharedPreferencesHelper
@@ -39,8 +37,6 @@ class HistoryFragment : BaseFragment(), HistoryView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-
-        history = savedInstanceState?.getParcelableArrayList(HISTORY_KEY) ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -82,16 +78,7 @@ class HistoryFragment : BaseFragment(), HistoryView {
             presenter?.get(sortNew)
         }
 
-        if (history.isEmpty()) {
-            presenter?.get(sortNew)
-        } else {
-            update(history)
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(HISTORY_KEY, history)
-        super.onSaveInstanceState(outState)
+        presenter?.get(sortNew)
     }
 
     override fun onDestroyView() {
@@ -129,7 +116,6 @@ class HistoryFragment : BaseFragment(), HistoryView {
     override fun update(response: ArrayList<HistoryHeaderModel>) {
         apiState = ApiState.SUCCESS
 
-        history.clearAndAdd(response)
         historyAdapter.update(response)
 
         binding.historyRecycler.apply {
@@ -159,9 +145,10 @@ class HistoryFragment : BaseFragment(), HistoryView {
     }
 
     override fun networkAvailable() {
-        when(apiState) {
+        when (apiState) {
             ApiState.PENDING, ApiState.FAILED -> presenter?.get(sortNew)
-            ApiState.SUCCESS -> {}
+            ApiState.SUCCESS -> {
+            }
         }
     }
 

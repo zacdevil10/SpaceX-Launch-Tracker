@@ -13,7 +13,7 @@ class LaunchDetailsPresenterImpl(
     NetworkInterface.Callback<Launch?> {
 
     override fun get(data: Any, api: SpaceXInterface) {
-        view.showProgress()
+        view.toggleSwipeRefresh(true)
         interactor.get(data, api, this)
     }
 
@@ -39,12 +39,15 @@ class LaunchDetailsPresenterImpl(
         response?.let { launch ->
             view.apply {
                 update(true, launch)
-                hideProgress()
+                toggleSwipeRefresh(false)
             }
         }
     }
 
     override fun onError(error: String) {
-        view.showError(error)
+        view.apply {
+            toggleSwipeRefresh(false)
+            showError(error)
+        }
     }
 }

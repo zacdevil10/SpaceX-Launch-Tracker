@@ -3,6 +3,7 @@ package uk.co.zac_h.spacex.about.company
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +16,6 @@ import uk.co.zac_h.spacex.utils.ApiState
 
 class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
 
-    companion object {
-        const val COMPANY_KEY = "company_info"
-    }
-
     override val title: String by lazy { requireContext().getString(R.string.menu_company) }
 
     private var _binding: FragmentCompanyBinding? = null
@@ -27,12 +24,6 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
     private var presenter: NetworkInterface.Presenter<Company?>? = null
 
     private var companyInfo: Company? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        companyInfo = savedInstanceState?.getParcelable(COMPANY_KEY)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,13 +40,6 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
         presenter = CompanyPresenterImpl(this, CompanyInteractorImpl())
 
         presenter?.getOrUpdate(companyInfo)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        companyInfo?.let {
-            outState.putParcelable(COMPANY_KEY, it)
-        }
-        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
@@ -109,9 +93,9 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
     }
 
     override fun networkAvailable() {
-        when(apiState) {
+        when (apiState) {
             ApiState.PENDING, ApiState.FAILED -> presenter?.getOrUpdate(null)
-            ApiState.SUCCESS -> {}
+            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 

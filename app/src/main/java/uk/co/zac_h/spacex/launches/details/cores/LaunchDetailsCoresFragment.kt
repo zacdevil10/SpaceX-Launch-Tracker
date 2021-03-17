@@ -65,6 +65,11 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
             adapter = coresAdapter
         }
 
+        binding.swipeRefresh.setOnRefreshListener {
+            apiState = ApiState.PENDING
+            id?.let { presenter?.get(it) }
+        }
+
         if (cores.isEmpty()) id?.let {
             presenter?.get(it)
         }
@@ -90,12 +95,8 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
         binding.launchDetailsCoresRecycler.scheduleLayoutAnimation()
     }
 
-    override fun showProgress() {
-
-    }
-
-    override fun hideProgress() {
-
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding.swipeRefresh.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {

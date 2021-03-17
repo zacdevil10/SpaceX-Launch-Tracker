@@ -10,7 +10,6 @@ class DragonPresenterImpl(
 ) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<List<Dragon>?> {
 
     override fun get(api: SpaceXInterface) {
-        view.showProgress()
         interactor.get(api, this)
     }
 
@@ -20,7 +19,6 @@ class DragonPresenterImpl(
 
     override fun onSuccess(response: List<Dragon>?) {
         view.apply {
-            hideProgress()
             toggleSwipeRefresh(false)
             response?.let { update(it.reversed()) }
         }

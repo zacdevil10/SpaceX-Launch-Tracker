@@ -64,8 +64,6 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
 
         binding.padStatsConstraint.transitionName = heading
 
-        hideProgress()
-
         presenter = PadStatsPresenterImpl(this, PadStatsInteractorImpl())
 
         padsAdapter = PadStatsSitesAdapter(pads)

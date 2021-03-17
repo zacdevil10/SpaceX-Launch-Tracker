@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentTwitterFeedBinding
@@ -32,9 +33,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        tweetsList = savedInstanceState?.let {
-            it.getParcelableArrayList<TimelineTweetModel>("timeline") as ArrayList<TimelineTweetModel>
-        } ?: ArrayList()
+        tweetsList = savedInstanceState?.getParcelableArrayList("timeline") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -58,6 +57,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
             layoutManager = layout
             setHasFixedSize(true)
             adapter = twitterAdapter
+            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
 
             addOnScrollListener(object : PaginationScrollListener(layout) {
                 override fun isLastPage(): Boolean = isLastPage
