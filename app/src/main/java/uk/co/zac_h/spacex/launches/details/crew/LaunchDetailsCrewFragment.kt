@@ -88,14 +88,6 @@ class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Cre
         crewAdapter.notifyDataSetChanged()
     }
 
-    override fun showProgress() {
-
-    }
-
-    override fun hideProgress() {
-
-    }
-
     override fun showError(error: String) {
         apiState = ApiState.FAILED
     }

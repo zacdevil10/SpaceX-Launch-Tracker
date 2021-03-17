@@ -1,14 +1,17 @@
 package uk.co.zac_h.spacex.vehicles.ships
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
+import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
 import uk.co.zac_h.spacex.databinding.FragmentShipsBinding
 import uk.co.zac_h.spacex.model.spacex.Ship
+import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.ShipsAdapter
 
@@ -16,7 +19,8 @@ class ShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
 
     override var title: String = "Ships"
 
-    private var binding: FragmentShipsBinding? = null
+    private var _binding: FragmentShipsBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var shipsAdapter: ShipsAdapter
@@ -33,7 +37,7 @@ class ShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentShipsBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,13 +49,14 @@ class ShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
 
         shipsAdapter = ShipsAdapter(shipsArray)
 
-        binding?.recycler?.apply {
+        binding.recycler.apply {
             layoutManager = LinearLayoutManager(this@ShipsFragment.context)
             setHasFixedSize(true)
             adapter = shipsAdapter
         }
 
-        binding?.swipeRefresh?.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
+            apiState = ApiState.PENDING
             presenter?.get()
         }
 
@@ -66,35 +71,32 @@ class ShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        binding = null
+        _binding = null
     }
 
     override fun update(response: List<Ship>) {
+        apiState = ApiState.SUCCESS
+
         shipsArray.clear()
         shipsArray.addAll(response)
 
-        binding?.recycler?.layoutAnimation = animateLayoutFromBottom(context)
+        binding.recycler.layoutAnimation = animateLayoutFromBottom(context)
         shipsAdapter.notifyDataSetChanged()
-        binding?.recycler?.scheduleLayoutAnimation()
-    }
-
-    override fun showProgress() {
-
-    }
-
-    override fun hideProgress() {
-
+        binding.recycler.scheduleLayoutAnimation()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding?.swipeRefresh?.isRefreshing = isRefreshing
+        binding.swipeRefresh.isRefreshing = isRefreshing
+    }
+
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (shipsArray.isEmpty()) presenter?.get()
-            }
+        when (apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.get()
+            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }

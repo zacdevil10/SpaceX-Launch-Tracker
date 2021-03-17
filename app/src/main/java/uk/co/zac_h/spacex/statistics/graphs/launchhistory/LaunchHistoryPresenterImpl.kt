@@ -19,10 +19,11 @@ class LaunchHistoryPresenterImpl(
     override fun getOrUpdate(response: List<HistoryStatsModel>?, api: SpaceXInterface) {
         if (response.isNullOrEmpty()) {
             view.showProgress()
-            interactor.get(SpaceXInterface.create(SPACEX_BASE_URL_V5), this)
-        } else {
-            view.update(false, response)
-            view.setSuccessRate(response, false)
+            interactor.get(api, this)
+        } else view.apply {
+            hideProgress()
+            update(false, response)
+            setSuccessRate(response, false)
         }
     }
 

@@ -19,10 +19,10 @@ class LaunchMassPresenter(
     override fun getOrUpdate(response: List<LaunchMassStatsModel>?, api: SpaceXInterface) {
         if (response.isNullOrEmpty()) {
             view.showProgress()
-            interactor.get(SpaceXInterface.create(SPACEX_BASE_URL_V5), this)
-        } else {
-            view.hideProgress()
-            view.update(false, response)
+            interactor.get(api, this)
+        } else view.apply {
+            hideProgress()
+            update(false, response)
         }
     }
 

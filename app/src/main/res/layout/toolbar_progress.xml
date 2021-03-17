@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:elevation="@dimen/toolbar_elevation"
         android:indeterminate="true"
-        app:hideAnimationBehavior="outward"
+        app:hideAnimationBehavior="inward"
         app:indicatorColor="?colorSecondary"
         app:layout_constraintBottom_toBottomOf="@id/app_bar"
         app:layout_constraintEnd_toEndOf="parent"

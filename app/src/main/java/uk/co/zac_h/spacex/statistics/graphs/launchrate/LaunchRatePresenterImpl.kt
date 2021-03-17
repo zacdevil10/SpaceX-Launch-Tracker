@@ -16,8 +16,11 @@ class LaunchRatePresenterImpl(
     override fun getOrUpdate(response: List<RateStatsModel>?, api: SpaceXInterface) {
         if (response.isNullOrEmpty()) {
             view.showProgress()
-            interactor.get(SpaceXInterface.create(SPACEX_BASE_URL_V5), this)
-        } else view.update(false, response)
+            interactor.get(api, this)
+        } else view.apply {
+            hideProgress()
+            update(false, response)
+        }
     }
 
     override fun cancelRequest() {

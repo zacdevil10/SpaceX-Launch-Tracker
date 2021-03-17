@@ -17,7 +17,7 @@ import uk.co.zac_h.spacex.utils.clearAndAdd
 
 class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
 
-    override var title: String = "Launch Details Ships"
+    override var title: String = ""
 
     private var _binding: FragmentLaunchDetailsShipsBinding? = null
     private val binding get() = _binding!!
@@ -63,9 +63,12 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
             adapter = shipsAdapter
         }
 
-        if (shipsArray.isEmpty()) id?.let {
-            presenter?.get(it)
+        binding.swipeRefresh.setOnRefreshListener {
+            apiState = ApiState.PENDING
+            id?.let { presenter?.get(it) }
         }
+
+        if (shipsArray.isEmpty()) id?.let { presenter?.get(it) }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -89,12 +92,8 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
         binding.launchDetailsShipsRecycler.scheduleLayoutAnimation()
     }
 
-    override fun showProgress() {
-
-    }
-
-    override fun hideProgress() {
-
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding.swipeRefresh.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {

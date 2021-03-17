@@ -5,9 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -53,6 +51,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
 
         savedInstanceState?.let {
             nextLaunchModel = it.getParcelable(NEXT_KEY)
@@ -75,19 +74,10 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
-
+        binding.toolbarLayout.progress.hide()
         binding.toolbarLayout.toolbar.apply {
+            setSupportActionBar()
             setup()
-            setOnMenuItemClickListener {
-                when (it.itemId) {
-                    R.id.edit -> {
-                        findNavController().navigate(R.id.action_dashboard_page_fragment_to_dashboard_edit_dialog)
-                        true
-                    }
-                    else -> false
-                }
-            }
         }
 
         togglePinnedProgress(false)
@@ -157,16 +147,6 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
         presenter?.getLatestLaunches(nextLaunchModel, latestLaunchModel)
     }
 
-    override fun onResume() {
-        super.onResume()
-        binding.refresh.isEnabled = true
-    }
-
-    override fun onPause() {
-        super.onPause()
-        binding.refresh.isEnabled = false
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         outState.apply {
             nextLaunchModel?.let { putParcelable(NEXT_KEY, it) }
@@ -182,6 +162,19 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
         countdownTimer = null
         presenter?.cancelRequest()
         _binding = null
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_dashboard, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.edit -> {
+            findNavController().navigate(R.id.action_dashboard_page_fragment_to_dashboard_edit_dialog)
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun update(data: Any, response: Launch) {
@@ -230,16 +223,16 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
             vehicle.text = response.rocket?.name
 
             missionName.text = response.missionName
-            date.text =
-                response.datePrecision?.let { response.launchDate?.dateUnix?.formatDateMillisLong(it) }
+
+            date.text = response.datePrecision?.let {
+                response.launchDate?.dateUnix?.formatDateMillisLong(it)
+            }
 
             dashboardLaunch.let { card ->
                 card.setOnClickListener {
                     findNavController().navigate(
                         R.id.action_launch_item_to_launch_details_container_fragment,
-                        bundleOf(
-                            LAUNCH_SHORT_KEY to response
-                        ),
+                        bundleOf(LAUNCH_SHORT_KEY to response),
                         null,
                         FragmentNavigatorExtras(card to response.id)
                     )
@@ -249,9 +242,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
     }
 
     private fun updatePinnedList(id: String, pinnedLaunch: Launch) {
-        if (pinnedArray.none { it.id == id }) {
-            pinnedArray.add(pinnedLaunch)
-        }
+        if (pinnedArray.none { it.id == id }) pinnedArray.add(pinnedLaunch)
 
         pinnedArray.sortByDescending { it.flightNumber }
 
@@ -351,18 +342,15 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
         binding.refresh.isRefreshing = isRefreshing
     }
 
-    override fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
-    }
-
     override fun showError(error: String) {
         apiState = ApiState.FAILED
     }
 
     override fun networkAvailable() {
-        when(apiState) {
+        when (apiState) {
             ApiState.PENDING, ApiState.FAILED -> presenter?.getLatestLaunches()
-            ApiState.SUCCESS -> {}
+            ApiState.SUCCESS -> {
+            }
         }
     }
 }

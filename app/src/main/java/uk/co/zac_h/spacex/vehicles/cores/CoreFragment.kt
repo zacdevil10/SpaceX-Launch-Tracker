@@ -1,14 +1,17 @@
 package uk.co.zac_h.spacex.vehicles.cores
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
+import uk.co.zac_h.spacex.databinding.FragmentCompanyBinding
 import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
 import uk.co.zac_h.spacex.model.spacex.Core
+import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
@@ -19,7 +22,8 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
 
     override var title: String = "Cores"
 
-    private var binding: FragmentCoreBinding? = null
+    private var _binding: FragmentCoreBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var coreAdapter: CoreAdapter
@@ -42,7 +46,7 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentCoreBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,13 +61,14 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
 
         coreAdapter = CoreAdapter(context, coresArray)
 
-        binding?.coreRecycler?.apply {
+        binding.coreRecycler.apply {
             layoutManager = LinearLayoutManager(this@CoreFragment.context)
             setHasFixedSize(true)
             adapter = coreAdapter
         }
 
-        binding?.swipeRefresh?.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
+            apiState = ApiState.PENDING
             presenter?.get()
         }
 
@@ -79,7 +84,7 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        binding = null
+        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -125,31 +130,28 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
     }
 
     override fun update(response: List<Core>) {
+        apiState = ApiState.SUCCESS
+
         coresArray.clear()
         coresArray.addAll(if (sortNew) response.reversed() else response)
 
-        binding?.coreRecycler?.layoutAnimation = animateLayoutFromBottom(context)
+        binding.coreRecycler.layoutAnimation = animateLayoutFromBottom(context)
         coreAdapter.notifyDataSetChanged()
-        binding?.coreRecycler?.scheduleLayoutAnimation()
-    }
-
-    override fun showProgress() {
-
-    }
-
-    override fun hideProgress() {
-
+        binding.coreRecycler.scheduleLayoutAnimation()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding?.swipeRefresh?.isRefreshing = isRefreshing
+        binding.swipeRefresh.isRefreshing = isRefreshing
+    }
+
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (coresArray.isEmpty()) presenter?.get()
-            }
+        when (apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.get()
+            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }

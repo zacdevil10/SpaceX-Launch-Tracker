@@ -85,6 +85,12 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
             LaunchDetailsInteractorImpl()
         )
 
+        binding.swipeRefresh.setOnRefreshListener {
+            apiState = ApiState.PENDING
+
+            launch?.let { presenter?.get(it.id) } ?: id?.let { presenter?.get(it) }
+        }
+
         launch?.let {
             presenter?.addLaunchModel(it, true)
             pinned = presenter?.isPinned(it.id) ?: false
@@ -108,9 +114,7 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(
             if (launch?.id?.let { presenter?.isPinned(it) } ?: launch?.id?.let {
-                    presenter?.isPinned(
-                        it
-                    )
+                    presenter?.isPinned(it)
                 } == true) {
                 R.menu.menu_details_alternate
             } else {
@@ -274,12 +278,8 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 
-    override fun showProgress() {
-
-    }
-
-    override fun hideProgress() {
-
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding.swipeRefresh.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {

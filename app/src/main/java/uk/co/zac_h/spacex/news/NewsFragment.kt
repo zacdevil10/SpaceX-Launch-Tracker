@@ -41,10 +41,7 @@ class NewsFragment : BaseFragment() {
             listOf(TwitterFeedFragment(), RedditFeedFragment())
         )
 
-        val tabIcons = listOf(
-            R.drawable.ic_twitter,
-            R.drawable.reddit
-        )
+        val tabIcons = listOf(R.drawable.ic_twitter, R.drawable.reddit)
 
         toolbarBinding.tabLayout.apply {
             setupWithViewPager(binding.newsViewPager)

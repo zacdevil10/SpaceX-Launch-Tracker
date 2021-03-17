@@ -57,8 +57,6 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
-
         presenter = LaunchDetailsPayloadsPresenter(this, LaunchDetailsPayloadsInteractor())
 
         payloadAdapter = PayloadAdapter(context, payloads)
@@ -68,6 +66,11 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
             setHasFixedSize(true)
             adapter = payloadAdapter
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            apiState = ApiState.PENDING
+            id?.let { presenter?.get(it) }
         }
 
         if (payloads.isEmpty()) id?.let {
@@ -92,12 +95,8 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
         payloadAdapter.notifyDataSetChanged()
     }
 
-    override fun showProgress() {
-
-    }
-
-    override fun hideProgress() {
-
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding.swipeRefresh.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {

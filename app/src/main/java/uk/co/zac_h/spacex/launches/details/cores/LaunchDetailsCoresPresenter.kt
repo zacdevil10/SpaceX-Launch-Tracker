@@ -12,8 +12,8 @@ class LaunchDetailsCoresPresenter(
 ) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<Launch?> {
 
     override fun get(data: Any, api: SpaceXInterface) {
-        view.showProgress()
-        interactor.get(data, SpaceXInterface.create(SPACEX_BASE_URL_V5), this)
+        view.toggleSwipeRefresh(true)
+        interactor.get(data, api, this)
     }
 
     override fun cancelRequest() {
@@ -22,12 +22,17 @@ class LaunchDetailsCoresPresenter(
 
     override fun onSuccess(response: Launch?) {
         response?.cores?.let {
-            view.update(it)
-            view.hideProgress()
+            view.apply {
+                update(it)
+                toggleSwipeRefresh(false)
+            }
         }
     }
 
     override fun onError(error: String) {
-        view.showError(error)
+        view.apply {
+            toggleSwipeRefresh(false)
+            showError(error)
+        }
     }
 }
