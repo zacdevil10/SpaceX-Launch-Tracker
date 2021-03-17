@@ -10,7 +10,6 @@ class ShipsPresenterImpl(
 ) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<List<Ship>?> {
 
     override fun get(api: SpaceXInterface) {
-        view.showProgress()
         interactor.get(api, this)
     }
 
@@ -19,11 +18,12 @@ class ShipsPresenterImpl(
     override fun onSuccess(response: List<Ship>?) {
         response?.let {
             view.update(response)
-            view.hideProgress()
+            view.toggleSwipeRefresh(false)
         }
     }
 
     override fun onError(error: String) {
+        view.toggleSwipeRefresh(false)
         view.showError(error)
     }
 }

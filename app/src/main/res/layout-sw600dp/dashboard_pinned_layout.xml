@@ -14,9 +14,9 @@
     app:layout_constraintTop_toTopOf="parent"
     tools:showIn="@layout/fragment_dashboard">
 
-    <com.google.android.material.progressindicator.ProgressIndicator
+    <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/progress"
-        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"

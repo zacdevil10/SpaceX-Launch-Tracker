@@ -1,12 +1,11 @@
 package uk.co.zac_h.spacex.launches.details.crew
 
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.crew.CrewView
 import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class LaunchDetailsCrewPresenter(
-    private val view: CrewView,
+    private val view: NetworkInterface.View<List<Crew>>,
     private val interactor: NetworkInterface.Interactor<List<Crew>?>
 ) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<List<Crew>?> {
 

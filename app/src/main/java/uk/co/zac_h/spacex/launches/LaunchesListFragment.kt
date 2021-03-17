@@ -64,7 +64,7 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
 
         presenter = LaunchesPresenterImpl(this, LaunchesInteractorImpl())
 
-        launchesAdapter = LaunchesAdapter(context, launches)
+        launchesAdapter = LaunchesAdapter(requireContext(), launches)
 
         binding?.launchesRecycler?.apply {
             layoutManager = LinearLayoutManager(this@LaunchesListFragment.context)
@@ -138,11 +138,11 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
     }
 
     override fun showProgress() {
-        binding?.progress?.show()
+
     }
 
     override fun hideProgress() {
-        binding?.progress?.hide()
+
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
@@ -152,7 +152,7 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
     override fun networkAvailable() {
         activity?.runOnUiThread {
             binding?.let {
-                if (launches.isEmpty() || it.progress.isShown)
+                if (launches.isEmpty())
                     launchParam?.let { launchId ->
                         presenter?.get(launchId)
                     }

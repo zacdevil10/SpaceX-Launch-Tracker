@@ -3,77 +3,55 @@ package uk.co.zac_h.spacex.about.company
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCompanyBinding
 import uk.co.zac_h.spacex.model.spacex.Company
+import uk.co.zac_h.spacex.utils.ApiState
 
 class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
 
-    companion object {
-        const val COMPANY_KEY = "company_info"
-    }
+    override val title: String by lazy { requireContext().getString(R.string.menu_company) }
 
-    override var title: String = "Company"
-
-    private var binding: FragmentCompanyBinding? = null
+    private var _binding: FragmentCompanyBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: NetworkInterface.Presenter<Company?>? = null
 
     private var companyInfo: Company? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        savedInstanceState?.let {
-            companyInfo = it.getParcelable(COMPANY_KEY)
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentCompanyBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
-
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+        binding.toolbarLayout.toolbar.setup()
 
         presenter = CompanyPresenterImpl(this, CompanyInteractorImpl())
 
         presenter?.getOrUpdate(companyInfo)
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        companyInfo?.let {
-            outState.putParcelable(COMPANY_KEY, it)
-        }
-        super.onSaveInstanceState(outState)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        binding = null
+        _binding = null
     }
 
     override fun update(response: Company) {
+        apiState = ApiState.SUCCESS
         companyInfo = response
-        binding?.apply {
+        with(binding) {
             response.headquarters?.let {
                 companyAddress.text =
                     context?.getString(R.string.address, it.address, it.city, it.state)
@@ -103,16 +81,21 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
     }
 
     override fun showProgress() {
-        binding?.progress?.show()
+        binding.toolbarLayout.progress.show()
     }
 
     override fun hideProgress() {
-        binding?.progress?.hide()
+        binding.toolbarLayout.progress.hide()
+    }
+
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            if (companyInfo == null) presenter?.getOrUpdate(null)
+        when (apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.getOrUpdate(null)
+            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 

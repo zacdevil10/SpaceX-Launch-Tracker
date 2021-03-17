@@ -17,6 +17,7 @@ interface NetworkInterface {
         fun get(api: SpaceXInterface = SpaceXInterface.create()) {}
         fun get(data: Any, api: SpaceXInterface = SpaceXInterface.create()) {}
         fun getOrUpdate(response: T, api: SpaceXInterface = SpaceXInterface.create()) {}
+        fun getOrUpdate(response: T, data: Any, api: SpaceXInterface = SpaceXInterface.create()) {}
         fun cancelRequest()
     }
 

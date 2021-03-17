@@ -7,10 +7,6 @@ import android.view.*
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
@@ -20,18 +16,19 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchHistoryBinding
+import uk.co.zac_h.spacex.statistics.adapters.Statistics
 import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 
 class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistoryView {
 
-    override var title: String = "Launch History"
+    override val title: String by lazy { Statistics.LAUNCH_HISTORY.title }
 
-    private var binding: FragmentLaunchHistoryBinding? = null
+    private var _binding: FragmentLaunchHistoryBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: LaunchHistoryContract.LaunchHistoryPresenter? = null
 
@@ -58,7 +55,7 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchHistoryBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,24 +64,21 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
+        (activity as MainActivity).setSupportActionBar(binding.toolbarLayout.toolbar)
+        binding.toolbarLayout.toolbar.setup()
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+        binding.launchHistoryConstraint.transitionName = heading
 
-        binding?.launchHistoryConstraint?.transitionName = heading
-
-        hideProgress()
-
-        binding?.tint?.setOnClickListener {
+        binding.tint.setOnClickListener {
             toggleFilterVisibility(false)
         }
 
         presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
 
-        binding?.launchHistoryChipGroup?.setOnCheckedChangeListener { _, checkedId ->
+        binding.launchHistoryChipGroup.setOnCheckedChangeListener { _, checkedId ->
             filter = when (checkedId) {
-                binding?.launchHistorySuccessToggle?.id -> LaunchHistoryFilter.SUCCESSES
-                binding?.launchHistoryFailureToggle?.id -> LaunchHistoryFilter.FAILURES
+                binding.launchHistorySuccessToggle.id -> LaunchHistoryFilter.SUCCESSES
+                binding.launchHistoryFailureToggle.id -> LaunchHistoryFilter.FAILURES
                 else -> null
             }
             presenter?.updateFilter(launchStats)
@@ -93,7 +87,7 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
         presenter?.getOrUpdate(launchStats)
 
         //Pie chart appearance
-        binding?.launchHistoryPieChart?.apply {
+        binding.launchHistoryPieChart.apply {
             isDrawHoleEnabled = true
             setHoleColor(ContextCompat.getColor(context, R.color.color_background))
             setDrawEntryLabels(false)
@@ -127,7 +121,7 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        binding = null
+        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -141,6 +135,7 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
             true
         }
         R.id.reload -> {
+            apiState = ApiState.PENDING
             launchStats.clear()
             presenter?.getOrUpdate(null)
             true
@@ -149,6 +144,7 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
     }
 
     override fun update(data: Any, response: List<HistoryStatsModel>) {
+        apiState = ApiState.SUCCESS
         if (launchStats.isEmpty()) launchStats.addAll(response)
 
         val colors = ArrayList<Int>()
@@ -204,7 +200,7 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
             setValueTextSize(11f)
         }
 
-        binding?.launchHistoryPieChart?.apply {
+        binding.launchHistoryPieChart.apply {
             this.centerText = context?.getString(R.string.pie_chart_title, "2006 - 2020")
                 ?.generateCenterSpannableText()
             this.data = pieData
@@ -216,21 +212,21 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
         stats.forEach {
             when (it.rocket) {
                 RocketType.FALCON_ONE -> {
-                    animateProgress(animate, it.successRate, binding?.falconOneRateProgress)
+                    animateProgress(animate, it.successRate, binding.falconOneRateProgress)
 
-                    binding?.falconOnePercentText?.text =
+                    binding.falconOnePercentText.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }
                 RocketType.FALCON_NINE -> {
-                    animateProgress(animate, it.successRate, binding?.falconNineRateProgress)
+                    animateProgress(animate, it.successRate, binding.falconNineRateProgress)
 
-                    binding?.falconNinePercentText?.text =
+                    binding.falconNinePercentText.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }
                 RocketType.FALCON_HEAVY -> {
-                    animateProgress(animate, it.successRate, binding?.falconHeavyRateProgress)
+                    animateProgress(animate, it.successRate, binding.falconHeavyRateProgress)
 
-                    binding?.falconHeavyPercentText?.text =
+                    binding.falconHeavyPercentText.text =
                         context?.getString(R.string.percentage, it.successRate)
                 }
             }
@@ -247,7 +243,7 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
     }
 
     override fun toggleFilterVisibility(filterVisible: Boolean) {
-        binding?.launchHistoryFilterConstraint?.apply {
+        binding.launchHistoryFilterConstraint.apply {
             when (filterVisible) {
                 true -> {
                     visibility = View.VISIBLE
@@ -260,7 +256,7 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
             }
         }
 
-        binding?.tint?.apply {
+        binding.tint.apply {
             when (filterVisible) {
                 true -> {
                     visibility = View.VISIBLE
@@ -277,20 +273,21 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
     }
 
     override fun showProgress() {
-        binding?.progress?.show()
+        binding.toolbarLayout.progress.show()
     }
 
     override fun hideProgress() {
-        binding?.progress?.hide()
+        binding.toolbarLayout.progress.hide()
+    }
+
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (launchStats.isEmpty() || it.progress.isShown) presenter?.getOrUpdate(
-                    null
-                )
-            }
+        when(apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.getOrUpdate(null)
+            ApiState.SUCCESS -> {}
         }
     }
 }

@@ -2,7 +2,7 @@ package uk.co.zac_h.spacex.model.reddit
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class SubredditModel(

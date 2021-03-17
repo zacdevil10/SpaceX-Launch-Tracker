@@ -12,12 +12,15 @@ import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsPayloadsBinding
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
 import uk.co.zac_h.spacex.model.spacex.Payload
+import uk.co.zac_h.spacex.utils.ApiState
+import uk.co.zac_h.spacex.utils.clearAndAdd
 
 class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List<Payload>> {
 
     override var title: String = "Launch Details Payloads"
 
-    private var binding: FragmentLaunchDetailsPayloadsBinding? = null
+    private var _binding: FragmentLaunchDetailsPayloadsBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
@@ -27,7 +30,7 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
     private var id: String? = null
 
     companion object {
-        const val ID_KEY = "id"
+        private const val ID_KEY = "id"
         const val PAYLOADS_KEY = "payloads"
 
         @JvmStatic
@@ -48,23 +51,26 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchDetailsPayloadsBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
-
         presenter = LaunchDetailsPayloadsPresenter(this, LaunchDetailsPayloadsInteractor())
 
         payloadAdapter = PayloadAdapter(context, payloads)
 
-        binding?.launchDetailsPayloadRecycler?.apply {
+        binding.launchDetailsPayloadRecycler.apply {
             layoutManager = LinearLayoutManager(this@LaunchDetailsPayloadsFragment.context)
             setHasFixedSize(true)
             adapter = payloadAdapter
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            apiState = ApiState.PENDING
+            id?.let { presenter?.get(it) }
         }
 
         if (payloads.isEmpty()) id?.let {
@@ -79,28 +85,28 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding = null
+        _binding = null
     }
 
     override fun update(response: List<Payload>) {
-        payloads.clear()
-        payloads.addAll(response)
+        apiState = ApiState.SUCCESS
 
+        payloads.clearAndAdd(response)
         payloadAdapter.notifyDataSetChanged()
     }
 
-    override fun showProgress() {
-        binding?.progress?.show()
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding.swipeRefresh.isRefreshing = isRefreshing
     }
 
-    override fun hideProgress() {
-        binding?.progress?.hide()
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            id?.let {
-                if (payloads.isEmpty()) presenter?.get(it)
+        when (apiState) {
+            ApiState.PENDING, ApiState.FAILED -> id?.let { presenter?.get(it) }
+            ApiState.SUCCESS -> {
             }
         }
     }

@@ -5,23 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesBinding
-import uk.co.zac_h.spacex.launches.adapters.LaunchesPagerAdapter
+import uk.co.zac_h.spacex.databinding.ToolbarTabBinding
+import uk.co.zac_h.spacex.utils.ViewPagerAdapter
 
 class LaunchesFragment : BaseFragment() {
 
-    override var title: String = ""
+    override var title: String = "Launches"
 
-    private var binding: FragmentLaunchesBinding? = null
+    private var _binding: FragmentLaunchesBinding? = null
+    private val binding get() = _binding!!
+    private var _toolbarBinding: ToolbarTabBinding? = null
+    private val toolbarBinding get() = _toolbarBinding!!
 
     private val fragments: List<BaseFragment> = listOf(
         LaunchesListFragment.newInstance("upcoming"),
@@ -33,7 +31,8 @@ class LaunchesFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchesBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _toolbarBinding = ToolbarTabBinding.bind(this.root)
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -41,19 +40,18 @@ class LaunchesFragment : BaseFragment() {
 
         postponeEnterTransition()
 
-        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
+        (activity as MainActivity).setSupportActionBar(toolbarBinding.toolbar)
+        toolbarBinding.toolbar.setup()
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
-
-        binding?.launchesViewPager?.adapter = LaunchesPagerAdapter(childFragmentManager, fragments)
+        binding.launchesViewPager.adapter = ViewPagerAdapter(childFragmentManager, fragments)
 
         val tabIcons = listOf(
             R.drawable.ic_baseline_schedule_24,
             R.drawable.ic_history_black_24dp
         )
 
-        binding?.launchesTabLayout?.apply {
-            setupWithViewPager(binding?.launchesViewPager)
+        toolbarBinding.tabLayout.apply {
+            setupWithViewPager(binding.launchesViewPager)
             for (position in 0..tabCount) {
                 getTabAt(position)?.setIcon(tabIcons[position])
             }
@@ -64,6 +62,7 @@ class LaunchesFragment : BaseFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        binding = null
+        _toolbarBinding = null
+        _binding = null
     }
 }

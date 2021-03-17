@@ -9,7 +9,7 @@ class TwitterFeedPresenterImpl(
 ) : TwitterFeedContract.TwitterFeedPresenter, TwitterFeedContract.InteractorCallback {
 
     override fun getTweets(api: TwitterInterface) {
-        view.showProgress()
+        view.toggleSwipeProgress(true)
         interactor.getTwitterTimeline(listener = this, api = api)
     }
 
@@ -35,7 +35,6 @@ class TwitterFeedPresenterImpl(
             view.apply {
                 updateRecycler(tweets)
                 toggleSwipeProgress(false)
-                hideProgress()
             }
         }
     }

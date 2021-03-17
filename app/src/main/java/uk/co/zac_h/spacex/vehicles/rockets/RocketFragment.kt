@@ -1,14 +1,17 @@
 package uk.co.zac_h.spacex.vehicles.rockets
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
+import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
 import uk.co.zac_h.spacex.databinding.FragmentRocketBinding
 import uk.co.zac_h.spacex.model.spacex.Rocket
+import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 
@@ -16,7 +19,8 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
 
     override var title: String = "Rockets"
 
-    private var binding: FragmentRocketBinding? = null
+    private var _binding: FragmentRocketBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var rocketsAdapter: RocketsAdapter
@@ -33,25 +37,24 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentRocketBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
-
         presenter = RocketPresenterImpl(this, RocketInteractorImpl())
 
         rocketsAdapter = RocketsAdapter(rocketsArray)
 
-        binding?.rocketRecycler?.apply {
+        binding.rocketRecycler.apply {
             layoutManager = LinearLayoutManager(this@RocketFragment.context)
             setHasFixedSize(true)
             adapter = rocketsAdapter
         }
 
-        binding?.rocketSwipeRefresh?.setOnRefreshListener {
+        binding.rocketSwipeRefresh.setOnRefreshListener {
+            apiState = ApiState.PENDING
             presenter?.get()
         }
 
@@ -66,36 +69,32 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        binding = null
+        _binding = null
     }
 
     override fun update(response: List<Rocket>) {
+        apiState = ApiState.SUCCESS
+
         rocketsArray.clear()
         rocketsArray.addAll(response)
 
-        binding?.rocketRecycler?.layoutAnimation = animateLayoutFromBottom(context)
+        binding.rocketRecycler.layoutAnimation = animateLayoutFromBottom(context)
         rocketsAdapter.notifyDataSetChanged()
-        binding?.rocketRecycler?.scheduleLayoutAnimation()
-    }
-
-    override fun showProgress() {
-        binding?.progress?.show()
-    }
-
-    override fun hideProgress() {
-        binding?.progress?.hide()
+        binding.rocketRecycler.scheduleLayoutAnimation()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding?.rocketSwipeRefresh?.isRefreshing = isRefreshing
+        binding.rocketSwipeRefresh.isRefreshing = isRefreshing
+    }
+
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (rocketsArray.isEmpty() || it.progress.isShown)
-                    presenter?.get()
-            }
+        when (apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.get()
+            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }

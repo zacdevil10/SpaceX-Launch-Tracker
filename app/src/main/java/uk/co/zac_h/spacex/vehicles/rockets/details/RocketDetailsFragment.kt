@@ -4,17 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.databinding.CollapsingToolbarBinding
 import uk.co.zac_h.spacex.databinding.FragmentRocketDetailsBinding
 import uk.co.zac_h.spacex.model.spacex.Rocket
 import uk.co.zac_h.spacex.utils.metricFormat
@@ -23,9 +18,12 @@ import uk.co.zac_h.spacex.vehicles.adapters.RocketPayloadAdapter
 
 class RocketDetailsFragment : BaseFragment() {
 
-    override var title: String = ""
+    override var title: String = "Rocket"
 
-    private lateinit var binding: FragmentRocketDetailsBinding
+    private var _binding: FragmentRocketDetailsBinding? = null
+    private val binding get() = _binding!!
+    private var _toolbarBinding: CollapsingToolbarBinding? = null
+    private val toolbarBinding get() = _toolbarBinding!!
 
     private var rocket: Rocket? = null
 
@@ -41,30 +39,24 @@ class RocketDetailsFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentRocketDetailsBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _toolbarBinding = CollapsingToolbarBinding.bind(this.root)
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        with(binding) {
-            NavigationUI.setupWithNavController(
-                toolbarLayout,
-                toolbar,
-                navController,
-                appBarConfig
-            )
+        title = rocket?.name ?: ""
+        setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
 
+        with(binding) {
             rocket?.let {
                 rocketDetailsCoordinator.transitionName = it.id
-
-                title = it.name ?: ""
-                toolbar.title = it.name
 
                 Glide.with(view)
                     .load(it.flickr?.random())
                     .error(R.drawable.ic_baseline_error_outline_24)
-                    .into(header)
+                    .into(toolbarBinding.header)
 
                 rocketDetailsText.text = it.description
 

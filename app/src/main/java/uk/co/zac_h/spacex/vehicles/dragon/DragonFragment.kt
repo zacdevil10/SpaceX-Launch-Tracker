@@ -1,14 +1,17 @@
 package uk.co.zac_h.spacex.vehicles.dragon
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
+import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
 import uk.co.zac_h.spacex.databinding.FragmentDragonBinding
 import uk.co.zac_h.spacex.model.spacex.Dragon
+import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.DragonAdapter
 
@@ -16,7 +19,8 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
 
     override var title: String = "Dragon"
 
-    private var binding: FragmentDragonBinding? = null
+    private var _binding: FragmentDragonBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var dragonAdapter: DragonAdapter
@@ -33,7 +37,7 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentDragonBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,13 +49,14 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
 
         dragonAdapter = DragonAdapter(dragonArray)
 
-        binding?.dragonRecycler?.apply {
+        binding.dragonRecycler.apply {
             layoutManager = LinearLayoutManager(this@DragonFragment.context)
             setHasFixedSize(true)
             adapter = dragonAdapter
         }
 
-        binding?.swipeRefresh?.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
+            apiState = ApiState.PENDING
             presenter?.get()
         }
 
@@ -66,35 +71,32 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        binding = null
+        _binding = null
     }
 
     override fun update(response: List<Dragon>) {
+        apiState = ApiState.SUCCESS
+
         dragonArray.clear()
         dragonArray.addAll(response)
 
-        binding?.dragonRecycler?.layoutAnimation = animateLayoutFromBottom(context)
+        binding.dragonRecycler.layoutAnimation = animateLayoutFromBottom(context)
         dragonAdapter.notifyDataSetChanged()
-        binding?.dragonRecycler?.scheduleLayoutAnimation()
-    }
-
-    override fun showProgress() {
-        binding?.progress?.show()
-    }
-
-    override fun hideProgress() {
-        binding?.progress?.hide()
+        binding.dragonRecycler.scheduleLayoutAnimation()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding?.swipeRefresh?.isRefreshing = isRefreshing
+        binding.swipeRefresh.isRefreshing = isRefreshing
+    }
+
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (dragonArray.isEmpty() || it.progress.isShown) presenter?.get()
-            }
+        when (apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.get()
+            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 

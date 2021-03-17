@@ -3,10 +3,6 @@ package uk.co.zac_h.spacex.statistics.graphs.launchmass
 import android.os.Bundle
 import android.view.*
 import androidx.core.view.doOnPreDraw
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.BarData
@@ -19,10 +15,10 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchMassBinding
+import uk.co.zac_h.spacex.statistics.adapters.Statistics
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
 import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.models.KeysModel
@@ -31,9 +27,10 @@ import uk.co.zac_h.spacex.utils.models.OrbitMassModel
 
 class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
 
-    override var title: String = "Launch Mass"
+    override val title: String by lazy { Statistics.MASS_TO_ORBIT.title }
 
-    private var binding: FragmentLaunchMassBinding? = null
+    private var _binding: FragmentLaunchMassBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: LaunchMassContract.Presenter? = null
 
@@ -61,7 +58,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchMassBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -70,34 +67,34 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
+        (activity as MainActivity).setSupportActionBar(binding.toolbarLayout.toolbar)
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+        binding.toolbarLayout.toolbar.setup()
 
-        binding?.launchMassConstraint?.transitionName = heading
+        binding.launchMassConstraint.transitionName = heading
 
         hideProgress()
 
-        binding?.launchMassFilterTint?.setOnClickListener {
+        binding.launchMassFilterTint.setOnClickListener {
             showFilter(false)
         }
 
         presenter = LaunchMassPresenter(this, LaunchMassInteractor())
 
-        binding?.launchMassRocketChipGroup?.setOnCheckedChangeListener { _, checkedId ->
+        binding.launchMassRocketChipGroup.setOnCheckedChangeListener { _, checkedId ->
             filterRocket = when (checkedId) {
-                binding?.launchMassFalconOneToggle?.id -> RocketType.FALCON_ONE
-                binding?.launchMassFalconNineToggle?.id -> RocketType.FALCON_NINE
-                binding?.launchMassFalconHeavyToggle?.id -> RocketType.FALCON_HEAVY
+                binding.launchMassFalconOneToggle.id -> RocketType.FALCON_ONE
+                binding.launchMassFalconNineToggle.id -> RocketType.FALCON_NINE
+                binding.launchMassFalconHeavyToggle.id -> RocketType.FALCON_HEAVY
                 else -> null
             }
             presenter?.updateFilter(statsList)
         }
 
-        binding?.launchMassTypeChipGroup?.setOnCheckedChangeListener { _, checkedId ->
+        binding.launchMassTypeChipGroup.setOnCheckedChangeListener { _, checkedId ->
             filterType = when (checkedId) {
-                binding?.launchMassRocketToggle?.id -> LaunchMassViewType.ROCKETS
-                binding?.launchMassOrbitToggle?.id -> LaunchMassViewType.ORBIT
+                binding.launchMassRocketToggle.id -> LaunchMassViewType.ROCKETS
+                binding.launchMassOrbitToggle.id -> LaunchMassViewType.ORBIT
                 else -> null
             }
             presenter?.updateFilter(statsList)
@@ -105,12 +102,12 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
 
         keyAdapter = StatisticsKeyAdapter(context, keys, true)
 
-        binding?.statisticsBarChart?.recycler?.apply {
+        binding.statisticsBarChart.recycler.apply {
             layoutManager = LinearLayoutManager(this@LaunchMassFragment.context)
             adapter = keyAdapter
         }
 
-        binding?.statisticsBarChart?.barChart?.apply {
+        binding.statisticsBarChart.barChart.apply {
             setup()
 
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
@@ -120,9 +117,9 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
 
                         keys.clear()
 
-                        binding?.statisticsBarChart?.key?.visibility = View.VISIBLE
+                        binding.statisticsBarChart.key.visibility = View.VISIBLE
 
-                        binding?.statisticsBarChart?.year?.text = stats.year.toString()
+                        binding.statisticsBarChart.year.text = stats.year.toString()
 
                         when (filterType) {
                             LaunchMassViewType.ROCKETS -> {
@@ -156,7 +153,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
                 }
 
                 override fun onNothingSelected() {
-                    binding?.statisticsBarChart?.key?.visibility = View.GONE
+                    binding.statisticsBarChart.key.visibility = View.GONE
 
                     keys.clear()
                     keyAdapter.notifyDataSetChanged()
@@ -175,7 +172,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        binding = null
+        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -185,8 +182,8 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.filter -> {
-            binding?.statisticsBarChart?.key?.visibility = View.GONE
-            binding?.statisticsBarChart?.barChart?.apply {
+            binding.statisticsBarChart.key.visibility = View.GONE
+            binding.statisticsBarChart.barChart.apply {
                 onTouchListener.setLastHighlighted(null)
                 highlightValues(null)
             }
@@ -194,6 +191,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
             true
         }
         R.id.reload -> {
+            apiState = ApiState.PENDING
             statsList.clear()
             presenter?.getOrUpdate(null)
             true
@@ -202,9 +200,10 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
     }
 
     override fun update(data: Any, response: List<LaunchMassStatsModel>) {
+        apiState = ApiState.SUCCESS
         if (statsList.isEmpty()) statsList.addAll(response)
 
-        binding?.statisticsBarChart?.key?.visibility = View.GONE
+        binding.statisticsBarChart.key.visibility = View.GONE
 
         val colors = ArrayList<Int>()
 
@@ -319,7 +318,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
         val dataSets = ArrayList<IBarDataSet>()
         dataSets.add(set)
 
-        binding?.statisticsBarChart?.barChart?.apply {
+        binding.statisticsBarChart.barChart.apply {
             onTouchListener.setLastHighlighted(null)
             highlightValues(null)
             if (data == true) animateY(400, Easing.Linear)
@@ -352,7 +351,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
     )
 
     override fun showFilter(filterVisible: Boolean) {
-        binding?.launchMassFilterConstraint?.apply {
+        binding.launchMassFilterConstraint.apply {
             when (filterVisible) {
                 true -> {
                     visibility = View.VISIBLE
@@ -365,7 +364,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
             }
         }
 
-        binding?.launchMassFilterTint?.apply {
+        binding.launchMassFilterTint.apply {
             when (filterVisible) {
                 true -> {
                     visibility = View.VISIBLE
@@ -382,18 +381,21 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
     }
 
     override fun showProgress() {
-        binding?.progress?.show()
+        binding.toolbarLayout.progress.show()
     }
 
     override fun hideProgress() {
-        binding?.progress?.hide()
+        binding.toolbarLayout.progress.hide()
+    }
+
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (statsList.isEmpty() || it.progress.isShown) presenter?.getOrUpdate(null)
-            }
+        when(apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.getOrUpdate(null)
+            ApiState.SUCCESS -> {}
         }
     }
 }

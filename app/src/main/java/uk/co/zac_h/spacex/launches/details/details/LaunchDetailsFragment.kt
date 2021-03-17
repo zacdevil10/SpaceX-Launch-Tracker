@@ -7,25 +7,25 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.view.*
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
 import uk.co.zac_h.spacex.model.spacex.DatePrecision
 import uk.co.zac_h.spacex.model.spacex.Launch
+import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 
 class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetailsView {
 
-    override var title: String = "Launch Details"
+    override var title: String = ""
 
-    private var binding: FragmentLaunchDetailsBinding? = null
+    private var _binding: FragmentLaunchDetailsBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: LaunchDetailsContract.LaunchDetailsPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
@@ -56,8 +56,8 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        launch =
-            savedInstanceState?.getParcelable(LAUNCH_KEY) ?: arguments?.getParcelable(LAUNCH_KEY_SHORT)
+        launch = savedInstanceState?.getParcelable(LAUNCH_KEY)
+            ?: arguments?.getParcelable(LAUNCH_KEY_SHORT)
         id = arguments?.getString(ID_KEY)
     }
 
@@ -66,13 +66,11 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchDetailsBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        hideProgress()
 
         pinnedSharedPreferences = PinnedSharedPreferencesHelperImpl(
             context?.getSharedPreferences(
@@ -81,12 +79,17 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
             )
         )
 
-        presenter =
-            LaunchDetailsPresenterImpl(
-                this,
-                pinnedSharedPreferences,
-                LaunchDetailsInteractorImpl()
-            )
+        presenter = LaunchDetailsPresenterImpl(
+            this,
+            pinnedSharedPreferences,
+            LaunchDetailsInteractorImpl()
+        )
+
+        binding.swipeRefresh.setOnRefreshListener {
+            apiState = ApiState.PENDING
+
+            launch?.let { presenter?.get(it.id) } ?: id?.let { presenter?.get(it) }
+        }
 
         launch?.let {
             presenter?.addLaunchModel(it, true)
@@ -105,15 +108,13 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        binding = null
+        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(
             if (launch?.id?.let { presenter?.isPinned(it) } ?: launch?.id?.let {
-                    presenter?.isPinned(
-                        it
-                    )
+                    presenter?.isPinned(it)
                 } == true) {
                 R.menu.menu_details_alternate
             } else {
@@ -140,12 +141,11 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
     }
 
     override fun update(data: Any, response: Launch?) {
+        apiState = ApiState.SUCCESS
         response?.let {
             if (data as Boolean) launch = response
 
-            (activity as MainActivity).supportActionBar?.title = it.missionName
-
-            binding?.apply {
+            with(binding) {
                 Glide.with(this@LaunchDetailsFragment)
                     .load(it.links?.missionPatch?.patchSmall)
                     .error(context?.let { context ->
@@ -278,22 +278,20 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 
-    override fun showProgress() {
-        binding?.progress?.show()
-    }
-
-    override fun hideProgress() {
-        binding?.progress?.hide()
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding.swipeRefresh.isRefreshing = isRefreshing
     }
 
     override fun showError(error: String) {
-        Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+        apiState = ApiState.FAILED
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            if (launch == null) launch?.id?.let {
-                presenter?.get(it)
+        when (apiState) {
+            ApiState.PENDING, ApiState.FAILED -> launch?.let {
+                presenter?.get(it.id)
+            } ?: id?.let { presenter?.get(it) }
+            ApiState.SUCCESS -> {
             }
         }
     }

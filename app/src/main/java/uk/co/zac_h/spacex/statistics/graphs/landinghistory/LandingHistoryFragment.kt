@@ -3,10 +3,6 @@ package uk.co.zac_h.spacex.statistics.graphs.landinghistory
 import android.os.Bundle
 import android.view.*
 import androidx.core.view.doOnPreDraw
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.BarData
@@ -19,20 +15,22 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLandingHistoryBinding
+import uk.co.zac_h.spacex.statistics.adapters.Statistics
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
+import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.LandingHistoryModel
 
 class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<LandingHistoryModel>> {
 
-    override var title: String = "Landing History"
+    override val title: String by lazy { Statistics.LANDING_HISTORY.title }
 
-    private var binding: FragmentLandingHistoryBinding? = null
+    private var _binding: FragmentLandingHistoryBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: NetworkInterface.Presenter<List<LandingHistoryModel>?>? = null
 
@@ -56,7 +54,7 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLandingHistoryBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,24 +63,21 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
+        (activity as MainActivity).setSupportActionBar(binding.toolbarLayout.toolbar)
+        binding.toolbarLayout.toolbar.setup()
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
-
-        binding?.landingHistoryConstraint?.transitionName = heading
-
-        hideProgress()
+        binding.landingHistoryConstraint.transitionName = heading
 
         presenter = LandingHistoryPresenter(this, LandingHistoryInteractor())
 
         keyAdapter = StatisticsKeyAdapter(context, keys, false)
 
-        binding?.statisticsBarChart?.recycler?.apply {
+        binding.statisticsBarChart.recycler.apply {
             layoutManager = LinearLayoutManager(this@LandingHistoryFragment.context)
             adapter = keyAdapter
         }
 
-        binding?.statisticsBarChart?.barChart?.apply {
+        binding.statisticsBarChart.barChart.apply {
             setup()
 
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
@@ -92,7 +87,7 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
 
                         keys.clear()
 
-                        binding?.apply {
+                        binding.apply {
                             statisticsBarChart.key.visibility = View.VISIBLE
 
                             statisticsBarChart.year.text = stats.year.toString()
@@ -111,7 +106,7 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
                 }
 
                 override fun onNothingSelected() {
-                    binding?.statisticsBarChart?.key?.visibility = View.GONE
+                    binding.statisticsBarChart.key.visibility = View.GONE
                     keys.clear()
                     keyAdapter.notifyDataSetChanged()
                 }
@@ -128,7 +123,7 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding = null
+        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -138,6 +133,7 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.reload -> {
+            apiState = ApiState.PENDING
             statsList.clear()
             presenter?.getOrUpdate(null)
             true
@@ -146,6 +142,7 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
     }
 
     override fun update(data: Any, response: List<LandingHistoryModel>) {
+        apiState = ApiState.SUCCESS
         if (statsList.isEmpty()) statsList.addAll(response)
 
         val colors = ArrayList<Int>()
@@ -185,7 +182,7 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
         val dataSets = ArrayList<IBarDataSet>()
         dataSets.add(set)
 
-        binding?.statisticsBarChart?.barChart?.apply {
+        binding.statisticsBarChart.barChart.apply {
             if (data == true) animateY(400, Easing.Linear)
             xAxis.labelCount = response.size
             axisLeft.apply {
@@ -200,18 +197,21 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
     }
 
     override fun showProgress() {
-        binding?.progress?.show()
+        binding.toolbarLayout.progress.show()
     }
 
     override fun hideProgress() {
-        binding?.progress?.hide()
+        binding.toolbarLayout.progress.hide()
+    }
+
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (statsList.isEmpty() || it.progress.isShown) presenter?.getOrUpdate(null)
-            }
+        when(apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.getOrUpdate(null)
+            ApiState.SUCCESS -> {}
         }
     }
 }
