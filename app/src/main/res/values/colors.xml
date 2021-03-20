@@ -34,4 +34,7 @@
 
     <color name="ocean">#29b6f6</color>
     <color name="landscape">#9ccc65</color>
+
+    <color name="color_primary_translucent">#819ca9</color>
+
 </resources>
