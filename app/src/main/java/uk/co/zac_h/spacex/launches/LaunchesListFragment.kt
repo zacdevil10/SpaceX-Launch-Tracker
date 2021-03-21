@@ -137,14 +137,6 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
         binding?.launchesRecycler?.scheduleLayoutAnimation()
     }
 
-    override fun showProgress() {
-
-    }
-
-    override fun hideProgress() {
-
-    }
-
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
         binding?.swipeRefresh?.isRefreshing = isRefreshing
     }

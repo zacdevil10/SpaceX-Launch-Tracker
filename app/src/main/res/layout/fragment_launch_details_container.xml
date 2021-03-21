@@ -5,30 +5,26 @@
     android:id="@+id/fragment_launch_details_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_background"
     tools:context=".launches.details.LaunchDetailsContainerFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include
-            android:id="@+id/toolbar_layout"
-            layout="@layout/toolbar_progress" />
+        <include layout="@layout/toolbar_progress" />
 
         <TextView
             android:id="@+id/launch_details_countdown_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color_background"
-            android:elevation="@dimen/toolbar_elevation"
             android:letterSpacing="0.1"
             android:paddingTop="@dimen/small_margin"
             android:paddingBottom="@dimen/small_margin"
             android:textAlignment="center"
             android:textAppearance="?textAppearanceHeadline4"
             android:textColor="?colorSecondary"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
+            app:layout_constraintTop_toBottomOf="@id/app_bar"
             tools:text="T-43:13:23:55" />
 
         <androidx.fragment.app.FragmentContainerView

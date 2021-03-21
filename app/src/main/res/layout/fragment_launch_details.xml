@@ -6,9 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/color_background"
-    tools:context=".launches.details.details.LaunchDetailsFragment"
-    tools:ignore="Overdraw">
+    tools:context=".launches.details.details.LaunchDetailsFragment">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/launch_details_scroll_view"
@@ -125,33 +123,30 @@
                 android:id="@+id/launch_details_button_bar_main"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginTop="@dimen/small_margin"
-                android:layout_marginEnd="@dimen/medium_margin"
+                android:paddingStart="@dimen/medium_margin"
+                android:paddingEnd="@dimen/medium_margin"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
+                android:clipToPadding="false"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/launch_details_site_name_label">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/launch_details_watch_button"
-                    style="?attr/materialButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:insetBottom="0dp"
                     android:text="@string/watch_label"
-                    android:textAppearance="?textAppearanceBody2"
                     app:icon="@drawable/ic_play_arrow_black_24dp"
                     app:iconGravity="textStart" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/launch_details_calendar_button"
-                    style="?attr/materialButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:insetTop="0dp"
                     android:text="@string/create_event_label"
-                    android:textAppearance="?textAppearanceBody2"
                     app:icon="@drawable/ic_calendar_plus"
                     app:iconGravity="textStart" />
 
@@ -173,14 +168,12 @@
 
             <Button
                 android:id="@+id/launch_details_press_kit_button"
-                style="?attr/materialButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
                 android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginTop="@dimen/small_margin"
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:text="@string/press_kit_label"
-                android:textAppearance="?textAppearanceBody2"
                 app:icon="@drawable/ic_assignment_black_24dp"
                 app:iconGravity="textStart"
                 app:iconTint="@color/color_on_primary"
@@ -188,13 +181,11 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/launch_details_wiki_button"
-                style="?attr/materialButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
                 android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:text="@string/wikipedia_label"
-                android:textAppearance="?textAppearanceBody2"
                 app:icon="@drawable/wikipedia"
                 app:iconGravity="textStart"
                 app:iconPadding="0dp"
@@ -207,7 +198,6 @@
                 android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:text="@string/campaign_label"
-                android:textAppearance="?textAppearanceBody2"
                 app:icon="@drawable/reddit"
                 app:iconGravity="textStart"
                 app:layout_constraintTop_toBottomOf="@id/launch_details_wiki_button" />
@@ -220,7 +210,6 @@
                 android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:text="@string/launch_label"
-                android:textAppearance="?textAppearanceBody2"
                 app:icon="@drawable/reddit"
                 app:iconGravity="textStart"
                 app:layout_constraintTop_toBottomOf="@id/launch_details_campaign_button" />
@@ -233,7 +222,6 @@
                 android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:text="@string/media_label"
-                android:textAppearance="?textAppearanceBody2"
                 app:icon="@drawable/reddit"
                 app:iconGravity="textStart"
                 app:layout_constraintTop_toBottomOf="@id/launch_details_launch_button" />

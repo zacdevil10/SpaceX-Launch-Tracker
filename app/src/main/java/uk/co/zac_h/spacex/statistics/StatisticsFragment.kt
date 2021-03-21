@@ -10,6 +10,7 @@ import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentStatisticsBinding
+import uk.co.zac_h.spacex.databinding.ToolbarProgressBinding
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsAdapter
 
 class StatisticsFragment : BaseFragment(), StatisticsContract.View {
@@ -25,6 +26,7 @@ class StatisticsFragment : BaseFragment(), StatisticsContract.View {
         savedInstanceState: Bundle?
     ): View = FragmentStatisticsBinding.inflate(inflater, container, false).apply {
         _binding = this
+        _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -33,8 +35,8 @@ class StatisticsFragment : BaseFragment(), StatisticsContract.View {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        binding.toolbarLayout.progress.hide()
-        binding.toolbarLayout.toolbar.setup()
+        toolbarBinding.progress.hide()
+        toolbarBinding.toolbar.setup()
 
         binding.statisticsRecycler.apply {
             layoutManager = LinearLayoutManager(this@StatisticsFragment.context)

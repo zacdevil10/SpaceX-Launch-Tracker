@@ -10,6 +10,7 @@ import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentCapsuleDetailsBinding
+import uk.co.zac_h.spacex.databinding.ToolbarProgressBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
 import uk.co.zac_h.spacex.model.spacex.Capsule
 import uk.co.zac_h.spacex.utils.*
@@ -36,6 +37,7 @@ class CapsuleDetailsFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View = FragmentCapsuleDetailsBinding.inflate(inflater, container, false).apply {
         binding = this
+        _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -46,7 +48,7 @@ class CapsuleDetailsFragment : BaseFragment() {
 
         with(binding) {
             title = capsule?.serial ?: requireContext().getString(R.string.detail_capsule)
-            toolbarLayout.toolbar.setup()
+            toolbarBinding.toolbar.setup()
 
             capsuleDetailsConstraint.transitionName = capsule?.id
 
@@ -74,8 +76,8 @@ class CapsuleDetailsFragment : BaseFragment() {
                     adapter = MissionsAdapter(context, launches)
                 }
             } ?: run { capsuleDetailsMissionLabel.visibility = View.GONE }
-
-            toolbarLayout.progress.hide()
         }
+
+        toolbarBinding.progress.hide()
     }
 }

@@ -18,8 +18,6 @@ class LaunchesFragment : BaseFragment() {
 
     private var _binding: FragmentLaunchesBinding? = null
     private val binding get() = _binding!!
-    private var _toolbarBinding: ToolbarTabBinding? = null
-    private val toolbarBinding get() = _toolbarBinding!!
 
     private val fragments: List<BaseFragment> = listOf(
         LaunchesListFragment.newInstance("upcoming"),
@@ -31,8 +29,8 @@ class LaunchesFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchesBinding.inflate(inflater, container, false).apply {
-        _toolbarBinding = ToolbarTabBinding.bind(this.root)
         _binding = this
+        _toolbarTabBinding = ToolbarTabBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -40,8 +38,10 @@ class LaunchesFragment : BaseFragment() {
 
         postponeEnterTransition()
 
-        (activity as MainActivity).setSupportActionBar(toolbarBinding.toolbar)
-        toolbarBinding.toolbar.setup()
+        toolbarTabBinding.toolbar.apply {
+            setSupportActionBar()
+            setup()
+        }
 
         binding.launchesViewPager.adapter = ViewPagerAdapter(childFragmentManager, fragments)
 
@@ -50,7 +50,7 @@ class LaunchesFragment : BaseFragment() {
             R.drawable.ic_history_black_24dp
         )
 
-        toolbarBinding.tabLayout.apply {
+        toolbarTabBinding.tabLayout.apply {
             setupWithViewPager(binding.launchesViewPager)
             for (position in 0..tabCount) {
                 getTabAt(position)?.setIcon(tabIcons[position])

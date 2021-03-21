@@ -17,6 +17,7 @@ import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
 import uk.co.zac_h.spacex.databinding.ListItemDashboardLaunchBinding
+import uk.co.zac_h.spacex.databinding.ToolbarProgressBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.utils.*
@@ -69,13 +70,14 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
         savedInstanceState: Bundle?
     ): View = FragmentDashboardBinding.inflate(inflater, container, false).apply {
         _binding = this
+        _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbarLayout.progress.hide()
-        binding.toolbarLayout.toolbar.apply {
+        toolbarBinding.progress.hide()
+        toolbarBinding.toolbar.apply {
             setSupportActionBar()
             setup()
         }

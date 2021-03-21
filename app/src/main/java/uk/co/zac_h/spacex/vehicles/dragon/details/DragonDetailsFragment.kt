@@ -23,9 +23,6 @@ class DragonDetailsFragment : BaseFragment() {
     private var _binding: FragmentDragonDetailsBinding? = null
     private val binding get() = _binding!!
 
-    private var _toolbarBinding: CollapsingToolbarBinding? = null
-    private val toolbarBinding get() = _toolbarBinding!!
-
     private var dragon: Dragon? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,13 +39,13 @@ class DragonDetailsFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View = FragmentDragonDetailsBinding.inflate(inflater, container, false).apply {
         _binding = this
-        _toolbarBinding = CollapsingToolbarBinding.bind(this.root)
+        _collapsingToolbarBinding = CollapsingToolbarBinding.bind(this.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
+        setup(collapsingToolbarBinding.toolbar, collapsingToolbarBinding.toolbarLayout)
 
         title = dragon?.name ?: title
 
@@ -59,7 +56,7 @@ class DragonDetailsFragment : BaseFragment() {
                 Glide.with(view)
                     .load(it.flickr?.random())
                     .error(R.drawable.ic_baseline_error_outline_24)
-                    .into(toolbarBinding.header)
+                    .into(collapsingToolbarBinding.header)
 
                 dragonDetailsText.text = it.description
 

@@ -24,7 +24,6 @@ class VehiclesFragment : BaseFragment() {
     override var title: String = "Vehicles"
 
     private lateinit var binding: FragmentVehiclesBinding
-    private lateinit var toolbarLayout: ToolbarTabBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +35,7 @@ class VehiclesFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentVehiclesBinding.inflate(inflater, container, false).apply {
-        toolbarLayout = ToolbarTabBinding.bind(this.root)
+        _toolbarTabBinding = ToolbarTabBinding.bind(this.root)
         binding = this
     }.root
 
@@ -51,8 +50,10 @@ class VehiclesFragment : BaseFragment() {
             CapsulesFragment()
         )
 
-        (activity as MainActivity).setSupportActionBar(toolbarLayout.toolbar)
-        toolbarLayout.toolbar.setupWithTabLayout(toolbarLayout.tabLayout, TabLayout.MODE_SCROLLABLE)
+        toolbarTabBinding.toolbar.apply {
+            setSupportActionBar()
+            setupWithTabLayout(toolbarTabBinding.tabLayout, TabLayout.MODE_SCROLLABLE)
+        }
 
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
@@ -69,7 +70,7 @@ class VehiclesFragment : BaseFragment() {
             R.drawable.ic_dragon
         )
 
-        toolbarLayout.tabLayout.apply {
+        toolbarTabBinding.tabLayout.apply {
             setupWithViewPager(binding.vehiclesViewPager)
             for (position in 0..tabCount) {
                 getTabAt(position)?.setIcon(tabIcons[position])

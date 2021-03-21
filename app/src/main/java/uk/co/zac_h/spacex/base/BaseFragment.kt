@@ -13,11 +13,23 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.tabs.TabLayout
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.databinding.CollapsingToolbarBinding
+import uk.co.zac_h.spacex.databinding.ToolbarProgressBinding
+import uk.co.zac_h.spacex.databinding.ToolbarTabBinding
 import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 abstract class BaseFragment : Fragment(),
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
+
+    var _toolbarBinding: ToolbarProgressBinding? = null
+    val toolbarBinding get() = _toolbarBinding!!
+
+    var _toolbarTabBinding: ToolbarTabBinding? = null
+    val toolbarTabBinding get() = _toolbarTabBinding!!
+
+    var _collapsingToolbarBinding: CollapsingToolbarBinding? = null
+    val collapsingToolbarBinding get() = _collapsingToolbarBinding!!
 
     abstract val title: String
 

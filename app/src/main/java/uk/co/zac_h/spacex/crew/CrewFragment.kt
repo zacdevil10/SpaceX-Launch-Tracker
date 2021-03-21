@@ -14,6 +14,7 @@ import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewBinding
+import uk.co.zac_h.spacex.databinding.ToolbarProgressBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
@@ -46,6 +47,7 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
         savedInstanceState: Bundle?
     ): View = FragmentCrewBinding.inflate(inflater, container, false).apply {
         _binding = this
+        _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,7 +57,7 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
             binding.root.doOnPreDraw { startPostponedEnterTransition() }
         }
 
-        binding.toolbarLayout.toolbar.setup()
+        toolbarBinding.toolbar.setup()
 
         presenter = CrewPresenterImpl(this, CrewInteractorImpl())
 
@@ -127,11 +129,11 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
     }
 
     override fun showProgress() {
-        binding.toolbarLayout.progress.show()
+        toolbarBinding.progress.show()
     }
 
     override fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
+        toolbarBinding.progress.hide()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {

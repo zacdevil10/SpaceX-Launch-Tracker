@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_layout">
+        app:layout_constraintTop_toBottomOf="@id/app_bar">
 
         <include
             android:id="@+id/statistics_bar_chart"
@@ -27,7 +27,7 @@
         android:background="#68000000"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_layout" />
+        app:layout_constraintTop_toBottomOf="@id/app_bar" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/launch_mass_filter_constraint"
@@ -39,7 +39,7 @@
         android:focusable="true"
         android:padding="@dimen/medium_margin"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_layout">
+        app:layout_constraintTop_toBottomOf="@id/app_bar">
 
         <TextView
             android:id="@+id/launch_mass_filters_text"
@@ -70,21 +70,21 @@
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/launch_mass_falcon_one_toggle"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/falcon_1" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/launch_mass_falcon_nine_toggle"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/falcon_9" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/launch_mass_falcon_heavy_toggle"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/falcon_heavy" />
@@ -123,7 +123,7 @@
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/launch_mass_rocket_toggle"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:checked="true"
@@ -131,7 +131,7 @@
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/launch_mass_orbit_toggle"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/orbits_label" />
@@ -142,8 +142,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include
-        android:id="@+id/toolbar_layout"
-        layout="@layout/toolbar_progress" />
+    <include layout="@layout/toolbar_progress" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
