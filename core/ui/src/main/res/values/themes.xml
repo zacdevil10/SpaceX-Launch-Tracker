@@ -26,6 +26,12 @@
         <item name="navigationViewStyle">@style/Widget.AppTheme.NavigationView</item>
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.PrimarySurface</item>
         <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
+        <item name="materialButtonStyle">@style/Widget.AppTheme.MaterialButton</item>
+        <item name="bottomNavigationStyle">@style/Widget.AppTheme.BottomNavigationView</item>
+
+        <item name="colorNavigationItem">@color/menu_item_color_state</item>
+        <item name="colorNavigationItemSelected">@color/color_secondary</item>
+        <item name="drawableNavigationItemBackground">@drawable/menu_background_color_state</item>
     </style>
 
     <style name="Base.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
