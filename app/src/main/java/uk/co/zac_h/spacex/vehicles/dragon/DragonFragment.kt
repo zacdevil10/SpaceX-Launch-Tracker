@@ -77,7 +77,7 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
         dragonArray.clear()
         dragonArray.addAll(response)
 
-        binding.dragonRecycler.layoutAnimation = animateLayoutFromBottom(context)
+        binding.dragonRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
         dragonAdapter.notifyDataSetChanged()
         binding.dragonRecycler.scheduleLayoutAnimation()
     }

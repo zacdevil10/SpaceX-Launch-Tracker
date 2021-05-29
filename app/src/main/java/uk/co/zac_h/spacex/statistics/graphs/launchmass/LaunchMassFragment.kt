@@ -99,10 +99,10 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
             presenter?.updateFilter(statsList)
         }
 
-        keyAdapter = StatisticsKeyAdapter(context, keys, true)
+        keyAdapter = StatisticsKeyAdapter(requireContext(), keys, true)
 
         binding.statisticsBarChart.recycler.apply {
-            layoutManager = LinearLayoutManager(this@LaunchMassFragment.context)
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = keyAdapter
         }
 

@@ -88,7 +88,7 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
         apiState = ApiState.SUCCESS
 
         cores.clearAndAdd(response)
-        binding.launchDetailsCoresRecycler.layoutAnimation = animateLayoutFromBottom(context)
+        binding.launchDetailsCoresRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
         coresAdapter.notifyDataSetChanged()
         binding.launchDetailsCoresRecycler.scheduleLayoutAnimation()
     }

@@ -9,7 +9,7 @@ import uk.co.zac_h.spacex.databinding.ListItemCrewMissionBinding
 import uk.co.zac_h.spacex.model.spacex.Launch
 
 class CrewMissionsAdapter(
-    private val context: Context?,
+    private val context: Context,
     private val launches: List<Launch>
 ) : RecyclerView.Adapter<CrewMissionsAdapter.ViewHolder>() {
 
@@ -28,7 +28,7 @@ class CrewMissionsAdapter(
         holder.binding.apply {
             listItemCrewMissionNameText.text = launch.missionName
             listItemCrewMissionFlightText.text =
-                context?.getString(R.string.flight_number, launch.flightNumber)
+                context.getString(R.string.flight_number, launch.flightNumber)
         }
     }
 

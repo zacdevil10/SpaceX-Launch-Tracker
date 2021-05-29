@@ -52,15 +52,15 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
 
         hideProgress()
 
-        orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(context)
+        orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(requireContext())
         presenter = CorePresenterImpl(this, CoreInteractorImpl())
 
         sortNew = orderSharedPreferences.isSortedNew("cores")
 
-        coreAdapter = CoreAdapter(context, coresArray)
+        coreAdapter = CoreAdapter(requireContext(), coresArray)
 
         binding.coreRecycler.apply {
-            layoutManager = LinearLayoutManager(this@CoreFragment.context)
+            layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = coreAdapter
         }
@@ -132,7 +132,7 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
         coresArray.clear()
         coresArray.addAll(if (sortNew) response.reversed() else response)
 
-        binding.coreRecycler.layoutAnimation = animateLayoutFromBottom(context)
+        binding.coreRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
         coreAdapter.notifyDataSetChanged()
         binding.coreRecycler.scheduleLayoutAnimation()
     }

@@ -69,10 +69,10 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
 
         presenter = FairingRecoveryPresenter(this, FairingRecoveryInteractor())
 
-        keyAdapter = StatisticsKeyAdapter(context, keys, false)
+        keyAdapter = StatisticsKeyAdapter(requireContext(), keys, false)
 
         binding.statisticsBarChart.recycler.apply {
-            layoutManager = LinearLayoutManager(this@FairingRecoveryFragment.context)
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = keyAdapter
         }
 

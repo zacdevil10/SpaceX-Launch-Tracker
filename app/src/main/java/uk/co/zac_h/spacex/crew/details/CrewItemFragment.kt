@@ -65,11 +65,11 @@ class CrewItemFragment : Fragment() {
 
                 addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                     override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                        context?.theme?.resolveAttribute(
+                        requireContext().theme.resolveAttribute(
                             android.R.attr.actionBarSize,
                             typedVal,
                             true
-                        )?.let {
+                        ).let {
                             val actionBarHeight = TypedValue.complexToDimensionPixelSize(
                                 typedVal.data,
                                 requireContext().resources.displayMetrics

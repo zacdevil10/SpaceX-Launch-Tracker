@@ -30,7 +30,7 @@ class AboutFragment : BaseFragment() {
             toolbarLayout.progress.hide()
 
             aboutVersion.text =
-                context?.getString(R.string.version_name, BuildConfig.VERSION_NAME)
+                requireContext().getString(R.string.version_name, BuildConfig.VERSION_NAME)
         }
     }
 }

@@ -74,20 +74,20 @@ class DragonDetailsFragment : BaseFragment() {
 
                 dragonDetailsCrewCapacityText.text = it.crewCapacity.toString()
                 dragonDetailsFirstFlightText.text = it.firstFlight
-                dragonDetailsDryMassText.text = context?.getString(
+                dragonDetailsDryMassText.text = requireContext().getString(
                     R.string.mass_formatted,
                     it.dryMass?.kg,
                     it.dryMass?.lb
                 )
                 it.heightWithTrunk?.let { heightWithTrunk ->
-                    dragonDetailsHeightText.text = context?.getString(
+                    dragonDetailsHeightText.text = requireContext().getString(
                         R.string.measurements,
                         heightWithTrunk.meters?.metricFormat(),
                         heightWithTrunk.feet?.metricFormat()
                     )
                 }
                 it.diameter?.let { diameter ->
-                    dragonDetailsDiameterText.text = context?.getString(
+                    dragonDetailsDiameterText.text = requireContext().getString(
                         R.string.measurements,
                         diameter.meters?.metricFormat(),
                         diameter.feet?.metricFormat()
@@ -101,15 +101,15 @@ class DragonDetailsFragment : BaseFragment() {
                     it.heatShield?.temp.toString() //TODO: Format with units
 
                 dragonDetailsThrusterRecycler.apply {
-                    layoutManager = LinearLayoutManager(this@DragonDetailsFragment.context)
+                    layoutManager = LinearLayoutManager(requireContext())
                     setHasFixedSize(true)
                     adapter = it.thrusters?.let { thrusters ->
-                        DragonThrusterAdapter(this@DragonDetailsFragment.context, thrusters)
+                        DragonThrusterAdapter(requireContext(), thrusters)
                     }
                 }
 
                 it.launchPayloadMass?.let { launchPayloadMass ->
-                    dragonDetailsLaunchMassText.text = context?.getString(
+                    dragonDetailsLaunchMassText.text = requireContext().getString(
                         R.string.mass_formatted,
                         launchPayloadMass.kg,
                         launchPayloadMass.lb
@@ -117,7 +117,7 @@ class DragonDetailsFragment : BaseFragment() {
                 }
 
                 it.returnPayloadMass?.let { returnPayloadMass ->
-                    dragonDetailsReturnMassText.text = context?.getString(
+                    dragonDetailsReturnMassText.text = requireContext().getString(
                         R.string.mass_formatted,
                         returnPayloadMass.kg,
                         returnPayloadMass.lb
@@ -125,7 +125,7 @@ class DragonDetailsFragment : BaseFragment() {
                 }
 
                 it.launchPayloadVolume?.let { launchPayloadVolume ->
-                    dragonDetailsLaunchVolText.text = context?.getString(
+                    dragonDetailsLaunchVolText.text = requireContext().getString(
                         R.string.volume_formatted,
                         launchPayloadVolume.cubicMeters?.metricFormat(),
                         launchPayloadVolume.cubicFeet?.metricFormat()
@@ -133,7 +133,7 @@ class DragonDetailsFragment : BaseFragment() {
                 }
 
                 it.returnPayloadVol?.let { returnPayloadVol ->
-                    dragonDetailsReturnVolText.text = context?.getString(
+                    dragonDetailsReturnVolText.text = requireContext().getString(
                         R.string.volume_formatted,
                         returnPayloadVol.cubicMeters?.metricFormat(),
                         returnPayloadVol.cubicFeet?.metricFormat()
@@ -141,7 +141,7 @@ class DragonDetailsFragment : BaseFragment() {
                 }
 
                 it.pressurizedCapsule?.payloadVolume?.let { payloadVolume ->
-                    dragonDetailsPressurizedVolText.text = context?.getString(
+                    dragonDetailsPressurizedVolText.text = requireContext().getString(
                         R.string.volume_formatted,
                         payloadVolume.cubicMeters?.metricFormat(),
                         payloadVolume.cubicFeet?.metricFormat()
@@ -149,7 +149,7 @@ class DragonDetailsFragment : BaseFragment() {
                 }
 
                 it.trunk?.trunkVolume?.let { trunkVolume ->
-                    dragonDetailsTrunkVolText.text = context?.getString(
+                    dragonDetailsTrunkVolText.text = requireContext().getString(
                         R.string.volume_formatted,
                         trunkVolume.cubicMeters?.metricFormat(),
                         trunkVolume.cubicFeet?.metricFormat()

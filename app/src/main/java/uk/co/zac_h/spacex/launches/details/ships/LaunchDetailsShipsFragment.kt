@@ -85,7 +85,7 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
 
         shipsArray.clearAndAdd(response)
 
-        binding.launchDetailsShipsRecycler.layoutAnimation = animateLayoutFromBottom(context)
+        binding.launchDetailsShipsRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
         shipsAdapter.notifyDataSetChanged()
         binding.launchDetailsShipsRecycler.scheduleLayoutAnimation()
     }

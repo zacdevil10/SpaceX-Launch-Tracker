@@ -112,7 +112,7 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
         apiState = ApiState.SUCCESS
         pads.clearAndAdd(response)
 
-        binding.padStatsLaunchSitesRecycler.layoutAnimation = animateLayoutFromBottom(context)
+        binding.padStatsLaunchSitesRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
         padsAdapter.notifyDataSetChanged()
         binding.padStatsLaunchSitesRecycler.scheduleLayoutAnimation()
     }

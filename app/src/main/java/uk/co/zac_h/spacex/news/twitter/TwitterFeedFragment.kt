@@ -49,8 +49,8 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
 
         presenter = TwitterFeedPresenterImpl(this, TwitterFeedInteractorImpl())
 
-        twitterAdapter = TwitterFeedAdapter(context, tweetsList, this)
-        val layout = LinearLayoutManager(this@TwitterFeedFragment.context)
+        twitterAdapter = TwitterFeedAdapter(requireContext(), tweetsList, this)
+        val layout = LinearLayoutManager(requireContext())
 
         binding.twitterFeedRecycler.apply {
             layoutManager = layout

@@ -52,7 +52,7 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
         with(binding) {
             response.headquarters?.let {
                 companyAddress.text =
-                    context?.getString(R.string.address, it.address, it.city, it.state)
+                    requireContext().getString(R.string.address, it.address, it.city, it.state)
             }
 
             companyWebsite.setOnClickListener { openWebLink(response.website) }
@@ -61,7 +61,7 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
 
             companySummary.text = response.summary
             companyFounded.text =
-                context?.getString(R.string.founded, response.founder, response.founded)
+                requireContext().getString(R.string.founded, response.founder, response.founded)
             companyCeo.text = response.ceo
             companyCto.text = response.cto
             companyCoo.text = response.coo

@@ -53,7 +53,7 @@ class HistoryFragment : BaseFragment(), HistoryView {
             setup()
         }
 
-        orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(context)
+        orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(requireContext())
         presenter = HistoryPresenterImpl(this, HistoryInteractorImpl())
 
         sortNew = orderSharedPreferences.isSortedNew(HISTORY_KEY)

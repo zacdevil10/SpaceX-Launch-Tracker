@@ -131,7 +131,7 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
         launches.addAll(response)
 
 
-        binding.launchesRecycler.layoutAnimation = animateLayoutFromBottom(context)
+        binding.launchesRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
         launchesAdapter.notifyDataSetChanged()
         binding.launchesRecycler.scheduleLayoutAnimation()
     }

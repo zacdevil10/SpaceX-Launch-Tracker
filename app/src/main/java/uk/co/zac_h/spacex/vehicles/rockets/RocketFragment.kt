@@ -75,7 +75,7 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
         rocketsArray.clear()
         rocketsArray.addAll(response)
 
-        binding.rocketRecycler.layoutAnimation = animateLayoutFromBottom(context)
+        binding.rocketRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
         rocketsAdapter.notifyDataSetChanged()
         binding.rocketRecycler.scheduleLayoutAnimation()
     }

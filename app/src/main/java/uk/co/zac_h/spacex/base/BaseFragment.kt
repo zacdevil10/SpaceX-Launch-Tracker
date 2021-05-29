@@ -33,18 +33,18 @@ abstract class BaseFragment : Fragment(),
         navController = NavHostFragment.findNavController(this)
         val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
         appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
+            AppBarConfiguration.Builder((requireContext().applicationContext as App).startDestinations)
                 .setOpenableLayout(drawerLayout).build()
     }
 
     override fun onStart() {
         super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+        (requireContext().applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
     override fun onStop() {
         super.onStop()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+        (requireContext().applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     fun Toolbar.setup() {
