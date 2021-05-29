@@ -13,8 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemCapsuleBinding
 import uk.co.zac_h.spacex.model.spacex.Capsule
-import java.util.*
-import kotlin.collections.ArrayList
 
 class CapsulesAdapter(private val capsules: ArrayList<Capsule>) :
     RecyclerView.Adapter<CapsulesAdapter.ViewHolder>(), Filterable {
@@ -71,9 +69,8 @@ class CapsulesAdapter(private val capsules: ArrayList<Capsule>) :
                             val filteredList = ArrayList<Capsule>()
                             capsules.forEach { capsule ->
                                 capsule.serial?.let { serial ->
-                                    if (serial.toLowerCase(Locale.getDefault()).contains(
-                                            search.toString().toLowerCase(Locale.getDefault())
-                                        )
+                                    if (serial.lowercase()
+                                            .contains(search.toString().lowercase())
                                     ) {
                                         filteredList.add(capsule)
                                     }

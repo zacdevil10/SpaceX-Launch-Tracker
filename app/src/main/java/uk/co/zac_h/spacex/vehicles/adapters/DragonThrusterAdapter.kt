@@ -8,7 +8,6 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemDragonThrusterBinding
 import uk.co.zac_h.spacex.model.spacex.DragonThrusterConfiguration
 import uk.co.zac_h.spacex.utils.metricFormat
-import java.util.*
 
 class DragonThrusterAdapter(
     private val context: Context?,
@@ -32,8 +31,10 @@ class DragonThrusterAdapter(
             listItemDragonThrusterTypeText.text = thruster.type
             listItemDragonThrusterAmountText.text = thruster.amount.toString()
             listItemDragonThrusterPodsText.text = thruster.pods.toString()
-            listItemDragonThrusterFuelOneText.text = thruster.fuelType1?.capitalize(Locale.ENGLISH)
-            listItemDragonThrusterFuelTwoText.text = thruster.fuelType2?.capitalize(Locale.ENGLISH)
+            listItemDragonThrusterFuelOneText.text =
+                thruster.fuelType1?.replaceFirstChar { it.uppercase() }
+            listItemDragonThrusterFuelTwoText.text =
+                thruster.fuelType2?.replaceFirstChar { it.uppercase() }
             listItemDragonThrusterThrustText.text = context?.getString(
                 R.string.thrust,
                 thruster.thrust?.kN?.metricFormat(),
