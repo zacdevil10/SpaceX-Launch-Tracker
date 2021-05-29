@@ -158,16 +158,17 @@ class TwitterFeedAdapter(
             urls.add(
                 when (tweetMedia.type) {
                     "photo" -> {
-                        tweetMedia.url?.let { url -> MediaModel(url, MediaType.IMAGE) }
-                            ?: return@forEach
+                        tweetMedia.url?.let { url ->
+                            MediaModel(url = url, type = MediaType.IMAGE_URL)
+                        } ?: return@forEach
                     }
                     "video", "animated_gif" -> {
                         tweetMedia.info?.variants?.get(bitratePosition)?.url?.let { static ->
                             tweetMedia.url?.let { url ->
                                 MediaModel(
-                                    static,
-                                    MediaType.VIDEO,
-                                    url
+                                    url = url,
+                                    static = static,
+                                    type = MediaType.VIDEO
                                 )
                             }
                         } ?: return@forEach
