@@ -23,17 +23,29 @@
         android:id="@+id/news_page_fragment"
         android:name="uk.co.zac_h.spacex.news.NewsFragment"
         app:enterAnim="@android:anim/fade_in"
-        tools:layout="@layout/fragment_news" />
+        tools:layout="@layout/fragment_news">
+
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="spacex://news" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/launches_page_fragment"
         android:name="uk.co.zac_h.spacex.launches.LaunchesFragment"
         app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_launches">
+
         <action
             android:id="@+id/action_launch_item_to_launch_details_container_fragment"
             app:destination="@id/launch_details_container_fragment"
             app:exitAnim="@android:anim/fade_out" />
+
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="spacex://launches" />
+
     </fragment>
 
     <fragment
@@ -41,10 +53,16 @@
         android:name="uk.co.zac_h.spacex.crew.CrewFragment"
         app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_crew">
+
         <action
             android:id="@+id/action_crew_fragment_to_crew_details_fragment"
             app:destination="@id/crew_detail_page_fragment"
             app:exitAnim="@android:anim/fade_out" />
+
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="spacex://crew" />
+
     </fragment>
 
     <fragment
@@ -57,6 +75,7 @@
         android:name="uk.co.zac_h.spacex.vehicles.VehiclesFragment"
         app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_vehicles">
+
         <action
             android:id="@+id/action_vehicles_page_fragment_to_rocket_details_fragment"
             app:destination="@id/rocket_details_fragment" />
@@ -76,6 +95,11 @@
             android:id="@+id/action_vehicles_page_fragment_to_core_details_fragment"
             app:destination="@id/core_details_fragment"
             app:exitAnim="@android:anim/fade_out" />
+
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="spacex://vehicles" />
+
     </fragment>
 
     <fragment
@@ -107,6 +131,11 @@
             android:id="@+id/action_statistics_fragment_to_pad_stats"
             app:destination="@id/pad_stats_fragment"
             app:exitAnim="@android:anim/fade_out" />
+
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="spacex://statistics" />
+
     </fragment>
 
     <fragment
@@ -143,20 +172,38 @@
         android:id="@+id/company_page_fragment"
         android:name="uk.co.zac_h.spacex.about.company.CompanyFragment"
         app:enterAnim="@android:anim/fade_in"
-        tools:layout="@layout/fragment_company" />
+        tools:layout="@layout/fragment_company">
+
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="spacex://about/company" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/history_page_fragment"
         android:name="uk.co.zac_h.spacex.about.history.HistoryFragment"
         app:enterAnim="@android:anim/fade_in"
         app:exitAnim="@android:anim/fade_out"
-        tools:layout="@layout/fragment_history" />
+        tools:layout="@layout/fragment_history">
+
+        <deepLink
+            android:id="@+id/historyLink"
+            app:uri="spacex://about/history" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/about_page_fragment"
         android:name="uk.co.zac_h.spacex.about.AboutFragment"
         app:enterAnim="@android:anim/fade_in"
-        tools:layout="@layout/fragment_about" />
+        tools:layout="@layout/fragment_about">
+
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="spacex://about/app" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/launch_details_container_fragment"
@@ -174,6 +221,15 @@
             android:id="@+id/action_crew_fragment_to_crew_details_fragment"
             app:destination="@id/crew_detail_page_fragment"
             app:exitAnim="@android:anim/fade_out" />
+
+        <deepLink
+            android:id="@+id/launchDetailsLink"
+            app:uri="spacex://launch_details={launch_id}" />
+
+        <argument
+            android:name="launch_id"
+            app:argType="string" />
+
     </fragment>
 
     <fragment
