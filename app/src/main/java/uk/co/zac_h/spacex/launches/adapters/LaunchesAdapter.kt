@@ -98,11 +98,9 @@ class LaunchesAdapter(
                         else -> {
                             val filteredList = ArrayList<Launch>()
                             launches.forEach { launch ->
-                                if (launch.missionName?.toLowerCase(Locale.getDefault()).toString()
+                                if (launch.missionName?.lowercase().toString()
                                         .contains(
-                                            it.toString().toLowerCase(
-                                                Locale.getDefault()
-                                            )
+                                            it.toString().lowercase()
                                         ) || launch.launchDate?.dateUnix?.formatDateMillisYYYY()
                                         .toString().contains(
                                             it
@@ -115,7 +113,7 @@ class LaunchesAdapter(
                                 }
 
                                 launch.rocket?.name?.let { rocketName ->
-                                    if (rocketName.toLowerCase(Locale.getDefault()).contains(s)) {
+                                    if (rocketName.lowercase().contains(s)) {
                                         filteredList.add(launch)
                                     }
                                 }

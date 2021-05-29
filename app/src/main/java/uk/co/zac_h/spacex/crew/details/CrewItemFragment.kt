@@ -25,7 +25,6 @@ import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_ACTIVE
 import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_INACTIVE
 import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_RETIRED
 import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_UNKNOWN
-import java.util.*
 import kotlin.math.roundToInt
 
 class CrewItemFragment : Fragment() {
@@ -122,7 +121,7 @@ class CrewItemFragment : Fragment() {
                     CrewStatus.INACTIVE -> SPACEX_CREW_STATUS_INACTIVE
                     CrewStatus.RETIRED -> SPACEX_CREW_STATUS_RETIRED
                     CrewStatus.UNKNOWN -> SPACEX_CREW_STATUS_UNKNOWN
-                }.capitalize(Locale.getDefault())
+                }.replaceFirstChar { it.uppercase() }
             }
             crewAgency.text = person?.agency
 

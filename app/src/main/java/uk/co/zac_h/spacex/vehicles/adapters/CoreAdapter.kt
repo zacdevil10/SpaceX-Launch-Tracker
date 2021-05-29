@@ -13,8 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemCoreBinding
 import uk.co.zac_h.spacex.model.spacex.Core
-import java.util.*
-import kotlin.collections.ArrayList
 
 class CoreAdapter(private val context: Context?, private val cores: ArrayList<Core>) :
     RecyclerView.Adapter<CoreAdapter.ViewHolder>(), Filterable {
@@ -75,11 +73,8 @@ class CoreAdapter(private val context: Context?, private val cores: ArrayList<Co
                             val filteredList = ArrayList<Core>()
                             cores.forEach { core ->
                                 core.serial?.let { serial ->
-                                    if (serial.toLowerCase(Locale.getDefault()).contains(
-                                            search.toString().toLowerCase(
-                                                Locale.getDefault()
-                                            )
-                                        )
+                                    if (serial.lowercase()
+                                            .contains(search.toString().lowercase())
                                     ) {
                                         filteredList.add(core)
                                     }
