@@ -20,11 +20,9 @@ class DragonDetailsFragment : BaseFragment() {
 
     override var title: String = "Dragon"
 
-    private var _binding: FragmentDragonDetailsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentDragonDetailsBinding
 
-    private var _toolbarBinding: CollapsingToolbarBinding? = null
-    private val toolbarBinding get() = _toolbarBinding!!
+    private lateinit var toolbarBinding: CollapsingToolbarBinding
 
     private var dragon: Dragon? = null
 
@@ -41,8 +39,8 @@ class DragonDetailsFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentDragonDetailsBinding.inflate(inflater, container, false).apply {
-        _binding = this
-        _toolbarBinding = CollapsingToolbarBinding.bind(this.root)
+        binding = this
+        toolbarBinding = CollapsingToolbarBinding.bind(this.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -172,12 +170,6 @@ class DragonDetailsFragment : BaseFragment() {
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _toolbarBinding = null
-        _binding = null
     }
 
 }

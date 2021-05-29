@@ -18,8 +18,7 @@ class CoreDetailsFragment : BaseFragment() {
 
     override var title: String = "Core Details"
 
-    private var _binding: FragmentCoreDetailsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentCoreDetailsBinding
 
     private var core: Core? = null
 
@@ -40,7 +39,7 @@ class CoreDetailsFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentCoreDetailsBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -59,11 +58,6 @@ class CoreDetailsFragment : BaseFragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelable("core", core)
         super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     private fun updateCoreDetails(core: Core?) {

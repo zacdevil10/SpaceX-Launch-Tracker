@@ -21,8 +21,7 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
 
     override val title: String by lazy { heading ?: "Pads" }
 
-    private var _binding: FragmentPadStatsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentPadStatsBinding
 
     private var heading: String? = null
 
@@ -50,7 +49,7 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentPadStatsBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -90,7 +89,6 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -19,8 +19,7 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
 
     override val title: String = ""
 
-    private var _binding: FragmentLaunchDetailsCoresBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentLaunchDetailsCoresBinding
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
@@ -50,7 +49,7 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchDetailsCoresBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -83,7 +82,6 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun update(response: List<LaunchCore>) {

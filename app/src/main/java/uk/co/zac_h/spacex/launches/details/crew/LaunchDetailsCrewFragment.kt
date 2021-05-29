@@ -17,8 +17,7 @@ class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Cre
 
     override var title: String = "Launch Details Crew"
 
-    private var _binding: FragmentLaunchDetailsCrewBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentLaunchDetailsCrewBinding
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
@@ -48,7 +47,7 @@ class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Cre
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchDetailsCrewBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,7 +77,6 @@ class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Cre
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun update(response: List<Crew>) {

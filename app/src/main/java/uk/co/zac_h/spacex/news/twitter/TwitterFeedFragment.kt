@@ -18,8 +18,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
 
     override var title: String = "Twitter"
 
-    private var _binding: FragmentTwitterFeedBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentTwitterFeedBinding
 
     private var presenter: TwitterFeedContract.TwitterFeedPresenter? = null
     private lateinit var twitterAdapter: TwitterFeedAdapter
@@ -40,7 +39,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentTwitterFeedBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,7 +100,6 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequests()
-        _binding = null
     }
 
     override fun updateRecycler(tweets: List<TimelineTweetModel>) {

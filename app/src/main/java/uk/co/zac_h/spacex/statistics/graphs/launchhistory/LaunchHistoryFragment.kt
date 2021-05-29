@@ -27,8 +27,7 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
 
     override val title: String by lazy { Statistics.LAUNCH_HISTORY.title }
 
-    private var _binding: FragmentLaunchHistoryBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentLaunchHistoryBinding
 
     private var presenter: LaunchHistoryContract.LaunchHistoryPresenter? = null
 
@@ -55,7 +54,7 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchHistoryBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -121,7 +120,6 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

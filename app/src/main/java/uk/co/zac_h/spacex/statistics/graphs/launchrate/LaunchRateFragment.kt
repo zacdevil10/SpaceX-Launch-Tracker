@@ -29,8 +29,7 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
 
     override val title: String by lazy { Statistics.LAUNCH_RATE.title }
 
-    private var _binding: FragmentLaunchRateBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentLaunchRateBinding
 
     private var heading: String? = null
 
@@ -56,7 +55,7 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchRateBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -138,7 +137,6 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -19,7 +19,7 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
 
     override var title: String = ""
 
-    private var binding: FragmentLaunchesListBinding? = null
+    private lateinit var binding: FragmentLaunchesListBinding
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var launchesAdapter: LaunchesAdapter
 
@@ -66,14 +66,14 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
 
         launchesAdapter = LaunchesAdapter(requireContext(), launches)
 
-        binding?.launchesRecycler?.apply {
+        binding.launchesRecycler.apply {
             layoutManager = LinearLayoutManager(this@LaunchesListFragment.context)
             setHasFixedSize(true)
             adapter = launchesAdapter
         }
 
         launchParam?.let { launchId ->
-            binding?.swipeRefresh?.setOnRefreshListener {
+            binding.swipeRefresh.setOnRefreshListener {
                 presenter?.get(launchId)
             }
 
@@ -83,12 +83,12 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
 
     override fun onResume() {
         super.onResume()
-        binding?.swipeRefresh?.isEnabled = true
+        binding.swipeRefresh.isEnabled = true
     }
 
     override fun onPause() {
         super.onPause()
-        binding?.swipeRefresh?.isEnabled = false
+        binding.swipeRefresh.isEnabled = false
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -99,7 +99,6 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        binding = null
     }
 
     override fun onDestroy() {
@@ -132,9 +131,9 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
         launches.addAll(response)
 
 
-        binding?.launchesRecycler?.layoutAnimation = animateLayoutFromBottom(context)
+        binding.launchesRecycler.layoutAnimation = animateLayoutFromBottom(context)
         launchesAdapter.notifyDataSetChanged()
-        binding?.launchesRecycler?.scheduleLayoutAnimation()
+        binding.launchesRecycler.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
@@ -146,12 +145,12 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding?.swipeRefresh?.isRefreshing = isRefreshing
+        binding.swipeRefresh.isRefreshing = isRefreshing
     }
 
     override fun networkAvailable() {
         activity?.runOnUiThread {
-            binding?.let {
+            binding.let {
                 if (launches.isEmpty())
                     launchParam?.let { launchId ->
                         presenter?.get(launchId)

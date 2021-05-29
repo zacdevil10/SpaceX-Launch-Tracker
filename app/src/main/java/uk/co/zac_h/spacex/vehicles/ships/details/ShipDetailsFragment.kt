@@ -20,10 +20,8 @@ class ShipDetailsFragment : BaseFragment() {
 
     override var title: String = ""
 
-    private var _binding: FragmentShipDetailsBinding? = null
-    private val binding get() = _binding!!
-    private var _toolbarBinding: CollapsingToolbarBinding? = null
-    private val toolbarBinding get() = _toolbarBinding!!
+    private lateinit var binding: FragmentShipDetailsBinding
+    private lateinit var toolbarBinding: CollapsingToolbarBinding
 
     private var ship: Ship? = null
 
@@ -39,8 +37,8 @@ class ShipDetailsFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentShipDetailsBinding.inflate(inflater, container, false).apply {
-        _toolbarBinding = CollapsingToolbarBinding.bind(this.root)
-        _binding = this
+        toolbarBinding = CollapsingToolbarBinding.bind(this.root)
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -107,11 +105,5 @@ class ShipDetailsFragment : BaseFragment() {
 
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _toolbarBinding = null
-        _binding = null
     }
 }

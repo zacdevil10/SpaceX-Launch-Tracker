@@ -24,8 +24,7 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
 
     override var title: String = ""
 
-    private var _binding: FragmentLaunchDetailsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentLaunchDetailsBinding
 
     private var presenter: LaunchDetailsContract.LaunchDetailsPresenter? = null
     private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
@@ -66,7 +65,7 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchDetailsBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -108,7 +107,6 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -35,8 +35,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
 
     override val title: String by lazy { requireContext().getString(R.string.menu_home) }
 
-    private var _binding: FragmentDashboardBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentDashboardBinding
 
     private var presenter: DashboardContract.Presenter? = null
 
@@ -68,7 +67,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentDashboardBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -161,7 +160,6 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
         countdownTimer?.cancel()
         countdownTimer = null
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

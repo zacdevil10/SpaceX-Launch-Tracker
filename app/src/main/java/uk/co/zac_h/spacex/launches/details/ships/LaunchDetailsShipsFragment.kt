@@ -19,8 +19,7 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
 
     override var title: String = ""
 
-    private var _binding: FragmentLaunchDetailsShipsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentLaunchDetailsShipsBinding
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
@@ -47,7 +46,7 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchDetailsShipsBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -79,7 +78,6 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun update(response: List<Ship>) {

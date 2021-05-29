@@ -9,7 +9,6 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCapsulesBinding
-import uk.co.zac_h.spacex.databinding.FragmentCompanyBinding
 import uk.co.zac_h.spacex.model.spacex.Capsule
 import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
@@ -19,8 +18,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
 
     override var title: String = "Capsules"
 
-    private var _binding: FragmentCapsulesBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentCapsulesBinding
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var capsulesAdapter: CapsulesAdapter
@@ -44,7 +42,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentCapsulesBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -82,7 +80,6 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

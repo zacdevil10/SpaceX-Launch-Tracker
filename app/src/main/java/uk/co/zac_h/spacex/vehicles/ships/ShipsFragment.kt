@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
 import uk.co.zac_h.spacex.databinding.FragmentShipsBinding
 import uk.co.zac_h.spacex.model.spacex.Ship
 import uk.co.zac_h.spacex.utils.ApiState
@@ -19,8 +18,7 @@ class ShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
 
     override var title: String = "Ships"
 
-    private var _binding: FragmentShipsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentShipsBinding
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var shipsAdapter: ShipsAdapter
@@ -37,7 +35,7 @@ class ShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentShipsBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -71,7 +69,6 @@ class ShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun update(response: List<Ship>) {

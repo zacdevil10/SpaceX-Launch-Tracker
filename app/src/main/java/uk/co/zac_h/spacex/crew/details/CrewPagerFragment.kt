@@ -20,8 +20,7 @@ class CrewPagerFragment : BaseFragment() {
 
     override var title: String = ""
 
-    private var _binding: FragmentCrewDetailsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentCrewDetailsBinding
 
     private lateinit var crewPagerAdapter: CrewPagerAdapter
     private lateinit var crewArray: ArrayList<Crew>
@@ -40,7 +39,7 @@ class CrewPagerFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentCrewDetailsBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -94,10 +93,5 @@ class CrewPagerFragment : BaseFragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList("crew", crewArray)
         super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

@@ -29,8 +29,7 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
 
     override val title: String by lazy { Statistics.LANDING_HISTORY.title }
 
-    private var _binding: FragmentLandingHistoryBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentLandingHistoryBinding
 
     private var presenter: NetworkInterface.Presenter<List<LandingHistoryModel>?>? = null
 
@@ -54,7 +53,7 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLandingHistoryBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -119,11 +118,6 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList("stats", statsList)
         super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -19,8 +19,7 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
 
     override var title: String = "Launch Details Payloads"
 
-    private var _binding: FragmentLaunchDetailsPayloadsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentLaunchDetailsPayloadsBinding
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
@@ -51,7 +50,7 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchDetailsPayloadsBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -81,11 +80,6 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList(PAYLOADS_KEY, payloads)
         super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun update(response: List<Payload>) {
