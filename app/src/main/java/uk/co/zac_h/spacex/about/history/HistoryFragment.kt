@@ -4,18 +4,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
-import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentHistoryBinding
+import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
@@ -27,12 +22,12 @@ class HistoryFragment : BaseFragment(), HistoryView {
         const val HISTORY_KEY = "history"
     }
 
-    override var title: String = "History"
+    override val title: String by lazy { requireContext().getString(R.string.menu_history) }
 
-    private var binding: FragmentHistoryBinding? = null
+    private var _binding: FragmentHistoryBinding? = null
+    private val binding get() = _binding!!
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
-    private lateinit var history: ArrayList<HistoryHeaderModel>
 
     private lateinit var historyAdapter: HistoryAdapter
 
@@ -42,83 +37,58 @@ class HistoryFragment : BaseFragment(), HistoryView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-
-        history = savedInstanceState?.let {
-            it.getParcelableArrayList<HistoryHeaderModel>(HISTORY_KEY) as ArrayList<HistoryHeaderModel>
-        } ?: ArrayList()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentHistoryBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
-
-        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
-
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+        binding.toolbarLayout.toolbar.apply {
+            setSupportActionBar()
+            setup()
+        }
 
         orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(context)
         presenter = HistoryPresenterImpl(this, HistoryInteractorImpl())
 
         sortNew = orderSharedPreferences.isSortedNew(HISTORY_KEY)
 
-        historyAdapter = HistoryAdapter(requireContext(), history, this)
+        historyAdapter = HistoryAdapter(requireContext(), this)
 
-        val isTabletLand = context?.resources?.getBoolean(R.bool.isTabletLand)
+        val isTabletLand = requireContext().resources.getBoolean(R.bool.isTabletLand)
 
-        binding?.historyRecycler?.apply {
-            layoutManager = isTabletLand?.let {
-                if (isTabletLand) {
-                    LinearLayoutManager(
-                        this@HistoryFragment.context,
-                        LinearLayoutManager.HORIZONTAL,
-                        false
-                    )
-                } else {
-                    LinearLayoutManager(this@HistoryFragment.context)
-                }
-            } ?: LinearLayoutManager(this@HistoryFragment.context)
-            setHasFixedSize(true)
+        with(binding.historyRecycler) {
+            layoutManager = if (isTabletLand) LinearLayoutManager(
+                this@HistoryFragment.context,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            ) else LinearLayoutManager(this@HistoryFragment.context)
             adapter = historyAdapter
-            addItemDecoration(
-                HeaderItemDecoration(
-                    this,
-                    historyAdapter.isHeader(),
-                    isTabletLand ?: false
-                )
-            )
+            addItemDecoration(HeaderItemDecoration(this, historyAdapter.isHeader(), isTabletLand))
         }
 
-        binding?.swipeRefresh?.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
+            apiState = ApiState.PENDING
             presenter?.get(sortNew)
         }
 
-        if (history.isEmpty()) {
-            presenter?.get(sortNew)
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(HISTORY_KEY, history)
-        super.onSaveInstanceState(outState)
+        presenter?.get(sortNew)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        binding = null
+        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_history, menu)
-
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -144,12 +114,11 @@ class HistoryFragment : BaseFragment(), HistoryView {
         }
 
     override fun update(response: ArrayList<HistoryHeaderModel>) {
-        history.clear()
-        history.addAll(response)
+        apiState = ApiState.SUCCESS
 
-        historyAdapter.notifyDataSetChanged()
+        historyAdapter.update(response)
 
-        binding?.historyRecycler?.apply {
+        binding.historyRecycler.apply {
             smoothScrollToPosition(0)
             scheduleLayoutAnimation()
         }
@@ -160,22 +129,25 @@ class HistoryFragment : BaseFragment(), HistoryView {
     }
 
     override fun showProgress() {
-        binding?.progress?.show()
+        binding.toolbarLayout.progress.show()
     }
 
     override fun hideProgress() {
-        binding?.progress?.hide()
+        binding.toolbarLayout.progress.hide()
+    }
+
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding?.swipeRefresh?.isRefreshing = isRefreshing
+        binding.swipeRefresh.isRefreshing = isRefreshing
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (history.isEmpty() || it.progress.isShown)
-                    presenter?.get(sortNew)
+        when (apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.get(sortNew)
+            ApiState.SUCCESS -> {
             }
         }
     }

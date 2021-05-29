@@ -11,9 +11,7 @@ class CompanyPresenterImpl(
 
     override fun getOrUpdate(response: Company?, api: SpaceXInterface) {
         view.showProgress()
-        response?.let {
-            this.onSuccess(it)
-        } ?: interactor.get(api, this)
+        response?.let { onSuccess(it) } ?: interactor.get(api, this)
     }
 
     override fun cancelRequest() {
@@ -23,8 +21,8 @@ class CompanyPresenterImpl(
     override fun onSuccess(response: Company?) {
         response?.let {
             view.apply {
-                hideProgress()
                 update(it)
+                hideProgress()
             }
         }
     }

@@ -15,12 +15,14 @@
     <string name="menu_history">History</string>
     <string name="menu_ships">Ships</string>
 
+    <string name="detail_capsule">Capsule</string>
+
 
     <string name="flight_number">Flight %1$d</string>
     <string name="reused">Reused</string>
 
     <!-- Dashboard -->
-    <string name="no_pinned_launches_found_label">No pinned launches found.</string>
+    <string name="no_pinned_launches_found_label">No pinned launches found</string>
     <string name="next_launch">Next</string>
     <string name="latest_launch">Previous</string>
     <string name="customise_dashboard_label">Customise dashboard</string>
@@ -144,7 +146,7 @@
     <string name="reddit_campaign_icon_desc">Reddit Campaign Icon</string>
     <string name="reddit_campaign_label">Reddit Campaign</string>
     <string name="wikipedia_icon_desc">Wikipedia Icon</string>
-    <string name="wikipedia_label">Wikipedia</string>
+    <string name="wikipedia_label">ikipedia</string>
     <string name="article_icon_desc">Article Icon</string>
     <string name="article_label">Article</string>
 

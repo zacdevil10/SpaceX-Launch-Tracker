@@ -22,7 +22,7 @@ class RedditFeedInteractorImpl : BaseNetwork(), RedditFeedContract.RedditFeedInt
                         listener.onPagedSuccess(it.body())
                     } ?: listener.onSuccess(it.body())
                 }
-                onResponseFailure = { listener.onError(it) }
+                onResponseFailure = { if (id == null) listener.onError(it) }
             }
         }
     }

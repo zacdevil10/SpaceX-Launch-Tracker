@@ -6,15 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".news.twitter.TwitterFeedFragment">
 
-    <com.google.android.material.progressindicator.ProgressIndicator
-        android:id="@+id/progress"
-        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/toolbar_elevation"
-        app:indicatorColor="?colorSecondary"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
@@ -25,36 +16,36 @@
             android:id="@+id/twitter_feed_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="@dimen/medium_margin"
             android:clipToPadding="false"
-            tools:listitem="@layout/list_item_tweet"/>
+            android:paddingBottom="@dimen/medium_margin"
+            tools:listitem="@layout/list_item_tweet" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <com.google.android.material.progressindicator.ProgressIndicator
+    <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/paging_progress_indicator"
-        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="@dimen/toolbar_elevation"
+        android:indeterminate="true"
         app:indicatorColor="?colorSecondary"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <com.google.android.material.chip.Chip
         android:id="@+id/twitter_feed_scroll_up"
+        style="@style/Widget.MaterialComponents.Chip.Action"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Widget.MaterialComponents.Chip.Action"
-        app:chipBackgroundColor="@color/color_secondary"
-        app:chipIconTint="@android:color/white"
-        android:textColor="@android:color/white"
         android:clipChildren="true"
-        android:visibility="invisible"
         android:elevation="8dp"
         android:text="@string/scroll_to_top_label"
+        android:textColor="@android:color/white"
+        android:visibility="invisible"
+        app:chipBackgroundColor="@color/color_secondary"
         app:chipIcon="@drawable/ic_arrow_upward_black_24dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:chipIconTint="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

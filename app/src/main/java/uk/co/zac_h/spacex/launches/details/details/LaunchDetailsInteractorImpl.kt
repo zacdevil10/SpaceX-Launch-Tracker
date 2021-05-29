@@ -37,7 +37,8 @@ class LaunchDetailsInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<L
                     "flight_number",
                     "name",
                     "date_unix",
-                    "date_precision"
+                    "date_precision",
+                    "upcoming"
                 ),
                 limit = 1
             )

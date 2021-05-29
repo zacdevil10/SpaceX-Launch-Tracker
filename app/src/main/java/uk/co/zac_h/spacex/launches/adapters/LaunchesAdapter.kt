@@ -22,7 +22,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class LaunchesAdapter(
-    private val context: Context?,
+    private val context: Context,
     private val launches: ArrayList<Launch>
 ) : RecyclerView.Adapter<LaunchesAdapter.ViewHolder>(), Filterable {
 
@@ -48,13 +48,9 @@ class LaunchesAdapter(
 
             Glide.with(root)
                 .load(launch.links?.missionPatch?.patchSmall)
-                .error(context?.let { ContextCompat.getDrawable(it, R.drawable.ic_mission_patch) })
-                .fallback(context?.let {
-                    ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
-                })
-                .placeholder(context?.let {
-                    ContextCompat.getDrawable(it, R.drawable.ic_mission_patch)
-                })
+                .error(ContextCompat.getDrawable(context, R.drawable.ic_mission_patch))
+                .fallback(ContextCompat.getDrawable(context, R.drawable.ic_mission_patch))
+                .placeholder(ContextCompat.getDrawable(context, R.drawable.ic_mission_patch))
                 .into(missionPatch)
 
             if (launch.rocket?.name == "Falcon 9") {
@@ -73,8 +69,7 @@ class LaunchesAdapter(
                 landingVehicle.visibility = View.GONE
             }
 
-            flightNumber.text =
-                context?.getString(R.string.flight_number, launch.flightNumber)
+            flightNumber.text = context.getString(R.string.flight_number, launch.flightNumber)
             vehicle.text = launch.rocket?.name
             missionName.text = launch.missionName
             date.text =
@@ -83,9 +78,7 @@ class LaunchesAdapter(
             root.setOnClickListener {
                 root.findNavController().navigate(
                     R.id.action_launch_item_to_launch_details_container_fragment,
-                    bundleOf(
-                        LAUNCH_SHORT_KEY to launch
-                    ),
+                    bundleOf(LAUNCH_SHORT_KEY to launch),
                     null,
                     FragmentNavigatorExtras(root to launch.id)
                 )
@@ -105,11 +98,9 @@ class LaunchesAdapter(
                         else -> {
                             val filteredList = ArrayList<Launch>()
                             launches.forEach { launch ->
-                                if (launch.missionName?.toLowerCase(Locale.getDefault()).toString()
+                                if (launch.missionName?.lowercase().toString()
                                         .contains(
-                                            it.toString().toLowerCase(
-                                                Locale.getDefault()
-                                            )
+                                            it.toString().lowercase()
                                         ) || launch.launchDate?.dateUnix?.formatDateMillisYYYY()
                                         .toString().contains(
                                             it
@@ -122,7 +113,7 @@ class LaunchesAdapter(
                                 }
 
                                 launch.rocket?.name?.let { rocketName ->
-                                    if (rocketName.toLowerCase(Locale.getDefault()).contains(s)) {
+                                    if (rocketName.lowercase().contains(s)) {
                                         filteredList.add(launch)
                                     }
                                 }

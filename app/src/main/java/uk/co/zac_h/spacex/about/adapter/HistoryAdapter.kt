@@ -8,16 +8,19 @@ import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.about.history.HistoryView
 import uk.co.zac_h.spacex.databinding.ListItemHistoryEventBinding
 import uk.co.zac_h.spacex.databinding.ListItemHistoryHeadingBinding
+import uk.co.zac_h.spacex.model.spacex.History
 import uk.co.zac_h.spacex.utils.animateFromRightWithOffset
 import uk.co.zac_h.spacex.utils.animationScaleUpWithOffset
 import uk.co.zac_h.spacex.utils.formatDateMillisDDMMM
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
+import uk.co.zac_h.spacex.utils.splitHistoryListByDate
 
 class HistoryAdapter(
     private var context: Context,
-    private var events: List<HistoryHeaderModel>,
     private var view: HistoryView
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var events: List<HistoryHeaderModel> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
@@ -77,6 +80,11 @@ class HistoryAdapter(
                 heading.text = event.header
             }
         }
+    }
+
+    fun update(list: List<HistoryHeaderModel>) {
+        events = list
+        notifyDataSetChanged()
     }
 
     fun isHeader(): (itemPosition: Int) -> Boolean = { events[it].isHeader }

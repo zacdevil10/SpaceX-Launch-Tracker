@@ -5,14 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
-import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
@@ -24,7 +18,8 @@ class CoreDetailsFragment : BaseFragment() {
 
     override var title: String = "Core Details"
 
-    private var binding: FragmentCoreDetailsBinding? = null
+    private var _binding: FragmentCoreDetailsBinding? = null
+    private val binding get() = _binding!!
 
     private var core: Core? = null
 
@@ -45,7 +40,7 @@ class CoreDetailsFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentCoreDetailsBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,11 +48,10 @@ class CoreDetailsFragment : BaseFragment() {
 
         postponeEnterTransition()
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+        title = core?.serial ?: title
+        binding.toolbarLayout.toolbar.setup()
 
-        core?.let {
-            updateCoreDetails(it)
-        }
+        updateCoreDetails(core)
 
         view.doOnPreDraw { startPostponedEnterTransition() }
     }
@@ -69,17 +63,15 @@ class CoreDetailsFragment : BaseFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding = null
+        _binding = null
     }
 
-    private fun updateCoreDetails(core: Core) {
-        core.apply {
+    private fun updateCoreDetails(core: Core?) {
+        core?.apply {
             this@CoreDetailsFragment.core = core
 
-            binding?.apply {
+            with(binding) {
                 coreDetailsScrollview.transitionName = id
-
-                toolbar.title = serial
 
                 coreDetailsSerialText.text = serial
                 coreDetailsBlockText.text = block ?: "TBD"
@@ -101,7 +93,7 @@ class CoreDetailsFragment : BaseFragment() {
                     }
                 }
 
-                progress.hide()
+                toolbarLayout.progress.hide()
             }
         }
     }
