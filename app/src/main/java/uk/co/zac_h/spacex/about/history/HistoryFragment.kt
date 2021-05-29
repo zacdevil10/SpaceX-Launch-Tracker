@@ -24,8 +24,7 @@ class HistoryFragment : BaseFragment(), HistoryView {
 
     override val title: String by lazy { requireContext().getString(R.string.menu_history) }
 
-    private var _binding: FragmentHistoryBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentHistoryBinding
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
@@ -43,7 +42,7 @@ class HistoryFragment : BaseFragment(), HistoryView {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentHistoryBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -84,7 +83,6 @@ class HistoryFragment : BaseFragment(), HistoryView {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -18,8 +18,7 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
 
     override val title: String by lazy { requireContext().getString(R.string.menu_company) }
 
-    private var _binding: FragmentCompanyBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentCompanyBinding
 
     private var presenter: NetworkInterface.Presenter<Company?>? = null
 
@@ -29,7 +28,7 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentCompanyBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,7 +44,6 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun update(response: Company) {

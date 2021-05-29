@@ -16,10 +16,8 @@ class LaunchesFragment : BaseFragment() {
 
     override var title: String = "Launches"
 
-    private var _binding: FragmentLaunchesBinding? = null
-    private val binding get() = _binding!!
-    private var _toolbarBinding: ToolbarTabBinding? = null
-    private val toolbarBinding get() = _toolbarBinding!!
+    private lateinit var binding: FragmentLaunchesBinding
+    private lateinit var toolbarBinding: ToolbarTabBinding
 
     private val fragments: List<BaseFragment> = listOf(
         LaunchesListFragment.newInstance("upcoming"),
@@ -31,8 +29,8 @@ class LaunchesFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchesBinding.inflate(inflater, container, false).apply {
-        _toolbarBinding = ToolbarTabBinding.bind(this.root)
-        _binding = this
+        toolbarBinding = ToolbarTabBinding.bind(this.root)
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,11 +56,5 @@ class LaunchesFragment : BaseFragment() {
         }
 
         view.doOnPreDraw { startPostponedEnterTransition() }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _toolbarBinding = null
-        _binding = null
     }
 }

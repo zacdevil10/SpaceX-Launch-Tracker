@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
 import uk.co.zac_h.spacex.databinding.FragmentRocketBinding
 import uk.co.zac_h.spacex.model.spacex.Rocket
 import uk.co.zac_h.spacex.utils.ApiState
@@ -19,8 +18,7 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
 
     override var title: String = "Rockets"
 
-    private var _binding: FragmentRocketBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentRocketBinding
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var rocketsAdapter: RocketsAdapter
@@ -37,7 +35,7 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentRocketBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,7 +67,6 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun update(response: List<Rocket>) {

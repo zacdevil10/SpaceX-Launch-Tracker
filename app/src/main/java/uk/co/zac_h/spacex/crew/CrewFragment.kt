@@ -27,8 +27,7 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
 
     override val title: String by lazy { requireContext().getString(R.string.menu_crew) }
 
-    private var _binding: FragmentCrewBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentCrewBinding
 
     private var presenter: NetworkInterface.Presenter<List<Crew>?>? = null
 
@@ -45,7 +44,7 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentCrewBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -114,7 +113,6 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun update(response: List<Crew>) {

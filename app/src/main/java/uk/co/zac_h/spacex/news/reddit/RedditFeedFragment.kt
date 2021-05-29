@@ -21,8 +21,7 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
 
     override var title: String = "Reddit"
 
-    private var _binding: FragmentRedditFeedBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentRedditFeedBinding
 
     private var presenter: RedditFeedContract.RedditFeedPresenter? = null
     private lateinit var redditAdapter: RedditAdapter
@@ -51,7 +50,7 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentRedditFeedBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -119,7 +118,6 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

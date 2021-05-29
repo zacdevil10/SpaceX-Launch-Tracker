@@ -17,17 +17,15 @@ class NewsFragment : BaseFragment() {
 
     override val title: String by lazy { requireContext().getString(R.string.menu_news) }
 
-    private var _binding: FragmentNewsBinding? = null
-    private val binding get() = _binding!!
-    private var _toolbarBinding: ToolbarTabBinding? = null
-    private val toolbarBinding get() = _toolbarBinding!!
+    private lateinit var binding: FragmentNewsBinding
+    private lateinit var toolbarBinding: ToolbarTabBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentNewsBinding.inflate(inflater, container, false).apply {
-        _toolbarBinding = ToolbarTabBinding.bind(this.root)
-        _binding = this
+        toolbarBinding = ToolbarTabBinding.bind(this.root)
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -49,11 +47,5 @@ class NewsFragment : BaseFragment() {
                 getTabAt(position)?.setIcon(tabIcons[position])
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _toolbarBinding = null
-        _binding = null
     }
 }

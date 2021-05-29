@@ -29,8 +29,7 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
 
     override val title: String by lazy { Statistics.FAIRING_RECOVERY.title }
 
-    private var _binding: FragmentFairingRecoveryBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentFairingRecoveryBinding
 
     private var presenter: NetworkInterface.Presenter<List<FairingRecoveryModel>?>? = null
 
@@ -54,7 +53,7 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentFairingRecoveryBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -122,11 +121,6 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList("stats", statsList)
         super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

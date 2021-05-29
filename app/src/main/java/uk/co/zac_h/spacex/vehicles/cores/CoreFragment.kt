@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.databinding.FragmentCompanyBinding
 import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
 import uk.co.zac_h.spacex.model.spacex.Core
 import uk.co.zac_h.spacex.utils.ApiState
@@ -22,8 +21,7 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
 
     override var title: String = "Cores"
 
-    private var _binding: FragmentCoreBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentCoreBinding
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var coreAdapter: CoreAdapter
@@ -46,7 +44,7 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentCoreBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -84,7 +82,6 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

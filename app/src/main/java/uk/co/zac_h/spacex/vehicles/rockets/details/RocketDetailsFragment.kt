@@ -20,10 +20,8 @@ class RocketDetailsFragment : BaseFragment() {
 
     override var title: String = "Rocket"
 
-    private var _binding: FragmentRocketDetailsBinding? = null
-    private val binding get() = _binding!!
-    private var _toolbarBinding: CollapsingToolbarBinding? = null
-    private val toolbarBinding get() = _toolbarBinding!!
+    private lateinit var binding: FragmentRocketDetailsBinding
+    private lateinit var toolbarBinding: CollapsingToolbarBinding
 
     private var rocket: Rocket? = null
 
@@ -39,8 +37,8 @@ class RocketDetailsFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentRocketDetailsBinding.inflate(inflater, container, false).apply {
-        _toolbarBinding = CollapsingToolbarBinding.bind(this.root)
-        _binding = this
+        toolbarBinding = CollapsingToolbarBinding.bind(this.root)
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

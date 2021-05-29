@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
 import uk.co.zac_h.spacex.databinding.FragmentDragonBinding
 import uk.co.zac_h.spacex.model.spacex.Dragon
 import uk.co.zac_h.spacex.utils.ApiState
@@ -19,8 +18,7 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
 
     override var title: String = "Dragon"
 
-    private var _binding: FragmentDragonBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentDragonBinding
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var dragonAdapter: DragonAdapter
@@ -37,7 +35,7 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentDragonBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -71,7 +69,6 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun update(response: List<Dragon>) {

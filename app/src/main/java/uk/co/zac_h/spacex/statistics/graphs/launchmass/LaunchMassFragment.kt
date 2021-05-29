@@ -29,8 +29,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
 
     override val title: String by lazy { Statistics.MASS_TO_ORBIT.title }
 
-    private var _binding: FragmentLaunchMassBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentLaunchMassBinding
 
     private var presenter: LaunchMassContract.Presenter? = null
 
@@ -58,7 +57,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchMassBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -172,7 +171,6 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -29,8 +29,7 @@ import kotlin.math.roundToInt
 
 class CrewItemFragment : Fragment() {
 
-    private var _binding: FragmentCrewItemBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentCrewItemBinding
 
     companion object {
         const val CREW_KEY = "crew"
@@ -46,7 +45,7 @@ class CrewItemFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentCrewItemBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -133,10 +132,5 @@ class CrewItemFragment : Fragment() {
                 if (it.isEmpty()) crewMissionLabel.visibility = View.GONE
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
