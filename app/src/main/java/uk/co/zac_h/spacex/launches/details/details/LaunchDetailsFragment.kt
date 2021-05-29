@@ -72,7 +72,7 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
         super.onViewCreated(view, savedInstanceState)
 
         pinnedSharedPreferences = PinnedSharedPreferencesHelperImpl(
-            context?.getSharedPreferences(
+            requireContext().getSharedPreferences(
                 "pinned",
                 Context.MODE_PRIVATE
             )
@@ -146,18 +146,18 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
             with(binding) {
                 Glide.with(this@LaunchDetailsFragment)
                     .load(it.links?.missionPatch?.patchSmall)
-                    .error(context?.let { context ->
+                    .error(requireContext().let { context ->
                         ContextCompat.getDrawable(context, R.drawable.ic_mission_patch)
                     })
-                    .fallback(context?.let { context ->
+                    .fallback(requireContext().let { context ->
                         ContextCompat.getDrawable(context, R.drawable.ic_mission_patch)
                     })
-                    .placeholder(context?.let { context ->
+                    .placeholder(requireContext().let { context ->
                         ContextCompat.getDrawable(context, R.drawable.ic_mission_patch)
                     })
                     .into(launchDetailsMissionPatchImage)
 
-                launchDetailsNumberText.text = context?.getString(
+                launchDetailsNumberText.text = requireContext().getString(
                     R.string.flight_number,
                     it.flightNumber
                 )

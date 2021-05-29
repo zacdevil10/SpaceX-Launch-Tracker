@@ -199,8 +199,8 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
         }
 
         binding.launchHistoryPieChart.apply {
-            this.centerText = context?.getString(R.string.pie_chart_title, "2006 - 2020")
-                ?.generateCenterSpannableText()
+            this.centerText = requireContext().getString(R.string.pie_chart_title, "2006 - 2020")
+                .generateCenterSpannableText()
             this.data = pieData
             if (data == true) animateY(1400, Easing.EaseInOutCubic) else invalidate()
         }
@@ -213,19 +213,19 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
                     animateProgress(animate, it.successRate, binding.falconOneRateProgress)
 
                     binding.falconOnePercentText.text =
-                        context?.getString(R.string.percentage, it.successRate)
+                        requireContext().getString(R.string.percentage, it.successRate)
                 }
                 RocketType.FALCON_NINE -> {
                     animateProgress(animate, it.successRate, binding.falconNineRateProgress)
 
                     binding.falconNinePercentText.text =
-                        context?.getString(R.string.percentage, it.successRate)
+                        requireContext().getString(R.string.percentage, it.successRate)
                 }
                 RocketType.FALCON_HEAVY -> {
                     animateProgress(animate, it.successRate, binding.falconHeavyRateProgress)
 
                     binding.falconHeavyPercentText.text =
-                        context?.getString(R.string.percentage, it.successRate)
+                        requireContext().getString(R.string.percentage, it.successRate)
                 }
             }
         }
@@ -283,9 +283,10 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
     }
 
     override fun networkAvailable() {
-        when(apiState) {
+        when (apiState) {
             ApiState.PENDING, ApiState.FAILED -> presenter?.getOrUpdate(null)
-            ApiState.SUCCESS -> {}
+            ApiState.SUCCESS -> {
+            }
         }
     }
 }

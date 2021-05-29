@@ -119,7 +119,7 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
         apiState = ApiState.SUCCESS
 
         crewArray.clearAndAdd(response)
-        binding.crewRecycler.layoutAnimation = animateLayoutFromBottom(context)
+        binding.crewRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
         crewAdapter.update(response)
         binding.crewRecycler.scheduleLayoutAnimation()
     }

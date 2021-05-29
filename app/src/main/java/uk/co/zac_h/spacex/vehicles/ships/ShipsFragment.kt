@@ -77,7 +77,7 @@ class ShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
         shipsArray.clear()
         shipsArray.addAll(response)
 
-        binding.recycler.layoutAnimation = animateLayoutFromBottom(context)
+        binding.recycler.layoutAnimation = animateLayoutFromBottom(requireContext())
         shipsAdapter.notifyDataSetChanged()
         binding.recycler.scheduleLayoutAnimation()
     }

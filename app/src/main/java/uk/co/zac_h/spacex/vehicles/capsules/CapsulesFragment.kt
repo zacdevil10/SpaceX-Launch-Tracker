@@ -48,7 +48,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(context)
+        orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(requireContext())
         presenter = CapsulesPresenterImpl(this, CapsulesInteractorImpl())
 
         sortNew = orderSharedPreferences.isSortedNew("capsules")
@@ -56,7 +56,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
         capsulesAdapter = CapsulesAdapter(capsulesArray)
 
         binding.capsulesRecycler.apply {
-            layoutManager = LinearLayoutManager(this@CapsulesFragment.context)
+            layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = capsulesAdapter
         }
@@ -130,7 +130,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
         capsulesArray.clear()
         capsulesArray.addAll(if (sortNew) response.reversed() else response)
 
-        binding.capsulesRecycler.layoutAnimation = animateLayoutFromBottom(context)
+        binding.capsulesRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
         capsulesAdapter.notifyDataSetChanged()
         binding.capsulesRecycler.scheduleLayoutAnimation()
     }

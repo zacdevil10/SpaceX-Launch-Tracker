@@ -14,7 +14,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemCoreBinding
 import uk.co.zac_h.spacex.model.spacex.Core
 
-class CoreAdapter(private val context: Context?, private val cores: ArrayList<Core>) :
+class CoreAdapter(private val context: Context, private val cores: ArrayList<Core>) :
     RecyclerView.Adapter<CoreAdapter.ViewHolder>(), Filterable {
 
     private var filteredCores: ArrayList<Core>
@@ -37,7 +37,7 @@ class CoreAdapter(private val context: Context?, private val cores: ArrayList<Co
             listItemCoreSerial.text = core.serial
 
             core.block?.let {
-                listItemCoreBlockText.text = context?.getString(R.string.block, it)
+                listItemCoreBlockText.text = context.getString(R.string.block, it)
                 listItemCoreTitleSeparator.visibility = View.VISIBLE
             } ?: run {
                 listItemCoreBlockText.text = ""

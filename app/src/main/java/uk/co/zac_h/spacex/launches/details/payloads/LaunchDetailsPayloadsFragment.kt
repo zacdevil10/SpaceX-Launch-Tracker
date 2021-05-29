@@ -58,10 +58,10 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
 
         presenter = LaunchDetailsPayloadsPresenter(this, LaunchDetailsPayloadsInteractor())
 
-        payloadAdapter = PayloadAdapter(context, payloads)
+        payloadAdapter = PayloadAdapter(requireContext(), payloads)
 
         binding.launchDetailsPayloadRecycler.apply {
-            layoutManager = LinearLayoutManager(this@LaunchDetailsPayloadsFragment.context)
+            layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = payloadAdapter
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false

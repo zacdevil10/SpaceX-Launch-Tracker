@@ -100,12 +100,12 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
     override fun onResume() {
         super.onResume()
         if (posts.isEmpty()) presenter?.getSub(order)
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+        (requireContext().applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
     override fun onPause() {
         super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+        (requireContext().applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

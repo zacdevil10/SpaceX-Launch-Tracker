@@ -81,10 +81,10 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
 
         togglePinnedProgress(false)
 
-        val pinnedPrefs = (context?.applicationContext as App).pinnedPreferencesRepo
+        val pinnedPrefs = (requireContext().applicationContext as App).pinnedPreferencesRepo
 
         pinnedSharedPreferences = PinnedSharedPreferencesHelperImpl(
-            context?.getSharedPreferences("pinned", Context.MODE_PRIVATE)
+            requireContext().getSharedPreferences("pinned", Context.MODE_PRIVATE)
         )
 
         presenter = DashboardPresenterImpl(this, DashboardInteractorImpl())
@@ -96,7 +96,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
             adapter = pinnedAdapter
         }
 
-        val prefs = (context?.applicationContext as App).dashboardPreferencesRepo
+        val prefs = (requireContext().applicationContext as App).dashboardPreferencesRepo
 
         prefs.visibleLive.observe(viewLifecycleOwner, { mode ->
             mode?.let {
@@ -196,27 +196,25 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
             dashboardLaunch.transitionName = response.id
 
             when (response.upcoming) {
-                true -> heading.text = context?.getString(R.string.next_launch)
-                false -> heading.text = context?.getString(R.string.latest_launch)
+                true -> heading.text = requireContext().getString(R.string.next_launch)
+                false -> heading.text = requireContext().getString(R.string.latest_launch)
             }
 
             missionPatch.let {
                 Glide.with(this@DashboardFragment)
                     .load(response.links?.missionPatch?.patchSmall)
-                    .error(context?.let { ctx ->
-                        ContextCompat.getDrawable(ctx, R.drawable.ic_mission_patch)
-                    })
-                    .fallback(context?.let { ctx ->
-                        ContextCompat.getDrawable(ctx, R.drawable.ic_mission_patch)
-                    })
-                    .placeholder(context?.let { ctx ->
-                        ContextCompat.getDrawable(ctx, R.drawable.ic_mission_patch)
-                    })
+                    .error(ContextCompat.getDrawable(requireContext(), R.drawable.ic_mission_patch))
+                    .fallback(
+                        ContextCompat.getDrawable(requireContext(), R.drawable.ic_mission_patch)
+                    )
+                    .placeholder(
+                        ContextCompat.getDrawable(requireContext(), R.drawable.ic_mission_patch)
+                    )
                     .into(it)
             }
 
             flightNumber.text =
-                context?.getString(R.string.flight_number, response.flightNumber)
+                requireContext().getString(R.string.flight_number, response.flightNumber)
 
             vehicle.text = response.rocket?.name
 
