@@ -65,7 +65,9 @@
                     android:insetBottom="0dp"
                     android:text="@string/website_label"
                     android:textAppearance="?textAppearanceBody2"
-                    app:icon="@drawable/ic_baseline_web_24" />
+                    android:visibility="gone"
+                    app:icon="@drawable/ic_baseline_web_24"
+                    tools:visibility="visible" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/company_twitter"
@@ -76,7 +78,9 @@
                     android:insetBottom="0dp"
                     android:text="@string/twitter_label"
                     android:textAppearance="?textAppearanceBody2"
-                    app:icon="@drawable/ic_twitter" />
+                    android:visibility="gone"
+                    app:icon="@drawable/ic_twitter"
+                    tools:visibility="visible" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/company_album"
@@ -87,7 +91,9 @@
                     android:insetBottom="0dp"
                     android:text="@string/album_label"
                     android:textAppearance="?textAppearanceBody2"
-                    app:icon="@drawable/ic_baseline_photo_album_24" />
+                    android:visibility="gone"
+                    app:icon="@drawable/ic_baseline_photo_album_24"
+                    tools:visibility="visible" />
 
             </com.google.android.material.button.MaterialButtonToggleGroup>
 

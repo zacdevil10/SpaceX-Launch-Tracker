@@ -134,7 +134,7 @@
     <string name="test_sites_label">Test Sites</string>
     <string name="spacex_logo_desc">SpaceX Logo</string>
     <string name="address">%1$s, %2$s, %3$s</string>
-    <string name="founded">%1$s, %2$d</string>
+    <string name="founded">%1$s, %2$s</string>
 
     <string name="website_label">Website</string>
     <string name="twitter_label">Twitter</string>
