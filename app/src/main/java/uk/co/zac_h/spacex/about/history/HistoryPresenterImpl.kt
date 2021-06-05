@@ -9,7 +9,7 @@ import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.splitHistoryListByDate
 
 class HistoryPresenterImpl(
-    private val view: HistoryContract.View,
+    private val view: NetworkInterface.View<ArrayList<HistoryHeaderModel>>,
     private val interactor: NetworkInterface.Interactor<List<History>>,
     private val orderSharedPreferences: OrderSharedPreferencesHelper
 ) : HistoryContract.Presenter, NetworkInterface.Callback<List<History>> {

@@ -15,6 +15,7 @@ import uk.co.zac_h.spacex.databinding.FragmentCompanyBinding
 import uk.co.zac_h.spacex.model.spacex.Company
 import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.Keys.CompanyKeys
+import uk.co.zac_h.spacex.utils.openWebLink
 
 class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
 
@@ -92,10 +93,6 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
             companyLaunchSites.text = response.launchSites
             companyTestSites.text = response.testSites
         }
-    }
-
-    fun openWebLink(link: String) {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 
     override fun showProgress() {

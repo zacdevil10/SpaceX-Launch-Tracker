@@ -1,23 +1,26 @@
 package uk.co.zac_h.spacex.about.history
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
 import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentHistoryBinding
 import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.Keys.HistoryKeys
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
+import uk.co.zac_h.spacex.utils.openWebLink
 import uk.co.zac_h.spacex.utils.views.HeaderItemDecoration
 
-class HistoryFragment : BaseFragment(), HistoryContract.View {
+class HistoryFragment : BaseFragment(), NetworkInterface.View<ArrayList<HistoryHeaderModel>> {
 
     override val title: String by lazy { getString(R.string.menu_history) }
 
@@ -30,7 +33,6 @@ class HistoryFragment : BaseFragment(), HistoryContract.View {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
 
         history = savedInstanceState?.getParcelableArrayList(HistoryKeys.HISTORY_SAVED_STATE)
     }
@@ -46,8 +48,8 @@ class HistoryFragment : BaseFragment(), HistoryContract.View {
         super.onViewCreated(view, savedInstanceState)
 
         binding.toolbarLayout.toolbar.apply {
-            setSupportActionBar()
             setup()
+            createOptionsMenu(R.menu.menu_history)
         }
 
         presenter = HistoryPresenterImpl(
@@ -56,7 +58,7 @@ class HistoryFragment : BaseFragment(), HistoryContract.View {
             OrderSharedPreferencesHelperImpl.build(requireContext())
         )
 
-        historyAdapter = HistoryAdapter(requireContext(), this)
+        historyAdapter = HistoryAdapter(requireContext(), ::openWebLink)
 
         val isTabletLand = resources.getBoolean(R.bool.isTabletLand)
 
@@ -88,17 +90,11 @@ class HistoryFragment : BaseFragment(), HistoryContract.View {
         presenter?.cancelRequest()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_history, menu)
-        super.onCreateOptionsMenu(menu, inflater)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.sort_new -> handleSortItemClick(false)
+        R.id.sort_old -> handleSortItemClick(true)
+        else -> super.onOptionsItemSelected(item)
     }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean =
-        when (item.itemId) {
-            R.id.sort_new -> handleSortItemClick(false)
-            R.id.sort_old -> handleSortItemClick(true)
-            else -> super.onOptionsItemSelected(item)
-        }
 
     private fun handleSortItemClick(order: Boolean): Boolean {
         history = null
@@ -119,10 +115,6 @@ class HistoryFragment : BaseFragment(), HistoryContract.View {
             smoothScrollToPosition(0)
             scheduleLayoutAnimation()
         }
-    }
-
-    override fun openWebLink(link: String) {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 
     override fun showProgress() {
@@ -148,5 +140,4 @@ class HistoryFragment : BaseFragment(), HistoryContract.View {
             ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
-
 }

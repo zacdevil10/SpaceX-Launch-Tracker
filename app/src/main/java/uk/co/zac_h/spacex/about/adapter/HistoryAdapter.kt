@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import uk.co.zac_h.spacex.about.history.HistoryContract
 import uk.co.zac_h.spacex.databinding.ListItemHistoryEventBinding
 import uk.co.zac_h.spacex.databinding.ListItemHistoryHeadingBinding
 import uk.co.zac_h.spacex.utils.animateFromRightWithOffset
@@ -15,7 +14,7 @@ import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 
 class HistoryAdapter(
     private var context: Context,
-    private var view: HistoryContract.View
+    private var openWebLink: (String) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var events: List<HistoryHeaderModel> = emptyList()
@@ -64,7 +63,7 @@ class HistoryAdapter(
                         startAnimation(animateFromRightWithOffset(this@HistoryAdapter.context, 240))
 
                         setOnClickListener {
-                            view.openWebLink(link)
+                            openWebLink(link)
                         }
                     } ?: run {
                         visibility = View.GONE

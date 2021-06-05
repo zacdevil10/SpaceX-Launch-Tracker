@@ -2,6 +2,7 @@ package uk.co.zac_h.spacex.base
 
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.MenuRes
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -70,4 +71,12 @@ abstract class BaseFragment : Fragment(),
         (activity as MainActivity).setSupportActionBar(this)
     }
 
+    open fun Toolbar.createOptionsMenu(@MenuRes menu: Int) {
+        this.apply {
+            inflateMenu(menu)
+            setOnMenuItemClickListener {
+                onOptionsItemSelected(it)
+            }
+        }
+    }
 }

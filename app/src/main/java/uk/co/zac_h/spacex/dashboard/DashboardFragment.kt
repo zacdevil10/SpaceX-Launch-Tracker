@@ -257,7 +257,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
                     binding.next.countdown.apply {
                         text = context.getString(R.string.watch_live_label)
                         setOnClickListener {
-                            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
+                            openWebLink(link)
                         }
                     }
                 }
