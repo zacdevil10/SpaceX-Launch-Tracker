@@ -25,7 +25,7 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
         const val CREW_KEY = "crew"
     }
 
-    override val title: String by lazy { requireContext().getString(R.string.menu_crew) }
+    override val title: String by lazy { getString(R.string.menu_crew) }
 
     private lateinit var binding: FragmentCrewBinding
 

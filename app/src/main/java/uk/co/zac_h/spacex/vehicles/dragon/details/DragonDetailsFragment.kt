@@ -74,20 +74,20 @@ class DragonDetailsFragment : BaseFragment() {
 
                 dragonDetailsCrewCapacityText.text = it.crewCapacity.toString()
                 dragonDetailsFirstFlightText.text = it.firstFlight
-                dragonDetailsDryMassText.text = requireContext().getString(
+                dragonDetailsDryMassText.text = getString(
                     R.string.mass_formatted,
                     it.dryMass?.kg,
                     it.dryMass?.lb
                 )
                 it.heightWithTrunk?.let { heightWithTrunk ->
-                    dragonDetailsHeightText.text = requireContext().getString(
+                    dragonDetailsHeightText.text = getString(
                         R.string.measurements,
                         heightWithTrunk.meters?.metricFormat(),
                         heightWithTrunk.feet?.metricFormat()
                     )
                 }
                 it.diameter?.let { diameter ->
-                    dragonDetailsDiameterText.text = requireContext().getString(
+                    dragonDetailsDiameterText.text = getString(
                         R.string.measurements,
                         diameter.meters?.metricFormat(),
                         diameter.feet?.metricFormat()
@@ -109,7 +109,7 @@ class DragonDetailsFragment : BaseFragment() {
                 }
 
                 it.launchPayloadMass?.let { launchPayloadMass ->
-                    dragonDetailsLaunchMassText.text = requireContext().getString(
+                    dragonDetailsLaunchMassText.text = getString(
                         R.string.mass_formatted,
                         launchPayloadMass.kg,
                         launchPayloadMass.lb
@@ -117,7 +117,7 @@ class DragonDetailsFragment : BaseFragment() {
                 }
 
                 it.returnPayloadMass?.let { returnPayloadMass ->
-                    dragonDetailsReturnMassText.text = requireContext().getString(
+                    dragonDetailsReturnMassText.text = getString(
                         R.string.mass_formatted,
                         returnPayloadMass.kg,
                         returnPayloadMass.lb
@@ -125,7 +125,7 @@ class DragonDetailsFragment : BaseFragment() {
                 }
 
                 it.launchPayloadVolume?.let { launchPayloadVolume ->
-                    dragonDetailsLaunchVolText.text = requireContext().getString(
+                    dragonDetailsLaunchVolText.text = getString(
                         R.string.volume_formatted,
                         launchPayloadVolume.cubicMeters?.metricFormat(),
                         launchPayloadVolume.cubicFeet?.metricFormat()
@@ -133,7 +133,7 @@ class DragonDetailsFragment : BaseFragment() {
                 }
 
                 it.returnPayloadVol?.let { returnPayloadVol ->
-                    dragonDetailsReturnVolText.text = requireContext().getString(
+                    dragonDetailsReturnVolText.text = getString(
                         R.string.volume_formatted,
                         returnPayloadVol.cubicMeters?.metricFormat(),
                         returnPayloadVol.cubicFeet?.metricFormat()
@@ -141,7 +141,7 @@ class DragonDetailsFragment : BaseFragment() {
                 }
 
                 it.pressurizedCapsule?.payloadVolume?.let { payloadVolume ->
-                    dragonDetailsPressurizedVolText.text = requireContext().getString(
+                    dragonDetailsPressurizedVolText.text = getString(
                         R.string.volume_formatted,
                         payloadVolume.cubicMeters?.metricFormat(),
                         payloadVolume.cubicFeet?.metricFormat()
@@ -149,7 +149,7 @@ class DragonDetailsFragment : BaseFragment() {
                 }
 
                 it.trunk?.trunkVolume?.let { trunkVolume ->
-                    dragonDetailsTrunkVolText.text = requireContext().getString(
+                    dragonDetailsTrunkVolText.text = getString(
                         R.string.volume_formatted,
                         trunkVolume.cubicMeters?.metricFormat(),
                         trunkVolume.cubicFeet?.metricFormat()

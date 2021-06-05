@@ -33,7 +33,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
         const val PINNED_KEY = "pinned"
     }
 
-    override val title: String by lazy { requireContext().getString(R.string.menu_home) }
+    override val title: String by lazy { getString(R.string.menu_home) }
 
     private lateinit var binding: FragmentDashboardBinding
 
@@ -196,8 +196,8 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
             dashboardLaunch.transitionName = response.id
 
             when (response.upcoming) {
-                true -> heading.text = requireContext().getString(R.string.next_launch)
-                false -> heading.text = requireContext().getString(R.string.latest_launch)
+                true -> heading.text = getString(R.string.next_launch)
+                false -> heading.text = getString(R.string.latest_launch)
             }
 
             missionPatch.let {
@@ -214,7 +214,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
             }
 
             flightNumber.text =
-                requireContext().getString(R.string.flight_number, response.flightNumber)
+                getString(R.string.flight_number, response.flightNumber)
 
             vehicle.text = response.rocket?.name
 

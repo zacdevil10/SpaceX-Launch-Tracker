@@ -45,7 +45,7 @@ class CapsuleDetailsFragment : BaseFragment() {
         view.doOnPreDraw { startPostponedEnterTransition() }
 
         with(binding) {
-            title = capsule?.serial ?: requireContext().getString(R.string.detail_capsule)
+            title = capsule?.serial ?: getString(R.string.detail_capsule)
             toolbarLayout.toolbar.setup()
 
             capsuleDetailsConstraint.transitionName = capsule?.id

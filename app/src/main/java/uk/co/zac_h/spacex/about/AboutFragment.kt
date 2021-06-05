@@ -11,7 +11,7 @@ import uk.co.zac_h.spacex.databinding.FragmentAboutBinding
 
 class AboutFragment : BaseFragment() {
 
-    override val title: String by lazy { requireContext().getString(R.string.menu_about) }
+    override val title: String by lazy { getString(R.string.menu_about) }
 
     private lateinit var binding: FragmentAboutBinding
 
@@ -29,8 +29,7 @@ class AboutFragment : BaseFragment() {
             toolbarLayout.toolbar.setup()
             toolbarLayout.progress.hide()
 
-            aboutVersion.text =
-                requireContext().getString(R.string.version_name, BuildConfig.VERSION_NAME)
+            aboutVersion.text = getString(R.string.version_name, BuildConfig.VERSION_NAME)
         }
     }
 }

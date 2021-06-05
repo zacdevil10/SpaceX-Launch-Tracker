@@ -15,7 +15,7 @@ import uk.co.zac_h.spacex.utils.ViewPagerAdapter
 
 class NewsFragment : BaseFragment() {
 
-    override val title: String by lazy { requireContext().getString(R.string.menu_news) }
+    override val title: String by lazy { getString(R.string.menu_news) }
 
     private lateinit var binding: FragmentNewsBinding
     private lateinit var toolbarBinding: ToolbarTabBinding
