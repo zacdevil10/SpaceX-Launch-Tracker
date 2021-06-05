@@ -199,7 +199,7 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
         }
 
         binding.launchHistoryPieChart.apply {
-            this.centerText = requireContext().getString(R.string.pie_chart_title, "2006 - 2020")
+            this.centerText = getString(R.string.pie_chart_title, "2006 - 2020")
                 .generateCenterSpannableText()
             this.data = pieData
             if (data == true) animateY(1400, Easing.EaseInOutCubic) else invalidate()
@@ -213,19 +213,19 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
                     animateProgress(animate, it.successRate, binding.falconOneRateProgress)
 
                     binding.falconOnePercentText.text =
-                        requireContext().getString(R.string.percentage, it.successRate)
+                        getString(R.string.percentage, it.successRate)
                 }
                 RocketType.FALCON_NINE -> {
                     animateProgress(animate, it.successRate, binding.falconNineRateProgress)
 
                     binding.falconNinePercentText.text =
-                        requireContext().getString(R.string.percentage, it.successRate)
+                        getString(R.string.percentage, it.successRate)
                 }
                 RocketType.FALCON_HEAVY -> {
                     animateProgress(animate, it.successRate, binding.falconHeavyRateProgress)
 
                     binding.falconHeavyPercentText.text =
-                        requireContext().getString(R.string.percentage, it.successRate)
+                        getString(R.string.percentage, it.successRate)
                 }
             }
         }

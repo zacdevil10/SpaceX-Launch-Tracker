@@ -83,7 +83,7 @@ class ShipDetailsFragment : BaseFragment() {
                 }
 
                 it.mass?.let { mass ->
-                    shipDetailsMassText.text = requireContext().getString(
+                    shipDetailsMassText.text = getString(
                         R.string.mass_formatted,
                         mass.kg,
                         mass.lb

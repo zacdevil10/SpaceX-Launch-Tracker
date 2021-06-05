@@ -48,25 +48,25 @@ abstract class BaseFragment : Fragment(),
         applicationContext.networkStateChangeListener.removeListener(this)
     }
 
-    fun Toolbar.setup() {
+    protected fun Toolbar.setup() {
         this.apply {
             setupWithNavController(navController, appBarConfig)
             title = this@BaseFragment.title
         }
     }
 
-    fun Toolbar.setupWithTabLayout(tabLayout: TabLayout, tabLayoutMode: Int) {
+    protected fun Toolbar.setupWithTabLayout(tabLayout: TabLayout, tabLayoutMode: Int) {
         this.setup()
         tabLayout.tabMode = tabLayoutMode
 
     }
 
-    fun setup(toolbar: Toolbar, toolbarLayout: CollapsingToolbarLayout) {
+    protected fun setup(toolbar: Toolbar, toolbarLayout: CollapsingToolbarLayout) {
         NavigationUI.setupWithNavController(toolbarLayout, toolbar, navController, appBarConfig)
         toolbar.title = title
     }
 
-    fun Toolbar.setSupportActionBar() {
+    protected fun Toolbar.setSupportActionBar() {
         (activity as MainActivity).setSupportActionBar(this)
     }
 

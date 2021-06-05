@@ -157,7 +157,7 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
                     })
                     .into(launchDetailsMissionPatchImage)
 
-                launchDetailsNumberText.text = requireContext().getString(
+                launchDetailsNumberText.text = getString(
                     R.string.flight_number,
                     it.flightNumber
                 )

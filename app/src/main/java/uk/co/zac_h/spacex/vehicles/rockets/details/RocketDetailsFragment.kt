@@ -71,26 +71,26 @@ class RocketDetailsFragment : BaseFragment() {
 
                 rocketDetailsCostText.text = it.costPerLaunch
                 rocketDetailsSuccessText.text =
-                    requireContext().getString(R.string.percentage, it.successRate)
+                    getString(R.string.percentage, it.successRate)
                 rocketDetailsFirstFlightText.text = it.firstFlight
                 rocketDetailsStagesText.text = it.stages.toString()
 
                 it.height?.let { height ->
-                    rocketDetailsHeightText.text = requireContext().getString(
+                    rocketDetailsHeightText.text = getString(
                         R.string.measurements,
                         height.meters?.metricFormat(),
                         height.feet?.metricFormat()
                     )
                 }
                 it.diameter?.let { diameter ->
-                    rocketDetailsDiameterText.text = requireContext().getString(
+                    rocketDetailsDiameterText.text = getString(
                         R.string.measurements,
                         diameter.meters?.metricFormat(),
                         diameter.feet?.metricFormat()
                     )
                 }
                 it.mass?.let { mass ->
-                    rocketDetailsMassText.text = requireContext().getString(
+                    rocketDetailsMassText.text = getString(
                         R.string.mass_formatted,
                         mass.kg,
                         mass.lb
@@ -110,21 +110,20 @@ class RocketDetailsFragment : BaseFragment() {
                     }
 
                     rocketDetailsEnginesFirstText.text = firstStage.engines.toString()
-                    rocketDetailsFuelFirstText.text = requireContext().getString(
+                    rocketDetailsFuelFirstText.text = getString(
                         R.string.ton_format,
                         firstStage.fuelAmountTons?.metricFormat()
                     )
-                    rocketDetailsBurnFirstText.text =
-                        requireContext().getString(
-                            R.string.seconds_format,
-                            firstStage.burnTimeSec ?: 0
-                        )
-                    rocketDetailsThrustSeaText.text = requireContext().getString(
+                    rocketDetailsBurnFirstText.text = getString(
+                        R.string.seconds_format,
+                        firstStage.burnTimeSec ?: 0
+                    )
+                    rocketDetailsThrustSeaText.text = getString(
                         R.string.thrust,
                         firstStage.thrustSeaLevel?.kN?.metricFormat(),
                         firstStage.thrustSeaLevel?.lbf?.metricFormat()
                     )
-                    rocketDetailsThrustVacText.text = requireContext().getString(
+                    rocketDetailsThrustVacText.text = getString(
                         R.string.thrust,
                         firstStage.thrustVacuum?.kN?.metricFormat(),
                         firstStage.thrustVacuum?.lbf?.metricFormat()
@@ -133,15 +132,15 @@ class RocketDetailsFragment : BaseFragment() {
 
                 it.secondStage?.let { secondStage ->
                     rocketDetailsEnginesSecondText.text = secondStage.engines.toString()
-                    rocketDetailsFuelSecondText.text = requireContext().getString(
+                    rocketDetailsFuelSecondText.text = getString(
                         R.string.ton_format,
                         secondStage.fuelAmountTons?.metricFormat()
                     )
-                    rocketDetailsBurnSecondText.text = requireContext().getString(
+                    rocketDetailsBurnSecondText.text = getString(
                         R.string.seconds_format,
                         secondStage.burnTimeSec ?: 0
                     )
-                    rocketDetailsThrustSecondText.text = requireContext().getString(
+                    rocketDetailsThrustSecondText.text = getString(
                         R.string.thrust,
                         secondStage.thrust?.kN?.metricFormat(),
                         secondStage.thrust?.lbf?.metricFormat()
