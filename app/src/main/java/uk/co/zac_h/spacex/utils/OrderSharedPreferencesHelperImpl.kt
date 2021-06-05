@@ -16,10 +16,7 @@ class OrderSharedPreferencesHelperImpl(private val preferences: SharedPreference
 
         fun build(context: Context): OrderSharedPreferencesHelperImpl =
             OrderSharedPreferencesHelperImpl(
-                context.getSharedPreferences(
-                    "order",
-                    Context.MODE_PRIVATE
-                )
+                context.getSharedPreferences("order", Context.MODE_PRIVATE)
             )
 
     }

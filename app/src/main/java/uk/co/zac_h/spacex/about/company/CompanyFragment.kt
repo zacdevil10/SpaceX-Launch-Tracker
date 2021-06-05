@@ -17,7 +17,7 @@ import uk.co.zac_h.spacex.utils.ApiState
 
 class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
 
-    override val title: String by lazy { requireContext().getString(R.string.menu_company) }
+    override val title: String by lazy { getString(R.string.menu_company) }
 
     private lateinit var binding: FragmentCompanyBinding
 
