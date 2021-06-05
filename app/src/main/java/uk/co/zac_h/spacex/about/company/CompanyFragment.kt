@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
@@ -23,6 +24,12 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
     private var presenter: NetworkInterface.Presenter<Company?>? = null
 
     private var companyInfo: Company? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        companyInfo = savedInstanceState?.getParcelable(COMPANY_INFO)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +48,11 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
         presenter?.getOrUpdate(companyInfo)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putParcelable(COMPANY_INFO, companyInfo)
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
@@ -51,8 +63,7 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
         companyInfo = response
         with(binding) {
             response.headquarters?.let {
-                companyAddress.text =
-                    requireContext().getString(R.string.address, it.address, it.city, it.state)
+                companyAddress.text = getString(R.string.address, it.address, it.city, it.state)
             }
 
             companyWebsite.setOnClickListener { openWebLink(response.website) }
@@ -60,8 +71,7 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
             companyAlbum.setOnClickListener { openWebLink(response.flickr) }
 
             companySummary.text = response.summary
-            companyFounded.text =
-                requireContext().getString(R.string.founded, response.founder, response.founded)
+            companyFounded.text = getString(R.string.founded, response.founder, response.founded)
             companyCeo.text = response.ceo
             companyCto.text = response.cto
             companyCoo.text = response.coo
@@ -88,13 +98,18 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
 
     override fun showError(error: String) {
         apiState = ApiState.FAILED
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
         when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> presenter?.getOrUpdate(null)
+            ApiState.PENDING, ApiState.FAILED -> presenter?.getOrUpdate(companyInfo)
             ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
+    }
+
+    companion object {
+        const val COMPANY_INFO = "company_info_saved"
     }
 
 }
