@@ -1,8 +1,11 @@
 package uk.co.zac_h.spacex.launches
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
@@ -10,6 +13,7 @@ import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.model.spacex.Launch
+import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import java.util.*
 import kotlin.collections.ArrayList
@@ -31,10 +35,8 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
 
     companion object {
         fun newInstance(launchParam: String) = LaunchesListFragment().apply {
-            arguments = Bundle().apply {
-                putString("launchParam", launchParam)
-                title = launchParam
-            }
+            arguments = bundleOf("launchParam" to launchParam)
+            title = launchParam
         }
     }
 
@@ -58,8 +60,6 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
-
         launchParam = arguments?.getString("launchParam")
 
         presenter = LaunchesPresenterImpl(this, LaunchesInteractorImpl())
@@ -74,21 +74,12 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
 
         launchParam?.let { launchId ->
             binding.swipeRefresh.setOnRefreshListener {
+                apiState = ApiState.PENDING
                 presenter?.get(launchId)
             }
 
             if (launches.isEmpty()) presenter?.get(launchId)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        binding.swipeRefresh.isEnabled = true
-    }
-
-    override fun onPause() {
-        super.onPause()
-        binding.swipeRefresh.isEnabled = false
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -127,6 +118,7 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
     }
 
     override fun update(response: List<Launch>) {
+        apiState = ApiState.SUCCESS
         launches.clear()
         launches.addAll(response)
 
@@ -137,25 +129,26 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
     }
 
     override fun showProgress() {
-
+        binding.progress.show()
     }
 
     override fun hideProgress() {
-
+        binding.progress.hide()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
         binding.swipeRefresh.isRefreshing = isRefreshing
     }
 
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding.let {
-                if (launches.isEmpty())
-                    launchParam?.let { launchId ->
-                        presenter?.get(launchId)
-                    }
-            }
+        when (apiState) {
+            ApiState.PENDING, ApiState.FAILED -> launchParam?.let { presenter?.get(it) }
+            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }
