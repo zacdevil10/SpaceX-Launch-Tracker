@@ -6,14 +6,14 @@ import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class LaunchesInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<Launch>?> {
+class LaunchesInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<Launch>> {
 
     private var call: Call<LaunchDocsModel>? = null
 
     override fun get(
         data: Any,
         api: SpaceXInterface,
-        listener: NetworkInterface.Callback<List<Launch>?>
+        listener: NetworkInterface.Callback<List<Launch>>
     ) {
         val query = QueryModel(
             query = QueryUpcomingLaunchesModel(data == "upcoming"),
@@ -65,7 +65,7 @@ class LaunchesInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<L
         call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess = { response ->
-                    listener.onSuccess(response.body()?.docs?.map { Launch(it) })
+                    response.body()?.docs?.map { Launch(it) }?.let { listener.onSuccess(it) }
                 }
                 onResponseFailure = { listener.onError(it) }
             }
