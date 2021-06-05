@@ -14,7 +14,7 @@ import uk.co.zac_h.spacex.utils.ViewPagerAdapter
 
 class LaunchesFragment : BaseFragment() {
 
-    override var title: String = "Launches"
+    override val title: String by lazy { getString(R.string.menu_launches) }
 
     private lateinit var binding: FragmentLaunchesBinding
     private lateinit var toolbarBinding: ToolbarTabBinding
