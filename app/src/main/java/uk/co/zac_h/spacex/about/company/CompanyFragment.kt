@@ -14,6 +14,7 @@ import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCompanyBinding
 import uk.co.zac_h.spacex.model.spacex.Company
 import uk.co.zac_h.spacex.utils.ApiState
+import uk.co.zac_h.spacex.utils.Keys.CompanyKeys
 
 class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
 
@@ -28,7 +29,7 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        companyInfo = savedInstanceState?.getParcelable(COMPANY_INFO)
+        companyInfo = savedInstanceState?.getParcelable(CompanyKeys.COMPANY_INFO)
     }
 
     override fun onCreateView(
@@ -49,7 +50,7 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable(COMPANY_INFO, companyInfo)
+        outState.putParcelable(CompanyKeys.COMPANY_INFO, companyInfo)
         super.onSaveInstanceState(outState)
     }
 
@@ -106,10 +107,6 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
             ApiState.PENDING, ApiState.FAILED -> presenter?.getOrUpdate(companyInfo)
             ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
-    }
-
-    companion object {
-        const val COMPANY_INFO = "company_info_saved"
     }
 
 }

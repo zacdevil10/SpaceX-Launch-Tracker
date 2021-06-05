@@ -12,7 +12,7 @@ import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentHistoryBinding
 import uk.co.zac_h.spacex.utils.ApiState
-import uk.co.zac_h.spacex.utils.Keys
+import uk.co.zac_h.spacex.utils.Keys.HistoryKeys
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.views.HeaderItemDecoration
@@ -32,7 +32,7 @@ class HistoryFragment : BaseFragment(), HistoryContract.View {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        history = savedInstanceState?.getParcelableArrayList(Keys.HISTORY.HISTORY_KEY)
+        history = savedInstanceState?.getParcelableArrayList(HistoryKeys.HISTORY_SAVED_STATE)
     }
 
     override fun onCreateView(
@@ -79,7 +79,7 @@ class HistoryFragment : BaseFragment(), HistoryContract.View {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(Keys.HISTORY.HISTORY_KEY, history)
+        outState.putParcelableArrayList(HistoryKeys.HISTORY_SAVED_STATE, history)
         super.onSaveInstanceState(outState)
     }
 

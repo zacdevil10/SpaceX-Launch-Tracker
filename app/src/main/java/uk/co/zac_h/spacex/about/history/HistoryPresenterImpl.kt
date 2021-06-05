@@ -3,8 +3,8 @@ package uk.co.zac_h.spacex.about.history
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.History
 import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.utils.Keys.HistoryKeys
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
-import uk.co.zac_h.spacex.utils.Keys
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.splitHistoryListByDate
 
@@ -19,7 +19,7 @@ class HistoryPresenterImpl(
     override fun get(api: SpaceXInterface) {
         view.showProgress()
         interactor.get(
-            if (getOrder()) Keys.HISTORY.ORDER_DESCENDING else Keys.HISTORY.ORDER_ASCENDING,
+            if (getOrder()) HistoryKeys.ORDER_DESCENDING else HistoryKeys.ORDER_ASCENDING,
             api,
             this
         )
@@ -55,9 +55,9 @@ class HistoryPresenterImpl(
         }
     }
 
-    override fun getOrder(): Boolean = orderSharedPreferences.isSortedNew(Keys.HISTORY.HISTORY_KEY)
+    override fun getOrder(): Boolean = orderSharedPreferences.isSortedNew(HistoryKeys.HISTORY_ORDER)
 
     override fun setOrder(order: Boolean) {
-        orderSharedPreferences.setSortOrder(Keys.HISTORY.HISTORY_KEY, order)
+        orderSharedPreferences.setSortOrder(HistoryKeys.HISTORY_ORDER, order)
     }
 }
