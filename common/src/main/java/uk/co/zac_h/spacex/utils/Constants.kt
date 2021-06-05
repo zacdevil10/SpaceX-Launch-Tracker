@@ -512,8 +512,12 @@ const val LAUNCH_SHORT_KEY = "launch_short"
 Keys =========================================================================
 =========================================================================================>*/
 object Keys {
-    object HISTORY {
-        const val HISTORY_KEY = "history"
+    object CompanyKeys {
+        const val COMPANY_INFO = "company_info_saved"
+    }
+    object HistoryKeys {
+        const val HISTORY_SAVED_STATE = "history_saved"
+        const val HISTORY_ORDER = "history"
         const val ORDER_ASCENDING = "asc"
         const val ORDER_DESCENDING = "desc"
     }
