@@ -67,9 +67,18 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
                 companyAddress.text = getString(R.string.address, it.address, it.city, it.state)
             }
 
-            companyWebsite.setOnClickListener { openWebLink(response.website) }
-            companyTwitter.setOnClickListener { openWebLink(response.twitter) }
-            companyAlbum.setOnClickListener { openWebLink(response.flickr) }
+            response.website?.let { website ->
+                companyWebsite.visibility = View.VISIBLE
+                companyWebsite.setOnClickListener { openWebLink(website) }
+            }
+            response.twitter?.let { twitter ->
+                companyTwitter.visibility = View.VISIBLE
+                companyTwitter.setOnClickListener { openWebLink(twitter) }
+            }
+            response.flickr?.let { flickr ->
+                companyAlbum.visibility = View.VISIBLE
+                companyAlbum.setOnClickListener { openWebLink(flickr) }
+            }
 
             companySummary.text = response.summary
             companyFounded.text = getString(R.string.founded, response.founder, response.founded)
@@ -78,14 +87,14 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
             companyCoo.text = response.coo
             companyCtoPro.text = response.ctoPropulsion
             companyValuation.text = response.valuation
-            companyEmployees.text = response.employees.toString()
-            companyVehicles.text = response.vehicles.toString()
-            companyLaunchSites.text = response.launchSites.toString()
-            companyTestSites.text = response.testSites.toString()
+            companyEmployees.text = response.employees
+            companyVehicles.text = response.vehicles
+            companyLaunchSites.text = response.launchSites
+            companyTestSites.text = response.testSites
         }
     }
 
-    fun openWebLink(link: String?) {
+    fun openWebLink(link: String) {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 

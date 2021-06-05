@@ -7,15 +7,15 @@ import uk.co.zac_h.spacex.model.spacex.CompanyResponse
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class CompanyInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<Company?> {
+class CompanyInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<Company> {
 
     private var call: Call<CompanyResponse>? = null
 
-    override fun get(api: SpaceXInterface, listener: NetworkInterface.Callback<Company?>) {
+    override fun get(api: SpaceXInterface, listener: NetworkInterface.Callback<Company>) {
         call = api.getCompanyInfo().apply {
             makeCall {
-                onResponseSuccess = {
-                    listener.onSuccess(it.body()?.let { response -> Company(response) })
+                onResponseSuccess = { response ->
+                    response.body()?.let { Company(it) }?.let { listener.onSuccess(it) }
                 }
                 onResponseFailure = { listener.onError(it) }
             }

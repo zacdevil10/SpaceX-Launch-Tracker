@@ -6,24 +6,26 @@ import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class CompanyPresenterImpl(
     private val view: NetworkInterface.View<Company>,
-    private val interactor: NetworkInterface.Interactor<Company?>
-) : NetworkInterface.Presenter<Company?>, NetworkInterface.Callback<Company?> {
+    private val interactor: NetworkInterface.Interactor<Company>
+) : NetworkInterface.Presenter<Company?>, NetworkInterface.Callback<Company> {
+
+    override fun get(api: SpaceXInterface) {
+        view.showProgress()
+        interactor.get(api, this)
+    }
 
     override fun getOrUpdate(response: Company?, api: SpaceXInterface) {
-        view.showProgress()
-        response?.let { onSuccess(it) } ?: interactor.get(api, this)
+        response?.let { onSuccess(it) } ?: super.getOrUpdate(response, api)
     }
 
     override fun cancelRequest() {
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(response: Company?) {
-        response?.let {
-            view.apply {
-                update(it)
-                hideProgress()
-            }
+    override fun onSuccess(response: Company) {
+        view.apply {
+            hideProgress()
+            update(response)
         }
     }
 
