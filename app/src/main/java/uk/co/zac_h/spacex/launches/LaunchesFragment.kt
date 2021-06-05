@@ -38,8 +38,10 @@ class LaunchesFragment : BaseFragment() {
 
         postponeEnterTransition()
 
-        (activity as MainActivity).setSupportActionBar(toolbarBinding.toolbar)
-        toolbarBinding.toolbar.setup()
+        toolbarBinding.toolbar.apply {
+            setSupportActionBar()
+            setup()
+        }
 
         binding.launchesViewPager.adapter = ViewPagerAdapter(childFragmentManager, fragments)
 
