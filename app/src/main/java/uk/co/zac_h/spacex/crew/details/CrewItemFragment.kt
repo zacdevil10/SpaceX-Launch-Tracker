@@ -34,10 +34,8 @@ class CrewItemFragment : Fragment() {
     companion object {
         const val CREW_KEY = "crew"
 
-        fun newInstance(crew: Crew): Fragment {
-            return CrewItemFragment().apply {
-                arguments = bundleOf(CREW_KEY to crew)
-            }
+        fun newInstance(crew: Crew): Fragment = CrewItemFragment().apply {
+            arguments = bundleOf(CREW_KEY to crew)
         }
     }
 
