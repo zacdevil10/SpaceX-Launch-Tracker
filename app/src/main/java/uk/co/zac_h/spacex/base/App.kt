@@ -2,9 +2,6 @@ package uk.co.zac_h.spacex.base
 
 import android.app.Application
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import androidx.fragment.app.Fragment
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.utils.repo.DashboardPreferencesRepository
