@@ -323,3 +323,7 @@ enum class DatePrecision(val precision: String) {
     DAY("dd MMM yyyy"),
     HOUR("dd MMM yy - HH:mm zzz")
 }
+
+enum class Upcoming(val text: String, val upcoming: Boolean) {
+    NEXT("next", true), LATEST("latest", false)
+}

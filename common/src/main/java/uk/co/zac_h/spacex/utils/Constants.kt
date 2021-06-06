@@ -525,4 +525,9 @@ object Keys {
         const val CREW_ARGS = "crew_args"
         const val CREW_SAVED_STATE = "crew_saved"
     }
+    object DashboardKeys {
+        const val NEXT_SAVED_STATE = "next_saved"
+        const val LATEST_SAVED_STATE = "latest_saved"
+        const val PINNED_SAVED_STATE = "pinned_saved"
+    }
 }

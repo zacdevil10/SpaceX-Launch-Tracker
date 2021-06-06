@@ -2,15 +2,16 @@ package uk.co.zac_h.spacex.dashboard
 
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.Launch
+import uk.co.zac_h.spacex.model.spacex.Upcoming
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.SPACEX_BASE_URL_V5
 import java.util.concurrent.TimeUnit
 
 class DashboardPresenterImpl(
     private val view: DashboardContract.View,
-    private val interactor: NetworkInterface.Interactor<Launch?>
+    private val interactor: NetworkInterface.Interactor<Launch>
 ) : DashboardContract.Presenter,
-    NetworkInterface.Callback<Launch?> {
+    NetworkInterface.Callback<Launch> {
 
     override fun getLatestLaunches(
         next: Launch?,
@@ -20,13 +21,13 @@ class DashboardPresenterImpl(
         interactor.apply {
             if (next == null) {
                 view.toggleNextProgress(true)
-                get("next", SpaceXInterface.create(SPACEX_BASE_URL_V5), this@DashboardPresenterImpl)
-            } else onSuccess("next", next)
+                get(Upcoming.NEXT, api, this@DashboardPresenterImpl)
+            } else onSuccess(Upcoming.NEXT, next)
 
             if (latest == null) {
                 view.toggleLatestProgress(true)
-                get("latest", SpaceXInterface.create(SPACEX_BASE_URL_V5), this@DashboardPresenterImpl)
-            } else onSuccess("latest", latest)
+                get(Upcoming.LATEST, api, this@DashboardPresenterImpl)
+            } else onSuccess(Upcoming.LATEST, latest)
         }
     }
 
@@ -75,32 +76,30 @@ class DashboardPresenterImpl(
         }
     }
 
-    override fun onSuccess(data: Any, response: Launch?) {
-        response?.let { launch ->
-            when (data as String) {
-                "next" -> {
-                    view.toggleNextProgress(false)
-                    val time =
-                        (launch.launchDate?.dateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
-                    if (launch.tbd == false && time >= 0) view.apply {
-                        setCountdown(time)
-                        showCountdown()
-                        hideNextHeading()
-                    } else view.apply {
-                        hideCountdown()
-                        showNextHeading()
-                    }
-                }
-                "latest" -> {
-                    view.toggleLatestProgress(false)
-                }
-                else -> {
-                    view.hidePinnedMessage()
-                    view.togglePinnedProgress(false)
+    override fun onSuccess(data: Any, response: Launch) {
+        when (data) {
+            Upcoming.NEXT -> {
+                view.toggleNextProgress(false)
+                val time =
+                    (response.launchDate?.dateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
+                if (response.tbd == false && time >= 0) view.apply {
+                    setCountdown(time)
+                    showCountdown()
+                    hideNextHeading()
+                } else view.apply {
+                    hideCountdown()
+                    showNextHeading()
                 }
             }
-            view.update(data, launch)
+            Upcoming.LATEST -> {
+                view.toggleLatestProgress(false)
+            }
+            else -> {
+                view.hidePinnedMessage()
+                view.togglePinnedProgress(false)
+            }
         }
+        view.update(data, response)
         view.toggleSwipeRefresh(false)
     }
 
