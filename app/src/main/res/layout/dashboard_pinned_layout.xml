@@ -18,8 +18,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:elevation="@dimen/card_elevation"
+        android:indeterminate="true"
+        app:hideAnimationBehavior="inward"
         app:indicatorColor="?colorSecondary"
-        app:layout_constraintBottom_toBottomOf="@id/toolbar" />
+        app:layout_constraintBottom_toBottomOf="@id/toolbar"
+        app:showAnimationBehavior="outward" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
