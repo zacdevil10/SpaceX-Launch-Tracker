@@ -521,4 +521,8 @@ object Keys {
         const val ORDER_ASCENDING = "asc"
         const val ORDER_DESCENDING = "desc"
     }
+    object CrewKeys {
+        const val CREW_ARGS = "crew_args"
+        const val CREW_SAVED_STATE = "crew_saved"
+    }
 }

@@ -16,6 +16,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.GridItemCrewBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
+import uk.co.zac_h.spacex.utils.Keys.CrewKeys
 
 class CrewAdapter(var crew: List<Crew>, val startTransition: (() -> Unit)? = null) :
     RecyclerView.Adapter<CrewAdapter.ViewHolder>() {
@@ -75,7 +76,7 @@ class CrewAdapter(var crew: List<Crew>, val startTransition: (() -> Unit)? = nul
         fun bind(person: Crew) {
             binding.root.findNavController().navigate(
                 R.id.action_crew_fragment_to_crew_details_fragment,
-                bundleOf("crew" to crew, "position" to adapterPosition),
+                bundleOf(CrewKeys.CREW_ARGS to crew),
                 null,
                 FragmentNavigatorExtras(binding.root to person.id)
             )

@@ -21,6 +21,7 @@ import uk.co.zac_h.spacex.crew.adapters.CrewMissionsAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewItemBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.model.spacex.CrewStatus
+import uk.co.zac_h.spacex.utils.Keys.CrewKeys
 import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_ACTIVE
 import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_INACTIVE
 import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_RETIRED
@@ -32,10 +33,8 @@ class CrewItemFragment : Fragment() {
     private lateinit var binding: FragmentCrewItemBinding
 
     companion object {
-        const val CREW_KEY = "crew"
-
         fun newInstance(crew: Crew): Fragment = CrewItemFragment().apply {
-            arguments = bundleOf(CREW_KEY to crew)
+            arguments = bundleOf(CrewKeys.CREW_ARGS to crew)
         }
     }
 
@@ -49,7 +48,7 @@ class CrewItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val person = arguments?.getParcelable<Crew>(CREW_KEY)
+        val person = arguments?.getParcelable<Crew>(CrewKeys.CREW_ARGS)
 
         with(binding) {
             itemCrewConstraint.transitionName = person?.id

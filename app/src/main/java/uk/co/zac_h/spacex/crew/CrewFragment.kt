@@ -16,14 +16,11 @@ import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.utils.ApiState
+import uk.co.zac_h.spacex.utils.Keys.CrewKeys
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.clearAndAdd
 
 class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
-
-    companion object {
-        const val CREW_KEY = "crew"
-    }
 
     override val title: String by lazy { getString(R.string.menu_crew) }
 
@@ -37,7 +34,7 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        crewArray = savedInstanceState?.getParcelableArrayList(CREW_KEY) ?: ArrayList()
+        crewArray = savedInstanceState?.getParcelableArrayList(CrewKeys.CREW_SAVED_STATE) ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -106,7 +103,7 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(CREW_KEY, crewArray)
+        outState.putParcelableArrayList(CrewKeys.CREW_SAVED_STATE, crewArray)
         super.onSaveInstanceState(outState)
     }
 
