@@ -67,3 +67,5 @@ fun String.formatWithUrls(
 
     return message
 }
+
+fun String?.orUnknown(): String = this ?: "Unknown"

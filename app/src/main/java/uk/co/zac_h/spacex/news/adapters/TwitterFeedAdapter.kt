@@ -25,7 +25,7 @@ import uk.co.zac_h.spacex.utils.formatWithUrls
 import uk.co.zac_h.spacex.utils.views.HtmlTextView
 
 class TwitterFeedAdapter(
-    private val context: Context?,
+    private val context: Context,
     private val twitterFeed: ArrayList<TimelineTweetModel>,
     private val view: TwitterFeedContract.TwitterFeedView
 ) :
@@ -55,7 +55,7 @@ class TwitterFeedAdapter(
             date.text = tweet.created.dateStringToMillis()?.convertDate()
             name.text = tweet.user.name
             screenName.text =
-                context?.getString(R.string.screen_name, tweet.user.screenName)
+                context.getString(R.string.screen_name, tweet.user.screenName)
 
             desc.apply {
                 tweet.text?.formatWithUrls(
@@ -99,7 +99,7 @@ class TwitterFeedAdapter(
                 quoteDate.text = quoted.created?.dateStringToMillis()?.convertDate()
                 quoteName.text = quoted.user?.name
                 quoteScreenName.text =
-                    context?.getString(R.string.screen_name, quoted.user?.screenName)
+                    context.getString(R.string.screen_name, quoted.user?.screenName)
                 quoteDesc.apply {
                     quoted.text?.formatWithUrls(null, null, null)?.let {
                         setHtmlText(it)

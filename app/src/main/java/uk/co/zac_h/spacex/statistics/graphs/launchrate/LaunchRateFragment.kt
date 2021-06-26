@@ -29,8 +29,7 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
 
     override val title: String by lazy { Statistics.LAUNCH_RATE.title }
 
-    private var _binding: FragmentLaunchRateBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentLaunchRateBinding
 
     private var heading: String? = null
 
@@ -56,8 +55,8 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchRateBinding.inflate(inflater, container, false).apply {
-        _binding = this
         _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -66,7 +65,7 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        toolbarBinding.toolbar.apply {
+        _toolbarBinding.toolbar.apply {
             setSupportActionBar()
             setup()
         }
@@ -75,10 +74,10 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
 
         presenter = LaunchRatePresenterImpl(this, LaunchRateInteractorImpl())
 
-        keyAdapter = StatisticsKeyAdapter(context, keys, false)
+        keyAdapter = StatisticsKeyAdapter(requireContext(), keys, false)
 
         binding.statisticsBarChart.recycler.apply {
-            layoutManager = LinearLayoutManager(this@LaunchRateFragment.context)
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = keyAdapter
         }
 
@@ -141,7 +140,6 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -217,11 +215,11 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
     }
 
     override fun showProgress() {
-        toolbarBinding.progress.show()
+        _toolbarBinding.progress.show()
     }
 
     override fun hideProgress() {
-        toolbarBinding.progress.hide()
+        _toolbarBinding.progress.hide()
     }
 
     override fun showError(error: String) {

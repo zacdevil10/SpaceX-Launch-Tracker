@@ -12,7 +12,7 @@ import uk.co.zac_h.spacex.databinding.ListItemMissionBinding
 import uk.co.zac_h.spacex.model.spacex.Launch
 
 class MissionsAdapter(
-    private val context: Context?,
+    private val context: Context,
     private val launches: List<Launch>
 ) : RecyclerView.Adapter<MissionsAdapter.ViewHolder>() {
 
@@ -31,7 +31,7 @@ class MissionsAdapter(
             root.transitionName = launch.id
             missionName.text = launch.missionName
             missionFlightNumber.text =
-                context?.getString(R.string.flight_number, launch.flightNumber)
+                context.getString(R.string.flight_number, launch.flightNumber)
 
             root.setOnClickListener {
                 root.findNavController().navigate(

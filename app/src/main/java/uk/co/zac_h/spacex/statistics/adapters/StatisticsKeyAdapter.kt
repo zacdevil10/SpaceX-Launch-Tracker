@@ -10,7 +10,7 @@ import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.models.KeysModel
 
 class StatisticsKeyAdapter(
-    private val context: Context?,
+    private val context: Context,
     private var keys: ArrayList<KeysModel>,
     private val format: Boolean
 ) :
@@ -26,7 +26,7 @@ class StatisticsKeyAdapter(
 
         holder.binding.apply {
             listItemKeyLabel.text = key.label
-            listItemKeyValue.text = if (format) context?.getString(
+            listItemKeyValue.text = if (format) context.getString(
                 R.string.mass_kg,
                 key.value.metricFormat()
             ) else key.value.toInt().toString()

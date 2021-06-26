@@ -6,14 +6,14 @@ import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class LaunchDetailsInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<Launch?> {
+class LaunchDetailsInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<Launch> {
 
     private var call: Call<LaunchDocsModel>? = null
 
     override fun get(
         data: Any,
         api: SpaceXInterface,
-        listener: NetworkInterface.Callback<Launch?>
+        listener: NetworkInterface.Callback<Launch>
     ) {
         val populateList = listOf(
             QueryPopulateModel("launchpad", select = listOf("name"), populate = ""),
@@ -47,7 +47,9 @@ class LaunchDetailsInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<L
         call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess = { response ->
-                    listener.onSuccess(response.body()?.docs?.get(0)?.let { Launch(it) })
+                    response.body()?.docs?.get(0)
+                        ?.let { Launch(it) }
+                        ?.let { listener.onSuccess(it) }
                 }
                 onResponseFailure = { listener.onError(it) }
             }

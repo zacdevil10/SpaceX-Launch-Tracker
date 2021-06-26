@@ -20,8 +20,7 @@ class ShipDetailsFragment : BaseFragment() {
 
     override var title: String = ""
 
-    private var _binding: FragmentShipDetailsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentShipDetailsBinding
 
     private var ship: Ship? = null
 
@@ -37,8 +36,8 @@ class ShipDetailsFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentShipDetailsBinding.inflate(inflater, container, false).apply {
-        _binding = this
         _collapsingToolbarBinding = CollapsingToolbarBinding.bind(binding.root)
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,7 +47,7 @@ class ShipDetailsFragment : BaseFragment() {
         view.doOnPreDraw { startPostponedEnterTransition() }
 
         title = ship?.name ?: ""
-        setup(collapsingToolbarBinding.toolbar, collapsingToolbarBinding.toolbarLayout)
+        setup(_collapsingToolbarBinding.toolbar, _collapsingToolbarBinding.toolbarLayout)
 
         with(binding) {
 
@@ -58,7 +57,7 @@ class ShipDetailsFragment : BaseFragment() {
                 Glide.with(view)
                     .load(it.image)
                     .error(R.drawable.ic_baseline_error_outline_24)
-                    .into(collapsingToolbarBinding.header)
+                    .into(_collapsingToolbarBinding.header)
 
                 when (it.active) {
                     true -> shipDetailsStatusImage.setImageAndTint(
@@ -83,7 +82,7 @@ class ShipDetailsFragment : BaseFragment() {
                 }
 
                 it.mass?.let { mass ->
-                    shipDetailsMassText.text = context?.getString(
+                    shipDetailsMassText.text = getString(
                         R.string.mass_formatted,
                         mass.kg,
                         mass.lb
@@ -105,11 +104,5 @@ class ShipDetailsFragment : BaseFragment() {
 
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _toolbarBinding = null
-        _binding = null
     }
 }

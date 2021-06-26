@@ -12,17 +12,16 @@ import uk.co.zac_h.spacex.databinding.ToolbarProgressBinding
 
 class AboutFragment : BaseFragment() {
 
-    override val title: String by lazy { requireContext().getString(R.string.menu_about) }
+    override val title: String by lazy { getString(R.string.menu_about) }
 
-    private var _binding: FragmentAboutBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentAboutBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentAboutBinding.inflate(inflater, container, false).apply {
-        _binding = this
         _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -32,13 +31,7 @@ class AboutFragment : BaseFragment() {
             toolbarBinding.toolbar.setup()
             toolbarBinding.progress.hide()
 
-            aboutVersion.text =
-                context?.getString(R.string.version_name, BuildConfig.VERSION_NAME)
+            aboutVersion.text = getString(R.string.version_name, BuildConfig.VERSION_NAME)
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

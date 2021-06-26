@@ -21,8 +21,7 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
 
     override val title: String by lazy { heading ?: "Pads" }
 
-    private var _binding: FragmentPadStatsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentPadStatsBinding
 
     private var heading: String? = null
 
@@ -50,8 +49,8 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentPadStatsBinding.inflate(inflater, container, false).apply {
-        _binding = this
         _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,7 +59,7 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        toolbarBinding.toolbar.apply {
+        _toolbarBinding.toolbar.apply {
             setSupportActionBar()
             setup()
         }
@@ -93,7 +92,6 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -117,17 +115,17 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
         apiState = ApiState.SUCCESS
         pads.clearAndAdd(response)
 
-        binding.padStatsLaunchSitesRecycler.layoutAnimation = animateLayoutFromBottom(context)
+        binding.padStatsLaunchSitesRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
         padsAdapter.notifyDataSetChanged()
         binding.padStatsLaunchSitesRecycler.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        toolbarBinding.progress.show()
+        _toolbarBinding.progress.show()
     }
 
     override fun hideProgress() {
-        toolbarBinding.progress.hide()
+        _toolbarBinding.progress.hide()
     }
 
     override fun showError(error: String) {

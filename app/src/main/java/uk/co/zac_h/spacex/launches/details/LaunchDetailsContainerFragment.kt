@@ -25,8 +25,7 @@ class LaunchDetailsContainerFragment : BaseFragment(), LaunchDetailsContainerCon
 
     override val title: String by lazy { launchShort?.missionName ?: "" }
 
-    private var _binding: FragmentLaunchDetailsContainerBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentLaunchDetailsContainerBinding
 
     private var presenter: LaunchDetailsContainerContract.Presenter? = null
 
@@ -51,8 +50,8 @@ class LaunchDetailsContainerFragment : BaseFragment(), LaunchDetailsContainerCon
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchDetailsContainerBinding.inflate(inflater, container, false).apply {
-        _binding = this
         _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -61,8 +60,8 @@ class LaunchDetailsContainerFragment : BaseFragment(), LaunchDetailsContainerCon
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        toolbarBinding.progress.hide()
-        toolbarBinding.toolbar.apply {
+        _toolbarBinding.progress.hide()
+        _toolbarBinding.toolbar.apply {
             setSupportActionBar()
             setup()
         }
@@ -155,7 +154,6 @@ class LaunchDetailsContainerFragment : BaseFragment(), LaunchDetailsContainerCon
         super.onDestroyView()
         countdownTimer?.cancel()
         countdownTimer = null
-        _binding = null
     }
 
     override fun setCountdown(time: Long) {

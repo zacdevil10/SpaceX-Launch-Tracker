@@ -20,8 +20,7 @@ class DragonDetailsFragment : BaseFragment() {
 
     override var title: String = "Dragon"
 
-    private var _binding: FragmentDragonDetailsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentDragonDetailsBinding
 
     private var dragon: Dragon? = null
 
@@ -38,14 +37,14 @@ class DragonDetailsFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentDragonDetailsBinding.inflate(inflater, container, false).apply {
-        _binding = this
         _collapsingToolbarBinding = CollapsingToolbarBinding.bind(this.root)
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setup(collapsingToolbarBinding.toolbar, collapsingToolbarBinding.toolbarLayout)
+        setup(_collapsingToolbarBinding.toolbar, _collapsingToolbarBinding.toolbarLayout)
 
         title = dragon?.name ?: title
 
@@ -56,7 +55,7 @@ class DragonDetailsFragment : BaseFragment() {
                 Glide.with(view)
                     .load(it.flickr?.random())
                     .error(R.drawable.ic_baseline_error_outline_24)
-                    .into(collapsingToolbarBinding.header)
+                    .into(_collapsingToolbarBinding.header)
 
                 dragonDetailsText.text = it.description
 
@@ -73,20 +72,20 @@ class DragonDetailsFragment : BaseFragment() {
 
                 dragonDetailsCrewCapacityText.text = it.crewCapacity.toString()
                 dragonDetailsFirstFlightText.text = it.firstFlight
-                dragonDetailsDryMassText.text = context?.getString(
+                dragonDetailsDryMassText.text = getString(
                     R.string.mass_formatted,
                     it.dryMass?.kg,
                     it.dryMass?.lb
                 )
                 it.heightWithTrunk?.let { heightWithTrunk ->
-                    dragonDetailsHeightText.text = context?.getString(
+                    dragonDetailsHeightText.text = getString(
                         R.string.measurements,
                         heightWithTrunk.meters?.metricFormat(),
                         heightWithTrunk.feet?.metricFormat()
                     )
                 }
                 it.diameter?.let { diameter ->
-                    dragonDetailsDiameterText.text = context?.getString(
+                    dragonDetailsDiameterText.text = getString(
                         R.string.measurements,
                         diameter.meters?.metricFormat(),
                         diameter.feet?.metricFormat()
@@ -100,15 +99,15 @@ class DragonDetailsFragment : BaseFragment() {
                     it.heatShield?.temp.toString() //TODO: Format with units
 
                 dragonDetailsThrusterRecycler.apply {
-                    layoutManager = LinearLayoutManager(this@DragonDetailsFragment.context)
+                    layoutManager = LinearLayoutManager(requireContext())
                     setHasFixedSize(true)
                     adapter = it.thrusters?.let { thrusters ->
-                        DragonThrusterAdapter(this@DragonDetailsFragment.context, thrusters)
+                        DragonThrusterAdapter(requireContext(), thrusters)
                     }
                 }
 
                 it.launchPayloadMass?.let { launchPayloadMass ->
-                    dragonDetailsLaunchMassText.text = context?.getString(
+                    dragonDetailsLaunchMassText.text = getString(
                         R.string.mass_formatted,
                         launchPayloadMass.kg,
                         launchPayloadMass.lb
@@ -116,7 +115,7 @@ class DragonDetailsFragment : BaseFragment() {
                 }
 
                 it.returnPayloadMass?.let { returnPayloadMass ->
-                    dragonDetailsReturnMassText.text = context?.getString(
+                    dragonDetailsReturnMassText.text = getString(
                         R.string.mass_formatted,
                         returnPayloadMass.kg,
                         returnPayloadMass.lb
@@ -124,7 +123,7 @@ class DragonDetailsFragment : BaseFragment() {
                 }
 
                 it.launchPayloadVolume?.let { launchPayloadVolume ->
-                    dragonDetailsLaunchVolText.text = context?.getString(
+                    dragonDetailsLaunchVolText.text = getString(
                         R.string.volume_formatted,
                         launchPayloadVolume.cubicMeters?.metricFormat(),
                         launchPayloadVolume.cubicFeet?.metricFormat()
@@ -132,7 +131,7 @@ class DragonDetailsFragment : BaseFragment() {
                 }
 
                 it.returnPayloadVol?.let { returnPayloadVol ->
-                    dragonDetailsReturnVolText.text = context?.getString(
+                    dragonDetailsReturnVolText.text = getString(
                         R.string.volume_formatted,
                         returnPayloadVol.cubicMeters?.metricFormat(),
                         returnPayloadVol.cubicFeet?.metricFormat()
@@ -140,7 +139,7 @@ class DragonDetailsFragment : BaseFragment() {
                 }
 
                 it.pressurizedCapsule?.payloadVolume?.let { payloadVolume ->
-                    dragonDetailsPressurizedVolText.text = context?.getString(
+                    dragonDetailsPressurizedVolText.text = getString(
                         R.string.volume_formatted,
                         payloadVolume.cubicMeters?.metricFormat(),
                         payloadVolume.cubicFeet?.metricFormat()
@@ -148,7 +147,7 @@ class DragonDetailsFragment : BaseFragment() {
                 }
 
                 it.trunk?.trunkVolume?.let { trunkVolume ->
-                    dragonDetailsTrunkVolText.text = context?.getString(
+                    dragonDetailsTrunkVolText.text = getString(
                         R.string.volume_formatted,
                         trunkVolume.cubicMeters?.metricFormat(),
                         trunkVolume.cubicFeet?.metricFormat()
@@ -169,12 +168,6 @@ class DragonDetailsFragment : BaseFragment() {
                 }
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _toolbarBinding = null
-        _binding = null
     }
 
 }

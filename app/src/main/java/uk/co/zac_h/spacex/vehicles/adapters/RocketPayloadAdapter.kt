@@ -9,7 +9,7 @@ import uk.co.zac_h.spacex.databinding.ListItemRocketPayloadBinding
 import uk.co.zac_h.spacex.model.spacex.PayloadWeights
 
 class RocketPayloadAdapter(
-    private val context: Context?,
+    private val context: Context,
     private val payloads: List<PayloadWeights>
 ) : RecyclerView.Adapter<RocketPayloadAdapter.ViewHolder>() {
 
@@ -23,7 +23,7 @@ class RocketPayloadAdapter(
 
         holder.binding.apply {
             listItemRocketPayloadOrbitTypeText.text = payload.name
-            listItemRocketPayloadMassText.text = context?.getString(
+            listItemRocketPayloadMassText.text = context.getString(
                 R.string.mass,
                 payload.mass?.kg,
                 payload.mass?.lb

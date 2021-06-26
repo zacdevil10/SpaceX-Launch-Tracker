@@ -18,7 +18,7 @@ open class BaseNetwork {
     fun <T> Call<T>.makeCall(callback: BaseCallback<T>.() -> Unit) {
         val baseCallback = BaseCallback<T>()
         callback.invoke(baseCallback)
-        this.clone().enqueue(baseCallback)
+        clone().enqueue(baseCallback)
 
         listeners.add(object : BaseNetworkListener {
             override fun terminate() {
@@ -41,30 +41,22 @@ open class BaseNetwork {
         private var canceled = false
 
         override fun onResponse(call: Call<T>, response: Response<T>) {
-            if (!canceled) {
-                if (response.isSuccessful) {
-                    onResponseSuccess?.invoke(response)
-                } else {
-                    onResponseFailure?.invoke("Error: ${response.code()}")
-                }
+            if (!canceled) if (response.isSuccessful) {
+                onResponseSuccess?.invoke(response)
+            } else {
+                onResponseFailure?.invoke("Error: ${response.code()}")
             }
         }
 
         override fun onFailure(call: Call<T>, t: Throwable) {
-            when (t) {
-                is HttpException ->
-                    onResponseFailure?.invoke(
-                        t.localizedMessage ?: "There was a network error! Please try refreshing."
-                    )
-                is UnknownHostException ->
-                    onResponseFailure?.invoke(
-                        "Unable to resolve host! Check your network connection and try again."
-                    )
-                else ->
-                    Log.e(
-                        this.javaClass.name,
-                        t.localizedMessage ?: "Job failed to execute"
-                    )
+            if (!canceled) when (t) {
+                is HttpException -> onResponseFailure?.invoke(
+                    t.localizedMessage ?: "There was a network error! Please try refreshing."
+                )
+                is UnknownHostException -> onResponseFailure?.invoke(
+                    "Unable to resolve host! Check your network connection and try again."
+                )
+                else -> Log.e(this.javaClass.name, t.localizedMessage ?: "Job failed to execute")
             }
         }
 

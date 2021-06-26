@@ -21,6 +21,7 @@ import uk.co.zac_h.spacex.crew.adapters.CrewMissionsAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewItemBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.model.spacex.CrewStatus
+import uk.co.zac_h.spacex.utils.Keys.CrewKeys
 import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_ACTIVE
 import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_INACTIVE
 import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_RETIRED
@@ -29,16 +30,11 @@ import kotlin.math.roundToInt
 
 class CrewItemFragment : Fragment() {
 
-    private var _binding: FragmentCrewItemBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentCrewItemBinding
 
     companion object {
-        const val CREW_KEY = "crew"
-
-        fun newInstance(crew: Crew): Fragment {
-            return CrewItemFragment().apply {
-                arguments = bundleOf(CREW_KEY to crew)
-            }
+        fun newInstance(crew: Crew): Fragment = CrewItemFragment().apply {
+            arguments = bundleOf(CrewKeys.CREW_ARGS to crew)
         }
     }
 
@@ -46,13 +42,13 @@ class CrewItemFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentCrewItemBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val person = arguments?.getParcelable<Crew>(CREW_KEY)
+        val person = arguments?.getParcelable<Crew>(CrewKeys.CREW_ARGS)
 
         with(binding) {
             itemCrewConstraint.transitionName = person?.id
@@ -66,11 +62,11 @@ class CrewItemFragment : Fragment() {
 
                 addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                     override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                        context?.theme?.resolveAttribute(
+                        requireContext().theme.resolveAttribute(
                             android.R.attr.actionBarSize,
                             typedVal,
                             true
-                        )?.let {
+                        ).let {
                             val actionBarHeight = TypedValue.complexToDimensionPixelSize(
                                 typedVal.data,
                                 requireContext().resources.displayMetrics
@@ -133,10 +129,5 @@ class CrewItemFragment : Fragment() {
                 if (it.isEmpty()) crewMissionLabel.visibility = View.GONE
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

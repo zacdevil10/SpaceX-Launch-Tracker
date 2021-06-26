@@ -16,13 +16,13 @@ import uk.co.zac_h.spacex.databinding.FragmentCrewDetailsBinding
 import uk.co.zac_h.spacex.databinding.ToolbarProgressBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.utils.views.DepthPageTransformer
+import uk.co.zac_h.spacex.utils.Keys.CrewKeys
 
 class CrewPagerFragment : BaseFragment() {
 
     override var title: String = ""
 
-    private var _binding: FragmentCrewDetailsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentCrewDetailsBinding
 
     private lateinit var crewPagerAdapter: CrewPagerAdapter
     private lateinit var crewArray: ArrayList<Crew>
@@ -31,8 +31,9 @@ class CrewPagerFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        crewArray = savedInstanceState?.getParcelableArrayList("crew")
-            ?: arguments?.getParcelableArrayList<Crew>("crew") as ArrayList<Crew> ?: ArrayList()
+        crewArray = savedInstanceState?.getParcelableArrayList(CrewKeys.CREW_SAVED_STATE)
+            ?: arguments?.getParcelableArrayList<Crew>(CrewKeys.CREW_ARGS) as ArrayList<Crew>
+                    ?: ArrayList()
 
         crew = crewArray.map { CrewItemFragment.newInstance(it) }
     }
@@ -41,15 +42,15 @@ class CrewPagerFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentCrewDetailsBinding.inflate(inflater, container, false).apply {
-        _binding = this
         _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        toolbarBinding.progress.hide()
-        toolbarBinding.toolbar.apply {
+        _toolbarBinding.progress.hide()
+        _toolbarBinding.toolbar.apply {
             setSupportActionBar()
             setup()
         }
@@ -100,12 +101,7 @@ class CrewPagerFragment : BaseFragment() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("crew", crewArray)
+        outState.putParcelableArrayList(CrewKeys.CREW_SAVED_STATE, crewArray)
         super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

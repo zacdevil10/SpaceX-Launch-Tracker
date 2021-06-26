@@ -10,7 +10,7 @@ import uk.co.zac_h.spacex.databinding.ListItemPayloadBinding
 import uk.co.zac_h.spacex.model.spacex.Payload
 import uk.co.zac_h.spacex.utils.formatCustomers
 
-class PayloadAdapter(private var context: Context?, private var payloads: List<Payload>?) :
+class PayloadAdapter(private var context: Context, private var payloads: List<Payload>?) :
     RecyclerView.Adapter<PayloadAdapter.ViewHolder>() {
 
     private var expandedPosition = 0
@@ -48,7 +48,7 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
             }
 
             payload?.formattedMass?.let {
-                listItemPayloadMassText.text = context?.getString(
+                listItemPayloadMassText.text = context.getString(
                     R.string.mass,
                     it.kg,
                     it.lb

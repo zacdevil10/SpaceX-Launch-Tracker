@@ -6,8 +6,8 @@ import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class LaunchesPresenterImpl(
     private val view: NetworkInterface.View<List<Launch>>,
-    private val interactor: NetworkInterface.Interactor<List<Launch>?>
-) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<List<Launch>?> {
+    private val interactor: NetworkInterface.Interactor<List<Launch>>
+) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<List<Launch>> {
 
     override fun get(data: Any, api: SpaceXInterface) {
         view.showProgress()
@@ -18,13 +18,11 @@ class LaunchesPresenterImpl(
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(response: List<Launch>?) {
-        response?.let {
-            view.apply {
-                hideProgress()
-                update(it)
-                toggleSwipeRefresh(false)
-            }
+    override fun onSuccess(response: List<Launch>) {
+        view.apply {
+            hideProgress()
+            update(response)
+            toggleSwipeRefresh(false)
         }
     }
 

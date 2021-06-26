@@ -48,7 +48,7 @@ class CapsuleDetailsFragment : BaseFragment() {
 
         with(binding) {
             title = capsule?.serial ?: requireContext().getString(R.string.detail_capsule)
-            toolbarBinding.toolbar.setup()
+            _toolbarBinding.toolbar.setup()
 
             capsuleDetailsConstraint.transitionName = capsule?.id
 
@@ -78,6 +78,6 @@ class CapsuleDetailsFragment : BaseFragment() {
             } ?: run { capsuleDetailsMissionLabel.visibility = View.GONE }
         }
 
-        toolbarBinding.progress.hide()
+        _toolbarBinding.progress.hide()
     }
 }

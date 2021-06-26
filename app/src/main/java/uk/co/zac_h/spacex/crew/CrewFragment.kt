@@ -17,19 +17,15 @@ import uk.co.zac_h.spacex.databinding.FragmentCrewBinding
 import uk.co.zac_h.spacex.databinding.ToolbarProgressBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.utils.ApiState
+import uk.co.zac_h.spacex.utils.Keys.CrewKeys
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.clearAndAdd
 
 class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
 
-    companion object {
-        const val CREW_KEY = "crew"
-    }
+    override val title: String by lazy { getString(R.string.menu_crew) }
 
-    override val title: String by lazy { requireContext().getString(R.string.menu_crew) }
-
-    private var _binding: FragmentCrewBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentCrewBinding
 
     private var presenter: NetworkInterface.Presenter<List<Crew>?>? = null
 
@@ -39,15 +35,15 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        crewArray = savedInstanceState?.getParcelableArrayList(CREW_KEY) ?: ArrayList()
+        crewArray = savedInstanceState?.getParcelableArrayList(CrewKeys.CREW_SAVED_STATE) ?: ArrayList()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentCrewBinding.inflate(inflater, container, false).apply {
-        _binding = this
         _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,7 +53,7 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
             binding.root.doOnPreDraw { startPostponedEnterTransition() }
         }
 
-        toolbarBinding.toolbar.setup()
+        _toolbarBinding.toolbar.setup()
 
         presenter = CrewPresenterImpl(this, CrewInteractorImpl())
 
@@ -109,31 +105,30 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(CREW_KEY, crewArray)
+        outState.putParcelableArrayList(CrewKeys.CREW_SAVED_STATE, crewArray)
         super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun update(response: List<Crew>) {
         apiState = ApiState.SUCCESS
 
         crewArray.clearAndAdd(response)
-        binding.crewRecycler.layoutAnimation = animateLayoutFromBottom(context)
+        binding.crewRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
         crewAdapter.update(response)
         binding.crewRecycler.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        toolbarBinding.progress.show()
+        _toolbarBinding.progress.show()
     }
 
     override fun hideProgress() {
-        toolbarBinding.progress.hide()
+        _toolbarBinding.progress.hide()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {

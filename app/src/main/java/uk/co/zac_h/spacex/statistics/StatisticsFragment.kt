@@ -17,16 +17,15 @@ class StatisticsFragment : BaseFragment(), StatisticsContract.View {
 
     override var title: String = "Statistics"
 
-    private var _binding: FragmentStatisticsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentStatisticsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentStatisticsBinding.inflate(inflater, container, false).apply {
-        _binding = this
         _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -35,18 +34,13 @@ class StatisticsFragment : BaseFragment(), StatisticsContract.View {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        toolbarBinding.progress.hide()
-        toolbarBinding.toolbar.setup()
+        _toolbarBinding.progress.hide()
+        _toolbarBinding.toolbar.setup()
 
         binding.statisticsRecycler.apply {
             layoutManager = LinearLayoutManager(this@StatisticsFragment.context)
             adapter = StatisticsAdapter(this@StatisticsFragment)
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun openWebLink(link: String) {

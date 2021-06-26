@@ -15,23 +15,22 @@ import uk.co.zac_h.spacex.utils.ViewPagerAdapter
 
 class NewsFragment : BaseFragment() {
 
-    override val title: String by lazy { requireContext().getString(R.string.menu_news) }
+    override val title: String by lazy { getString(R.string.menu_news) }
 
-    private var _binding: FragmentNewsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentNewsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentNewsBinding.inflate(inflater, container, false).apply {
         _toolbarTabBinding = ToolbarTabBinding.bind(this.root)
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        toolbarTabBinding.toolbar.apply {
+        _toolbarTabBinding.toolbar.apply {
             setSupportActionBar()
             setup()
         }
@@ -43,17 +42,11 @@ class NewsFragment : BaseFragment() {
 
         val tabIcons = listOf(R.drawable.ic_twitter, R.drawable.reddit)
 
-        toolbarTabBinding.tabLayout.apply {
+        _toolbarTabBinding.tabLayout.apply {
             setupWithViewPager(binding.newsViewPager)
             for (position in 0..tabCount) {
                 getTabAt(position)?.setIcon(tabIcons[position])
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _toolbarBinding = null
-        _binding = null
     }
 }

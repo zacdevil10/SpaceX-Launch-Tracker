@@ -1,9 +1,11 @@
 package uk.co.zac_h.spacex.launches.details.cores
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
@@ -13,44 +15,38 @@ import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.model.spacex.LaunchCore
 import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
-import uk.co.zac_h.spacex.utils.clearAndAdd
 
 class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<LaunchCore>> {
 
-    override val title: String = ""
+    private lateinit var binding: FragmentLaunchDetailsCoresBinding
 
-    private var _binding: FragmentLaunchDetailsCoresBinding? = null
-    private val binding get() = _binding!!
-
-    private var presenter: NetworkInterface.Presenter<Nothing>? = null
+    private var presenter: NetworkInterface.Presenter<List<LaunchCore>>? = null
 
     private lateinit var coresAdapter: FirstStageAdapter
     private lateinit var cores: ArrayList<LaunchCore>
 
-    private var id: String? = null
+    private lateinit var id: String
 
     companion object {
         const val CORES_KEY = "cores"
-        const val ID_KEY = "id"
 
-        @JvmStatic
-        fun newInstance(args: Any) = LaunchDetailsCoresFragment().apply {
-            arguments = bundleOf(ID_KEY to args)
+        fun newInstance(id: String) = LaunchDetailsCoresFragment().apply {
+            this.id = id
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        retainInstance = true
 
         cores = savedInstanceState?.getParcelableArrayList(CORES_KEY) ?: ArrayList()
-        id = arguments?.getString(ID_KEY)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchDetailsCoresBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,7 +54,7 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
 
         presenter = LaunchDetailsCoresPresenter(this, LaunchDetailsCoresInteractor())
 
-        coresAdapter = FirstStageAdapter(cores)
+        coresAdapter = FirstStageAdapter()
 
         binding.launchDetailsCoresRecycler.apply {
             layoutManager = LinearLayoutManager(this@LaunchDetailsCoresFragment.context)
@@ -67,12 +63,11 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
 
         binding.swipeRefresh.setOnRefreshListener {
             apiState = ApiState.PENDING
-            id?.let { presenter?.get(it) }
+            cores.clear()
+            presenter?.get(id)
         }
 
-        if (cores.isEmpty()) id?.let {
-            presenter?.get(it)
-        }
+        presenter?.getOrUpdate(cores, id)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -83,15 +78,17 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun update(response: List<LaunchCore>) {
         apiState = ApiState.SUCCESS
 
-        cores.clearAndAdd(response)
-        binding.launchDetailsCoresRecycler.layoutAnimation = animateLayoutFromBottom(context)
-        coresAdapter.notifyDataSetChanged()
+        if (cores.isEmpty()) {
+            cores.addAll(response)
+            binding.launchDetailsCoresRecycler.layoutAnimation = animateLayoutFromBottom(context)
+        }
+
+        coresAdapter.update(response)
         binding.launchDetailsCoresRecycler.scheduleLayoutAnimation()
     }
 
@@ -101,12 +98,13 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
 
     override fun showError(error: String) {
         apiState = ApiState.FAILED
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        when(apiState) {
-            ApiState.PENDING, ApiState.FAILED -> id?.let { presenter?.get(it) }
-            ApiState.SUCCESS -> {}
+        when (apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.get(id)
+            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }

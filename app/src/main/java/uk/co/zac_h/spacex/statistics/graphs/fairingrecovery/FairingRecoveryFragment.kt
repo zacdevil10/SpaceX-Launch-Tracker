@@ -30,8 +30,7 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
 
     override val title: String by lazy { Statistics.FAIRING_RECOVERY.title }
 
-    private var _binding: FragmentFairingRecoveryBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentFairingRecoveryBinding
 
     private var presenter: NetworkInterface.Presenter<List<FairingRecoveryModel>?>? = null
 
@@ -55,8 +54,8 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentFairingRecoveryBinding.inflate(inflater, container, false).apply {
-        _binding = this
         _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,7 +64,7 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        toolbarBinding.toolbar.apply {
+        _toolbarBinding.toolbar.apply {
             setSupportActionBar()
             setup()
         }
@@ -74,10 +73,10 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
 
         presenter = FairingRecoveryPresenter(this, FairingRecoveryInteractor())
 
-        keyAdapter = StatisticsKeyAdapter(context, keys, false)
+        keyAdapter = StatisticsKeyAdapter(requireContext(), keys, false)
 
         binding.statisticsBarChart.recycler.apply {
-            layoutManager = LinearLayoutManager(this@FairingRecoveryFragment.context)
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = keyAdapter
         }
 
@@ -126,11 +125,6 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList("stats", statsList)
         super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -200,11 +194,11 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
     }
 
     override fun showProgress() {
-        toolbarBinding.progress.show()
+        _toolbarBinding.progress.show()
     }
 
     override fun hideProgress() {
-        toolbarBinding.progress.hide()
+        _toolbarBinding.progress.hide()
     }
 
     override fun showError(error: String) {

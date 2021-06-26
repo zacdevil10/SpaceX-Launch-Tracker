@@ -21,8 +21,7 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
 
     override var title: String = "Reddit"
 
-    private var _binding: FragmentRedditFeedBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentRedditFeedBinding
 
     private var presenter: RedditFeedContract.RedditFeedPresenter? = null
     private lateinit var redditAdapter: RedditAdapter
@@ -51,7 +50,7 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentRedditFeedBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,12 +100,12 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
     override fun onResume() {
         super.onResume()
         if (posts.isEmpty()) presenter?.getSub(order)
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+        (requireContext().applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
     override fun onPause() {
         super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+        (requireContext().applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -119,7 +118,6 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

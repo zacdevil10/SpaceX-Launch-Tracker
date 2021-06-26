@@ -2,6 +2,7 @@ package uk.co.zac_h.spacex.base
 
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.MenuRes
 import androidx.appcompat.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -22,16 +23,11 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 abstract class BaseFragment : Fragment(),
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    var _toolbarBinding: ToolbarProgressBinding? = null
-    val toolbarBinding get() = _toolbarBinding!!
+    open val title: String by lazy { getString(R.string.app_name) }
 
-    var _toolbarTabBinding: ToolbarTabBinding? = null
-    val toolbarTabBinding get() = _toolbarTabBinding!!
-
-    var _collapsingToolbarBinding: CollapsingToolbarBinding? = null
-    val collapsingToolbarBinding get() = _collapsingToolbarBinding!!
-
-    abstract val title: String
+    lateinit var _toolbarBinding: ToolbarProgressBinding
+    lateinit var _toolbarTabBinding: ToolbarTabBinding
+    lateinit var _collapsingToolbarBinding: CollapsingToolbarBinding
 
     var apiState: ApiState = ApiState.PENDING
 
@@ -39,46 +35,55 @@ abstract class BaseFragment : Fragment(),
 
     private lateinit var appBarConfig: AppBarConfiguration
 
+    private val applicationContext by lazy { requireContext().applicationContext as App }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         navController = NavHostFragment.findNavController(this)
         val drawerLayout = requireActivity().findViewById<DrawerLayout>(R.id.drawer_layout)
-        appBarConfig =
-            AppBarConfiguration.Builder((context?.applicationContext as App).startDestinations)
-                .setOpenableLayout(drawerLayout).build()
+        appBarConfig = AppBarConfiguration.Builder(applicationContext.startDestinations)
+            .setOpenableLayout(drawerLayout).build()
     }
 
     override fun onStart() {
         super.onStart()
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+        applicationContext.networkStateChangeListener.addListener(this)
     }
 
     override fun onStop() {
         super.onStop()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+        applicationContext.networkStateChangeListener.removeListener(this)
     }
 
-    fun Toolbar.setup() {
+    protected fun Toolbar.setup() {
         this.apply {
             setupWithNavController(navController, appBarConfig)
             title = this@BaseFragment.title
         }
     }
 
-    fun Toolbar.setupWithTabLayout(tabLayout: TabLayout, tabLayoutMode: Int) {
+    protected fun Toolbar.setupWithTabLayout(tabLayout: TabLayout, tabLayoutMode: Int) {
         this.setup()
         tabLayout.tabMode = tabLayoutMode
 
     }
 
-    fun setup(toolbar: Toolbar, toolbarLayout: CollapsingToolbarLayout) {
+    protected fun setup(toolbar: Toolbar, toolbarLayout: CollapsingToolbarLayout) {
         NavigationUI.setupWithNavController(toolbarLayout, toolbar, navController, appBarConfig)
         toolbar.title = title
     }
 
-    fun Toolbar.setSupportActionBar() {
+    protected fun Toolbar.setSupportActionBar() {
         (activity as MainActivity).setSupportActionBar(this)
     }
 
+    open fun Toolbar.createOptionsMenu(@MenuRes menu: Int) {
+        this.apply {
+            inflateMenu(menu)
+            setOnMenuItemClickListener {
+                onOptionsItemSelected(it)
+            }
+        }
+    }
 }

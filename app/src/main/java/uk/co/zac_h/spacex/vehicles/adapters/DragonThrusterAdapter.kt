@@ -10,7 +10,7 @@ import uk.co.zac_h.spacex.model.spacex.DragonThrusterConfiguration
 import uk.co.zac_h.spacex.utils.metricFormat
 
 class DragonThrusterAdapter(
-    private val context: Context?,
+    private val context: Context,
     private val thrusters: List<DragonThrusterConfiguration>
 ) : RecyclerView.Adapter<DragonThrusterAdapter.ViewHolder>() {
 
@@ -35,7 +35,7 @@ class DragonThrusterAdapter(
                 thruster.fuelType1?.replaceFirstChar { it.uppercase() }
             listItemDragonThrusterFuelTwoText.text =
                 thruster.fuelType2?.replaceFirstChar { it.uppercase() }
-            listItemDragonThrusterThrustText.text = context?.getString(
+            listItemDragonThrusterThrustText.text = context.getString(
                 R.string.thrust,
                 thruster.thrust?.kN?.metricFormat(),
                 thruster.thrust?.lbf?.metricFormat()

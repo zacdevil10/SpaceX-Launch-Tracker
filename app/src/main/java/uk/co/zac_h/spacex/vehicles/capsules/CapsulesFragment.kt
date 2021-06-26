@@ -9,7 +9,6 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCapsulesBinding
-import uk.co.zac_h.spacex.databinding.FragmentCompanyBinding
 import uk.co.zac_h.spacex.model.spacex.Capsule
 import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
@@ -19,8 +18,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
 
     override var title: String = "Capsules"
 
-    private var _binding: FragmentCapsulesBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentCapsulesBinding
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var capsulesAdapter: CapsulesAdapter
@@ -44,13 +42,13 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentCapsulesBinding.inflate(inflater, container, false).apply {
-        _binding = this
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(context)
+        orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(requireContext())
         presenter = CapsulesPresenterImpl(this, CapsulesInteractorImpl())
 
         sortNew = orderSharedPreferences.isSortedNew("capsules")
@@ -58,7 +56,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
         capsulesAdapter = CapsulesAdapter(capsulesArray)
 
         binding.capsulesRecycler.apply {
-            layoutManager = LinearLayoutManager(this@CapsulesFragment.context)
+            layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = capsulesAdapter
         }
@@ -82,7 +80,6 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -133,7 +130,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
         capsulesArray.clear()
         capsulesArray.addAll(if (sortNew) response.reversed() else response)
 
-        binding.capsulesRecycler.layoutAnimation = animateLayoutFromBottom(context)
+        binding.capsulesRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
         capsulesAdapter.notifyDataSetChanged()
         binding.capsulesRecycler.scheduleLayoutAnimation()
     }

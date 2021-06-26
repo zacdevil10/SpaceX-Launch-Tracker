@@ -29,8 +29,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
 
     override val title: String by lazy { Statistics.MASS_TO_ORBIT.title }
 
-    private var _binding: FragmentLaunchMassBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentLaunchMassBinding
 
     private var presenter: LaunchMassContract.Presenter? = null
 
@@ -58,8 +57,8 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchMassBinding.inflate(inflater, container, false).apply {
-        _binding = this
         _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
+        binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,7 +67,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        toolbarBinding.toolbar.apply {
+        _toolbarBinding.toolbar.apply {
             setSupportActionBar()
             setup()
         }
@@ -102,10 +101,10 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
             presenter?.updateFilter(statsList)
         }
 
-        keyAdapter = StatisticsKeyAdapter(context, keys, true)
+        keyAdapter = StatisticsKeyAdapter(requireContext(), keys, true)
 
         binding.statisticsBarChart.recycler.apply {
-            layoutManager = LinearLayoutManager(this@LaunchMassFragment.context)
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = keyAdapter
         }
 
@@ -174,7 +173,6 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        _binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -383,11 +381,11 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
     }
 
     override fun showProgress() {
-        toolbarBinding.progress.show()
+        _toolbarBinding.progress.show()
     }
 
     override fun hideProgress() {
-        toolbarBinding.progress.hide()
+        _toolbarBinding.progress.hide()
     }
 
     override fun showError(error: String) {

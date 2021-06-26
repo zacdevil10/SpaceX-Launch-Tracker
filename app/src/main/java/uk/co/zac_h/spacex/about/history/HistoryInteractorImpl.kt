@@ -6,14 +6,14 @@ import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class HistoryInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<History>?> {
+class HistoryInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<History>> {
 
     private var call: Call<HistoryDocsModel>? = null
 
     override fun get(
         data: Any,
         api: SpaceXInterface,
-        listener: NetworkInterface.Callback<List<History>?>
+        listener: NetworkInterface.Callback<List<History>>
     ) {
         val query = QueryModel(
             "",
@@ -29,7 +29,7 @@ class HistoryInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<Hi
         call = api.queryHistory(query).apply {
             makeCall {
                 onResponseSuccess = { response ->
-                    listener.onSuccess(response.body()?.docs?.map { History(it) })
+                    response.body()?.docs?.map { History(it) }?.let { listener.onSuccess(it) }
                 }
                 onResponseFailure = { listener.onError(it) }
             }
