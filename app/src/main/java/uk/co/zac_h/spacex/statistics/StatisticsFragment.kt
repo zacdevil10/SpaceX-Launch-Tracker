@@ -24,8 +24,8 @@ class StatisticsFragment : BaseFragment(), StatisticsContract.View {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentStatisticsBinding.inflate(inflater, container, false).apply {
-        _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
         binding = this
+        toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -34,8 +34,8 @@ class StatisticsFragment : BaseFragment(), StatisticsContract.View {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        _toolbarBinding.progress.hide()
-        _toolbarBinding.toolbar.setup()
+        toolbarBinding.progress.hide()
+        toolbarBinding.toolbar.setup()
 
         binding.statisticsRecycler.apply {
             layoutManager = LinearLayoutManager(this@StatisticsFragment.context)

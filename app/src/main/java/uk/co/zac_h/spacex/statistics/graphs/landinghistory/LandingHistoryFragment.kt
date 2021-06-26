@@ -53,8 +53,8 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLandingHistoryBinding.inflate(inflater, container, false).apply {
-        _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
         binding = this
+        toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -63,7 +63,7 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        _toolbarBinding.toolbar.apply {
+        toolbarBinding.toolbar.apply {
             setSupportActionBar()
             setup()
         }
@@ -194,11 +194,11 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
     }
 
     override fun showProgress() {
-        _toolbarBinding.progress.show()
+        toolbarBinding.progress.show()
     }
 
     override fun hideProgress() {
-        _toolbarBinding.progress.hide()
+        toolbarBinding.progress.hide()
     }
 
     override fun showError(error: String) {

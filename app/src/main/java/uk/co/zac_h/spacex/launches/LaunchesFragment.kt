@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesBinding
 import uk.co.zac_h.spacex.databinding.ToolbarTabBinding
 import uk.co.zac_h.spacex.utils.ViewPagerAdapter
@@ -28,8 +27,8 @@ class LaunchesFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchesBinding.inflate(inflater, container, false).apply {
-        _toolbarTabBinding = ToolbarTabBinding.bind(binding.root)
         binding = this
+        toolbarTabBinding = ToolbarTabBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -37,7 +36,7 @@ class LaunchesFragment : BaseFragment() {
 
         postponeEnterTransition()
 
-        _toolbarTabBinding.toolbar.apply {
+        toolbarTabBinding.toolbar.apply {
             setSupportActionBar()
             setup()
         }
@@ -49,7 +48,7 @@ class LaunchesFragment : BaseFragment() {
             R.drawable.ic_history_black_24dp
         )
 
-        _toolbarTabBinding.tabLayout.apply {
+        toolbarTabBinding.tabLayout.apply {
             setupWithViewPager(binding.launchesViewPager)
             for (position in 0..tabCount) {
                 getTabAt(position)?.setIcon(tabIcons[position])

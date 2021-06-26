@@ -42,8 +42,8 @@ class HistoryFragment : BaseFragment(), NetworkInterface.View<ArrayList<HistoryH
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentHistoryBinding.inflate(inflater, container, false).apply {
-        _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
         binding = this
+        toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

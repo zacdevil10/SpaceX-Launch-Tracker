@@ -42,15 +42,15 @@ class CrewPagerFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentCrewDetailsBinding.inflate(inflater, container, false).apply {
-        _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
         binding = this
+        toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _toolbarBinding.progress.hide()
-        _toolbarBinding.toolbar.apply {
+        toolbarBinding.progress.hide()
+        toolbarBinding.toolbar.apply {
             setSupportActionBar()
             setup()
         }

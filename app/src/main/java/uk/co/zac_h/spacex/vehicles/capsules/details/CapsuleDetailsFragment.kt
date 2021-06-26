@@ -37,7 +37,7 @@ class CapsuleDetailsFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View = FragmentCapsuleDetailsBinding.inflate(inflater, container, false).apply {
         binding = this
-        _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
+        toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,7 +48,7 @@ class CapsuleDetailsFragment : BaseFragment() {
 
         with(binding) {
             title = capsule?.serial ?: requireContext().getString(R.string.detail_capsule)
-            _toolbarBinding.toolbar.setup()
+            toolbarBinding.toolbar.setup()
 
             capsuleDetailsConstraint.transitionName = capsule?.id
 
@@ -78,6 +78,6 @@ class CapsuleDetailsFragment : BaseFragment() {
             } ?: run { capsuleDetailsMissionLabel.visibility = View.GONE }
         }
 
-        _toolbarBinding.progress.hide()
+        toolbarBinding.progress.hide()
     }
 }

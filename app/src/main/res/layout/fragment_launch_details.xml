@@ -134,29 +134,16 @@
                 android:id="@+id/launch_details_button_bar_main"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-<<<<<<< HEAD
                 android:layout_marginTop="@dimen/small_margin"
+                android:clipToPadding="false"
                 android:paddingStart="@dimen/medium_margin"
                 android:paddingEnd="@dimen/medium_margin"
-                android:orientation="vertical"
-=======
-                android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:layout_marginEnd="@dimen/medium_margin"
->>>>>>> dev
                 app:layout_constraintEnd_toEndOf="parent"
-                android:clipToPadding="false"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/launch_details_site_name_label">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/launch_details_watch_button"
-<<<<<<< HEAD
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:insetBottom="0dp"
-                    android:text="@string/watch_label"
-=======
                     style="?attr/materialButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="58dp"
@@ -164,19 +151,12 @@
                     android:text="@string/watch_label"
                     android:textAppearance="?textAppearanceBody2"
                     android:visibility="gone"
->>>>>>> dev
                     app:icon="@drawable/ic_play_arrow_black_24dp"
                     app:iconGravity="textStart"
                     tools:visibility="visible" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/launch_details_calendar_button"
-<<<<<<< HEAD
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:insetTop="0dp"
-                    android:text="@string/create_event_label"
-=======
                     style="?attr/materialButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="58dp"
@@ -184,7 +164,6 @@
                     android:text="@string/create_event_label"
                     android:textAppearance="?textAppearanceBody2"
                     android:visibility="gone"
->>>>>>> dev
                     app:icon="@drawable/ic_calendar_plus"
                     app:iconGravity="textStart"
                     tools:visibility="visible" />
@@ -207,22 +186,6 @@
                 tools:lines="6"
                 tools:text="@tools:sample/lorem/random" />
 
-<<<<<<< HEAD
-            <Button
-                android:id="@+id/launch_details_press_kit_button"
-                android:layout_width="match_parent"
-                android:layout_height="58dp"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/small_margin"
-                android:layout_marginEnd="@dimen/medium_margin"
-                android:text="@string/press_kit_label"
-                app:icon="@drawable/ic_assignment_black_24dp"
-                app:iconGravity="textStart"
-                app:iconTint="@color/color_on_primary"
-                app:layout_constraintTop_toBottomOf="@id/launch_details_details_text" />
-
-=======
->>>>>>> dev
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/launch_details_wiki_button"
                 android:layout_width="match_parent"
@@ -230,11 +193,8 @@
                 android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:text="@string/wikipedia_label"
-<<<<<<< HEAD
-=======
                 android:textAppearance="?textAppearanceBody2"
                 android:visibility="gone"
->>>>>>> dev
                 app:icon="@drawable/wikipedia"
                 app:iconGravity="textStart"
                 app:iconPadding="0dp"
@@ -249,11 +209,8 @@
                 android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:text="@string/campaign_label"
-<<<<<<< HEAD
-=======
                 android:textAppearance="?textAppearanceBody2"
                 android:visibility="gone"
->>>>>>> dev
                 app:icon="@drawable/reddit"
                 app:iconGravity="textStart"
                 app:layout_constraintBottom_toTopOf="@id/launch_details_launch_button"
@@ -268,11 +225,8 @@
                 android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:text="@string/launch_label"
-<<<<<<< HEAD
-=======
                 android:textAppearance="?textAppearanceBody2"
                 android:visibility="gone"
->>>>>>> dev
                 app:icon="@drawable/reddit"
                 app:iconGravity="textStart"
                 app:layout_constraintBottom_toTopOf="@id/launch_details_media_button"
@@ -288,11 +242,8 @@
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:layout_marginBottom="@dimen/large_margin"
                 android:text="@string/media_label"
-<<<<<<< HEAD
-=======
                 android:textAppearance="?textAppearanceBody2"
                 android:visibility="gone"
->>>>>>> dev
                 app:icon="@drawable/reddit"
                 app:iconGravity="textStart"
                 app:layout_constraintBottom_toBottomOf="parent"

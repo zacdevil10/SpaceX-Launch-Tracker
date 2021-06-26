@@ -25,9 +25,9 @@ abstract class BaseFragment : Fragment(),
 
     open val title: String by lazy { getString(R.string.app_name) }
 
-    lateinit var _toolbarBinding: ToolbarProgressBinding
-    lateinit var _toolbarTabBinding: ToolbarTabBinding
-    lateinit var _collapsingToolbarBinding: CollapsingToolbarBinding
+    lateinit var toolbarBinding: ToolbarProgressBinding
+    lateinit var toolbarTabBinding: ToolbarTabBinding
+    lateinit var collapsingToolbarBinding: CollapsingToolbarBinding
 
     var apiState: ApiState = ApiState.PENDING
 

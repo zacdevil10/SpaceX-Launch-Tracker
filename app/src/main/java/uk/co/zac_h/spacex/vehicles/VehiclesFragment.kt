@@ -9,7 +9,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.transition.Hold
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentVehiclesBinding
 import uk.co.zac_h.spacex.databinding.ToolbarTabBinding
 import uk.co.zac_h.spacex.utils.ViewPagerAdapter
@@ -35,8 +34,8 @@ class VehiclesFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentVehiclesBinding.inflate(inflater, container, false).apply {
-        _toolbarTabBinding = ToolbarTabBinding.bind(this.root)
         binding = this
+        toolbarTabBinding = ToolbarTabBinding.bind(this.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

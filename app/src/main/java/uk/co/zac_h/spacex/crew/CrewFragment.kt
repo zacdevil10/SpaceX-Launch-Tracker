@@ -42,8 +42,8 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentCrewBinding.inflate(inflater, container, false).apply {
-        _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
         binding = this
+        toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,7 +53,7 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
             binding.root.doOnPreDraw { startPostponedEnterTransition() }
         }
 
-        _toolbarBinding.toolbar.setup()
+        toolbarBinding.toolbar.setup()
 
         presenter = CrewPresenterImpl(this, CrewInteractorImpl())
 
@@ -124,11 +124,11 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
     }
 
     override fun showProgress() {
-        _toolbarBinding.progress.show()
+        toolbarBinding.progress.show()
     }
 
     override fun hideProgress() {
-        _toolbarBinding.progress.hide()
+        toolbarBinding.progress.hide()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {

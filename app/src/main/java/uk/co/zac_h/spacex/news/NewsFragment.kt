@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentNewsBinding
 import uk.co.zac_h.spacex.databinding.ToolbarTabBinding
 import uk.co.zac_h.spacex.news.reddit.RedditFeedFragment
@@ -23,14 +22,14 @@ class NewsFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentNewsBinding.inflate(inflater, container, false).apply {
-        _toolbarTabBinding = ToolbarTabBinding.bind(this.root)
         binding = this
+        toolbarTabBinding = ToolbarTabBinding.bind(this.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        _toolbarTabBinding.toolbar.apply {
+        toolbarTabBinding.toolbar.apply {
             setSupportActionBar()
             setup()
         }
@@ -42,7 +41,7 @@ class NewsFragment : BaseFragment() {
 
         val tabIcons = listOf(R.drawable.ic_twitter, R.drawable.reddit)
 
-        _toolbarTabBinding.tabLayout.apply {
+        toolbarTabBinding.tabLayout.apply {
             setupWithViewPager(binding.newsViewPager)
             for (position in 0..tabCount) {
                 getTabAt(position)?.setIcon(tabIcons[position])

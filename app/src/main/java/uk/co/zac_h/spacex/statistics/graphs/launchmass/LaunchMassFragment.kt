@@ -57,8 +57,8 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchMassBinding.inflate(inflater, container, false).apply {
-        _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
         binding = this
+        toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,7 +67,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        _toolbarBinding.toolbar.apply {
+        toolbarBinding.toolbar.apply {
             setSupportActionBar()
             setup()
         }
@@ -381,11 +381,11 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
     }
 
     override fun showProgress() {
-        _toolbarBinding.progress.show()
+        toolbarBinding.progress.show()
     }
 
     override fun hideProgress() {
-        _toolbarBinding.progress.hide()
+        toolbarBinding.progress.hide()
     }
 
     override fun showError(error: String) {

@@ -40,8 +40,8 @@ class CoreDetailsFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentCoreDetailsBinding.inflate(inflater, container, false).apply {
-        _toolbarBinding = ToolbarProgressBinding.bind(binding.root)
         binding = this
+        toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,7 +50,7 @@ class CoreDetailsFragment : BaseFragment() {
         postponeEnterTransition()
 
         title = core?.serial ?: title
-        _toolbarBinding.toolbar.setup()
+        toolbarBinding.toolbar.setup()
 
         updateCoreDetails(core)
 
@@ -90,7 +90,7 @@ class CoreDetailsFragment : BaseFragment() {
                 }
             }
 
-            _toolbarBinding.progress.hide()
+            toolbarBinding.progress.hide()
         }
     }
 }
