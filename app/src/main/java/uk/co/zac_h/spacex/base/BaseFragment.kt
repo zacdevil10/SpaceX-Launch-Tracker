@@ -20,7 +20,7 @@ import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 abstract class BaseFragment : Fragment(),
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
-    abstract val title: String
+    open val title: String by lazy { getString(R.string.app_name) }
 
     var apiState: ApiState = ApiState.PENDING
 
