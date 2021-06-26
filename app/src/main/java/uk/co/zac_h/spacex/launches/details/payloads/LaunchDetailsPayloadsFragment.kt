@@ -1,10 +1,11 @@
 package uk.co.zac_h.spacex.launches.details.payloads
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import uk.co.zac_h.spacex.base.BaseFragment
@@ -17,8 +18,6 @@ import uk.co.zac_h.spacex.utils.clearAndAdd
 
 class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List<Payload>> {
 
-    override var title: String = "Launch Details Payloads"
-
     private lateinit var binding: FragmentLaunchDetailsPayloadsBinding
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
@@ -26,24 +25,21 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
     private lateinit var payloadAdapter: PayloadAdapter
     private lateinit var payloads: ArrayList<Payload>
 
-    private var id: String? = null
+    private lateinit var id: String
 
     companion object {
-        private const val ID_KEY = "id"
         const val PAYLOADS_KEY = "payloads"
 
         @JvmStatic
-        fun newInstance(args: Any) = LaunchDetailsPayloadsFragment().apply {
-            arguments = bundleOf(ID_KEY to args)
+        fun newInstance(id: String) = LaunchDetailsPayloadsFragment().apply {
+            this.id = id
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        payloads =
-            savedInstanceState?.getParcelableArrayList(PAYLOADS_KEY) ?: ArrayList()
-        id = arguments?.getString("id")
+        payloads = savedInstanceState?.getParcelableArrayList(PAYLOADS_KEY) ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -69,12 +65,10 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
 
         binding.swipeRefresh.setOnRefreshListener {
             apiState = ApiState.PENDING
-            id?.let { presenter?.get(it) }
+            presenter?.get(id)
         }
 
-        if (payloads.isEmpty()) id?.let {
-            presenter?.get(it)
-        }
+        if (payloads.isEmpty()) presenter?.get(id)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -95,13 +89,13 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
 
     override fun showError(error: String) {
         apiState = ApiState.FAILED
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
         when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> id?.let { presenter?.get(it) }
-            ApiState.SUCCESS -> {
-            }
+            ApiState.PENDING, ApiState.FAILED -> presenter?.get(id)
+            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }
