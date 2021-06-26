@@ -16,6 +16,7 @@ class AboutFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View = FragmentAboutBinding.inflate(inflater, container, false).apply {
         binding = this
+        toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
