@@ -3,6 +3,7 @@ package uk.co.zac_h.spacex.launches.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -10,15 +11,16 @@ import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemFirstStageBinding
 import uk.co.zac_h.spacex.model.spacex.LaunchCore
+import uk.co.zac_h.spacex.utils.orUnknown
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
-class FirstStageAdapter(private val cores: List<LaunchCore>) :
-    RecyclerView.Adapter<FirstStageAdapter.ViewHolder>() {
+class FirstStageAdapter : RecyclerView.Adapter<FirstStageAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(
-            ListItemFirstStageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        )
+    private var cores: List<LaunchCore> = emptyList()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
+        ListItemFirstStageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val core = cores[position]
@@ -26,38 +28,18 @@ class FirstStageAdapter(private val cores: List<LaunchCore>) :
         holder.binding.apply {
             firstStageCard.transitionName = core.core?.id
 
-            firstStageCoreSerial.text = core.core?.serial ?: "Unknown"
+            firstStageCoreSerial.text = core.core?.serial?.orUnknown()
 
-            firstStageReusedImage.apply {
-                core.reused?.let { reused ->
-                    if (reused) {
-                        setImageAndTint(R.drawable.ic_check_circle_black_24dp, R.color.success)
-                    } else {
-                        setImageAndTint(R.drawable.ic_remove_circle_black_24dp, R.color.failed)
-                    }
-                }
-            }
+            core.reused?.let { firstStageReusedImage.successFailureImage(it) }
 
-            firstStageLandedImage.apply {
-                core.landingSuccess?.let { landingSuccess ->
-                    if (landingSuccess) {
-                        setImageAndTint(R.drawable.ic_check_circle_black_24dp, R.color.success)
-                    } else {
-                        setImageAndTint(R.drawable.ic_remove_circle_black_24dp, R.color.failed)
-                    }
-                }
-            }
+            core.landingSuccess?.let { firstStageLandedImage.successFailureImage(it) }
 
             firstStageLandingImage.apply {
                 core.landingAttempt?.let { landingIntent ->
-                    if (landingIntent) {
-                        when (core.landingType) {
-                            "ASDS" -> setImageAndTint(R.drawable.ic_waves, R.color.ocean)
-                            "RTLS" -> setImageAndTint(R.drawable.ic_landscape, R.color.landscape)
-                        }
-                    } else {
-                        setImageAndTint(R.drawable.ic_remove_circle_black_24dp, R.color.failed)
-                    }
+                    if (landingIntent) when (core.landingType) {
+                        "ASDS" -> setImageAndTint(R.drawable.ic_waves, R.color.ocean)
+                        "RTLS" -> setImageAndTint(R.drawable.ic_landscape, R.color.landscape)
+                    } else successFailureImage(false)
                 }
             }
 
@@ -68,7 +50,7 @@ class FirstStageAdapter(private val cores: List<LaunchCore>) :
                         R.id.action_launch_details_container_fragment_to_core_details_fragment,
                         bundleOf("core" to core.core),
                         null,
-                        FragmentNavigatorExtras(firstStageCard to (core.core?.id ?: ""))
+                        FragmentNavigatorExtras(firstStageCard to (core.core?.id.orEmpty()))
                     )
                 }
             } ?: run {
@@ -78,6 +60,19 @@ class FirstStageAdapter(private val cores: List<LaunchCore>) :
     }
 
     override fun getItemCount(): Int = cores.size
+
+    fun update(list: List<LaunchCore>) {
+        cores = list
+        notifyDataSetChanged()
+    }
+
+    private fun ImageView.successFailureImage(success: Boolean) {
+        if (success) {
+            setImageAndTint(R.drawable.ic_check_circle_black_24dp, R.color.success)
+        } else {
+            setImageAndTint(R.drawable.ic_remove_circle_black_24dp, R.color.failed)
+        }
+    }
 
     class ViewHolder(val binding: ListItemFirstStageBinding) : RecyclerView.ViewHolder(binding.root)
 }
