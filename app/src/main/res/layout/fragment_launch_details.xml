@@ -151,8 +151,10 @@
                     android:layout_weight="1"
                     android:text="@string/watch_label"
                     android:textAppearance="?textAppearanceBody2"
+                    android:visibility="gone"
                     app:icon="@drawable/ic_play_arrow_black_24dp"
-                    app:iconGravity="textStart" />
+                    app:iconGravity="textStart"
+                    tools:visibility="visible" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/launch_details_calendar_button"
@@ -162,8 +164,10 @@
                     android:layout_weight="1"
                     android:text="@string/create_event_label"
                     android:textAppearance="?textAppearanceBody2"
+                    android:visibility="gone"
                     app:icon="@drawable/ic_calendar_plus"
-                    app:iconGravity="textStart" />
+                    app:iconGravity="textStart"
+                    tools:visibility="visible" />
 
             </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -192,11 +196,13 @@
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:text="@string/wikipedia_label"
                 android:textAppearance="?textAppearanceBody2"
+                android:visibility="gone"
                 app:icon="@drawable/wikipedia"
                 app:iconGravity="textStart"
                 app:iconPadding="0dp"
                 app:layout_constraintBottom_toTopOf="@id/launch_details_campaign_button"
-                app:layout_constraintTop_toBottomOf="@id/launch_details_details_text" />
+                app:layout_constraintTop_toBottomOf="@id/launch_details_details_text"
+                tools:visibility="visible" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/launch_details_campaign_button"
@@ -206,10 +212,12 @@
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:text="@string/campaign_label"
                 android:textAppearance="?textAppearanceBody2"
+                android:visibility="gone"
                 app:icon="@drawable/reddit"
                 app:iconGravity="textStart"
                 app:layout_constraintBottom_toTopOf="@id/launch_details_launch_button"
-                app:layout_constraintTop_toBottomOf="@id/launch_details_wiki_button" />
+                app:layout_constraintTop_toBottomOf="@id/launch_details_wiki_button"
+                tools:visibility="visible" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/launch_details_launch_button"
@@ -220,10 +228,12 @@
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:text="@string/launch_label"
                 android:textAppearance="?textAppearanceBody2"
+                android:visibility="gone"
                 app:icon="@drawable/reddit"
                 app:iconGravity="textStart"
                 app:layout_constraintBottom_toTopOf="@id/launch_details_media_button"
-                app:layout_constraintTop_toBottomOf="@id/launch_details_campaign_button" />
+                app:layout_constraintTop_toBottomOf="@id/launch_details_campaign_button"
+                tools:visibility="visible" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/launch_details_media_button"
@@ -235,10 +245,12 @@
                 android:layout_marginBottom="@dimen/large_margin"
                 android:text="@string/media_label"
                 android:textAppearance="?textAppearanceBody2"
+                android:visibility="gone"
                 app:icon="@drawable/reddit"
                 app:iconGravity="textStart"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/launch_details_launch_button" />
+                app:layout_constraintTop_toBottomOf="@id/launch_details_launch_button"
+                tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
