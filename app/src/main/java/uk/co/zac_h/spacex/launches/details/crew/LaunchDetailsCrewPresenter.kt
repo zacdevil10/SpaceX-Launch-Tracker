@@ -7,24 +7,23 @@ import uk.co.zac_h.spacex.utils.SPACEX_BASE_URL_V5
 
 class LaunchDetailsCrewPresenter(
     private val view: NetworkInterface.View<List<Crew>>,
-    private val interactor: NetworkInterface.Interactor<List<Crew>?>
-) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<List<Crew>?> {
+    private val interactor: NetworkInterface.Interactor<List<Crew>>
+) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<List<Crew>> {
 
     override fun get(data: Any, api: SpaceXInterface) {
-        view.showProgress()
-        interactor.get(data, SpaceXInterface.create(SPACEX_BASE_URL_V5), this)
+        view.toggleSwipeRefresh(true)
+        interactor.get(data, api, this)
     }
 
     override fun cancelRequest() = interactor.cancelAllRequests()
 
-    override fun onSuccess(response: List<Crew>?) {
-        response?.let {
-            view.update(it)
-            view.hideProgress()
-        }
+    override fun onSuccess(response: List<Crew>) {
+        view.update(response)
+        view.toggleSwipeRefresh(false)
     }
 
     override fun onError(error: String) {
         view.showError(error)
+        view.toggleSwipeRefresh(false)
     }
 }

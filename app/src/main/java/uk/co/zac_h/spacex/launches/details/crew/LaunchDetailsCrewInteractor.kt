@@ -7,14 +7,14 @@ import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 import uk.co.zac_h.spacex.utils.SPACEX_FIELD_CREW_LAUNCHES
 
-class LaunchDetailsCrewInteractor : BaseNetwork(), NetworkInterface.Interactor<List<Crew>?> {
+class LaunchDetailsCrewInteractor : BaseNetwork(), NetworkInterface.Interactor<List<Crew>> {
 
     private var call: Call<LaunchDocsModel>? = null
 
     override fun get(
         data: Any,
         api: SpaceXInterface,
-        listener: NetworkInterface.Callback<List<Crew>?>
+        listener: NetworkInterface.Callback<List<Crew>>
     ) {
         val populateList = listOf(
             QueryPopulateModel(
@@ -38,7 +38,9 @@ class LaunchDetailsCrewInteractor : BaseNetwork(), NetworkInterface.Interactor<L
         call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess = { response ->
-                    listener.onSuccess(response.body()?.docs?.get(0)?.crew?.map { Crew(it) })
+                    response.body()?.docs?.get(0)?.crew
+                        ?.map { Crew(it) }
+                        ?.let { listener.onSuccess(it) }
                 }
                 onResponseFailure = { listener.onError(it) }
             }
