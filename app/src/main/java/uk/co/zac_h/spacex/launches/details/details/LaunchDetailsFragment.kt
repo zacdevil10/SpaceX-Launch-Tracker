@@ -3,7 +3,6 @@ package uk.co.zac_h.spacex.launches.details.details
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.view.*
@@ -15,10 +14,7 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
 import uk.co.zac_h.spacex.model.spacex.DatePrecision
 import uk.co.zac_h.spacex.model.spacex.Launch
-import uk.co.zac_h.spacex.utils.ApiState
-import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelper
-import uk.co.zac_h.spacex.utils.PinnedSharedPreferencesHelperImpl
-import uk.co.zac_h.spacex.utils.formatDateMillisLong
+import uk.co.zac_h.spacex.utils.*
 
 class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetailsView {
 
@@ -198,15 +194,6 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
                     launchDetailsCalendarButton.visibility = View.GONE
                 }
 
-                it.links?.presskit?.let { link ->
-                    launchDetailsPressKitButton.visibility = View.VISIBLE
-                    launchDetailsPressKitButton.setOnClickListener {
-                        openWebLink(link)
-                    }
-                } ?: run {
-                    launchDetailsPressKitButton.visibility = View.GONE
-                }
-
                 it.links?.wikipedia?.let { link ->
                     launchDetailsWikiButton.visibility = View.VISIBLE
                     launchDetailsWikiButton.setOnClickListener {
@@ -270,10 +257,6 @@ class LaunchDetailsFragment : BaseFragment(), LaunchDetailsContract.LaunchDetail
                 showError("No supported calendar apps found.")
             }
         }
-    }
-
-    override fun openWebLink(link: String) {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {

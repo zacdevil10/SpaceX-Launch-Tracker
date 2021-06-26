@@ -7,7 +7,6 @@ interface LaunchDetailsContract {
 
     interface LaunchDetailsView : NetworkInterface.View<Launch?> {
         fun newCalendarEvent()
-        fun openWebLink(link: String)
     }
 
     interface LaunchDetailsPresenter : NetworkInterface.Presenter<Launch?> {
