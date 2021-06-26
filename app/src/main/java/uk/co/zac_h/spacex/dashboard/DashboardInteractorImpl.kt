@@ -45,8 +45,8 @@ class DashboardInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<Launc
                     )
                 ),
                 sort = when (data) {
-                    "next" -> QueryLaunchesSortModel("asc")
-                    "latest" -> QueryLaunchesSortModel("desc")
+                    Upcoming.NEXT -> QueryLaunchesSortModel("asc")
+                    Upcoming.LATEST -> QueryLaunchesSortModel("desc")
                     else -> ""
                 },
                 select = listOf(
