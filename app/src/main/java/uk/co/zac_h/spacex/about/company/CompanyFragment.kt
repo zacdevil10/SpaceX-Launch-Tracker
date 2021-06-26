@@ -1,7 +1,5 @@
 package uk.co.zac_h.spacex.about.company
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,6 +10,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCompanyBinding
+import uk.co.zac_h.spacex.databinding.ToolbarProgressBinding
 import uk.co.zac_h.spacex.model.spacex.Company
 import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.Keys.CompanyKeys
@@ -38,12 +37,13 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
         savedInstanceState: Bundle?
     ): View = FragmentCompanyBinding.inflate(inflater, container, false).apply {
         binding = this
+        toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbarLayout.toolbar.setup()
+        toolbarBinding.toolbar.setup()
 
         presenter = CompanyPresenterImpl(this, CompanyInteractorImpl())
 
@@ -96,11 +96,11 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
     }
 
     override fun showProgress() {
-        binding.toolbarLayout.progress.show()
+        toolbarBinding.progress.show()
     }
 
     override fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
+        toolbarBinding.progress.hide()
     }
 
     override fun showError(error: String) {

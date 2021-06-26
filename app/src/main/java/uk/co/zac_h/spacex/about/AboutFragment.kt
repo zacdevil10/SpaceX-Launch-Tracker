@@ -8,6 +8,7 @@ import uk.co.zac_h.spacex.BuildConfig
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentAboutBinding
+import uk.co.zac_h.spacex.databinding.ToolbarProgressBinding
 
 class AboutFragment : BaseFragment() {
 
@@ -20,14 +21,15 @@ class AboutFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View = FragmentAboutBinding.inflate(inflater, container, false).apply {
         binding = this
+        toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         with(binding) {
-            toolbarLayout.toolbar.setup()
-            toolbarLayout.progress.hide()
+            toolbarBinding.toolbar.setup()
+            toolbarBinding.progress.hide()
 
             aboutVersion.text = getString(R.string.version_name, BuildConfig.VERSION_NAME)
         }

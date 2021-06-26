@@ -16,9 +16,9 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentFairingRecoveryBinding
+import uk.co.zac_h.spacex.databinding.ToolbarProgressBinding
 import uk.co.zac_h.spacex.statistics.adapters.Statistics
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
 import uk.co.zac_h.spacex.utils.ApiState
@@ -54,6 +54,7 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
         savedInstanceState: Bundle?
     ): View = FragmentFairingRecoveryBinding.inflate(inflater, container, false).apply {
         binding = this
+        toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,8 +63,10 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding.toolbarLayout.toolbar)
-        binding.toolbarLayout.toolbar.setup()
+        toolbarBinding.toolbar.apply {
+            setSupportActionBar()
+            setup()
+        }
 
         binding.fairingRecoveryConstraint.transitionName = heading
 
@@ -190,11 +193,11 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
     }
 
     override fun showProgress() {
-        binding.toolbarLayout.progress.show()
+        toolbarBinding.progress.show()
     }
 
     override fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
+        toolbarBinding.progress.hide()
     }
 
     override fun showError(error: String) {

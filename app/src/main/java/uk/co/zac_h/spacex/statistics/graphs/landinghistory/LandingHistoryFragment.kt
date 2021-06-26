@@ -16,9 +16,9 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLandingHistoryBinding
+import uk.co.zac_h.spacex.databinding.ToolbarProgressBinding
 import uk.co.zac_h.spacex.statistics.adapters.Statistics
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
 import uk.co.zac_h.spacex.utils.ApiState
@@ -54,6 +54,7 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
         savedInstanceState: Bundle?
     ): View = FragmentLandingHistoryBinding.inflate(inflater, container, false).apply {
         binding = this
+        toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -62,8 +63,10 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding.toolbarLayout.toolbar)
-        binding.toolbarLayout.toolbar.setup()
+        toolbarBinding.toolbar.apply {
+            setSupportActionBar()
+            setup()
+        }
 
         binding.landingHistoryConstraint.transitionName = heading
 
@@ -191,11 +194,11 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
     }
 
     override fun showProgress() {
-        binding.toolbarLayout.progress.show()
+        toolbarBinding.progress.show()
     }
 
     override fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
+        toolbarBinding.progress.hide()
     }
 
     override fun showError(error: String) {
@@ -203,9 +206,10 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
     }
 
     override fun networkAvailable() {
-        when(apiState) {
+        when (apiState) {
             ApiState.PENDING, ApiState.FAILED -> presenter?.getOrUpdate(null)
-            ApiState.SUCCESS -> {}
+            ApiState.SUCCESS -> {
+            }
         }
     }
 }

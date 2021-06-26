@@ -21,7 +21,6 @@ class ShipDetailsFragment : BaseFragment() {
     override var title: String = ""
 
     private lateinit var binding: FragmentShipDetailsBinding
-    private lateinit var toolbarBinding: CollapsingToolbarBinding
 
     private var ship: Ship? = null
 
@@ -37,8 +36,8 @@ class ShipDetailsFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentShipDetailsBinding.inflate(inflater, container, false).apply {
-        toolbarBinding = CollapsingToolbarBinding.bind(this.root)
         binding = this
+        collapsingToolbarBinding = CollapsingToolbarBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,7 +47,7 @@ class ShipDetailsFragment : BaseFragment() {
         view.doOnPreDraw { startPostponedEnterTransition() }
 
         title = ship?.name ?: ""
-        setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
+        setup(collapsingToolbarBinding.toolbar, collapsingToolbarBinding.toolbarLayout)
 
         with(binding) {
 
@@ -58,7 +57,7 @@ class ShipDetailsFragment : BaseFragment() {
                 Glide.with(view)
                     .load(it.image)
                     .error(R.drawable.ic_baseline_error_outline_24)
-                    .into(toolbarBinding.header)
+                    .into(collapsingToolbarBinding.header)
 
                 when (it.active) {
                     true -> shipDetailsStatusImage.setImageAndTint(

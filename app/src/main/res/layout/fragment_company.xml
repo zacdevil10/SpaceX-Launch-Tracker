@@ -7,15 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".about.company.CompanyFragment">
 
-    <include
-        android:id="@+id/toolbar_layout"
-        layout="@layout/toolbar_progress" />
+    <include layout="@layout/toolbar_progress" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_layout">
+        app:layout_constraintTop_toBottomOf="@id/app_bar">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -48,9 +46,11 @@
                 android:id="@+id/company_button_bar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:layout_marginEnd="@dimen/medium_margin"
+                android:paddingStart="@dimen/medium_margin"
+                android:paddingEnd="@dimen/medium_margin"
+                android:paddingTop="@dimen/medium_margin"
+                android:paddingBottom="@dimen/medium_margin"
+                android:clipToPadding="false"
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -102,7 +102,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/medium_margin"
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:textAlignment="center"
                 android:textAppearance="@style/Details"

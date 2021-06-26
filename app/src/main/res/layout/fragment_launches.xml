@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".launches.LaunchesFragment">
 
-    <include
-        layout="@layout/toolbar_tab" />
+    <include layout="@layout/toolbar_tab" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/launches_view_pager"

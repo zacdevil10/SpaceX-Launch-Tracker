@@ -6,7 +6,6 @@ import android.os.CountDownTimer
 import android.util.Log
 import android.view.*
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
@@ -14,12 +13,12 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.google.android.material.progressindicator.LinearProgressIndicator
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
 import uk.co.zac_h.spacex.databinding.ListItemDashboardLaunchBinding
+import uk.co.zac_h.spacex.databinding.ToolbarProgressBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.model.spacex.Upcoming
@@ -66,6 +65,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
         savedInstanceState: Bundle?
     ): View = FragmentDashboardBinding.inflate(inflater, container, false).apply {
         binding = this
+        toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -74,8 +74,8 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
         view.doOnPreDraw { startPostponedEnterTransition() }
         postponeEnterTransition()
 
-        binding.toolbarLayout.progress.hide()
-        binding.toolbarLayout.toolbar.apply {
+        toolbarBinding.progress.hide()
+        toolbarBinding.toolbar.apply {
             setup()
             createOptionsMenu(R.menu.menu_dashboard)
         }

@@ -8,9 +8,7 @@
     android:background="@color/color_background"
     tools:context=".statistics.graphs.padstats.PadStatsFragment">
 
-    <include
-        android:id="@+id/toolbar_layout"
-        layout="@layout/toolbar_progress" />
+    <include layout="@layout/toolbar_progress" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/pad_stats_launch_sites_recycler"
@@ -20,7 +18,7 @@
         android:paddingTop="@dimen/small_margin"
         android:paddingBottom="@dimen/xlarge_margin"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
+        app:layout_constraintTop_toBottomOf="@id/app_bar"
         tools:listitem="@layout/list_item_pad_stats" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesBinding
 import uk.co.zac_h.spacex.databinding.ToolbarTabBinding
 import uk.co.zac_h.spacex.utils.ViewPagerAdapter
@@ -17,7 +16,6 @@ class LaunchesFragment : BaseFragment() {
     override val title: String by lazy { getString(R.string.menu_launches) }
 
     private lateinit var binding: FragmentLaunchesBinding
-    private lateinit var toolbarBinding: ToolbarTabBinding
 
     private val fragments: List<BaseFragment> = listOf(
         LaunchesListFragment.newInstance("upcoming"),
@@ -29,8 +27,8 @@ class LaunchesFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchesBinding.inflate(inflater, container, false).apply {
-        toolbarBinding = ToolbarTabBinding.bind(this.root)
         binding = this
+        toolbarTabBinding = ToolbarTabBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -38,7 +36,7 @@ class LaunchesFragment : BaseFragment() {
 
         postponeEnterTransition()
 
-        toolbarBinding.toolbar.apply {
+        toolbarTabBinding.toolbar.apply {
             setSupportActionBar()
             setup()
         }
@@ -50,7 +48,7 @@ class LaunchesFragment : BaseFragment() {
             R.drawable.ic_history_black_24dp
         )
 
-        toolbarBinding.tabLayout.apply {
+        toolbarTabBinding.tabLayout.apply {
             setupWithViewPager(binding.launchesViewPager)
             for (position in 0..tabCount) {
                 getTabAt(position)?.setIcon(tabIcons[position])

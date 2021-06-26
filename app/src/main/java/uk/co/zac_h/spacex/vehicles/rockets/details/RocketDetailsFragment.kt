@@ -21,7 +21,6 @@ class RocketDetailsFragment : BaseFragment() {
     override var title: String = "Rocket"
 
     private lateinit var binding: FragmentRocketDetailsBinding
-    private lateinit var toolbarBinding: CollapsingToolbarBinding
 
     private var rocket: Rocket? = null
 
@@ -37,15 +36,15 @@ class RocketDetailsFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentRocketDetailsBinding.inflate(inflater, container, false).apply {
-        toolbarBinding = CollapsingToolbarBinding.bind(this.root)
         binding = this
+        collapsingToolbarBinding = CollapsingToolbarBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         title = rocket?.name ?: ""
-        setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
+        setup(collapsingToolbarBinding.toolbar, collapsingToolbarBinding.toolbarLayout)
 
         with(binding) {
             rocket?.let {
@@ -54,7 +53,7 @@ class RocketDetailsFragment : BaseFragment() {
                 Glide.with(view)
                     .load(it.flickr?.random())
                     .error(R.drawable.ic_baseline_error_outline_24)
-                    .into(toolbarBinding.header)
+                    .into(collapsingToolbarBinding.header)
 
                 rocketDetailsText.text = it.description
 

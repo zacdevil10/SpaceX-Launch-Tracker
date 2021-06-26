@@ -11,8 +11,8 @@ import androidx.fragment.app.commit
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsContainerBinding
+import uk.co.zac_h.spacex.databinding.ToolbarProgressBinding
 import uk.co.zac_h.spacex.launches.details.cores.LaunchDetailsCoresFragment
 import uk.co.zac_h.spacex.launches.details.crew.LaunchDetailsCrewFragment
 import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsFragment
@@ -50,6 +50,7 @@ class LaunchDetailsContainerFragment : BaseFragment(), LaunchDetailsContainerCon
         savedInstanceState: Bundle?
     ): View = FragmentLaunchDetailsContainerBinding.inflate(inflater, container, false).apply {
         binding = this
+        toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,10 +59,11 @@ class LaunchDetailsContainerFragment : BaseFragment(), LaunchDetailsContainerCon
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        binding.toolbarLayout.progress.hide()
-
-        (activity as MainActivity).setSupportActionBar(binding.toolbarLayout.toolbar)
-        binding.toolbarLayout.toolbar.setup()
+        toolbarBinding.progress.hide()
+        toolbarBinding.toolbar.apply {
+            setSupportActionBar()
+            setup()
+        }
 
         presenter = LaunchDetailsContainerPresenter(this)
 

@@ -3,17 +3,55 @@
     <!--Navigation Drawer-->
     <style name="Widget.AppTheme.NavigationView" parent="Widget.MaterialComponents.NavigationView">
         <item name="itemTextAppearance">?textAppearanceBody2</item>
+        <item name="itemIconTint">?attr/colorNavigationItem</item>
+        <item name="itemTextColor">?attr/colorNavigationItem</item>
+        <item name="itemBackground">?attr/drawableNavigationItemBackground</item>
+    </style>
+
+    <!--Material Button-->
+    <style name="Widget.AppTheme.MaterialButton" parent="Widget.MaterialComponents.Button">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.AppTheme.MaterialButton</item>
+    </style>
+
+    <style name="ThemeOverlay.AppTheme.MaterialButton" parent="">
+        <item name="colorPrimary">#fbe9e7</item>
+    </style>
+
+    <style name="Widget.AppTheme.MaterialButton.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.AppTheme.MaterialButton.TextButton</item>
+    </style>
+
+    <style name="ThemeOverlay.AppTheme.MaterialButton.TextButton" parent="">
+        <item name="colorPrimary">?colorSecondary</item>
+    </style>
+
+    <!--Bottom Navigation-->
+    <style name="Widget.AppTheme.BottomNavigationView" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.AppTheme.BottomNavigationView</item>
+    </style>
+
+    <style name="ThemeOverlay.AppTheme.BottomNavigationView" parent="">
+        <item name="colorOnPrimary">?colorSecondary</item>
     </style>
 
     <style name="SpinnerItem">
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">?colorOnPrimary</item>
     </style>
 
     <style name="Details" parent="TextAppearance.MaterialComponents.Body1" />
+
     <style name="MissionTitle" parent="TextAppearance.MaterialComponents.Subtitle2" />
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.DayNight" />
+
+    <style name="Widget.AppTheme.CollapsingToolbar.ExpandedText" parent="">
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="Widget.AppTheme.CollapsingToolbar.CollapsedText" parent="">
+        <item name="android:textColor">#000000</item>
+    </style>
 
 </resources>

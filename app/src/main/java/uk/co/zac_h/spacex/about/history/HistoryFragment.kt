@@ -13,6 +13,7 @@ import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentHistoryBinding
+import uk.co.zac_h.spacex.databinding.ToolbarProgressBinding
 import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.Keys.HistoryKeys
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
@@ -42,12 +43,13 @@ class HistoryFragment : BaseFragment(), NetworkInterface.View<ArrayList<HistoryH
         savedInstanceState: Bundle?
     ): View = FragmentHistoryBinding.inflate(inflater, container, false).apply {
         binding = this
+        toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbarLayout.toolbar.apply {
+        toolbarBinding.toolbar.apply {
             setup()
             createOptionsMenu(R.menu.menu_history)
         }
@@ -118,11 +120,11 @@ class HistoryFragment : BaseFragment(), NetworkInterface.View<ArrayList<HistoryH
     }
 
     override fun showProgress() {
-        binding.toolbarLayout.progress.show()
+        toolbarBinding.progress.show()
     }
 
     override fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
+        toolbarBinding.progress.hide()
     }
 
     override fun showError(error: String) {

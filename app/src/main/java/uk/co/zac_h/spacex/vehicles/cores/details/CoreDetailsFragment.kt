@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
+import uk.co.zac_h.spacex.databinding.ToolbarProgressBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
 import uk.co.zac_h.spacex.model.spacex.Core
 import uk.co.zac_h.spacex.utils.*
@@ -40,6 +41,7 @@ class CoreDetailsFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View = FragmentCoreDetailsBinding.inflate(inflater, container, false).apply {
         binding = this
+        toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -48,7 +50,7 @@ class CoreDetailsFragment : BaseFragment() {
         postponeEnterTransition()
 
         title = core?.serial ?: title
-        binding.toolbarLayout.toolbar.setup()
+        toolbarBinding.toolbar.setup()
 
         updateCoreDetails(core)
 
@@ -86,9 +88,9 @@ class CoreDetailsFragment : BaseFragment() {
                         adapter = MissionsAdapter(context, it)
                     }
                 }
-
-                toolbarLayout.progress.hide()
             }
+
+            toolbarBinding.progress.hide()
         }
     }
 }

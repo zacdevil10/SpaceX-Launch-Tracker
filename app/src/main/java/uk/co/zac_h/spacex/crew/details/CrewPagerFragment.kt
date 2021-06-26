@@ -13,6 +13,7 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.crew.adapters.CrewPagerAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewDetailsBinding
+import uk.co.zac_h.spacex.databinding.ToolbarProgressBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.utils.views.DepthPageTransformer
 import uk.co.zac_h.spacex.utils.Keys.CrewKeys
@@ -42,12 +43,19 @@ class CrewPagerFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View = FragmentCrewDetailsBinding.inflate(inflater, container, false).apply {
         binding = this
+        toolbarBinding = ToolbarProgressBinding.bind(binding.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbar.setup()
+        toolbarBinding.progress.hide()
+        toolbarBinding.toolbar.apply {
+            setSupportActionBar()
+            setup()
+        }
+
+        activity?.title = crewArray[MainActivity.currentPosition].name
 
         crewPagerAdapter = CrewPagerAdapter(childFragmentManager, crew)
 

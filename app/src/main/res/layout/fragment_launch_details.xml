@@ -6,9 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/color_background"
-    tools:context=".launches.details.details.LaunchDetailsFragment"
-    tools:ignore="Overdraw">
+    tools:context=".launches.details.details.LaunchDetailsFragment">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/launch_details_scroll_view"
@@ -136,9 +134,10 @@
                 android:id="@+id/launch_details_button_bar_main"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:layout_marginEnd="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/small_margin"
+                android:clipToPadding="false"
+                android:paddingStart="@dimen/medium_margin"
+                android:paddingEnd="@dimen/medium_margin"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/launch_details_site_name_label">
@@ -189,7 +188,6 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/launch_details_wiki_button"
-                style="?attr/materialButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
                 android:layout_marginStart="@dimen/medium_margin"

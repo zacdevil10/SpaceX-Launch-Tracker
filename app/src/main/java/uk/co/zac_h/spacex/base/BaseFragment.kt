@@ -14,6 +14,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.tabs.TabLayout
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.databinding.CollapsingToolbarBinding
+import uk.co.zac_h.spacex.databinding.ToolbarProgressBinding
+import uk.co.zac_h.spacex.databinding.ToolbarTabBinding
 import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
@@ -21,6 +24,10 @@ abstract class BaseFragment : Fragment(),
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     open val title: String by lazy { getString(R.string.app_name) }
+
+    lateinit var toolbarBinding: ToolbarProgressBinding
+    lateinit var toolbarTabBinding: ToolbarTabBinding
+    lateinit var collapsingToolbarBinding: CollapsingToolbarBinding
 
     var apiState: ApiState = ApiState.PENDING
 
