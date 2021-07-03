@@ -10,7 +10,6 @@ class CorePresenterImpl(
 ) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<List<Core>?> {
 
     override fun get(api: SpaceXInterface) {
-        view.showProgress()
         interactor.get(api, this)
     }
 
@@ -19,10 +18,11 @@ class CorePresenterImpl(
     }
 
     override fun onSuccess(response: List<Core>?) {
-        view.apply {
-            hideProgress()
-            toggleSwipeRefresh(false)
-            response?.let { update(it) }
+        response?.let {
+            view.apply {
+                toggleSwipeRefresh(false)
+                update(it)
+            }
         }
     }
 

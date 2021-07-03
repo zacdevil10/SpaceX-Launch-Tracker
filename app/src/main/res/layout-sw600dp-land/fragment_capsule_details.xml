@@ -9,20 +9,16 @@
     tools:context=".vehicles.capsules.details.CapsuleDetailsFragment"
     tools:ignore="Overdraw">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        style="@style/Widget.MaterialComponents.Toolbar.Primary"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:textColor="?colorOnSurface"
-        app:layout_constraintTop_toTopOf="parent" />
+    <include
+        android:id="@+id/toolbar_layout"
+        layout="@layout/toolbar_progress" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/capsule_details_scrollview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        app:layout_constraintTop_toBottomOf="@id/toolbar_layout">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="600dp"

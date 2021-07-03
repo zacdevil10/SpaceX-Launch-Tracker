@@ -19,9 +19,10 @@ class LaunchHistoryPresenterImpl(
         if (response.isNullOrEmpty()) {
             view.showProgress()
             interactor.get(api, this)
-        } else {
-            view.update(false, response)
-            view.setSuccessRate(response, false)
+        } else view.apply {
+            hideProgress()
+            update(false, response)
+            setSuccessRate(response, false)
         }
     }
 

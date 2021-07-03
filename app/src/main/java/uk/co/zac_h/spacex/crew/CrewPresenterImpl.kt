@@ -5,9 +5,9 @@ import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 class CrewPresenterImpl(
-    private val view: CrewView,
-    private val interactor: NetworkInterface.Interactor<List<Crew>?>
-) : NetworkInterface.Presenter<List<Crew>?>, NetworkInterface.Callback<List<Crew>?> {
+    private val view: NetworkInterface.View<List<Crew>>,
+    private val interactor: NetworkInterface.Interactor<List<Crew>>
+) : NetworkInterface.Presenter<List<Crew>?>, NetworkInterface.Callback<List<Crew>> {
 
     override fun get(api: SpaceXInterface) {
         view.showProgress()
@@ -18,13 +18,11 @@ class CrewPresenterImpl(
         interactor.cancelAllRequests()
     }
 
-    override fun onSuccess(response: List<Crew>?) {
-        response?.let {
-            view.apply {
-                hideProgress()
-                toggleSwipeRefresh(false)
-                update(it)
-            }
+    override fun onSuccess(response: List<Crew>) {
+        view.apply {
+            hideProgress()
+            toggleSwipeRefresh(false)
+            update(response)
         }
     }
 

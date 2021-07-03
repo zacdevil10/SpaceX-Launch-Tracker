@@ -1,45 +1,50 @@
 package uk.co.zac_h.spacex.launches.details.crew
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.crew.CrewView
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCrewBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
+import uk.co.zac_h.spacex.utils.ApiState
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
+import uk.co.zac_h.spacex.utils.clearAndAdd
+import uk.co.zac_h.spacex.utils.orUnknown
 
-class LaunchDetailsCrewFragment : BaseFragment(), CrewView {
+class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
 
-    override var title: String = "Launch Details Crew"
+    private lateinit var binding: FragmentLaunchDetailsCrewBinding
 
-    private var binding: FragmentLaunchDetailsCrewBinding? = null
-
-    private var presenter: NetworkInterface.Presenter<Nothing>? = null
+    private var presenter: NetworkInterface.Presenter<List<Crew>>? = null
 
     private lateinit var crewAdapter: CrewAdapter
-    private lateinit var crew: ArrayList<Crew>
+    private var crew: ArrayList<Crew> = ArrayList()
 
-    private var id: String? = null
+    private lateinit var id: String
 
     companion object {
         const val CREW_KEY = "crew"
         const val ID_KEY = "id"
 
         @JvmStatic
-        fun newInstance(args: Any) = LaunchDetailsCrewFragment().apply {
-            arguments = bundleOf(ID_KEY to args)
+        fun newInstance(id: String) = LaunchDetailsCrewFragment().apply {
+            this.id = id
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        crew = savedInstanceState?.getParcelableArrayList(CREW_KEY) ?: ArrayList()
-        id = arguments?.getString(ID_KEY)
+        savedInstanceState?.let {
+            id = it.getString(ID_KEY).orUnknown()
+            crew = it.getParcelableArrayList(CREW_KEY) ?: ArrayList()
+        }
     }
 
     override fun onCreateView(
@@ -52,53 +57,56 @@ class LaunchDetailsCrewFragment : BaseFragment(), CrewView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
-
         presenter = LaunchDetailsCrewPresenter(this, LaunchDetailsCrewInteractor())
 
-        crewAdapter = CrewAdapter(this, crew)
+        crewAdapter = CrewAdapter()
 
-        binding?.launchDetailsCrewRecycler?.apply {
+        binding.launchDetailsCrewRecycler.apply {
             setHasFixedSize(true)
             adapter = crewAdapter
         }
 
-        if (crew.isEmpty()) id?.let {
-            presenter?.get(it)
+        presenter?.getOrUpdate(crew, id)
+
+        binding.swipeRefresh.setOnRefreshListener {
+            apiState = ApiState.PENDING
+            presenter?.get(id)
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList(CREW_KEY, crew)
-        super.onSaveInstanceState(outState)
+        outState.putString(ID_KEY, id)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        binding = null
     }
 
     override fun update(response: List<Crew>) {
-        crew.clear()
-        crew.addAll(response)
+        if (apiState != ApiState.SUCCESS) binding.launchDetailsCrewRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
 
-        crewAdapter.notifyDataSetChanged()
+        apiState = ApiState.SUCCESS
+
+        crew = response as ArrayList<Crew>
+        crewAdapter.update(response)
+        binding.launchDetailsCrewRecycler.scheduleLayoutAnimation()
     }
 
-    override fun showProgress() {
-        binding?.progress?.show()
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding.swipeRefresh.isRefreshing = isRefreshing
     }
 
-    override fun hideProgress() {
-        binding?.progress?.hide()
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            id?.let {
-                if (crew.isEmpty()) presenter?.get(it)
-            }
+        when(apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.get(id)
+            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }

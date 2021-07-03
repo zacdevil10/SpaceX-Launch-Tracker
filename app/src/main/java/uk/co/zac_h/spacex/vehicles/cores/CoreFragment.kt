@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.vehicles.cores
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,6 +10,7 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
 import uk.co.zac_h.spacex.model.spacex.Core
+import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
@@ -19,7 +21,7 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
 
     override var title: String = "Cores"
 
-    private var binding: FragmentCoreBinding? = null
+    private lateinit var binding: FragmentCoreBinding
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var coreAdapter: CoreAdapter
@@ -50,20 +52,21 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
 
         hideProgress()
 
-        orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(context)
+        orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(requireContext())
         presenter = CorePresenterImpl(this, CoreInteractorImpl())
 
         sortNew = orderSharedPreferences.isSortedNew("cores")
 
-        coreAdapter = CoreAdapter(context, coresArray)
+        coreAdapter = CoreAdapter(requireContext(), coresArray)
 
-        binding?.coreRecycler?.apply {
-            layoutManager = LinearLayoutManager(this@CoreFragment.context)
+        binding.coreRecycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = coreAdapter
         }
 
-        binding?.swipeRefresh?.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
+            apiState = ApiState.PENDING
             presenter?.get()
         }
 
@@ -79,7 +82,6 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -125,31 +127,28 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
     }
 
     override fun update(response: List<Core>) {
+        apiState = ApiState.SUCCESS
+
         coresArray.clear()
         coresArray.addAll(if (sortNew) response.reversed() else response)
 
-        binding?.coreRecycler?.layoutAnimation = animateLayoutFromBottom(context)
+        binding.coreRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
         coreAdapter.notifyDataSetChanged()
-        binding?.coreRecycler?.scheduleLayoutAnimation()
-    }
-
-    override fun showProgress() {
-        binding?.progress?.show()
-    }
-
-    override fun hideProgress() {
-        binding?.progress?.hide()
+        binding.coreRecycler.scheduleLayoutAnimation()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding?.swipeRefresh?.isRefreshing = isRefreshing
+        binding.swipeRefresh.isRefreshing = isRefreshing
+    }
+
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (coresArray.isEmpty() || it.progress.isShown) presenter?.get()
-            }
+        when (apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.get()
+            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }

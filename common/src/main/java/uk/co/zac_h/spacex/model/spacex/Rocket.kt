@@ -2,7 +2,7 @@ package uk.co.zac_h.spacex.model.spacex
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import uk.co.zac_h.spacex.utils.*
 import java.text.DecimalFormat
 

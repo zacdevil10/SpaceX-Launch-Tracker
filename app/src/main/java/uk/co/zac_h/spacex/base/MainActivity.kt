@@ -44,11 +44,10 @@ class MainActivity : AppCompatActivity(),
             setAction(R.string.dismiss_label) { dismiss() }
         }
 
-        val navHostFragment: NavHostFragment =
+        val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
-        val navController = navHostFragment.navController
 
-        findViewById<NavigationView>(R.id.nav_view).setupWithNavController(navController)
+        binding.navView.setupWithNavController(navHostFragment.navController)
     }
 
     override fun onStart() {

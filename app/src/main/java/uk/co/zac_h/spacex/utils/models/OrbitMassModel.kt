@@ -1,7 +1,7 @@
 package uk.co.zac_h.spacex.utils.models
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class OrbitMassModel(

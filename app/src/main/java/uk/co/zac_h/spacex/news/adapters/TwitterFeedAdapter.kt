@@ -25,7 +25,7 @@ import uk.co.zac_h.spacex.utils.formatWithUrls
 import uk.co.zac_h.spacex.utils.views.HtmlTextView
 
 class TwitterFeedAdapter(
-    private val context: Context?,
+    private val context: Context,
     private val twitterFeed: ArrayList<TimelineTweetModel>,
     private val view: TwitterFeedContract.TwitterFeedView
 ) :
@@ -55,7 +55,7 @@ class TwitterFeedAdapter(
             date.text = tweet.created.dateStringToMillis()?.convertDate()
             name.text = tweet.user.name
             screenName.text =
-                context?.getString(R.string.screen_name, tweet.user.screenName)
+                context.getString(R.string.screen_name, tweet.user.screenName)
 
             desc.apply {
                 tweet.text?.formatWithUrls(
@@ -99,7 +99,7 @@ class TwitterFeedAdapter(
                 quoteDate.text = quoted.created?.dateStringToMillis()?.convertDate()
                 quoteName.text = quoted.user?.name
                 quoteScreenName.text =
-                    context?.getString(R.string.screen_name, quoted.user?.screenName)
+                    context.getString(R.string.screen_name, quoted.user?.screenName)
                 quoteDesc.apply {
                     quoted.text?.formatWithUrls(null, null, null)?.let {
                         setHtmlText(it)
@@ -158,16 +158,17 @@ class TwitterFeedAdapter(
             urls.add(
                 when (tweetMedia.type) {
                     "photo" -> {
-                        tweetMedia.url?.let { url -> MediaModel(url, MediaType.IMAGE) }
-                            ?: return@forEach
+                        tweetMedia.url?.let { url ->
+                            MediaModel(url = url, type = MediaType.IMAGE_URL)
+                        } ?: return@forEach
                     }
                     "video", "animated_gif" -> {
                         tweetMedia.info?.variants?.get(bitratePosition)?.url?.let { static ->
                             tweetMedia.url?.let { url ->
                                 MediaModel(
-                                    static,
-                                    MediaType.VIDEO,
-                                    url
+                                    url = url,
+                                    static = static,
+                                    type = MediaType.VIDEO
                                 )
                             }
                         } ?: return@forEach

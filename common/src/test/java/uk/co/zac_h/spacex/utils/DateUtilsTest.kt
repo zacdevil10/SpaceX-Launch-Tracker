@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.utils
 
 import org.junit.Test
+import uk.co.zac_h.spacex.model.spacex.DatePrecision
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -10,8 +11,8 @@ class DateUtilsTest {
 
     @Test
     fun formatMillisecondDateToLongFormatString() {
-        val monthPrecisionDateFormatted = dateInMillis.formatDateMillisLong("month")
-        val hourPrecisionDateFormatted = dateInMillis.formatDateMillisLong("hour")
+        val monthPrecisionDateFormatted = dateInMillis.formatDateMillisLong(DatePrecision.MONTH)
+        val hourPrecisionDateFormatted = dateInMillis.formatDateMillisLong(DatePrecision.HOUR)
 
         assert(
             monthPrecisionDateFormatted == SimpleDateFormat(

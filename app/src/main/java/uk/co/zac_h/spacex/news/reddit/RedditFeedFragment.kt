@@ -15,15 +15,13 @@ import uk.co.zac_h.spacex.databinding.FragmentRedditFeedBinding
 import uk.co.zac_h.spacex.model.reddit.SubredditModel
 import uk.co.zac_h.spacex.model.reddit.SubredditPostModel
 import uk.co.zac_h.spacex.news.adapters.RedditAdapter
-import uk.co.zac_h.spacex.utils.PaginationScrollListener
-import uk.co.zac_h.spacex.utils.REDDIT_PARAM_ORDER_HOT
-import uk.co.zac_h.spacex.utils.REDDIT_PARAM_ORDER_NEW
+import uk.co.zac_h.spacex.utils.*
 
 class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
 
     override var title: String = "Reddit"
 
-    private var binding: FragmentRedditFeedBinding? = null
+    private lateinit var binding: FragmentRedditFeedBinding
 
     private var presenter: RedditFeedContract.RedditFeedPresenter? = null
     private lateinit var redditAdapter: RedditAdapter
@@ -51,15 +49,13 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentRedditFeedBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentRedditFeedBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
         hidePagingProgress()
 
         presenter = RedditFeedPresenterImpl(this, RedditFeedInteractorImpl())
@@ -68,7 +64,7 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
 
         val layout = LinearLayoutManager(this@RedditFeedFragment.context)
 
-        binding?.redditRecycler?.apply {
+        binding.redditRecycler.apply {
             layoutManager = layout
             setHasFixedSize(true)
             adapter = redditAdapter
@@ -95,7 +91,8 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
             })
         }
 
-        binding?.swipeRefresh?.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
+            apiState = ApiState.PENDING
             presenter?.getSub(order)
         }
     }
@@ -103,12 +100,12 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
     override fun onResume() {
         super.onResume()
         if (posts.isEmpty()) presenter?.getSub(order)
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
+        (requireContext().applicationContext as App).networkStateChangeListener.addListener(this)
     }
 
     override fun onPause() {
         super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
+        (requireContext().applicationContext as App).networkStateChangeListener.removeListener(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -121,7 +118,6 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -167,11 +163,11 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
     }
 
     override fun updateRecycler(subredditData: SubredditModel) {
-        posts.clear()
-        posts.addAll(subredditData.data.children)
+        apiState = ApiState.SUCCESS
 
+        posts.clearAndAdd(subredditData.data.children)
         redditAdapter.notifyDataSetChanged()
-        binding?.redditRecycler?.scrollToPosition(0)
+        binding.redditRecycler.scrollToPosition(0)
     }
 
     override fun addPagedData(subredditData: SubredditModel) {
@@ -186,37 +182,35 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
     }
 
     override fun showProgress() {
-        binding?.progress?.show()
+
     }
 
     override fun hideProgress() {
-        binding?.progress?.hide()
+
     }
 
     override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding?.swipeRefresh?.isRefreshing = refreshing
+        binding.swipeRefresh.isRefreshing = refreshing
     }
 
     override fun showPagingProgress() {
-        binding?.pagingProgressIndicator?.show()
+        binding.pagingProgressIndicator.show()
     }
 
     override fun hidePagingProgress() {
-        binding?.pagingProgressIndicator?.hide()
+        binding.pagingProgressIndicator.hide()
     }
 
     override fun showError(error: String) {
-
+        apiState = ApiState.FAILED
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (posts.isEmpty() || it.progress.isShown)
-                    presenter?.getSub(order)
+        when (apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.getSub(order)
+            ApiState.SUCCESS -> {
             }
-
-            if (isLoading) presenter?.getNextPage(posts[posts.size - 1].data.name, order)
         }
+        if (isLoading) presenter?.getNextPage(posts[posts.size - 1].data.name, order)
     }
 }

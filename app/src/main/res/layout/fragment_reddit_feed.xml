@@ -6,15 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".news.reddit.RedditFeedFragment">
 
-    <com.google.android.material.progressindicator.ProgressIndicator
-        android:id="@+id/progress"
-        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/toolbar_elevation"
-        app:indicatorColor="?colorSecondary"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
@@ -32,12 +23,12 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <com.google.android.material.progressindicator.ProgressIndicator
+    <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/paging_progress_indicator"
-        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="@dimen/toolbar_elevation"
+        android:indeterminate="true"
         app:indicatorColor="?colorSecondary"
         app:layout_constraintBottom_toBottomOf="parent" />
 

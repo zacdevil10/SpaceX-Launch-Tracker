@@ -15,12 +15,14 @@
     <string name="menu_history">History</string>
     <string name="menu_ships">Ships</string>
 
+    <string name="detail_capsule">Capsule</string>
+
 
     <string name="flight_number">Flight %1$d</string>
     <string name="reused">Reused</string>
 
     <!-- Dashboard -->
-    <string name="no_pinned_launches_found_label">No pinned launches found.</string>
+    <string name="no_pinned_launches_found_label">No pinned launches found</string>
     <string name="next_launch">Next</string>
     <string name="latest_launch">Previous</string>
     <string name="customise_dashboard_label">Customise dashboard</string>
@@ -72,7 +74,7 @@
     <string name="inclination_label">Inclination</string>
     <string name="period_label">Period</string>
     <string name="mass">%1$s kg / %2$s lbs</string>
-    <string name="static_fire_label">(static fire)</string>
+    <string name="static_fire_label">Static fire:</string>
     <string name="watch_label">Watch</string>
     <string name="press_kit_label">Press Kit</string>
     <string name="campaign_label">Campaign</string>
@@ -132,7 +134,7 @@
     <string name="test_sites_label">Test Sites</string>
     <string name="spacex_logo_desc">SpaceX Logo</string>
     <string name="address">%1$s, %2$s, %3$s</string>
-    <string name="founded">%1$s, %2$d</string>
+    <string name="founded">%1$s, %2$s</string>
 
     <string name="website_label">Website</string>
     <string name="twitter_label">Twitter</string>
@@ -144,7 +146,7 @@
     <string name="reddit_campaign_icon_desc">Reddit Campaign Icon</string>
     <string name="reddit_campaign_label">Reddit Campaign</string>
     <string name="wikipedia_icon_desc">Wikipedia Icon</string>
-    <string name="wikipedia_label">Wikipedia</string>
+    <string name="wikipedia_label">ikipedia</string>
     <string name="article_icon_desc">Article Icon</string>
     <string name="article_label">Article</string>
 

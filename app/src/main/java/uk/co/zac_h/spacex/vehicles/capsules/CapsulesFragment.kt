@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,9 +10,7 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCapsulesBinding
 import uk.co.zac_h.spacex.model.spacex.Capsule
-import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
-import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
-import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
+import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
 
 class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
@@ -19,7 +18,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
 
     override var title: String = "Capsules"
 
-    private var binding: FragmentCapsulesBinding? = null
+    private lateinit var binding: FragmentCapsulesBinding
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var capsulesAdapter: CapsulesAdapter
@@ -49,22 +48,21 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
-
-        orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(context)
+        orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(requireContext())
         presenter = CapsulesPresenterImpl(this, CapsulesInteractorImpl())
 
         sortNew = orderSharedPreferences.isSortedNew("capsules")
 
         capsulesAdapter = CapsulesAdapter(capsulesArray)
 
-        binding?.capsulesRecycler?.apply {
-            layoutManager = LinearLayoutManager(this@CapsulesFragment.context)
+        binding.capsulesRecycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = capsulesAdapter
         }
 
-        binding?.swipeRefresh?.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
+            apiState = ApiState.PENDING
             presenter?.get()
         }
 
@@ -82,7 +80,6 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        binding = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -128,31 +125,28 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
     }
 
     override fun update(response: List<Capsule>) {
+        apiState = ApiState.SUCCESS
+
         capsulesArray.clear()
         capsulesArray.addAll(if (sortNew) response.reversed() else response)
 
-        binding?.capsulesRecycler?.layoutAnimation = animateLayoutFromBottom(context)
+        binding.capsulesRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
         capsulesAdapter.notifyDataSetChanged()
-        binding?.capsulesRecycler?.scheduleLayoutAnimation()
-    }
-
-    override fun showProgress() {
-        binding?.progress?.show()
-    }
-
-    override fun hideProgress() {
-        binding?.progress?.hide()
+        binding.capsulesRecycler.scheduleLayoutAnimation()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding?.swipeRefresh?.isRefreshing = isRefreshing
+        binding.swipeRefresh.isRefreshing = isRefreshing
+    }
+
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (capsulesArray.isEmpty() || it.progress.isShown) presenter?.get()
-            }
+        when (apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.get()
+            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }

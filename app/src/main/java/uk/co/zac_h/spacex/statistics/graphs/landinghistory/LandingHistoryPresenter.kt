@@ -15,7 +15,10 @@ class LandingHistoryPresenter(
         if (response.isNullOrEmpty()) {
             view.showProgress()
             interactor.get(api, this)
-        } else view.update(false, response)
+        } else view.apply {
+            hideProgress()
+            update(false, response)
+        }
     }
 
     override fun cancelRequest() {

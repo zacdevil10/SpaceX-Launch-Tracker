@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="heading_start_margin">8dp</dimen>
-    <dimen name="container_scroll_over">8dp</dimen>
-</resources>

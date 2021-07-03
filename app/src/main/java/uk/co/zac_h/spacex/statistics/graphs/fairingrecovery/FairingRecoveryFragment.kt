@@ -3,10 +3,6 @@ package uk.co.zac_h.spacex.statistics.graphs.fairingrecovery
 import android.os.Bundle
 import android.view.*
 import androidx.core.view.doOnPreDraw
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.BarData
@@ -19,20 +15,21 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentFairingRecoveryBinding
+import uk.co.zac_h.spacex.statistics.adapters.Statistics
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
+import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.models.FairingRecoveryModel
 import uk.co.zac_h.spacex.utils.models.KeysModel
 
 class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<FairingRecoveryModel>> {
 
-    override var title: String = "Fairing Recovery"
+    override val title: String by lazy { Statistics.FAIRING_RECOVERY.title }
 
-    private var binding: FragmentFairingRecoveryBinding? = null
+    private lateinit var binding: FragmentFairingRecoveryBinding
 
     private var presenter: NetworkInterface.Presenter<List<FairingRecoveryModel>?>? = null
 
@@ -65,24 +62,21 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
+        (activity as MainActivity).setSupportActionBar(binding.toolbarLayout.toolbar)
+        binding.toolbarLayout.toolbar.setup()
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
-
-        binding?.fairingRecoveryConstraint?.transitionName = heading
-
-        hideProgress()
+        binding.fairingRecoveryConstraint.transitionName = heading
 
         presenter = FairingRecoveryPresenter(this, FairingRecoveryInteractor())
 
-        keyAdapter = StatisticsKeyAdapter(context, keys, false)
+        keyAdapter = StatisticsKeyAdapter(requireContext(), keys, false)
 
-        binding?.statisticsBarChart?.recycler?.apply {
-            layoutManager = LinearLayoutManager(this@FairingRecoveryFragment.context)
+        binding.statisticsBarChart.recycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = keyAdapter
         }
 
-        binding?.statisticsBarChart?.barChart?.apply {
+        binding.statisticsBarChart.barChart.apply {
             setup()
 
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
@@ -92,7 +86,7 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
 
                         keys.clear()
 
-                        binding?.apply {
+                        binding.apply {
                             statisticsBarChart.key.visibility = View.VISIBLE
 
                             statisticsBarChart.year.text = stats.year.toString()
@@ -114,7 +108,7 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
                 }
 
                 override fun onNothingSelected() {
-                    binding?.statisticsBarChart?.key?.visibility = View.GONE
+                    binding.statisticsBarChart.key.visibility = View.GONE
                     keys.clear()
                     keyAdapter.notifyDataSetChanged()
                 }
@@ -129,11 +123,6 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
         super.onSaveInstanceState(outState)
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
-    }
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_statistics_reload, menu)
         super.onCreateOptionsMenu(menu, inflater)
@@ -141,6 +130,7 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.reload -> {
+            apiState = ApiState.PENDING
             statsList.clear()
             presenter?.getOrUpdate(null)
             true
@@ -149,6 +139,7 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
     }
 
     override fun update(data: Any, response: List<FairingRecoveryModel>) {
+        apiState = ApiState.SUCCESS
         if (statsList.isEmpty()) statsList.addAll(response)
 
         val colors = ArrayList<Int>()
@@ -184,7 +175,7 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
         val dataSets = ArrayList<IBarDataSet>()
         dataSets.add(set)
 
-        binding?.statisticsBarChart?.barChart?.apply {
+        binding.statisticsBarChart.barChart.apply {
             if (data == true) animateY(400, Easing.Linear)
             xAxis.labelCount = response.size
             axisLeft.apply {
@@ -199,17 +190,21 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
     }
 
     override fun showProgress() {
-        binding?.progress?.show()
+        binding.toolbarLayout.progress.show()
     }
 
     override fun hideProgress() {
-        binding?.progress?.hide()
+        binding.toolbarLayout.progress.hide()
+    }
+
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (statsList.isEmpty() || it.progress.isShown) presenter?.getOrUpdate(null)
+        when (apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.getOrUpdate(null)
+            ApiState.SUCCESS -> {
             }
         }
     }

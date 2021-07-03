@@ -7,50 +7,38 @@
     android:layout_height="match_parent"
     tools:context=".launches.details.LaunchDetailsContainerFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:elevation="@dimen/toolbar_elevation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            style="@style/Widget.MaterialComponents.Toolbar.Primary"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:elevation="@dimen/toolbar_elevation"
-            android:textColor="?colorOnSurface"
-            android:theme="@style/AppTheme.AppBarOverlay"
-            app:layout_collapseMode="parallax"
-            app:layout_scrollFlags="scroll|enterAlways" />
+        <include
+            android:id="@+id/toolbar_layout"
+            layout="@layout/toolbar_progress" />
 
         <TextView
             android:id="@+id/launch_details_countdown_text"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?colorPrimary"
+            android:layout_height="wrap_content"
+            android:background="@color/color_background"
             android:elevation="@dimen/toolbar_elevation"
             android:letterSpacing="0.1"
             android:paddingTop="@dimen/small_margin"
             android:paddingBottom="@dimen/small_margin"
             android:textAlignment="center"
-            android:textAppearance="?textAppearanceHeadline5"
-            android:textColor="?colorOnPrimary"
-            android:theme="@style/AppTheme.AppBarOverlay"
+            android:textAppearance="?textAppearanceHeadline4"
+            android:textColor="?colorSecondary"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/app_bar"
-            tools:text="43:13:23:55" />
+            app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
+            tools:text="T-43:13:23:55" />
 
-    </com.google.android.material.appbar.AppBarLayout>
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/launch_details_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/launch_details_countdown_text" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/launch_details_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/launch_details_bottom_navigation"

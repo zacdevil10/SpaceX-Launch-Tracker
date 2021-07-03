@@ -14,13 +14,13 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.MainActivity
-import uk.co.zac_h.spacex.crew.CrewView
 import uk.co.zac_h.spacex.databinding.GridItemCrewBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
+import uk.co.zac_h.spacex.utils.Keys.CrewKeys
 
 class CrewAdapter(
-    private val view: CrewView,
-    private val crew: List<Crew>
+    var crew: List<Crew> = emptyList(),
+    val startTransition: (() -> Unit)? = null
 ) : RecyclerView.Adapter<CrewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
@@ -40,7 +40,7 @@ class CrewAdapter(
                     target: Target<Drawable>?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    view.startTransition()
+                    startTransition?.invoke()
                     return false
                 }
 
@@ -51,7 +51,7 @@ class CrewAdapter(
                     dataSource: DataSource?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    view.startTransition()
+                    startTransition?.invoke()
                     return false
                 }
             }).into(image)
@@ -67,13 +67,18 @@ class CrewAdapter(
 
     override fun getItemCount(): Int = crew.size
 
+    fun update(list: List<Crew>) {
+        crew = list
+        notifyDataSetChanged()
+    }
+
     inner class ViewHolder(val binding: GridItemCrewBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(person: Crew) {
             binding.root.findNavController().navigate(
                 R.id.action_crew_fragment_to_crew_details_fragment,
-                bundleOf("crew" to crew, "position" to adapterPosition),
+                bundleOf(CrewKeys.CREW_ARGS to crew),
                 null,
                 FragmentNavigatorExtras(binding.root to person.id)
             )

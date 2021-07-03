@@ -1,7 +1,7 @@
 package uk.co.zac_h.spacex.utils
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import uk.co.zac_h.spacex.model.spacex.DatePrecision
 import java.text.SimpleDateFormat
 import java.util.*

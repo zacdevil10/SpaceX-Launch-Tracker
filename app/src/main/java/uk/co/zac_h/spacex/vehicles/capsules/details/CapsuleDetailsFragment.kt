@@ -5,15 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentCapsuleDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
@@ -25,7 +19,7 @@ class CapsuleDetailsFragment : BaseFragment() {
 
     override var title: String = ""
 
-    private var binding: FragmentCapsuleDetailsBinding? = null
+    private lateinit var binding: FragmentCapsuleDetailsBinding
 
     private var capsule: Capsule? = null
 
@@ -34,7 +28,7 @@ class CapsuleDetailsFragment : BaseFragment() {
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        capsule = arguments?.getParcelable("capsule") as Capsule?
+        capsule = arguments?.getParcelable("capsule")
     }
 
     override fun onCreateView(
@@ -50,12 +44,11 @@ class CapsuleDetailsFragment : BaseFragment() {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+        with(binding) {
+            title = capsule?.serial ?: getString(R.string.detail_capsule)
+            toolbarLayout.toolbar.setup()
 
-        binding?.apply {
             capsuleDetailsConstraint.transitionName = capsule?.id
-
-            toolbar.title = capsule?.serial
 
             capsule?.type?.let {
                 capsuleDetailsTypeText.text = it.type
@@ -81,11 +74,8 @@ class CapsuleDetailsFragment : BaseFragment() {
                     adapter = MissionsAdapter(context, launches)
                 }
             } ?: run { capsuleDetailsMissionLabel.visibility = View.GONE }
-        }
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
+            toolbarLayout.progress.hide()
+        }
     }
 }

@@ -10,7 +10,6 @@ class CapsulesPresenterImpl(
 ) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<List<Capsule>?> {
 
     override fun get(api: SpaceXInterface) {
-        view.showProgress()
         interactor.get(api, this)
     }
 
@@ -19,10 +18,9 @@ class CapsulesPresenterImpl(
     }
 
     override fun onSuccess(response: List<Capsule>?) {
-        view.apply {
-            hideProgress()
-            toggleSwipeRefresh(false)
-            response?.let {
+        response?.let {
+            view.apply {
+                toggleSwipeRefresh(false)
                 update(it)
             }
         }

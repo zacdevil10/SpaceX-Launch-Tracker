@@ -4,20 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
 import uk.co.zac_h.spacex.BuildConfig
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentAboutBinding
 
 class AboutFragment : BaseFragment() {
 
-    override var title: String = "About"
+    override val title: String by lazy { getString(R.string.menu_about) }
 
     private lateinit var binding: FragmentAboutBinding
 
@@ -31,9 +25,11 @@ class AboutFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbar.setupWithNavController(navController, appBarConfig)
+        with(binding) {
+            toolbarLayout.toolbar.setup()
+            toolbarLayout.progress.hide()
 
-        binding.aboutVersion.text =
-            context?.getString(R.string.version_name, BuildConfig.VERSION_NAME)
+            aboutVersion.text = getString(R.string.version_name, BuildConfig.VERSION_NAME)
+        }
     }
 }

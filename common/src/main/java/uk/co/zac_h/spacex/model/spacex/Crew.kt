@@ -2,7 +2,7 @@ package uk.co.zac_h.spacex.model.spacex
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import uk.co.zac_h.spacex.utils.*
 
 data class CrewDocsModel(
@@ -32,8 +32,8 @@ data class CrewQueriedResponse(
 @Parcelize
 data class Crew(
     val name: String?,
-    val status: CrewStatus?,
-    val agency: String?,
+    val status: CrewStatus,
+    val agency: String,
     val image: String?,
     val wikipedia: String?,
     val launchIds: List<String>? = null,
@@ -46,7 +46,7 @@ data class Crew(
     ) : this(
         name = response.name,
         status = response.status.toCrewStatus(),
-        agency = response.agency,
+        agency = response.agency.orUnknown(),
         image = response.image,
         wikipedia = response.wikipedia,
         launchIds = response.launches,
@@ -58,7 +58,7 @@ data class Crew(
     ) : this(
         name = response.name,
         status = response.status.toCrewStatus(),
-        agency = response.agency,
+        agency = response.agency.orUnknown(),
         image = response.image,
         wikipedia = response.wikipedia,
         launches = response.launches?.map { Launch(it) },
