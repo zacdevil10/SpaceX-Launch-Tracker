@@ -7,11 +7,15 @@ import uk.co.zac_h.spacex.rest.SpaceXInterface
 class LaunchDetailsCrewPresenter(
     private val view: NetworkInterface.View<List<Crew>>,
     private val interactor: NetworkInterface.Interactor<List<Crew>>
-) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<List<Crew>> {
+) : NetworkInterface.Presenter<List<Crew>>, NetworkInterface.Callback<List<Crew>> {
 
     override fun get(data: Any, api: SpaceXInterface) {
         view.toggleSwipeRefresh(true)
         interactor.get(data, api, this)
+    }
+
+    override fun getOrUpdate(response: List<Crew>, data: Any, api: SpaceXInterface) {
+        if (response.isEmpty()) super.getOrUpdate(response, data, api) else onSuccess(response)
     }
 
     override fun cancelRequest() = interactor.cancelAllRequests()

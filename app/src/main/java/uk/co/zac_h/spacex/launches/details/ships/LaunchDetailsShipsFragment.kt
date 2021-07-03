@@ -1,9 +1,11 @@
 package uk.co.zac_h.spacex.launches.details.ships
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
@@ -14,32 +16,36 @@ import uk.co.zac_h.spacex.model.spacex.Ship
 import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.clearAndAdd
+import uk.co.zac_h.spacex.utils.orUnknown
 
 class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
-
-    override var title: String = ""
 
     private lateinit var binding: FragmentLaunchDetailsShipsBinding
 
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
 
     private lateinit var shipsAdapter: LaunchDetailsShipsAdapter
-    private lateinit var shipsArray: ArrayList<Ship>
+    private var shipsArray: ArrayList<Ship> = ArrayList()
 
-    private var id: String? = null
+    private lateinit var id: String
 
     companion object {
+        const val SHIPS_KEY = "ships"
+        const val ID_KEY = "id"
+
         @JvmStatic
-        fun newInstance(args: Any) = LaunchDetailsShipsFragment().apply {
-            arguments = bundleOf("id" to args)
+        fun newInstance(id: String) = LaunchDetailsShipsFragment().apply {
+            this.id = id
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        shipsArray = savedInstanceState?.getParcelableArrayList("ships") ?: ArrayList()
-        id = arguments?.getString("id")
+        savedInstanceState?.let {
+            shipsArray = it.getParcelableArrayList(SHIPS_KEY) ?: ArrayList()
+            id = it.getString(ID_KEY).orUnknown()
+        }
     }
 
     override fun onCreateView(
@@ -58,20 +64,20 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
 
         binding.launchDetailsShipsRecycler.apply {
             layoutManager = LinearLayoutManager(context)
-            setHasFixedSize(true)
             adapter = shipsAdapter
         }
 
         binding.swipeRefresh.setOnRefreshListener {
             apiState = ApiState.PENDING
-            id?.let { presenter?.get(it) }
+            presenter?.get(id)
         }
 
-        if (shipsArray.isEmpty()) id?.let { presenter?.get(it) }
+        if (shipsArray.isEmpty()) presenter?.get(id)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("ships", shipsArray)
+        outState.putParcelableArrayList(SHIPS_KEY, shipsArray)
+        outState.putString(ID_KEY, id)
         super.onSaveInstanceState(outState)
     }
 
@@ -85,7 +91,8 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
 
         shipsArray.clearAndAdd(response)
 
-        binding.launchDetailsShipsRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
+        binding.launchDetailsShipsRecycler.layoutAnimation =
+            animateLayoutFromBottom(requireContext())
         shipsAdapter.notifyDataSetChanged()
         binding.launchDetailsShipsRecycler.scheduleLayoutAnimation()
     }
@@ -96,12 +103,13 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
 
     override fun showError(error: String) {
         apiState = ApiState.FAILED
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        when(apiState) {
-            ApiState.PENDING, ApiState.FAILED -> id?.let { presenter?.get(it) }
-            ApiState.SUCCESS -> {}
+        when (apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.get(id)
+            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }
