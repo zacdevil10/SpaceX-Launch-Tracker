@@ -15,6 +15,8 @@ import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.model.spacex.LaunchCore
 import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
+import uk.co.zac_h.spacex.utils.clearAndAdd
+import uk.co.zac_h.spacex.utils.orUnknown
 
 class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<LaunchCore>> {
 
@@ -23,12 +25,13 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
     private var presenter: NetworkInterface.Presenter<List<LaunchCore>>? = null
 
     private lateinit var coresAdapter: FirstStageAdapter
-    private lateinit var cores: ArrayList<LaunchCore>
+    private var cores: ArrayList<LaunchCore> = ArrayList()
 
     private lateinit var id: String
 
     companion object {
         const val CORES_KEY = "cores"
+        const val ID_KEY = "id"
 
         fun newInstance(id: String) = LaunchDetailsCoresFragment().apply {
             this.id = id
@@ -37,9 +40,11 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
 
-        cores = savedInstanceState?.getParcelableArrayList(CORES_KEY) ?: ArrayList()
+        savedInstanceState?.let {
+            id = it.getString(ID_KEY).orUnknown()
+            cores = it.getParcelableArrayList(CORES_KEY) ?: ArrayList()
+        }
     }
 
     override fun onCreateView(
@@ -63,7 +68,6 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
 
         binding.swipeRefresh.setOnRefreshListener {
             apiState = ApiState.PENDING
-            cores.clear()
             presenter?.get(id)
         }
 
@@ -72,7 +76,7 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList(CORES_KEY, cores)
-        super.onSaveInstanceState(outState)
+        outState.putString(ID_KEY, id)
     }
 
     override fun onDestroyView() {
@@ -81,12 +85,13 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
     }
 
     override fun update(response: List<LaunchCore>) {
-        apiState = ApiState.SUCCESS
+        cores = response as ArrayList<LaunchCore>
 
-        if (cores.isEmpty()) {
-            cores.addAll(response)
+        if (apiState != ApiState.SUCCESS) {
             binding.launchDetailsCoresRecycler.layoutAnimation = animateLayoutFromBottom(context)
         }
+
+        apiState = ApiState.SUCCESS
 
         coresAdapter.update(response)
         binding.launchDetailsCoresRecycler.scheduleLayoutAnimation()

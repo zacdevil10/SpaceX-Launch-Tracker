@@ -22,7 +22,7 @@ abstract class BaseFragment : Fragment(),
 
     open val title: String by lazy { getString(R.string.app_name) }
 
-    var apiState: ApiState = ApiState.PENDING
+    protected var apiState: ApiState = ApiState.PENDING
 
     private lateinit var navController: NavController
 
@@ -50,14 +50,12 @@ abstract class BaseFragment : Fragment(),
     }
 
     protected fun Toolbar.setup() {
-        this.apply {
-            setupWithNavController(navController, appBarConfig)
-            title = this@BaseFragment.title
-        }
+        setupWithNavController(navController, appBarConfig)
+        title = this@BaseFragment.title
     }
 
     protected fun Toolbar.setupWithTabLayout(tabLayout: TabLayout, tabLayoutMode: Int) {
-        this.setup()
+        setup()
         tabLayout.tabMode = tabLayoutMode
 
     }
@@ -72,11 +70,9 @@ abstract class BaseFragment : Fragment(),
     }
 
     open fun Toolbar.createOptionsMenu(@MenuRes menu: Int) {
-        this.apply {
-            inflateMenu(menu)
-            setOnMenuItemClickListener {
-                onOptionsItemSelected(it)
-            }
+        inflateMenu(menu)
+        setOnMenuItemClickListener {
+            onOptionsItemSelected(it)
         }
     }
 }

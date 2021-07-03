@@ -15,20 +15,22 @@ import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
 import uk.co.zac_h.spacex.model.spacex.Payload
 import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.clearAndAdd
+import uk.co.zac_h.spacex.utils.orUnknown
 
 class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List<Payload>> {
 
     private lateinit var binding: FragmentLaunchDetailsPayloadsBinding
 
-    private var presenter: NetworkInterface.Presenter<Nothing>? = null
+    private var presenter: NetworkInterface.Presenter<List<Payload>>? = null
 
     private lateinit var payloadAdapter: PayloadAdapter
-    private lateinit var payloads: ArrayList<Payload>
+    private var payloads: ArrayList<Payload> = ArrayList()
 
     private lateinit var id: String
 
     companion object {
         const val PAYLOADS_KEY = "payloads"
+        const val ID_KEY = "id"
 
         @JvmStatic
         fun newInstance(id: String) = LaunchDetailsPayloadsFragment().apply {
@@ -39,7 +41,10 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        payloads = savedInstanceState?.getParcelableArrayList(PAYLOADS_KEY) ?: ArrayList()
+        savedInstanceState?.let {
+            id = it.getString(ID_KEY).orUnknown()
+            payloads = it.getParcelableArrayList(PAYLOADS_KEY) ?: ArrayList()
+        }
     }
 
     override fun onCreateView(
@@ -54,7 +59,7 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
 
         presenter = LaunchDetailsPayloadsPresenter(this, LaunchDetailsPayloadsInteractor())
 
-        payloadAdapter = PayloadAdapter(requireContext(), payloads)
+        payloadAdapter = PayloadAdapter(requireContext())
 
         binding.launchDetailsPayloadRecycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -68,19 +73,19 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
             presenter?.get(id)
         }
 
-        if (payloads.isEmpty()) presenter?.get(id)
+        presenter?.getOrUpdate(payloads, id)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList(PAYLOADS_KEY, payloads)
-        super.onSaveInstanceState(outState)
+        outState.putString(ID_KEY, id)
     }
 
     override fun update(response: List<Payload>) {
         apiState = ApiState.SUCCESS
 
-        payloads.clearAndAdd(response)
-        payloadAdapter.notifyDataSetChanged()
+        payloads = response as ArrayList<Payload>
+        payloadAdapter.update(response)
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {

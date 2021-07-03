@@ -18,8 +18,10 @@ import uk.co.zac_h.spacex.databinding.GridItemCrewBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.utils.Keys.CrewKeys
 
-class CrewAdapter(var crew: List<Crew>, val startTransition: (() -> Unit)? = null) :
-    RecyclerView.Adapter<CrewAdapter.ViewHolder>() {
+class CrewAdapter(
+    var crew: List<Crew> = emptyList(),
+    val startTransition: (() -> Unit)? = null
+) : RecyclerView.Adapter<CrewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
         GridItemCrewBinding.inflate(LayoutInflater.from(parent.context), parent, false)

@@ -15,20 +15,22 @@ import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.clearAndAdd
+import uk.co.zac_h.spacex.utils.orUnknown
 
 class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
 
     private lateinit var binding: FragmentLaunchDetailsCrewBinding
 
-    private var presenter: NetworkInterface.Presenter<Nothing>? = null
+    private var presenter: NetworkInterface.Presenter<List<Crew>>? = null
 
     private lateinit var crewAdapter: CrewAdapter
-    private lateinit var crew: ArrayList<Crew>
+    private var crew: ArrayList<Crew> = ArrayList()
 
     private lateinit var id: String
 
     companion object {
         const val CREW_KEY = "crew"
+        const val ID_KEY = "id"
 
         @JvmStatic
         fun newInstance(id: String) = LaunchDetailsCrewFragment().apply {
@@ -38,9 +40,11 @@ class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Cre
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        retainInstance = true
 
-        crew = savedInstanceState?.getParcelableArrayList(CREW_KEY) ?: ArrayList()
+        savedInstanceState?.let {
+            id = it.getString(ID_KEY).orUnknown()
+            crew = it.getParcelableArrayList(CREW_KEY) ?: ArrayList()
+        }
     }
 
     override fun onCreateView(
@@ -55,14 +59,14 @@ class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Cre
 
         presenter = LaunchDetailsCrewPresenter(this, LaunchDetailsCrewInteractor())
 
-        crewAdapter = CrewAdapter(crew)
+        crewAdapter = CrewAdapter()
 
         binding.launchDetailsCrewRecycler.apply {
             setHasFixedSize(true)
             adapter = crewAdapter
         }
 
-        if (crew.isEmpty()) presenter?.get(id)
+        presenter?.getOrUpdate(crew, id)
 
         binding.swipeRefresh.setOnRefreshListener {
             apiState = ApiState.PENDING
@@ -72,7 +76,7 @@ class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Cre
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList(CREW_KEY, crew)
-        super.onSaveInstanceState(outState)
+        outState.putString(ID_KEY, id)
     }
 
     override fun onDestroyView() {
@@ -81,12 +85,12 @@ class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Cre
     }
 
     override fun update(response: List<Crew>) {
+        if (apiState != ApiState.SUCCESS) binding.launchDetailsCrewRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
+
         apiState = ApiState.SUCCESS
 
-        crew.clearAndAdd(response)
-
-        binding.launchDetailsCrewRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
-        crewAdapter.notifyDataSetChanged()
+        crew = response as ArrayList<Crew>
+        crewAdapter.update(response)
         binding.launchDetailsCrewRecycler.scheduleLayoutAnimation()
     }
 

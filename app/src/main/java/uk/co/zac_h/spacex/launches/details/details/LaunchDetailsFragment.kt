@@ -21,8 +21,6 @@ import uk.co.zac_h.spacex.utils.*
 
 class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
 
-    override var title: String = ""
-
     private lateinit var binding: FragmentLaunchDetailsBinding
 
     private var presenter: LaunchDetailsContract.LaunchDetailsPresenter? = null
@@ -40,7 +38,7 @@ class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
                     id = args.id
                 }
                 is String -> id = args
-                else -> throw IllegalArgumentException()
+                else -> throw IllegalArgumentException("${this.javaClass.simpleName} has been created with an invalid argument type")
             }
         }
     }
@@ -48,7 +46,11 @@ class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        retainInstance = true
+
+        savedInstanceState?.let {
+            id = it.getString("id").orUnknown()
+            launch = it.getParcelable("launch")
+        }
     }
 
     override fun onCreateView(
@@ -85,11 +87,14 @@ class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
         presenter?.cancelRequest()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString("id", id)
+        outState.putParcelable("launch", launch)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(
-            if (presenter?.isPinned(id) == true) {
-                R.menu.menu_details_alternate
-            } else R.menu.menu_details,
+            if (presenter?.isPinned(id) == true) R.menu.menu_details_alternate else R.menu.menu_details,
             menu
         )
     }
