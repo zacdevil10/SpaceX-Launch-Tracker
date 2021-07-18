@@ -1,10 +1,11 @@
 package uk.co.zac_h.spacex.launches.details.payloads
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import uk.co.zac_h.spacex.base.BaseFragment
@@ -12,36 +13,38 @@ import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsPayloadsBinding
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
 import uk.co.zac_h.spacex.model.spacex.Payload
+import uk.co.zac_h.spacex.utils.ApiState
+import uk.co.zac_h.spacex.utils.clearAndAdd
+import uk.co.zac_h.spacex.utils.orUnknown
 
 class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List<Payload>> {
 
-    override var title: String = "Launch Details Payloads"
+    private lateinit var binding: FragmentLaunchDetailsPayloadsBinding
 
-    private var binding: FragmentLaunchDetailsPayloadsBinding? = null
-
-    private var presenter: NetworkInterface.Presenter<Nothing>? = null
+    private var presenter: NetworkInterface.Presenter<List<Payload>>? = null
 
     private lateinit var payloadAdapter: PayloadAdapter
-    private lateinit var payloads: ArrayList<Payload>
+    private var payloads: ArrayList<Payload> = ArrayList()
 
-    private var id: String? = null
+    private lateinit var id: String
 
     companion object {
-        const val ID_KEY = "id"
         const val PAYLOADS_KEY = "payloads"
+        const val ID_KEY = "id"
 
         @JvmStatic
-        fun newInstance(args: Any) = LaunchDetailsPayloadsFragment().apply {
-            arguments = bundleOf(ID_KEY to args)
+        fun newInstance(id: String) = LaunchDetailsPayloadsFragment().apply {
+            this.id = id
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        payloads =
-            savedInstanceState?.getParcelableArrayList(PAYLOADS_KEY) ?: ArrayList()
-        id = arguments?.getString("id")
+        savedInstanceState?.let {
+            id = it.getString(ID_KEY).orUnknown()
+            payloads = it.getParcelableArrayList(PAYLOADS_KEY) ?: ArrayList()
+        }
     }
 
     override fun onCreateView(
@@ -54,54 +57,50 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
-
         presenter = LaunchDetailsPayloadsPresenter(this, LaunchDetailsPayloadsInteractor())
 
-        payloadAdapter = PayloadAdapter(context, payloads)
+        payloadAdapter = PayloadAdapter(requireContext())
 
-        binding?.launchDetailsPayloadRecycler?.apply {
-            layoutManager = LinearLayoutManager(this@LaunchDetailsPayloadsFragment.context)
+        binding.launchDetailsPayloadRecycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = payloadAdapter
             (itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
         }
 
-        if (payloads.isEmpty()) id?.let {
-            presenter?.get(it)
+        binding.swipeRefresh.setOnRefreshListener {
+            apiState = ApiState.PENDING
+            presenter?.get(id)
         }
+
+        presenter?.getOrUpdate(payloads, id)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList(PAYLOADS_KEY, payloads)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
+        outState.putString(ID_KEY, id)
     }
 
     override fun update(response: List<Payload>) {
-        payloads.clear()
-        payloads.addAll(response)
+        apiState = ApiState.SUCCESS
 
-        payloadAdapter.notifyDataSetChanged()
+        payloads = response as ArrayList<Payload>
+        payloadAdapter.update(response)
     }
 
-    override fun showProgress() {
-        binding?.progress?.show()
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding.swipeRefresh.isRefreshing = isRefreshing
     }
 
-    override fun hideProgress() {
-        binding?.progress?.hide()
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            id?.let {
-                if (payloads.isEmpty()) presenter?.get(it)
-            }
+        when (apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.get(id)
+            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }

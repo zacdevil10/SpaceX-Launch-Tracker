@@ -143,7 +143,7 @@ interface SpaceXInterface {
 
     companion object RetrofitSetup {
         fun create(): SpaceXInterface = Retrofit.Builder().apply {
-            baseUrl(SPACEX_BASE_URL_DEVELOP)
+            baseUrl(SPACEX_BASE_URL)
             addConverterFactory(MoshiConverterFactory.create())
         }.build().create(SpaceXInterface::class.java)
     }

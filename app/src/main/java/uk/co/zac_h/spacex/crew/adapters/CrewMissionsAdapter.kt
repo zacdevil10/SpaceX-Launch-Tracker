@@ -6,12 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemCrewMissionBinding
-import uk.co.zac_h.spacex.databinding.ListItemMissionBinding
-import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
 import uk.co.zac_h.spacex.model.spacex.Launch
 
 class CrewMissionsAdapter(
-    private val context: Context?,
+    private val context: Context,
     private val launches: List<Launch>
 ) : RecyclerView.Adapter<CrewMissionsAdapter.ViewHolder>() {
 
@@ -30,7 +28,7 @@ class CrewMissionsAdapter(
         holder.binding.apply {
             listItemCrewMissionNameText.text = launch.missionName
             listItemCrewMissionFlightText.text =
-                context?.getString(R.string.flight_number, launch.flightNumber)
+                context.getString(R.string.flight_number, launch.flightNumber)
         }
     }
 

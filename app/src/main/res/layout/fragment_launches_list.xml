@@ -11,14 +11,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.progressindicator.ProgressIndicator
+        <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/progress"
-            style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:elevation="@dimen/toolbar_elevation"
+            android:indeterminate="true"
+            app:hideAnimationBehavior="outward"
             app:indicatorColor="?colorSecondary"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:showAnimationBehavior="inward" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/launches_recycler"

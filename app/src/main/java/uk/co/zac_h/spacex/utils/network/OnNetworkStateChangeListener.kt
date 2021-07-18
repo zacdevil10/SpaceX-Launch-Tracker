@@ -8,7 +8,7 @@ import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Build
 
-class OnNetworkStateChangeListener(private val context: Context?) {
+class OnNetworkStateChangeListener(private val context: Context) {
 
     private val listeners: MutableSet<NetworkStateReceiverListener> = HashSet()
 
@@ -27,22 +27,20 @@ class OnNetworkStateChangeListener(private val context: Context?) {
 
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            context?.let { context ->
-                connectivityManager =
-                    context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            connectivityManager =
+                context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-                networkCallback = object : ConnectivityManager.NetworkCallback() {
-                    override fun onAvailable(network: Network) {
-                        super.onAvailable(network)
-                        connected = true
-                        notifyStateToAll()
-                    }
+            networkCallback = object : ConnectivityManager.NetworkCallback() {
+                override fun onAvailable(network: Network) {
+                    super.onAvailable(network)
+                    connected = true
+                    notifyStateToAll()
+                }
 
-                    override fun onLost(network: Network) {
-                        super.onLost(network)
-                        connected = false
-                        notifyStateToAll()
-                    }
+                override fun onLost(network: Network) {
+                    super.onLost(network)
+                    connected = false
+                    notifyStateToAll()
                 }
             }
         } else {
@@ -82,7 +80,7 @@ class OnNetworkStateChangeListener(private val context: Context?) {
     }
 
     fun updateState() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) context?.let {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             connected = isConnected(context)
 
             notifyStateToAll()
@@ -90,15 +88,16 @@ class OnNetworkStateChangeListener(private val context: Context?) {
     }
 
     fun registerReceiver() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
-            context?.registerReceiver(broadcastReceiver, intentFilter)
-        else connectivityManager.registerDefaultNetworkCallback(networkCallback)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) context.registerReceiver(
+            broadcastReceiver,
+            intentFilter
+        ) else connectivityManager.registerDefaultNetworkCallback(networkCallback)
     }
 
     fun unregisterReceiver() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N)
-            context?.unregisterReceiver(broadcastReceiver)
-        else connectivityManager.unregisterNetworkCallback(networkCallback)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) context.unregisterReceiver(
+            broadcastReceiver
+        ) else connectivityManager.unregisterNetworkCallback(networkCallback)
     }
 
     fun addListener(listener: NetworkStateReceiverListener) {

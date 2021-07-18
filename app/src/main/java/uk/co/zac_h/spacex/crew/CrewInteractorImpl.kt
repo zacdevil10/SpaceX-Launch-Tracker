@@ -6,11 +6,11 @@ import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class CrewInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<Crew>?> {
+class CrewInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<Crew>> {
 
     private var call: Call<CrewDocsModel>? = null
 
-    override fun get(api: SpaceXInterface, listener: NetworkInterface.Callback<List<Crew>?>) {
+    override fun get(api: SpaceXInterface, listener: NetworkInterface.Callback<List<Crew>>) {
         val query = QueryModel(
             "",
             QueryOptionsModel(
@@ -28,7 +28,7 @@ class CrewInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<Crew>
         call = api.queryCrewMembers(query).apply {
             makeCall {
                 onResponseSuccess = { response ->
-                    listener.onSuccess(response.body()?.docs?.map { Crew(it) })
+                    response.body()?.docs?.map { Crew(it) }?.let { listener.onSuccess(it) }
                 }
                 onResponseFailure = { listener.onError(it) }
             }

@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import uk.co.zac_h.spacex.about.history.HistoryView
 import uk.co.zac_h.spacex.databinding.ListItemHistoryEventBinding
 import uk.co.zac_h.spacex.databinding.ListItemHistoryHeadingBinding
 import uk.co.zac_h.spacex.utils.animateFromRightWithOffset
@@ -15,9 +14,10 @@ import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 
 class HistoryAdapter(
     private var context: Context,
-    private var events: List<HistoryHeaderModel>,
-    private var view: HistoryView
+    private var openWebLink: (String) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var events: List<HistoryHeaderModel> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
@@ -63,7 +63,7 @@ class HistoryAdapter(
                         startAnimation(animateFromRightWithOffset(this@HistoryAdapter.context, 240))
 
                         setOnClickListener {
-                            view.openWebLink(link)
+                            openWebLink(link)
                         }
                     } ?: run {
                         visibility = View.GONE
@@ -77,6 +77,11 @@ class HistoryAdapter(
                 heading.text = event.header
             }
         }
+    }
+
+    fun update(list: List<HistoryHeaderModel>) {
+        events = list
+        notifyDataSetChanged()
     }
 
     fun isHeader(): (itemPosition: Int) -> Boolean = { events[it].isHeader }

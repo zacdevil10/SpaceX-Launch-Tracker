@@ -2,7 +2,7 @@ package uk.co.zac_h.spacex.model.spacex
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import uk.co.zac_h.spacex.utils.*
 
 data class LaunchDocsModel(
@@ -127,7 +127,6 @@ data class LaunchLinks(
     @field:Json(name = SPACEX_FIELD_LAUNCH_PATCH) val missionPatch: MissionPatch?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_REDDIT) val redditLinks: MissionRedditLinks?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_FLICKR) val flickr: MissionFlickr?,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_PRESSKIT) val presskit: String?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_WEBCAST) val webcast: String?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_YOUTUBE_ID) val youtubeId: String?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_ARTICLE) val article: String?,
@@ -322,4 +321,8 @@ enum class DatePrecision(val precision: String) {
     MONTH("MMM yyyy"),
     DAY("dd MMM yyyy"),
     HOUR("dd MMM yy - HH:mm zzz")
+}
+
+enum class Upcoming(val text: String, val upcoming: Boolean) {
+    NEXT("next", true), LATEST("latest", false)
 }

@@ -10,8 +10,10 @@ import uk.co.zac_h.spacex.databinding.ListItemPayloadBinding
 import uk.co.zac_h.spacex.model.spacex.Payload
 import uk.co.zac_h.spacex.utils.formatCustomers
 
-class PayloadAdapter(private var context: Context?, private var payloads: List<Payload>?) :
+class PayloadAdapter(private var context: Context) :
     RecyclerView.Adapter<PayloadAdapter.ViewHolder>() {
+
+    private var payloads: List<Payload> = emptyList()
 
     private var expandedPosition = 0
 
@@ -24,7 +26,7 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
     )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val payload = payloads?.get(position)
+        val payload = payloads.get(position)
 
         val isExpanded = position == expandedPosition
 
@@ -33,22 +35,22 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
             root.isActivated = isExpanded
             listItemPayloadExpandCollapseToggle.isChecked = isExpanded
 
-            listItemPayloadNameText.text = payload?.name
-            listItemPayloadManufacturerText.text = payload?.manufacturers?.formatCustomers()
+            listItemPayloadNameText.text = payload.name
+            listItemPayloadManufacturerText.text = payload.manufacturers?.formatCustomers()
 
             //Payload specs
-            listItemPayloadCustomerText.text = payload?.customers?.formatCustomers()
-            listItemPayloadOrbitText.text = payload?.orbit
+            listItemPayloadCustomerText.text = payload.customers?.formatCustomers()
+            listItemPayloadOrbitText.text = payload.orbit
 
-            payload?.lifespan?.let {
+            payload.lifespan?.let {
                 listItemPayloadLifespanText.text = it.toString()
             } ?: run {
                 listItemPayloadLifespanLabel.visibility = View.GONE
                 listItemPayloadLifespanText.visibility = View.GONE
             }
 
-            payload?.formattedMass?.let {
-                listItemPayloadMassText.text = context?.getString(
+            payload.formattedMass?.let {
+                listItemPayloadMassText.text = context.getString(
                     R.string.mass,
                     it.kg,
                     it.lb
@@ -58,70 +60,70 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
                 listItemPayloadMassLabel.visibility = View.GONE
             }
 
-            payload?.type?.let {
+            payload.type?.let {
                 listItemPayloadTypeText.text = it
             } ?: run {
                 listItemPayloadTypeText.visibility = View.GONE
                 listItemPayloadTypeLabel.visibility = View.GONE
             }
 
-            payload?.referenceSystem?.let {
+            payload.referenceSystem?.let {
                 listItemPayloadRefsystemText.text = it
             } ?: run {
                 listItemPayloadRefsystemText.visibility = View.GONE
                 listItemPayloadRefsystemLabel.visibility = View.GONE
             }
 
-            payload?.regime?.let {
+            payload.regime?.let {
                 listItemPayloadRegimeText.text = it
             } ?: run {
                 listItemPayloadRegimeText.visibility = View.GONE
                 listItemPayloadRegimeLabel.visibility = View.GONE
             }
 
-            payload?.longitude?.let {
+            payload.longitude?.let {
                 listItemPayloadLongText.text = it.toString()
             } ?: run {
                 listItemPayloadLongText.visibility = View.GONE
                 listItemPayloadLongLabel.visibility = View.GONE
             }
 
-            payload?.semiMajorAxisKm?.let {
+            payload.semiMajorAxisKm?.let {
                 listItemPayloadSemimajorText.text = it.toString()
             } ?: run {
                 listItemPayloadSemimajorText.visibility = View.GONE
                 listItemPayloadSemimajorLabel.visibility = View.GONE
             }
 
-            payload?.eccentricity?.let {
+            payload.eccentricity?.let {
                 listItemPayloadEccentricityText.text = it.toString()
             } ?: run {
                 listItemPayloadEccentricityText.visibility = View.GONE
                 listItemPayloadEccentricityLabel.visibility = View.GONE
             }
 
-            payload?.periapsisKm?.let {
+            payload.periapsisKm?.let {
                 listItemPayloadPeriapsisText.text = it.toString()
             } ?: run {
                 listItemPayloadPeriapsisText.visibility = View.GONE
                 listItemPayloadPeriapsisLabel.visibility = View.GONE
             }
 
-            payload?.apoapsisKm?.let {
+            payload.apoapsisKm?.let {
                 listItemPayloadApoapsisText.text = it.toString()
             } ?: run {
                 listItemPayloadApoapsisText.visibility = View.GONE
                 listItemPayloadApoapsisLabel.visibility = View.GONE
             }
 
-            payload?.inclination?.let {
+            payload.inclination?.let {
                 listItemPayloadInclinationText.text = it.toString()
             } ?: run {
                 listItemPayloadInclinationText.visibility = View.GONE
                 listItemPayloadInclinationLabel.visibility = View.GONE
             }
 
-            payload?.period?.let {
+            payload.period?.let {
                 listItemPayloadPeriodText.text = it.toString()
             } ?: run {
                 listItemPayloadPeriodText.visibility = View.GONE
@@ -135,7 +137,12 @@ class PayloadAdapter(private var context: Context?, private var payloads: List<P
         }
     }
 
-    override fun getItemCount(): Int = payloads?.size ?: 0
+    override fun getItemCount(): Int = payloads.size
+
+    fun update(list: List<Payload>) {
+        payloads = list
+        notifyDataSetChanged()
+    }
 
     class ViewHolder(val binding: ListItemPayloadBinding) : RecyclerView.ViewHolder(binding.root)
 }

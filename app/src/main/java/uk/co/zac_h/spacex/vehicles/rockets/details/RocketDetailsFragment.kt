@@ -4,17 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.NavigationUI
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.databinding.CollapsingToolbarBinding
 import uk.co.zac_h.spacex.databinding.FragmentRocketDetailsBinding
 import uk.co.zac_h.spacex.model.spacex.Rocket
 import uk.co.zac_h.spacex.utils.metricFormat
@@ -23,9 +18,10 @@ import uk.co.zac_h.spacex.vehicles.adapters.RocketPayloadAdapter
 
 class RocketDetailsFragment : BaseFragment() {
 
-    override var title: String = ""
+    override var title: String = "Rocket"
 
     private lateinit var binding: FragmentRocketDetailsBinding
+    private lateinit var toolbarBinding: CollapsingToolbarBinding
 
     private var rocket: Rocket? = null
 
@@ -41,30 +37,24 @@ class RocketDetailsFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentRocketDetailsBinding.inflate(inflater, container, false).apply {
+        toolbarBinding = CollapsingToolbarBinding.bind(this.root)
         binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        with(binding) {
-            NavigationUI.setupWithNavController(
-                toolbarLayout,
-                toolbar,
-                navController,
-                appBarConfig
-            )
+        title = rocket?.name ?: ""
+        setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
 
+        with(binding) {
             rocket?.let {
                 rocketDetailsCoordinator.transitionName = it.id
-
-                title = it.name ?: ""
-                toolbar.title = it.name
 
                 Glide.with(view)
                     .load(it.flickr?.random())
                     .error(R.drawable.ic_baseline_error_outline_24)
-                    .into(header)
+                    .into(toolbarBinding.header)
 
                 rocketDetailsText.text = it.description
 
@@ -81,26 +71,26 @@ class RocketDetailsFragment : BaseFragment() {
 
                 rocketDetailsCostText.text = it.costPerLaunch
                 rocketDetailsSuccessText.text =
-                    context?.getString(R.string.percentage, it.successRate)
+                    getString(R.string.percentage, it.successRate)
                 rocketDetailsFirstFlightText.text = it.firstFlight
                 rocketDetailsStagesText.text = it.stages.toString()
 
                 it.height?.let { height ->
-                    rocketDetailsHeightText.text = context?.getString(
+                    rocketDetailsHeightText.text = getString(
                         R.string.measurements,
                         height.meters?.metricFormat(),
                         height.feet?.metricFormat()
                     )
                 }
                 it.diameter?.let { diameter ->
-                    rocketDetailsDiameterText.text = context?.getString(
+                    rocketDetailsDiameterText.text = getString(
                         R.string.measurements,
                         diameter.meters?.metricFormat(),
                         diameter.feet?.metricFormat()
                     )
                 }
                 it.mass?.let { mass ->
-                    rocketDetailsMassText.text = context?.getString(
+                    rocketDetailsMassText.text = getString(
                         R.string.mass_formatted,
                         mass.kg,
                         mass.lb
@@ -120,18 +110,20 @@ class RocketDetailsFragment : BaseFragment() {
                     }
 
                     rocketDetailsEnginesFirstText.text = firstStage.engines.toString()
-                    rocketDetailsFuelFirstText.text = context?.getString(
+                    rocketDetailsFuelFirstText.text = getString(
                         R.string.ton_format,
                         firstStage.fuelAmountTons?.metricFormat()
                     )
-                    rocketDetailsBurnFirstText.text =
-                        context?.getString(R.string.seconds_format, firstStage.burnTimeSec ?: 0)
-                    rocketDetailsThrustSeaText.text = context?.getString(
+                    rocketDetailsBurnFirstText.text = getString(
+                        R.string.seconds_format,
+                        firstStage.burnTimeSec ?: 0
+                    )
+                    rocketDetailsThrustSeaText.text = getString(
                         R.string.thrust,
                         firstStage.thrustSeaLevel?.kN?.metricFormat(),
                         firstStage.thrustSeaLevel?.lbf?.metricFormat()
                     )
-                    rocketDetailsThrustVacText.text = context?.getString(
+                    rocketDetailsThrustVacText.text = getString(
                         R.string.thrust,
                         firstStage.thrustVacuum?.kN?.metricFormat(),
                         firstStage.thrustVacuum?.lbf?.metricFormat()
@@ -140,14 +132,15 @@ class RocketDetailsFragment : BaseFragment() {
 
                 it.secondStage?.let { secondStage ->
                     rocketDetailsEnginesSecondText.text = secondStage.engines.toString()
-                    rocketDetailsFuelSecondText.text =
-                        context?.getString(
-                            R.string.ton_format,
-                            secondStage.fuelAmountTons?.metricFormat()
-                        )
-                    rocketDetailsBurnSecondText.text =
-                        context?.getString(R.string.seconds_format, secondStage.burnTimeSec ?: 0)
-                    rocketDetailsThrustSecondText.text = context?.getString(
+                    rocketDetailsFuelSecondText.text = getString(
+                        R.string.ton_format,
+                        secondStage.fuelAmountTons?.metricFormat()
+                    )
+                    rocketDetailsBurnSecondText.text = getString(
+                        R.string.seconds_format,
+                        secondStage.burnTimeSec ?: 0
+                    )
+                    rocketDetailsThrustSecondText.text = getString(
                         R.string.thrust,
                         secondStage.thrust?.kN?.metricFormat(),
                         secondStage.thrust?.lbf?.metricFormat()
@@ -155,12 +148,12 @@ class RocketDetailsFragment : BaseFragment() {
                 }
 
                 rocketDetailsPayloadRecycler.apply {
-                    layoutManager = LinearLayoutManager(this@RocketDetailsFragment.context)
+                    layoutManager = LinearLayoutManager(requireContext())
                     setHasFixedSize(true)
                     adapter =
                         it.payloadWeights?.let { payloadWeights ->
                             RocketPayloadAdapter(
-                                this@RocketDetailsFragment.context,
+                                requireContext(),
                                 payloadWeights
                             )
                         }

@@ -1,8 +1,7 @@
 package uk.co.zac_h.spacex.utils
 
 const val SPACEX_STAGE_BASE_URL = "https://stage.spacexdata.com/v4/"
-const val SPACEX_BASE_URL = "https://api.spacexdata.com/v4/"
-const val SPACEX_BASE_URL_DEVELOP = "https://stage.spacexdata.com/v4/"
+const val SPACEX_BASE_URL = "https://api.spacexdata.com/v5/"
 const val TWITTER_BASE_URL = "https://api.twitter.com/1.1/"
 const val REDDIT_BASE_URL = "https://reddit.com/"
 
@@ -505,5 +504,30 @@ const val REDDIT_QUERY_AFTER = "after"
 
 Navigation ===============================================================================
 =========================================================================================>*/
-
 const val LAUNCH_SHORT_KEY = "launch_short"
+
+/*<=======================================================================================
+================================================================================Navigation
+
+Keys =========================================================================
+=========================================================================================>*/
+object Keys {
+    object CompanyKeys {
+        const val COMPANY_INFO = "company_info_saved"
+    }
+    object HistoryKeys {
+        const val HISTORY_SAVED_STATE = "history_saved"
+        const val HISTORY_ORDER = "history"
+        const val ORDER_ASCENDING = "asc"
+        const val ORDER_DESCENDING = "desc"
+    }
+    object CrewKeys {
+        const val CREW_ARGS = "crew_args"
+        const val CREW_SAVED_STATE = "crew_saved"
+    }
+    object DashboardKeys {
+        const val NEXT_SAVED_STATE = "next_saved"
+        const val LATEST_SAVED_STATE = "latest_saved"
+        const val PINNED_SAVED_STATE = "pinned_saved"
+    }
+}

@@ -11,14 +11,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.model.reddit.RedditPost
 import uk.co.zac_h.spacex.model.reddit.SubredditPostModel
 import uk.co.zac_h.spacex.news.reddit.RedditFeedContract
 import uk.co.zac_h.spacex.utils.convertDate
 import uk.co.zac_h.spacex.utils.views.HtmlTextView
 
 class RedditAdapter(
-    private val view: RedditFeedContract.RedditFeedView,
-    private val posts: List<SubredditPostModel>
+    private val openLink: (String) -> Unit,
+    private val posts: List<RedditPost>
 ) :
     RecyclerView.Adapter<RedditAdapter.ViewHolder>() {
 
@@ -39,16 +40,16 @@ class RedditAdapter(
         val post = posts[position]
 
         holder.apply {
-            if (post.data.redditDomain || post.data.isSelf) {
+            if (post.redditDomain || post.isSelf) {
                 thumbCard.visibility = View.GONE
-            } else if (post.data.thumbnail.isNotEmpty()) {
+            } else if (post.thumbnail.isNotEmpty()) {
                 thumbCard.visibility = View.VISIBLE
-                Glide.with(itemView).load(post.data.thumbnail)
+                Glide.with(itemView).load(post.thumbnail)
                     .placeholder(R.drawable.ic_placeholder_reddit).into(thumbnail)
-                thumbLink.text = post.data.domain
+                thumbLink.text = post.domain
             }
 
-            if (post.data.redditDomain && post.data.preview != null && post.data.textHtml.isNullOrEmpty()) post.data.preview?.let {
+            if (post.redditDomain && post.preview != null && post.description.isNullOrEmpty()) post.preview?.let {
                 preview.visibility = View.VISIBLE
                 val image = it.images[0].resolutions[it.images[0].resolutions.size - 1]
                 Glide.with(itemView).load(image.url).into(preview)
@@ -67,22 +68,22 @@ class RedditAdapter(
                 preview.visibility = View.GONE
             }
 
-            title.text = post.data.title
+            title.text = post.title
 
             text.plainText = true
-            post.data.textHtml?.let { text.setHtmlText(it) }
+            post.description?.let { text.setHtmlText(it) }
 
-            author.text = post.data.author
-            date.text = post.data.created.toLong().convertDate()
-            score.text = post.data.score.toString()
-            comments.text = post.data.commentsCount.toString()
+            author.text = post.author
+            date.text = post.created.toLong().convertDate()
+            score.text = post.score.toString()
+            comments.text = post.commentsCount.toString()
 
-            text.visibility = if (post.data.textHtml.isNullOrEmpty()) View.GONE else View.VISIBLE
+            text.visibility = if (post.description.isNullOrEmpty()) View.GONE else View.VISIBLE
 
-            pin.visibility = if (post.data.stickied) View.VISIBLE else View.GONE
+            pin.visibility = if (post.stickied) View.VISIBLE else View.GONE
 
             card.setOnClickListener {
-                view.openWebLink("$REDDIT${post.data.permalink}")
+                openLink("$REDDIT${post.permalink}")
             }
         }
     }

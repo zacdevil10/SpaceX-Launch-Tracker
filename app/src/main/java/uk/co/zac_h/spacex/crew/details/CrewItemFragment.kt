@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.os.bundleOf
 import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,31 +17,24 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.android.synthetic.main.grid_item_crew.*
 import uk.co.zac_h.spacex.crew.adapters.CrewMissionsAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewItemBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.model.spacex.CrewStatus
+import uk.co.zac_h.spacex.utils.Keys.CrewKeys
 import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_ACTIVE
 import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_INACTIVE
 import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_RETIRED
 import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_UNKNOWN
-import java.util.*
 import kotlin.math.roundToInt
 
 class CrewItemFragment : Fragment() {
 
-    private var binding: FragmentCrewItemBinding? = null
+    private lateinit var binding: FragmentCrewItemBinding
 
     companion object {
-        const val CREW_KEY = "crew"
-
-        fun newInstance(crew: Crew): Fragment {
-            return CrewItemFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(CREW_KEY, crew)
-                }
-            }
+        fun newInstance(crew: Crew): Fragment = CrewItemFragment().apply {
+            arguments = bundleOf(CrewKeys.CREW_ARGS to crew)
         }
     }
 
@@ -54,9 +48,9 @@ class CrewItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val person = arguments?.getParcelable<Crew>(CREW_KEY)
+        val person = arguments?.getParcelable<Crew>(CrewKeys.CREW_ARGS)
 
-        binding?.apply {
+        with(binding) {
             itemCrewConstraint.transitionName = person?.id
 
             val typedVal = TypedValue()
@@ -68,11 +62,11 @@ class CrewItemFragment : Fragment() {
 
                 addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
                     override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                        context?.theme?.resolveAttribute(
+                        requireContext().theme.resolveAttribute(
                             android.R.attr.actionBarSize,
                             typedVal,
                             true
-                        )?.let {
+                        ).let {
                             val actionBarHeight = TypedValue.complexToDimensionPixelSize(
                                 typedVal.data,
                                 requireContext().resources.displayMetrics
@@ -123,7 +117,7 @@ class CrewItemFragment : Fragment() {
                     CrewStatus.INACTIVE -> SPACEX_CREW_STATUS_INACTIVE
                     CrewStatus.RETIRED -> SPACEX_CREW_STATUS_RETIRED
                     CrewStatus.UNKNOWN -> SPACEX_CREW_STATUS_UNKNOWN
-                }.capitalize(Locale.getDefault())
+                }.replaceFirstChar { it.uppercase() }
             }
             crewAgency.text = person?.agency
 
@@ -135,10 +129,5 @@ class CrewItemFragment : Fragment() {
                 if (it.isEmpty()) crewMissionLabel.visibility = View.GONE
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
     }
 }

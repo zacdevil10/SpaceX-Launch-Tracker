@@ -10,7 +10,6 @@ class RocketPresenterImpl(
 ) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<List<Rocket>?> {
 
     override fun get(api: SpaceXInterface) {
-        view.showProgress()
         interactor.get(api, this)
     }
 
@@ -20,7 +19,6 @@ class RocketPresenterImpl(
 
     override fun onSuccess(response: List<Rocket>?) {
         view.apply {
-            hideProgress()
             toggleSwipeRefresh(false)
             response?.let { update(it.reversed()) }
         }

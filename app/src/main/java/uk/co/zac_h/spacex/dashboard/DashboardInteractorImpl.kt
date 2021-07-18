@@ -6,18 +6,18 @@ import uk.co.zac_h.spacex.model.spacex.*
 import uk.co.zac_h.spacex.rest.SpaceXInterface
 import uk.co.zac_h.spacex.utils.BaseNetwork
 
-class DashboardInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<Launch?> {
+class DashboardInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<Launch> {
 
     private var call: Call<LaunchDocsModel>? = null
 
     override fun get(
         data: Any,
         api: SpaceXInterface,
-        listener: NetworkInterface.Callback<Launch?>
+        listener: NetworkInterface.Callback<Launch>
     ) {
         val query = QueryModel(
             query = when (data) {
-                "next", "latest" -> QueryUpcomingLaunchesModel(data == "next")
+                is Upcoming -> QueryUpcomingLaunchesModel(data.upcoming)
                 else -> QueryLaunchesQueryModel(data as String)
             },
             options = QueryOptionsModel(
@@ -26,7 +26,6 @@ class DashboardInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<Launc
                     QueryPopulateModel(path = "rocket", populate = "", select = listOf("name")),
                     QueryPopulateModel("launchpad", select = listOf("name"), populate = ""),
                     QueryPopulateModel("crew.crew", populate = "", select = listOf("id")),
-
                     QueryPopulateModel("ships", populate = "", select = listOf("id")),
                     QueryPopulateModel(
                         path = "cores",
@@ -46,8 +45,8 @@ class DashboardInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<Launc
                     )
                 ),
                 sort = when (data) {
-                    "next" -> QueryLaunchesSortModel("asc")
-                    "latest" -> QueryLaunchesSortModel("desc")
+                    Upcoming.NEXT -> QueryLaunchesSortModel("asc")
+                    Upcoming.LATEST -> QueryLaunchesSortModel("desc")
                     else -> ""
                 },
                 select = listOf(
@@ -57,7 +56,7 @@ class DashboardInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<Launc
                     "tbd",
                     "rocket",
                     "cores",
-                    //"crew",
+                    "crew",
                     "ships",
                     "links",
                     "static_fire_date_unix",
@@ -73,7 +72,9 @@ class DashboardInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<Launc
         call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess = { response ->
-                    listener.onSuccess(data, response.body()?.docs?.get(0)?.let { Launch(it) })
+                    response.body()?.docs?.get(0)?.let { Launch(it) }?.let {
+                        listener.onSuccess(data, it)
+                    }
                 }
                 onResponseFailure = {
                     listener.onError(it)

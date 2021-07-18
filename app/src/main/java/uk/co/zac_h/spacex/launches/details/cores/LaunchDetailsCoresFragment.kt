@@ -1,9 +1,11 @@
 package uk.co.zac_h.spacex.launches.details.cores
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
@@ -11,36 +13,38 @@ import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCoresBinding
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.model.spacex.LaunchCore
+import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
+import uk.co.zac_h.spacex.utils.clearAndAdd
+import uk.co.zac_h.spacex.utils.orUnknown
 
 class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<LaunchCore>> {
 
-    override var title: String = "Launch Details Cores"
+    private lateinit var binding: FragmentLaunchDetailsCoresBinding
 
-    private var binding: FragmentLaunchDetailsCoresBinding? = null
-
-    private var presenter: NetworkInterface.Presenter<Nothing>? = null
+    private var presenter: NetworkInterface.Presenter<List<LaunchCore>>? = null
 
     private lateinit var coresAdapter: FirstStageAdapter
-    private lateinit var cores: ArrayList<LaunchCore>
+    private var cores: ArrayList<LaunchCore> = ArrayList()
 
-    private var id: String? = null
+    private lateinit var id: String
 
     companion object {
         const val CORES_KEY = "cores"
         const val ID_KEY = "id"
 
-        @JvmStatic
-        fun newInstance(args: Any) = LaunchDetailsCoresFragment().apply {
-            arguments = bundleOf(ID_KEY to args)
+        fun newInstance(id: String) = LaunchDetailsCoresFragment().apply {
+            this.id = id
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        cores = savedInstanceState?.getParcelableArrayList(CORES_KEY) ?: ArrayList()
-        id = arguments?.getString(ID_KEY)
+        savedInstanceState?.let {
+            id = it.getString(ID_KEY).orUnknown()
+            cores = it.getParcelableArrayList(CORES_KEY) ?: ArrayList()
+        }
     }
 
     override fun onCreateView(
@@ -53,55 +57,59 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
-
         presenter = LaunchDetailsCoresPresenter(this, LaunchDetailsCoresInteractor())
 
-        coresAdapter = FirstStageAdapter(cores)
+        coresAdapter = FirstStageAdapter()
 
-        binding?.launchDetailsCoresRecycler?.apply {
+        binding.launchDetailsCoresRecycler.apply {
             layoutManager = LinearLayoutManager(this@LaunchDetailsCoresFragment.context)
             adapter = coresAdapter
         }
 
-        if (cores.isEmpty()) id?.let {
-            presenter?.get(it)
+        binding.swipeRefresh.setOnRefreshListener {
+            apiState = ApiState.PENDING
+            presenter?.get(id)
         }
+
+        presenter?.getOrUpdate(cores, id)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList(CORES_KEY, cores)
-        super.onSaveInstanceState(outState)
+        outState.putString(ID_KEY, id)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        binding = null
     }
 
     override fun update(response: List<LaunchCore>) {
-        cores.clear()
-        cores.addAll(response)
+        cores = response as ArrayList<LaunchCore>
 
-        binding?.launchDetailsCoresRecycler?.layoutAnimation = animateLayoutFromBottom(context)
-        coresAdapter.notifyDataSetChanged()
-        binding?.launchDetailsCoresRecycler?.scheduleLayoutAnimation()
+        if (apiState != ApiState.SUCCESS) {
+            binding.launchDetailsCoresRecycler.layoutAnimation = animateLayoutFromBottom(context)
+        }
+
+        apiState = ApiState.SUCCESS
+
+        coresAdapter.update(response)
+        binding.launchDetailsCoresRecycler.scheduleLayoutAnimation()
     }
 
-    override fun showProgress() {
-        binding?.progress?.show()
+    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+        binding.swipeRefresh.isRefreshing = isRefreshing
     }
 
-    override fun hideProgress() {
-        binding?.progress?.hide()
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            id?.let {
-                if (cores.isEmpty()) presenter?.get(it)
-            }
+        when (apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.get(id)
+            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }

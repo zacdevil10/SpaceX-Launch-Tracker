@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.SharedElementCallback
 import androidx.core.view.doOnPreDraw
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
@@ -16,16 +15,16 @@ import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
+import uk.co.zac_h.spacex.utils.ApiState
+import uk.co.zac_h.spacex.utils.Keys.CrewKeys
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
+import uk.co.zac_h.spacex.utils.clearAndAdd
 
-class CrewFragment : BaseFragment(), CrewView {
+class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
 
-    companion object {
-        const val CREW_KEY = "crew"
-    }
+    override val title: String by lazy { getString(R.string.menu_crew) }
 
-    override var title: String = "Crew"
-
-    private var binding: FragmentCrewBinding? = null
+    private lateinit var binding: FragmentCrewBinding
 
     private var presenter: NetworkInterface.Presenter<List<Crew>?>? = null
 
@@ -35,7 +34,7 @@ class CrewFragment : BaseFragment(), CrewView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        crewArray = savedInstanceState?.getParcelableArrayList(CREW_KEY) ?: ArrayList()
+        crewArray = savedInstanceState?.getParcelableArrayList(CrewKeys.CREW_SAVED_STATE) ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -48,19 +47,17 @@ class CrewFragment : BaseFragment(), CrewView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
-
         if (savedInstanceState == null) {
-            startTransition()
+            binding.root.doOnPreDraw { startPostponedEnterTransition() }
         }
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+        binding.toolbarLayout.toolbar.setup()
 
         presenter = CrewPresenterImpl(this, CrewInteractorImpl())
 
-        crewAdapter = CrewAdapter(this, crewArray)
+        crewAdapter = CrewAdapter(crewArray) { binding.root.doOnPreDraw { startPostponedEnterTransition() } }
 
-        binding?.crewRecycler?.apply {
+        binding.crewRecycler.apply {
             setHasFixedSize(true)
             adapter = crewAdapter
         }
@@ -68,11 +65,12 @@ class CrewFragment : BaseFragment(), CrewView {
         prepareTransitions()
         postponeEnterTransition()
 
-        binding?.swipeRefresh?.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
+            apiState = ApiState.PENDING
             presenter?.get()
         }
 
-        if (crewArray.isEmpty()) presenter?.get()
+        if (crewArray.isEmpty()) presenter?.get() else apiState = ApiState.SUCCESS
     }
 
     private fun prepareTransitions() {
@@ -84,7 +82,7 @@ class CrewFragment : BaseFragment(), CrewView {
                 sharedElements: MutableMap<String, View>?
             ) {
                 val selectedViewHolder: RecyclerView.ViewHolder =
-                    binding?.crewRecycler?.findViewHolderForAdapterPosition(MainActivity.currentPosition)
+                    binding.crewRecycler.findViewHolderForAdapterPosition(MainActivity.currentPosition)
                         ?: return
 
                 names?.get(0)?.let { name ->
@@ -99,45 +97,50 @@ class CrewFragment : BaseFragment(), CrewView {
         })
     }
 
-    override fun startTransition() {
-        binding?.root?.doOnPreDraw { startPostponedEnterTransition() }
+    override fun onResume() {
+        super.onResume()
+        if (apiState == ApiState.SUCCESS) hideProgress()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(CREW_KEY, crewArray)
+        outState.putParcelableArrayList(CrewKeys.CREW_SAVED_STATE, crewArray)
         super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-        binding = null
     }
 
     override fun update(response: List<Crew>) {
-        crewArray.clear()
-        crewArray.addAll(response)
+        apiState = ApiState.SUCCESS
 
-        crewAdapter.notifyDataSetChanged()
+        crewArray.clearAndAdd(response)
+        binding.crewRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
+        crewAdapter.update(response)
+        binding.crewRecycler.scheduleLayoutAnimation()
     }
 
     override fun showProgress() {
-        binding?.progress?.show()
+        binding.toolbarLayout.progress.show()
     }
 
     override fun hideProgress() {
-        binding?.progress?.hide()
+        binding.toolbarLayout.progress.hide()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding?.swipeRefresh?.isRefreshing = isRefreshing
+        binding.swipeRefresh.isRefreshing = isRefreshing
+    }
+
+    override fun showError(error: String) {
+        apiState = ApiState.FAILED
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (crewArray.isEmpty() || it.progress.isShown) presenter?.get()
-            }
+        when(apiState) {
+            ApiState.PENDING, ApiState.FAILED -> presenter?.get()
+            ApiState.SUCCESS -> {}
         }
     }
 }
