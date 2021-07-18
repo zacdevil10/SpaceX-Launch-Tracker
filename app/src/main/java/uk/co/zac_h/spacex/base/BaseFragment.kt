@@ -57,7 +57,6 @@ abstract class BaseFragment : Fragment(),
     protected fun Toolbar.setupWithTabLayout(tabLayout: TabLayout, tabLayoutMode: Int) {
         setup()
         tabLayout.tabMode = tabLayoutMode
-
     }
 
     protected fun setup(toolbar: Toolbar, toolbarLayout: CollapsingToolbarLayout) {
