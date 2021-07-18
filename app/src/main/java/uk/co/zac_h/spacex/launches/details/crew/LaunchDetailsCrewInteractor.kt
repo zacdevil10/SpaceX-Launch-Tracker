@@ -21,7 +21,7 @@ class LaunchDetailsCrewInteractor : BaseNetwork(), NetworkInterface.Interactor<L
                 "crew.crew",
                 populate = listOf(
                     QueryPopulateModel(
-                        "crew.launches",
+                        "launches",
                         populate = "",
                         select = listOf("flight_number", "name", "date_unix")
                     )
