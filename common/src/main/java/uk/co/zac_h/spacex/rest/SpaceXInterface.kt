@@ -142,8 +142,8 @@ interface SpaceXInterface {
     fun queryHistory(@Body body: QueryModel): Call<HistoryDocsModel>
 
     companion object RetrofitSetup {
-        fun create(): SpaceXInterface = Retrofit.Builder().apply {
-            baseUrl(SPACEX_BASE_URL)
+        fun create(baseUrl: String = SPACEX_BASE_URL_V4): SpaceXInterface = Retrofit.Builder().apply {
+            baseUrl(baseUrl)
             addConverterFactory(MoshiConverterFactory.create())
         }.build().create(SpaceXInterface::class.java)
     }

@@ -11,8 +11,8 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 45
-        versionName "1.5.10"
+        versionCode 46
+        versionName "1.5.11"
 
         def secretsFile = rootProject.file('secrets.properties')
         def secrets = new Properties()
