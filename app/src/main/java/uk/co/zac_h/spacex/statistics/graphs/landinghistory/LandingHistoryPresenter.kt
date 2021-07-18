@@ -3,6 +3,7 @@ package uk.co.zac_h.spacex.statistics.graphs.landinghistory
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.utils.SPACEX_BASE_URL_V5
 import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.LandingHistoryModel
 
@@ -14,7 +15,7 @@ class LandingHistoryPresenter(
     override fun getOrUpdate(response: List<LandingHistoryModel>?, api: SpaceXInterface) {
         if (response.isNullOrEmpty()) {
             view.showProgress()
-            interactor.get(api, this)
+            interactor.get(SpaceXInterface.create(SPACEX_BASE_URL_V5), this)
         } else view.update(false, response)
     }
 
