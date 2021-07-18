@@ -1,7 +1,8 @@
 package uk.co.zac_h.spacex.utils
 
 const val SPACEX_STAGE_BASE_URL = "https://stage.spacexdata.com/v4/"
-const val SPACEX_BASE_URL = "https://api.spacexdata.com/v5/"
+const val SPACEX_BASE_URL_V4 = "https://api.spacexdata.com/v4/"
+const val SPACEX_BASE_URL_V5 = "https://api.spacexdata.com/v5/"
 const val TWITTER_BASE_URL = "https://api.twitter.com/1.1/"
 const val REDDIT_BASE_URL = "https://reddit.com/"
 
