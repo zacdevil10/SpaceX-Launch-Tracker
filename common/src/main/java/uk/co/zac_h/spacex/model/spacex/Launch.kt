@@ -89,13 +89,13 @@ data class Fairings(
 
 data class LaunchCrewResponse(
     @field:Json(name = SPACEX_FIELD_LAUNCH_CREW) val crew: String,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW_ROLE) val role: String
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW_ROLE) val role: String?
 )
 
 
 data class LaunchCrewQueriedResponse(
     @field:Json(name = SPACEX_FIELD_LAUNCH_CREW) val crew: CrewQueriedResponse,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW_ROLE) val role: String
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW_ROLE) val role: String?
 )
 
 data class LaunchCoreResponse(

@@ -32,8 +32,8 @@ data class CrewQueriedResponse(
 @Parcelize
 data class Crew(
     val name: String?,
-    val status: CrewStatus,
-    val agency: String,
+    val status: CrewStatus?,
+    val agency: String?,
     val image: String?,
     val wikipedia: String?,
     val launchIds: List<String>? = null,
