@@ -22,7 +22,7 @@ class LaunchesInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<L
                 populate = listOf(
                     QueryPopulateModel(path = "rocket", populate = "", select = listOf("name")),
                     QueryPopulateModel("launchpad", select = listOf("name"), populate = ""),
-                    QueryPopulateModel("crew", populate = "", select = listOf("id")),
+                    QueryPopulateModel("crew.crew", populate = "", select = listOf("id")),
                     QueryPopulateModel("ships", populate = "", select = listOf("id")),
                     QueryPopulateModel(
                         path = "cores",

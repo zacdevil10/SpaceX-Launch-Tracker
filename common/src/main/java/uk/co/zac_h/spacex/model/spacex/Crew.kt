@@ -32,12 +32,13 @@ data class CrewQueriedResponse(
 @Parcelize
 data class Crew(
     val name: String?,
-    val status: CrewStatus,
-    val agency: String,
+    val status: CrewStatus?,
+    val agency: String?,
     val image: String?,
     val wikipedia: String?,
     val launchIds: List<String>? = null,
     val launches: List<Launch>? = null,
+    val role: String?,
     val id: String
 ) : Parcelable {
 
@@ -50,11 +51,13 @@ data class Crew(
         image = response.image,
         wikipedia = response.wikipedia,
         launchIds = response.launches,
+        role = null,
         id = response.id
     )
 
     constructor(
-        response: CrewQueriedResponse
+        response: CrewQueriedResponse,
+        role: String? = null
     ) : this(
         name = response.name,
         status = response.status.toCrewStatus(),
@@ -62,7 +65,33 @@ data class Crew(
         image = response.image,
         wikipedia = response.wikipedia,
         launches = response.launches?.map { Launch(it) },
+        role = role,
         id = response.id
+    )
+
+    constructor(
+        response: LaunchCrewResponse
+    ) : this(
+        name = null,
+        status = null,
+        agency = null,
+        image = null,
+        wikipedia = null,
+        role = response.role,
+        id = response.crew
+    )
+
+    constructor(
+        response: LaunchCrewQueriedResponse
+    ) : this(
+        name = response.crew.name,
+        status = response.crew.status.toCrewStatus(),
+        agency = response.crew.agency,
+        image = response.crew.image,
+        wikipedia = response.crew.wikipedia,
+        launches = response.crew.launches?.map { Launch(it) },
+        role = response.role,
+        id = response.crew.id
     )
 
     companion object {
