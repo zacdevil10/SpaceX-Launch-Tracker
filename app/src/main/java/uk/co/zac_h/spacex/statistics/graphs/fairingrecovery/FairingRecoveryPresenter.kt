@@ -30,20 +30,16 @@ class FairingRecoveryPresenter(
     override fun onSuccess(data: Any, response: List<Launch>?) {
         val stats = ArrayList<FairingRecoveryModel>()
 
-        response?.filter { launch ->
-            launch.fairings?.any { it.netAttempt == true || it.waterAttempt == true } == true
-        }?.forEach { launch ->
+        response?.forEach { launch ->
             val year = launch.launchDate?.dateUnix?.formatDateMillisYYYY() ?: return@forEach
 
             if (stats.none { it.year == year }) stats.add(FairingRecoveryModel(year))
 
             val stat = stats.filter { it.year == year }[0]
 
-            launch.fairings?.forEach {
-                when (it.recovered == true) {
-                    true -> stat.successes++
-                    false -> stat.failures++
-                }
+            when (launch.fairings?.recoveryAttempt == true && launch.fairings?.isRecovered == true) {
+                true -> stat.successes++
+                false -> stat.failures++
             }
         }
 
