@@ -3,6 +3,7 @@ package uk.co.zac_h.spacex.launches.details.crew
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.Crew
 import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.utils.SPACEX_BASE_URL_V5
 
 class LaunchDetailsCrewPresenter(
     private val view: NetworkInterface.View<List<Crew>>,
@@ -11,7 +12,7 @@ class LaunchDetailsCrewPresenter(
 
     override fun get(data: Any, api: SpaceXInterface) {
         view.toggleSwipeRefresh(true)
-        interactor.get(data, api, this)
+        interactor.get(data, SpaceXInterface.create(SPACEX_BASE_URL_V5), this)
     }
 
     override fun getOrUpdate(response: List<Crew>, data: Any, api: SpaceXInterface) {

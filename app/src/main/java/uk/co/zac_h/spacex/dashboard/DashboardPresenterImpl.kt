@@ -4,6 +4,7 @@ import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.model.spacex.Upcoming
 import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.utils.SPACEX_BASE_URL_V5
 import java.util.concurrent.TimeUnit
 
 class DashboardPresenterImpl(
@@ -20,19 +21,19 @@ class DashboardPresenterImpl(
         interactor.apply {
             if (next == null) {
                 view.toggleNextProgress(true)
-                get(Upcoming.NEXT, api, this@DashboardPresenterImpl)
+                get(Upcoming.NEXT, SpaceXInterface.create(SPACEX_BASE_URL_V5), this@DashboardPresenterImpl)
             } else onSuccess(Upcoming.NEXT, next)
 
             if (latest == null) {
                 view.toggleLatestProgress(true)
-                get(Upcoming.LATEST, api, this@DashboardPresenterImpl)
+                get(Upcoming.LATEST, SpaceXInterface.create(SPACEX_BASE_URL_V5), this@DashboardPresenterImpl)
             } else onSuccess(Upcoming.LATEST, latest)
         }
     }
 
     override fun get(data: Any, api: SpaceXInterface) {
         view.togglePinnedProgress(true)
-        interactor.get(data, api, this)
+        interactor.get(data, SpaceXInterface.create(SPACEX_BASE_URL_V5), this)
     }
 
     override fun updateCountdown(time: Long) {
