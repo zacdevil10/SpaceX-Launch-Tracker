@@ -4,22 +4,18 @@ import android.os.Parcelable
 import com.squareup.moshi.Json
 import kotlinx.parcelize.Parcelize
 
-@Parcelize
 data class SubredditModel(
     @field:Json(name = "data") var data: SubredditDataModel
-) : Parcelable
+)
 
-@Parcelize
 data class SubredditDataModel(
     @field:Json(name = "children") var children: List<SubredditPostModel>
-) : Parcelable
+)
 
-@Parcelize
 data class SubredditPostModel(
     @field:Json(name = "data") var data: RedditPostData
-) : Parcelable
+)
 
-@Parcelize
 data class RedditPostData(
     @field:Json(name = "selftext_html") var textHtml: String?,
     @field:Json(name = "title") var title: String,
@@ -35,7 +31,7 @@ data class RedditPostData(
     @field:Json(name = "is_self") var isSelf: Boolean,
     @field:Json(name = "is_reddit_media_domain") var redditDomain: Boolean,
     @field:Json(name = "permalink") var permalink: String
-) : Parcelable
+)
 
 @Parcelize
 data class RedditPreviewListModel(
@@ -54,3 +50,40 @@ data class RedditMediaModel(
     @field:Json(name = "width") var width: Int,
     @field:Json(name = "height") var height: Int
 ) : Parcelable
+
+@Parcelize
+data class RedditPost(
+    var name: String,
+    var title: String,
+    var description: String?,
+    var author: String,
+    var created: Float,
+    var thumbnail: String,
+    var score: Int,
+    var commentsCount: Int,
+    var preview: RedditPreviewListModel?,
+    var domain: String,
+    var stickied: Boolean,
+    var isSelf: Boolean,
+    var redditDomain: Boolean,
+    var permalink: String
+) : Parcelable {
+
+    constructor(data: RedditPostData) : this(
+        name = data.name,
+        title = data.title,
+        description = data.textHtml,
+        author = data.author,
+        created = data.created,
+        thumbnail = data.thumbnail,
+        score = data.score,
+        commentsCount = data.commentsCount,
+        preview = data.preview,
+        domain = data.domain,
+        stickied = data.stickied,
+        isSelf = data.isSelf,
+        redditDomain = data.redditDomain,
+        permalink = data.permalink
+    )
+
+}

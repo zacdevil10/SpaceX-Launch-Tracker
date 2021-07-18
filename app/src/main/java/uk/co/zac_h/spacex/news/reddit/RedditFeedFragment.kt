@@ -1,19 +1,16 @@
 package uk.co.zac_h.spacex.news.reddit
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentRedditFeedBinding
-import uk.co.zac_h.spacex.model.reddit.SubredditModel
-import uk.co.zac_h.spacex.model.reddit.SubredditPostModel
+import uk.co.zac_h.spacex.model.reddit.RedditPost
 import uk.co.zac_h.spacex.news.adapters.RedditAdapter
 import uk.co.zac_h.spacex.utils.*
 
@@ -26,7 +23,7 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
     private var presenter: RedditFeedContract.RedditFeedPresenter? = null
     private lateinit var redditAdapter: RedditAdapter
 
-    private lateinit var posts: ArrayList<SubredditPostModel>
+    private lateinit var posts: ArrayList<RedditPost>
 
     private var isLastPage = false
     private var isLoading = false
@@ -42,7 +39,7 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
         orderPos = savedInstanceState?.getInt("orderPos") ?: 0
 
         posts = savedInstanceState?.let {
-            it.getParcelableArrayList<SubredditPostModel>("posts") as ArrayList<SubredditPostModel>
+            it.getParcelableArrayList<RedditPost>("posts") as ArrayList<RedditPost>
         } ?: ArrayList()
     }
 
@@ -60,13 +57,12 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
 
         presenter = RedditFeedPresenterImpl(this, RedditFeedInteractorImpl())
 
-        redditAdapter = RedditAdapter(this, posts)
+        redditAdapter = RedditAdapter(::openWebLink, posts)
 
-        val layout = LinearLayoutManager(this@RedditFeedFragment.context)
+        val layout = LinearLayoutManager(context)
 
         binding.redditRecycler.apply {
             layoutManager = layout
-            setHasFixedSize(true)
             adapter = redditAdapter
 
             addOnScrollListener(object : PaginationScrollListener(layout) {
@@ -78,46 +74,30 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
 
                 override fun loadItems() {
                     isLoading = true
-                    presenter?.getNextPage(posts[posts.size - 1].data.name, order)
-                }
-
-                override fun onScrollTop() {
-
-                }
-
-                override fun onScrolledDown() {
-
+                    presenter?.getPosts(id = posts.last().name, order = order)
                 }
             })
         }
 
         binding.swipeRefresh.setOnRefreshListener {
             apiState = ApiState.PENDING
-            presenter?.getSub(order)
+            presenter?.getPosts(order = order)
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        if (posts.isEmpty()) presenter?.getSub(order)
-        (requireContext().applicationContext as App).networkStateChangeListener.addListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        (requireContext().applicationContext as App).networkStateChangeListener.removeListener(this)
+        if (posts.isEmpty()) presenter?.getPosts(order = order)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("posts", posts)
-        outState.putString("order", order)
-        outState.putInt("orderPos", orderPos)
-        super.onSaveInstanceState(outState)
+        outState.apply {
+            putParcelableArrayList("posts", posts)
+            putString("order", order)
+            putInt("orderPos", orderPos)
+        }
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         presenter?.cancelRequest()
+        super.onDestroyView()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -143,42 +123,34 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
                     if (orderPos != position) when (position) {
                         0 -> {
                             order = REDDIT_PARAM_ORDER_HOT
-                            presenter?.getSub(order)
+                            presenter?.getPosts(order = order)
                         }
                         1 -> {
                             order = REDDIT_PARAM_ORDER_NEW
-                            presenter?.getSub(order)
+                            presenter?.getPosts(order = order)
                         }
                     }
                     orderPos = position
                 }
 
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-
-                }
+                override fun onNothingSelected(p0: AdapterView<*>?) {}
             }
         }
-
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun updateRecycler(subredditData: SubredditModel) {
+    override fun updateRecycler(subredditData: List<RedditPost>) {
         apiState = ApiState.SUCCESS
 
-        posts.clearAndAdd(subredditData.data.children)
+        posts.clearAndAdd(subredditData)
         redditAdapter.notifyDataSetChanged()
         binding.redditRecycler.scrollToPosition(0)
     }
 
-    override fun addPagedData(subredditData: SubredditModel) {
+    override fun addPagedData(subredditData: List<RedditPost>) {
         isLoading = false
 
-        posts.addAll(subredditData.data.children)
+        posts.addAll(subredditData)
         redditAdapter.notifyDataSetChanged()
-    }
-
-    override fun openWebLink(link: String) {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 
     override fun showProgress() {
@@ -207,10 +179,9 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
 
     override fun networkAvailable() {
         when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> presenter?.getSub(order)
-            ApiState.SUCCESS -> {
-            }
+            ApiState.PENDING, ApiState.FAILED -> presenter?.getPosts(order = order)
+            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
-        if (isLoading) presenter?.getNextPage(posts[posts.size - 1].data.name, order)
+        if (isLoading) presenter?.getPosts(id = posts.last().name, order = order)
     }
 }

@@ -1,14 +1,14 @@
 package uk.co.zac_h.spacex.news.reddit
 
+import uk.co.zac_h.spacex.model.reddit.RedditPost
 import uk.co.zac_h.spacex.model.reddit.SubredditModel
 import uk.co.zac_h.spacex.rest.RedditInterface
 
 interface RedditFeedContract {
 
     interface RedditFeedView {
-        fun updateRecycler(subredditData: SubredditModel)
-        fun addPagedData(subredditData: SubredditModel)
-        fun openWebLink(link: String)
+        fun updateRecycler(subredditData: List<RedditPost>)
+        fun addPagedData(subredditData: List<RedditPost>)
         fun showProgress()
         fun hideProgress()
         fun toggleSwipeRefresh(refreshing: Boolean)
@@ -18,8 +18,7 @@ interface RedditFeedContract {
     }
 
     interface RedditFeedPresenter {
-        fun getSub(order: String, api: RedditInterface = RedditInterface.create())
-        fun getNextPage(id: String, order: String, api: RedditInterface = RedditInterface.create())
+        fun getPosts(id: String? = null, order: String, api: RedditInterface = RedditInterface.create())
         fun cancelRequest()
     }
 
@@ -35,8 +34,8 @@ interface RedditFeedContract {
     }
 
     interface InteractorCallback {
-        fun onSuccess(data: SubredditModel?)
-        fun onPagedSuccess(data: SubredditModel?)
+        fun onSuccess(data: List<RedditPost>)
+        fun onPagedSuccess(data: List<RedditPost>)
         fun onError(error: String)
     }
 }
