@@ -6,7 +6,6 @@ import android.os.CountDownTimer
 import android.util.Log
 import android.view.*
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
@@ -14,7 +13,6 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.google.android.material.progressindicator.LinearProgressIndicator
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.base.BaseFragment
@@ -25,7 +23,6 @@ import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.model.spacex.Upcoming
 import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.Keys.DashboardKeys
-import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_LATEST_NEWS
 import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_NEXT_LAUNCH
 import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_PINNED_LAUNCH
 import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_PREVIOUS_LAUNCH
@@ -50,14 +47,10 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        savedInstanceState?.let {
-            nextLaunchModel = it.getParcelable(DashboardKeys.NEXT_SAVED_STATE)
-            latestLaunchModel = it.getParcelable(DashboardKeys.LATEST_SAVED_STATE)
-        }
-
-        pinnedArray = savedInstanceState?.let {
-            it.getParcelableArrayList<Launch>(DashboardKeys.PINNED_SAVED_STATE) as ArrayList<Launch>
-        } ?: ArrayList()
+        nextLaunchModel = savedInstanceState?.getParcelable(DashboardKeys.NEXT_SAVED_STATE)
+        latestLaunchModel = savedInstanceState?.getParcelable(DashboardKeys.LATEST_SAVED_STATE)
+        pinnedArray = savedInstanceState?.getParcelableArrayList(DashboardKeys.PINNED_SAVED_STATE)
+            ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -80,8 +73,6 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
             createOptionsMenu(R.menu.menu_dashboard)
         }
 
-        togglePinnedProgress(false)
-
         val pinnedPrefs = (requireContext().applicationContext as App).pinnedPreferencesRepo
 
         pinnedSharedPreferences = PinnedSharedPreferencesHelperImpl(
@@ -90,7 +81,9 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
 
         presenter = DashboardPresenterImpl(this, DashboardInteractorImpl())
 
-        pinnedAdapter = LaunchesAdapter(requireContext())
+        pinnedAdapter = LaunchesAdapter(requireContext()).also {
+            it.update(pinnedArray)
+        }
 
         binding.pinned.pinnedRecycler.apply {
             layoutManager = LinearLayoutManager(this@DashboardFragment.context)
@@ -100,43 +93,36 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
         val prefs = (requireContext().applicationContext as App).dashboardPreferencesRepo
 
         prefs.visibleLive.observe(viewLifecycleOwner) { mode ->
-            mode?.let {
-                it.forEach { elements ->
-                    when (elements.key) {
-                        PREFERENCES_NEXT_LAUNCH ->
-                            presenter?.toggleNextLaunchVisibility(elements.value as Boolean)
-                        PREFERENCES_PREVIOUS_LAUNCH ->
-                            presenter?.toggleLatestLaunchVisibility(elements.value as Boolean)
-                        PREFERENCES_PINNED_LAUNCH ->
-                            presenter?.togglePinnedList(elements.value as Boolean)
-                        PREFERENCES_LATEST_NEWS -> {
-                        }
-                    }
+            mode?.forEach {
+                when (it.key) {
+                    PREFERENCES_NEXT_LAUNCH -> presenter?.toggleNextVisibility(it.value as Boolean)
+                    PREFERENCES_PREVIOUS_LAUNCH -> presenter?.toggleLatestVisibility(it.value as Boolean)
+                    PREFERENCES_PINNED_LAUNCH -> presenter?.togglePinnedList(it.value as Boolean)
                 }
             }
         }
 
         pinnedPrefs.pinnedLive.observe(viewLifecycleOwner) { mode ->
-            mode?.let { map ->
-                map.forEach { e ->
-                    if (e.key.length < 4) {
-                        pinnedSharedPreferences.removePinnedLaunch(e.key)
-                        return@forEach
-                    }
+            mode?.forEach { e ->
+                if (e.key.length < 4) {
+                    pinnedSharedPreferences.removePinnedLaunch(e.key)
+                    return@forEach
+                }
 
-                    if (e.value as Boolean) {
-                        if (pinnedArray.none { it.id == e.key }) {
-                            presenter?.get(e.key)
-                        }
-                    } else {
+                when (e.value) {
+                    true -> if (pinnedArray.none { it.id == e.key }) {
+                        presenter?.get(e.key)
+                    }
+                    false -> {
                         pinnedArray.removeAll { it.id == e.key }
+                        togglePinnedProgress(false)
                         pinnedAdapter.update(pinnedArray)
                         pinnedSharedPreferences.removePinnedLaunch(e.key)
                     }
                 }
-
-                if (map.isNullOrEmpty()) showPinnedMessage()
             }
+
+            if (mode.isNullOrEmpty()) showPinnedMessage()
         }
 
         binding.refresh.setOnRefreshListener {
@@ -191,19 +177,16 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
         with(binding) {
             dashboardLaunch.transitionName = response.id
 
-            when (response.upcoming) {
-                true -> heading.text = getString(R.string.next_launch)
-                false -> heading.text = getString(R.string.latest_launch)
-            }
+            heading.setText(
+                if (response.upcoming == true) R.string.next_launch else R.string.latest_launch
+            )
 
-            missionPatch.let {
-                Glide.with(this@DashboardFragment)
-                    .load(response.links?.missionPatch?.patchSmall)
-                    .error(getDrawable(requireContext(), R.drawable.ic_mission_patch))
-                    .fallback(getDrawable(requireContext(), R.drawable.ic_mission_patch))
-                    .placeholder(getDrawable(requireContext(), R.drawable.ic_mission_patch))
-                    .into(it)
-            }
+            Glide.with(this@DashboardFragment)
+                .load(response.links?.missionPatch?.patchSmall)
+                .error(getDrawable(requireContext(), R.drawable.ic_mission_patch))
+                .fallback(getDrawable(requireContext(), R.drawable.ic_mission_patch))
+                .placeholder(getDrawable(requireContext(), R.drawable.ic_mission_patch))
+                .into(missionPatch)
 
             flightNumber.text = getString(R.string.flight_number, response.flightNumber)
 
@@ -211,9 +194,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
 
             missionName.text = response.missionName
 
-            date.text = response.datePrecision?.let {
-                response.launchDate?.dateUnix?.formatDateMillisLong(it)
-            }
+            date.text = response.launchDate?.dateUnix?.formatDateMillisLong(response.datePrecision)
 
             dashboardLaunch.let { card ->
                 card.setOnClickListener {
@@ -246,7 +227,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
             override fun onFinish() {
                 nextLaunchModel?.links?.webcast?.let { link ->
                     binding.next.countdown.apply {
-                        text = getString(R.string.watch_live_label)
+                        setText(R.string.watch_live_label)
                         setOnClickListener {
                             openWebLink(link)
                         }

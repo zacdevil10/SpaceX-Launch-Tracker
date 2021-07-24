@@ -58,13 +58,13 @@ class DashboardPresenterImpl(
         interactor.cancelAllRequests()
     }
 
-    override fun toggleNextLaunchVisibility(visible: Boolean) {
+    override fun toggleNextVisibility(visible: Boolean) {
         view.apply {
             if (visible) showNextLaunch() else hideNextLaunch()
         }
     }
 
-    override fun toggleLatestLaunchVisibility(visible: Boolean) {
+    override fun toggleLatestVisibility(visible: Boolean) {
         view.apply {
             if (visible) showLatestLaunch() else hideLatestLaunch()
         }
