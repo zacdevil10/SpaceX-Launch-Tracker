@@ -8,11 +8,15 @@ import uk.co.zac_h.spacex.utils.SPACEX_BASE_URL_V5
 class LaunchesPresenterImpl(
     private val view: NetworkInterface.View<List<Launch>>,
     private val interactor: NetworkInterface.Interactor<List<Launch>>
-) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<List<Launch>> {
+) : NetworkInterface.Presenter<List<Launch>>, NetworkInterface.Callback<List<Launch>> {
 
     override fun get(data: Any, api: SpaceXInterface) {
         view.showProgress()
         interactor.get(data, SpaceXInterface.create(SPACEX_BASE_URL_V5), this)
+    }
+
+    override fun getOrUpdate(response: List<Launch>, data: Any, api: SpaceXInterface) {
+        if (response.isNotEmpty()) onSuccess(response) else super.getOrUpdate(response, data, api)
     }
 
     override fun cancelRequest() {

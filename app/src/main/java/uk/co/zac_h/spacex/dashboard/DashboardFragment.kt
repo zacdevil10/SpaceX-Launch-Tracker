@@ -90,7 +90,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
 
         presenter = DashboardPresenterImpl(this, DashboardInteractorImpl())
 
-        pinnedAdapter = LaunchesAdapter(requireContext(), pinnedArray)
+        pinnedAdapter = LaunchesAdapter(requireContext())
 
         binding.pinned.pinnedRecycler.apply {
             layoutManager = LinearLayoutManager(this@DashboardFragment.context)
@@ -130,7 +130,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
                         }
                     } else {
                         pinnedArray.removeAll { it.id == e.key }
-                        pinnedAdapter.notifyDataSetChanged()
+                        pinnedAdapter.update(pinnedArray)
                         pinnedSharedPreferences.removePinnedLaunch(e.key)
                     }
                 }
@@ -233,7 +233,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
 
         pinnedArray.sortByDescending { it.flightNumber }
 
-        pinnedAdapter.notifyDataSetChanged()
+        pinnedAdapter.update(pinnedArray)
     }
 
     override fun setCountdown(time: Long) {

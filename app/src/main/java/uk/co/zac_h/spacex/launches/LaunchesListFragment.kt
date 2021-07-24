@@ -24,12 +24,12 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
     override var title: String = ""
 
     private lateinit var binding: FragmentLaunchesListBinding
-    private var presenter: NetworkInterface.Presenter<Nothing>? = null
+    private var presenter: NetworkInterface.Presenter<List<Launch>>? = null
     private lateinit var launchesAdapter: LaunchesAdapter
 
     private lateinit var launches: ArrayList<Launch>
 
-    private lateinit var searchView: SearchView
+    private var searchView: SearchView? = null
 
     private var launchParam: String? = null
 
@@ -44,9 +44,8 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        launches = savedInstanceState?.let {
-            it.getParcelableArrayList<Launch>("launches") as ArrayList<Launch>
-        } ?: ArrayList()
+        launches = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
+        launchParam = arguments?.getString("launchParam")
     }
 
     override fun onCreateView(
@@ -60,11 +59,9 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        launchParam = arguments?.getString("launchParam")
-
         presenter = LaunchesPresenterImpl(this, LaunchesInteractorImpl())
 
-        launchesAdapter = LaunchesAdapter(requireContext(), launches)
+        launchesAdapter = LaunchesAdapter(requireContext())
 
         binding.launchesRecycler.apply {
             layoutManager = LinearLayoutManager(this@LaunchesListFragment.context)
@@ -78,7 +75,7 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
                 presenter?.get(launchId)
             }
 
-            if (launches.isEmpty()) presenter?.get(launchId)
+            presenter?.getOrUpdate(launches, launchId)
         }
     }
 
@@ -94,38 +91,35 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
 
     override fun onDestroy() {
         super.onDestroy()
-        if (::searchView.isInitialized) searchView.setOnQueryTextListener(null)
+        searchView?.setOnQueryTextListener(null)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_launches, menu)
+        /*inflater.inflate(R.menu.menu_launches, menu)
 
         searchView = menu.findItem(R.id.app_bar_search).actionView as SearchView
 
-        searchView.setOnQueryTextListener(this)
+        searchView?.setOnQueryTextListener(this)*/
 
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
-        launchesAdapter.filter.filter(query)
+        //launchesAdapter.filter.filter(query)
         return false
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        launchesAdapter.filter.filter(newText)
+        //launchesAdapter.filter.filter(newText)
         return false
     }
 
     override fun update(response: List<Launch>) {
         apiState = ApiState.SUCCESS
-        launches.clear()
-        launches.addAll(response)
 
+        launches = response as ArrayList<Launch>
 
-        binding.launchesRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
-        launchesAdapter.notifyDataSetChanged()
-        binding.launchesRecycler.scheduleLayoutAnimation()
+        launchesAdapter.update(response)
     }
 
     override fun showProgress() {
@@ -147,7 +141,9 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
 
     override fun networkAvailable() {
         when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> launchParam?.let { presenter?.get(it) }
+            ApiState.PENDING, ApiState.FAILED -> launchParam?.let {
+                presenter?.getOrUpdate(launches, it)
+            }
             ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
