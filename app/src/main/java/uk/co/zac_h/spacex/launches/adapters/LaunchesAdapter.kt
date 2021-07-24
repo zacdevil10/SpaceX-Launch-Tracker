@@ -21,16 +21,11 @@ import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import java.util.*
 import kotlin.collections.ArrayList
 
-class LaunchesAdapter(
-    private val context: Context,
-    private val launches: ArrayList<Launch>
-) : RecyclerView.Adapter<LaunchesAdapter.ViewHolder>(), Filterable {
+class LaunchesAdapter(private val context: Context) :
+    RecyclerView.Adapter<LaunchesAdapter.ViewHolder>() {
 
-    private var filteredLaunches: ArrayList<Launch>
-
-    init {
-        filteredLaunches = launches
-    }
+    private var launches: ArrayList<Launch> = ArrayList()
+    //private var filteredLaunches: ArrayList<Launch> = launches
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
         ListItemLaunchesBinding.inflate(
@@ -41,7 +36,7 @@ class LaunchesAdapter(
     )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val launch = filteredLaunches[position]
+        val launch = launches[position]
 
         holder.binding.apply {
             root.transitionName = launch.id
@@ -54,16 +49,13 @@ class LaunchesAdapter(
                 .into(missionPatch)
 
             if (launch.rocket?.name == "Falcon 9") {
-                reused.visibility = launch.cores?.get(0)?.reused?.let {
-                    if (it) View.VISIBLE else View.GONE
-                } ?: View.GONE
+                reused.visibility =
+                    if (launch.cores?.first()?.reused == true) View.VISIBLE else View.GONE
 
                 landingVehicle.visibility =
-                    launch.cores?.get(0)?.landingSuccess?.let {
-                        if (it) View.VISIBLE else View.GONE
-                    } ?: View.GONE
+                    if (launch.cores?.first()?.landingSuccess == true) View.VISIBLE else View.GONE
 
-                landingVehicle.text = launch.cores?.get(0)?.landingPad?.name
+                landingVehicle.text = launch.cores?.first()?.landingPad?.name
             } else {
                 reused.visibility = View.GONE
                 landingVehicle.visibility = View.GONE
@@ -72,8 +64,7 @@ class LaunchesAdapter(
             flightNumber.text = context.getString(R.string.flight_number, launch.flightNumber)
             vehicle.text = launch.rocket?.name
             missionName.text = launch.missionName
-            date.text =
-                launch.launchDate?.dateUnix?.formatDateMillisLong(launch.datePrecision)
+            date.text = launch.launchDate?.dateUnix?.formatDateMillisLong(launch.datePrecision)
 
             root.setOnClickListener {
                 root.findNavController().navigate(
@@ -86,57 +77,53 @@ class LaunchesAdapter(
         }
     }
 
-    override fun getItemCount(): Int = filteredLaunches.size
+    override fun getItemCount(): Int = launches.size
 
-    override fun getFilter(): Filter {
-        return object : Filter() {
-            override fun performFiltering(s: CharSequence?): FilterResults {
-                val filterResults = FilterResults()
-                s?.let {
-                    filteredLaunches = when {
-                        it.isEmpty() -> launches
-                        else -> {
-                            val filteredList = ArrayList<Launch>()
-                            launches.forEach { launch ->
-                                if (launch.missionName?.lowercase().toString()
-                                        .contains(
-                                            it.toString().lowercase()
-                                        ) || launch.launchDate?.dateUnix?.formatDateMillisYYYY()
-                                        .toString().contains(
-                                            it
-                                        ) || launch.flightNumber.toString().contains(
-                                        it
-                                    )
-                                ) {
-                                    filteredList.add(launch)
-                                    return@forEach
-                                }
+    fun update(newList: ArrayList<Launch>) {
+        launches = newList
+        notifyDataSetChanged()
+    }
 
-                                launch.rocket?.name?.let { rocketName ->
-                                    if (rocketName.lowercase().contains(s)) {
-                                        filteredList.add(launch)
-                                    }
-                                }
+    /*override fun getFilter(): Filter = object : Filter() {
+        override fun performFiltering(s: CharSequence?): FilterResults {
+            val filterResults = FilterResults()
+            s?.let {
+                filteredLaunches = when {
+                    it.isEmpty() -> launches
+                    else -> {
+                        val filteredList = ArrayList<Launch>()
+                        launches.forEach { launch ->
+                            if (launch.missionName?.lowercase().toString().contains(it.toString().lowercase())
+                                or launch.launchDate?.dateUnix?.formatDateMillisYYYY().toString().contains(it)
+                                or launch.flightNumber.toString().contains(it)) {
+                                filteredList.add(launch)
+                                return@forEach
                             }
 
-                            filteredList
+                            launch.rocket?.name?.let { rocketName ->
+                                if (rocketName.lowercase().contains(s)) {
+                                    filteredList.add(launch)
+                                }
+                            }
                         }
+
+                        filteredList
                     }
-
-                    filterResults.values = filteredLaunches
-                    filterResults.count = filteredLaunches.size
                 }
-                return filterResults
-            }
 
-            override fun publishResults(
-                charSequence: CharSequence?,
-                filterResults: FilterResults?
-            ) {
-                notifyDataSetChanged()
+                filterResults.values = filteredLaunches
+                filterResults.count = filteredLaunches.size
             }
+            return filterResults
         }
-    }
+
+        override fun publishResults(
+            charSequence: CharSequence?,
+            filterResults: FilterResults?
+        ) {
+            notifyDataSetChanged()
+        }
+    }*/
 
     class ViewHolder(val binding: ListItemLaunchesBinding) : RecyclerView.ViewHolder(binding.root)
 }
