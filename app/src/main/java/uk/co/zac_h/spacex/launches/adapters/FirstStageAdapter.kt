@@ -28,7 +28,7 @@ class FirstStageAdapter : RecyclerView.Adapter<FirstStageAdapter.ViewHolder>() {
         holder.binding.apply {
             firstStageCard.transitionName = core.core?.id
 
-            firstStageCoreSerial.text = core.core?.serial?.orUnknown()
+            firstStageCoreSerial.text = core.core?.serial.orUnknown()
 
             core.reused?.let { firstStageReusedImage.successFailureImage(it) }
 
