@@ -34,8 +34,8 @@ interface DashboardContract {
         )
 
         fun updateCountdown(time: Long)
-        fun toggleNextLaunchVisibility(visible: Boolean)
-        fun toggleLatestLaunchVisibility(visible: Boolean)
+        fun toggleNextVisibility(visible: Boolean)
+        fun toggleLatestVisibility(visible: Boolean)
         fun togglePinnedList(visible: Boolean)
     }
 }
