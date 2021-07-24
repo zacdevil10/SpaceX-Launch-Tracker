@@ -4,8 +4,7 @@ import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.model.spacex.Launch
 import uk.co.zac_h.spacex.model.spacex.Upcoming
 import uk.co.zac_h.spacex.rest.SpaceXInterface
-import uk.co.zac_h.spacex.utils.SPACEX_BASE_URL_V5
-import java.util.concurrent.TimeUnit
+import uk.co.zac_h.spacex.utils.*
 
 class DashboardPresenterImpl(
     private val view: DashboardContract.View,
@@ -13,22 +12,24 @@ class DashboardPresenterImpl(
 ) : DashboardContract.Presenter,
     NetworkInterface.Callback<Launch> {
 
-    override fun getLatestLaunches(
-        next: Launch?,
-        latest: Launch?,
-        api: SpaceXInterface
-    ) {
-        interactor.apply {
-            if (next == null) {
-                view.toggleNextProgress(true)
-                get(Upcoming.NEXT, SpaceXInterface.create(SPACEX_BASE_URL_V5), this@DashboardPresenterImpl)
-            } else onSuccess(Upcoming.NEXT, next)
+    override fun getLatestLaunches(next: Launch?, latest: Launch?, api: SpaceXInterface) {
+        if (next == null) {
+            view.toggleNextProgress(true)
+            interactor.get(
+                Upcoming.NEXT,
+                SpaceXInterface.create(SPACEX_BASE_URL_V5),
+                this@DashboardPresenterImpl
+            )
+        } else onSuccess(Upcoming.NEXT, next)
 
-            if (latest == null) {
-                view.toggleLatestProgress(true)
-                get(Upcoming.LATEST, SpaceXInterface.create(SPACEX_BASE_URL_V5), this@DashboardPresenterImpl)
-            } else onSuccess(Upcoming.LATEST, latest)
-        }
+        if (latest == null) {
+            view.toggleLatestProgress(true)
+            interactor.get(
+                Upcoming.LATEST,
+                SpaceXInterface.create(SPACEX_BASE_URL_V5),
+                this@DashboardPresenterImpl
+            )
+        } else onSuccess(Upcoming.LATEST, latest)
     }
 
     override fun get(data: Any, api: SpaceXInterface) {
@@ -37,21 +38,15 @@ class DashboardPresenterImpl(
     }
 
     override fun updateCountdown(time: Long) {
-        val remaining = String.format(
-            "T-%02d:%02d:%02d:%02d",
-            TimeUnit.MILLISECONDS.toDays(time),
-            TimeUnit.MILLISECONDS.toHours(time) - TimeUnit.DAYS.toHours(
-                TimeUnit.MILLISECONDS.toDays(time)
-            ),
-            TimeUnit.MILLISECONDS.toMinutes(time) - TimeUnit.HOURS.toMinutes(
-                TimeUnit.MILLISECONDS.toHours(time)
-            ),
-            TimeUnit.MILLISECONDS.toSeconds(time) - TimeUnit.MINUTES.toSeconds(
-                TimeUnit.MILLISECONDS.toMinutes(time)
+        view.updateCountdown(
+            String.format(
+                "T-%02d:%02d:%02d:%02d",
+                time.toCountdownDays(),
+                time.toCountdownHours(),
+                time.toCountdownMinutes(),
+                time.toCountdownSeconds()
             )
         )
-
-        view.updateCountdown(remaining)
     }
 
     override fun cancelRequest() {
@@ -59,44 +54,36 @@ class DashboardPresenterImpl(
     }
 
     override fun toggleNextVisibility(visible: Boolean) {
-        view.apply {
-            if (visible) showNextLaunch() else hideNextLaunch()
-        }
+        if (visible) view.showNextLaunch() else view.hideNextLaunch()
     }
 
     override fun toggleLatestVisibility(visible: Boolean) {
-        view.apply {
-            if (visible) showLatestLaunch() else hideLatestLaunch()
-        }
+        if (visible) view.showLatestLaunch() else view.hideLatestLaunch()
     }
 
     override fun togglePinnedList(visible: Boolean) {
-        view.apply {
-            if (visible) showPinnedList() else hidePinnedList()
-        }
+        if (visible) view.showPinnedList() else view.hidePinnedList()
     }
 
     override fun onSuccess(data: Any, response: Launch) {
         when (data) {
-            Upcoming.NEXT -> {
-                view.toggleNextProgress(false)
-                val time =
-                    (response.launchDate?.dateUnix?.times(1000) ?: 0) - System.currentTimeMillis()
-                if (response.tbd == false && time >= 0) view.apply {
+            Upcoming.NEXT -> view.apply {
+                toggleNextProgress(false)
+                val time = response.launchDate?.dateUnix?.times(1000)
+                    ?.minus(System.currentTimeMillis()) ?: 0
+                if (response.tbd == false && time >= 0) {
                     setCountdown(time)
                     showCountdown()
                     hideNextHeading()
-                } else view.apply {
+                } else {
                     hideCountdown()
                     showNextHeading()
                 }
             }
-            Upcoming.LATEST -> {
-                view.toggleLatestProgress(false)
-            }
-            else -> {
-                view.hidePinnedMessage()
-                view.togglePinnedProgress(false)
+            Upcoming.LATEST -> view.toggleLatestProgress(false)
+            else -> view.apply {
+                hidePinnedMessage()
+                togglePinnedProgress(false)
             }
         }
         view.update(data, response)
@@ -104,9 +91,7 @@ class DashboardPresenterImpl(
     }
 
     override fun onError(error: String) {
-        view.apply {
-            showError(error)
-            toggleSwipeRefresh(false)
-        }
+        view.showError(error)
+        view.toggleSwipeRefresh(false)
     }
 }
