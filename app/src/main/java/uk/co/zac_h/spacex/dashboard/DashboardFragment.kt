@@ -244,6 +244,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
     }
 
     override fun showPinnedMessage() {
+        binding.pinned.progress.hide()
         if (pinnedArray.isEmpty()) binding.pinned.pinnedMessage.visibility = View.VISIBLE
     }
 
