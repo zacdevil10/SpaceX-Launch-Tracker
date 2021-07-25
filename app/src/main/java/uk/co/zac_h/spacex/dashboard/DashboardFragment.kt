@@ -67,6 +67,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
         view.doOnPreDraw { startPostponedEnterTransition() }
         postponeEnterTransition()
 
+        togglePinnedProgress(false)
         binding.toolbarLayout.progress.hide()
         binding.toolbarLayout.toolbar.apply {
             setup()
@@ -115,7 +116,6 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
                     }
                     false -> {
                         pinnedArray.removeAll { it.id == e.key }
-                        togglePinnedProgress(false)
                         pinnedAdapter.update(pinnedArray)
                         pinnedSharedPreferences.removePinnedLaunch(e.key)
                     }
