@@ -51,7 +51,6 @@ class VehiclesFragment : BaseFragment() {
             CapsulesFragment()
         )
 
-        (activity as MainActivity).setSupportActionBar(toolbarLayout.toolbar)
         toolbarLayout.toolbar.setupWithTabLayout(toolbarLayout.tabLayout, TabLayout.MODE_SCROLLABLE)
 
         postponeEnterTransition()

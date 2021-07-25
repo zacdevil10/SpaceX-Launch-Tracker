@@ -1,7 +1,9 @@
 package uk.co.zac_h.spacex.statistics.adapters
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.StringRes
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -12,7 +14,7 @@ import uk.co.zac_h.spacex.databinding.ListItemStatisticsBinding
 import uk.co.zac_h.spacex.statistics.StatisticsContract
 import uk.co.zac_h.spacex.utils.PadType
 
-class StatisticsAdapter(private val view: StatisticsContract.View) :
+class StatisticsAdapter(private val context: Context, private val view: StatisticsContract.View) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val items = listOf(
@@ -27,24 +29,20 @@ class StatisticsAdapter(private val view: StatisticsContract.View) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
-            1 -> {
-                FooterViewHolder(
-                    ListItemIllustrationsFooterBinding.inflate(
-                        LayoutInflater.from(parent.context),
-                        parent,
-                        false
-                    )
+            1 -> FooterViewHolder(
+                ListItemIllustrationsFooterBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
                 )
-            }
-            else -> {
-                ViewHolder(
-                    ListItemStatisticsBinding.inflate(
-                        LayoutInflater.from(parent.context),
-                        parent,
-                        false
-                    )
+            )
+            else -> ViewHolder(
+                ListItemStatisticsBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
                 )
-            }
+            )
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -52,8 +50,10 @@ class StatisticsAdapter(private val view: StatisticsContract.View) :
             is ViewHolder -> holder.binding.apply {
                 val item = items[position]
 
-                listItemStatisticsCard.transitionName = item.title
-                listItemStatisticsTitle.text = item.title
+                val title = context.getString(item.title)
+
+                listItemStatisticsCard.transitionName = title
+                listItemStatisticsTitle.text = title
 
                 listItemStatisticsGraphic.setImageResource(item.image)
 
@@ -68,10 +68,10 @@ class StatisticsAdapter(private val view: StatisticsContract.View) :
                                 Statistics.LANDING_PADS -> "type" to PadType.LANDING_PAD
                                 else -> "" to ""
                             },
-                            "heading" to item.title
+                            "heading" to title
                         ),
                         null,
-                        FragmentNavigatorExtras(listItemStatisticsCard to item.title)
+                        FragmentNavigatorExtras(listItemStatisticsCard to title)
                     )
                 }
             }
@@ -93,39 +93,39 @@ class StatisticsAdapter(private val view: StatisticsContract.View) :
         RecyclerView.ViewHolder(binding.root)
 }
 
-enum class Statistics(val title: String, val nav: Int, val image: Int) {
+enum class Statistics(@StringRes val title: Int, val nav: Int, val image: Int) {
     LAUNCH_HISTORY(
-        "Launch History",
+        R.string.statistics_launch_history,
         R.id.action_statistics_fragment_to_launch_history,
         R.drawable.ic_launch_history
     ),
     LANDING_HISTORY(
-        "Landing History",
+        R.string.statistics_landing_history,
         R.id.action_statistics_fragment_to_landing_history,
         R.drawable.ic_launch_history
     ),
     LAUNCH_RATE(
-        "Launch Rate",
+        R.string.statistics_launch_rate,
         R.id.action_statistics_fragment_to_launch_rate,
         R.drawable.ic_launch_rate
     ),
     MASS_TO_ORBIT(
-        "Mass to Orbit",
+        R.string.statistics_mass_to_orbit,
         R.id.action_statistics_fragment_to_launch_mass,
         R.drawable.ic_mass_to_orbit
     ),
     FAIRING_RECOVERY(
-        "Fairing Recovery",
+        R.string.statistics_fairing_recovery,
         R.id.action_statistics_fragment_to_fairing_recovery,
         R.drawable.ic_fairing_recovery
     ),
     LAUNCHPADS(
-        "Launchpads",
+        R.string.statistics_launchpads,
         R.id.action_statistics_fragment_to_pad_stats,
         R.drawable.ic_launchpads
     ),
     LANDING_PADS(
-        "Landing Pads",
+        R.string.statistics_landing_pads,
         R.id.action_statistics_fragment_to_pad_stats,
         R.drawable.ic_landing_pads
     )

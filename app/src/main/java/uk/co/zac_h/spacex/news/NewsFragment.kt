@@ -31,7 +31,6 @@ class NewsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as MainActivity).setSupportActionBar(toolbarBinding.toolbar)
         toolbarBinding.toolbar.setup()
 
         binding.newsViewPager.adapter = ViewPagerAdapter(

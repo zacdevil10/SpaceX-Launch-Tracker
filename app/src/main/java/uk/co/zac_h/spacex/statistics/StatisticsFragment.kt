@@ -8,13 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.LinearLayoutManager
+import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentStatisticsBinding
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsAdapter
 
 class StatisticsFragment : BaseFragment(), StatisticsContract.View {
 
-    override var title: String = "Statistics"
+    override val title by lazy { getString(R.string.menu_statistics) }
 
     private lateinit var binding: FragmentStatisticsBinding
 
@@ -37,7 +38,7 @@ class StatisticsFragment : BaseFragment(), StatisticsContract.View {
 
         binding.statisticsRecycler.apply {
             layoutManager = LinearLayoutManager(this@StatisticsFragment.context)
-            adapter = StatisticsAdapter(this@StatisticsFragment)
+            adapter = StatisticsAdapter(context, this@StatisticsFragment)
         }
     }
 

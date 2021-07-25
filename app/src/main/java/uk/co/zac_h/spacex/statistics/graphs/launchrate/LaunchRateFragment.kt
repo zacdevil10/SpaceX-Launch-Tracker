@@ -27,7 +27,7 @@ import uk.co.zac_h.spacex.utils.models.RateStatsModel
 
 class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsModel>> {
 
-    override val title: String by lazy { Statistics.LAUNCH_RATE.title }
+    override val title by lazy { getString(Statistics.LAUNCH_RATE.title) }
 
     private lateinit var binding: FragmentLaunchRateBinding
 
@@ -64,8 +64,10 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding.toolbarLayout.toolbar)
-        binding.toolbarLayout.toolbar.setup()
+        binding.toolbarLayout.toolbar.apply {
+            setup()
+            createOptionsMenu(R.menu.menu_statistics_reload)
+        }
 
         binding.launchRateConstraint.transitionName = heading
 
@@ -137,11 +139,6 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_statistics_reload, menu)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {

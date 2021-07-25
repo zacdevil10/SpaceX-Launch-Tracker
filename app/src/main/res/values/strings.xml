@@ -86,6 +86,14 @@
     <string name="payloads_label">Payloads</string>
 
     <!--Statistics-->
+    <string name="statistics_launch_history">Launch History</string>
+    <string name="statistics_landing_history">Landing History</string>
+    <string name="statistics_launch_rate">Launch Rate</string>
+    <string name="statistics_mass_to_orbit">Mass to Orbit</string>
+    <string name="statistics_fairing_recovery">Fairing Recovery</string>
+    <string name="statistics_launchpads">Launchpads</string>
+    <string name="statistics_landing_pads">Landing Pads</string>
+
     <string name="success_rate_heading">Launch Success Rate</string>
     <string name="percentage">%1$d%%</string>
     <string name="pie_chart_title">Launches\n%1$s</string>
