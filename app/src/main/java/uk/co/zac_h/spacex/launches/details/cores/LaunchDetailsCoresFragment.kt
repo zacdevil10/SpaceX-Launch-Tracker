@@ -6,21 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCoresBinding
+import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
 import uk.co.zac_h.spacex.model.spacex.LaunchCore
 import uk.co.zac_h.spacex.utils.ApiState
-import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
-import uk.co.zac_h.spacex.utils.clearAndAdd
 import uk.co.zac_h.spacex.utils.orUnknown
 
 class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<LaunchCore>> {
 
-    private lateinit var binding: FragmentLaunchDetailsCoresBinding
+    private lateinit var binding: FragmentVerticalRecyclerviewBinding
 
     private var presenter: NetworkInterface.Presenter<List<LaunchCore>>? = null
 
@@ -50,7 +47,7 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentLaunchDetailsCoresBinding.inflate(inflater, container, false).apply {
+    ): View = FragmentVerticalRecyclerviewBinding.inflate(inflater, container, false).apply {
         binding = this
     }.root
 
@@ -61,8 +58,8 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
 
         coresAdapter = FirstStageAdapter()
 
-        binding.launchDetailsCoresRecycler.apply {
-            layoutManager = LinearLayoutManager(this@LaunchDetailsCoresFragment.context)
+        binding.recycler.apply {
+            layoutManager = LinearLayoutManager(context)
             adapter = coresAdapter
         }
 
@@ -80,25 +77,28 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         presenter?.cancelRequest()
+        super.onDestroyView()
     }
 
     override fun update(response: List<LaunchCore>) {
-        cores = response as ArrayList<LaunchCore>
-
-        if (apiState != ApiState.SUCCESS) {
-            binding.launchDetailsCoresRecycler.layoutAnimation = animateLayoutFromBottom(context)
-        }
-
         apiState = ApiState.SUCCESS
 
+        cores = response as ArrayList<LaunchCore>
+
         coresAdapter.update(response)
-        binding.launchDetailsCoresRecycler.scheduleLayoutAnimation()
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
         binding.swipeRefresh.isRefreshing = isRefreshing
+    }
+
+    override fun showProgress() {
+        binding.progress.show()
+    }
+
+    override fun hideProgress() {
+        binding.progress.hide()
     }
 
     override fun showError(error: String) {

@@ -14,7 +14,7 @@ class LaunchDetailsPresenterImpl(
     NetworkInterface.Callback<Launch> {
 
     override fun get(data: Any, api: SpaceXInterface) {
-        view.toggleSwipeRefresh(true)
+        view.showProgress()
         interactor.get(data, SpaceXInterface.create(SPACEX_BASE_URL_V5), this)
     }
 
@@ -35,6 +35,7 @@ class LaunchDetailsPresenterImpl(
     override fun onSuccess(response: Launch) {
         view.apply {
             update(response)
+            hideProgress()
             toggleSwipeRefresh(false)
         }
     }

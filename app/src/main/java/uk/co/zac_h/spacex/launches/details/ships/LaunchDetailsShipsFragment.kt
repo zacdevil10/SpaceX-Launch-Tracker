@@ -6,23 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsShipsBinding
+import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchDetailsShipsAdapter
 import uk.co.zac_h.spacex.model.spacex.Ship
 import uk.co.zac_h.spacex.utils.ApiState
-import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
-import uk.co.zac_h.spacex.utils.clearAndAdd
 import uk.co.zac_h.spacex.utils.orUnknown
 
 class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
 
-    private lateinit var binding: FragmentLaunchDetailsShipsBinding
+    private lateinit var binding: FragmentVerticalRecyclerviewBinding
 
-    private var presenter: NetworkInterface.Presenter<Nothing>? = null
+    private var presenter: NetworkInterface.Presenter<List<Ship>>? = null
 
     private lateinit var shipsAdapter: LaunchDetailsShipsAdapter
     private var shipsArray: ArrayList<Ship> = ArrayList()
@@ -51,7 +48,7 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentLaunchDetailsShipsBinding.inflate(inflater, container, false).apply {
+    ): View = FragmentVerticalRecyclerviewBinding.inflate(inflater, container, false).apply {
         binding = this
     }.root
 
@@ -60,9 +57,9 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
 
         presenter = LaunchDetailsShipsPresenter(this, LaunchDetailsShipsInteractor())
 
-        shipsAdapter = LaunchDetailsShipsAdapter(shipsArray)
+        shipsAdapter = LaunchDetailsShipsAdapter()
 
-        binding.launchDetailsShipsRecycler.apply {
+        binding.recycler.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = shipsAdapter
         }
@@ -72,33 +69,37 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
             presenter?.get(id)
         }
 
-        if (shipsArray.isEmpty()) presenter?.get(id)
+        presenter?.getOrUpdate(shipsArray, id)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList(SHIPS_KEY, shipsArray)
         outState.putString(ID_KEY, id)
-        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         presenter?.cancelRequest()
+        super.onDestroyView()
     }
 
     override fun update(response: List<Ship>) {
         apiState = ApiState.SUCCESS
 
-        shipsArray.clearAndAdd(response)
+        shipsArray = response as ArrayList<Ship>
 
-        binding.launchDetailsShipsRecycler.layoutAnimation =
-            animateLayoutFromBottom(requireContext())
-        shipsAdapter.notifyDataSetChanged()
-        binding.launchDetailsShipsRecycler.scheduleLayoutAnimation()
+        shipsAdapter.update(response)
     }
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
         binding.swipeRefresh.isRefreshing = isRefreshing
+    }
+
+    override fun showProgress() {
+        binding.progress.show()
+    }
+
+    override fun hideProgress() {
+        binding.progress.hide()
     }
 
     override fun showError(error: String) {
