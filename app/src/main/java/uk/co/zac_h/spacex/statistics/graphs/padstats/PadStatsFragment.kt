@@ -58,8 +58,10 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding.toolbarLayout.toolbar)
-        binding.toolbarLayout.toolbar.setup()
+        binding.toolbarLayout.toolbar.apply {
+            setup()
+            createOptionsMenu(R.menu.menu_statistics_reload)
+        }
 
         binding.padStatsConstraint.transitionName = heading
 
@@ -89,11 +91,6 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_statistics_reload, menu)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {

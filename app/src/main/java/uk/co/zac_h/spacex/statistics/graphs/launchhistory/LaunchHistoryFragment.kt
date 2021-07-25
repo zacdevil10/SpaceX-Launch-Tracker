@@ -25,7 +25,7 @@ import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 
 class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistoryView {
 
-    override val title: String by lazy { Statistics.LAUNCH_HISTORY.title }
+    override val title by lazy { getString(Statistics.LAUNCH_HISTORY.title) }
 
     private lateinit var binding: FragmentLaunchHistoryBinding
 
@@ -40,7 +40,6 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
@@ -63,8 +62,10 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding.toolbarLayout.toolbar)
-        binding.toolbarLayout.toolbar.setup()
+        binding.toolbarLayout.toolbar.apply {
+            setup()
+            createOptionsMenu(R.menu.menu_statistics_filter)
+        }
 
         binding.launchHistoryConstraint.transitionName = heading
 
@@ -120,11 +121,6 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_statistics_filter, menu)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {

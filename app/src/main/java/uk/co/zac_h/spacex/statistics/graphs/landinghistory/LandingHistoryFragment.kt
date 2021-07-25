@@ -27,7 +27,7 @@ import uk.co.zac_h.spacex.utils.models.LandingHistoryModel
 
 class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<LandingHistoryModel>> {
 
-    override val title: String by lazy { Statistics.LANDING_HISTORY.title }
+    override val title by lazy { getString(Statistics.LANDING_HISTORY.title) }
 
     private lateinit var binding: FragmentLandingHistoryBinding
 
@@ -62,8 +62,10 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding.toolbarLayout.toolbar)
-        binding.toolbarLayout.toolbar.setup()
+        binding.toolbarLayout.toolbar.apply {
+            setup()
+            createOptionsMenu(R.menu.menu_statistics_reload)
+        }
 
         binding.landingHistoryConstraint.transitionName = heading
 
@@ -118,11 +120,6 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList("stats", statsList)
         super.onSaveInstanceState(outState)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_statistics_reload, menu)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {

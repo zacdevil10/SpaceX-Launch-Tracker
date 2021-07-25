@@ -27,7 +27,7 @@ import uk.co.zac_h.spacex.utils.models.KeysModel
 
 class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<FairingRecoveryModel>> {
 
-    override val title: String by lazy { Statistics.FAIRING_RECOVERY.title }
+    override val title by lazy { getString(Statistics.FAIRING_RECOVERY.title) }
 
     private lateinit var binding: FragmentFairingRecoveryBinding
 
@@ -62,8 +62,10 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding.toolbarLayout.toolbar)
-        binding.toolbarLayout.toolbar.setup()
+        binding.toolbarLayout.toolbar.apply {
+            setup()
+            createOptionsMenu(R.menu.menu_statistics_reload)
+        }
 
         binding.fairingRecoveryConstraint.transitionName = heading
 
@@ -121,11 +123,6 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putParcelableArrayList("stats", statsList)
         super.onSaveInstanceState(outState)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_statistics_reload, menu)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {

@@ -36,12 +36,10 @@ class LaunchesFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        view.doOnPreDraw { startPostponedEnterTransition() }
         postponeEnterTransition()
 
-        toolbarBinding.toolbar.apply {
-            setSupportActionBar()
-            setup()
-        }
+        toolbarBinding.toolbar.setup()
 
         binding.launchesViewPager.adapter = ViewPagerAdapter(childFragmentManager, fragments)
 
@@ -56,7 +54,5 @@ class LaunchesFragment : BaseFragment() {
                 getTabAt(position)?.setIcon(tabIcons[position])
             }
         }
-
-        view.doOnPreDraw { startPostponedEnterTransition() }
     }
 }

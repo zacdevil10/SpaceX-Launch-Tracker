@@ -54,7 +54,10 @@ abstract class BaseFragment : Fragment(),
         title = this@BaseFragment.title
     }
 
-    protected fun Toolbar.setupWithTabLayout(tabLayout: TabLayout, tabLayoutMode: Int) {
+    protected fun Toolbar.setupWithTabLayout(
+        tabLayout: TabLayout,
+        tabLayoutMode: Int = TabLayout.MODE_FIXED
+    ) {
         setup()
         tabLayout.tabMode = tabLayoutMode
     }

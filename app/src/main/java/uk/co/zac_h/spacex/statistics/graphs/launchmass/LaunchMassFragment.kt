@@ -27,7 +27,7 @@ import uk.co.zac_h.spacex.utils.models.OrbitMassModel
 
 class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
 
-    override val title: String by lazy { Statistics.MASS_TO_ORBIT.title }
+    override val title by lazy { getString(Statistics.MASS_TO_ORBIT.title) }
 
     private lateinit var binding: FragmentLaunchMassBinding
 
@@ -66,9 +66,10 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding.toolbarLayout.toolbar)
-
-        binding.toolbarLayout.toolbar.setup()
+        binding.toolbarLayout.toolbar.apply {
+            setup()
+            createOptionsMenu(R.menu.menu_statistics_filter)
+        }
 
         binding.launchMassConstraint.transitionName = heading
 
@@ -171,11 +172,6 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
     override fun onDestroyView() {
         super.onDestroyView()
         presenter?.cancelRequest()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_statistics_filter, menu)
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {

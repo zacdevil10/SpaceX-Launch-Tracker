@@ -33,7 +33,6 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
 
         order = savedInstanceState?.getString("order") ?: REDDIT_PARAM_ORDER_HOT
         orderPos = savedInstanceState?.getInt("orderPos") ?: 0
