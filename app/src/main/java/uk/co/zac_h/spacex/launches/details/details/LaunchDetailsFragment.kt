@@ -116,6 +116,8 @@ class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
     override fun update(response: Launch) {
         apiState = ApiState.SUCCESS
 
+        launch = response
+
         Glide.with(this@LaunchDetailsFragment)
             .load(response.links?.missionPatch?.patchSmall)
             .error(ContextCompat.getDrawable(requireContext(), R.drawable.ic_mission_patch))
@@ -200,6 +202,14 @@ class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
         binding.swipeRefresh.isRefreshing = isRefreshing
+    }
+
+    override fun showProgress() {
+        binding.progress.show()
+    }
+
+    override fun hideProgress() {
+        binding.progress.hide()
     }
 
     override fun showError(error: String) {

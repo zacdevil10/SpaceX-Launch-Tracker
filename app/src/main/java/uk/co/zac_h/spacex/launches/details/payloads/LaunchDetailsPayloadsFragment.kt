@@ -10,16 +10,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsPayloadsBinding
+import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
 import uk.co.zac_h.spacex.model.spacex.Payload
 import uk.co.zac_h.spacex.utils.ApiState
-import uk.co.zac_h.spacex.utils.clearAndAdd
 import uk.co.zac_h.spacex.utils.orUnknown
 
 class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List<Payload>> {
 
-    private lateinit var binding: FragmentLaunchDetailsPayloadsBinding
+    private lateinit var binding: FragmentVerticalRecyclerviewBinding
 
     private var presenter: NetworkInterface.Presenter<List<Payload>>? = null
 
@@ -50,7 +49,7 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentLaunchDetailsPayloadsBinding.inflate(inflater, container, false).apply {
+    ): View = FragmentVerticalRecyclerviewBinding.inflate(inflater, container, false).apply {
         binding = this
     }.root
 
@@ -61,7 +60,7 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
 
         payloadAdapter = PayloadAdapter(requireContext())
 
-        binding.launchDetailsPayloadRecycler.apply {
+        binding.recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = payloadAdapter
@@ -90,6 +89,14 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
 
     override fun toggleSwipeRefresh(isRefreshing: Boolean) {
         binding.swipeRefresh.isRefreshing = isRefreshing
+    }
+
+    override fun showProgress() {
+        binding.progress.show()
+    }
+
+    override fun hideProgress() {
+        binding.progress.hide()
     }
 
     override fun showError(error: String) {

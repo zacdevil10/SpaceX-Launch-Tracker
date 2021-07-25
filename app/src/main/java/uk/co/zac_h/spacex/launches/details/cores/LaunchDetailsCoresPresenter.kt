@@ -12,8 +12,8 @@ class LaunchDetailsCoresPresenter(
 ) : NetworkInterface.Presenter<List<LaunchCore>>, NetworkInterface.Callback<List<LaunchCore>> {
 
     override fun get(data: Any, api: SpaceXInterface) {
-        view.toggleSwipeRefresh(true)
-        interactor.get(data, api, this)
+        view.showProgress()
+        interactor.get(data, SpaceXInterface.create(SPACEX_BASE_URL_V5), this)
     }
 
     override fun getOrUpdate(response: List<LaunchCore>, data: Any, api: SpaceXInterface) {
@@ -31,6 +31,7 @@ class LaunchDetailsCoresPresenter(
     override fun onSuccess(response: List<LaunchCore>) {
         view.apply {
             update(response)
+            hideProgress()
             toggleSwipeRefresh(false)
         }
     }

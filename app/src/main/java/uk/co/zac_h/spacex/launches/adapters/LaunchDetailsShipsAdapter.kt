@@ -10,10 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemVehicleBinding
+import uk.co.zac_h.spacex.model.spacex.LaunchCore
 import uk.co.zac_h.spacex.model.spacex.Ship
 
-class LaunchDetailsShipsAdapter(private val ships: List<Ship>) :
-    RecyclerView.Adapter<LaunchDetailsShipsAdapter.ViewHolder>() {
+class LaunchDetailsShipsAdapter : RecyclerView.Adapter<LaunchDetailsShipsAdapter.ViewHolder>() {
+
+    private var ships: List<Ship> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
@@ -40,6 +42,11 @@ class LaunchDetailsShipsAdapter(private val ships: List<Ship>) :
     }
 
     override fun getItemCount(): Int = ships.size
+
+    fun update(list: List<Ship>) {
+        ships = list
+        notifyDataSetChanged()
+    }
 
     class ViewHolder(val binding: ListItemVehicleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(ship: Ship) {
