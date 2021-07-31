@@ -3,5 +3,5 @@
 /production
 /development
 
-src/development/google-services.json
-src/production/google-services.json
+src/dev/google-services.json
+src/prod/google-services.json

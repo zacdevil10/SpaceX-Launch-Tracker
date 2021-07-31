@@ -40,13 +40,15 @@ android {
     testOptions {
         unitTests.returnDefaultValues true
     }
-    flavorDimensions 'firebase'
+
+    flavorDimensions "firebaseEnv"
+
     productFlavors {
-        production {
-            dimension = 'firebase'
+        prod {
+            dimension "firebaseEnv"
         }
-        development {
-            dimension = 'firebase'
+        dev {
+            dimension "firebaseEnv"
         }
     }
 }
@@ -81,10 +83,11 @@ dependencies {
     implementation 'com.github.zacdevil10:MediaRecyclerView:v0.2.0-beta'
 
     //Firebase
-    implementation 'com.google.firebase:firebase-analytics:19.0.0'
-    implementation 'com.google.firebase:firebase-crashlytics:18.2.0'
-    implementation 'com.google.firebase:firebase-core:19.0.0'
-    implementation 'com.google.firebase:firebase-messaging:22.0.0'
+    implementation platform('com.google.firebase:firebase-bom:28.3.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-core'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
 
     //LeakCanary
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0'
