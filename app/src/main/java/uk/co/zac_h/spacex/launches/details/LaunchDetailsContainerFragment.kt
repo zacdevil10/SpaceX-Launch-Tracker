@@ -19,6 +19,7 @@ import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsFragment
 import uk.co.zac_h.spacex.launches.details.payloads.LaunchDetailsPayloadsFragment
 import uk.co.zac_h.spacex.launches.details.ships.LaunchDetailsShipsFragment
 import uk.co.zac_h.spacex.model.spacex.Launch
+import uk.co.zac_h.spacex.utils.openWebLink
 
 class LaunchDetailsContainerFragment : BaseFragment(), LaunchDetailsContainerContract.View {
 
@@ -161,7 +162,15 @@ class LaunchDetailsContainerFragment : BaseFragment(), LaunchDetailsContainerCon
             }
 
             override fun onFinish() {
-
+                launchShort?.links?.webcast?.let { link ->
+                    binding.launchDetailsCountdown.visibility = View.GONE
+                    binding.launchDetailsWatchNow.apply {
+                        visibility = View.VISIBLE
+                        setOnClickListener {
+                            openWebLink(link)
+                        }
+                    }
+                }
             }
         }
 
@@ -169,7 +178,7 @@ class LaunchDetailsContainerFragment : BaseFragment(), LaunchDetailsContainerCon
     }
 
     override fun updateCountdown(countdown: String) {
-        binding.launchDetailsCountdownText.text = countdown
+        binding.launchDetailsCountdown.text = countdown
     }
 
     private fun replaceFragment(fragment: Fragment): Boolean {
@@ -184,10 +193,10 @@ class LaunchDetailsContainerFragment : BaseFragment(), LaunchDetailsContainerCon
     }
 
     override fun showCountdown() {
-        binding.launchDetailsCountdownText.visibility = View.VISIBLE
+        binding.launchDetailsCountdown.visibility = View.VISIBLE
     }
 
     override fun hideCountdown() {
-        binding.launchDetailsCountdownText.visibility = View.GONE
+        binding.launchDetailsCountdown.visibility = View.GONE
     }
 }
