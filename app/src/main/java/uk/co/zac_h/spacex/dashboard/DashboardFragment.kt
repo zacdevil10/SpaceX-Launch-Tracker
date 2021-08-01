@@ -226,8 +226,9 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
 
             override fun onFinish() {
                 nextLaunchModel?.links?.webcast?.let { link ->
-                    binding.next.countdown.apply {
-                        setText(R.string.watch_live_label)
+                    binding.next.countdown.visibility = View.GONE
+                    binding.next.watchNow.apply {
+                        visibility = View.VISIBLE
                         setOnClickListener {
                             openWebLink(link)
                         }
