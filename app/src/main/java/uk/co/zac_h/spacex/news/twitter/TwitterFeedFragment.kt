@@ -49,7 +49,7 @@ class TwitterFeedFragment : BaseFragment(), ViewPagerFragment {
             layoutManager = layout
             setHasFixedSize(true)
             adapter = twitterAdapter
-            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+            //addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
 
             addOnScrollListener(object : PaginationScrollListener(layout) {
 

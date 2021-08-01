@@ -75,6 +75,10 @@ class TwitterFeedAdapter(
                 }
 
                 if (position < itemCount - 1) {
+                    divider.visibility = tweet.replyStatusId?.let {
+                        if (getItem(position + 1)?.id == it) View.GONE else View.VISIBLE
+                    } ?: View.VISIBLE
+
                     indicatorBottom.visibility = tweet.replyStatusId?.let {
                         if (getItem(position + 1)?.id == it) View.VISIBLE else View.GONE
                     } ?: View.GONE
@@ -208,6 +212,8 @@ class TwitterFeedAdapter(
         val quoteDesc: HtmlTextView = itemView.findViewById(R.id.tweet_quoted_full_text)
         val quoteMediaRecycler: MediaRecyclerView =
             itemView.findViewById(R.id.tweet_quoted_media_recycler)
+
+        val divider: View = itemView.findViewById(R.id.tweet_divider)
     }
 
     object TwitterComparator: DiffUtil.ItemCallback<TimelineTweetModel>() {
