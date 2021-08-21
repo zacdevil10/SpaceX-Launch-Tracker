@@ -7,12 +7,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentPadStatsBinding
 import uk.co.zac_h.spacex.model.spacex.StatsPadModel
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
-import uk.co.zac_h.spacex.utils.ApiState
+import uk.co.zac_h.spacex.utils.ApiResult
 import uk.co.zac_h.spacex.utils.PadType
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.clearAndAdd
@@ -95,7 +94,7 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.reload -> {
-            apiState = ApiState.PENDING
+            apiState = ApiResult.Status.PENDING
             when (type) {
                 PadType.LANDING_PAD -> presenter?.getLandingPads()
                 PadType.LAUNCHPAD -> presenter?.getLaunchpads()
@@ -106,7 +105,7 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
     }
 
     override fun update(response: List<StatsPadModel>) {
-        apiState = ApiState.SUCCESS
+        apiState = ApiResult.Status.SUCCESS
         pads.clearAndAdd(response)
 
         binding.padStatsLaunchSitesRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
@@ -123,16 +122,16 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
     }
 
     override fun showError(error: String) {
-        apiState = ApiState.FAILED
+        apiState = ApiResult.Status.FAILURE
     }
 
     override fun networkAvailable() {
         when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> when (type) {
+            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> when (type) {
                 PadType.LANDING_PAD -> presenter?.getLandingPads()
                 PadType.LAUNCHPAD -> presenter?.getLaunchpads()
             }
-            ApiState.SUCCESS -> {
+            ApiResult.Status.SUCCESS -> {
             }
         }
     }

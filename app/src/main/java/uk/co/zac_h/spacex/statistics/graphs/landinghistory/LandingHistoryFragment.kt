@@ -16,12 +16,11 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLandingHistoryBinding
 import uk.co.zac_h.spacex.statistics.adapters.Statistics
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
-import uk.co.zac_h.spacex.utils.ApiState
+import uk.co.zac_h.spacex.utils.ApiResult
 import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.LandingHistoryModel
 
@@ -124,7 +123,7 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.reload -> {
-            apiState = ApiState.PENDING
+            apiState = ApiResult.Status.PENDING
             statsList.clear()
             presenter?.getOrUpdate(null)
             true
@@ -133,7 +132,7 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
     }
 
     override fun update(data: Any, response: List<LandingHistoryModel>) {
-        apiState = ApiState.SUCCESS
+        apiState = ApiResult.Status.SUCCESS
         if (statsList.isEmpty()) statsList.addAll(response)
 
         val colors = ArrayList<Int>()
@@ -196,13 +195,13 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
     }
 
     override fun showError(error: String) {
-        apiState = ApiState.FAILED
+        apiState = ApiResult.Status.FAILURE
     }
 
     override fun networkAvailable() {
         when(apiState) {
-            ApiState.PENDING, ApiState.FAILED -> presenter?.getOrUpdate(null)
-            ApiState.SUCCESS -> {}
+            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.getOrUpdate(null)
+            ApiResult.Status.SUCCESS -> {}
         }
     }
 }

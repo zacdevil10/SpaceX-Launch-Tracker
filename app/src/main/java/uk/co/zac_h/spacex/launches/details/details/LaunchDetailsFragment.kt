@@ -75,7 +75,7 @@ class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
         )
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiState.PENDING
+            apiState = ApiResult.Status.PENDING
             presenter?.get(id)
         }
 
@@ -114,7 +114,7 @@ class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
     }
 
     override fun update(response: Launch) {
-        apiState = ApiState.SUCCESS
+        apiState = ApiResult.Status.SUCCESS
 
         launch = response
 
@@ -213,14 +213,14 @@ class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
     }
 
     override fun showError(error: String) {
-        apiState = ApiState.FAILED
+        apiState = ApiResult.Status.FAILURE
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
         when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> presenter?.get(id)
-            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
+            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get(id)
+            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }

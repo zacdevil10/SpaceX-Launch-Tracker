@@ -1,6 +1,9 @@
 package uk.co.zac_h.spacex.rest
 
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.Body
@@ -22,7 +25,7 @@ interface SpaceXInterface {
     fun queryCapsules(@Body body: QueryModel): Call<CapsulesDocsModel>
 
     @GET(SPACEX_COMPANY)
-    fun getCompanyInfo(): Call<CompanyResponse>
+    suspend fun getCompanyInfo(): Response<CompanyResponse>
 
     @GET(SPACEX_CORES)
     fun getCores(): Call<List<CoreResponse>>
@@ -142,9 +145,15 @@ interface SpaceXInterface {
     fun queryHistory(@Body body: QueryModel): Call<HistoryDocsModel>
 
     companion object RetrofitSetup {
-        fun create(baseUrl: String = SPACEX_BASE_URL_V4): SpaceXInterface = Retrofit.Builder().apply {
-            baseUrl(baseUrl)
-            addConverterFactory(MoshiConverterFactory.create())
-        }.build().create(SpaceXInterface::class.java)
+        fun create(baseUrl: String = SPACEX_BASE_URL_V4): SpaceXInterface =
+            Retrofit.Builder().apply {
+                baseUrl(baseUrl)
+                addConverterFactory(MoshiConverterFactory.create())
+                client(loggingClient())
+            }.build().create(SpaceXInterface::class.java)
+
+        private fun loggingClient() = OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+            .build()
     }
 }

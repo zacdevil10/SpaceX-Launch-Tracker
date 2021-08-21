@@ -14,7 +14,8 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.tabs.TabLayout
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.utils.ApiState
+import uk.co.zac_h.spacex.utils.ApiResult
+import uk.co.zac_h.spacex.utils.ApiResult.Status
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 abstract class BaseFragment : Fragment(),
@@ -22,7 +23,7 @@ abstract class BaseFragment : Fragment(),
 
     open val title: String by lazy { getString(R.string.app_name) }
 
-    protected var apiState: ApiState = ApiState.PENDING
+    protected var apiState: Status = Status.PENDING
 
     private lateinit var navController: NavController
 

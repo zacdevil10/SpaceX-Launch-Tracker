@@ -12,7 +12,7 @@ import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchDetailsShipsAdapter
 import uk.co.zac_h.spacex.model.spacex.Ship
-import uk.co.zac_h.spacex.utils.ApiState
+import uk.co.zac_h.spacex.utils.ApiResult
 import uk.co.zac_h.spacex.utils.orUnknown
 
 class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
@@ -65,7 +65,7 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiState.PENDING
+            apiState = ApiResult.Status.PENDING
             presenter?.get(id)
         }
 
@@ -83,7 +83,7 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
     }
 
     override fun update(response: List<Ship>) {
-        apiState = ApiState.SUCCESS
+        apiState = ApiResult.Status.SUCCESS
 
         shipsArray = response as ArrayList<Ship>
 
@@ -103,14 +103,14 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
     }
 
     override fun showError(error: String) {
-        apiState = ApiState.FAILED
+        apiState = ApiResult.Status.FAILURE
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
         when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> presenter?.get(id)
-            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
+            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get(id)
+            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }

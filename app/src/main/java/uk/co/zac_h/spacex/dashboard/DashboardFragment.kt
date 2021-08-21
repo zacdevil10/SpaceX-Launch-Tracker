@@ -112,7 +112,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
 
                 when (e.value) {
                     true -> if (pinnedArray.none { it.id == e.key }) {
-                        presenter?.get(e.key)
+                        //presenter?.get(e.key)
                     }
                     false -> {
                         pinnedArray.removeAll { it.id == e.key }
@@ -126,11 +126,11 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
         }
 
         binding.refresh.setOnRefreshListener {
-            apiState = ApiState.PENDING
-            presenter?.getLatestLaunches()
+            apiState = ApiResult.Status.PENDING
+            //presenter?.getLatestLaunches()
         }
 
-        presenter?.getLatestLaunches(nextLaunchModel, latestLaunchModel)
+        //presenter?.getLatestLaunches(nextLaunchModel, latestLaunchModel)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -158,7 +158,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
     }
 
     override fun update(data: Any, response: Launch) {
-        if (apiState != ApiState.FAILED) apiState = ApiState.SUCCESS
+        if (apiState != ApiResult.Status.FAILURE) apiState = ApiResult.Status.SUCCESS
         when (data) {
             Upcoming.NEXT -> {
                 nextLaunchModel = response
@@ -173,7 +173,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
     }
 
     fun update(binding: ListItemDashboardLaunchBinding, response: Launch) {
-        if (apiState != ApiState.FAILED) apiState = ApiState.SUCCESS
+        if (apiState != ApiResult.Status.FAILURE) apiState = ApiResult.Status.SUCCESS
         with(binding) {
             dashboardLaunch.transitionName = response.id
 
@@ -313,14 +313,14 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
     }
 
     override fun showError(error: String) {
-        apiState = ApiState.FAILED
+        apiState = ApiResult.Status.FAILURE
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
         when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> presenter?.getLatestLaunches()
-            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
+            //ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.getLatestLaunches()
+            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }

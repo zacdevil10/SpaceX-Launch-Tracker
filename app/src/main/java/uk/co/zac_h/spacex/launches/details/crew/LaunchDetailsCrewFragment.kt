@@ -6,15 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.os.bundleOf
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCrewBinding
 import uk.co.zac_h.spacex.model.spacex.Crew
-import uk.co.zac_h.spacex.utils.ApiState
+import uk.co.zac_h.spacex.utils.ApiResult
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
-import uk.co.zac_h.spacex.utils.clearAndAdd
 import uk.co.zac_h.spacex.utils.orUnknown
 
 class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
@@ -69,7 +67,7 @@ class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Cre
         presenter?.getOrUpdate(crew, id)
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiState.PENDING
+            apiState = ApiResult.Status.PENDING
             presenter?.get(id)
         }
     }
@@ -85,9 +83,10 @@ class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Cre
     }
 
     override fun update(response: List<Crew>) {
-        if (apiState != ApiState.SUCCESS) binding.launchDetailsCrewRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
+        if (apiState != ApiResult.Status.SUCCESS) binding.launchDetailsCrewRecycler.layoutAnimation =
+            animateLayoutFromBottom(requireContext())
 
-        apiState = ApiState.SUCCESS
+        apiState = ApiResult.Status.SUCCESS
 
         crew = response as ArrayList<Crew>
         crewAdapter.update(response)
@@ -99,14 +98,14 @@ class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Cre
     }
 
     override fun showError(error: String) {
-        apiState = ApiState.FAILED
+        apiState = ApiResult.Status.FAILURE
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        when(apiState) {
-            ApiState.PENDING, ApiState.FAILED -> presenter?.get(id)
-            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
+        when (apiState) {
+            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get(id)
+            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }

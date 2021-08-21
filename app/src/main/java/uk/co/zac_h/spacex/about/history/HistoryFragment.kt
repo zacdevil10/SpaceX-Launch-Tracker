@@ -13,7 +13,8 @@ import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentHistoryBinding
-import uk.co.zac_h.spacex.utils.ApiState
+import uk.co.zac_h.spacex.utils.ApiResult
+import uk.co.zac_h.spacex.utils.ApiResult.Status
 import uk.co.zac_h.spacex.utils.Keys.HistoryKeys
 import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
@@ -73,7 +74,7 @@ class HistoryFragment : BaseFragment(), NetworkInterface.View<ArrayList<HistoryH
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiState.PENDING
+            apiState = Status.PENDING
             presenter?.get()
         }
 
@@ -106,7 +107,7 @@ class HistoryFragment : BaseFragment(), NetworkInterface.View<ArrayList<HistoryH
     }
 
     override fun update(response: ArrayList<HistoryHeaderModel>) {
-        apiState = ApiState.SUCCESS
+        apiState = Status.SUCCESS
 
         history = response
         historyAdapter.update(response)
@@ -126,7 +127,7 @@ class HistoryFragment : BaseFragment(), NetworkInterface.View<ArrayList<HistoryH
     }
 
     override fun showError(error: String) {
-        apiState = ApiState.FAILED
+        apiState = Status.FAILURE
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
@@ -136,8 +137,8 @@ class HistoryFragment : BaseFragment(), NetworkInterface.View<ArrayList<HistoryH
 
     override fun networkAvailable() {
         when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> presenter?.get()
-            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
+            Status.PENDING, Status.FAILURE -> presenter?.get()
+            Status.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }
