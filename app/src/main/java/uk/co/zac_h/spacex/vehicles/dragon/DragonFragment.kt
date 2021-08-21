@@ -10,7 +10,7 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentDragonBinding
 import uk.co.zac_h.spacex.model.spacex.Dragon
-import uk.co.zac_h.spacex.utils.ApiState
+import uk.co.zac_h.spacex.utils.ApiResult
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.DragonAdapter
 
@@ -54,7 +54,7 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiState.PENDING
+            apiState = ApiResult.Status.PENDING
             presenter?.get()
         }
 
@@ -72,7 +72,7 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
     }
 
     override fun update(response: List<Dragon>) {
-        apiState = ApiState.SUCCESS
+        apiState = ApiResult.Status.SUCCESS
 
         dragonArray.clear()
         dragonArray.addAll(response)
@@ -87,13 +87,13 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
     }
 
     override fun showError(error: String) {
-        apiState = ApiState.FAILED
+        apiState = ApiResult.Status.FAILURE
     }
 
     override fun networkAvailable() {
         when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> presenter?.get()
-            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
+            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get()
+            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 

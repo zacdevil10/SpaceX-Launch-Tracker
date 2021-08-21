@@ -29,10 +29,10 @@ class OAuthSigningInterceptor(private val keys: OAuthKeys) : Interceptor {
             OAUTH_VERSION to OAUTH_VERSION_VALUE
         )
 
-        val method = request.method().encodeUtf8()
-        val baseUrl = request.url().newBuilder().query(null).build().toString().encodeUtf8()
-        val url = request.url()
-        for (i in 0 until url.querySize()) {
+        val method = request.method.encodeUtf8()
+        val baseUrl = request.url.newBuilder().query(null).build().toString().encodeUtf8()
+        val url = request.url
+        for (i in 0 until url.querySize) {
             parameters[url.queryParameterName(i)] = url.queryParameterValue(i)
         }
 

@@ -81,7 +81,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiState.PENDING
+            apiState = ApiResult.Status.PENDING
             presenter?.getTweets()
         }
 
@@ -103,7 +103,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
     }
 
     override fun updateRecycler(tweets: List<TimelineTweetModel>) {
-        apiState = ApiState.SUCCESS
+        apiState = ApiResult.Status.SUCCESS
 
         tweetsList.clearAndAdd(tweets)
         twitterAdapter.notifyDataSetChanged()
@@ -159,13 +159,13 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
     }
 
     override fun showError(error: String) {
-        apiState = ApiState.FAILED
+        apiState = ApiResult.Status.FAILURE
     }
 
     override fun networkAvailable() {
         when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> presenter?.getTweets()
-            ApiState.SUCCESS -> {
+            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.getTweets()
+            ApiResult.Status.SUCCESS -> {
             }
         }
         if (isLoading) presenter?.getTweets(tweetsList[tweetsList.size - 1].id)

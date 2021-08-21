@@ -62,7 +62,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiState.PENDING
+            apiState = ApiResult.Status.PENDING
             presenter?.get()
         }
 
@@ -125,7 +125,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
     }
 
     override fun update(response: List<Capsule>) {
-        apiState = ApiState.SUCCESS
+        apiState = ApiResult.Status.SUCCESS
 
         capsulesArray.clear()
         capsulesArray.addAll(if (sortNew) response.reversed() else response)
@@ -140,13 +140,13 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
     }
 
     override fun showError(error: String) {
-        apiState = ApiState.FAILED
+        apiState = ApiResult.Status.FAILURE
     }
 
     override fun networkAvailable() {
         when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> presenter?.get()
-            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
+            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get()
+            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }

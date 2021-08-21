@@ -10,7 +10,7 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentRocketBinding
 import uk.co.zac_h.spacex.model.spacex.Rocket
-import uk.co.zac_h.spacex.utils.ApiState
+import uk.co.zac_h.spacex.utils.ApiResult
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 
@@ -52,7 +52,7 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
         }
 
         binding.rocketSwipeRefresh.setOnRefreshListener {
-            apiState = ApiState.PENDING
+            apiState = ApiResult.Status.PENDING
             presenter?.get()
         }
 
@@ -70,7 +70,7 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
     }
 
     override fun update(response: List<Rocket>) {
-        apiState = ApiState.SUCCESS
+        apiState = ApiResult.Status.SUCCESS
 
         rocketsArray.clear()
         rocketsArray.addAll(response)
@@ -85,13 +85,13 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
     }
 
     override fun showError(error: String) {
-        apiState = ApiState.FAILED
+        apiState = ApiResult.Status.FAILURE
     }
 
     override fun networkAvailable() {
         when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> presenter?.get()
-            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
+            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get()
+            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }

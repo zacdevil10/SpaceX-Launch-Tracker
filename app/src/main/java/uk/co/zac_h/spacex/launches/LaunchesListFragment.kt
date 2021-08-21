@@ -7,14 +7,12 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.LinearLayoutManager
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.model.spacex.Launch
-import uk.co.zac_h.spacex.utils.ApiState
-import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
+import uk.co.zac_h.spacex.utils.ApiResult
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -71,7 +69,7 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
 
         launchParam?.let { launchId ->
             binding.swipeRefresh.setOnRefreshListener {
-                apiState = ApiState.PENDING
+                apiState = ApiResult.Status.PENDING
                 presenter?.get(launchId)
             }
 
@@ -115,7 +113,7 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
     }
 
     override fun update(response: List<Launch>) {
-        apiState = ApiState.SUCCESS
+        apiState = ApiResult.Status.SUCCESS
 
         launches = response as ArrayList<Launch>
 
@@ -135,16 +133,16 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
     }
 
     override fun showError(error: String) {
-        apiState = ApiState.FAILED
+        apiState = ApiResult.Status.FAILURE
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
         when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> launchParam?.let {
+            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> launchParam?.let {
                 presenter?.getOrUpdate(launches, it)
             }
-            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
+            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
     }
 }

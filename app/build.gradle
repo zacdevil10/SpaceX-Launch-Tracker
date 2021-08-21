@@ -5,6 +5,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: "com.hiya.jacoco-android"
+apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     compileSdkVersion 30
@@ -68,8 +69,6 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
     implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
 
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
-
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
 
@@ -83,16 +82,25 @@ dependencies {
     implementation 'com.github.zacdevil10:MediaRecyclerView:v0.2.0-beta'
 
     //Firebase
-    implementation platform('com.google.firebase:firebase-bom:28.3.0')
-    implementation 'com.google.firebase:firebase-analytics-ktx'
-    implementation 'com.google.firebase:firebase-crashlytics-ktx'
-    implementation 'com.google.firebase:firebase-core'
-    implementation 'com.google.firebase:firebase-messaging-ktx'
+    //implementation platform('com.google.firebase:firebase-bom:28.3.0')
+    //implementation 'com.google.firebase:firebase-analytics-ktx'
+    //implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    //implementation 'com.google.firebase:firebase-core'
+    //implementation 'com.google.firebase:firebase-messaging-ktx'
+
+    //MVVM
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
+    implementation "androidx.fragment:fragment-ktx:1.3.6"
+
+    //Hilt
+    implementation "com.google.dagger:hilt-android:2.38.1"
+    kapt "com.google.dagger:hilt-compiler:2.38.1"
 
     //LeakCanary
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0'
 
-    debugImplementation 'com.gu.android:toolargetool:0.3.0@aar'
+    //debugImplementation 'com.gu.android:toolargetool:0.3.0@aar'
 }
 
 jacocoAndroidUnitTestReport {

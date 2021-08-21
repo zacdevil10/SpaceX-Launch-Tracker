@@ -129,7 +129,7 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
             true
         }
         R.id.reload -> {
-            apiState = ApiState.PENDING
+            apiState = ApiResult.Status.PENDING
             launchStats.clear()
             presenter?.getOrUpdate(null)
             true
@@ -138,7 +138,7 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
     }
 
     override fun update(data: Any, response: List<HistoryStatsModel>) {
-        apiState = ApiState.SUCCESS
+        apiState = ApiResult.Status.SUCCESS
         if (launchStats.isEmpty()) launchStats.addAll(response)
 
         val colors = ArrayList<Int>()
@@ -275,13 +275,13 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
     }
 
     override fun showError(error: String) {
-        apiState = ApiState.FAILED
+        apiState = ApiResult.Status.FAILURE
     }
 
     override fun networkAvailable() {
         when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> presenter?.getOrUpdate(null)
-            ApiState.SUCCESS -> {
+            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.getOrUpdate(null)
+            ApiResult.Status.SUCCESS -> {
             }
         }
     }

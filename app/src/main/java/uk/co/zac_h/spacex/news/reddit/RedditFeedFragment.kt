@@ -79,7 +79,7 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiState.PENDING
+            apiState = ApiResult.Status.PENDING
             presenter?.getPosts(order = order)
         }
 
@@ -138,7 +138,7 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
     }
 
     override fun updateRecycler(subredditData: List<RedditPost>) {
-        apiState = ApiState.SUCCESS
+        apiState = ApiResult.Status.SUCCESS
 
         posts.clearAndAdd(subredditData)
         redditAdapter.notifyDataSetChanged()
@@ -173,13 +173,13 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
     }
 
     override fun showError(error: String) {
-        apiState = ApiState.FAILED
+        apiState = ApiResult.Status.FAILURE
     }
 
     override fun networkAvailable() {
         when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> presenter?.getPosts(order = order)
-            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
+            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.getPosts(order = order)
+            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
         if (isLoading) presenter?.getPosts(id = posts.last().name, order = order)
     }

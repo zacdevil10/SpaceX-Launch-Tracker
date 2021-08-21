@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ActivityMainBinding
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(),
     OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
