@@ -26,9 +26,7 @@ class CompanyViewModel @Inject constructor(
                 repository.getCompany()
             }
 
-            withContext(Dispatchers.Main) {
-                _company.value = response.map { Company(it) }
-            }
+            _company.value = response.map { Company(it) }
         }
     }
 

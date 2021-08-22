@@ -136,13 +136,13 @@ interface SpaceXInterface {
     fun queryStarlinkSatellites(@Body body: QueryModel): Call<Any>
 
     @GET(SPACEX_HISTORY)
-    fun getHistory(): Call<List<HistoryResponse>>
+    suspend fun getHistory(): Response<List<HistoryResponse>>
 
     @GET(SPACEX_HISTORY + SPACEX_GET_BY_PARAM_ID)
     fun getHistoricalEvent(): Call<HistoryResponse>
 
     @POST(SPACEX_HISTORY_QUERY)
-    fun queryHistory(@Body body: QueryModel): Call<HistoryDocsModel>
+    suspend fun queryHistory(@Body body: QueryModel): Response<HistoryDocsModel>
 
     companion object RetrofitSetup {
         fun create(baseUrl: String = SPACEX_BASE_URL_V4): SpaceXInterface =
