@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentCompanyBinding
 import uk.co.zac_h.spacex.model.spacex.Company
 import uk.co.zac_h.spacex.utils.ApiResult
@@ -16,9 +16,9 @@ import uk.co.zac_h.spacex.utils.openWebLink
 import uk.co.zac_h.spacex.utils.orUnknown
 
 @AndroidEntryPoint
-class CompanyFragment : Fragment() {
+class CompanyFragment : BaseFragment() {
 
-    //override val title: String by lazy { getString(R.string.menu_company) }
+    override val title: String by lazy { getString(R.string.menu_company) }
 
     private val viewModel: CompanyViewModel by viewModels()
 
@@ -33,6 +33,8 @@ class CompanyFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.toolbarLayout.toolbar.setup()
 
         viewModel.company.observe(viewLifecycleOwner) { result ->
             when (result.status) {
@@ -79,11 +81,11 @@ class CompanyFragment : Fragment() {
     }
 
     fun showProgress() {
-        binding.progress.show()
+        binding.toolbarLayout.progress.show()
     }
 
     fun hideProgress() {
-        binding.progress.hide()
+        binding.toolbarLayout.progress.hide()
     }
 
     fun showError(error: String) {
