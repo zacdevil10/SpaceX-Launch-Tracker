@@ -25,7 +25,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
 
     private lateinit var capsulesArray: ArrayList<Capsule>
 
-    private lateinit var orderSharedPreferences: OrderSharedPreferencesHelper
+    private lateinit var orderSharedPreferences: OrderSharedPreferences
     private var sortNew = false
     private lateinit var searchView: SearchView
 
@@ -48,7 +48,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(requireContext())
+        orderSharedPreferences = OrderSharedPreferences.build(requireContext())
         presenter = CapsulesPresenterImpl(this, CapsulesInteractorImpl())
 
         sortNew = orderSharedPreferences.isSortedNew("capsules")

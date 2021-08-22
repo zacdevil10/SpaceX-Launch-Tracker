@@ -11,8 +11,7 @@ import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
 import uk.co.zac_h.spacex.model.spacex.Core
 import uk.co.zac_h.spacex.utils.ApiResult
-import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
-import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
+import uk.co.zac_h.spacex.utils.OrderSharedPreferences
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
 
@@ -28,7 +27,7 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
 
     private lateinit var coresArray: ArrayList<Core>
 
-    private lateinit var orderSharedPreferences: OrderSharedPreferencesHelper
+    private lateinit var orderSharedPreferences: OrderSharedPreferences
     private var sortNew = false
     private lateinit var searchView: SearchView
 
@@ -52,7 +51,7 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
 
         hideProgress()
 
-        orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(requireContext())
+        orderSharedPreferences = OrderSharedPreferences.build(requireContext())
         presenter = CorePresenterImpl(this, CoreInteractorImpl())
 
         sortNew = orderSharedPreferences.isSortedNew("cores")

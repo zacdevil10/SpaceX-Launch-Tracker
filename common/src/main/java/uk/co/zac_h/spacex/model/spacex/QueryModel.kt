@@ -5,16 +5,16 @@ import com.squareup.moshi.Json
 // v4
 
 data class QueryModel(
-    private var query: Any,
+    private var query: Any? = null,
     private var options: Any
 )
 
 data class QueryOptionsModel(
-    private var pagination: Boolean,
-    private var populate: Any,
-    private var sort: Any,
-    private var select: Any,
-    private var limit: Int
+    private var pagination: Boolean? = null,
+    private var populate: Any? = null,
+    private var sort: Any? = null,
+    private var select: Any? = null,
+    private var limit: Int? = null
 )
 
 data class QueryPopulateModel(
