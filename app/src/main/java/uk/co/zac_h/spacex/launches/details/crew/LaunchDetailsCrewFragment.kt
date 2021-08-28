@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.launches.details.crew
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +9,7 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCrewBinding
-import uk.co.zac_h.spacex.model.spacex.Crew
-import uk.co.zac_h.spacex.utils.ApiResult
-import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
+import uk.co.zac_h.spacex.dto.spacex.Crew
 import uk.co.zac_h.spacex.utils.orUnknown
 
 class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
@@ -41,7 +38,7 @@ class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Cre
 
         savedInstanceState?.let {
             id = it.getString(ID_KEY).orUnknown()
-            crew = it.getParcelableArrayList(CREW_KEY) ?: ArrayList()
+            //crew = it.getParcelableArrayList(CREW_KEY) ?: ArrayList()
         }
     }
 
@@ -67,13 +64,13 @@ class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Cre
         presenter?.getOrUpdate(crew, id)
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiResult.Status.PENDING
+
             presenter?.get(id)
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(CREW_KEY, crew)
+        //outState.putParcelableArrayList(CREW_KEY, crew)
         outState.putString(ID_KEY, id)
     }
 
@@ -83,10 +80,10 @@ class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Cre
     }
 
     override fun update(response: List<Crew>) {
-        if (apiState != ApiResult.Status.SUCCESS) binding.launchDetailsCrewRecycler.layoutAnimation =
+        /*if (apiState != ApiResult.Status.SUCCESS) binding.launchDetailsCrewRecycler.layoutAnimation =
             animateLayoutFromBottom(requireContext())
 
-        apiState = ApiResult.Status.SUCCESS
+        */
 
         crew = response as ArrayList<Crew>
         crewAdapter.update(response)
@@ -98,14 +95,11 @@ class LaunchDetailsCrewFragment : BaseFragment(), NetworkInterface.View<List<Cre
     }
 
     override fun showError(error: String) {
-        apiState = ApiResult.Status.FAILURE
+
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        when (apiState) {
-            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get(id)
-            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }
+        /**/
     }
 }

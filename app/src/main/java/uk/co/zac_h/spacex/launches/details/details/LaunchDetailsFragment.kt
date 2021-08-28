@@ -15,8 +15,8 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
-import uk.co.zac_h.spacex.model.spacex.DatePrecision
-import uk.co.zac_h.spacex.model.spacex.Launch
+import uk.co.zac_h.spacex.dto.spacex.DatePrecision
+import uk.co.zac_h.spacex.dto.spacex.Launch
 import uk.co.zac_h.spacex.utils.*
 
 class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
@@ -49,7 +49,7 @@ class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
 
         savedInstanceState?.let {
             id = it.getString("id").orUnknown()
-            launch = it.getParcelable("launch")
+            //launch = it.getParcelable("launch")
         }
     }
 
@@ -75,7 +75,7 @@ class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
         )
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiResult.Status.PENDING
+
             presenter?.get(id)
         }
 
@@ -89,7 +89,7 @@ class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString("id", id)
-        outState.putParcelable("launch", launch)
+        //outState.putParcelable("launch", launch)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -114,7 +114,7 @@ class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
     }
 
     override fun update(response: Launch) {
-        apiState = ApiResult.Status.SUCCESS
+        //
 
         launch = response
 
@@ -136,7 +136,7 @@ class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
             launchDetailsSiteNameText.text = response.launchpad?.name
 
             launchDetailsDateText.text = response.datePrecision?.let { datePrecision ->
-                response.launchDate?.dateUnix?.formatDateMillisLong(datePrecision)
+                response.launchDate?.dateUnix?.formatDateMillisLong(/*datePrecision*/)
             }
 
             response.staticFireDate?.dateUnix?.let { date ->
@@ -213,14 +213,11 @@ class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
     }
 
     override fun showError(error: String) {
-        apiState = ApiResult.Status.FAILURE
+
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        when (apiState) {
-            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get(id)
-            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }
+        /**/
     }
 }

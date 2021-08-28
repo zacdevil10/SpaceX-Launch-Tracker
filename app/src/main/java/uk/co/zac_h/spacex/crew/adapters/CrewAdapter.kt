@@ -15,7 +15,7 @@ import com.bumptech.glide.request.target.Target
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.GridItemCrewBinding
-import uk.co.zac_h.spacex.model.spacex.Crew
+import uk.co.zac_h.spacex.dto.spacex.Crew
 import uk.co.zac_h.spacex.utils.Keys.CrewKeys
 
 class CrewAdapter(

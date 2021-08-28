@@ -1,20 +1,18 @@
 package uk.co.zac_h.spacex.news.twitter
 
-import retrofit2.Call
-import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
-import uk.co.zac_h.spacex.rest.TwitterInterface
-import uk.co.zac_h.spacex.utils.BaseNetwork
+import uk.co.zac_h.spacex.retrofit.TwitterService
+import uk.co.zac_h.spacex.BaseNetwork
 
 class TwitterFeedInteractorImpl : BaseNetwork(), TwitterFeedContract.TwitterFeedInteractor {
 
-    private var call: Call<List<TimelineTweetModel>>? = null
+    //private var call: Call<List<TimelineTweetModel>>? = null
 
     override fun getTwitterTimeline(
         id: Long?,
         listener: TwitterFeedContract.InteractorCallback,
-        api: TwitterInterface
+        api: TwitterService
     ) {
-        call = api.getTweets(
+        /*call = api.getTweets(
             screenName = "SpaceX",
             rts = false,
             trim = false,
@@ -30,7 +28,7 @@ class TwitterFeedInteractorImpl : BaseNetwork(), TwitterFeedContract.TwitterFeed
                 }
                 onResponseFailure = { listener.onError(it) }
             }
-        }
+        }*/
     }
 
     override fun cancelAllRequests() = terminateAll()

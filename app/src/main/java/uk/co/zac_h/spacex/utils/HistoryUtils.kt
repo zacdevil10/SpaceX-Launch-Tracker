@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.utils
 
-import uk.co.zac_h.spacex.model.spacex.History
+import uk.co.zac_h.spacex.dto.spacex.History
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 
 fun splitHistoryListByDate(history: List<History>): ArrayList<HistoryHeaderModel> {

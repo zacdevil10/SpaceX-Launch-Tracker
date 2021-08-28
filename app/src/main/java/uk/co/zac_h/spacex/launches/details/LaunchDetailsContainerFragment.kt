@@ -18,7 +18,7 @@ import uk.co.zac_h.spacex.launches.details.crew.LaunchDetailsCrewFragment
 import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsFragment
 import uk.co.zac_h.spacex.launches.details.payloads.LaunchDetailsPayloadsFragment
 import uk.co.zac_h.spacex.launches.details.ships.LaunchDetailsShipsFragment
-import uk.co.zac_h.spacex.model.spacex.Launch
+import uk.co.zac_h.spacex.dto.spacex.Launch
 import uk.co.zac_h.spacex.utils.openWebLink
 
 class LaunchDetailsContainerFragment : BaseFragment(), LaunchDetailsContainerContract.View {
@@ -41,7 +41,7 @@ class LaunchDetailsContainerFragment : BaseFragment(), LaunchDetailsContainerCon
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        launchShort = arguments?.getParcelable("launch_short")
+        //launchShort = arguments?.getParcelable("launch_short")
         id = arguments?.getString("launch_id")
         selectedItem = savedInstanceState?.getInt("selected_item")
     }

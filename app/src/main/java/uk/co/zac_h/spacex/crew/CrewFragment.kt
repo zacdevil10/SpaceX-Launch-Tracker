@@ -14,9 +14,7 @@ import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewBinding
-import uk.co.zac_h.spacex.model.spacex.Crew
-import uk.co.zac_h.spacex.utils.ApiResult
-import uk.co.zac_h.spacex.utils.Keys.CrewKeys
+import uk.co.zac_h.spacex.dto.spacex.Crew
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.utils.clearAndAdd
 
@@ -34,8 +32,8 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        crewArray =
-            savedInstanceState?.getParcelableArrayList(CrewKeys.CREW_SAVED_STATE) ?: ArrayList()
+        /*crewArray =
+            savedInstanceState?.getParcelableArrayList(CrewKeys.CREW_SAVED_STATE) ?: ArrayList()*/
     }
 
     override fun onCreateView(
@@ -68,11 +66,11 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
         postponeEnterTransition()
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiResult.Status.PENDING
+
             presenter?.get()
         }
 
-        if (crewArray.isEmpty()) presenter?.get() else apiState = ApiResult.Status.SUCCESS
+        if (crewArray.isEmpty()) presenter?.get()// else
     }
 
     private fun prepareTransitions() {
@@ -101,11 +99,11 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
 
     override fun onResume() {
         super.onResume()
-        if (apiState == ApiResult.Status.SUCCESS) hideProgress()
+        //if (apiState == ApiResult.Status.SUCCESS) hideProgress()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(CrewKeys.CREW_SAVED_STATE, crewArray)
+        //outState.putParcelableArrayList(CrewKeys.CREW_SAVED_STATE, crewArray)
         super.onSaveInstanceState(outState)
     }
 
@@ -115,7 +113,7 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
     }
 
     override fun update(response: List<Crew>) {
-        apiState = ApiResult.Status.SUCCESS
+        //
 
         crewArray.clearAndAdd(response)
         binding.crewRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
@@ -136,14 +134,14 @@ class CrewFragment : BaseFragment(), NetworkInterface.View<List<Crew>> {
     }
 
     override fun showError(error: String) {
-        apiState = ApiResult.Status.FAILURE
+
     }
 
     override fun networkAvailable() {
-        when (apiState) {
+        /*when (apiState) {
             ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get()
             ApiResult.Status.SUCCESS -> {
             }
-        }
+        }*/
     }
 }

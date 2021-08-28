@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
+import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentCompanyBinding
-import uk.co.zac_h.spacex.model.spacex.Company
-import uk.co.zac_h.spacex.utils.ApiResult
+import uk.co.zac_h.spacex.dto.spacex.Company
 import uk.co.zac_h.spacex.utils.openWebLink
 import uk.co.zac_h.spacex.utils.orUnknown
 
@@ -39,14 +39,15 @@ class CompanyFragment : BaseFragment() {
         viewModel.company.observe(viewLifecycleOwner) { result ->
             when (result.status) {
                 ApiResult.Status.PENDING -> showProgress()
-                ApiResult.Status.SUCCESS -> update(result.data)
+                ApiResult.Status.SUCCESS -> result.data?.let { update(it) }
                 ApiResult.Status.FAILURE -> showError(result.error?.message.orUnknown())
             }
         }
+
+        viewModel.getCompany()
     }
 
-    fun update(response: Company?) {
-        if (response == null) return
+    fun update(response: Company) {
         with(binding) {
             hideProgress()
             response.headquarters?.let {
@@ -90,6 +91,10 @@ class CompanyFragment : BaseFragment() {
 
     fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun networkAvailable() {
+        viewModel.getCompany()
     }
 
 }

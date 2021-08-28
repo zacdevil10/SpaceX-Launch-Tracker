@@ -4,8 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
@@ -14,11 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemLaunchesBinding
-import uk.co.zac_h.spacex.model.spacex.Launch
+import uk.co.zac_h.spacex.dto.spacex.Launch
 import uk.co.zac_h.spacex.utils.LAUNCH_SHORT_KEY
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
-import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
-import java.util.*
 import kotlin.collections.ArrayList
 
 class LaunchesAdapter(private val context: Context) :
@@ -64,7 +60,7 @@ class LaunchesAdapter(private val context: Context) :
             flightNumber.text = context.getString(R.string.flight_number, launch.flightNumber)
             vehicle.text = launch.rocket?.name
             missionName.text = launch.missionName
-            date.text = launch.launchDate?.dateUnix?.formatDateMillisLong(launch.datePrecision)
+            date.text = launch.launchDate?.dateUnix?.formatDateMillisLong(/*launch.datePrecision*/)
 
             root.setOnClickListener {
                 root.findNavController().navigate(

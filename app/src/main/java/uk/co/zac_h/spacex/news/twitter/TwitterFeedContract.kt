@@ -1,7 +1,8 @@
 package uk.co.zac_h.spacex.news.twitter
 
-import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
-import uk.co.zac_h.spacex.rest.TwitterInterface
+import uk.co.zac_h.spacex.dto.twitter.TimelineTweetModel
+import uk.co.zac_h.spacex.retrofit.NetworkModule
+import uk.co.zac_h.spacex.retrofit.TwitterService
 
 interface TwitterFeedContract {
 
@@ -20,8 +21,8 @@ interface TwitterFeedContract {
     }
 
     interface TwitterFeedPresenter {
-        fun getTweets(api: TwitterInterface = TwitterInterface.create())
-        fun getTweets(maxId: Long, api: TwitterInterface = TwitterInterface.create())
+        fun getTweets(api: TwitterService = NetworkModule.providesTwitterClient())
+        fun getTweets(maxId: Long, api: TwitterService = NetworkModule.providesTwitterClient())
         fun toggleScrollUp(visible: Boolean)
         fun cancelRequests()
     }
@@ -30,7 +31,7 @@ interface TwitterFeedContract {
         fun getTwitterTimeline(
             id: Long? = null,
             listener: InteractorCallback,
-            api: TwitterInterface
+            api: TwitterService
         )
 
         fun cancelAllRequests(): Unit?

@@ -9,11 +9,11 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentHistoryBinding
-import uk.co.zac_h.spacex.utils.ApiResult
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.openWebLink
 import uk.co.zac_h.spacex.utils.orUnknown
@@ -60,7 +60,7 @@ class HistoryFragment : BaseFragment() {
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.getHistory()
+
         }
 
         viewModel.history.observe(viewLifecycleOwner) {
@@ -69,7 +69,7 @@ class HistoryFragment : BaseFragment() {
                 ApiResult.Status.SUCCESS -> {
                     hideProgress()
                     toggleSwipeRefresh(false)
-                    it.data?.let { data -> update(data) }
+                    //it.data?.let { data -> update(data) }
                 }
                 ApiResult.Status.FAILURE -> {
                     showError(it.error?.message.orUnknown())
@@ -118,5 +118,9 @@ class HistoryFragment : BaseFragment() {
 
     fun toggleSwipeRefresh(isRefreshing: Boolean) {
         binding.swipeRefresh.isRefreshing = isRefreshing
+    }
+
+    override fun networkAvailable() {
+        viewModel.getHistory()
     }
 }

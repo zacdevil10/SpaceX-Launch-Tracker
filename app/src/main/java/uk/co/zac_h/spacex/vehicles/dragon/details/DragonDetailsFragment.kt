@@ -11,7 +11,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.CollapsingToolbarBinding
 import uk.co.zac_h.spacex.databinding.FragmentDragonDetailsBinding
-import uk.co.zac_h.spacex.model.spacex.Dragon
+import uk.co.zac_h.spacex.dto.spacex.Dragon
 import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.setImageAndTint
 import uk.co.zac_h.spacex.vehicles.adapters.DragonThrusterAdapter
@@ -31,7 +31,7 @@ class DragonDetailsFragment : BaseFragment() {
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        dragon = arguments?.getParcelable("dragon") as Dragon?
+        //dragon = arguments?.getParcelable("dragon") as Dragon?
     }
 
     override fun onCreateView(

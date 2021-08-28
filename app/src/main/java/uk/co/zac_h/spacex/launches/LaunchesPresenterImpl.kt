@@ -1,21 +1,21 @@
 package uk.co.zac_h.spacex.launches
 
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.model.spacex.Launch
-import uk.co.zac_h.spacex.rest.SpaceXInterface
-import uk.co.zac_h.spacex.utils.SPACEX_BASE_URL_V5
+import uk.co.zac_h.spacex.dto.spacex.Launch
+import uk.co.zac_h.spacex.retrofit.NetworkModule
+import uk.co.zac_h.spacex.retrofit.SpaceXService
 
 class LaunchesPresenterImpl(
     private val view: NetworkInterface.View<List<Launch>>,
     private val interactor: NetworkInterface.Interactor<List<Launch>>
 ) : NetworkInterface.Presenter<List<Launch>>, NetworkInterface.Callback<List<Launch>> {
 
-    override fun get(data: Any, api: SpaceXInterface) {
+    override fun get(data: Any, api: SpaceXService) {
         view.showProgress()
-        interactor.get(data, SpaceXInterface.create(SPACEX_BASE_URL_V5), this)
+        interactor.get(data, NetworkModule.providesSpaceXHttpClientV5(), this)
     }
 
-    override fun getOrUpdate(response: List<Launch>, data: Any, api: SpaceXInterface) {
+    override fun getOrUpdate(response: List<Launch>, data: Any, api: SpaceXService) {
         if (response.isNotEmpty()) onSuccess(response) else super.getOrUpdate(response, data, api)
     }
 

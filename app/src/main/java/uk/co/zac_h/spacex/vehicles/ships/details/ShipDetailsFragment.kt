@@ -13,7 +13,7 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.CollapsingToolbarBinding
 import uk.co.zac_h.spacex.databinding.FragmentShipDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
-import uk.co.zac_h.spacex.model.spacex.Ship
+import uk.co.zac_h.spacex.dto.spacex.Ship
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
 class ShipDetailsFragment : BaseFragment() {
@@ -30,7 +30,7 @@ class ShipDetailsFragment : BaseFragment() {
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        ship = arguments?.getParcelable("ship") as Ship?
+        //ship = arguments?.getParcelable("ship") as Ship?
     }
 
     override fun onCreateView(

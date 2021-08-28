@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.launches.details.payloads
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,9 +10,8 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
+import uk.co.zac_h.spacex.dto.spacex.Payload
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
-import uk.co.zac_h.spacex.model.spacex.Payload
-import uk.co.zac_h.spacex.utils.ApiResult
 import uk.co.zac_h.spacex.utils.orUnknown
 
 class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List<Payload>> {
@@ -42,7 +40,7 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
 
         savedInstanceState?.let {
             id = it.getString(ID_KEY).orUnknown()
-            payloads = it.getParcelableArrayList(PAYLOADS_KEY) ?: ArrayList()
+            //payloads = it.getParcelableArrayList(PAYLOADS_KEY) ?: ArrayList()
         }
     }
 
@@ -68,7 +66,7 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiResult.Status.PENDING
+
             presenter?.get(id)
         }
 
@@ -76,12 +74,12 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(PAYLOADS_KEY, payloads)
+        //outState.putParcelableArrayList(PAYLOADS_KEY, payloads)
         outState.putString(ID_KEY, id)
     }
 
     override fun update(response: List<Payload>) {
-        apiState = ApiResult.Status.SUCCESS
+        //
 
         payloads = response as ArrayList<Payload>
         payloadAdapter.update(response)
@@ -100,14 +98,11 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
     }
 
     override fun showError(error: String) {
-        apiState = ApiResult.Status.FAILURE
+
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        when (apiState) {
-            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get(id)
-            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }
+        /**/
     }
 }

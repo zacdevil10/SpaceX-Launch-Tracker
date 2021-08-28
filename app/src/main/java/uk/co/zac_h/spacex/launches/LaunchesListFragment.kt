@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.launches
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
@@ -10,11 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
+import uk.co.zac_h.spacex.dto.spacex.Launch
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
-import uk.co.zac_h.spacex.model.spacex.Launch
-import uk.co.zac_h.spacex.utils.ApiResult
 import java.util.*
-import kotlin.collections.ArrayList
 
 class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>,
     SearchView.OnQueryTextListener {
@@ -42,7 +39,7 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        launches = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
+        //launches = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
         launchParam = arguments?.getString("launchParam")
     }
 
@@ -69,7 +66,7 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
 
         launchParam?.let { launchId ->
             binding.swipeRefresh.setOnRefreshListener {
-                apiState = ApiResult.Status.PENDING
+
                 presenter?.get(launchId)
             }
 
@@ -78,7 +75,7 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("launches", launches)
+       // outState.putParcelableArrayList("launches", launches)
         super.onSaveInstanceState(outState)
     }
 
@@ -113,7 +110,7 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
     }
 
     override fun update(response: List<Launch>) {
-        apiState = ApiResult.Status.SUCCESS
+
 
         launches = response as ArrayList<Launch>
 
@@ -133,16 +130,16 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
     }
 
     override fun showError(error: String) {
-        apiState = ApiResult.Status.FAILURE
+
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        when (apiState) {
+        /*when (apiState) {
             ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> launchParam?.let {
                 presenter?.getOrUpdate(launches, it)
             }
             ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }
+        }*/
     }
 }

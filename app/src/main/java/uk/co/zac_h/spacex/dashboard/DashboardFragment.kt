@@ -19,8 +19,8 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
 import uk.co.zac_h.spacex.databinding.ListItemDashboardLaunchBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
-import uk.co.zac_h.spacex.model.spacex.Launch
-import uk.co.zac_h.spacex.model.spacex.Upcoming
+import uk.co.zac_h.spacex.dto.spacex.Launch
+import uk.co.zac_h.spacex.dto.spacex.Upcoming
 import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.Keys.DashboardKeys
 import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_NEXT_LAUNCH
@@ -40,17 +40,17 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
     private var nextLaunchModel: Launch? = null
     private var latestLaunchModel: Launch? = null
     private lateinit var pinnedAdapter: LaunchesAdapter
-    private lateinit var pinnedArray: ArrayList<Launch>
+    private var pinnedArray: ArrayList<Launch> = ArrayList()
 
     private var countdownTimer: CountDownTimer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        nextLaunchModel = savedInstanceState?.getParcelable(DashboardKeys.NEXT_SAVED_STATE)
+        /*nextLaunchModel = savedInstanceState?.getParcelable(DashboardKeys.NEXT_SAVED_STATE)
         latestLaunchModel = savedInstanceState?.getParcelable(DashboardKeys.LATEST_SAVED_STATE)
         pinnedArray = savedInstanceState?.getParcelableArrayList(DashboardKeys.PINNED_SAVED_STATE)
-            ?: ArrayList()
+            ?: ArrayList()*/
     }
 
     override fun onCreateView(
@@ -126,7 +126,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
         }
 
         binding.refresh.setOnRefreshListener {
-            apiState = ApiResult.Status.PENDING
+
             //presenter?.getLatestLaunches()
         }
 
@@ -134,11 +134,11 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.apply {
+       /* outState.apply {
             nextLaunchModel?.let { putParcelable(DashboardKeys.NEXT_SAVED_STATE, it) }
             latestLaunchModel?.let { putParcelable(DashboardKeys.LATEST_SAVED_STATE, it) }
             putParcelableArrayList(DashboardKeys.PINNED_SAVED_STATE, pinnedArray)
-        }
+        }*/
         super.onSaveInstanceState(outState)
     }
 
@@ -158,7 +158,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
     }
 
     override fun update(data: Any, response: Launch) {
-        if (apiState != ApiResult.Status.FAILURE) apiState = ApiResult.Status.SUCCESS
+        //if (apiState != ApiResult.Status.FAILURE)
         when (data) {
             Upcoming.NEXT -> {
                 nextLaunchModel = response
@@ -173,7 +173,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
     }
 
     fun update(binding: ListItemDashboardLaunchBinding, response: Launch) {
-        if (apiState != ApiResult.Status.FAILURE) apiState = ApiResult.Status.SUCCESS
+        //if (apiState != ApiResult.Status.FAILURE)
         with(binding) {
             dashboardLaunch.transitionName = response.id
 
@@ -194,7 +194,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
 
             missionName.text = response.missionName
 
-            date.text = response.launchDate?.dateUnix?.formatDateMillisLong(response.datePrecision)
+            date.text = response.launchDate?.dateUnix?.formatDateMillisLong(/*response.datePrecision*/)
 
             dashboardLaunch.let { card ->
                 card.setOnClickListener {
@@ -313,14 +313,14 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
     }
 
     override fun showError(error: String) {
-        apiState = ApiResult.Status.FAILURE
+
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        when (apiState) {
+       /* when (apiState) {
             //ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.getLatestLaunches()
             ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }
+        }*/
     }
 }

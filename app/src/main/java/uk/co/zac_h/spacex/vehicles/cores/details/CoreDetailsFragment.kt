@@ -10,7 +10,7 @@ import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
-import uk.co.zac_h.spacex.model.spacex.Core
+import uk.co.zac_h.spacex.dto.spacex.Core
 import uk.co.zac_h.spacex.utils.*
 import java.util.*
 
@@ -56,7 +56,7 @@ class CoreDetailsFragment : BaseFragment() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable("core", core)
+        //outState.putParcelable("core", core)
         super.onSaveInstanceState(outState)
     }
 

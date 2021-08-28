@@ -6,12 +6,8 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
-import uk.co.zac_h.spacex.model.twitter.TweetHashTagModel
-import uk.co.zac_h.spacex.model.twitter.TweetMentionsModel
-import uk.co.zac_h.spacex.model.twitter.TweetUrlModel
 import java.net.URLEncoder
 import java.text.DecimalFormat
-import java.util.regex.Pattern
 
 fun String.generateCenterSpannableText(): SpannableString =
     SpannableString(this).apply {
@@ -34,13 +30,13 @@ fun Any.metricFormat(): String = DecimalFormat("#,###.##").format(this)
 fun String.encodeUtf8(): String = URLEncoder.encode(this, "UTF-8")
 
 fun String.formatWithUrls(
-    urls: List<TweetUrlModel>?,
-    mentions: List<TweetMentionsModel>?,
-    tags: List<TweetHashTagModel>?
+    //urls: List<TweetUrlModel>?,
+    //mentions: List<TweetMentionsModel>?,
+    //tags: List<TweetHashTagModel>?
 ): String {
     var message = this
 
-    urls?.forEach {
+    /*urls?.forEach {
         message = message.replace(it.url, "<a href='${it.url}'>${it.displayUrl}</a>")
     }
 
@@ -63,7 +59,7 @@ fun String.formatWithUrls(
             "<a href='https://twitter.com/hashtag/${it.tag}'>#${it.tag}</a>",
             true
         )
-    }
+    }*/
 
     return message
 }

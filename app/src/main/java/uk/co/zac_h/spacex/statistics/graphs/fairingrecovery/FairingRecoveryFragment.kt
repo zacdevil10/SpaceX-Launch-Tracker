@@ -1,7 +1,10 @@
 package uk.co.zac_h.spacex.statistics.graphs.fairingrecovery
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.animation.Easing
@@ -20,7 +23,6 @@ import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentFairingRecoveryBinding
 import uk.co.zac_h.spacex.statistics.adapters.Statistics
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
-import uk.co.zac_h.spacex.utils.ApiResult
 import uk.co.zac_h.spacex.utils.models.FairingRecoveryModel
 import uk.co.zac_h.spacex.utils.models.KeysModel
 
@@ -126,7 +128,7 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.reload -> {
-            apiState = ApiResult.Status.PENDING
+
             statsList.clear()
             presenter?.getOrUpdate(null)
             true
@@ -135,7 +137,7 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
     }
 
     override fun update(data: Any, response: List<FairingRecoveryModel>) {
-        apiState = ApiResult.Status.SUCCESS
+
         if (statsList.isEmpty()) statsList.addAll(response)
 
         val colors = ArrayList<Int>()
@@ -194,14 +196,14 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
     }
 
     override fun showError(error: String) {
-        apiState = ApiResult.Status.FAILURE
+
     }
 
     override fun networkAvailable() {
-        when (apiState) {
+        /*when (apiState) {
             ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.getOrUpdate(null)
             ApiResult.Status.SUCCESS -> {
             }
-        }
+        }*/
     }
 }

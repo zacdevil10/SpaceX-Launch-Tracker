@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemDragonThrusterBinding
-import uk.co.zac_h.spacex.model.spacex.DragonThrusterConfiguration
+import uk.co.zac_h.spacex.dto.spacex.DragonThrusterConfiguration
 import uk.co.zac_h.spacex.utils.metricFormat
 
 class DragonThrusterAdapter(

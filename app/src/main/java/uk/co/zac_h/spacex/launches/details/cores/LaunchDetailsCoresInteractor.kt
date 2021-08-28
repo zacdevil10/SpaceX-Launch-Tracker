@@ -1,18 +1,17 @@
 package uk.co.zac_h.spacex.launches.details.cores
 
-import retrofit2.Call
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.model.spacex.*
-import uk.co.zac_h.spacex.rest.SpaceXInterface
-import uk.co.zac_h.spacex.utils.BaseNetwork
+import uk.co.zac_h.spacex.dto.spacex.*
+import uk.co.zac_h.spacex.retrofit.SpaceXService
+import uk.co.zac_h.spacex.BaseNetwork
 
 class LaunchDetailsCoresInteractor : BaseNetwork(), NetworkInterface.Interactor<List<LaunchCore>> {
 
-    private var call: Call<LaunchDocsModel>? = null
+    //private var call: Call<LaunchDocsModel>? = null
 
     override fun get(
         data: Any,
-        api: SpaceXInterface,
+        api: SpaceXService,
         listener: NetworkInterface.Callback<List<LaunchCore>>
     ) {
         val populateList = listOf(
@@ -51,7 +50,7 @@ class LaunchDetailsCoresInteractor : BaseNetwork(), NetworkInterface.Interactor<
             QueryOptionsModel(false, populateList, "", listOf("cores"), 10)
         )
 
-        call = api.queryLaunches(query).apply {
+        /*call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess = { response ->
                     response.body()?.docs?.get(0)
@@ -62,7 +61,7 @@ class LaunchDetailsCoresInteractor : BaseNetwork(), NetworkInterface.Interactor<
                 }
                 onResponseFailure = { listener.onError(it) }
             }
-        }
+        }*/
     }
 
     override fun cancelAllRequests() = terminateAll()

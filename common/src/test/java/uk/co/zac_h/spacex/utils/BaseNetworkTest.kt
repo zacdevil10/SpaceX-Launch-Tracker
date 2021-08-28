@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.utils
 
-import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.ResponseBody.Companion.toResponseBody
@@ -11,10 +10,9 @@ import org.mockito.Mockito.mock
 import retrofit2.Response
 import retrofit2.mock.Calls
 import uk.co.zac_h.spacex.model.spacex.LaunchResponse
-import uk.co.zac_h.spacex.rest.SpaceXInterface
 
 @Ignore("Broken")
-class BaseNetworkTest : BaseNetwork() {
+class BaseNetworkTest : uk.co.zac_h.spacex.BaseNetwork() {
 
     @Mock
     val mLaunchModel: LaunchResponse = mock(LaunchResponse::class.java)

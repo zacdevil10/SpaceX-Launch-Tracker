@@ -1,15 +1,15 @@
 package uk.co.zac_h.spacex.vehicles.dragon
 
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.model.spacex.Dragon
-import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.dto.spacex.Dragon
+import uk.co.zac_h.spacex.retrofit.SpaceXService
 
 class DragonPresenterImpl(
     private val view: NetworkInterface.View<List<Dragon>>,
     private val interactor: NetworkInterface.Interactor<List<Dragon>?>
 ) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<List<Dragon>?> {
 
-    override fun get(api: SpaceXInterface) {
+    override fun get(api: SpaceXService) {
         interactor.get(api, this)
     }
 

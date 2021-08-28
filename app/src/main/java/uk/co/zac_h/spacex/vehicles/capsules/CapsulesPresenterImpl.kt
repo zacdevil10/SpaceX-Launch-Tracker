@@ -1,15 +1,15 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.model.spacex.Capsule
-import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.dto.spacex.Capsule
+import uk.co.zac_h.spacex.retrofit.SpaceXService
 
 class CapsulesPresenterImpl(
     private val view: NetworkInterface.View<List<Capsule>>,
     private val interactor: NetworkInterface.Interactor<List<Capsule>?>
 ) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<List<Capsule>?> {
 
-    override fun get(api: SpaceXInterface) {
+    override fun get(api: SpaceXService) {
         interactor.get(api, this)
     }
 

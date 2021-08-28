@@ -1,8 +1,9 @@
 package uk.co.zac_h.spacex.dashboard
 
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.model.spacex.Launch
-import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.dto.spacex.Launch
+import uk.co.zac_h.spacex.retrofit.NetworkModule
+import uk.co.zac_h.spacex.retrofit.SpaceXService
 
 interface DashboardContract {
 
@@ -28,9 +29,9 @@ interface DashboardContract {
 
     interface Presenter : NetworkInterface.Presenter<Launch?> {
         fun getLatestLaunches(
-            next: Launch? = null,
-            latest: Launch? = null,
-            api: SpaceXInterface = SpaceXInterface.create()
+                next: Launch? = null,
+                latest: Launch? = null,
+                api: SpaceXService = NetworkModule.providesSpaceXHttpClientV4()
         )
 
         fun updateCountdown(time: Long)

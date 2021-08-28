@@ -10,7 +10,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemFirstStageBinding
-import uk.co.zac_h.spacex.model.spacex.LaunchCore
+import uk.co.zac_h.spacex.dto.spacex.LaunchCore
 import uk.co.zac_h.spacex.utils.orUnknown
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
