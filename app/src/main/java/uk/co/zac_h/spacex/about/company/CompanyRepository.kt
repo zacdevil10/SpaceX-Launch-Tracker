@@ -8,6 +8,6 @@ import uk.co.zac_h.spacex.dto.spacex.CompanyResponse
 import javax.inject.Inject
 
 class CompanyRepository @Inject constructor(
-        @CompanyDataSourceClient companyDataSource: RemoteDataSource<CompanyResponse>,
-        cache: Cache<CompanyResponse>
+    @CompanyDataSourceClient companyDataSource: RemoteDataSource<CompanyResponse>,
+    cache: Cache<CompanyResponse>
 ) : Repository<CompanyResponse>(companyDataSource, cache)
