@@ -10,14 +10,14 @@ import uk.co.zac_h.spacex.utils.OrderSharedPreferences
 import javax.inject.Inject
 
 class HistoryRepository @Inject constructor(
-        @HistoryDataSourceClient historyDataSource: RemoteDataSource<HistoryDocsModel>,
-        cache: Cache<HistoryDocsModel>,
-        private val sharedPreferences: OrderSharedPreferences
+    @HistoryDataSourceClient historyDataSource: RemoteDataSource<HistoryDocsModel>,
+    cache: Cache<HistoryDocsModel>,
+    private val sharedPreferences: OrderSharedPreferences
 ) : Repository<HistoryDocsModel>(historyDataSource, cache) {
 
     fun getOrder(): Boolean = sharedPreferences.isSortedNew(Keys.HistoryKeys.HISTORY_ORDER)
 
     fun setOrder(order: Boolean) =
-            sharedPreferences.setSortOrder(Keys.HistoryKeys.HISTORY_ORDER, order)
+        sharedPreferences.setSortOrder(Keys.HistoryKeys.HISTORY_ORDER, order)
 
 }

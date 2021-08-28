@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.ApiResult
+import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
 import uk.co.zac_h.spacex.base.BaseFragment
@@ -60,7 +61,7 @@ class HistoryFragment : BaseFragment() {
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-
+            viewModel.getHistory(CachePolicy.REFRESH)
         }
 
         viewModel.history.observe(viewLifecycleOwner) {
@@ -69,7 +70,7 @@ class HistoryFragment : BaseFragment() {
                 ApiResult.Status.SUCCESS -> {
                     hideProgress()
                     toggleSwipeRefresh(false)
-                    //it.data?.let { data -> update(data) }
+                    it.data?.let { data -> update(data) }
                 }
                 ApiResult.Status.FAILURE -> {
                     showError(it.error?.message.orUnknown())
@@ -78,7 +79,7 @@ class HistoryFragment : BaseFragment() {
             }
         }
 
-        if (savedInstanceState == null) viewModel.getHistory()
+        viewModel.getHistory()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
@@ -90,7 +91,7 @@ class HistoryFragment : BaseFragment() {
     private fun handleSortItemClick(order: Boolean): Boolean {
         if (viewModel.getOrder() == order) viewModel.apply {
             setOrder(!order)
-            getHistory()
+            getHistory(CachePolicy.REFRESH)
         }
         return true
     }

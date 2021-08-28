@@ -34,17 +34,15 @@ class HistoryViewModel @Inject constructor(
             )
         )
 
-    private var cachePolicy: CachePolicy = CachePolicy.ALWAYS
-
-    fun getHistory() {
+    fun getHistory(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
         viewModelScope.launch {
-            val response = async(SupervisorJob()) {
+            val response = async {
                 repository.fetch("History", query, cachePolicy)
             }
 
-            /*_history.value = response.map {
+            _history.value = response.await().map {
                 splitHistoryListByDate(it.docs.map { item -> History(item) })
-            }*/
+            }
         }
     }
 

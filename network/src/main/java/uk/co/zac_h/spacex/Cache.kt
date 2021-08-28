@@ -6,27 +6,29 @@ import javax.inject.Singleton
 @Singleton
 class Cache<T> @Inject constructor() {
 
-    private var data: ArrayList<CacheEntry<ApiResult<T>>> = ArrayList()
+    private var cache: ArrayList<CacheEntry<ApiResult<T>>> = ArrayList()
 
-    fun get(key: String): CacheEntry<ApiResult<T>>? = data.firstOrNull { it.key == key }
+    fun get(key: String): CacheEntry<ApiResult<T>>? = cache.firstOrNull { it.key == key }
 
     fun store(data: ApiResult<T>, key: String) {
-        this.data.removeAll { it.key == key }
-        this.data.add(CacheEntry(key = key, value = data))
+        cache.apply {
+            removeAll { it.key == key }
+            add(CacheEntry(key = key, value = data))
+        }
     }
 
     fun clear(key: String) {
-        data.removeAll { it.key == key }
+        cache.removeAll { it.key == key }
     }
 
     fun clear() {
-        data.clear()
+        cache.clear()
     }
 
 }
 
 object CachePolicyExpiry {
-    const val LENGTH = 5000
+    const val LENGTH = 300000
 }
 
 data class CacheEntry<T>(
