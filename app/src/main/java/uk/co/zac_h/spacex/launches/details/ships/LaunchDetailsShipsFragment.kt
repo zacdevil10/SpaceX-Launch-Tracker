@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.launches.details.ships
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
+import uk.co.zac_h.spacex.dto.spacex.Ship
 import uk.co.zac_h.spacex.launches.adapters.LaunchDetailsShipsAdapter
-import uk.co.zac_h.spacex.model.spacex.Ship
-import uk.co.zac_h.spacex.utils.ApiResult
 import uk.co.zac_h.spacex.utils.orUnknown
 
 class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
@@ -40,7 +38,7 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
         super.onCreate(savedInstanceState)
 
         savedInstanceState?.let {
-            shipsArray = it.getParcelableArrayList(SHIPS_KEY) ?: ArrayList()
+            //shipsArray = it.getParcelableArrayList(SHIPS_KEY) ?: ArrayList()
             id = it.getString(ID_KEY).orUnknown()
         }
     }
@@ -65,7 +63,7 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiResult.Status.PENDING
+
             presenter?.get(id)
         }
 
@@ -73,7 +71,7 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(SHIPS_KEY, shipsArray)
+        //outState.putParcelableArrayList(SHIPS_KEY, shipsArray)
         outState.putString(ID_KEY, id)
     }
 
@@ -83,7 +81,7 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
     }
 
     override fun update(response: List<Ship>) {
-        apiState = ApiResult.Status.SUCCESS
+
 
         shipsArray = response as ArrayList<Ship>
 
@@ -103,14 +101,11 @@ class LaunchDetailsShipsFragment : BaseFragment(), NetworkInterface.View<List<Sh
     }
 
     override fun showError(error: String) {
-        apiState = ApiResult.Status.FAILURE
+
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        when (apiState) {
-            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get(id)
-            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }
+
     }
 }

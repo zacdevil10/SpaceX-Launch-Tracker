@@ -9,7 +9,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCapsulesBinding
-import uk.co.zac_h.spacex.model.spacex.Capsule
+import uk.co.zac_h.spacex.dto.spacex.Capsule
 import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
 
@@ -33,8 +33,8 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        capsulesArray =
-            savedInstanceState?.getParcelableArrayList("capsules") ?: ArrayList()
+        /*capsulesArray =
+            savedInstanceState?.getParcelableArrayList("capsules") ?: ArrayList()*/
         sortNew = savedInstanceState?.getBoolean("sort") ?: false
     }
 
@@ -62,7 +62,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiResult.Status.PENDING
+
             presenter?.get()
         }
 
@@ -71,7 +71,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.apply {
-            putParcelableArrayList("capsules", capsulesArray)
+            //putParcelableArrayList("capsules", capsulesArray)
             putBoolean("sort", sortNew)
         }
         super.onSaveInstanceState(outState)
@@ -125,7 +125,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
     }
 
     override fun update(response: List<Capsule>) {
-        apiState = ApiResult.Status.SUCCESS
+
 
         capsulesArray.clear()
         capsulesArray.addAll(if (sortNew) response.reversed() else response)
@@ -140,13 +140,13 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
     }
 
     override fun showError(error: String) {
-        apiState = ApiResult.Status.FAILURE
+
     }
 
     override fun networkAvailable() {
-        when (apiState) {
+        /*when (apiState) {
             ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get()
             ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }
+        }*/
     }
 }

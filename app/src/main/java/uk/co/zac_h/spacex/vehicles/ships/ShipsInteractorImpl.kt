@@ -1,17 +1,19 @@
 package uk.co.zac_h.spacex.vehicles.ships
 
-import retrofit2.Call
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.model.spacex.*
-import uk.co.zac_h.spacex.rest.SpaceXInterface
-import uk.co.zac_h.spacex.utils.BaseNetwork
+import uk.co.zac_h.spacex.dto.spacex.QueryModel
+import uk.co.zac_h.spacex.dto.spacex.QueryOptionsModel
+import uk.co.zac_h.spacex.dto.spacex.QueryPopulateModel
+import uk.co.zac_h.spacex.dto.spacex.Ship
+import uk.co.zac_h.spacex.retrofit.SpaceXService
+import uk.co.zac_h.spacex.BaseNetwork
 
 class ShipsInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<Ship>?> {
 
-    private var call: Call<ShipsDocsModel>? = null
+    //private var call: Call<ShipsDocsModel>? = null
 
     override fun get(
-        api: SpaceXInterface,
+        api: SpaceXService,
         listener: NetworkInterface.Callback<List<Ship>?>
     ) {
         val query = QueryModel(
@@ -31,14 +33,14 @@ class ShipsInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<Ship
             )
         )
 
-        call = api.queryShips(query).apply {
+        /*call = api.queryShips(query).apply {
             makeCall {
                 onResponseSuccess = { response ->
                     listener.onSuccess(response.body()?.docs?.map { Ship(it) })
                 }
                 onResponseFailure = { listener.onError(it) }
             }
-        }
+        }*/
     }
 
     override fun cancelAllRequests() = terminateAll()

@@ -13,7 +13,7 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.crew.adapters.CrewPagerAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewDetailsBinding
-import uk.co.zac_h.spacex.model.spacex.Crew
+import uk.co.zac_h.spacex.dto.spacex.Crew
 import uk.co.zac_h.spacex.utils.views.DepthPageTransformer
 import uk.co.zac_h.spacex.utils.Keys.CrewKeys
 
@@ -30,9 +30,9 @@ class CrewPagerFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        crewArray = savedInstanceState?.getParcelableArrayList(CrewKeys.CREW_SAVED_STATE)
+        /*crewArray = savedInstanceState?.getParcelableArrayList(CrewKeys.CREW_SAVED_STATE)
             ?: arguments?.getParcelableArrayList<Crew>(CrewKeys.CREW_ARGS) as ArrayList<Crew>
-                    ?: ArrayList()
+                    ?: ArrayList()*/
 
         crew = crewArray.map { CrewItemFragment.newInstance(it) }
     }
@@ -93,7 +93,7 @@ class CrewPagerFragment : BaseFragment() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(CrewKeys.CREW_SAVED_STATE, crewArray)
+        //outState.putParcelableArrayList(CrewKeys.CREW_SAVED_STATE, crewArray)
         super.onSaveInstanceState(outState)
     }
 }

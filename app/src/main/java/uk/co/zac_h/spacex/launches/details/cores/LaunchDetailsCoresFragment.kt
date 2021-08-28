@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.launches.details.cores
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,9 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
+import uk.co.zac_h.spacex.dto.spacex.LaunchCore
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
-import uk.co.zac_h.spacex.model.spacex.LaunchCore
-import uk.co.zac_h.spacex.utils.ApiResult
 import uk.co.zac_h.spacex.utils.orUnknown
 
 class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<LaunchCore>> {
@@ -40,7 +38,7 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
 
         savedInstanceState?.let {
             id = it.getString(ID_KEY).orUnknown()
-            cores = it.getParcelableArrayList(CORES_KEY) ?: ArrayList()
+            //cores = it.getParcelableArrayList(CORES_KEY) ?: ArrayList()
         }
     }
 
@@ -64,7 +62,7 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiResult.Status.PENDING
+
             presenter?.get(id)
         }
 
@@ -72,7 +70,7 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(CORES_KEY, cores)
+        //outState.putParcelableArrayList(CORES_KEY, cores)
         outState.putString(ID_KEY, id)
     }
 
@@ -82,7 +80,7 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
     }
 
     override fun update(response: List<LaunchCore>) {
-        apiState = ApiResult.Status.SUCCESS
+        //
 
         cores = response as ArrayList<LaunchCore>
 
@@ -102,14 +100,11 @@ class LaunchDetailsCoresFragment : BaseFragment(), NetworkInterface.View<List<La
     }
 
     override fun showError(error: String) {
-        apiState = ApiResult.Status.FAILURE
+
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        when (apiState) {
-            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get(id)
-            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }
+        /**/
     }
 }

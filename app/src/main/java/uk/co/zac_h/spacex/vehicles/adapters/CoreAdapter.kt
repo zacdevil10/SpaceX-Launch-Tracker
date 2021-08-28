@@ -12,7 +12,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemCoreBinding
-import uk.co.zac_h.spacex.model.spacex.Core
+import uk.co.zac_h.spacex.dto.spacex.Core
 
 class CoreAdapter(private val context: Context, private val cores: ArrayList<Core>) :
     RecyclerView.Adapter<CoreAdapter.ViewHolder>(), Filterable {

@@ -1,17 +1,17 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
-import retrofit2.Call
-import uk.co.zac_h.spacex.model.spacex.*
-import uk.co.zac_h.spacex.rest.SpaceXInterface
-import uk.co.zac_h.spacex.utils.BaseNetwork
+import uk.co.zac_h.spacex.dto.spacex.QueryModel
+import uk.co.zac_h.spacex.dto.spacex.QueryOptionsModel
+import uk.co.zac_h.spacex.retrofit.SpaceXService
+import uk.co.zac_h.spacex.BaseNetwork
 
 class PadStatsInteractorImpl : BaseNetwork(), PadStatsContract.PadStatsInteractor {
 
-    private var launchCall: Call<LaunchpadDocsModel>? = null
-    private var landingCall: Call<LandingPadDocsModel>? = null
+    //private var launchCall: Call<LaunchpadDocsModel>? = null
+    //private var landingCall: Call<LandingPadDocsModel>? = null
 
     override fun getLaunchpads(
-        api: SpaceXInterface,
+        api: SpaceXService,
         listener: PadStatsContract.InteractorCallback
     ) {
         val launchQuery = QueryModel(
@@ -25,18 +25,18 @@ class PadStatsInteractorImpl : BaseNetwork(), PadStatsContract.PadStatsInteracto
             )
         )
 
-        launchCall = api.queryLaunchpads(launchQuery).apply {
+        /*launchCall = api.queryLaunchpads(launchQuery).apply {
             makeCall {
                 onResponseSuccess = { response ->
                     listener.onGetLaunchpads(response.body()?.docs?.map { Launchpad(it) })
                 }
                 onResponseFailure = { listener.onError(it) }
             }
-        }
+        }*/
     }
 
     override fun getLandingPads(
-        api: SpaceXInterface,
+        api: SpaceXService,
         listener: PadStatsContract.InteractorCallback
     ) {
         val landQuery = QueryModel(
@@ -50,14 +50,14 @@ class PadStatsInteractorImpl : BaseNetwork(), PadStatsContract.PadStatsInteracto
             )
         )
 
-        landingCall = api.queryLandingPads(landQuery).apply {
+        /*landingCall = api.queryLandingPads(landQuery).apply {
             makeCall {
                 onResponseSuccess = { response ->
                     listener.onGetLandingPads(response.body()?.docs?.map { LandingPad(it) })
                 }
                 onResponseFailure = { listener.onError(it) }
             }
-        }
+        }*/
     }
 
     override fun cancelAllRequests() = terminateAll()

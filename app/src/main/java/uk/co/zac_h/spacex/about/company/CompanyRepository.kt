@@ -1,14 +1,13 @@
 package uk.co.zac_h.spacex.about.company
 
-import uk.co.zac_h.spacex.SpaceXHttpClient
-import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.Cache
+import uk.co.zac_h.spacex.Repository
+import uk.co.zac_h.spacex.datasource.CompanyDataSourceClient
+import uk.co.zac_h.spacex.datasource.RemoteDataSource
+import uk.co.zac_h.spacex.dto.spacex.CompanyResponse
 import javax.inject.Inject
-import javax.inject.Singleton
 
 class CompanyRepository @Inject constructor(
-    @SpaceXHttpClient private val httpService: SpaceXInterface
-) {
-
-    suspend fun getCompany() = httpService.getCompanyInfo()
-
-}
+        @CompanyDataSourceClient companyDataSource: RemoteDataSource<CompanyResponse>,
+        cache: Cache<CompanyResponse>
+) : Repository<CompanyResponse>(companyDataSource, cache)

@@ -1,8 +1,8 @@
 package uk.co.zac_h.spacex.statistics.graphs.fairingrecovery
 
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.model.spacex.Launch
-import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.dto.spacex.Launch
+import uk.co.zac_h.spacex.retrofit.SpaceXService
 import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.FairingRecoveryModel
 
@@ -11,7 +11,7 @@ class FairingRecoveryPresenter(
     private val interactor: NetworkInterface.Interactor<List<Launch>?>
 ) : NetworkInterface.Presenter<List<FairingRecoveryModel>?>, NetworkInterface.Callback<List<Launch>?> {
 
-    override fun getOrUpdate(response: List<FairingRecoveryModel>?, api: SpaceXInterface) {
+    override fun getOrUpdate(response: List<FairingRecoveryModel>?, api: SpaceXService) {
         if (response.isNullOrEmpty()) {
             view.showProgress()
             interactor.get(api, this)

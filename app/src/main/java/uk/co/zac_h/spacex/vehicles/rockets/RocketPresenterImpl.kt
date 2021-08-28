@@ -1,15 +1,15 @@
 package uk.co.zac_h.spacex.vehicles.rockets
 
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.model.spacex.Rocket
-import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.dto.spacex.Rocket
+import uk.co.zac_h.spacex.retrofit.SpaceXService
 
 class RocketPresenterImpl(
     private val view: NetworkInterface.View<List<Rocket>>,
     private val interactor: NetworkInterface.Interactor<List<Rocket>?>
 ) : NetworkInterface.Presenter<Nothing>, NetworkInterface.Callback<List<Rocket>?> {
 
-    override fun get(api: SpaceXInterface) {
+    override fun get(api: SpaceXService) {
         interactor.get(api, this)
     }
 

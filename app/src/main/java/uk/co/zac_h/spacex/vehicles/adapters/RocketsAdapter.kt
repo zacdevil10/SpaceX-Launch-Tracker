@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemVehicleBinding
-import uk.co.zac_h.spacex.model.spacex.Rocket
+import uk.co.zac_h.spacex.dto.spacex.Rocket
 
 class RocketsAdapter(private val rockets: List<Rocket>) :
     RecyclerView.Adapter<RocketsAdapter.ViewHolder>() {

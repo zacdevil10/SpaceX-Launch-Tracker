@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentTwitterFeedBinding
-import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
+import uk.co.zac_h.spacex.dto.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.news.adapters.TwitterFeedAdapter
 import uk.co.zac_h.spacex.utils.*
 
@@ -32,7 +32,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        tweetsList = savedInstanceState?.getParcelableArrayList("timeline") ?: ArrayList()
+        //tweetsList = savedInstanceState?.getParcelableArrayList("timeline") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -81,7 +81,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiResult.Status.PENDING
+
             presenter?.getTweets()
         }
 
@@ -93,7 +93,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("timeline", tweetsList)
+        //outState.putParcelableArrayList("timeline", tweetsList)
         super.onSaveInstanceState(outState)
     }
 
@@ -103,7 +103,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
     }
 
     override fun updateRecycler(tweets: List<TimelineTweetModel>) {
-        apiState = ApiResult.Status.SUCCESS
+
 
         tweetsList.clearAndAdd(tweets)
         twitterAdapter.notifyDataSetChanged()
@@ -159,15 +159,15 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
     }
 
     override fun showError(error: String) {
-        apiState = ApiResult.Status.FAILURE
+
     }
 
     override fun networkAvailable() {
-        when (apiState) {
+        /*when (apiState) {
             ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.getTweets()
             ApiResult.Status.SUCCESS -> {
             }
         }
-        if (isLoading) presenter?.getTweets(tweetsList[tweetsList.size - 1].id)
+        if (isLoading) presenter?.getTweets(tweetsList[tweetsList.size - 1].id)*/
     }
 }

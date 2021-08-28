@@ -185,7 +185,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
             true
         }
         R.id.reload -> {
-            apiState = ApiResult.Status.PENDING
+
             statsList.clear()
             presenter?.getOrUpdate(null)
             true
@@ -194,7 +194,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
     }
 
     override fun update(data: Any, response: List<LaunchMassStatsModel>) {
-        apiState = ApiResult.Status.SUCCESS
+
         if (statsList.isEmpty()) statsList.addAll(response)
 
         binding.statisticsBarChart.key.visibility = View.GONE
@@ -383,13 +383,13 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
     }
 
     override fun showError(error: String) {
-        apiState = ApiResult.Status.FAILURE
+
     }
 
     override fun networkAvailable() {
-        when(apiState) {
+        /*when(apiState) {
             ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.getOrUpdate(null)
             ApiResult.Status.SUCCESS -> {}
-        }
+        }*/
     }
 }

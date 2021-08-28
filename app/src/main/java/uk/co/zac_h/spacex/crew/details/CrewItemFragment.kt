@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.crew.details
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
@@ -10,22 +9,10 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import uk.co.zac_h.spacex.crew.adapters.CrewMissionsAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewItemBinding
-import uk.co.zac_h.spacex.model.spacex.Crew
-import uk.co.zac_h.spacex.model.spacex.CrewStatus
+import uk.co.zac_h.spacex.dto.spacex.Crew
 import uk.co.zac_h.spacex.utils.Keys.CrewKeys
-import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_ACTIVE
-import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_INACTIVE
-import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_RETIRED
-import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_UNKNOWN
 import kotlin.math.roundToInt
 
 class CrewItemFragment : Fragment() {
@@ -48,10 +35,10 @@ class CrewItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val person = arguments?.getParcelable<Crew>(CrewKeys.CREW_ARGS)
+        //val person = arguments?.getParcelable<Crew>(CrewKeys.CREW_ARGS)
 
         with(binding) {
-            itemCrewConstraint.transitionName = person?.id
+            //itemCrewConstraint.transitionName = person?.id
 
             val typedVal = TypedValue()
             val initialMargin = indicator.marginTop
@@ -87,7 +74,7 @@ class CrewItemFragment : Fragment() {
                 })
             }
 
-            Glide.with(view).load(person?.image).listener(object : RequestListener<Drawable> {
+            /*Glide.with(view).load(person?.image).listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
@@ -127,7 +114,7 @@ class CrewItemFragment : Fragment() {
                     adapter = CrewMissionsAdapter(context, it)
                 }
                 if (it.isEmpty()) crewMissionLabel.visibility = View.GONE
-            }
+            }*/
         }
     }
 }

@@ -12,7 +12,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemCapsuleBinding
-import uk.co.zac_h.spacex.model.spacex.Capsule
+import uk.co.zac_h.spacex.dto.spacex.Capsule
 
 class CapsulesAdapter(private val capsules: ArrayList<Capsule>) :
     RecyclerView.Adapter<CapsulesAdapter.ViewHolder>(), Filterable {

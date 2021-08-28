@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.vehicles.dragon
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentDragonBinding
-import uk.co.zac_h.spacex.model.spacex.Dragon
-import uk.co.zac_h.spacex.utils.ApiResult
+import uk.co.zac_h.spacex.dto.spacex.Dragon
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.DragonAdapter
 
@@ -28,7 +26,7 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        dragonArray = savedInstanceState?.getParcelableArrayList("dragon") ?: ArrayList()
+        //dragonArray = savedInstanceState?.getParcelableArrayList("dragon") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -54,7 +52,7 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiResult.Status.PENDING
+
             presenter?.get()
         }
 
@@ -62,7 +60,7 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("dragon", dragonArray)
+        //outState.putParcelableArrayList("dragon", dragonArray)
         super.onSaveInstanceState(outState)
     }
 
@@ -72,7 +70,7 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
     }
 
     override fun update(response: List<Dragon>) {
-        apiState = ApiResult.Status.SUCCESS
+
 
         dragonArray.clear()
         dragonArray.addAll(response)
@@ -87,14 +85,14 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
     }
 
     override fun showError(error: String) {
-        apiState = ApiResult.Status.FAILURE
+
     }
 
     override fun networkAvailable() {
-        when (apiState) {
+        /*when (apiState) {
             ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get()
             ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }
+        }*/
     }
 
 }

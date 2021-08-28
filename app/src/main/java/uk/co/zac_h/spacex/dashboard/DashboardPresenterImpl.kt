@@ -1,9 +1,10 @@
 package uk.co.zac_h.spacex.dashboard
 
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.model.spacex.Launch
-import uk.co.zac_h.spacex.model.spacex.Upcoming
-import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.dto.spacex.Launch
+import uk.co.zac_h.spacex.dto.spacex.Upcoming
+import uk.co.zac_h.spacex.retrofit.NetworkModule
+import uk.co.zac_h.spacex.retrofit.SpaceXService
 import uk.co.zac_h.spacex.utils.*
 
 class DashboardPresenterImpl(
@@ -12,12 +13,12 @@ class DashboardPresenterImpl(
 ) : DashboardContract.Presenter,
     NetworkInterface.Callback<Launch> {
 
-    override fun getLatestLaunches(next: Launch?, latest: Launch?, api: SpaceXInterface) {
+    override fun getLatestLaunches(next: Launch?, latest: Launch?, api: SpaceXService) {
         if (next == null) {
             view.toggleNextProgress(true)
             interactor.get(
                 Upcoming.NEXT,
-                SpaceXInterface.create(SPACEX_BASE_URL_V5),
+                NetworkModule.providesSpaceXHttpClientV5(),
                 this@DashboardPresenterImpl
             )
         } else onSuccess(Upcoming.NEXT, next)
@@ -26,15 +27,15 @@ class DashboardPresenterImpl(
             view.toggleLatestProgress(true)
             interactor.get(
                 Upcoming.LATEST,
-                SpaceXInterface.create(SPACEX_BASE_URL_V5),
+                    NetworkModule.providesSpaceXHttpClientV5(),
                 this@DashboardPresenterImpl
             )
         } else onSuccess(Upcoming.LATEST, latest)
     }
 
-    override fun get(data: Any, api: SpaceXInterface) {
+    override fun get(data: Any, api: SpaceXService) {
         view.togglePinnedProgress(true)
-        interactor.get(data, SpaceXInterface.create(SPACEX_BASE_URL_V5), this)
+        interactor.get(data, NetworkModule.providesSpaceXHttpClientV5(), this)
     }
 
     override fun updateCountdown(time: Long) {

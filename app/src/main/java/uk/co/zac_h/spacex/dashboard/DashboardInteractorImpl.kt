@@ -1,18 +1,17 @@
 package uk.co.zac_h.spacex.dashboard
 
-import retrofit2.Call
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.model.spacex.*
-import uk.co.zac_h.spacex.rest.SpaceXInterface
-import uk.co.zac_h.spacex.utils.BaseNetwork
+import uk.co.zac_h.spacex.dto.spacex.*
+import uk.co.zac_h.spacex.retrofit.SpaceXService
+import uk.co.zac_h.spacex.BaseNetwork
 
 class DashboardInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<Launch> {
 
-    private var call: Call<LaunchDocsModel>? = null
+    //private var call: Call<LaunchDocsModel>? = null
 
     override fun get(
         data: Any,
-        api: SpaceXInterface,
+        api: SpaceXService,
         listener: NetworkInterface.Callback<Launch>
     ) {
         val query = QueryModel(
@@ -69,7 +68,7 @@ class DashboardInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<Launc
             )
         )
 
-        call = api.queryLaunches(query).apply {
+        /*call = api.queryLaunches(query).apply {
             makeCall {
                 onResponseSuccess = { response ->
                     response.body()?.docs?.get(0)?.let { Launch(it) }?.let {
@@ -80,7 +79,7 @@ class DashboardInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<Launc
                     listener.onError(it)
                 }
             }
-        }
+        }*/
     }
 
     override fun cancelAllRequests() = terminateAll()

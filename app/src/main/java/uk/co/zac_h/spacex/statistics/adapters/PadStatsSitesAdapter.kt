@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemPadStatsBinding
-import uk.co.zac_h.spacex.model.spacex.PadStatus
+import uk.co.zac_h.spacex.dto.spacex.PadStatus
 import uk.co.zac_h.spacex.model.spacex.StatsPadModel
 import uk.co.zac_h.spacex.utils.setImageAndTint
 

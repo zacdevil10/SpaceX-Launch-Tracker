@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemVehicleBinding
-import uk.co.zac_h.spacex.model.spacex.Dragon
+import uk.co.zac_h.spacex.dto.spacex.Dragon
 
 class DragonAdapter(private val dragonList: List<Dragon>) :
     RecyclerView.Adapter<DragonAdapter.ViewHolder>() {

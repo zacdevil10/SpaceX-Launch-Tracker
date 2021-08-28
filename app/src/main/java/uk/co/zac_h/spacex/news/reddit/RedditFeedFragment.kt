@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter
 import android.widget.Spinner
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.REDDIT_PARAM_ORDER_HOT
+import uk.co.zac_h.spacex.REDDIT_PARAM_ORDER_NEW
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentRedditFeedBinding
 import uk.co.zac_h.spacex.model.reddit.RedditPost
@@ -37,9 +39,9 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
         order = savedInstanceState?.getString("order") ?: REDDIT_PARAM_ORDER_HOT
         orderPos = savedInstanceState?.getInt("orderPos") ?: 0
 
-        posts = savedInstanceState?.let {
+        /*posts = savedInstanceState?.let {
             it.getParcelableArrayList<RedditPost>("posts") as ArrayList<RedditPost>
-        } ?: ArrayList()
+        } ?: ArrayList()*/
     }
 
     override fun onCreateView(
@@ -79,7 +81,7 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiResult.Status.PENDING
+
             presenter?.getPosts(order = order)
         }
 
@@ -88,7 +90,7 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.apply {
-            putParcelableArrayList("posts", posts)
+            //putParcelableArrayList("posts", posts)
             putString("order", order)
             putInt("orderPos", orderPos)
         }
@@ -138,7 +140,7 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
     }
 
     override fun updateRecycler(subredditData: List<RedditPost>) {
-        apiState = ApiResult.Status.SUCCESS
+
 
         posts.clearAndAdd(subredditData)
         redditAdapter.notifyDataSetChanged()
@@ -173,14 +175,14 @@ class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
     }
 
     override fun showError(error: String) {
-        apiState = ApiResult.Status.FAILURE
+
     }
 
     override fun networkAvailable() {
-        when (apiState) {
+        /*when (apiState) {
             ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.getPosts(order = order)
             ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
         }
-        if (isLoading) presenter?.getPosts(id = posts.last().name, order = order)
+        if (isLoading) presenter?.getPosts(id = posts.last().name, order = order)*/
     }
 }

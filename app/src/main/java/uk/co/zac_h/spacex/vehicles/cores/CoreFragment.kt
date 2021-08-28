@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.vehicles.cores
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,8 +8,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
-import uk.co.zac_h.spacex.model.spacex.Core
-import uk.co.zac_h.spacex.utils.ApiResult
+import uk.co.zac_h.spacex.dto.spacex.Core
 import uk.co.zac_h.spacex.utils.OrderSharedPreferences
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
@@ -35,7 +33,7 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        coresArray = savedInstanceState?.getParcelableArrayList("cores") ?: ArrayList()
+        //coresArray = savedInstanceState?.getParcelableArrayList("cores") ?: ArrayList()
         sortNew = savedInstanceState?.getBoolean("sort") ?: false
     }
 
@@ -65,7 +63,7 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            apiState = ApiResult.Status.PENDING
+
             presenter?.get()
         }
 
@@ -73,7 +71,7 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("cores", coresArray)
+        //outState.putParcelableArrayList("cores", coresArray)
         outState.putBoolean("sort", sortNew)
         super.onSaveInstanceState(outState)
     }
@@ -126,7 +124,7 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
     }
 
     override fun update(response: List<Core>) {
-        apiState = ApiResult.Status.SUCCESS
+
 
         coresArray.clear()
         coresArray.addAll(if (sortNew) response.reversed() else response)
@@ -141,13 +139,13 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
     }
 
     override fun showError(error: String) {
-        apiState = ApiResult.Status.FAILURE
+
     }
 
     override fun networkAvailable() {
-        when (apiState) {
+        /*when (apiState) {
             ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get()
             ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }
+        }*/
     }
 }

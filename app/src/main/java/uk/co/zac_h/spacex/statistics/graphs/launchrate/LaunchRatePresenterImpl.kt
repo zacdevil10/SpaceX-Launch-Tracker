@@ -1,10 +1,10 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.model.spacex.Launch
-import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.dto.spacex.Launch
+import uk.co.zac_h.spacex.retrofit.NetworkModule
+import uk.co.zac_h.spacex.retrofit.SpaceXService
 import uk.co.zac_h.spacex.utils.RocketIds
-import uk.co.zac_h.spacex.utils.SPACEX_BASE_URL_V5
 import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.RateStatsModel
 
@@ -13,10 +13,10 @@ class LaunchRatePresenterImpl(
     private val interactor: NetworkInterface.Interactor<List<Launch>?>
 ) : NetworkInterface.Presenter<List<RateStatsModel>?>, NetworkInterface.Callback<List<Launch>?> {
 
-    override fun getOrUpdate(response: List<RateStatsModel>?, api: SpaceXInterface) {
+    override fun getOrUpdate(response: List<RateStatsModel>?, api: SpaceXService) {
         if (response.isNullOrEmpty()) {
             view.showProgress()
-            interactor.get(api, this)
+            interactor.get(NetworkModule.providesSpaceXHttpClientV5(), this)
         } else view.apply {
             hideProgress()
             update(false, response)

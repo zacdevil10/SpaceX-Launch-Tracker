@@ -1,8 +1,8 @@
 package uk.co.zac_h.spacex.news.reddit
 
 import uk.co.zac_h.spacex.model.reddit.RedditPost
-import uk.co.zac_h.spacex.model.reddit.SubredditModel
-import uk.co.zac_h.spacex.rest.RedditInterface
+import uk.co.zac_h.spacex.retrofit.NetworkModule
+import uk.co.zac_h.spacex.retrofit.RedditService
 
 interface RedditFeedContract {
 
@@ -18,13 +18,13 @@ interface RedditFeedContract {
     }
 
     interface RedditFeedPresenter {
-        fun getPosts(id: String? = null, order: String, api: RedditInterface = RedditInterface.create())
+        fun getPosts(id: String? = null, order: String, api: RedditService = NetworkModule.providesRedditClient())
         fun cancelRequest()
     }
 
     interface RedditFeedInteractor {
         fun getSubreddit(
-            api: RedditInterface,
+            api: RedditService,
             listener: InteractorCallback,
             order: String,
             id: String? = null

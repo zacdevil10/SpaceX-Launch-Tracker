@@ -3,7 +3,10 @@ package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 import android.animation.ValueAnimator
 import android.graphics.Color
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
@@ -17,7 +20,6 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchHistoryBinding
 import uk.co.zac_h.spacex.statistics.adapters.Statistics
 import uk.co.zac_h.spacex.utils.*
@@ -129,7 +131,7 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
             true
         }
         R.id.reload -> {
-            apiState = ApiResult.Status.PENDING
+
             launchStats.clear()
             presenter?.getOrUpdate(null)
             true
@@ -138,7 +140,7 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
     }
 
     override fun update(data: Any, response: List<HistoryStatsModel>) {
-        apiState = ApiResult.Status.SUCCESS
+
         if (launchStats.isEmpty()) launchStats.addAll(response)
 
         val colors = ArrayList<Int>()
@@ -275,14 +277,14 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
     }
 
     override fun showError(error: String) {
-        apiState = ApiResult.Status.FAILURE
+
     }
 
     override fun networkAvailable() {
-        when (apiState) {
+        /*when (apiState) {
             ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.getOrUpdate(null)
             ApiResult.Status.SUCCESS -> {
             }
-        }
+        }*/
     }
 }

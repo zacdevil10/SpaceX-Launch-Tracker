@@ -51,24 +51,11 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.core:core-ktx:1.6.0'
 
-    //Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
-    kapt 'com.squareup.moshi:moshi-kotlin-codegen:1.12.0'
-    implementation "com.squareup.okhttp3:logging-interceptor:4.9.1"
-
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.1"
 
     //Hilt
     implementation "com.google.dagger:hilt-android:2.38.1"
     kapt "com.google.dagger:hilt-compiler:2.38.1"
-
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.mockito:mockito-core:3.11.2'
-    testImplementation 'com.squareup.okhttp3:mockwebserver:5.0.0-alpha.2'
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
-    testImplementation 'com.squareup.retrofit2:retrofit-mock:2.9.0'
 }
 
 jacocoAndroidUnitTestReport {

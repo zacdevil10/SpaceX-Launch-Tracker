@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.vehicles.rockets
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,8 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentRocketBinding
-import uk.co.zac_h.spacex.model.spacex.Rocket
-import uk.co.zac_h.spacex.utils.ApiResult
+import uk.co.zac_h.spacex.dto.spacex.Rocket
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 
@@ -28,7 +26,7 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        rocketsArray = savedInstanceState?.getParcelableArrayList("rockets") ?: ArrayList()
+        //rocketsArray = savedInstanceState?.getParcelableArrayList("rockets") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -52,7 +50,7 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
         }
 
         binding.rocketSwipeRefresh.setOnRefreshListener {
-            apiState = ApiResult.Status.PENDING
+
             presenter?.get()
         }
 
@@ -60,7 +58,7 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("rockets", rocketsArray)
+        //outState.putParcelableArrayList("rockets", rocketsArray)
         super.onSaveInstanceState(outState)
     }
 
@@ -70,7 +68,7 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
     }
 
     override fun update(response: List<Rocket>) {
-        apiState = ApiResult.Status.SUCCESS
+
 
         rocketsArray.clear()
         rocketsArray.addAll(response)
@@ -85,13 +83,13 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
     }
 
     override fun showError(error: String) {
-        apiState = ApiResult.Status.FAILURE
+
     }
 
     override fun networkAvailable() {
-        when (apiState) {
+        /*when (apiState) {
             ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get()
             ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }
+        }*/
     }
 }

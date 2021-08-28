@@ -16,8 +16,8 @@ import uk.co.zac_h.mediarecyclerview.models.MediaModel
 import uk.co.zac_h.mediarecyclerview.ui.MediaRecyclerView
 import uk.co.zac_h.mediarecyclerview.utils.MediaType
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.model.twitter.TimelineExtendedEntityModel
-import uk.co.zac_h.spacex.model.twitter.TimelineTweetModel
+import uk.co.zac_h.spacex.dto.twitter.TimelineExtendedEntityModel
+import uk.co.zac_h.spacex.dto.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.news.twitter.TwitterFeedContract
 import uk.co.zac_h.spacex.utils.convertDate
 import uk.co.zac_h.spacex.utils.dateStringToMillis
@@ -59,9 +59,9 @@ class TwitterFeedAdapter(
 
             desc.apply {
                 tweet.text?.formatWithUrls(
-                    tweet.entities.urls,
+                    /*tweet.entities.urls,
                     tweet.entities.mentions,
-                    tweet.entities.hashtags
+                    tweet.entities.hashtags*/
                 )?.let {
                     setHtmlText(it)
                 }
@@ -101,7 +101,7 @@ class TwitterFeedAdapter(
                 quoteScreenName.text =
                     context.getString(R.string.screen_name, quoted.user?.screenName)
                 quoteDesc.apply {
-                    quoted.text?.formatWithUrls(null, null, null)?.let {
+                    quoted.text?.formatWithUrls(/*null, null, null*/)?.let {
                         setHtmlText(it)
                     }
                 }

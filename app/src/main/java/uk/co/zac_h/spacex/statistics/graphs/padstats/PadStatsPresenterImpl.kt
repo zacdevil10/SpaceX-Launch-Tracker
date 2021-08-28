@@ -1,10 +1,10 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
 import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.model.spacex.LandingPad
-import uk.co.zac_h.spacex.model.spacex.Launchpad
+import uk.co.zac_h.spacex.dto.spacex.LandingPad
+import uk.co.zac_h.spacex.dto.spacex.Launchpad
 import uk.co.zac_h.spacex.model.spacex.StatsPadModel
-import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.retrofit.SpaceXService
 
 class PadStatsPresenterImpl(
     private val view: NetworkInterface.View<List<StatsPadModel>>,
@@ -13,13 +13,13 @@ class PadStatsPresenterImpl(
 
     private var padList = ArrayList<StatsPadModel>()
 
-    override fun getLaunchpads(api: SpaceXInterface) {
+    override fun getLaunchpads(api: SpaceXService) {
         padList.clear()
         view.showProgress()
         interactor.getLaunchpads(api, this)
     }
 
-    override fun getLandingPads(api: SpaceXInterface) {
+    override fun getLandingPads(api: SpaceXService) {
         padList.clear()
         view.showProgress()
         interactor.getLandingPads(api, this)
