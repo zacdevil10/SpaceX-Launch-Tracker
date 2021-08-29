@@ -1,6 +1,4 @@
-package uk.co.zac_h.spacex.model.spacex
-
-import uk.co.zac_h.spacex.dto.spacex.PadStatus
+package uk.co.zac_h.spacex.dto.spacex
 
 data class StatsPadModel(
     val name: String?,

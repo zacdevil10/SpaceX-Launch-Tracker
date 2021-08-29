@@ -2,7 +2,7 @@ package uk.co.zac_h.spacex.dto.spacex
 
 import com.squareup.moshi.Json
 import uk.co.zac_h.spacex.*
-import uk.co.zac_h.spacex.formatMass
+import uk.co.zac_h.spacex.dto.spacex.MassFormatted.Companion.formatMass
 
 data class DragonDocsModel(
     @field:Json(name = "docs") val docs: List<DragonResponse>

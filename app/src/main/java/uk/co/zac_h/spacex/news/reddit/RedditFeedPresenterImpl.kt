@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.news.reddit
 
-import uk.co.zac_h.spacex.model.reddit.RedditPost
+import uk.co.zac_h.spacex.dto.reddit.RedditPost
 import uk.co.zac_h.spacex.retrofit.RedditService
 
 class RedditFeedPresenterImpl(

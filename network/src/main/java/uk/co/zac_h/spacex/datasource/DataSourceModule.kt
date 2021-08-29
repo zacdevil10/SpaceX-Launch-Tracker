@@ -3,22 +3,21 @@ package uk.co.zac_h.spacex.datasource
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import retrofit2.Response
+import dagger.hilt.android.components.ViewModelComponent
 import uk.co.zac_h.spacex.dto.spacex.CompanyResponse
 import uk.co.zac_h.spacex.dto.spacex.HistoryDocsModel
 import javax.inject.Qualifier
 
-@InstallIn(SingletonComponent::class)
 @Module
+@InstallIn(ViewModelComponent::class)
 abstract class DataSourceModule {
 
-    @HistoryDataSourceClient
     @Binds
+    @HistoryDataSourceClient
     abstract fun bindHistoryDataSource(historyDataSource: HistoryDataSource): RemoteDataSource<HistoryDocsModel>
 
-    @CompanyDataSourceClient
     @Binds
+    @CompanyDataSourceClient
     abstract fun bindCompanyDataSource(companyDataSource: CompanyDataSource): RemoteDataSource<CompanyResponse>
 
 }

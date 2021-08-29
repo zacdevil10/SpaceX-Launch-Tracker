@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.news.reddit
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -12,9 +11,11 @@ import uk.co.zac_h.spacex.REDDIT_PARAM_ORDER_HOT
 import uk.co.zac_h.spacex.REDDIT_PARAM_ORDER_NEW
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentRedditFeedBinding
-import uk.co.zac_h.spacex.model.reddit.RedditPost
+import uk.co.zac_h.spacex.dto.reddit.RedditPost
 import uk.co.zac_h.spacex.news.adapters.RedditAdapter
-import uk.co.zac_h.spacex.utils.*
+import uk.co.zac_h.spacex.utils.PaginationScrollListener
+import uk.co.zac_h.spacex.utils.clearAndAdd
+import uk.co.zac_h.spacex.utils.openWebLink
 
 class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
 
