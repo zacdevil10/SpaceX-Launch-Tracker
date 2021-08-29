@@ -2,8 +2,8 @@ package uk.co.zac_h.spacex.dto.spacex
 
 import com.squareup.moshi.Json
 import uk.co.zac_h.spacex.*
+import uk.co.zac_h.spacex.dto.spacex.MassFormatted.Companion.formatMass
 import uk.co.zac_h.spacex.utils.EventDate
-import uk.co.zac_h.spacex.formatMass
 import java.text.DecimalFormat
 
 data class RoadsterDocsModel(

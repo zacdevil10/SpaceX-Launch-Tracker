@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.model.reddit
+package uk.co.zac_h.spacex.dto.reddit
 
 import com.squareup.moshi.Json
 
