@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentNewsBinding
 import uk.co.zac_h.spacex.databinding.ToolbarTabBinding
 import uk.co.zac_h.spacex.news.reddit.RedditFeedFragment
@@ -31,7 +30,10 @@ class NewsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        toolbarBinding.toolbar.setup()
+        toolbarBinding.toolbar.apply {
+            setup()
+            setSupportActionBar()
+        }
 
         binding.newsViewPager.adapter = ViewPagerAdapter(
             childFragmentManager,

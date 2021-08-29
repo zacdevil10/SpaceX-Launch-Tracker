@@ -1,18 +1,20 @@
 package uk.co.zac_h.spacex.news.reddit
 
+import uk.co.zac_h.spacex.REDDIT_PARAM_ORDER_HOT
 import uk.co.zac_h.spacex.datasource.news.RedditPagingSource
 import uk.co.zac_h.spacex.retrofit.RedditHttpClient
 import uk.co.zac_h.spacex.retrofit.RedditService
 import javax.inject.Inject
 
 class RedditFeedRepository @Inject constructor(
-    @RedditHttpClient httpService: RedditService
+    @RedditHttpClient private val httpService: RedditService
 ) {
 
-    val redditPagingSource = RedditPagingSource(httpService)
+    var order = REDDIT_PARAM_ORDER_HOT
 
-    fun setOrder(order: String) {
-        redditPagingSource.order = order
-    }
+    val redditPagingSource: RedditPagingSource
+        get() = RedditPagingSource(httpService).also {
+            it.order = order
+        }
 
 }
