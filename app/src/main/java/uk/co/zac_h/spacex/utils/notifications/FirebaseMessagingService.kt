@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.utils.notifications
 
-/*
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
@@ -12,4 +11,4 @@ class FirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
-}*/
+}

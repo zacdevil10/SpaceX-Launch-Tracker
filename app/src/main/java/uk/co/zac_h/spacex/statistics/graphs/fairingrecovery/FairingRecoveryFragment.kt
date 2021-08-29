@@ -47,7 +47,7 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
         sharedElementEnterTransition = MaterialContainerTransform()
 
         heading = arguments?.getString("heading")
-        statsList = savedInstanceState?.getParcelableArrayList("stats") ?: ArrayList()
+        //statsList = savedInstanceState?.getParcelableArrayList("stats") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -122,7 +122,7 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("stats", statsList)
+        //outState.putParcelableArrayList("stats", statsList)
         super.onSaveInstanceState(outState)
     }
 

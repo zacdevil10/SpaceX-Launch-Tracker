@@ -1,9 +1,5 @@
 package uk.co.zac_h.spacex.utils.models
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
 data class OrbitMassModel(
     var LEO: Float = 0f,
     var GTO: Float = 0f,
@@ -15,4 +11,4 @@ data class OrbitMassModel(
     var ED_L1: Float = 0f,
     var other: Float = 0f,
     var total: Float = 0f
-) : Parcelable
+)

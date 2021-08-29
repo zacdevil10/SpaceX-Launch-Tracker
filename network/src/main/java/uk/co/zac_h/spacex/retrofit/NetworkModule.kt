@@ -8,7 +8,6 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import uk.co.zac_h.BuildConfig
 import uk.co.zac_h.spacex.*
 import javax.inject.Qualifier
 
