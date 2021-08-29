@@ -23,7 +23,7 @@ class TwitterFeedFragment : BaseFragment(), TwitterFeedContract.TwitterFeedView 
     private var presenter: TwitterFeedContract.TwitterFeedPresenter? = null
     private lateinit var twitterAdapter: TwitterFeedAdapter
 
-    private lateinit var tweetsList: ArrayList<TimelineTweetModel>
+    private var tweetsList: ArrayList<TimelineTweetModel> = ArrayList()
 
     private var isLastPage = false
     private var isLoading = false

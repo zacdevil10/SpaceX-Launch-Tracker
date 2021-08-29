@@ -486,9 +486,10 @@ Reddit =========================================================================
 
 const val REDDIT_PARAM_SUBREDDIT = "subreddit"
 const val REDDIT_PARAM_ORDER = "order"
+const val REDDIT_PARAM_LIMIT = "limit"
 
 const val REDDIT_SUBREDDIT =
-    "r/{$REDDIT_PARAM_SUBREDDIT}/{$REDDIT_PARAM_ORDER}/.json?raw_json=1&limit=15"
+    "r/{$REDDIT_PARAM_SUBREDDIT}/{$REDDIT_PARAM_ORDER}/.json?raw_json=1"
 
 const val REDDIT_PARAM_ORDER_HOT = "hot"
 const val REDDIT_PARAM_ORDER_NEW = "new"

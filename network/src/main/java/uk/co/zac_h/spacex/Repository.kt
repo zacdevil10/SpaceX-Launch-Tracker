@@ -8,7 +8,11 @@ abstract class Repository<T>(
     private val cache: Cache<T>
 ) {
 
-    suspend fun fetch(key: String, query: QueryModel = QueryModel(), cachePolicy: CachePolicy) =
+    suspend fun fetch(
+        key: String,
+        query: QueryModel = QueryModel(),
+        cachePolicy: CachePolicy
+    ) =
         try {
             when (cachePolicy) {
                 CachePolicy.NEVER -> fetch(query)

@@ -13,6 +13,7 @@ interface RedditService {
     suspend fun getRedditFeed(
         @Path(REDDIT_PARAM_SUBREDDIT) subreddit: String,
         @Path(REDDIT_PARAM_ORDER) order: String = REDDIT_PARAM_ORDER_HOT,
+        @Query(REDDIT_PARAM_LIMIT) limit: Int,
         @Query(REDDIT_QUERY_AFTER) id: String? = null
     ): Response<SubredditModel>
 

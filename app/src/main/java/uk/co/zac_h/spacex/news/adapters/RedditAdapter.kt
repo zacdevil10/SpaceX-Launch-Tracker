@@ -7,19 +7,21 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.dto.reddit.RedditPost
+import uk.co.zac_h.spacex.dto.reddit.SubredditPostModel
 import uk.co.zac_h.spacex.utils.convertDate
 import uk.co.zac_h.spacex.utils.views.HtmlTextView
 
 class RedditAdapter(
-    private val openLink: (String) -> Unit,
-    private val posts: List<RedditPost>
-) :
-    RecyclerView.Adapter<RedditAdapter.ViewHolder>() {
+    diffCallback: DiffUtil.ItemCallback<SubredditPostModel> = RedditComparator,
+    private val openLink: (String) -> Unit
+) : PagingDataAdapter<SubredditPostModel, RedditAdapter.ViewHolder>(diffCallback) {
 
     companion object {
         const val REDDIT = "https://www.reddit.com"
@@ -35,58 +37,59 @@ class RedditAdapter(
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val post = posts[position]
+        val postModel = getItem(position)
 
         holder.apply {
-            if (post.redditDomain || post.isSelf) {
-                thumbCard.visibility = View.GONE
-            } else if (post.thumbnail.isNotEmpty()) {
-                thumbCard.visibility = View.VISIBLE
-                Glide.with(itemView).load(post.thumbnail)
-                    .placeholder(R.drawable.ic_placeholder_reddit).into(thumbnail)
-                thumbLink.text = post.domain
-            }
-
-            if (post.redditDomain && post.preview != null && post.description.isNullOrEmpty()) post.preview?.let {
-                preview.visibility = View.VISIBLE
-                val image = it.images[0].resolutions[it.images[0].resolutions.size - 1]
-                Glide.with(itemView).load(image.url).into(preview)
-
-                ConstraintSet().apply {
-                    clone(content)
-                    setDimensionRatio(
-                        preview.id,
-                        "${image.width}:${image.height}"
-                    )
-                    applyTo(content)
+            postModel?.data?.let {
+                val post = RedditPost(it)
+                if (post.redditDomain || post.isSelf) {
+                    thumbCard.visibility = View.GONE
+                } else if (post.thumbnail.isNotEmpty()) {
+                    thumbCard.visibility = View.VISIBLE
+                    Glide.with(itemView).load(post.thumbnail)
+                        .placeholder(R.drawable.ic_placeholder_reddit).into(thumbnail)
+                    thumbLink.text = post.domain
                 }
 
-                thumbCard.visibility = View.GONE
-            } else {
-                preview.visibility = View.GONE
-            }
+                if (post.redditDomain && post.preview != null && post.description.isNullOrEmpty()) post.preview?.let {
+                    preview.visibility = View.VISIBLE
+                    val image = it.images[0].resolutions[it.images[0].resolutions.size - 1]
+                    Glide.with(itemView).load(image.url).into(preview)
 
-            title.text = post.title
+                    ConstraintSet().apply {
+                        clone(content)
+                        setDimensionRatio(
+                            preview.id,
+                            "${image.width}:${image.height}"
+                        )
+                        applyTo(content)
+                    }
 
-            text.plainText = true
-            post.description?.let { text.setHtmlText(it) }
+                    thumbCard.visibility = View.GONE
+                } else {
+                    preview.visibility = View.GONE
+                }
 
-            author.text = post.author
-            date.text = post.created.toLong().convertDate()
-            score.text = post.score.toString()
-            comments.text = post.commentsCount.toString()
+                title.text = post.title
 
-            text.visibility = if (post.description.isNullOrEmpty()) View.GONE else View.VISIBLE
+                text.plainText = true
+                post.description?.let { text.setHtmlText(it) }
 
-            pin.visibility = if (post.stickied) View.VISIBLE else View.GONE
+                author.text = post.author
+                date.text = post.created.toLong().convertDate()
+                score.text = post.score.toString()
+                comments.text = post.commentsCount.toString()
 
-            card.setOnClickListener {
-                openLink("$REDDIT${post.permalink}")
+                text.visibility = if (post.description.isNullOrEmpty()) View.GONE else View.VISIBLE
+
+                pin.visibility = if (post.stickied) View.VISIBLE else View.GONE
+
+                card.setOnClickListener {
+                    openLink("$REDDIT${post.permalink}")
+                }
             }
         }
     }
-
-    override fun getItemCount(): Int = posts.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val card: MaterialCardView = itemView.findViewById(R.id.list_item_reddit_card)
@@ -103,5 +106,15 @@ class RedditAdapter(
         val score: TextView = itemView.findViewById(R.id.list_item_reddit_score)
         val comments: TextView = itemView.findViewById(R.id.list_item_reddit_comments)
         val pin: ImageView = itemView.findViewById(R.id.list_item_reddit_pinned)
+    }
+
+    object RedditComparator: DiffUtil.ItemCallback<SubredditPostModel>() {
+        override fun areItemsTheSame(oldItem: SubredditPostModel, newItem: SubredditPostModel): Boolean {
+            return oldItem.data.name == newItem.data.name
+        }
+
+        override fun areContentsTheSame(oldItem: SubredditPostModel, newItem: SubredditPostModel): Boolean {
+            return oldItem == newItem
+        }
     }
 }
