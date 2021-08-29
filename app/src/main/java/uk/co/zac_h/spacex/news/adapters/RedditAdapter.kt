@@ -14,14 +14,13 @@ import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.dto.reddit.RedditPost
-import uk.co.zac_h.spacex.dto.reddit.SubredditPostModel
 import uk.co.zac_h.spacex.utils.convertDate
 import uk.co.zac_h.spacex.utils.views.HtmlTextView
 
 class RedditAdapter(
-    diffCallback: DiffUtil.ItemCallback<SubredditPostModel> = RedditComparator,
+    diffCallback: DiffUtil.ItemCallback<RedditPost> = RedditComparator,
     private val openLink: (String) -> Unit
-) : PagingDataAdapter<SubredditPostModel, RedditAdapter.ViewHolder>(diffCallback) {
+) : PagingDataAdapter<RedditPost, RedditAdapter.ViewHolder>(diffCallback) {
 
     companion object {
         const val REDDIT = "https://www.reddit.com"
@@ -37,11 +36,10 @@ class RedditAdapter(
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val postModel = getItem(position)
+        val post = getItem(position)
 
         holder.apply {
-            postModel?.data?.let {
-                val post = RedditPost(it)
+            post?.let {
                 if (post.redditDomain || post.isSelf) {
                     thumbCard.visibility = View.GONE
                 } else if (post.thumbnail.isNotEmpty()) {
@@ -108,12 +106,12 @@ class RedditAdapter(
         val pin: ImageView = itemView.findViewById(R.id.list_item_reddit_pinned)
     }
 
-    object RedditComparator: DiffUtil.ItemCallback<SubredditPostModel>() {
-        override fun areItemsTheSame(oldItem: SubredditPostModel, newItem: SubredditPostModel): Boolean {
-            return oldItem.data.name == newItem.data.name
+    object RedditComparator: DiffUtil.ItemCallback<RedditPost>() {
+        override fun areItemsTheSame(oldItem: RedditPost, newItem: RedditPost): Boolean {
+            return oldItem.name == newItem.name
         }
 
-        override fun areContentsTheSame(oldItem: SubredditPostModel, newItem: SubredditPostModel): Boolean {
+        override fun areContentsTheSame(oldItem: RedditPost, newItem: RedditPost): Boolean {
             return oldItem == newItem
         }
     }

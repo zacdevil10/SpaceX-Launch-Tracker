@@ -5,7 +5,9 @@ import android.view.*
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.R
@@ -27,8 +29,10 @@ class RedditFeedFragment : BaseFragment() {
 
     private lateinit var redditAdapter: RedditAdapter
 
-    private var order: String = REDDIT_PARAM_ORDER_HOT
-    private var orderPos: Int = 0
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,6 +58,27 @@ class RedditFeedFragment : BaseFragment() {
         viewModel.redditFeed.observe(viewLifecycleOwner) {
             redditAdapter.submitData(lifecycle, it)
         }
+
+        redditAdapter.addLoadStateListener {
+            if (it.refresh is LoadState.Loading) {
+                binding.progress.show()
+            } else {
+                binding.swipeRefresh.isRefreshing = false
+
+                if (it.refresh is LoadState.NotLoading) binding.progress.hide()
+
+                val error = when {
+                    it.prepend is LoadState.Error -> it.prepend as LoadState.Error
+                    it.append is LoadState.Error -> it.append as LoadState.Error
+                    it.refresh is LoadState.Error -> it.refresh as LoadState.Error
+                    else -> null
+                }
+
+                error?.let {
+                    showError(error.error.message)
+                }
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -68,7 +93,7 @@ class RedditFeedFragment : BaseFragment() {
             ).apply {
                 setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
             }
-            setSelection(orderPos)
+            setSelection(viewModel.orderPosition)
             onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
                     p0: AdapterView<*>?,
@@ -76,19 +101,16 @@ class RedditFeedFragment : BaseFragment() {
                     position: Int,
                     p3: Long
                 ) {
-                    if (orderPos != position) when (position) {
+                    if (viewModel.orderPosition != position) when (position) {
                         0 -> {
-                            order = REDDIT_PARAM_ORDER_HOT
-                            viewModel.setOrder(order)
+                            viewModel.setOrder(REDDIT_PARAM_ORDER_HOT, position)
                             redditAdapter.refresh()
                         }
                         1 -> {
-                            order = REDDIT_PARAM_ORDER_NEW
-                            viewModel.setOrder(order)
+                            viewModel.setOrder(REDDIT_PARAM_ORDER_NEW, position)
                             redditAdapter.refresh()
                         }
                     }
-                    orderPos = position
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {}
@@ -96,17 +118,11 @@ class RedditFeedFragment : BaseFragment() {
         }
     }
 
-    fun showError(error: String) {
-
+    fun showError(error: String?) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        /*when (apiState) {
-            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.getPosts(order = order)
-            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }
-        if (isLoading) presenter?.getPosts(id = posts.last().name, order = order)*/
-
-        //redditAdapter.retry()
+        redditAdapter.retry()
     }
 }
