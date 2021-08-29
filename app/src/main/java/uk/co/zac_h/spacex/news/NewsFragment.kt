@@ -31,8 +31,8 @@ class NewsFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         toolbarBinding.toolbar.apply {
-            setup()
             setSupportActionBar()
+            setup()
         }
 
         binding.newsViewPager.adapter = ViewPagerAdapter(
