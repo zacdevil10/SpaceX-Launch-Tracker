@@ -48,7 +48,7 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
         sharedElementEnterTransition = MaterialContainerTransform()
 
         heading = arguments?.getString("heading")
-        statsList = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
+        //statsList = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -133,7 +133,7 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("launches", statsList)
+        //outState.putParcelableArrayList("launches", statsList)
         super.onSaveInstanceState(outState)
     }
 

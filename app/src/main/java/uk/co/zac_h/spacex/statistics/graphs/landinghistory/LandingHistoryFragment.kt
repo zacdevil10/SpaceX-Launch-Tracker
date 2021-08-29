@@ -47,7 +47,7 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
         sharedElementEnterTransition = MaterialContainerTransform()
 
         heading = arguments?.getString("heading")
-        statsList = savedInstanceState?.getParcelableArrayList("stats") ?: ArrayList()
+        //statsList = savedInstanceState?.getParcelableArrayList("stats") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -119,7 +119,7 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("stats", statsList)
+        //outState.putParcelableArrayList("stats", statsList)
         super.onSaveInstanceState(outState)
     }
 

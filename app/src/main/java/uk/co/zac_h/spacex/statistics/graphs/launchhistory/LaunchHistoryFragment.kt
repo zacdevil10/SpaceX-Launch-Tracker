@@ -46,7 +46,7 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
         sharedElementEnterTransition = MaterialContainerTransform()
 
         heading = arguments?.getString("heading")
-        launchStats = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
+        //launchStats = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
         filterVisible = savedInstanceState?.getBoolean("filter") ?: false
     }
 
@@ -114,7 +114,7 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.apply {
-            putParcelableArrayList("launches", launchStats)
+            //putParcelableArrayList("launches", launchStats)
             putBoolean("filter", filterVisible)
         }
         super.onSaveInstanceState(outState)

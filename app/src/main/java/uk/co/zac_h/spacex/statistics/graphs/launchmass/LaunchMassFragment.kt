@@ -16,7 +16,6 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchMassBinding
 import uk.co.zac_h.spacex.statistics.adapters.Statistics
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
@@ -50,7 +49,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
         sharedElementEnterTransition = MaterialContainerTransform()
 
         heading = arguments?.getString("heading")
-        statsList = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
+        //statsList = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -165,7 +164,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("launches", statsList)
+        //outState.putParcelableArrayList("launches", statsList)
         super.onSaveInstanceState(outState)
     }
 

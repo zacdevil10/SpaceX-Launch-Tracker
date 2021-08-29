@@ -1,7 +1,5 @@
 package uk.co.zac_h.spacex.utils
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -103,9 +101,8 @@ fun getString(
     }
 }
 
-@Parcelize
 data class EventDate(
     val dateUtc: String? = null,
     val dateUnix: Long? = null,
     val dateLocal: String? = null
-) : Parcelable
+)
