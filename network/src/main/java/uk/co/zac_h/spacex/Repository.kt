@@ -8,6 +8,8 @@ abstract class Repository<T>(
     private val cache: Cache<T>
 ) {
 
+    var location: RequestLocation = RequestLocation.REMOTE
+
     suspend fun fetch(
         key: String,
         query: QueryModel = QueryModel(),
@@ -15,11 +17,15 @@ abstract class Repository<T>(
     ) = try {
         when (cachePolicy) {
             CachePolicy.NEVER -> fetch(query)
-            CachePolicy.ALWAYS -> cache.get(key)?.value
-            CachePolicy.CLEAR -> cache.get(key)?.value.also { cache.clear(key) }
+            CachePolicy.ALWAYS -> cache.get(key)?.value.also { location = RequestLocation.CACHE }
+            CachePolicy.CLEAR -> cache.get(key)?.value.also {
+                location = RequestLocation.CACHE
+                cache.clear(key)
+            }
             CachePolicy.REFRESH -> fetchAndCache(key, query)
             CachePolicy.EXPIRES -> cache.get(key)?.let {
                 if (it.createdAt.plus(CachePolicyExpiry.LENGTH) > System.currentTimeMillis()) {
+                    location = RequestLocation.CACHE
                     it.value
                 } else null
             }
@@ -32,6 +38,9 @@ abstract class Repository<T>(
         fetch(query).also { cache.store(data = it, key = key) }
 
     private suspend fun fetch(query: QueryModel): ApiResult<T> =
-        remoteDataSource.fetchAsync(query).map { it }
+        remoteDataSource.fetchAsync(query).map { it }.also { location = RequestLocation.REMOTE }
 
+    enum class RequestLocation {
+        REMOTE, CACHE
+    }
 }
