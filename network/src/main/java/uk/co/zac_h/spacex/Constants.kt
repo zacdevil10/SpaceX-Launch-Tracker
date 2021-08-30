@@ -498,3 +498,11 @@ const val REDDIT_QUERY_AFTER = "after"
 
 /*<=======================================================================================
 ====================================================================================Reddit*/
+
+const val DEFAULT_PREFERENCES = "default_preferences"
+const val DASHBOARD_PREFERENCES = "dashboard_preferences"
+const val PINNED_PREFERENCES = "pinned"
+
+const val PREFERENCES_NEXT_LAUNCH = "next_launch"
+const val PREFERENCES_PREVIOUS_LAUNCH = "previous_launch"
+const val PREFERENCES_PINNED_LAUNCH = "pinned_launch"

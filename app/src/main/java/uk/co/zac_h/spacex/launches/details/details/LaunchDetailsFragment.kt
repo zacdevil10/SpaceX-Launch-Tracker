@@ -1,11 +1,9 @@
 package uk.co.zac_h.spacex.launches.details.details
 
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.CalendarContract
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -64,9 +62,9 @@ class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        pinnedSharedPreferences = PinnedSharedPreferencesHelperImpl(
+        /*pinnedSharedPreferences = PinnedSharedPreferences(
             requireContext().getSharedPreferences("pinned", Context.MODE_PRIVATE)
-        )
+        )*/
 
         presenter = LaunchDetailsPresenterImpl(
             this,

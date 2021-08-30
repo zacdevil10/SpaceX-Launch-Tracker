@@ -1,13 +1,13 @@
 package uk.co.zac_h.spacex.launches
 
+import uk.co.zac_h.spacex.BaseNetwork
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.dto.spacex.*
 import uk.co.zac_h.spacex.retrofit.SpaceXService
-import uk.co.zac_h.spacex.BaseNetwork
 
 class LaunchesInteractorImpl : BaseNetwork(), NetworkInterface.Interactor<List<Launch>> {
 
-    //private var call: Call<LaunchDocsModel>? = null
+    //private var call: Response<LaunchDocsModel>? = null
 
     override fun get(
         data: Any,

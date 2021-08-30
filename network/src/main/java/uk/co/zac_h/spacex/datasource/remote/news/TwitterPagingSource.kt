@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.datasource.news
+package uk.co.zac_h.spacex.datasource.remote.news
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState

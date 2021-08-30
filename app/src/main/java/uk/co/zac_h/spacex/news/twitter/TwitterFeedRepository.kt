@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.news.twitter
 
-import uk.co.zac_h.spacex.datasource.news.TwitterPagingSource
+import uk.co.zac_h.spacex.datasource.remote.news.TwitterPagingSource
 import uk.co.zac_h.spacex.retrofit.TwitterHttpClient
 import uk.co.zac_h.spacex.retrofit.TwitterService
 import javax.inject.Inject
