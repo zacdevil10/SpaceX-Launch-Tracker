@@ -1,41 +1,35 @@
 package uk.co.zac_h.spacex.dashboard
 
-import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
+import dagger.hilt.android.AndroidEntryPoint
+import uk.co.zac_h.spacex.*
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
 import uk.co.zac_h.spacex.databinding.ListItemDashboardLaunchBinding
-import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.dto.spacex.Launch
 import uk.co.zac_h.spacex.dto.spacex.Upcoming
+import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.utils.*
-import uk.co.zac_h.spacex.utils.Keys.DashboardKeys
-import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_NEXT_LAUNCH
-import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_PINNED_LAUNCH
-import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_PREVIOUS_LAUNCH
 
-class DashboardFragment : BaseFragment(), DashboardContract.View {
+@AndroidEntryPoint
+class DashboardFragment : BaseFragment() {
 
     override val title: String by lazy { getString(R.string.menu_home) }
 
+    private val viewModel: DashboardViewModel by viewModels()
+
     private lateinit var binding: FragmentDashboardBinding
-
-    private var presenter: DashboardContract.Presenter? = null
-
-    private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
 
     private var nextLaunchModel: Launch? = null
     private var latestLaunchModel: Launch? = null
@@ -43,15 +37,6 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
     private var pinnedArray: ArrayList<Launch> = ArrayList()
 
     private var countdownTimer: CountDownTimer? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        /*nextLaunchModel = savedInstanceState?.getParcelable(DashboardKeys.NEXT_SAVED_STATE)
-        latestLaunchModel = savedInstanceState?.getParcelable(DashboardKeys.LATEST_SAVED_STATE)
-        pinnedArray = savedInstanceState?.getParcelableArrayList(DashboardKeys.PINNED_SAVED_STATE)
-            ?: ArrayList()*/
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,23 +49,16 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.getLaunch("next")
+        viewModel.getLaunch("latest")
+
         view.doOnPreDraw { startPostponedEnterTransition() }
         postponeEnterTransition()
 
-        togglePinnedProgress(false)
-        binding.toolbarLayout.progress.hide()
         binding.toolbarLayout.toolbar.apply {
             setup()
             createOptionsMenu(R.menu.menu_dashboard)
         }
-
-        val pinnedPrefs = (requireContext().applicationContext as App).pinnedPreferencesRepo
-
-        pinnedSharedPreferences = PinnedSharedPreferencesHelperImpl(
-            requireContext().getSharedPreferences("pinned", Context.MODE_PRIVATE)
-        )
-
-        presenter = DashboardPresenterImpl(this, DashboardInteractorImpl())
 
         pinnedAdapter = LaunchesAdapter(requireContext()).also {
             it.update(pinnedArray)
@@ -91,33 +69,26 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
             adapter = pinnedAdapter
         }
 
-        val prefs = (requireContext().applicationContext as App).dashboardPreferencesRepo
-
-        prefs.visibleLive.observe(viewLifecycleOwner) { mode ->
-            mode?.forEach {
+        viewModel.dashboardLiveData.observe(viewLifecycleOwner) { entries ->
+            entries?.forEach {
                 when (it.key) {
-                    PREFERENCES_NEXT_LAUNCH -> presenter?.toggleNextVisibility(it.value as Boolean)
-                    PREFERENCES_PREVIOUS_LAUNCH -> presenter?.toggleLatestVisibility(it.value as Boolean)
-                    PREFERENCES_PINNED_LAUNCH -> presenter?.togglePinnedList(it.value as Boolean)
+                    PREFERENCES_NEXT_LAUNCH -> showNextLaunch(it.value as Boolean)
+                    PREFERENCES_PREVIOUS_LAUNCH -> showLatestLaunch(it.value as Boolean)
+                    PREFERENCES_PINNED_LAUNCH -> showPinnedList(it.value as Boolean)
                 }
             }
         }
 
-        pinnedPrefs.pinnedLive.observe(viewLifecycleOwner) { mode ->
+        viewModel.pinnedLiveData.observe(viewLifecycleOwner) { mode ->
             mode?.forEach { e ->
-                if (e.key.length < 4) {
-                    pinnedSharedPreferences.removePinnedLaunch(e.key)
-                    return@forEach
-                }
-
                 when (e.value) {
                     true -> if (pinnedArray.none { it.id == e.key }) {
-                        //presenter?.get(e.key)
+                        viewModel.getLaunch(e.key)
                     }
                     false -> {
                         pinnedArray.removeAll { it.id == e.key }
                         pinnedAdapter.update(pinnedArray)
-                        pinnedSharedPreferences.removePinnedLaunch(e.key)
+                        //pinnedSharedPreferences.removePinnedLaunch(e.key)
                     }
                 }
             }
@@ -125,28 +96,57 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
             if (mode.isNullOrEmpty()) showPinnedMessage()
         }
 
-        binding.refresh.setOnRefreshListener {
-
-            //presenter?.getLatestLaunches()
+        viewModel.nextLaunch.observe(viewLifecycleOwner) { response ->
+            when (response.status) {
+                ApiResult.Status.PENDING -> toggleNextProgress(true)
+                ApiResult.Status.SUCCESS -> {
+                    toggleNextProgress(false)
+                    response.data?.let {
+                        toggleNextProgress(false)
+                        val time = it.launchDate?.dateUnix?.times(1000)
+                            ?.minus(System.currentTimeMillis()) ?: 0
+                        if (it.tbd == false && time >= 0) {
+                            setCountdown(time)
+                            showCountdown()
+                            hideNextHeading()
+                        } else {
+                            hideCountdown()
+                            showNextHeading()
+                        }
+                        update(Upcoming.NEXT, it)
+                    }
+                }
+                ApiResult.Status.FAILURE -> {
+                    toggleSwipeRefresh(false)
+                    showError(response.error?.message)
+                }
+            }
         }
 
-        //presenter?.getLatestLaunches(nextLaunchModel, latestLaunchModel)
-    }
+        viewModel.latestLaunch.observe(viewLifecycleOwner) { response ->
+            when (response.status) {
+                ApiResult.Status.PENDING -> toggleLatestProgress(true)
+                ApiResult.Status.SUCCESS -> {
+                    toggleLatestProgress(false)
+                    response.data?.let { update(Upcoming.LATEST, it) }
+                }
+                ApiResult.Status.FAILURE -> {
+                    toggleSwipeRefresh(false)
+                    showError(response.error?.message)
+                }
+            }
+        }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-       /* outState.apply {
-            nextLaunchModel?.let { putParcelable(DashboardKeys.NEXT_SAVED_STATE, it) }
-            latestLaunchModel?.let { putParcelable(DashboardKeys.LATEST_SAVED_STATE, it) }
-            putParcelableArrayList(DashboardKeys.PINNED_SAVED_STATE, pinnedArray)
-        }*/
-        super.onSaveInstanceState(outState)
+        viewModel.pinnedLaunches.observe(viewLifecycleOwner) { response ->
+            val launches = response.mapNotNull { it.data }
+            pinnedAdapter.update(launches)
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         countdownTimer?.cancel()
         countdownTimer = null
-        presenter?.cancelRequest()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
@@ -157,8 +157,7 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun update(data: Any, response: Launch) {
-        //if (apiState != ApiResult.Status.FAILURE)
+    fun update(data: Any, response: Launch) {
         when (data) {
             Upcoming.NEXT -> {
                 nextLaunchModel = response
@@ -173,7 +172,6 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
     }
 
     fun update(binding: ListItemDashboardLaunchBinding, response: Launch) {
-        //if (apiState != ApiResult.Status.FAILURE)
         with(binding) {
             dashboardLaunch.transitionName = response.id
 
@@ -217,11 +215,19 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
         pinnedAdapter.update(pinnedArray)
     }
 
-    override fun setCountdown(time: Long) {
+    fun setCountdown(time: Long) {
         countdownTimer?.cancel()
         countdownTimer = object : CountDownTimer(time, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                presenter?.updateCountdown(millisUntilFinished)
+            override fun onTick(time: Long) {
+                updateCountdown(
+                    String.format(
+                        "T-%02d:%02d:%02d:%02d",
+                        time.toCountdownDays(),
+                        time.toCountdownHours(),
+                        time.toCountdownMinutes(),
+                        time.toCountdownSeconds()
+                    )
+                )
             }
 
             override fun onFinish() {
@@ -240,87 +246,71 @@ class DashboardFragment : BaseFragment(), DashboardContract.View {
         countdownTimer?.start()
     }
 
-    override fun updateCountdown(countdown: String) {
+    fun updateCountdown(countdown: String) {
         binding.next.countdown.text = countdown
     }
 
-    override fun showPinnedMessage() {
+    private fun showPinnedMessage() {
         binding.pinned.progress.hide()
         if (pinnedArray.isEmpty()) binding.pinned.pinnedMessage.visibility = View.VISIBLE
     }
 
-    override fun hidePinnedMessage() {
+    fun hidePinnedMessage() {
         binding.pinned.pinnedMessage.visibility = View.GONE
     }
 
-    override fun toggleNextProgress(isShown: Boolean) = when (isShown) {
+    private fun toggleNextProgress(isShown: Boolean) = when (isShown) {
         true -> binding.next.progress.show()
         false -> binding.next.progress.hide()
     }
 
-    override fun toggleLatestProgress(isShown: Boolean) = when (isShown) {
+    private fun toggleLatestProgress(isShown: Boolean) = when (isShown) {
         true -> binding.latest.progress.show()
         false -> binding.latest.progress.hide()
     }
 
-    override fun togglePinnedProgress(isShown: Boolean) = when (isShown) {
+    fun togglePinnedProgress(isShown: Boolean) = when (isShown) {
         true -> binding.pinned.progress.show()
         false -> binding.pinned.progress.hide()
     }
 
-    override fun showCountdown() {
+    private fun showCountdown() {
         binding.next.countdown.visibility = View.VISIBLE
     }
 
-    override fun hideCountdown() {
+    private fun hideCountdown() {
         binding.next.countdown.visibility = View.GONE
     }
 
-    override fun showNextHeading() {
+    private fun showNextHeading() {
         binding.next.heading.visibility = View.VISIBLE
     }
 
-    override fun hideNextHeading() {
+    private fun hideNextHeading() {
         binding.next.heading.visibility = View.GONE
     }
 
-    override fun showNextLaunch() {
-        binding.next.dashboardLaunch.visibility = View.VISIBLE
+    private fun showNextLaunch(visible: Boolean) {
+        binding.next.dashboardLaunch.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
-    override fun hideNextLaunch() {
-        binding.next.dashboardLaunch.visibility = View.GONE
+    private fun showLatestLaunch(visible: Boolean) {
+        binding.latest.dashboardLaunch.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
-    override fun showLatestLaunch() {
-        binding.latest.dashboardLaunch.visibility = View.VISIBLE
+    private fun showPinnedList(visible: Boolean) {
+        binding.pinned.dashboardPinned.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
-    override fun hideLatestLaunch() {
-        binding.latest.dashboardLaunch.visibility = View.GONE
-    }
-
-    override fun showPinnedList() {
-        binding.pinned.dashboardPinned.visibility = View.VISIBLE
-    }
-
-    override fun hidePinnedList() {
-        binding.pinned.dashboardPinned.visibility = View.GONE
-    }
-
-    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+    fun toggleSwipeRefresh(isRefreshing: Boolean) {
         binding.refresh.isRefreshing = isRefreshing
     }
 
-    override fun showError(error: String) {
-
+    fun showError(error: String?) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-       /* when (apiState) {
-            //ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.getLatestLaunches()
-            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }*/
+
     }
 }

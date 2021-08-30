@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex
 
-import uk.co.zac_h.spacex.datasource.RemoteDataSource
+import uk.co.zac_h.spacex.datasource.remote.RemoteDataSource
 import uk.co.zac_h.spacex.dto.spacex.QueryModel
 
 abstract class Repository<T>(

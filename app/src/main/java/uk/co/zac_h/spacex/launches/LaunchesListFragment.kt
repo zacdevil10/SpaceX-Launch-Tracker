@@ -12,6 +12,7 @@ import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
 import uk.co.zac_h.spacex.dto.spacex.Launch
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import java.util.*
+import kotlin.collections.ArrayList
 
 class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>,
     SearchView.OnQueryTextListener {
@@ -22,7 +23,7 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
     private var presenter: NetworkInterface.Presenter<List<Launch>>? = null
     private lateinit var launchesAdapter: LaunchesAdapter
 
-    private lateinit var launches: ArrayList<Launch>
+    private var launches: ArrayList<Launch> = ArrayList()
 
     private var searchView: SearchView? = null
 

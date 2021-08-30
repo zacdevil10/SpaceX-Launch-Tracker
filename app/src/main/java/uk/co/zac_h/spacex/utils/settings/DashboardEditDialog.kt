@@ -4,17 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import uk.co.zac_h.spacex.base.App
+import dagger.hilt.android.AndroidEntryPoint
+import uk.co.zac_h.spacex.PREFERENCES_NEXT_LAUNCH
+import uk.co.zac_h.spacex.PREFERENCES_PINNED_LAUNCH
+import uk.co.zac_h.spacex.PREFERENCES_PREVIOUS_LAUNCH
+import uk.co.zac_h.spacex.dashboard.DashboardViewModel
 import uk.co.zac_h.spacex.databinding.DialogDashboardEditBinding
-import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_NEXT_LAUNCH
-import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_PINNED_LAUNCH
-import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_PREVIOUS_LAUNCH
-import uk.co.zac_h.spacex.utils.repo.DashboardObj.PREFERENCES_SECTION
 
+@AndroidEntryPoint
 class DashboardEditDialog : BottomSheetDialogFragment() {
 
     private lateinit var binding: DialogDashboardEditBinding
+
+    private val viewModel: DashboardViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,34 +31,28 @@ class DashboardEditDialog : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val prefs = (requireActivity().application as App).dashboardPreferencesRepo
+        binding.dialogDashboardEditNext.isChecked = viewModel.getDashboardSectionState(PREFERENCES_NEXT_LAUNCH)
 
-        binding.dialogDashboardEditNext.isChecked =
-            (prefs.visible(PREFERENCES_NEXT_LAUNCH)[PREFERENCES_NEXT_LAUNCH] ?: true) as Boolean
-        binding.dialogDashboardEditPrevious.isChecked =
-            (prefs.visible(PREFERENCES_PREVIOUS_LAUNCH)[PREFERENCES_PREVIOUS_LAUNCH]
-                ?: true) as Boolean
-        binding.dialogDashboardEditPinned.isChecked =
-            (prefs.visible(PREFERENCES_PINNED_LAUNCH)[PREFERENCES_PINNED_LAUNCH] ?: true) as Boolean
+        binding.dialogDashboardEditPrevious.isChecked = viewModel.getDashboardSectionState(PREFERENCES_PREVIOUS_LAUNCH)
+
+        binding.dialogDashboardEditPinned.isChecked = viewModel.getDashboardSectionState(PREFERENCES_PINNED_LAUNCH)
 
         binding.dialogDashboardEditNext.setOnCheckedChangeListener { _, isChecked ->
-            prefs.isVisible = mutableMapOf(PREFERENCES_NEXT_LAUNCH.also {
-                PREFERENCES_SECTION = PREFERENCES_NEXT_LAUNCH
-            } to isChecked)
+            update(PREFERENCES_NEXT_LAUNCH, isChecked)
         }
 
         binding.dialogDashboardEditPrevious.setOnCheckedChangeListener { _, isChecked ->
-            prefs.isVisible = mutableMapOf(PREFERENCES_PREVIOUS_LAUNCH.also {
-                PREFERENCES_SECTION = PREFERENCES_PREVIOUS_LAUNCH
-            } to isChecked)
+            update(PREFERENCES_PREVIOUS_LAUNCH, isChecked)
         }
 
         binding.dialogDashboardEditPinned.setOnCheckedChangeListener { _, isChecked ->
-            prefs.isVisible = mutableMapOf(PREFERENCES_PINNED_LAUNCH.also {
-                PREFERENCES_SECTION = PREFERENCES_PINNED_LAUNCH
-            } to isChecked)
+            update(PREFERENCES_PINNED_LAUNCH, isChecked)
         }
 
+    }
+
+    private fun update(id: String, isChecked: Boolean) {
+        if (isChecked) viewModel.showDashboardSection(id) else viewModel.hideDashboardSection(id)
     }
 
 }

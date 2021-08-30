@@ -15,12 +15,11 @@ import uk.co.zac_h.spacex.databinding.ListItemLaunchesBinding
 import uk.co.zac_h.spacex.dto.spacex.Launch
 import uk.co.zac_h.spacex.utils.LAUNCH_SHORT_KEY
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
-import kotlin.collections.ArrayList
 
 class LaunchesAdapter(private val context: Context) :
     RecyclerView.Adapter<LaunchesAdapter.ViewHolder>() {
 
-    private var launches: ArrayList<Launch> = ArrayList()
+    private var launches: List<Launch> = emptyList()
     //private var filteredLaunches: ArrayList<Launch> = launches
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
@@ -75,7 +74,7 @@ class LaunchesAdapter(private val context: Context) :
 
     override fun getItemCount(): Int = launches.size
 
-    fun update(newList: ArrayList<Launch>) {
+    fun update(newList: List<Launch>) {
         launches = newList
         notifyDataSetChanged()
     }
