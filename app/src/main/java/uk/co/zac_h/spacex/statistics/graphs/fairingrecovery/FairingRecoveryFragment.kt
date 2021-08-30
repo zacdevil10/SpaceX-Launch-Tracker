@@ -16,7 +16,6 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
@@ -42,7 +41,6 @@ class FairingRecoveryFragment : BaseFragment() {
     private val navArgs: FairingRecoveryFragmentArgs by navArgs()
 
     private var statsList: List<FairingRecoveryModel> = ArrayList()
-    private lateinit var keyAdapter: StatisticsKeyAdapter
     private var keys: ArrayList<KeysModel> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,7 +72,7 @@ class FairingRecoveryFragment : BaseFragment() {
 
         binding.fairingRecoveryConstraint.transitionName = getString(navArgs.type.title)
 
-        keyAdapter = StatisticsKeyAdapter(requireContext(), keys, false)
+        val keyAdapter = StatisticsKeyAdapter(requireContext(), keys, false)
 
         binding.statisticsBarChart.recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -87,7 +85,7 @@ class FairingRecoveryFragment : BaseFragment() {
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     e?.let {
-                        val stats = statsList.filter { it.year == e.x.toInt() }[0]
+                        val stats = statsList.first { it.year == e.x.toInt() }
 
                         keys.clear()
 
@@ -98,10 +96,7 @@ class FairingRecoveryFragment : BaseFragment() {
 
                             keys.apply {
                                 if (stats.successes > 0) add(
-                                    KeysModel(
-                                        "Successes",
-                                        stats.successes
-                                    )
+                                    KeysModel("Successes", stats.successes)
                                 )
                                 if (stats.failures > 0) add(KeysModel("Failures", stats.failures))
                                 add(KeysModel("Total", e.y))
@@ -132,48 +127,31 @@ class FairingRecoveryFragment : BaseFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.reload -> {
-            viewModel.get(CachePolicy.REFRESH)
-            true
-        }
+        R.id.reload -> true.also { viewModel.get(CachePolicy.REFRESH) }
         else -> super.onOptionsItemSelected(item)
     }
 
     fun update(data: Boolean, response: List<FairingRecoveryModel>) {
+        hideProgress()
         statsList = response
-
-        val colors = ArrayList<Int>()
-
-        colors.add(ColorTemplate.rgb("29b6f6")) //Success
-        colors.add(ColorTemplate.rgb("b00020")) //Failure
-
-        val entries = ArrayList<BarEntry>()
 
         var max = 0f
 
-        response.forEach {
+        val entries = response.map {
             val newMax = it.successes + it.failures
             if (newMax > max) max = newMax
-            entries.add(
-                BarEntry(
-                    it.year.toFloat(),
-                    floatArrayOf(
-                        it.successes,
-                        it.failures
-                    )
-                )
-            )
+            BarEntry(it.year.toFloat(), floatArrayOf(it.successes, it.failures))
         }
 
         val set = BarDataSet(entries, "").apply {
-            setColors(colors)
+            colors = listOf(
+                ColorTemplate.rgb("29b6f6"), //Success
+                ColorTemplate.rgb("b00020")  //Failure
+            )
             setDrawValues(false)
 
             stackLabels = arrayOf("Success", "Failure")
         }
-
-        val dataSets = ArrayList<IBarDataSet>()
-        dataSets.add(set)
 
         binding.statisticsBarChart.barChart.apply {
             if (data) animateY(400, Easing.Linear)
@@ -181,10 +159,11 @@ class FairingRecoveryFragment : BaseFragment() {
             axisLeft.apply {
                 axisMinimum = 0f
                 axisMaximum = if ((max.toInt() % 2) == 0) max else max.plus(1)
-                labelCount =
-                    if ((max.toInt() % 2) == 0) max.toInt() / 2 else max.toInt().plus(1) / 2
+                labelCount = if ((max.toInt() % 2) == 0) {
+                    max.toInt() / 2
+                } else max.toInt().plus(1) / 2
             }
-            this.data = BarData(dataSets)
+            this.data = BarData(listOf(set))
             invalidate()
         }
     }
