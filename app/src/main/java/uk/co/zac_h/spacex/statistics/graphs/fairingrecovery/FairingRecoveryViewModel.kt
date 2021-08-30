@@ -21,7 +21,8 @@ class FairingRecoveryViewModel @Inject constructor(
     private val repository: StatisticsRepository
 ) : ViewModel() {
 
-    private val _fairingRecovery = MutableLiveData<ApiResult<List<FairingRecoveryModel>>>(ApiResult.pending())
+    private val _fairingRecovery =
+        MutableLiveData<ApiResult<List<FairingRecoveryModel>>>(ApiResult.pending())
     val fairingRecovery: LiveData<ApiResult<List<FairingRecoveryModel>>> = _fairingRecovery
 
     val cacheLocation: Repository.RequestLocation
@@ -33,25 +34,22 @@ class FairingRecoveryViewModel @Inject constructor(
                 repository.fetch(key = "fairing", query = query, cachePolicy = cachePolicy)
             }
 
-            val result = response.await().map { it.docs.map { Launch(it) } }
+            val result = response.await().map { launches -> launches.docs.map { Launch(it) } }
 
             _fairingRecovery.value = result.map { launches ->
-                val stats = ArrayList<FairingRecoveryModel>()
+                ArrayList<FairingRecoveryModel>().apply {
+                    launches.forEach {
+                        val year = it.launchDate?.dateUnix?.formatDateMillisYYYY() ?: return@forEach
 
-                launches.forEach { launch ->
-                    val year = launch.launchDate?.dateUnix?.formatDateMillisYYYY() ?: return@forEach
+                        if (none { newList -> newList.year == year }) add(FairingRecoveryModel(year))
 
-                    if (stats.none { it.year == year }) stats.add(FairingRecoveryModel(year))
+                        val stat = first { newList -> newList.year == year }
 
-                    val stat = stats.filter { it.year == year }[0]
-
-                    when (launch.fairings?.recoveryAttempt == true && launch.fairings?.isRecovered == true) {
-                        true -> stat.successes++
-                        false -> stat.failures++
+                        if (it.fairings?.recoveryAttempt == true && it.fairings?.isRecovered == true) {
+                            stat.successes++
+                        } else stat.failures++
                     }
                 }
-
-                stats
             }
         }
     }

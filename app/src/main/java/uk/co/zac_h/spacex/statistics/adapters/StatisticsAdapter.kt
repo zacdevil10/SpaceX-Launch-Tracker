@@ -74,27 +74,20 @@ class StatisticsAdapter(private val context: Context, private val view: Statisti
     }
 
     private fun getNavDirection(item: Statistics) = when (item) {
-        Statistics.LAUNCH_HISTORY -> StatisticsFragmentDirections.actionStatisticsFragmentToLaunchHistory(
-            Statistics.LAUNCH_HISTORY
-        )
-        Statistics.LANDING_HISTORY -> StatisticsFragmentDirections.actionStatisticsFragmentToLandingHistory(
-            Statistics.LANDING_HISTORY
-        )
-        Statistics.LAUNCH_RATE -> StatisticsFragmentDirections.actionStatisticsFragmentToLaunchRate(
-            Statistics.LAUNCH_RATE
-        )
-        Statistics.MASS_TO_ORBIT -> StatisticsFragmentDirections.actionStatisticsFragmentToLaunchMass(
-            Statistics.MASS_TO_ORBIT
-        )
-        Statistics.FAIRING_RECOVERY -> StatisticsFragmentDirections.actionStatisticsFragmentToFairingRecovery(
-            Statistics.FAIRING_RECOVERY
-        )
-        Statistics.LAUNCHPADS -> StatisticsFragmentDirections.actionStatisticsFragmentToPadStats(
-            Statistics.LAUNCHPADS
-        )
-        Statistics.LANDING_PADS -> StatisticsFragmentDirections.actionStatisticsFragmentToPadStats(
-            Statistics.LANDING_PADS
-        )
+        Statistics.LAUNCH_HISTORY ->
+            StatisticsFragmentDirections.actionStatisticsFragmentToLaunchHistory(Statistics.LAUNCH_HISTORY)
+        Statistics.LANDING_HISTORY ->
+            StatisticsFragmentDirections.actionStatisticsFragmentToLandingHistory(Statistics.LANDING_HISTORY)
+        Statistics.LAUNCH_RATE ->
+            StatisticsFragmentDirections.actionStatisticsFragmentToLaunchRate(Statistics.LAUNCH_RATE)
+        Statistics.MASS_TO_ORBIT ->
+            StatisticsFragmentDirections.actionStatisticsFragmentToLaunchMass(Statistics.MASS_TO_ORBIT)
+        Statistics.FAIRING_RECOVERY ->
+            StatisticsFragmentDirections.actionStatisticsFragmentToFairingRecovery(Statistics.FAIRING_RECOVERY)
+        Statistics.LAUNCHPADS ->
+            StatisticsFragmentDirections.actionStatisticsFragmentToPadStats(Statistics.LAUNCHPADS)
+        Statistics.LANDING_PADS ->
+            StatisticsFragmentDirections.actionStatisticsFragmentToPadStats(Statistics.LANDING_PADS)
     }
 
     override fun getItemCount(): Int = items.size + 1
@@ -108,32 +101,11 @@ class StatisticsAdapter(private val context: Context, private val view: Statisti
 }
 
 enum class Statistics(@StringRes val title: Int, val image: Int) {
-    LAUNCH_HISTORY(
-        R.string.statistics_launch_history,
-        R.drawable.ic_launch_history
-    ),
-    LANDING_HISTORY(
-        R.string.statistics_landing_history,
-        R.drawable.ic_launch_history
-    ),
-    LAUNCH_RATE(
-        R.string.statistics_launch_rate,
-        R.drawable.ic_launch_rate
-    ),
-    MASS_TO_ORBIT(
-        R.string.statistics_mass_to_orbit,
-        R.drawable.ic_mass_to_orbit
-    ),
-    FAIRING_RECOVERY(
-        R.string.statistics_fairing_recovery,
-        R.drawable.ic_fairing_recovery
-    ),
-    LAUNCHPADS(
-        R.string.statistics_launchpads,
-        R.drawable.ic_launchpads
-    ),
-    LANDING_PADS(
-        R.string.statistics_landing_pads,
-        R.drawable.ic_landing_pads
-    )
+    LAUNCH_HISTORY(R.string.statistics_launch_history, R.drawable.ic_launch_history),
+    LANDING_HISTORY(R.string.statistics_landing_history, R.drawable.ic_launch_history),
+    LAUNCH_RATE(R.string.statistics_launch_rate, R.drawable.ic_launch_rate),
+    MASS_TO_ORBIT(R.string.statistics_mass_to_orbit, R.drawable.ic_mass_to_orbit),
+    FAIRING_RECOVERY(R.string.statistics_fairing_recovery, R.drawable.ic_fairing_recovery),
+    LAUNCHPADS(R.string.statistics_launchpads, R.drawable.ic_launchpads),
+    LANDING_PADS(R.string.statistics_landing_pads, R.drawable.ic_landing_pads)
 }
