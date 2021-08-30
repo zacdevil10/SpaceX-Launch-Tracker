@@ -13,15 +13,13 @@
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
             android:id="@+id/progress"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:elevation="@dimen/toolbar_elevation"
             android:indeterminate="true"
             app:hideAnimationBehavior="outward"
             app:indicatorColor="?colorSecondary"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:showAnimationBehavior="inward" />
 
         <androidx.recyclerview.widget.RecyclerView
