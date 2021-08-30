@@ -5,7 +5,10 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.BarData
@@ -17,37 +20,36 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
+import uk.co.zac_h.spacex.ApiResult
+import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentFairingRecoveryBinding
 import uk.co.zac_h.spacex.statistics.adapters.Statistics
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
 import uk.co.zac_h.spacex.utils.models.FairingRecoveryModel
 import uk.co.zac_h.spacex.utils.models.KeysModel
 
-class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<FairingRecoveryModel>> {
+class FairingRecoveryFragment : BaseFragment() {
 
     override val title by lazy { getString(Statistics.FAIRING_RECOVERY.title) }
 
     private lateinit var binding: FragmentFairingRecoveryBinding
 
-    private var presenter: NetworkInterface.Presenter<List<FairingRecoveryModel>?>? = null
+    private val viewModel: FairingRecoveryViewModel by viewModels()
 
-    private lateinit var statsList: ArrayList<FairingRecoveryModel>
+    private val navArgs: FairingRecoveryFragmentArgs by navArgs()
+
+    private var statsList: List<FairingRecoveryModel> = ArrayList()
     private lateinit var keyAdapter: StatisticsKeyAdapter
     private var keys: ArrayList<KeysModel> = ArrayList()
-
-    private var heading: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
         sharedElementEnterTransition = MaterialContainerTransform()
-
-        heading = arguments?.getString("heading")
-        //statsList = savedInstanceState?.getParcelableArrayList("stats") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -63,14 +65,14 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
+        viewModel.get()
+
         binding.toolbarLayout.toolbar.apply {
             setup()
             createOptionsMenu(R.menu.menu_statistics_reload)
         }
 
-        binding.fairingRecoveryConstraint.transitionName = heading
-
-        presenter = FairingRecoveryPresenter(this, FairingRecoveryInteractor())
+        binding.fairingRecoveryConstraint.transitionName = getString(navArgs.type.title)
 
         keyAdapter = StatisticsKeyAdapter(requireContext(), keys, false)
 
@@ -118,27 +120,27 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
             })
         }
 
-        presenter?.getOrUpdate(statsList)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        //outState.putParcelableArrayList("stats", statsList)
-        super.onSaveInstanceState(outState)
+        viewModel.fairingRecovery.observe(viewLifecycleOwner) { response ->
+            when (response.status) {
+                ApiResult.Status.PENDING -> showProgress()
+                ApiResult.Status.SUCCESS -> response.data?.let {
+                    update(viewModel.cacheLocation != Repository.RequestLocation.CACHE, it)
+                }
+                ApiResult.Status.FAILURE -> showError(response.error?.message)
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.reload -> {
-
-            statsList.clear()
-            presenter?.getOrUpdate(null)
+            viewModel.get(CachePolicy.REFRESH)
             true
         }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun update(data: Any, response: List<FairingRecoveryModel>) {
-
-        if (statsList.isEmpty()) statsList.addAll(response)
+    fun update(data: Boolean, response: List<FairingRecoveryModel>) {
+        statsList = response
 
         val colors = ArrayList<Int>()
 
@@ -174,7 +176,7 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
         dataSets.add(set)
 
         binding.statisticsBarChart.barChart.apply {
-            if (data == true) animateY(400, Easing.Linear)
+            if (data) animateY(400, Easing.Linear)
             xAxis.labelCount = response.size
             axisLeft.apply {
                 axisMinimum = 0f
@@ -187,23 +189,19 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
         }
     }
 
-    override fun showProgress() {
+    fun showProgress() {
         binding.toolbarLayout.progress.show()
     }
 
-    override fun hideProgress() {
+    fun hideProgress() {
         binding.toolbarLayout.progress.hide()
     }
 
-    override fun showError(error: String) {
-
+    fun showError(error: String?) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        /*when (apiState) {
-            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.getOrUpdate(null)
-            ApiResult.Status.SUCCESS -> {
-            }
-        }*/
+        viewModel.get()
     }
 }

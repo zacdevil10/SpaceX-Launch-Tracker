@@ -141,32 +141,68 @@
     <fragment
         android:id="@+id/launch_history_fragment"
         android:name="uk.co.zac_h.spacex.statistics.graphs.launchhistory.LaunchHistoryFragment"
-        tools:layout="@layout/fragment_launch_history" />
+        tools:layout="@layout/fragment_launch_history">
+
+        <argument
+            android:name="type"
+            app:argType="uk.co.zac_h.spacex.statistics.adapters.Statistics" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/landing_history_fragment"
         android:name="uk.co.zac_h.spacex.statistics.graphs.landinghistory.LandingHistoryFragment"
-        tools:layout="@layout/fragment_landing_history" />
+        tools:layout="@layout/fragment_landing_history">
+
+        <argument
+            android:name="type"
+            app:argType="uk.co.zac_h.spacex.statistics.adapters.Statistics" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/launch_rate_fragment"
         android:name="uk.co.zac_h.spacex.statistics.graphs.launchrate.LaunchRateFragment"
-        tools:layout="@layout/fragment_launch_rate" />
+        tools:layout="@layout/fragment_launch_rate">
+
+        <argument
+            android:name="type"
+            app:argType="uk.co.zac_h.spacex.statistics.adapters.Statistics" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/launch_mass_fragment"
         android:name="uk.co.zac_h.spacex.statistics.graphs.launchmass.LaunchMassFragment"
-        tools:layout="@layout/fragment_launch_mass" />
+        tools:layout="@layout/fragment_launch_mass">
+
+        <argument
+            android:name="type"
+            app:argType="uk.co.zac_h.spacex.statistics.adapters.Statistics" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/fairing_recovery_fragment"
         android:name="uk.co.zac_h.spacex.statistics.graphs.fairingrecovery.FairingRecoveryFragment"
-        tools:layout="@layout/fragment_fairing_recovery" />
+        tools:layout="@layout/fragment_fairing_recovery">
+
+        <argument
+            android:name="type"
+            app:argType="uk.co.zac_h.spacex.statistics.adapters.Statistics" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/pad_stats_fragment"
         android:name="uk.co.zac_h.spacex.statistics.graphs.padstats.PadStatsFragment"
-        tools:layout="@layout/fragment_pad_stats" />
+        tools:layout="@layout/fragment_pad_stats">
+
+        <argument
+            android:name="type"
+            app:argType="uk.co.zac_h.spacex.statistics.adapters.Statistics" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/company_page_fragment"
