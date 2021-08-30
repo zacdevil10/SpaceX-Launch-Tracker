@@ -6,7 +6,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import uk.co.zac_h.spacex.datasource.remote.about.CompanyDataSource
 import uk.co.zac_h.spacex.datasource.remote.about.HistoryDataSource
-import uk.co.zac_h.spacex.datasource.remote.dashboard.DashboardDataSource
 import uk.co.zac_h.spacex.dto.spacex.CompanyResponse
 import uk.co.zac_h.spacex.dto.spacex.HistoryDocsModel
 import uk.co.zac_h.spacex.dto.spacex.LaunchDocsModel
@@ -25,8 +24,8 @@ abstract class DataSourceModule {
     abstract fun bindCompanyDataSource(companyDataSource: CompanyDataSource): RemoteDataSource<CompanyResponse>
 
     @Binds
-    @DashboardDataSourceClient
-    abstract fun bindDashboardDataSource(dashboardDataSource: DashboardDataSource): RemoteDataSource<LaunchDocsModel>
+    @LaunchesDataSourceClient
+    abstract fun bindLaunchesDataSource(launchesDataSource: LaunchesDataSource): RemoteDataSource<LaunchDocsModel>
 
 }
 
@@ -37,4 +36,4 @@ annotation class HistoryDataSourceClient
 annotation class CompanyDataSourceClient
 
 @Qualifier
-annotation class DashboardDataSourceClient
+annotation class LaunchesDataSourceClient

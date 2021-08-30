@@ -3,36 +3,39 @@ package uk.co.zac_h.spacex.launches
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
-import androidx.appcompat.widget.SearchView
-import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import dagger.hilt.android.AndroidEntryPoint
+import uk.co.zac_h.spacex.ApiResult
+import uk.co.zac_h.spacex.CachePolicy
+import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
 import uk.co.zac_h.spacex.dto.spacex.Launch
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import java.util.*
-import kotlin.collections.ArrayList
 
-class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>,
-    SearchView.OnQueryTextListener {
+@AndroidEntryPoint
+class LaunchesListFragment : BaseFragment() {
 
-    override var title: String = ""
+    override val title: String by lazy { type.typeString }
+
+    private val viewModel: LaunchesViewModel by navGraphViewModels(R.id.nav_graph) {
+        defaultViewModelProviderFactory
+    }
+
+    private val flowViewModel: FlowTypeViewModel by viewModels()
+
+    private lateinit var type: LaunchType
 
     private lateinit var binding: FragmentLaunchesListBinding
-    private var presenter: NetworkInterface.Presenter<List<Launch>>? = null
+
     private lateinit var launchesAdapter: LaunchesAdapter
 
-    private var launches: ArrayList<Launch> = ArrayList()
-
-    private var searchView: SearchView? = null
-
-    private var launchParam: String? = null
-
     companion object {
-        fun newInstance(launchParam: String) = LaunchesListFragment().apply {
-            arguments = bundleOf("launchParam" to launchParam)
-            title = launchParam
+        fun newInstance(type: LaunchType) = LaunchesListFragment().apply {
+            this.type = type
         }
     }
 
@@ -40,8 +43,7 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        //launches = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
-        launchParam = arguments?.getString("launchParam")
+        if (::type.isInitialized) flowViewModel.type = type
     }
 
     override fun onCreateView(
@@ -55,8 +57,6 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = LaunchesPresenterImpl(this, LaunchesInteractorImpl())
-
         launchesAdapter = LaunchesAdapter(requireContext())
 
         binding.launchesRecycler.apply {
@@ -65,82 +65,50 @@ class LaunchesListFragment : BaseFragment(), NetworkInterface.View<List<Launch>>
             adapter = launchesAdapter
         }
 
-        launchParam?.let { launchId ->
-            binding.swipeRefresh.setOnRefreshListener {
+        viewModel.launchesLiveData.observe(viewLifecycleOwner) { result ->
+            when (result.status) {
+                ApiResult.Status.PENDING -> showProgress()
+                ApiResult.Status.SUCCESS -> result.data?.let {
+                    toggleSwipeRefresh(false)
+                    when (flowViewModel.type) {
+                        LaunchType.UPCOMING -> update(it[flowViewModel.type]?.sortedBy { launch -> launch.flightNumber })
+                        LaunchType.PAST -> update(it[flowViewModel.type]?.sortedByDescending { launch -> launch.flightNumber })
+                    }
 
-                presenter?.get(launchId)
+                }
+                ApiResult.Status.FAILURE -> showError(result.error?.message)
             }
+        }
 
-            presenter?.getOrUpdate(launches, launchId)
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.getLaunches(CachePolicy.REFRESH)
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-       // outState.putParcelableArrayList("launches", launches)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.cancelRequest()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        searchView?.setOnQueryTextListener(null)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        /*inflater.inflate(R.menu.menu_launches, menu)
-
-        searchView = menu.findItem(R.id.app_bar_search).actionView as SearchView
-
-        searchView?.setOnQueryTextListener(this)*/
-
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        //launchesAdapter.filter.filter(query)
-        return false
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
-        //launchesAdapter.filter.filter(newText)
-        return false
-    }
-
-    override fun update(response: List<Launch>) {
-
-
-        launches = response as ArrayList<Launch>
+    fun update(response: List<Launch>?) {
+        if (response == null) return
+        hideProgress()
 
         launchesAdapter.update(response)
     }
 
-    override fun showProgress() {
+    fun showProgress() {
         binding.progress.show()
     }
 
-    override fun hideProgress() {
+    fun hideProgress() {
         binding.progress.hide()
     }
 
-    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
+    fun toggleSwipeRefresh(isRefreshing: Boolean) {
         binding.swipeRefresh.isRefreshing = isRefreshing
     }
 
-    override fun showError(error: String) {
-
+    fun showError(error: String?) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        /*when (apiState) {
-            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> launchParam?.let {
-                presenter?.getOrUpdate(launches, it)
-            }
-            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }*/
+        viewModel.getLaunches()
     }
 }

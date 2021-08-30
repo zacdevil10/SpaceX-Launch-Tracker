@@ -5,23 +5,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
+import androidx.navigation.navGraphViewModels
+import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesBinding
 import uk.co.zac_h.spacex.databinding.ToolbarTabBinding
 import uk.co.zac_h.spacex.utils.ViewPagerAdapter
 
+@AndroidEntryPoint
 class LaunchesFragment : BaseFragment() {
 
     override val title: String by lazy { getString(R.string.menu_launches) }
+
+    private val viewModel: LaunchesViewModel by navGraphViewModels(R.id.nav_graph) {
+        defaultViewModelProviderFactory
+    }
 
     private lateinit var binding: FragmentLaunchesBinding
     private lateinit var toolbarBinding: ToolbarTabBinding
 
     private val fragments: List<BaseFragment> = listOf(
-        LaunchesListFragment.newInstance("upcoming"),
-        LaunchesListFragment.newInstance("past")
+        LaunchesListFragment.newInstance(LaunchType.UPCOMING),
+        LaunchesListFragment.newInstance(LaunchType.PAST)
     )
 
     override fun onCreateView(
@@ -54,5 +60,11 @@ class LaunchesFragment : BaseFragment() {
                 getTabAt(position)?.setIcon(tabIcons[position])
             }
         }
+
+        viewModel.getLaunches()
     }
+}
+
+enum class LaunchType(val typeString: String) {
+    UPCOMING("upcoming"), PAST("past")
 }

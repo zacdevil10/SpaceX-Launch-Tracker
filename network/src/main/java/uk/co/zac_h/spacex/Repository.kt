@@ -12,22 +12,21 @@ abstract class Repository<T>(
         key: String,
         query: QueryModel = QueryModel(),
         cachePolicy: CachePolicy
-    ) =
-        try {
-            when (cachePolicy) {
-                CachePolicy.NEVER -> fetch(query)
-                CachePolicy.ALWAYS -> cache.get(key)?.value
-                CachePolicy.CLEAR -> cache.get(key)?.value.also { cache.clear(key) }
-                CachePolicy.REFRESH -> fetchAndCache(key, query)
-                CachePolicy.EXPIRES -> cache.get(key)?.let {
-                    if (it.createdAt.plus(CachePolicyExpiry.LENGTH) > System.currentTimeMillis()) {
-                        it.value
-                    } else null
-                }
-            } ?: fetchAndCache(key, query)
-        } catch (e: Throwable) {
-            ApiResult.failure(e)
-        }
+    ) = try {
+        when (cachePolicy) {
+            CachePolicy.NEVER -> fetch(query)
+            CachePolicy.ALWAYS -> cache.get(key)?.value
+            CachePolicy.CLEAR -> cache.get(key)?.value.also { cache.clear(key) }
+            CachePolicy.REFRESH -> fetchAndCache(key, query)
+            CachePolicy.EXPIRES -> cache.get(key)?.let {
+                if (it.createdAt.plus(CachePolicyExpiry.LENGTH) > System.currentTimeMillis()) {
+                    it.value
+                } else null
+            }
+        } ?: fetchAndCache(key, query)
+    } catch (e: Throwable) {
+        ApiResult.failure(e)
+    }
 
     private suspend fun fetchAndCache(key: String, query: QueryModel): ApiResult<T> =
         fetch(query).also { cache.store(data = it, key = key) }
