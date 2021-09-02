@@ -17,7 +17,7 @@ class LaunchDetailsCrewInteractor : BaseNetwork(), NetworkInterface.Interactor<L
     ) {
         val populateList = listOf(
             QueryPopulateModel(
-                "crew",
+                "crew.crew",
                 populate = listOf(
                     QueryPopulateModel(
                         "launches",

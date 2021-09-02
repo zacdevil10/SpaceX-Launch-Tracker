@@ -27,7 +27,7 @@ data class LaunchResponse(
     @field:Json(name = SPACEX_FIELD_LAUNCH_UPCOMING) val upcoming: Boolean?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_DETAILS) val details: String?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRINGS) val fairings: Fairings?,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW) val crew: List<String>?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW) val crew: List<LaunchCrewResponse>?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_SHIPS) val ships: List<String>?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_CAPSULES) val capsules: List<String>?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_PAYLOADS) val payloads: List<String>?,
@@ -56,7 +56,7 @@ data class LaunchQueriedResponse(
     @field:Json(name = SPACEX_FIELD_LAUNCH_UPCOMING) val upcoming: Boolean?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_DETAILS) val details: String?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRINGS) val fairings: Fairings?,
-    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW) val crew: List<CrewQueriedResponse>?,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW) val crew: List<LaunchCrewQueriedResponse>?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_SHIPS) val ships: List<ShipQueriedResponse>?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_CAPSULES) val capsules: List<String>?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_PAYLOADS) val payloads: List<PayloadResponse>?,
@@ -81,6 +81,17 @@ data class Fairings(
     @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRINGS_RECOVERED) val isRecovered: Boolean?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_FAIRINGS_SHIPS) val ships: List<String>?
 ) : Parcelable
+
+data class LaunchCrewResponse(
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW) val crew: String,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW_ROLE) val role: String?
+)
+
+
+data class LaunchCrewQueriedResponse(
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW) val crew: CrewQueriedResponse,
+    @field:Json(name = SPACEX_FIELD_LAUNCH_CREW_ROLE) val role: String?
+)
 
 data class LaunchCoreResponse(
     @field:Json(name = SPACEX_FIELD_LAUNCH_CORES_CORE) var id: String?,
@@ -155,7 +166,6 @@ data class Launch(
     val upcoming: Boolean?,
     val details: String?,
     val fairings: Fairings?,
-    val crewIds: List<String>? = null,
     val crew: List<Crew>? = null,
     val shipIds: List<String>? = null,
     val ships: List<Ship>? = null,
@@ -194,7 +204,7 @@ data class Launch(
         upcoming = response.upcoming,
         details = response.details,
         fairings = response.fairings,
-        crewIds = response.crew,
+        crew = response.crew?.map { Crew(it) },
         shipIds = response.ships,
         capsules = response.capsules,
         payloadIds = response.payloads,
