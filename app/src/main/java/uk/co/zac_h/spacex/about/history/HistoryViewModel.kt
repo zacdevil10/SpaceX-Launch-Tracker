@@ -5,13 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
-import uk.co.zac_h.spacex.dto.spacex.*
-import uk.co.zac_h.spacex.map
+import uk.co.zac_h.spacex.async
+import uk.co.zac_h.spacex.dto.spacex.History
+import uk.co.zac_h.spacex.dto.spacex.QueryHistorySort
+import uk.co.zac_h.spacex.dto.spacex.QueryModel
+import uk.co.zac_h.spacex.dto.spacex.QueryOptionsModel
 import uk.co.zac_h.spacex.utils.Keys.HistoryKeys
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.splitHistoryListByDate
@@ -22,7 +23,7 @@ class HistoryViewModel @Inject constructor(
     private val repository: HistoryRepository
 ) : ViewModel() {
 
-    private val _history = MutableLiveData<ApiResult<List<HistoryHeaderModel>>>(ApiResult.pending())
+    private val _history = MutableLiveData<ApiResult<List<HistoryHeaderModel>>>()
     val history: LiveData<ApiResult<List<HistoryHeaderModel>>> = _history
 
     private val query: QueryModel
@@ -36,7 +37,7 @@ class HistoryViewModel @Inject constructor(
 
     fun getHistory(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
         viewModelScope.launch {
-            val response = async {
+            val response = async(_history) {
                 repository.fetch("History", query, cachePolicy)
             }
 
