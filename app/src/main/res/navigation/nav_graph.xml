@@ -202,6 +202,10 @@
             android:name="type"
             app:argType="uk.co.zac_h.spacex.statistics.adapters.Statistics" />
 
+        <argument
+            android:name="padType"
+            app:argType="uk.co.zac_h.spacex.utils.PadType" />
+
     </fragment>
 
     <fragment

@@ -11,6 +11,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemIllustrationsFooterBinding
 import uk.co.zac_h.spacex.databinding.ListItemStatisticsBinding
 import uk.co.zac_h.spacex.statistics.StatisticsFragmentDirections
+import uk.co.zac_h.spacex.utils.PadType
 
 class StatisticsAdapter(private val context: Context, private val openWebLink: (String) -> Unit) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -84,9 +85,9 @@ class StatisticsAdapter(private val context: Context, private val openWebLink: (
         Statistics.FAIRING_RECOVERY ->
             StatisticsFragmentDirections.actionStatisticsFragmentToFairingRecovery(Statistics.FAIRING_RECOVERY)
         Statistics.LAUNCHPADS ->
-            StatisticsFragmentDirections.actionStatisticsFragmentToPadStats(Statistics.LAUNCHPADS)
+            StatisticsFragmentDirections.actionStatisticsFragmentToPadStats(Statistics.LAUNCHPADS, PadType.LAUNCHPAD)
         Statistics.LANDING_PADS ->
-            StatisticsFragmentDirections.actionStatisticsFragmentToPadStats(Statistics.LANDING_PADS)
+            StatisticsFragmentDirections.actionStatisticsFragmentToPadStats(Statistics.LANDING_PADS, PadType.LANDING_PAD)
     }
 
     override fun getItemCount(): Int = items.size + 1

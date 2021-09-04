@@ -5,6 +5,5 @@ data class StatsPadModel(
     val attempts: Int,
     val successes: Int,
     val status: PadStatus?,
-    val type: String? = "RTLS",
-    val isHeading: Boolean = false
+    val type: String? = "RTLS"
 )

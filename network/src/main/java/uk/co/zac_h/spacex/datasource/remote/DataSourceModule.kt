@@ -6,9 +6,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import uk.co.zac_h.spacex.datasource.remote.about.CompanyDataSource
 import uk.co.zac_h.spacex.datasource.remote.about.HistoryDataSource
-import uk.co.zac_h.spacex.dto.spacex.CompanyResponse
-import uk.co.zac_h.spacex.dto.spacex.HistoryDocsModel
-import uk.co.zac_h.spacex.dto.spacex.LaunchDocsModel
+import uk.co.zac_h.spacex.datasource.remote.statistics.LandingPadDataSource
+import uk.co.zac_h.spacex.datasource.remote.statistics.LaunchpadDataSource
+import uk.co.zac_h.spacex.dto.spacex.*
 import javax.inject.Qualifier
 
 @Module
@@ -27,6 +27,14 @@ abstract class DataSourceModule {
     @LaunchesDataSourceClient
     abstract fun bindLaunchesDataSource(launchesDataSource: LaunchesDataSource): RemoteDataSource<LaunchDocsModel>
 
+    @Binds
+    @LaunchpadDataSourceClient
+    abstract fun bindLaunchpadDataSource(launchpadDataSource: LaunchpadDataSource): RemoteDataSource<LaunchpadDocsModel>
+
+    @Binds
+    @LandingPadDataSourceClient
+    abstract fun bindLandingPadDataSource(landingPadDataSource: LandingPadDataSource): RemoteDataSource<LandingPadDocsModel>
+
 }
 
 @Qualifier
@@ -37,3 +45,9 @@ annotation class CompanyDataSourceClient
 
 @Qualifier
 annotation class LaunchesDataSourceClient
+
+@Qualifier
+annotation class LaunchpadDataSourceClient
+
+@Qualifier
+annotation class LandingPadDataSourceClient
