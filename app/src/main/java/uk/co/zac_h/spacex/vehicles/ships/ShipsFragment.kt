@@ -21,7 +21,7 @@ class ShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var shipsAdapter: ShipsAdapter
 
-    private lateinit var shipsArray: ArrayList<Ship>
+    private var shipsArray: ArrayList<Ship> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

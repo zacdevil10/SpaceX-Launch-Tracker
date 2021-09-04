@@ -8,6 +8,7 @@ import uk.co.zac_h.spacex.datasource.remote.about.CompanyDataSource
 import uk.co.zac_h.spacex.datasource.remote.about.HistoryDataSource
 import uk.co.zac_h.spacex.datasource.remote.statistics.LandingPadDataSource
 import uk.co.zac_h.spacex.datasource.remote.statistics.LaunchpadDataSource
+import uk.co.zac_h.spacex.datasource.remote.vehicles.RocketDataSource
 import uk.co.zac_h.spacex.dto.spacex.*
 import javax.inject.Qualifier
 
@@ -35,6 +36,10 @@ abstract class DataSourceModule {
     @LandingPadDataSourceClient
     abstract fun bindLandingPadDataSource(landingPadDataSource: LandingPadDataSource): RemoteDataSource<LandingPadDocsModel>
 
+    @Binds
+    @RocketDataSourceClient
+    abstract fun bindRocketDataSource(rocketDataSource: RocketDataSource): RemoteDataSource<MutableList<RocketResponse>>
+
 }
 
 @Qualifier
@@ -51,3 +56,6 @@ annotation class LaunchpadDataSourceClient
 
 @Qualifier
 annotation class LandingPadDataSourceClient
+
+@Qualifier
+annotation class RocketDataSourceClient

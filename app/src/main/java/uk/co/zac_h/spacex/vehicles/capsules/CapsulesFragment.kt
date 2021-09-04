@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,7 +9,8 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCapsulesBinding
 import uk.co.zac_h.spacex.dto.spacex.Capsule
-import uk.co.zac_h.spacex.utils.*
+import uk.co.zac_h.spacex.utils.OrderSharedPreferences
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
 
 class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
@@ -23,7 +23,7 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var capsulesAdapter: CapsulesAdapter
 
-    private lateinit var capsulesArray: ArrayList<Capsule>
+    private var capsulesArray: ArrayList<Capsule> = ArrayList()
 
     private lateinit var orderSharedPreferences: OrderSharedPreferences
     private var sortNew = false

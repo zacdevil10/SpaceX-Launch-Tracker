@@ -23,7 +23,7 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var coreAdapter: CoreAdapter
 
-    private lateinit var coresArray: ArrayList<Core>
+    private var coresArray: ArrayList<Core> = ArrayList()
 
     private lateinit var orderSharedPreferences: OrderSharedPreferences
     private var sortNew = false

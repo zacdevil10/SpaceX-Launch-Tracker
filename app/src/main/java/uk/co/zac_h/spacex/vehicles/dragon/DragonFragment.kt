@@ -21,7 +21,7 @@ class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
     private var presenter: NetworkInterface.Presenter<Nothing>? = null
     private lateinit var dragonAdapter: DragonAdapter
 
-    private lateinit var dragonArray: ArrayList<Dragon>
+    private var dragonArray: ArrayList<Dragon> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

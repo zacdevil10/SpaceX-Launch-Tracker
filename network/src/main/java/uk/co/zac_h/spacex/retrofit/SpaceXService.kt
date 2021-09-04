@@ -104,7 +104,7 @@ interface SpaceXService {
     suspend fun queryRoadsterInfo(): Response<RoadsterDocsModel>
 
     @GET(SPACEX_ROCKETS)
-    suspend fun getRockets(): Response<List<RocketResponse>>
+    suspend fun getRockets(): Response<MutableList<RocketResponse>>
 
     @GET(SPACEX_ROCKETS + SPACEX_GET_BY_PARAM_ID)
     suspend fun getRocket(@Path(SPACEX_PARAM_ID) id: String): Response<RocketResponse>
