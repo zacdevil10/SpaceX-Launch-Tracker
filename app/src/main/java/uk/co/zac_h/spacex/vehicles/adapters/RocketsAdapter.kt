@@ -2,17 +2,19 @@ package uk.co.zac_h.spacex.vehicles.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemVehicleBinding
 import uk.co.zac_h.spacex.dto.spacex.Rocket
+import uk.co.zac_h.spacex.vehicles.VehiclesFragmentDirections
 
-class RocketsAdapter(private val rockets: List<Rocket>) :
-    RecyclerView.Adapter<RocketsAdapter.ViewHolder>() {
+class RocketsAdapter(val setSelected: (String) -> Unit) :
+    ListAdapter<Rocket, RocketsAdapter.ViewHolder>(RocketComparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
@@ -20,7 +22,7 @@ class RocketsAdapter(private val rockets: List<Rocket>) :
         )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val rocket = rockets[position]
+        val rocket = getItem(position)
 
         holder.binding.apply {
             vehicleCard.transitionName = rocket.id
@@ -33,21 +35,31 @@ class RocketsAdapter(private val rockets: List<Rocket>) :
             vehicleName.text = rocket.name
             vehicleDetails.text = rocket.description
 
-            vehicleCard.setOnClickListener { holder.bind(rocket) }
-            vehicleSpecs.setOnClickListener { holder.bind(rocket) }
+            vehicleCard.setOnClickListener {
+                setSelected(rocket.id)
+                holder.bind(rocket)
+            }
+            vehicleSpecs.setOnClickListener {
+                setSelected(rocket.id)
+                holder.bind(rocket)
+            }
         }
     }
-
-    override fun getItemCount(): Int = rockets.size
 
     class ViewHolder(val binding: ListItemVehicleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(rocket: Rocket) {
             binding.root.findNavController().navigate(
-                R.id.action_vehicles_page_fragment_to_rocket_details_fragment,
-                bundleOf("rocket" to rocket),
-                null,
+                VehiclesFragmentDirections.actionVehiclesPageFragmentToRocketDetailsFragment(),
                 FragmentNavigatorExtras(binding.vehicleCard to rocket.id)
             )
         }
+    }
+
+    object RocketComparator : DiffUtil.ItemCallback<Rocket>() {
+
+        override fun areItemsTheSame(oldItem: Rocket, newItem: Rocket) = oldItem == newItem
+
+        override fun areContentsTheSame(oldItem: Rocket, newItem: Rocket) = oldItem.id == newItem.id
+
     }
 }

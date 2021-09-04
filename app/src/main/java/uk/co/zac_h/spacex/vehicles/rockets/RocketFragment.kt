@@ -4,30 +4,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import uk.co.zac_h.spacex.ApiResult
+import uk.co.zac_h.spacex.CachePolicy
+import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentRocketBinding
 import uk.co.zac_h.spacex.dto.spacex.Rocket
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
+import uk.co.zac_h.spacex.utils.orUnknown
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 
-class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
+class RocketFragment : BaseFragment() {
 
     override var title: String = "Rockets"
 
     private lateinit var binding: FragmentRocketBinding
 
-    private var presenter: NetworkInterface.Presenter<Nothing>? = null
-    private lateinit var rocketsAdapter: RocketsAdapter
-
-    private lateinit var rocketsArray: ArrayList<Rocket>
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        //rocketsArray = savedInstanceState?.getParcelableArrayList("rockets") ?: ArrayList()
+    private val viewModel: RocketViewModel by navGraphViewModels(R.id.nav_graph) {
+        defaultViewModelProviderFactory
     }
+
+    private lateinit var rocketsAdapter: RocketsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,9 +40,7 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = RocketPresenterImpl(this, RocketInteractorImpl())
-
-        rocketsAdapter = RocketsAdapter(rocketsArray)
+        rocketsAdapter = RocketsAdapter(::selected)
 
         binding.rocketRecycler.apply {
             layoutManager = LinearLayoutManager(this@RocketFragment.context)
@@ -50,46 +49,44 @@ class RocketFragment : BaseFragment(), NetworkInterface.View<List<Rocket>> {
         }
 
         binding.rocketSwipeRefresh.setOnRefreshListener {
-
-            presenter?.get()
+            viewModel.getRockets(CachePolicy.REFRESH)
         }
 
-        if (rocketsArray.isEmpty()) presenter?.get()
+        viewModel.rockets.observe(viewLifecycleOwner) { result ->
+            when (result.status) {
+                ApiResult.Status.PENDING -> {
+                }
+                ApiResult.Status.SUCCESS -> {
+                    binding.rocketSwipeRefresh.isRefreshing = false
+                    result.data?.let { data -> update(data) }
+                }
+                ApiResult.Status.FAILURE -> {
+                    binding.rocketSwipeRefresh.isRefreshing = false
+                    showError(result.error?.message.orUnknown())
+                }
+            }
+        }
+
+        viewModel.getRockets()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        //outState.putParcelableArrayList("rockets", rocketsArray)
-        super.onSaveInstanceState(outState)
+    private fun update(response: List<Rocket>) {
+        rocketsAdapter.submitList(response)
+        if (viewModel.cacheLocation == Repository.RequestLocation.REMOTE) {
+            binding.rocketRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
+            binding.rocketRecycler.scheduleLayoutAnimation()
+        }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.cancelRequest()
+    private fun selected(id: String) {
+        viewModel.setSelected(id)
     }
 
-    override fun update(response: List<Rocket>) {
-
-
-        rocketsArray.clear()
-        rocketsArray.addAll(response)
-
-        binding.rocketRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
-        rocketsAdapter.notifyDataSetChanged()
-        binding.rocketRecycler.scheduleLayoutAnimation()
-    }
-
-    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding.rocketSwipeRefresh.isRefreshing = isRefreshing
-    }
-
-    override fun showError(error: String) {
-
+    private fun showError(error: String?) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        /*when (apiState) {
-            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get()
-            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }*/
+        viewModel.getRockets()
     }
 }
