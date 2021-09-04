@@ -10,10 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemIllustrationsFooterBinding
 import uk.co.zac_h.spacex.databinding.ListItemStatisticsBinding
-import uk.co.zac_h.spacex.statistics.StatisticsContract
 import uk.co.zac_h.spacex.statistics.StatisticsFragmentDirections
 
-class StatisticsAdapter(private val context: Context, private val view: StatisticsContract.View) :
+class StatisticsAdapter(private val context: Context, private val openWebLink: (String) -> Unit) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val items = listOf(
@@ -67,7 +66,7 @@ class StatisticsAdapter(private val context: Context, private val view: Statisti
             }
             is FooterViewHolder -> holder.binding.apply {
                 root.setOnClickListener {
-                    view.openWebLink("https://stories.freepik.com/")
+                    openWebLink("https://stories.freepik.com/")
                 }
             }
         }
