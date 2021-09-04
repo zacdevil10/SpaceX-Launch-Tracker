@@ -24,7 +24,8 @@
         app:cardCornerRadius="0dp"
         app:cardElevation="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -46,7 +47,9 @@
                 android:id="@+id/recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/year" />
+                app:layout_constraintTop_toBottomOf="@id/year"
+                tools:itemCount="4"
+                tools:listitem="@layout/list_item_key" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

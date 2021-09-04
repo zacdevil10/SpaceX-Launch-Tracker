@@ -41,7 +41,6 @@ class FairingRecoveryFragment : BaseFragment() {
     private val navArgs: FairingRecoveryFragmentArgs by navArgs()
 
     private var statsList: List<FairingRecoveryModel> = ArrayList()
-    private var keys: ArrayList<KeysModel> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +71,7 @@ class FairingRecoveryFragment : BaseFragment() {
 
         binding.fairingRecoveryConstraint.transitionName = getString(navArgs.type.title)
 
-        val keyAdapter = StatisticsKeyAdapter(requireContext(), keys, false)
+        val keyAdapter = StatisticsKeyAdapter(requireContext(), false)
 
         binding.statisticsBarChart.recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -87,30 +86,24 @@ class FairingRecoveryFragment : BaseFragment() {
                     e?.let {
                         val stats = statsList.first { it.year == e.x.toInt() }
 
-                        keys.clear()
-
-                        binding.apply {
-                            statisticsBarChart.key.visibility = View.VISIBLE
-
-                            statisticsBarChart.year.text = stats.year.toString()
-
-                            keys.apply {
-                                if (stats.successes > 0) add(
-                                    KeysModel("Successes", stats.successes)
-                                )
-                                if (stats.failures > 0) add(KeysModel("Failures", stats.failures))
-                                add(KeysModel("Total", e.y))
-                            }
+                        binding.statisticsBarChart.apply {
+                            key.visibility = View.VISIBLE
+                            year.text = stats.year.toString()
                         }
 
-                        keyAdapter.notifyDataSetChanged()
+                        val keys = listOfNotNull(
+                            KeysModel("Successes", stats.successes),
+                            KeysModel("Failures", stats.failures),
+                            KeysModel("Total", e.y)
+                        )
+
+                        keyAdapter.submitList(keys)
                     }
                 }
 
                 override fun onNothingSelected() {
                     binding.statisticsBarChart.key.visibility = View.GONE
-                    keys.clear()
-                    keyAdapter.notifyDataSetChanged()
+                    keyAdapter.submitList(emptyList())
                 }
             })
         }

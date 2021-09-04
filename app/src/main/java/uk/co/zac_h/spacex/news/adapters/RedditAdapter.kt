@@ -106,7 +106,7 @@ class RedditAdapter(
         val pin: ImageView = itemView.findViewById(R.id.list_item_reddit_pinned)
     }
 
-    object RedditComparator: DiffUtil.ItemCallback<RedditPost>() {
+    object RedditComparator : DiffUtil.ItemCallback<RedditPost>() {
         override fun areItemsTheSame(oldItem: RedditPost, newItem: RedditPost): Boolean {
             return oldItem.name == newItem.name
         }
