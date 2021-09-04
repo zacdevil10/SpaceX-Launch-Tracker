@@ -74,7 +74,7 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
 
         presenter = LaunchRatePresenterImpl(this, LaunchRateInteractorImpl())
 
-        keyAdapter = StatisticsKeyAdapter(requireContext(), keys, false)
+        keyAdapter = StatisticsKeyAdapter(requireContext(), false)
 
         binding.statisticsBarChart.recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())

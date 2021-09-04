@@ -9,19 +9,24 @@
 
     <TextView
         android:id="@+id/list_item_key_label"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="?colorOnPrimary"
+        android:layout_marginEnd="@dimen/medium_margin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/list_item_key_value"
+        app:layout_constraintHorizontal_bias="0"
         tools:text="Falcon Heavy" />
 
     <TextView
         android:id="@+id/list_item_key_value"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="?colorOnPrimary"
         android:textAlignment="textEnd"
+        app:layout_constraintStart_toEndOf="@id/list_item_key_label"
+        app:layout_constraintHorizontal_bias="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="33000 kg" />

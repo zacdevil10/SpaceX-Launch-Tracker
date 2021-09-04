@@ -72,7 +72,7 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
 
         presenter = LandingHistoryPresenter(this, LandingHistoryInteractor())
 
-        keyAdapter = StatisticsKeyAdapter(requireContext(), keys, false)
+        keyAdapter = StatisticsKeyAdapter(requireContext(), false)
 
         binding.statisticsBarChart.recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())

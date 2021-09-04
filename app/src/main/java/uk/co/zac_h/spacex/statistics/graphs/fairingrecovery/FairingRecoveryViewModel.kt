@@ -30,6 +30,7 @@ class FairingRecoveryViewModel @Inject constructor(
 
     fun get(cachePolicy: CachePolicy = CachePolicy.EXPIRES) {
         viewModelScope.launch {
+            _fairingRecovery.value = ApiResult.pending()
             val response = async {
                 repository.fetch(key = "fairing", query = query, cachePolicy = cachePolicy)
             }

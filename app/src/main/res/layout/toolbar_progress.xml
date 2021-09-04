@@ -32,7 +32,6 @@
         app:indicatorColor="?colorSecondary"
         app:layout_constraintBottom_toBottomOf="@id/app_bar"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:showAnimationBehavior="outward" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
