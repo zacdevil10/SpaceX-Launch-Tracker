@@ -58,6 +58,7 @@ class HistoryFragment : BaseFragment() {
             ) else LinearLayoutManager(this@HistoryFragment.context)
             adapter = historyAdapter
             addItemDecoration(HeaderItemDecoration(this, historyAdapter.isHeader(), isTabletLand))
+            itemAnimator = null
         }
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -97,7 +98,7 @@ class HistoryFragment : BaseFragment() {
     }
 
     fun update(response: List<HistoryHeaderModel>) {
-        historyAdapter.update(response)
+        historyAdapter.submitList(response)
 
         binding.historyRecycler.apply {
             smoothScrollToPosition(0)
