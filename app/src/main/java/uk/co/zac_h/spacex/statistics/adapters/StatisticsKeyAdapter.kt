@@ -39,7 +39,7 @@ class StatisticsKeyAdapter(
         override fun areItemsTheSame(oldItem: KeysModel, newItem: KeysModel) = oldItem == newItem
 
         override fun areContentsTheSame(oldItem: KeysModel, newItem: KeysModel) =
-            oldItem.value == newItem.value
+            oldItem.label == newItem.label && oldItem.value == newItem.value
 
     }
 

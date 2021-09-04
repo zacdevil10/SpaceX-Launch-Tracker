@@ -40,7 +40,7 @@ class FairingRecoveryFragment : BaseFragment() {
 
     private val navArgs: FairingRecoveryFragmentArgs by navArgs()
 
-    private var statsList: List<FairingRecoveryModel> = ArrayList()
+    private var statsList: List<FairingRecoveryModel> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,7 +91,7 @@ class FairingRecoveryFragment : BaseFragment() {
                             year.text = stats.year.toString()
                         }
 
-                        val keys = listOfNotNull(
+                        val keys = listOf(
                             KeysModel("Successes", stats.successes),
                             KeysModel("Failures", stats.failures),
                             KeysModel("Total", e.y)
