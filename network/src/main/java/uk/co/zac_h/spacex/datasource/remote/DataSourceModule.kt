@@ -10,6 +10,7 @@ import uk.co.zac_h.spacex.datasource.remote.statistics.LandingPadDataSource
 import uk.co.zac_h.spacex.datasource.remote.statistics.LaunchpadDataSource
 import uk.co.zac_h.spacex.datasource.remote.vehicles.DragonDataSource
 import uk.co.zac_h.spacex.datasource.remote.vehicles.RocketDataSource
+import uk.co.zac_h.spacex.datasource.remote.vehicles.ShipDataSource
 import uk.co.zac_h.spacex.dto.spacex.*
 import javax.inject.Qualifier
 
@@ -45,6 +46,10 @@ abstract class DataSourceModule {
     @DragonDataSourceClient
     abstract fun bindDragonDataSource(dragonDataSource: DragonDataSource): RemoteDataSource<MutableList<DragonResponse>>
 
+    @Binds
+    @ShipDataSourceClient
+    abstract fun bindShipDataSource(shipDataSource: ShipDataSource): RemoteDataSource<ShipsDocsModel>
+
 }
 
 @Qualifier
@@ -67,3 +72,6 @@ annotation class RocketDataSourceClient
 
 @Qualifier
 annotation class DragonDataSourceClient
+
+@Qualifier
+annotation class ShipDataSourceClient

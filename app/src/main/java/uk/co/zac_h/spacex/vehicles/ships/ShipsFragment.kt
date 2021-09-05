@@ -4,46 +4,43 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import uk.co.zac_h.spacex.ApiResult
+import uk.co.zac_h.spacex.CachePolicy
+import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.databinding.FragmentShipsBinding
+import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.dto.spacex.Ship
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.ShipsAdapter
 
-class ShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
+class ShipsFragment : BaseFragment() {
 
     override var title: String = "Ships"
 
-    private lateinit var binding: FragmentShipsBinding
+    private lateinit var binding: FragmentVerticalRecyclerviewBinding
 
-    private var presenter: NetworkInterface.Presenter<Nothing>? = null
-    private lateinit var shipsAdapter: ShipsAdapter
-
-    private var shipsArray: ArrayList<Ship> = ArrayList()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        //shipsArray = savedInstanceState?.getParcelableArrayList("ships") ?: ArrayList()
+    private val viewModel: ShipsViewModel by navGraphViewModels(R.id.nav_graph) {
+        defaultViewModelProviderFactory
     }
 
+    private lateinit var shipsAdapter: ShipsAdapter
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentShipsBinding.inflate(inflater, container, false).apply {
+    ): View = FragmentVerticalRecyclerviewBinding.inflate(inflater, container, false).apply {
         binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
-
-        presenter = ShipsPresenterImpl(this, ShipsInteractorImpl())
-
-        shipsAdapter = ShipsAdapter(shipsArray)
+        shipsAdapter = ShipsAdapter { viewModel.selectedId = it }
 
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(this@ShipsFragment.context)
@@ -52,46 +49,48 @@ class ShipsFragment : BaseFragment(), NetworkInterface.View<List<Ship>> {
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-
-            presenter?.get()
+            viewModel.getShips(CachePolicy.REFRESH)
         }
 
-        if (shipsArray.isEmpty()) presenter?.get()
+        viewModel.ships.observe(viewLifecycleOwner) { result ->
+            when (result.status) {
+                ApiResult.Status.PENDING -> showProgress()
+                ApiResult.Status.SUCCESS -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    result.data?.let { data -> update(data) }
+                }
+                ApiResult.Status.FAILURE -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    showError(result.error?.message)
+                }
+            }
+        }
+
+        viewModel.getShips()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        //outState.putParcelableArrayList("ships", shipsArray)
-        super.onSaveInstanceState(outState)
+    private fun update(response: List<Ship>) {
+        hideProgress()
+        shipsAdapter.submitList(response)
+        if (viewModel.cacheLocation == Repository.RequestLocation.REMOTE) {
+            binding.recycler.layoutAnimation = animateLayoutFromBottom(requireContext())
+            binding.recycler.scheduleLayoutAnimation()
+        }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.cancelRequest()
+    private fun showProgress() {
+        binding.progress.show()
     }
 
-    override fun update(response: List<Ship>) {
-
-
-        shipsArray.clear()
-        shipsArray.addAll(response)
-
-        binding.recycler.layoutAnimation = animateLayoutFromBottom(requireContext())
-        shipsAdapter.notifyDataSetChanged()
-        binding.recycler.scheduleLayoutAnimation()
+    private fun hideProgress() {
+        binding.progress.hide()
     }
 
-    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding.swipeRefresh.isRefreshing = isRefreshing
-    }
-
-    override fun showError(error: String) {
-
+    private fun showError(error: String?) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        /*when (apiState) {
-            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get()
-            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }*/
+        viewModel.getShips()
     }
 }
