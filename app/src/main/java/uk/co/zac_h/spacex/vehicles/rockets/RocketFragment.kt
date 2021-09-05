@@ -40,7 +40,7 @@ class RocketFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        rocketsAdapter = RocketsAdapter(::selected)
+        rocketsAdapter = RocketsAdapter { viewModel.selectedId = it }
 
         binding.rocketRecycler.apply {
             layoutManager = LinearLayoutManager(this@RocketFragment.context)
@@ -54,8 +54,7 @@ class RocketFragment : BaseFragment() {
 
         viewModel.rockets.observe(viewLifecycleOwner) { result ->
             when (result.status) {
-                ApiResult.Status.PENDING -> {
-                }
+                ApiResult.Status.PENDING -> showProgress()
                 ApiResult.Status.SUCCESS -> {
                     binding.rocketSwipeRefresh.isRefreshing = false
                     result.data?.let { data -> update(data) }
@@ -71,6 +70,7 @@ class RocketFragment : BaseFragment() {
     }
 
     private fun update(response: List<Rocket>) {
+        hideProgress()
         rocketsAdapter.submitList(response)
         if (viewModel.cacheLocation == Repository.RequestLocation.REMOTE) {
             binding.rocketRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
@@ -78,8 +78,12 @@ class RocketFragment : BaseFragment() {
         }
     }
 
-    private fun selected(id: String) {
-        viewModel.setSelected(id)
+    private fun showProgress() {
+        binding.progress.show()
+    }
+
+    private fun hideProgress() {
+        binding.progress.hide()
     }
 
     private fun showError(error: String?) {

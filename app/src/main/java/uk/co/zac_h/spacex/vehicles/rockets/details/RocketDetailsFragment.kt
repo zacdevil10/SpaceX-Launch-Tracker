@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -20,14 +21,16 @@ import uk.co.zac_h.spacex.vehicles.rockets.RocketViewModel
 
 class RocketDetailsFragment : BaseFragment() {
 
-    override var title: String = "Rocket"
+    override val title: String by lazy { navArgs.label ?: title }
 
-    private lateinit var binding: FragmentRocketDetailsBinding
-    private lateinit var toolbarBinding: CollapsingToolbarBinding
+    private val navArgs: RocketDetailsFragmentArgs by navArgs()
 
     private val viewModel: RocketViewModel by navGraphViewModels(R.id.nav_graph) {
         defaultViewModelProviderFactory
     }
+
+    private lateinit var binding: FragmentRocketDetailsBinding
+    private lateinit var toolbarBinding: CollapsingToolbarBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,15 +49,14 @@ class RocketDetailsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.rocket.observe(viewLifecycleOwner) {
-            update(it)
+        setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
+
+        viewModel.rockets.observe(viewLifecycleOwner) { result ->
+            result.data?.first { it.id == viewModel.selectedId }?.let { update(it) }
         }
     }
 
     private fun update(rocket: Rocket?) {
-        title = rocket?.name ?: ""
-        setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
-
         with(binding) {
             rocket?.let {
                 rocketDetailsCoordinator.transitionName = it.id
@@ -158,13 +160,9 @@ class RocketDetailsFragment : BaseFragment() {
                 rocketDetailsPayloadRecycler.apply {
                     layoutManager = LinearLayoutManager(requireContext())
                     setHasFixedSize(true)
-                    adapter =
-                        it.payloadWeights?.let { payloadWeights ->
-                            RocketPayloadAdapter(
-                                requireContext(),
-                                payloadWeights
-                            )
-                        }
+                    adapter = it.payloadWeights?.let { payloadWeights ->
+                        RocketPayloadAdapter(requireContext(), payloadWeights)
+                    }
                 }
             }
         }

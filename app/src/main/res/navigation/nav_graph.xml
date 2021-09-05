@@ -285,7 +285,14 @@
     <fragment
         android:id="@+id/rocket_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.rockets.details.RocketDetailsFragment"
-        tools:layout="@layout/fragment_rocket_details" />
+        tools:layout="@layout/fragment_rocket_details">
+
+        <argument
+            android:name="label"
+            app:argType="string"
+            app:nullable="true" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/dragon_details_fragment"
