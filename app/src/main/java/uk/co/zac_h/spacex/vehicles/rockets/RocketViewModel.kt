@@ -1,6 +1,9 @@
 package uk.co.zac_h.spacex.vehicles.rockets
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.ApiResult
@@ -18,13 +21,7 @@ class RocketViewModel @Inject constructor(
     private val _rockets = MutableLiveData<ApiResult<List<Rocket>>>()
     val rockets: LiveData<ApiResult<List<Rocket>>> = _rockets
 
-    private val _selected = MutableLiveData("")
-
-    val rocket: LiveData<Rocket?> = _selected.switchMap { selected ->
-        _rockets.map {
-            it.data?.firstOrNull { data -> data.id == selected }
-        }
-    }
+    var selectedId = ""
 
     val cacheLocation: Repository.RequestLocation
         get() = repository.cacheLocation
@@ -37,10 +34,6 @@ class RocketViewModel @Inject constructor(
 
             _rockets.value = response.await().map { result -> result.map { Rocket(it) } }
         }
-    }
-
-    fun setSelected(id: String) {
-        _selected.value = id
     }
 
 }

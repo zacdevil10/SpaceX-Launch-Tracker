@@ -49,7 +49,7 @@ class RocketsAdapter(val setSelected: (String) -> Unit) :
     class ViewHolder(val binding: ListItemVehicleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(rocket: Rocket) {
             binding.root.findNavController().navigate(
-                VehiclesFragmentDirections.actionVehiclesPageFragmentToRocketDetailsFragment(),
+                VehiclesFragmentDirections.actionVehiclesPageFragmentToRocketDetailsFragment(rocket.name),
                 FragmentNavigatorExtras(binding.vehicleCard to rocket.id)
             )
         }
