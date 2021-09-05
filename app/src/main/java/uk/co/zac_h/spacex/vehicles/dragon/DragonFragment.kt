@@ -4,95 +4,93 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import uk.co.zac_h.spacex.ApiResult
+import uk.co.zac_h.spacex.CachePolicy
+import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.databinding.FragmentDragonBinding
+import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.dto.spacex.Dragon
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.DragonAdapter
 
-class DragonFragment : BaseFragment(), NetworkInterface.View<List<Dragon>> {
+class DragonFragment : BaseFragment() {
 
     override var title: String = "Dragon"
 
-    private lateinit var binding: FragmentDragonBinding
+    private lateinit var binding: FragmentVerticalRecyclerviewBinding
 
-    private var presenter: NetworkInterface.Presenter<Nothing>? = null
-    private lateinit var dragonAdapter: DragonAdapter
-
-    private var dragonArray: ArrayList<Dragon> = ArrayList()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        //dragonArray = savedInstanceState?.getParcelableArrayList("dragon") ?: ArrayList()
+    private val viewModel: DragonViewModel by navGraphViewModels(R.id.nav_graph) {
+        defaultViewModelProviderFactory
     }
+
+    private lateinit var dragonAdapter: DragonAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentDragonBinding.inflate(inflater, container, false).apply {
+    ): View = FragmentVerticalRecyclerviewBinding.inflate(inflater, container, false).apply {
         binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
+        dragonAdapter = DragonAdapter { viewModel.selectedId = it }
 
-        presenter = DragonPresenterImpl(this, DragonInteractorImpl())
-
-        dragonAdapter = DragonAdapter(dragonArray)
-
-        binding.dragonRecycler.apply {
-            layoutManager = LinearLayoutManager(this@DragonFragment.context)
+        binding.recycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = dragonAdapter
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-
-            presenter?.get()
+            viewModel.getDragons(CachePolicy.REFRESH)
         }
 
-        if (dragonArray.isEmpty()) presenter?.get()
+        viewModel.dragons.observe(viewLifecycleOwner) { result ->
+            when (result.status) {
+                ApiResult.Status.PENDING -> showProgress()
+                ApiResult.Status.SUCCESS -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    result.data?.let { data -> update(data) }
+                }
+                ApiResult.Status.FAILURE -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    showError(result.error?.message)
+                }
+            }
+        }
+
+        viewModel.getDragons()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        //outState.putParcelableArrayList("dragon", dragonArray)
-        super.onSaveInstanceState(outState)
+    private fun update(response: List<Dragon>) {
+        hideProgress()
+        dragonAdapter.submitList(response)
+        if (viewModel.cacheLocation == Repository.RequestLocation.REMOTE) {
+            binding.recycler.layoutAnimation = animateLayoutFromBottom(requireContext())
+            binding.recycler.scheduleLayoutAnimation()
+        }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.cancelRequest()
+    private fun showProgress() {
+        binding.progress.show()
     }
 
-    override fun update(response: List<Dragon>) {
-
-
-        dragonArray.clear()
-        dragonArray.addAll(response)
-
-        binding.dragonRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
-        dragonAdapter.notifyDataSetChanged()
-        binding.dragonRecycler.scheduleLayoutAnimation()
+    private fun hideProgress() {
+        binding.progress.hide()
     }
 
-    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding.swipeRefresh.isRefreshing = isRefreshing
-    }
-
-    override fun showError(error: String) {
-
+    private fun showError(error: String?) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        /*when (apiState) {
-            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get()
-            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }*/
+        viewModel.getDragons()
     }
 
 }

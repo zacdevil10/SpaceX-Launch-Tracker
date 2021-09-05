@@ -12,17 +12,16 @@ import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.databinding.FragmentRocketBinding
+import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.dto.spacex.Rocket
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
-import uk.co.zac_h.spacex.utils.orUnknown
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 
 class RocketFragment : BaseFragment() {
 
     override var title: String = "Rockets"
 
-    private lateinit var binding: FragmentRocketBinding
+    private lateinit var binding: FragmentVerticalRecyclerviewBinding
 
     private val viewModel: RocketViewModel by navGraphViewModels(R.id.nav_graph) {
         defaultViewModelProviderFactory
@@ -33,7 +32,7 @@ class RocketFragment : BaseFragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentRocketBinding.inflate(inflater, container, false).apply {
+    ): View = FragmentVerticalRecyclerviewBinding.inflate(inflater, container, false).apply {
         binding = this
     }.root
 
@@ -42,13 +41,13 @@ class RocketFragment : BaseFragment() {
 
         rocketsAdapter = RocketsAdapter { viewModel.selectedId = it }
 
-        binding.rocketRecycler.apply {
-            layoutManager = LinearLayoutManager(this@RocketFragment.context)
+        binding.recycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = rocketsAdapter
         }
 
-        binding.rocketSwipeRefresh.setOnRefreshListener {
+        binding.swipeRefresh.setOnRefreshListener {
             viewModel.getRockets(CachePolicy.REFRESH)
         }
 
@@ -56,12 +55,12 @@ class RocketFragment : BaseFragment() {
             when (result.status) {
                 ApiResult.Status.PENDING -> showProgress()
                 ApiResult.Status.SUCCESS -> {
-                    binding.rocketSwipeRefresh.isRefreshing = false
+                    binding.swipeRefresh.isRefreshing = false
                     result.data?.let { data -> update(data) }
                 }
                 ApiResult.Status.FAILURE -> {
-                    binding.rocketSwipeRefresh.isRefreshing = false
-                    showError(result.error?.message.orUnknown())
+                    binding.swipeRefresh.isRefreshing = false
+                    showError(result.error?.message)
                 }
             }
         }
@@ -73,8 +72,8 @@ class RocketFragment : BaseFragment() {
         hideProgress()
         rocketsAdapter.submitList(response)
         if (viewModel.cacheLocation == Repository.RequestLocation.REMOTE) {
-            binding.rocketRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
-            binding.rocketRecycler.scheduleLayoutAnimation()
+            binding.recycler.layoutAnimation = animateLayoutFromBottom(requireContext())
+            binding.recycler.scheduleLayoutAnimation()
         }
     }
 

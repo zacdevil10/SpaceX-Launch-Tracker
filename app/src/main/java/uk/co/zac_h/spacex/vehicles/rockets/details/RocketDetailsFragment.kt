@@ -39,7 +39,8 @@ class RocketDetailsFragment : BaseFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentRocketDetailsBinding.inflate(inflater, container, false).apply {
         toolbarBinding = CollapsingToolbarBinding.bind(this.root)

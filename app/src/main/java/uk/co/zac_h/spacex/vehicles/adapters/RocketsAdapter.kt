@@ -16,10 +16,9 @@ import uk.co.zac_h.spacex.vehicles.VehiclesFragmentDirections
 class RocketsAdapter(val setSelected: (String) -> Unit) :
     ListAdapter<Rocket, RocketsAdapter.ViewHolder>(RocketComparator) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(
-            ListItemVehicleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
+        ListItemVehicleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val rocket = getItem(position)

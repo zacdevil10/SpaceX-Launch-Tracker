@@ -41,7 +41,7 @@ interface SpaceXService {
     suspend fun queryCrewMembers(@Body body: QueryModel): Response<CrewDocsModel>
 
     @GET(SPACEX_DRAGONS)
-    suspend fun getDragons(): Response<List<DragonResponse>>
+    suspend fun getDragons(): Response<MutableList<DragonResponse>>
 
     @GET(SPACEX_DRAGONS + SPACEX_GET_BY_PARAM_ID)
     suspend fun getDragon(@Path(SPACEX_PARAM_ID) id: String): Response<DragonResponse>
