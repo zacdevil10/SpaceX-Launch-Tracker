@@ -8,6 +8,7 @@ import uk.co.zac_h.spacex.datasource.remote.about.CompanyDataSource
 import uk.co.zac_h.spacex.datasource.remote.about.HistoryDataSource
 import uk.co.zac_h.spacex.datasource.remote.statistics.LandingPadDataSource
 import uk.co.zac_h.spacex.datasource.remote.statistics.LaunchpadDataSource
+import uk.co.zac_h.spacex.datasource.remote.vehicles.DragonDataSource
 import uk.co.zac_h.spacex.datasource.remote.vehicles.RocketDataSource
 import uk.co.zac_h.spacex.dto.spacex.*
 import javax.inject.Qualifier
@@ -40,6 +41,10 @@ abstract class DataSourceModule {
     @RocketDataSourceClient
     abstract fun bindRocketDataSource(rocketDataSource: RocketDataSource): RemoteDataSource<MutableList<RocketResponse>>
 
+    @Binds
+    @DragonDataSourceClient
+    abstract fun bindDragonDataSource(dragonDataSource: DragonDataSource): RemoteDataSource<MutableList<DragonResponse>>
+
 }
 
 @Qualifier
@@ -59,3 +64,6 @@ annotation class LandingPadDataSourceClient
 
 @Qualifier
 annotation class RocketDataSourceClient
+
+@Qualifier
+annotation class DragonDataSourceClient

@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
@@ -15,23 +17,25 @@ import uk.co.zac_h.spacex.dto.spacex.Dragon
 import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.setImageAndTint
 import uk.co.zac_h.spacex.vehicles.adapters.DragonThrusterAdapter
+import uk.co.zac_h.spacex.vehicles.dragon.DragonViewModel
 
 class DragonDetailsFragment : BaseFragment() {
 
-    override var title: String = "Dragon"
+    override val title: String by lazy { navArgs.label ?: title }
+
+    private val navArgs: DragonDetailsFragmentArgs by navArgs()
+
+    private val viewModel: DragonViewModel by navGraphViewModels(R.id.nav_graph) {
+        defaultViewModelProviderFactory
+    }
 
     private lateinit var binding: FragmentDragonDetailsBinding
-
     private lateinit var toolbarBinding: CollapsingToolbarBinding
-
-    private var dragon: Dragon? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
-
-        //dragon = arguments?.getParcelable("dragon") as Dragon?
     }
 
     override fun onCreateView(
@@ -48,13 +52,17 @@ class DragonDetailsFragment : BaseFragment() {
 
         setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
 
-        title = dragon?.name ?: title
+        viewModel.dragons.observe(viewLifecycleOwner) { result ->
+            result.data?.first { it.id == viewModel.selectedId }?.let { update(it) }
+        }
+    }
 
+    private fun update(dragon: Dragon?) {
         with(binding) {
             dragon?.let {
                 dragonDetailsCoordinator.transitionName = it.id
 
-                Glide.with(view)
+                Glide.with(requireContext())
                     .load(it.flickr?.random())
                     .error(R.drawable.ic_baseline_error_outline_24)
                     .into(toolbarBinding.header)
