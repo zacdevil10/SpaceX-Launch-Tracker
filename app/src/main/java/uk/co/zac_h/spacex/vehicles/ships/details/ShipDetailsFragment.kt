@@ -4,7 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.doOnPreDraw
+import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
@@ -12,25 +13,28 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.CollapsingToolbarBinding
 import uk.co.zac_h.spacex.databinding.FragmentShipDetailsBinding
-import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
 import uk.co.zac_h.spacex.dto.spacex.Ship
+import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
 import uk.co.zac_h.spacex.utils.setImageAndTint
+import uk.co.zac_h.spacex.vehicles.ships.ShipsViewModel
 
 class ShipDetailsFragment : BaseFragment() {
 
-    override var title: String = ""
+    override val title: String by lazy { navArgs.label ?: title }
+
+    private val navArgs: ShipDetailsFragmentArgs by navArgs()
+
+    private val viewModel: ShipsViewModel by navGraphViewModels(R.id.nav_graph) {
+        defaultViewModelProviderFactory
+    }
 
     private lateinit var binding: FragmentShipDetailsBinding
     private lateinit var toolbarBinding: CollapsingToolbarBinding
-
-    private var ship: Ship? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
-
-        //ship = arguments?.getParcelable("ship") as Ship?
     }
 
     override fun onCreateView(
@@ -44,18 +48,19 @@ class ShipDetailsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        postponeEnterTransition()
-        view.doOnPreDraw { startPostponedEnterTransition() }
-
-        title = ship?.name ?: ""
         setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
 
-        with(binding) {
+        viewModel.ships.observe(viewLifecycleOwner) { result ->
+            result.data?.first { it.id == viewModel.selectedId }?.let { update(it) }
+        }
+    }
 
+    private fun update(ship: Ship?) {
+        with(binding) {
             ship?.let {
                 shipDetailsCoordinator.transitionName = it.id
 
-                Glide.with(view)
+                Glide.with(requireContext())
                     .load(it.image)
                     .error(R.drawable.ic_baseline_error_outline_24)
                     .into(toolbarBinding.header)

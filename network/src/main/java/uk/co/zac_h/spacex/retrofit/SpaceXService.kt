@@ -113,7 +113,7 @@ interface SpaceXService {
     suspend fun queryRockets(@Body body: QueryModel): Response<RocketDocsModel>
 
     @GET(SPACEX_SHIPS)
-    suspend fun getShips(): Response<List<ShipResponse>>
+    suspend fun getShips(): Response<MutableList<ShipResponse>>
 
     @GET(SPACEX_SHIPS + SPACEX_GET_BY_PARAM_ID)
     suspend fun getShip(@Path(SPACEX_PARAM_ID) id: String): Response<ShipResponse>

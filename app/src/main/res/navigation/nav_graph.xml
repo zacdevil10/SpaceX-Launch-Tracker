@@ -310,10 +310,17 @@
         android:id="@+id/ship_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.ships.details.ShipDetailsFragment"
         tools:layout="@layout/fragment_ship_details">
+
+        <argument
+            android:name="label"
+            app:argType="string"
+            app:nullable="true" />
+
         <action
             android:id="@+id/missions_to_launch_details_container_fragment"
             app:destination="@id/launch_details_container_fragment"
             app:exitAnim="@android:anim/fade_out" />
+
     </fragment>
 
     <fragment
