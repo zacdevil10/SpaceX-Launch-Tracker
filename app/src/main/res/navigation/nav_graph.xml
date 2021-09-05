@@ -276,10 +276,17 @@
         android:id="@+id/core_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.cores.details.CoreDetailsFragment"
         tools:layout="@layout/fragment_core_details">
+
+        <argument
+            android:name="label"
+            app:argType="string"
+            app:nullable="true" />
+
         <action
             android:id="@+id/missions_to_launch_details_container_fragment"
             app:destination="@id/launch_details_container_fragment"
             app:exitAnim="@android:anim/fade_out" />
+
     </fragment>
 
     <fragment

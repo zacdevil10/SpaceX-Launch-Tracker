@@ -51,6 +51,7 @@ class VehiclesFragment : BaseFragment() {
         )
 
         toolbarLayout.toolbar.setupWithTabLayout(toolbarLayout.tabLayout, TabLayout.MODE_SCROLLABLE)
+        toolbarLayout.toolbar.setSupportActionBar()
 
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }

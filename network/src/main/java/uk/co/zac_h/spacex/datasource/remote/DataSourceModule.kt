@@ -8,6 +8,7 @@ import uk.co.zac_h.spacex.datasource.remote.about.CompanyDataSource
 import uk.co.zac_h.spacex.datasource.remote.about.HistoryDataSource
 import uk.co.zac_h.spacex.datasource.remote.statistics.LandingPadDataSource
 import uk.co.zac_h.spacex.datasource.remote.statistics.LaunchpadDataSource
+import uk.co.zac_h.spacex.datasource.remote.vehicles.CoreDataSource
 import uk.co.zac_h.spacex.datasource.remote.vehicles.DragonDataSource
 import uk.co.zac_h.spacex.datasource.remote.vehicles.RocketDataSource
 import uk.co.zac_h.spacex.datasource.remote.vehicles.ShipDataSource
@@ -50,6 +51,10 @@ abstract class DataSourceModule {
     @ShipDataSourceClient
     abstract fun bindShipDataSource(shipDataSource: ShipDataSource): RemoteDataSource<ShipsDocsModel>
 
+    @Binds
+    @CoreDataSourceClient
+    abstract fun bindCoreDataSource(coreDataSource: CoreDataSource): RemoteDataSource<CoreDocsModel>
+
 }
 
 @Qualifier
@@ -75,3 +80,6 @@ annotation class DragonDataSourceClient
 
 @Qualifier
 annotation class ShipDataSourceClient
+
+@Qualifier
+annotation class CoreDataSourceClient

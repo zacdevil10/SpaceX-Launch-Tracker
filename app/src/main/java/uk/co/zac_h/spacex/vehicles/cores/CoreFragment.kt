@@ -2,83 +2,76 @@ package uk.co.zac_h.spacex.vehicles.cores
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import uk.co.zac_h.spacex.ApiResult
+import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
+import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.dto.spacex.Core
-import uk.co.zac_h.spacex.utils.OrderSharedPreferences
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
 
-class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
-    SearchView.OnQueryTextListener {
+class CoreFragment : BaseFragment(), SearchView.OnQueryTextListener {
 
     override var title: String = "Cores"
 
-    private lateinit var binding: FragmentCoreBinding
+    private lateinit var binding: FragmentVerticalRecyclerviewBinding
 
-    private var presenter: NetworkInterface.Presenter<Nothing>? = null
+    private val viewModel: CoreViewModel by navGraphViewModels(R.id.nav_graph) {
+        defaultViewModelProviderFactory
+    }
+
     private lateinit var coreAdapter: CoreAdapter
 
-    private var coresArray: ArrayList<Core> = ArrayList()
-
-    private lateinit var orderSharedPreferences: OrderSharedPreferences
-    private var sortNew = false
     private lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-
-        //coresArray = savedInstanceState?.getParcelableArrayList("cores") ?: ArrayList()
-        sortNew = savedInstanceState?.getBoolean("sort") ?: false
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentCoreBinding.inflate(inflater, container, false).apply {
+    ): View = FragmentVerticalRecyclerviewBinding.inflate(inflater, container, false).apply {
         binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
+        coreAdapter = CoreAdapter(requireContext()) { viewModel.selectedId = it }
 
-        orderSharedPreferences = OrderSharedPreferences.build(requireContext())
-        presenter = CorePresenterImpl(this, CoreInteractorImpl())
-
-        sortNew = orderSharedPreferences.isSortedNew("cores")
-
-        coreAdapter = CoreAdapter(requireContext(), coresArray)
-
-        binding.coreRecycler.apply {
+        binding.recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = coreAdapter
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-
-            presenter?.get()
+            viewModel.getCores(CachePolicy.REFRESH)
         }
 
-        if (coresArray.isEmpty()) presenter?.get()
-    }
+        viewModel.cores.observe(viewLifecycleOwner) { result ->
+            when (result.status) {
+                ApiResult.Status.PENDING -> showProgress()
+                ApiResult.Status.SUCCESS -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    result.data?.let { data -> update(data) }
+                }
+                ApiResult.Status.FAILURE -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    showError(result.error?.message)
+                }
+            }
+        }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        //outState.putParcelableArrayList("cores", coresArray)
-        outState.putBoolean("sort", sortNew)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.cancelRequest()
+        viewModel.getCores()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -90,62 +83,52 @@ class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean =
-        when (item.itemId) {
-            R.id.sort_new -> {
-                if (!sortNew) {
-                    sortNew = true
-                    orderSharedPreferences.setSortOrder("cores", sortNew)
-                    coresArray.reverse()
-                    coreAdapter.notifyDataSetChanged()
-                }
-                true
-            }
-            R.id.sort_old -> {
-                if (sortNew) {
-                    sortNew = false
-                    orderSharedPreferences.setSortOrder("cores", sortNew)
-                    coresArray.reverse()
-                    coreAdapter.notifyDataSetChanged()
-                }
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.sort_new -> handleSortItemClick(false)
+        R.id.sort_old -> handleSortItemClick(true)
+        else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun handleSortItemClick(order: Boolean): Boolean {
+        if (viewModel.getOrder() == order) viewModel.apply {
+            setOrder(!order)
+            getCores()
         }
+        return true
+    }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
-        coreAdapter.filter.filter(query)
+        //coreAdapter.filter.filter(query)
         return false
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        coreAdapter.filter.filter(newText)
+        //coreAdapter.filter.filter(newText)
         return false
     }
 
-    override fun update(response: List<Core>) {
-
-
-        coresArray.clear()
-        coresArray.addAll(if (sortNew) response.reversed() else response)
-
-        binding.coreRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
-        coreAdapter.notifyDataSetChanged()
-        binding.coreRecycler.scheduleLayoutAnimation()
+    private fun update(response: List<Core>) {
+        hideProgress()
+        coreAdapter.submitList(response)
+        if (viewModel.cacheLocation == Repository.RequestLocation.REMOTE) {
+            binding.recycler.layoutAnimation = animateLayoutFromBottom(requireContext())
+            binding.recycler.scheduleLayoutAnimation()
+        }
     }
 
-    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding.swipeRefresh.isRefreshing = isRefreshing
+    private fun showProgress() {
+        binding.progress.show()
     }
 
-    override fun showError(error: String) {
+    private fun hideProgress() {
+        binding.progress.hide()
+    }
 
+    private fun showError(error: String?) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        /*when (apiState) {
-            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get()
-            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }*/
+        viewModel.getCores()
     }
 }
