@@ -9,8 +9,8 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.dashboard.DashboardFragmentDirections
 import uk.co.zac_h.spacex.databinding.ListItemLaunchesBinding
 import uk.co.zac_h.spacex.dto.spacex.Launch
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
@@ -62,7 +62,7 @@ class LaunchesAdapter(private val context: Context) :
 
             root.setOnClickListener {
                 root.findNavController().navigate(
-                    DashboardFragmentDirections.actionLaunchItemToLaunchDetailsContainerFragment(
+                    NavGraphDirections.actionLaunchItemToLaunchDetailsContainer(
                         launch.missionName,
                         launch.id
                     ),

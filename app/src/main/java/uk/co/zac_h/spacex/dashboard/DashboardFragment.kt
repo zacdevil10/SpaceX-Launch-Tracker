@@ -197,7 +197,7 @@ class DashboardFragment : BaseFragment() {
             dashboardLaunch.let { card ->
                 card.setOnClickListener {
                     findNavController().navigate(
-                        DashboardFragmentDirections.actionLaunchItemToLaunchDetailsContainerFragment(
+                        NavGraphDirections.actionLaunchItemToLaunchDetailsContainer(
                             response.missionName,
                             response.id
                         ),

@@ -10,13 +10,11 @@
         android:name="uk.co.zac_h.spacex.dashboard.DashboardFragment"
         app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_dashboard">
-        <action
-            android:id="@+id/action_launch_item_to_launch_details_container_fragment"
-            app:destination="@id/launch_details_container_fragment"
-            app:exitAnim="@android:anim/fade_out" />
+
         <action
             android:id="@+id/action_dashboard_page_fragment_to_dashboard_edit_dialog"
             app:destination="@id/dashboard_edit_dialog" />
+
     </fragment>
 
     <fragment
@@ -36,11 +34,6 @@
         android:name="uk.co.zac_h.spacex.launches.LaunchesFragment"
         app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_launches">
-
-        <action
-            android:id="@+id/action_launch_item_to_launch_details_container_fragment"
-            app:destination="@id/launch_details_container_fragment"
-            app:exitAnim="@android:anim/fade_out" />
 
         <deepLink
             android:id="@+id/deepLink"
@@ -287,11 +280,6 @@
             app:argType="string"
             app:nullable="true" />
 
-        <action
-            android:id="@+id/missions_to_launch_details_container_fragment"
-            app:destination="@id/launch_details_container_fragment"
-            app:exitAnim="@android:anim/fade_out" />
-
     </fragment>
 
     <fragment
@@ -328,22 +316,12 @@
             app:argType="string"
             app:nullable="true" />
 
-        <action
-            android:id="@+id/missions_to_launch_details_container_fragment"
-            app:destination="@id/launch_details_container_fragment"
-            app:exitAnim="@android:anim/fade_out" />
-
     </fragment>
 
     <fragment
         android:id="@+id/capsule_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.capsules.details.CapsuleDetailsFragment"
-        tools:layout="@layout/fragment_capsule_details">
-        <action
-            android:id="@+id/missions_to_launch_details_container_fragment"
-            app:destination="@id/launch_details_container_fragment"
-            app:exitAnim="@android:anim/fade_out" />
-    </fragment>
+        tools:layout="@layout/fragment_capsule_details" />
 
     <dialog
         android:id="@+id/theme_alert_dialog"
@@ -352,5 +330,15 @@
     <dialog
         android:id="@+id/dashboard_edit_dialog"
         android:name="uk.co.zac_h.spacex.utils.settings.DashboardEditDialog" />
+
+    <action
+        android:id="@+id/action_launch_item_to_launch_details_container"
+        app:destination="@id/launch_details_container_fragment"
+        app:exitAnim="@android:anim/fade_out" />
+
+    <action
+        android:id="@+id/missions_to_launch_details_container_fragment"
+        app:destination="@id/launch_details_container_fragment"
+        app:exitAnim="@android:anim/fade_out" />
 
 </navigation>

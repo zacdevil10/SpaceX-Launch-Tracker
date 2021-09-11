@@ -10,8 +10,8 @@ import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentCapsuleDetailsBinding
-import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
 import uk.co.zac_h.spacex.dto.spacex.Capsule
+import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
 import uk.co.zac_h.spacex.utils.*
 import java.util.*
 
@@ -27,8 +27,6 @@ class CapsuleDetailsFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
-
-        //capsule = arguments?.getParcelable("capsule")
     }
 
     override fun onCreateView(
