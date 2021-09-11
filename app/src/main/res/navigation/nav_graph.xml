@@ -267,6 +267,11 @@
             app:uri="spacex://launch_details={launch_id}" />
 
         <argument
+            android:name="label"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
             android:name="launch_id"
             app:argType="string" />
 

@@ -4,45 +4,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.SimpleItemAnimator
+import uk.co.zac_h.spacex.ApiResult
+import uk.co.zac_h.spacex.CachePolicy
+import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.dto.spacex.Payload
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
-import uk.co.zac_h.spacex.utils.orUnknown
+import uk.co.zac_h.spacex.launches.details.LaunchDetailsContainerViewModel
 
-class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List<Payload>> {
+class LaunchDetailsPayloadsFragment : BaseFragment() {
+
+    private val viewModel: LaunchDetailsContainerViewModel by navGraphViewModels(R.id.nav_graph) {
+        defaultViewModelProviderFactory
+    }
 
     private lateinit var binding: FragmentVerticalRecyclerviewBinding
 
-    private var presenter: NetworkInterface.Presenter<List<Payload>>? = null
-
     private lateinit var payloadAdapter: PayloadAdapter
-    private var payloads: ArrayList<Payload> = ArrayList()
-
-    private lateinit var id: String
-
-    companion object {
-        const val PAYLOADS_KEY = "payloads"
-        const val ID_KEY = "id"
-
-        @JvmStatic
-        fun newInstance(id: String) = LaunchDetailsPayloadsFragment().apply {
-            this.id = id
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        savedInstanceState?.let {
-            id = it.getString(ID_KEY).orUnknown()
-            //payloads = it.getParcelableArrayList(PAYLOADS_KEY) ?: ArrayList()
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,8 +36,6 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        presenter = LaunchDetailsPayloadsPresenter(this, LaunchDetailsPayloadsInteractor())
-
         payloadAdapter = PayloadAdapter(requireContext())
 
         binding.recycler.apply {
@@ -66,43 +46,22 @@ class LaunchDetailsPayloadsFragment : BaseFragment(), NetworkInterface.View<List
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-
-            presenter?.get(id)
+            viewModel.getLaunch(CachePolicy.REFRESH)
         }
 
-        presenter?.getOrUpdate(payloads, id)
+        viewModel.launch.observe(viewLifecycleOwner) { response ->
+            when (response.status) {
+                ApiResult.Status.PENDING -> {
+                }
+                ApiResult.Status.SUCCESS -> response.data?.payloads?.let { update(it) }.also {
+                    binding.swipeRefresh.isRefreshing = false
+                }
+                ApiResult.Status.FAILURE -> binding.swipeRefresh.isRefreshing = false
+            }
+        }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        //outState.putParcelableArrayList(PAYLOADS_KEY, payloads)
-        outState.putString(ID_KEY, id)
-    }
-
-    override fun update(response: List<Payload>) {
-        //
-
-        payloads = response as ArrayList<Payload>
+    private fun update(response: List<Payload>) {
         payloadAdapter.update(response)
-    }
-
-    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding.swipeRefresh.isRefreshing = isRefreshing
-    }
-
-    override fun showProgress() {
-        binding.progress.show()
-    }
-
-    override fun hideProgress() {
-        binding.progress.hide()
-    }
-
-    override fun showError(error: String) {
-
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun networkAvailable() {
-        /**/
     }
 }
