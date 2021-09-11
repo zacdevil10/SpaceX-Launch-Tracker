@@ -6,9 +6,9 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 
 fun <T, R> CoroutineScope.async(
-    liveData: MutableLiveData<ApiResult<T>>,
+    liveData: MutableLiveData<ApiResult<T>>?,
     block: suspend CoroutineScope.() -> ApiResult<R>
 ): Deferred<ApiResult<R>> = async {
-    liveData.value = ApiResult.pending()
+    liveData?.value = ApiResult.pending()
     block.invoke(this)
 }

@@ -95,7 +95,7 @@ class CoreAdapter(private val context: Context, val setSelected: (String) -> Uni
     class ViewHolder(val binding: ListItemCoreBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(core: Core) {
             binding.root.findNavController().navigate(
-                VehiclesFragmentDirections.actionVehiclesPageFragmentToCoreDetailsFragment(core.serial),
+                VehiclesFragmentDirections.actionVehiclesPageFragmentToCoreDetailsFragment(core.serial, core.id),
                 FragmentNavigatorExtras(binding.listItemCoreCard to core.id)
             )
         }

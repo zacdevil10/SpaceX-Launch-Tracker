@@ -48,11 +48,13 @@ class DashboardFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getLaunch("next")
-        viewModel.getLaunch("latest")
-
         view.doOnPreDraw { startPostponedEnterTransition() }
         postponeEnterTransition()
+
+        binding.toolbarLayout.progress.hide()
+
+        viewModel.getLaunch("next")
+        viewModel.getLaunch("latest")
 
         binding.toolbarLayout.toolbar.apply {
             setup()
@@ -66,6 +68,11 @@ class DashboardFragment : BaseFragment() {
         binding.pinned.pinnedRecycler.apply {
             layoutManager = LinearLayoutManager(this@DashboardFragment.context)
             adapter = pinnedAdapter
+        }
+
+        binding.refresh.setOnRefreshListener {
+            viewModel.getLaunch("next", CachePolicy.REFRESH)
+            viewModel.getLaunch("latest", CachePolicy.REFRESH)
         }
 
         viewModel.dashboardLiveData.observe(viewLifecycleOwner) { entries ->
@@ -97,26 +104,26 @@ class DashboardFragment : BaseFragment() {
 
         viewModel.nextLaunch.observe(viewLifecycleOwner) { response ->
             when (response.status) {
-                ApiResult.Status.PENDING -> toggleNextProgress(true)
+                ApiResult.Status.PENDING -> binding.next.progress.show()
                 ApiResult.Status.SUCCESS -> {
-                    toggleNextProgress(false)
+                    binding.refresh.isRefreshing = false
+                    binding.next.progress.hide()
                     response.data?.let {
-                        toggleNextProgress(false)
                         val time = it.launchDate?.dateUnix?.times(1000)
                             ?.minus(System.currentTimeMillis()) ?: 0
                         if (it.tbd == false && time >= 0) {
                             setCountdown(time)
-                            showCountdown()
-                            hideNextHeading()
+                            binding.next.countdown.visibility = View.VISIBLE
+                            binding.next.heading.visibility = View.GONE
                         } else {
-                            hideCountdown()
-                            showNextHeading()
+                            binding.next.countdown.visibility = View.GONE
+                            binding.next.heading.visibility = View.VISIBLE
                         }
                         update(Upcoming.NEXT, it)
                     }
                 }
                 ApiResult.Status.FAILURE -> {
-                    toggleSwipeRefresh(false)
+                    binding.refresh.isRefreshing = false
                     showError(response.error?.message)
                 }
             }
@@ -124,13 +131,14 @@ class DashboardFragment : BaseFragment() {
 
         viewModel.latestLaunch.observe(viewLifecycleOwner) { response ->
             when (response.status) {
-                ApiResult.Status.PENDING -> toggleLatestProgress(true)
+                ApiResult.Status.PENDING -> binding.latest.progress.show()
                 ApiResult.Status.SUCCESS -> {
-                    toggleLatestProgress(false)
+                    binding.refresh.isRefreshing = false
+                    binding.latest.progress.hide()
                     response.data?.let { update(Upcoming.LATEST, it) }
                 }
                 ApiResult.Status.FAILURE -> {
-                    toggleSwipeRefresh(false)
+                    binding.refresh.isRefreshing = false
                     showError(response.error?.message)
                 }
             }
@@ -139,6 +147,7 @@ class DashboardFragment : BaseFragment() {
         viewModel.pinnedLaunches.observe(viewLifecycleOwner) { response ->
             val launches = response.mapNotNull { it.data }
             pinnedAdapter.update(launches)
+            binding.pinned.progress.hide()
         }
     }
 
@@ -216,7 +225,7 @@ class DashboardFragment : BaseFragment() {
         pinnedAdapter.update(pinnedArray)
     }
 
-    fun setCountdown(time: Long) {
+    private fun setCountdown(time: Long) {
         countdownTimer?.cancel()
         countdownTimer = object : CountDownTimer(time, 1000) {
             override fun onTick(time: Long) {
@@ -260,37 +269,6 @@ class DashboardFragment : BaseFragment() {
         binding.pinned.pinnedMessage.visibility = View.GONE
     }
 
-    private fun toggleNextProgress(isShown: Boolean) = when (isShown) {
-        true -> binding.next.progress.show()
-        false -> binding.next.progress.hide()
-    }
-
-    private fun toggleLatestProgress(isShown: Boolean) = when (isShown) {
-        true -> binding.latest.progress.show()
-        false -> binding.latest.progress.hide()
-    }
-
-    fun togglePinnedProgress(isShown: Boolean) = when (isShown) {
-        true -> binding.pinned.progress.show()
-        false -> binding.pinned.progress.hide()
-    }
-
-    private fun showCountdown() {
-        binding.next.countdown.visibility = View.VISIBLE
-    }
-
-    private fun hideCountdown() {
-        binding.next.countdown.visibility = View.GONE
-    }
-
-    private fun showNextHeading() {
-        binding.next.heading.visibility = View.VISIBLE
-    }
-
-    private fun hideNextHeading() {
-        binding.next.heading.visibility = View.GONE
-    }
-
     private fun showNextLaunch(visible: Boolean) {
         binding.next.dashboardLaunch.visibility = if (visible) View.VISIBLE else View.GONE
     }
@@ -303,15 +281,12 @@ class DashboardFragment : BaseFragment() {
         binding.pinned.dashboardPinned.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
-    fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding.refresh.isRefreshing = isRefreshing
-    }
-
     fun showError(error: String?) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-
+        viewModel.getLaunch("next")
+        viewModel.getLaunch("latest")
     }
 }
