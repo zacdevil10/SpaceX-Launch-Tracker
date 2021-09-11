@@ -35,6 +35,8 @@ class LaunchDetailsCoresFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.progress.hide()
+
         coresAdapter = FirstStageAdapter()
 
         binding.recycler.apply {
