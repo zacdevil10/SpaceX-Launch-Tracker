@@ -5,6 +5,7 @@
     android:id="@+id/fragment_launch_details_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_background"
     tools:context=".launches.details.LaunchDetailsContainerFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,7 +26,9 @@
             android:paddingTop="@dimen/small_margin"
             android:paddingEnd="@dimen/medium_margin"
             android:paddingBottom="@dimen/small_margin"
-            app:layout_constraintTop_toBottomOf="@id/toolbar_layout">
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
+            tools:visibility="visible">
 
             <TextView
                 android:id="@+id/launch_details_countdown"

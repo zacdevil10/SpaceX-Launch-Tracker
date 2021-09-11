@@ -71,9 +71,11 @@ class LaunchDetailsContainerFragment : BaseFragment() {
 
         viewModel.launch.observe(viewLifecycleOwner) { response ->
             when (response.status) {
-                ApiResult.Status.PENDING -> {
+                ApiResult.Status.PENDING -> binding.toolbarLayout.progress.show()
+                ApiResult.Status.SUCCESS -> {
+                    binding.toolbarLayout.progress.hide()
+                    response.data?.let { update(it) }
                 }
-                ApiResult.Status.SUCCESS -> response.data?.let { update(it) }
                 ApiResult.Status.FAILURE -> showError(response.error?.message)
             }
         }
@@ -105,12 +107,12 @@ class LaunchDetailsContainerFragment : BaseFragment() {
     }
 
     private fun update(launch: Launch) {
-        if (launch.crew?.isNotEmpty() == true || launch.ships?.isNotEmpty() == true) {
-            if (launch.crew?.isNotEmpty() == true && launch.ships?.isNotEmpty() == true) {
+        if (launch.crew.isNullOrEmpty().not() || launch.ships.isNullOrEmpty().not()) {
+            if (launch.crew.isNullOrEmpty().not() && launch.ships.isNullOrEmpty().not()) {
                 binding.launchDetailsBottomNavigation.inflateMenu(R.menu.launch_details_bottom_nav_menu_all)
-            } else if (launch.crew?.isNotEmpty() == true) {
+            } else if (launch.crew.isNullOrEmpty().not()) {
                 binding.launchDetailsBottomNavigation.inflateMenu(R.menu.launch_details_bottom_nav_menu_crew)
-            } else if (launch.ships?.isNotEmpty() == true) {
+            } else if (launch.ships.isNullOrEmpty().not()) {
                 binding.launchDetailsBottomNavigation.inflateMenu(R.menu.launch_details_bottom_nav_menu_ships)
             }
         } else {
@@ -174,5 +176,9 @@ class LaunchDetailsContainerFragment : BaseFragment() {
 
     private fun showError(error: String?) {
 
+    }
+
+    override fun networkAvailable() {
+        viewModel.getLaunch()
     }
 }
