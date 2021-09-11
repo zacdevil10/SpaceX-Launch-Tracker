@@ -35,6 +35,8 @@ class LaunchDetailsShipsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.progress.hide()
+
         shipsAdapter = LaunchDetailsShipsAdapter()
 
         binding.recycler.apply {

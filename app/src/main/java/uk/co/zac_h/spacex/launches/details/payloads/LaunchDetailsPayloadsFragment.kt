@@ -36,6 +36,8 @@ class LaunchDetailsPayloadsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.progress.hide()
+
         payloadAdapter = PayloadAdapter(requireContext())
 
         binding.recycler.apply {
