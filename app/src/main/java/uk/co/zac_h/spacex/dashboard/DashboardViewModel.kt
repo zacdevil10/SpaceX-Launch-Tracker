@@ -40,7 +40,7 @@ class DashboardViewModel @Inject constructor(
         viewModelScope.launch {
             val response = async {
                 repository.fetch(
-                    key = id,
+                    key = "$id-dashboard",
                     query = query(
                         when (id) {
                             "next" -> Upcoming.NEXT
