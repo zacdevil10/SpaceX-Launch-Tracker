@@ -5,11 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
 import uk.co.zac_h.spacex.dto.spacex.Core
@@ -22,9 +21,7 @@ class CoreDetailsFragment : BaseFragment() {
 
     private val navArgs: CoreDetailsFragmentArgs by navArgs()
 
-    private val viewModel: CoreViewModel by navGraphViewModels(R.id.nav_graph) {
-        defaultViewModelProviderFactory
-    }
+    private val viewModel: CoreViewModel by viewModels()
 
     private lateinit var binding: FragmentCoreDetailsBinding
 
@@ -32,6 +29,8 @@ class CoreDetailsFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
+
+        viewModel.selectedId = navArgs.id
     }
 
     override fun onCreateView(
@@ -44,6 +43,8 @@ class CoreDetailsFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.getCores()
 
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }

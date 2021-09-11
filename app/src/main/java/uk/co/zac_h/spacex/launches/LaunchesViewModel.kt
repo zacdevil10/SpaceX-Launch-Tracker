@@ -24,12 +24,12 @@ class LaunchesViewModel @Inject constructor(
         MutableLiveData<ApiResult<Map<LaunchType, List<Launch>>>>(ApiResult.pending())
     val launchesLiveData: LiveData<ApiResult<Map<LaunchType, List<Launch>>>> = _launchesLiveData
 
-    fun getLaunches(cachePolicy: CachePolicy = CachePolicy.EXPIRES) {
+    fun getLaunches(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
         viewModelScope.launch {
             val response = async {
                 _launchesLiveData.value = ApiResult.pending()
                 repository.fetch(
-                    key = "all_launches",
+                    key = "launches",
                     query = query,
                     cachePolicy = cachePolicy
                 )
@@ -48,9 +48,6 @@ class LaunchesViewModel @Inject constructor(
             pagination = false,
             populate = listOf(
                 QueryPopulateModel(path = "rocket", populate = "", select = listOf("name")),
-                QueryPopulateModel("launchpad", select = listOf("name"), populate = ""),
-                QueryPopulateModel("crew.crew", populate = "", select = listOf("id")),
-                QueryPopulateModel("ships", populate = "", select = listOf("id")),
                 QueryPopulateModel(
                     path = "cores",
                     populate = listOf(
@@ -68,25 +65,18 @@ class LaunchesViewModel @Inject constructor(
                     select = ""
                 )
             ),
-            sort = "",
             select = listOf(
                 "flight_number",
                 "name",
                 "date_unix",
-                "tbd",
-                "upcoming",
                 "rocket",
                 "cores",
-                "crew",
-                "ships",
                 "links",
-                "static_fire_date_unix",
-                "details",
-                "launchpad",
-                "date_precision"
+                "date_precision",
+                "upcoming",
+                "tbd"
             ),
-            limit = 5000
+            limit = 10000
         )
     )
-
 }
