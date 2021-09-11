@@ -5,7 +5,6 @@ import android.os.CountDownTimer
 import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat.getDrawable
-import androidx.core.os.bundleOf
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
@@ -192,14 +191,16 @@ class DashboardFragment : BaseFragment() {
 
             missionName.text = response.missionName
 
-            date.text = response.launchDate?.dateUnix?.formatDateMillisLong(/*response.datePrecision*/)
+            date.text =
+                response.launchDate?.dateUnix?.formatDateMillisLong(/*response.datePrecision*/)
 
             dashboardLaunch.let { card ->
                 card.setOnClickListener {
                     findNavController().navigate(
-                        R.id.action_launch_item_to_launch_details_container_fragment,
-                        bundleOf(LAUNCH_SHORT_KEY to response),
-                        null,
+                        DashboardFragmentDirections.actionLaunchItemToLaunchDetailsContainerFragment(
+                            response.missionName,
+                            response.id
+                        ),
                         FragmentNavigatorExtras(card to response.id)
                     )
                 }

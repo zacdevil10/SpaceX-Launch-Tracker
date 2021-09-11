@@ -7,48 +7,30 @@ import android.provider.CalendarContract
 import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.navigation.navGraphViewModels
 import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
+import uk.co.zac_h.spacex.ApiResult
+import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
 import uk.co.zac_h.spacex.dto.spacex.DatePrecision
 import uk.co.zac_h.spacex.dto.spacex.Launch
+import uk.co.zac_h.spacex.launches.details.LaunchDetailsContainerViewModel
 import uk.co.zac_h.spacex.utils.*
 
-class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
+class LaunchDetailsFragment : BaseFragment() {
+
+    private val viewModel: LaunchDetailsContainerViewModel by navGraphViewModels(R.id.nav_graph) {
+        defaultViewModelProviderFactory
+    }
 
     private lateinit var binding: FragmentLaunchDetailsBinding
-
-    private var presenter: LaunchDetailsContract.LaunchDetailsPresenter? = null
-    private lateinit var pinnedSharedPreferences: PinnedSharedPreferencesHelper
-
-    private var launch: Launch? = null
-    private lateinit var id: String
-
-    companion object {
-        @JvmStatic
-        fun newInstance(args: Any) = LaunchDetailsFragment().apply {
-            when (args) {
-                is Launch -> {
-                    launch = args
-                    id = args.id
-                }
-                is String -> id = args
-                else -> throw IllegalArgumentException("${this.javaClass.simpleName} has been created with an invalid argument type")
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-
-        savedInstanceState?.let {
-            id = it.getString("id").orUnknown()
-            //launch = it.getParcelable("launch")
-        }
     }
 
     override fun onCreateView(
@@ -62,60 +44,44 @@ class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /*pinnedSharedPreferences = PinnedSharedPreferences(
-            requireContext().getSharedPreferences("pinned", Context.MODE_PRIVATE)
-        )*/
-
-        presenter = LaunchDetailsPresenterImpl(
-            this,
-            pinnedSharedPreferences,
-            LaunchDetailsInteractorImpl()
-        )
-
         binding.swipeRefresh.setOnRefreshListener {
-
-            presenter?.get(id)
+            viewModel.getLaunch(CachePolicy.REFRESH)
         }
 
-        presenter?.getOrUpdate(launch, id)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.cancelRequest()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putString("id", id)
-        //outState.putParcelable("launch", launch)
+        viewModel.launch.observe(viewLifecycleOwner) { response ->
+            when (response.status) {
+                ApiResult.Status.PENDING -> {
+                }
+                ApiResult.Status.SUCCESS -> response.data?.let { update(it) }.also {
+                    binding.swipeRefresh.isRefreshing = false
+                }
+                ApiResult.Status.FAILURE -> binding.swipeRefresh.isRefreshing = false
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(
-            if (presenter?.isPinned(id) == true) R.menu.menu_details_alternate else R.menu.menu_details,
+            if (viewModel.isPinned()) R.menu.menu_details_alternate else R.menu.menu_details,
             menu
         )
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.pin -> {
-            presenter?.pinLaunch(id, true)
+            viewModel.pinLaunch(true)
             activity?.invalidateOptionsMenu()
             true
         }
         R.id.unpin -> {
-            presenter?.pinLaunch(id, false)
+            viewModel.pinLaunch(false)
             activity?.invalidateOptionsMenu()
             true
         }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun update(response: Launch) {
-        //
-
-        launch = response
-
+    private fun update(response: Launch) {
         Glide.with(this@LaunchDetailsFragment)
             .load(response.links?.missionPatch?.patchSmall)
             .error(ContextCompat.getDrawable(requireContext(), R.drawable.ic_mission_patch))
@@ -155,7 +121,7 @@ class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
             ) {
                 launchDetailsCalendarButton.visibility = View.VISIBLE
                 launchDetailsCalendarButton.setOnClickListener {
-                    createEvent()
+                    createEvent(response)
                 }
             } else launchDetailsCalendarButton.visibility = View.GONE
 
@@ -173,49 +139,27 @@ class LaunchDetailsFragment : BaseFragment(), NetworkInterface.View<Launch> {
         } ?: run { visibility = View.GONE }
     }
 
-    private fun createEvent() {
-        launch?.let {
-            val calendarIntent = Intent(Intent.ACTION_INSERT).apply {
-                data = CalendarContract.Events.CONTENT_URI
-                putExtra(
-                    CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                    it.launchDate?.dateUnix?.times(1000L)
-                )
-                putExtra(
-                    CalendarContract.EXTRA_EVENT_END_TIME,
-                    it.launchDate?.dateUnix?.times(1000L)?.plus(3600000)
-                )
-                putExtra(
-                    CalendarContract.Events.TITLE,
-                    "${it.missionName} - SpaceX"
-                )
-            }
-            try {
-                startActivity(calendarIntent)
-            } catch (e: ActivityNotFoundException) {
-                showError("No supported calendar apps found.")
-            }
+    private fun createEvent(launch: Launch) {
+        val calendarIntent = Intent(Intent.ACTION_INSERT).apply {
+            data = CalendarContract.Events.CONTENT_URI
+            putExtra(
+                CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                launch.launchDate?.dateUnix?.times(1000L)
+            )
+            putExtra(
+                CalendarContract.EXTRA_EVENT_END_TIME,
+                launch.launchDate?.dateUnix?.times(1000L)?.plus(3600000)
+            )
+            putExtra(
+                CalendarContract.Events.TITLE,
+                "${launch.missionName} - SpaceX"
+            )
+        }
+        try {
+            startActivity(calendarIntent)
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(context, "No supported calendar apps found.", Toast.LENGTH_SHORT).show()
         }
     }
 
-    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding.swipeRefresh.isRefreshing = isRefreshing
-    }
-
-    override fun showProgress() {
-        binding.progress.show()
-    }
-
-    override fun hideProgress() {
-        binding.progress.hide()
-    }
-
-    override fun showError(error: String) {
-
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun networkAvailable() {
-        /**/
-    }
 }
