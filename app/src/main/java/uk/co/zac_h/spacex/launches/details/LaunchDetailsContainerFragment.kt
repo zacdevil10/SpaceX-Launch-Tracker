@@ -11,6 +11,7 @@ import androidx.fragment.app.commit
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
@@ -43,6 +44,9 @@ class LaunchDetailsContainerFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
+
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
 
         viewModel.launchID = navArgs.launchId
 

@@ -60,8 +60,14 @@
 
     <fragment
         android:id="@+id/crew_detail_page_fragment"
-        android:name="uk.co.zac_h.spacex.crew.details.CrewPagerFragment"
-        tools:layout="@layout/fragment_crew_details" />
+        android:name="uk.co.zac_h.spacex.crew.details.CrewItemFragment"
+        tools:layout="@layout/fragment_crew_details">
+
+        <argument
+            android:name="id"
+            app:argType="string" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/vehicles_page_fragment"
