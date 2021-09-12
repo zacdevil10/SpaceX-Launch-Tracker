@@ -55,6 +55,10 @@ abstract class DataSourceModule {
     @CoreDataSourceClient
     abstract fun bindCoreDataSource(coreDataSource: CoreDataSource): RemoteDataSource<CoreDocsModel>
 
+    @Binds
+    @CrewDataSourceClient
+    abstract fun bindCrewDataSource(crewDataSource: CrewDataSource): RemoteDataSource<CrewDocsModel>
+
 }
 
 @Qualifier
@@ -83,3 +87,6 @@ annotation class ShipDataSourceClient
 
 @Qualifier
 annotation class CoreDataSourceClient
+
+@Qualifier
+annotation class CrewDataSourceClient

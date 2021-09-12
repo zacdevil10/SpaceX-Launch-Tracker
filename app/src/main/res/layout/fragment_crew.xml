@@ -22,10 +22,8 @@
             android:id="@+id/crew_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingStart="@dimen/medium_margin"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:spanCount="2"
-            tools:ignore="RtlSymmetry"
             tools:listitem="@layout/grid_item_crew" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
