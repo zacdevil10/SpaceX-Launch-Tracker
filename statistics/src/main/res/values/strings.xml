@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Statistics-->
+    <string name="statistics_launch_history">Launch History</string>
+    <string name="statistics_landing_history">Landing History</string>
+    <string name="statistics_launch_rate">Launch Rate</string>
+    <string name="statistics_mass_to_orbit">Mass to Orbit</string>
+    <string name="statistics_fairing_recovery">Fairing Recovery</string>
+    <string name="statistics_launchpads">Launchpads</string>
+    <string name="statistics_landing_pads">Landing Pads</string>
+
+    <string name="illustration_by_freepik_stories">Illustration by Freepik Stories</string>
+
+    <string name="success_rate_heading">Launch Success Rate</string>
+    <string name="percentage">%1$d%%</string>
+    <string name="pie_chart_title">Launches\n%1$s</string>
+
+    <string name="falcon_1_rate_label">Falcon 1:</string>
+    <string name="falcon_9_rate_label">Falcon 9:</string>
+    <string name="falcon_heavy_rate_label">Falcon Heavy:</string>
+    <string name="failures_rate_label">Failures:</string>
+    <string name="future_rate_label">Future:</string>
+    <string name="total_rate_label">Total:</string>
+
+    <string name="mass_kg">%1$s kg</string>
+
+    <string name="status_label">Status</string>
+    <string name="successes_label">Successes</string>
+    <string name="attempts_label">Attempts</string>
+    <string name="launch_pad_status_desc">Launch pad status</string>
+    <string name="launch_pad_type_desc">Pad type</string>
+
+    <string name="rockets_label">Rockets</string>
+    <string name="orbits_label">Orbits</string>
+    <string name="type_filter_label">Type:</string>
+
+    <!--Rocket names-->
+    <string name="falcon_1">Falcon 1</string>
+    <string name="falcon_9">Falcon 9</string>
+    <string name="falcon_heavy">Falcon Heavy</string>
+
+    <!--Filter labels-->
+    <string name="filter_successes">Successes</string>
+    <string name="filter_failures">Failures</string>
+    <string name="filter">Filter:</string>
+
+</resources>
