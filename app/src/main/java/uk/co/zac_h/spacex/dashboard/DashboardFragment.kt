@@ -11,6 +11,7 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.google.android.material.transition.MaterialFadeThrough
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.*
 import uk.co.zac_h.spacex.base.BaseFragment
@@ -36,6 +37,13 @@ class DashboardFragment : BaseFragment() {
     private var pinnedArray: ArrayList<Launch> = ArrayList()
 
     private var countdownTimer: CountDownTimer? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        exitTransition = MaterialFadeThrough()
+        reenterTransition = MaterialFadeThrough()
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
