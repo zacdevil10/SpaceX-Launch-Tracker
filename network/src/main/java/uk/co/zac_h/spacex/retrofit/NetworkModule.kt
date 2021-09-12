@@ -9,7 +9,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import uk.co.zac_h.spacex.*
-import uk.co.zac_h.spacex.network.BuildConfig
 import javax.inject.Qualifier
 
 @Module
