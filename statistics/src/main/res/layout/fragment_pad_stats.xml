@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pad_stats_constraint"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_background">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/pad_stats_launch_sites_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingTop="@dimen/small_margin"
+        android:paddingBottom="@dimen/xlarge_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/list_item_pad_stats" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

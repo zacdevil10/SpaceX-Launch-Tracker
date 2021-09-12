@@ -1,3 +1,4 @@
 include ':app', ':common'
 rootProject.name='SpaceX'
 include ':network'
+include ':statistics'

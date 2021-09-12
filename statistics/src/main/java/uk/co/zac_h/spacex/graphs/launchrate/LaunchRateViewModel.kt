@@ -1,0 +1,71 @@
+package uk.co.zac_h.spacex.graphs.launchrate
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import uk.co.zac_h.spacex.*
+import uk.co.zac_h.spacex.dto.spacex.*
+import uk.co.zac_h.spacex.models.RateStatsModel
+import uk.co.zac_h.spacex.utils.RocketIds
+import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
+import javax.inject.Inject
+
+@HiltViewModel
+class LaunchRateViewModel @Inject constructor(
+    private val repository: StatisticsRepository
+) : ViewModel() {
+
+    private val _launchRate = MutableLiveData<ApiResult<List<RateStatsModel>>>()
+    val launchRate: LiveData<ApiResult<List<RateStatsModel>>> = _launchRate
+
+    val cacheLocation: Repository.RequestLocation
+        get() = repository.cacheLocation
+
+    fun get(cachePolicy: CachePolicy = CachePolicy.EXPIRES) {
+        viewModelScope.launch {
+            val response = async(_launchRate) {
+                repository.fetch(key = "launch_rate", query = query, cachePolicy = cachePolicy)
+            }
+
+            val result = response.await().map { launches -> launches.docs.map { Launch(it) } }
+
+            _launchRate.value = result.map { launches ->
+                ArrayList<RateStatsModel>().apply {
+                    launches.forEach {
+                        val year = it.launchDate?.dateUnix?.formatDateMillisYYYY() ?: return@forEach
+
+                        if (none { newList -> newList.year == year }) add(RateStatsModel(year))
+
+                        val stat = first { newList -> newList.year == year }
+
+                        if (it.upcoming == false) it.success?.let { success ->
+                            if (success) when (it.rocket?.id) {
+                                RocketIds.FALCON_ONE -> stat.falconOne++
+                                RocketIds.FALCON_NINE -> stat.falconNine++
+                                RocketIds.FALCON_HEAVY -> stat.falconHeavy++
+                                else -> return@forEach
+                            } else stat.failure++
+                        } else stat.planned++
+                    }
+                }
+            }
+        }
+    }
+
+    private val query = QueryModel(
+        "",
+        QueryOptionsModel(
+            false,
+            listOf(
+                QueryPopulateModel("rocket", populate = "", select = listOf("id"))
+            ),
+            QueryLaunchesSortByDate("asc"),
+            listOf("rocket", "success", "upcoming", "date_unix"),
+            100000
+        )
+    )
+
+}

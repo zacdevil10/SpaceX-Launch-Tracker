@@ -63,7 +63,7 @@ data class ShipQueriedResponse(
 )
 
 data class Ship(
-    val name: String?,
+    override val name: String,
     val legacyId: String?,
     val model: String?,
     val type: String?,
@@ -83,16 +83,21 @@ data class Ship(
     val lng: Float?,
     val lastUpdate: String?,
     val link: String?,
-    val image: String?,
+    override val image: String,
     val launchIds: List<String>? = null,
     val launches: List<Launch>? = null,
-    val id: String
+    override val id: String
+) : Vehicle(
+    id = id,
+    name = name,
+    details = "",
+    image = image
 ) {
 
     constructor(
         response: ShipResponse
     ) : this(
-        name = response.name,
+        name = response.name.orEmpty(),
         legacyId = response.legacyId,
         model = response.model,
         type = response.type,
@@ -112,7 +117,7 @@ data class Ship(
         lng = response.lng,
         lastUpdate = response.lastUpdate,
         link = response.link,
-        image = response.image,
+        image = response.image.orEmpty(),
         launchIds = response.launches,
         id = response.id
     )
@@ -120,7 +125,7 @@ data class Ship(
     constructor(
         response: ShipQueriedResponse
     ) : this(
-        name = response.name,
+        name = response.name.orEmpty(),
         legacyId = response.legacyId,
         model = response.model,
         type = response.type,
@@ -140,10 +145,15 @@ data class Ship(
         lng = response.lng,
         lastUpdate = response.lastUpdate,
         link = response.link,
-        image = response.image,
+        image = response.image.orEmpty(),
         launches = response.launches?.map { Launch(it) },
         id = response.id
     )
-
-
 }
+
+open class Vehicle(
+    open val id: String,
+    open val image: String,
+    open val name: String,
+    val details: String
+)
