@@ -29,7 +29,7 @@
     <item android:title="@string/menu_about_spacex">
         <menu>
             <item
-                android:id="@id/statistics_page_fragment"
+                android:id="@id/statistics_navigation"
                 android:checkable="true"
                 android:icon="@drawable/ic_data_usage_black_24dp"
                 android:title="@string/menu_statistics" />

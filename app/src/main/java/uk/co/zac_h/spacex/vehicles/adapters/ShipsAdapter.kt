@@ -49,7 +49,7 @@ class ShipsAdapter(val setSelected: (String) -> Unit) :
     class ViewHolder(val binding: ListItemVehicleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(ship: Ship) {
             binding.root.findNavController().navigate(
-                VehiclesFragmentDirections.actionVehiclesPageFragmentToShipDetailsFragment(ship.name),
+                VehiclesFragmentDirections.actionVehiclesPageToShipDetails(ship.name, ship.id),
                 FragmentNavigatorExtras(binding.vehicleCard to ship.id)
             )
         }

@@ -49,6 +49,10 @@ class MainActivity : AppCompatActivity(),
             supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
 
         binding.navView.setupWithNavController(navHostFragment.navController)
+
+        binding.bottomToolbar.setupWithNavController(navHostFragment.navController)
+
+        setSupportActionBar(binding.bottomToolbar)
     }
 
     override fun onStart() {

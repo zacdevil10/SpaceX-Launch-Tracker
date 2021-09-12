@@ -28,16 +28,6 @@
     <string name="customise_dashboard_label">Customise dashboard</string>
     <string name="watch_live_label">WATCH LIVE</string>
 
-    <!--Filter labels-->
-    <string name="filter_successes">Successes</string>
-    <string name="filter_failures">Failures</string>
-    <string name="filter">Filter:</string>
-
-    <!--Rocket names-->
-    <string name="falcon_1">Falcon 1</string>
-    <string name="falcon_9">Falcon 9</string>
-    <string name="falcon_heavy">Falcon Heavy</string>
-
     <!--News-->
     <string name="screen_name">\@%1$s</string>
     <string name="twitter_profile_image_desc">Twitter profile image</string>
@@ -76,7 +66,6 @@
     <string name="mass">%1$s kg / %2$s lbs</string>
     <string name="static_fire_label">Static fire:</string>
     <string name="watch_label">Watch</string>
-    <string name="press_kit_label">Press Kit</string>
     <string name="campaign_label">Campaign</string>
     <string name="launch_label">Launch</string>
     <string name="media_label">Media</string>
@@ -84,40 +73,6 @@
     <string name="details_label">Details</string>
     <string name="cores_label">Cores</string>
     <string name="payloads_label">Payloads</string>
-
-    <!--Statistics-->
-    <string name="statistics_launch_history">Launch History</string>
-    <string name="statistics_landing_history">Landing History</string>
-    <string name="statistics_launch_rate">Launch Rate</string>
-    <string name="statistics_mass_to_orbit">Mass to Orbit</string>
-    <string name="statistics_fairing_recovery">Fairing Recovery</string>
-    <string name="statistics_launchpads">Launchpads</string>
-    <string name="statistics_landing_pads">Landing Pads</string>
-
-    <string name="success_rate_heading">Launch Success Rate</string>
-    <string name="percentage">%1$d%%</string>
-    <string name="pie_chart_title">Launches\n%1$s</string>
-
-    <string name="falcon_1_rate_label">Falcon 1:</string>
-    <string name="falcon_9_rate_label">Falcon 9:</string>
-    <string name="falcon_heavy_rate_label">Falcon Heavy:</string>
-    <string name="failures_rate_label">Failures:</string>
-    <string name="future_rate_label">Future:</string>
-    <string name="total_rate_label">Total:</string>
-
-    <string name="mass_kg">%1$s kg</string>
-
-    <string name="status_label">Status</string>
-    <string name="successes_label">Successes</string>
-    <string name="attempts_label">Attempts</string>
-    <string name="launch_pad_status_desc">Launch pad status</string>
-    <string name="launch_pad_type_desc">Pad type</string>
-
-    <string name="rockets_label">Rockets</string>
-    <string name="orbits_label">Orbits</string>
-    <string name="type_filter_label">Type:</string>
-
-    <string name="illustration_by_freepik_stories">Illustration by Freepik Stories</string>
 
     <!--About-->
     <string name="powered_by">Powered by the r/SpaceX, Twitter and Reddit API</string>
@@ -149,13 +104,7 @@
     <string name="album_label">Album</string>
 
     <string name="create_event_label">Create Event</string>
-    <string name="launch_details_icon_desc">Launch Details Icon</string>
-    <string name="launch_details_label">Launch Details</string>
-    <string name="reddit_campaign_icon_desc">Reddit Campaign Icon</string>
-    <string name="reddit_campaign_label">Reddit Campaign</string>
-    <string name="wikipedia_icon_desc">Wikipedia Icon</string>
     <string name="wikipedia_label">ikipedia</string>
-    <string name="article_icon_desc">Article Icon</string>
     <string name="article_label">Article</string>
 
     <!-- Vehicles -->
@@ -187,13 +136,10 @@
     <string name="type_label">Type</string>
     <string name="reuse_count_label">Reuse Count</string>
     <string name="landings_label">Landings</string>
-    <string name="no_missions_found">No missions found.</string>
     <string name="block">Block %1$s</string>
     <string name="sort_label">Sort</string>
     <string name="newest_first_label">Newest first</string>
     <string name="oldest_first_label">Oldest first</string>
-    <string name="filter_label">Filter</string>
-    <string name="reload_label">Reload</string>
     <string name="amount_label">Amount</string>
     <string name="pods_label">Pods</string>
     <string name="fuel_1_label">Fuel 1</string>

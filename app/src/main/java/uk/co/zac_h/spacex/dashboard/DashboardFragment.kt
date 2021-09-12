@@ -11,7 +11,6 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.*
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
@@ -21,7 +20,6 @@ import uk.co.zac_h.spacex.dto.spacex.Upcoming
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.utils.*
 
-@AndroidEntryPoint
 class DashboardFragment : BaseFragment() {
 
     override val title: String by lazy { getString(R.string.menu_home) }
