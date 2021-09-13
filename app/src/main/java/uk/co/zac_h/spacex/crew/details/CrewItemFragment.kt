@@ -91,6 +91,8 @@ class CrewItemFragment : BaseFragment() {
         viewModel.crew.observe(viewLifecycleOwner) { result ->
             result.data?.find { it.id == navArgs.id }?.let { update(it) }
         }
+
+        viewModel.get()
     }
 
     private fun update(person: Crew) {
