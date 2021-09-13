@@ -8,10 +8,7 @@ import uk.co.zac_h.spacex.datasource.remote.about.CompanyDataSource
 import uk.co.zac_h.spacex.datasource.remote.about.HistoryDataSource
 import uk.co.zac_h.spacex.datasource.remote.statistics.LandingPadDataSource
 import uk.co.zac_h.spacex.datasource.remote.statistics.LaunchpadDataSource
-import uk.co.zac_h.spacex.datasource.remote.vehicles.CoreDataSource
-import uk.co.zac_h.spacex.datasource.remote.vehicles.DragonDataSource
-import uk.co.zac_h.spacex.datasource.remote.vehicles.RocketDataSource
-import uk.co.zac_h.spacex.datasource.remote.vehicles.ShipDataSource
+import uk.co.zac_h.spacex.datasource.remote.vehicles.*
 import uk.co.zac_h.spacex.dto.spacex.*
 import javax.inject.Qualifier
 
@@ -56,6 +53,10 @@ abstract class DataSourceModule {
     abstract fun bindCoreDataSource(coreDataSource: CoreDataSource): RemoteDataSource<CoreDocsModel>
 
     @Binds
+    @CapsuleDataSourceClient
+    abstract fun bindCapsuleDataSource(capsuleDataSource: CapsuleDataSource): RemoteDataSource<CapsulesDocsModel>
+
+    @Binds
     @CrewDataSourceClient
     abstract fun bindCrewDataSource(crewDataSource: CrewDataSource): RemoteDataSource<CrewDocsModel>
 
@@ -87,6 +88,9 @@ annotation class ShipDataSourceClient
 
 @Qualifier
 annotation class CoreDataSourceClient
+
+@Qualifier
+annotation class CapsuleDataSourceClient
 
 @Qualifier
 annotation class CrewDataSourceClient
