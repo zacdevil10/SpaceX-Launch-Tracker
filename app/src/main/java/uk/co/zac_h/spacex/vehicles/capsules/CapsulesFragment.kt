@@ -2,84 +2,75 @@ package uk.co.zac_h.spacex.vehicles.capsules
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import uk.co.zac_h.spacex.ApiResult
+import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.databinding.FragmentCapsulesBinding
+import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.dto.spacex.Capsule
-import uk.co.zac_h.spacex.utils.OrderSharedPreferences
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
 
-class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
-    SearchView.OnQueryTextListener {
+class CapsulesFragment : BaseFragment(), SearchView.OnQueryTextListener {
 
     override var title: String = "Capsules"
 
-    private lateinit var binding: FragmentCapsulesBinding
+    private lateinit var binding: FragmentVerticalRecyclerviewBinding
 
-    private var presenter: NetworkInterface.Presenter<Nothing>? = null
+    private val viewModel: CapsulesViewModel by viewModels()
+
     private lateinit var capsulesAdapter: CapsulesAdapter
 
-    private var capsulesArray: ArrayList<Capsule> = ArrayList()
-
-    private lateinit var orderSharedPreferences: OrderSharedPreferences
-    private var sortNew = false
     private lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-
-        /*capsulesArray =
-            savedInstanceState?.getParcelableArrayList("capsules") ?: ArrayList()*/
-        sortNew = savedInstanceState?.getBoolean("sort") ?: false
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentCapsulesBinding.inflate(inflater, container, false).apply {
+    ): View = FragmentVerticalRecyclerviewBinding.inflate(inflater, container, false).apply {
         binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        orderSharedPreferences = OrderSharedPreferences.build(requireContext())
-        presenter = CapsulesPresenterImpl(this, CapsulesInteractorImpl())
+        capsulesAdapter = CapsulesAdapter()
 
-        sortNew = orderSharedPreferences.isSortedNew("capsules")
-
-        capsulesAdapter = CapsulesAdapter(capsulesArray)
-
-        binding.capsulesRecycler.apply {
+        binding.recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = capsulesAdapter
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-
-            presenter?.get()
+            viewModel.get(CachePolicy.REFRESH)
         }
 
-        if (capsulesArray.isEmpty()) presenter?.get()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.apply {
-            //putParcelableArrayList("capsules", capsulesArray)
-            putBoolean("sort", sortNew)
+        viewModel.capsules.observe(viewLifecycleOwner) { result ->
+            when (result.status) {
+                ApiResult.Status.PENDING -> showProgress()
+                ApiResult.Status.SUCCESS -> {
+                    hideProgress()
+                    binding.swipeRefresh.isRefreshing = false
+                    result.data?.let { data -> update(data) }
+                }
+                ApiResult.Status.FAILURE -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    showError(result.error?.message)
+                }
+            }
         }
-        super.onSaveInstanceState(outState)
-    }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.cancelRequest()
+        viewModel.get()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -91,62 +82,51 @@ class CapsulesFragment : BaseFragment(), NetworkInterface.View<List<Capsule>>,
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean =
-        when (item.itemId) {
-            R.id.sort_new -> {
-                if (!sortNew) {
-                    sortNew = true
-                    orderSharedPreferences.setSortOrder("capsules", sortNew)
-                    capsulesArray.reverse()
-                    capsulesAdapter.notifyDataSetChanged()
-                }
-                true
-            }
-            R.id.sort_old -> {
-                if (sortNew) {
-                    sortNew = false
-                    orderSharedPreferences.setSortOrder("capsules", sortNew)
-                    capsulesArray.reverse()
-                    capsulesAdapter.notifyDataSetChanged()
-                }
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.sort_new -> handleSortItemClick(false)
+        R.id.sort_old -> handleSortItemClick(true)
+        else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun handleSortItemClick(order: Boolean): Boolean {
+        if (viewModel.getOrder() == order) viewModel.apply {
+            setOrder(!order)
+            get()
         }
+        return true
+    }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
-        capsulesAdapter.filter.filter(query)
+        //capsulesAdapter.filter.filter(query)
         return false
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        capsulesAdapter.filter.filter(newText)
+        //capsulesAdapter.filter.filter(newText)
         return false
     }
 
-    override fun update(response: List<Capsule>) {
-
-
-        capsulesArray.clear()
-        capsulesArray.addAll(if (sortNew) response.reversed() else response)
-
-        binding.capsulesRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
-        capsulesAdapter.notifyDataSetChanged()
-        binding.capsulesRecycler.scheduleLayoutAnimation()
+    private fun update(response: List<Capsule>) {
+        capsulesAdapter.submitList(response)
+        if (viewModel.cacheLocation == Repository.RequestLocation.REMOTE) {
+            binding.recycler.layoutAnimation = animateLayoutFromBottom(requireContext())
+            binding.recycler.scheduleLayoutAnimation()
+        }
     }
 
-    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding.swipeRefresh.isRefreshing = isRefreshing
+    private fun showProgress() {
+        binding.progress.show()
     }
 
-    override fun showError(error: String) {
+    private fun hideProgress() {
+        binding.progress.hide()
+    }
 
+    private fun showError(error: String?) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        /*when (apiState) {
-            ApiResult.Status.PENDING, ApiResult.Status.FAILURE -> presenter?.get()
-            ApiResult.Status.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }*/
+        viewModel.get()
     }
 }

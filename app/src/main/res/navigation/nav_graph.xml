@@ -331,7 +331,18 @@
     <fragment
         android:id="@+id/capsule_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.capsules.details.CapsuleDetailsFragment"
-        tools:layout="@layout/fragment_capsule_details" />
+        tools:layout="@layout/fragment_capsule_details">
+
+        <argument
+            android:name="label"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="id"
+            app:argType="string" />
+
+    </fragment>
 
     <dialog
         android:id="@+id/theme_alert_dialog"
