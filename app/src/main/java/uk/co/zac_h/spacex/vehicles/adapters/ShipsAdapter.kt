@@ -14,8 +14,7 @@ import uk.co.zac_h.spacex.databinding.ListItemVehicleBinding
 import uk.co.zac_h.spacex.dto.spacex.Ship
 import uk.co.zac_h.spacex.vehicles.VehiclesFragmentDirections
 
-class ShipsAdapter(val setSelected: (String) -> Unit) :
-    ListAdapter<Ship, ShipsAdapter.ViewHolder>(ShipComparator) {
+class ShipsAdapter : ListAdapter<Ship, ShipsAdapter.ViewHolder>(ShipComparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
         ListItemVehicleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -35,21 +34,18 @@ class ShipsAdapter(val setSelected: (String) -> Unit) :
             vehicleName.text = ship.name
             vehicleDetails.visibility = View.GONE
 
-            vehicleCard.setOnClickListener {
-                setSelected(ship.id)
-                holder.bind(ship)
-            }
-            vehicleSpecs.setOnClickListener {
-                setSelected(ship.id)
-                holder.bind(ship)
-            }
+            vehicleCard.setOnClickListener { holder.bind(ship) }
+            vehicleSpecs.setOnClickListener { holder.bind(ship) }
         }
     }
 
     class ViewHolder(val binding: ListItemVehicleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(ship: Ship) {
             binding.root.findNavController().navigate(
-                VehiclesFragmentDirections.actionVehiclesPageFragmentToShipDetailsFragment(ship.name),
+                VehiclesFragmentDirections.actionVehiclesPageFragmentToShipDetailsFragment(
+                    ship.name,
+                    ship.id
+                ),
                 FragmentNavigatorExtras(binding.vehicleCard to ship.id)
             )
         }

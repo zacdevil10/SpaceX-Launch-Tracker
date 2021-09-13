@@ -40,7 +40,7 @@ class ShipsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        shipsAdapter = ShipsAdapter { viewModel.selectedId = it }
+        shipsAdapter = ShipsAdapter()
 
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(this@ShipsFragment.context)

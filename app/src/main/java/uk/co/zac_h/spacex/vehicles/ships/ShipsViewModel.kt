@@ -24,8 +24,6 @@ class ShipsViewModel @Inject constructor(
     private val _ships = MutableLiveData<ApiResult<List<Ship>>>()
     val ships: LiveData<ApiResult<List<Ship>>> = _ships
 
-    var selectedId = ""
-
     val cacheLocation: Repository.RequestLocation
         get() = repository.cacheLocation
 

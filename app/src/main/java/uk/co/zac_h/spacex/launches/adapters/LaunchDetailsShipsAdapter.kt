@@ -51,7 +51,8 @@ class LaunchDetailsShipsAdapter : RecyclerView.Adapter<LaunchDetailsShipsAdapter
         fun bind(ship: Ship) {
             binding.root.findNavController().navigate(
                 LaunchDetailsContainerFragmentDirections.actionLaunchDetailsContainerFragmentToShipDetailsFragment(
-                    ship.name
+                    ship.name,
+                    ship.id
                 ),
                 FragmentNavigatorExtras(binding.vehicleCard to ship.id)
             )

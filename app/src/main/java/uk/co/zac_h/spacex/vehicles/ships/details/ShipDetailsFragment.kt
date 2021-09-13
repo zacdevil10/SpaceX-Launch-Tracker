@@ -49,13 +49,15 @@ class ShipDetailsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.getShips()
+
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
         setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
 
         viewModel.ships.observe(viewLifecycleOwner) { result ->
-            result.data?.first { it.id == viewModel.selectedId }?.let { update(it) }
+            update(result.data?.first { it.id == navArgs.id })
         }
     }
 
