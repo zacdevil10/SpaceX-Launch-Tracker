@@ -50,8 +50,8 @@ class VehiclesFragment : BaseFragment() {
             CapsulesFragment()
         )
 
-        toolbarLayout.toolbar.setupWithTabLayout(toolbarLayout.tabLayout, TabLayout.MODE_SCROLLABLE)
         toolbarLayout.toolbar.setSupportActionBar()
+        toolbarLayout.toolbar.setupWithTabLayout(toolbarLayout.tabLayout, TabLayout.MODE_SCROLLABLE)
 
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
