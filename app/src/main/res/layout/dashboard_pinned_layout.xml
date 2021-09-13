@@ -21,8 +21,7 @@
         android:indeterminate="true"
         app:hideAnimationBehavior="inward"
         app:indicatorColor="?colorSecondary"
-        app:layout_constraintBottom_toBottomOf="@id/toolbar"
-        app:showAnimationBehavior="outward" />
+        app:layout_constraintBottom_toBottomOf="@id/toolbar" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

@@ -10,13 +10,11 @@
         android:name="uk.co.zac_h.spacex.dashboard.DashboardFragment"
         app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_dashboard">
-        <action
-            android:id="@+id/action_launch_item_to_launch_details_container_fragment"
-            app:destination="@id/launch_details_container_fragment"
-            app:exitAnim="@android:anim/fade_out" />
+
         <action
             android:id="@+id/action_dashboard_page_fragment_to_dashboard_edit_dialog"
             app:destination="@id/dashboard_edit_dialog" />
+
     </fragment>
 
     <fragment
@@ -36,11 +34,6 @@
         android:name="uk.co.zac_h.spacex.launches.LaunchesFragment"
         app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_launches">
-
-        <action
-            android:id="@+id/action_launch_item_to_launch_details_container_fragment"
-            app:destination="@id/launch_details_container_fragment"
-            app:exitAnim="@android:anim/fade_out" />
 
         <deepLink
             android:id="@+id/deepLink"
@@ -67,8 +60,14 @@
 
     <fragment
         android:id="@+id/crew_detail_page_fragment"
-        android:name="uk.co.zac_h.spacex.crew.details.CrewPagerFragment"
-        tools:layout="@layout/fragment_crew_details" />
+        android:name="uk.co.zac_h.spacex.crew.details.CrewItemFragment"
+        tools:layout="@layout/fragment_crew_details">
+
+        <argument
+            android:name="id"
+            app:argType="string" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/vehicles_page_fragment"
@@ -141,32 +140,72 @@
     <fragment
         android:id="@+id/launch_history_fragment"
         android:name="uk.co.zac_h.spacex.statistics.graphs.launchhistory.LaunchHistoryFragment"
-        tools:layout="@layout/fragment_launch_history" />
+        tools:layout="@layout/fragment_launch_history">
+
+        <argument
+            android:name="type"
+            app:argType="uk.co.zac_h.spacex.statistics.adapters.Statistics" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/landing_history_fragment"
         android:name="uk.co.zac_h.spacex.statistics.graphs.landinghistory.LandingHistoryFragment"
-        tools:layout="@layout/fragment_landing_history" />
+        tools:layout="@layout/fragment_landing_history">
+
+        <argument
+            android:name="type"
+            app:argType="uk.co.zac_h.spacex.statistics.adapters.Statistics" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/launch_rate_fragment"
         android:name="uk.co.zac_h.spacex.statistics.graphs.launchrate.LaunchRateFragment"
-        tools:layout="@layout/fragment_launch_rate" />
+        tools:layout="@layout/fragment_launch_rate">
+
+        <argument
+            android:name="type"
+            app:argType="uk.co.zac_h.spacex.statistics.adapters.Statistics" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/launch_mass_fragment"
         android:name="uk.co.zac_h.spacex.statistics.graphs.launchmass.LaunchMassFragment"
-        tools:layout="@layout/fragment_launch_mass" />
+        tools:layout="@layout/fragment_launch_mass">
+
+        <argument
+            android:name="type"
+            app:argType="uk.co.zac_h.spacex.statistics.adapters.Statistics" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/fairing_recovery_fragment"
         android:name="uk.co.zac_h.spacex.statistics.graphs.fairingrecovery.FairingRecoveryFragment"
-        tools:layout="@layout/fragment_fairing_recovery" />
+        tools:layout="@layout/fragment_fairing_recovery">
+
+        <argument
+            android:name="type"
+            app:argType="uk.co.zac_h.spacex.statistics.adapters.Statistics" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/pad_stats_fragment"
         android:name="uk.co.zac_h.spacex.statistics.graphs.padstats.PadStatsFragment"
-        tools:layout="@layout/fragment_pad_stats" />
+        tools:layout="@layout/fragment_pad_stats">
+
+        <argument
+            android:name="type"
+            app:argType="uk.co.zac_h.spacex.statistics.adapters.Statistics" />
+
+        <argument
+            android:name="padType"
+            app:argType="uk.co.zac_h.spacex.utils.PadType" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/company_page_fragment"
@@ -227,6 +266,11 @@
             app:uri="spacex://launch_details={launch_id}" />
 
         <argument
+            android:name="label"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
             android:name="launch_id"
             app:argType="string" />
 
@@ -236,40 +280,72 @@
         android:id="@+id/core_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.cores.details.CoreDetailsFragment"
         tools:layout="@layout/fragment_core_details">
-        <action
-            android:id="@+id/missions_to_launch_details_container_fragment"
-            app:destination="@id/launch_details_container_fragment"
-            app:exitAnim="@android:anim/fade_out" />
+
+        <argument
+            android:name="label"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="id"
+            app:argType="string" />
+
     </fragment>
 
     <fragment
         android:id="@+id/rocket_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.rockets.details.RocketDetailsFragment"
-        tools:layout="@layout/fragment_rocket_details" />
+        tools:layout="@layout/fragment_rocket_details">
+
+        <argument
+            android:name="label"
+            app:argType="string"
+            app:nullable="true" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/dragon_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.dragon.details.DragonDetailsFragment"
-        tools:layout="@layout/fragment_dragon_details" />
+        tools:layout="@layout/fragment_dragon_details">
+
+        <argument
+            android:name="label"
+            app:argType="string"
+            app:nullable="true" />
+
+    </fragment>
 
     <fragment
         android:id="@+id/ship_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.ships.details.ShipDetailsFragment"
         tools:layout="@layout/fragment_ship_details">
-        <action
-            android:id="@+id/missions_to_launch_details_container_fragment"
-            app:destination="@id/launch_details_container_fragment"
-            app:exitAnim="@android:anim/fade_out" />
+
+        <argument
+            android:name="label"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="id"
+            app:argType="string" />
+
     </fragment>
 
     <fragment
         android:id="@+id/capsule_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.capsules.details.CapsuleDetailsFragment"
         tools:layout="@layout/fragment_capsule_details">
-        <action
-            android:id="@+id/missions_to_launch_details_container_fragment"
-            app:destination="@id/launch_details_container_fragment"
-            app:exitAnim="@android:anim/fade_out" />
+
+        <argument
+            android:name="label"
+            app:argType="string"
+            app:nullable="true" />
+
+        <argument
+            android:name="id"
+            app:argType="string" />
+
     </fragment>
 
     <dialog
@@ -279,5 +355,15 @@
     <dialog
         android:id="@+id/dashboard_edit_dialog"
         android:name="uk.co.zac_h.spacex.utils.settings.DashboardEditDialog" />
+
+    <action
+        android:id="@+id/action_launch_item_to_launch_details_container"
+        app:destination="@id/launch_details_container_fragment"
+        app:exitAnim="@android:anim/fade_out" />
+
+    <action
+        android:id="@+id/missions_to_launch_details_container_fragment"
+        app:destination="@id/launch_details_container_fragment"
+        app:exitAnim="@android:anim/fade_out" />
 
 </navigation>

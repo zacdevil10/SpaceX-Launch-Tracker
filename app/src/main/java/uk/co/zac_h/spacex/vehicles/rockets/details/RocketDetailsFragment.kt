@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
@@ -11,30 +13,34 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.CollapsingToolbarBinding
 import uk.co.zac_h.spacex.databinding.FragmentRocketDetailsBinding
-import uk.co.zac_h.spacex.model.spacex.Rocket
+import uk.co.zac_h.spacex.dto.spacex.Rocket
 import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.setImageAndTint
 import uk.co.zac_h.spacex.vehicles.adapters.RocketPayloadAdapter
+import uk.co.zac_h.spacex.vehicles.rockets.RocketViewModel
 
 class RocketDetailsFragment : BaseFragment() {
 
-    override var title: String = "Rocket"
+    override val title: String by lazy { navArgs.label ?: title }
+
+    private val navArgs: RocketDetailsFragmentArgs by navArgs()
+
+    private val viewModel: RocketViewModel by navGraphViewModels(R.id.nav_graph) {
+        defaultViewModelProviderFactory
+    }
 
     private lateinit var binding: FragmentRocketDetailsBinding
     private lateinit var toolbarBinding: CollapsingToolbarBinding
-
-    private var rocket: Rocket? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
-
-        rocket = arguments?.getParcelable("rocket") as Rocket?
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentRocketDetailsBinding.inflate(inflater, container, false).apply {
         toolbarBinding = CollapsingToolbarBinding.bind(this.root)
@@ -44,14 +50,19 @@ class RocketDetailsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        title = rocket?.name ?: ""
         setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
 
+        viewModel.rockets.observe(viewLifecycleOwner) { result ->
+            result.data?.first { it.id == viewModel.selectedId }?.let { update(it) }
+        }
+    }
+
+    private fun update(rocket: Rocket?) {
         with(binding) {
             rocket?.let {
                 rocketDetailsCoordinator.transitionName = it.id
 
-                Glide.with(view)
+                Glide.with(requireContext())
                     .load(it.flickr?.random())
                     .error(R.drawable.ic_baseline_error_outline_24)
                     .into(toolbarBinding.header)
@@ -150,13 +161,9 @@ class RocketDetailsFragment : BaseFragment() {
                 rocketDetailsPayloadRecycler.apply {
                     layoutManager = LinearLayoutManager(requireContext())
                     setHasFixedSize(true)
-                    adapter =
-                        it.payloadWeights?.let { payloadWeights ->
-                            RocketPayloadAdapter(
-                                requireContext(),
-                                payloadWeights
-                            )
-                        }
+                    adapter = it.payloadWeights?.let { payloadWeights ->
+                        RocketPayloadAdapter(requireContext(), payloadWeights)
+                    }
                 }
             }
         }

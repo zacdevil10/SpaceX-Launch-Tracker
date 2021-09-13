@@ -2,46 +2,39 @@ package uk.co.zac_h.spacex.statistics.graphs.padstats
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
+import uk.co.zac_h.spacex.ApiResult
+import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
-import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentPadStatsBinding
-import uk.co.zac_h.spacex.model.spacex.StatsPadModel
+import uk.co.zac_h.spacex.dto.spacex.StatsPadModel
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
-import uk.co.zac_h.spacex.utils.ApiState
 import uk.co.zac_h.spacex.utils.PadType
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
-import uk.co.zac_h.spacex.utils.clearAndAdd
 
-class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadModel>> {
+class PadStatsFragment : BaseFragment() {
 
-    override val title: String by lazy { heading ?: "Pads" }
+    override val title: String by lazy { getString(navArgs.type.title) }
 
     private lateinit var binding: FragmentPadStatsBinding
 
-    private var heading: String? = null
+    private val viewModel: PadStatsViewModel by viewModels()
 
-    private var presenter: PadStatsContract.PadStatsPresenter? = null
-
-    private var type: PadType? = null
+    private val navArgs: PadStatsFragmentArgs by navArgs()
 
     private lateinit var padsAdapter: PadStatsSitesAdapter
-
-    private lateinit var pads: ArrayList<StatsPadModel>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
         sharedElementEnterTransition = MaterialContainerTransform()
-
-        heading = arguments?.getString("heading")
-        type = arguments?.get("type") as PadType?
-        pads = savedInstanceState?.getParcelableArrayList("pads") ?: ArrayList()
     }
 
     override fun onCreateView(
@@ -63,11 +56,9 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
             createOptionsMenu(R.menu.menu_statistics_reload)
         }
 
-        binding.padStatsConstraint.transitionName = heading
+        binding.padStatsConstraint.transitionName = getString(navArgs.type.title)
 
-        presenter = PadStatsPresenterImpl(this, PadStatsInteractorImpl())
-
-        padsAdapter = PadStatsSitesAdapter(pads)
+        padsAdapter = PadStatsSitesAdapter()
 
         binding.padStatsLaunchSitesRecycler.apply {
             layoutManager = LinearLayoutManager(this@PadStatsFragment.context)
@@ -75,65 +66,57 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
             adapter = padsAdapter
         }
 
-        type?.let {
-            when (it) {
-                PadType.LANDING_PAD -> presenter?.getLandingPads()
-                PadType.LAUNCHPAD -> presenter?.getLaunchpads()
+        when (navArgs.padType) {
+            PadType.LANDING_PAD -> viewModel.getLandingPads()
+            PadType.LAUNCHPAD -> viewModel.getLaunchpads()
+        }
+
+        viewModel.stats.observe(viewLifecycleOwner) { response ->
+            when (response.status) {
+                ApiResult.Status.PENDING -> showProgress()
+                ApiResult.Status.SUCCESS -> response.data?.let {
+                    update(it)
+                }
+                ApiResult.Status.FAILURE -> showError(response.error?.message)
             }
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("pads", pads)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.cancelRequest()
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.reload -> {
-            apiState = ApiState.PENDING
-            when (type) {
-                PadType.LANDING_PAD -> presenter?.getLandingPads()
-                PadType.LAUNCHPAD -> presenter?.getLaunchpads()
+            when (navArgs.padType) {
+                PadType.LANDING_PAD -> viewModel.getLandingPads(CachePolicy.REFRESH)
+                PadType.LAUNCHPAD -> viewModel.getLaunchpads(CachePolicy.REFRESH)
             }
             true
         }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun update(response: List<StatsPadModel>) {
-        apiState = ApiState.SUCCESS
-        pads.clearAndAdd(response)
-
-        binding.padStatsLaunchSitesRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
-        padsAdapter.notifyDataSetChanged()
+    fun update(response: List<StatsPadModel>) {
+        hideProgress()
+        binding.padStatsLaunchSitesRecycler.layoutAnimation =
+            animateLayoutFromBottom(requireContext())
+        padsAdapter.submitList(response)
         binding.padStatsLaunchSitesRecycler.scheduleLayoutAnimation()
     }
 
-    override fun showProgress() {
+    fun showProgress() {
         binding.toolbarLayout.progress.show()
     }
 
-    override fun hideProgress() {
+    fun hideProgress() {
         binding.toolbarLayout.progress.hide()
     }
 
-    override fun showError(error: String) {
-        apiState = ApiState.FAILED
+    fun showError(error: String?) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> when (type) {
-                PadType.LANDING_PAD -> presenter?.getLandingPads()
-                PadType.LAUNCHPAD -> presenter?.getLaunchpads()
-            }
-            ApiState.SUCCESS -> {
-            }
+        when (navArgs.padType) {
+            PadType.LANDING_PAD -> viewModel.getLandingPads()
+            PadType.LAUNCHPAD -> viewModel.getLaunchpads()
         }
     }
 }

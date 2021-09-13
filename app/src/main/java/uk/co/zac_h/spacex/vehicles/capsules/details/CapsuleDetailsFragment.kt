@@ -5,30 +5,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentCapsuleDetailsBinding
+import uk.co.zac_h.spacex.dto.spacex.Capsule
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
-import uk.co.zac_h.spacex.model.spacex.Capsule
 import uk.co.zac_h.spacex.utils.*
+import uk.co.zac_h.spacex.vehicles.capsules.CapsulesViewModel
 import java.util.*
 
 class CapsuleDetailsFragment : BaseFragment() {
 
-    override var title: String = ""
+    override val title: String by lazy { navArgs.label ?: title }
+
+    private val navArgs: CapsuleDetailsFragmentArgs by navArgs()
+
+    private val viewModel: CapsulesViewModel by viewModels()
 
     private lateinit var binding: FragmentCapsuleDetailsBinding
-
-    private var capsule: Capsule? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
-
-        capsule = arguments?.getParcelable("capsule")
     }
 
     override fun onCreateView(
@@ -41,11 +43,20 @@ class CapsuleDetailsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.get()
+
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
+        binding.toolbarLayout.toolbar.setup()
+
+        viewModel.capsules.observe(viewLifecycleOwner) { result ->
+            update(result.data?.first { it.id == navArgs.id })
+        }
+    }
+
+    private fun update(capsule: Capsule?) {
         with(binding) {
-            title = capsule?.serial ?: getString(R.string.detail_capsule)
             toolbarLayout.toolbar.setup()
 
             capsuleDetailsConstraint.transitionName = capsule?.id

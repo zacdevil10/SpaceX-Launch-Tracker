@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".news.twitter.TwitterFeedFragment">
 
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/toolbar_elevation"
+        android:indeterminate="true"
+        app:indicatorColor="?colorSecondary"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
@@ -21,15 +30,6 @@
             tools:listitem="@layout/list_item_tweet" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/paging_progress_indicator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/toolbar_elevation"
-        android:indeterminate="true"
-        app:indicatorColor="?colorSecondary"
-        app:layout_constraintBottom_toBottomOf="parent" />
 
     <com.google.android.material.chip.Chip
         android:id="@+id/twitter_feed_scroll_up"

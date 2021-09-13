@@ -5,33 +5,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
+import uk.co.zac_h.spacex.dto.spacex.Core
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
-import uk.co.zac_h.spacex.model.spacex.Core
-import uk.co.zac_h.spacex.utils.*
-import java.util.*
+import uk.co.zac_h.spacex.vehicles.cores.CoreViewModel
 
 class CoreDetailsFragment : BaseFragment() {
 
-    override var title: String = "Core Details"
+    override val title: String by lazy { navArgs.label ?: title }
+
+    private val navArgs: CoreDetailsFragmentArgs by navArgs()
+
+    private val viewModel: CoreViewModel by viewModels()
 
     private lateinit var binding: FragmentCoreDetailsBinding
-
-    private var core: Core? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        core = if (savedInstanceState != null) {
-            savedInstanceState.getParcelable("core")
-        } else {
-            arguments?.getParcelable("core")
-        }
+        viewModel.selectedId = navArgs.id
     }
 
     override fun onCreateView(
@@ -45,25 +44,20 @@ class CoreDetailsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        postponeEnterTransition()
+        viewModel.getCores()
 
-        title = core?.serial ?: title
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
+
         binding.toolbarLayout.toolbar.setup()
 
-        updateCoreDetails(core)
-
-        view.doOnPreDraw { startPostponedEnterTransition() }
+        viewModel.cores.observe(viewLifecycleOwner) { result ->
+            result.data?.first { it.id == viewModel.selectedId }?.let { update(it) }
+        }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable("core", core)
-        super.onSaveInstanceState(outState)
-    }
-
-    private fun updateCoreDetails(core: Core?) {
+    private fun update(core: Core?) {
         core?.apply {
-            this@CoreDetailsFragment.core = core
-
             with(binding) {
                 coreDetailsScrollview.transitionName = id
 
@@ -81,7 +75,7 @@ class CoreDetailsFragment : BaseFragment() {
 
                 launches?.let {
                     coreDetailsMissionRecycler.apply {
-                        layoutManager = LinearLayoutManager(this@CoreDetailsFragment.context)
+                        layoutManager = LinearLayoutManager(requireContext())
                         setHasFixedSize(true)
                         adapter = MissionsAdapter(context, it)
                     }

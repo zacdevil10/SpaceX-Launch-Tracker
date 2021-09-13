@@ -9,7 +9,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.transition.Hold
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentVehiclesBinding
 import uk.co.zac_h.spacex.databinding.ToolbarTabBinding
 import uk.co.zac_h.spacex.utils.ViewPagerAdapter
@@ -21,7 +20,7 @@ import uk.co.zac_h.spacex.vehicles.ships.ShipsFragment
 
 class VehiclesFragment : BaseFragment() {
 
-    override var title: String = "Vehicles"
+    override val title by lazy { getString(R.string.vehicles_label) }
 
     private lateinit var binding: FragmentVehiclesBinding
     private lateinit var toolbarLayout: ToolbarTabBinding
@@ -52,6 +51,7 @@ class VehiclesFragment : BaseFragment() {
         )
 
         toolbarLayout.toolbar.setupWithTabLayout(toolbarLayout.tabLayout, TabLayout.MODE_SCROLLABLE)
+        toolbarLayout.toolbar.setSupportActionBar()
 
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }

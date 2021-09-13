@@ -4,32 +4,25 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
-import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemCoreBinding
-import uk.co.zac_h.spacex.model.spacex.Core
+import uk.co.zac_h.spacex.dto.spacex.Core
+import uk.co.zac_h.spacex.vehicles.VehiclesFragmentDirections
 
-class CoreAdapter(private val context: Context, private val cores: ArrayList<Core>) :
-    RecyclerView.Adapter<CoreAdapter.ViewHolder>(), Filterable {
+class CoreAdapter(private val context: Context, val setSelected: (String) -> Unit) :
+    ListAdapter<Core, CoreAdapter.ViewHolder>(CoreComparator) {
 
-    private var filteredCores: ArrayList<Core>
-
-    init {
-        filteredCores = cores
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(
-            ListItemCoreBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
+        ListItemCoreBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val core = filteredCores[position]
+        val core = getItem(position)
 
         holder.binding.apply {
             listItemCoreCard.transitionName = core.id
@@ -55,14 +48,18 @@ class CoreAdapter(private val context: Context, private val cores: ArrayList<Cor
             }
             listItemCoreFlightsText.text = (core.launches?.size ?: 0).toString()
 
-            listItemCoreSpecsButton.setOnClickListener { holder.bind(core) }
-            listItemCoreCard.setOnClickListener { holder.bind(core) }
+            listItemCoreSpecsButton.setOnClickListener {
+                setSelected(core.id)
+                holder.bind(core)
+            }
+            listItemCoreCard.setOnClickListener {
+                setSelected(core.id)
+                holder.bind(core)
+            }
         }
     }
 
-    override fun getItemCount(): Int = filteredCores.size
-
-    override fun getFilter(): Filter {
+    /*override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(search: CharSequence?): FilterResults {
                 val filterResults = FilterResults()
@@ -93,16 +90,22 @@ class CoreAdapter(private val context: Context, private val cores: ArrayList<Cor
                 notifyDataSetChanged()
             }
         }
-    }
+    }*/
 
     class ViewHolder(val binding: ListItemCoreBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(core: Core) {
             binding.root.findNavController().navigate(
-                R.id.action_vehicles_page_fragment_to_core_details_fragment,
-                bundleOf("core" to core, "title" to core.serial),
-                null,
+                VehiclesFragmentDirections.actionVehiclesPageFragmentToCoreDetailsFragment(core.serial, core.id),
                 FragmentNavigatorExtras(binding.listItemCoreCard to core.id)
             )
         }
+    }
+
+    object CoreComparator : DiffUtil.ItemCallback<Core>() {
+
+        override fun areItemsTheSame(oldItem: Core, newItem: Core) = oldItem == newItem
+
+        override fun areContentsTheSame(oldItem: Core, newItem: Core) = oldItem.id == newItem.id
+
     }
 }

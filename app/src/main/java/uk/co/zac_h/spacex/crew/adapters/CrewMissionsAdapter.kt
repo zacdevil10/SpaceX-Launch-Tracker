@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemCrewMissionBinding
-import uk.co.zac_h.spacex.model.spacex.Launch
+import uk.co.zac_h.spacex.dto.spacex.Launch
 
 class CrewMissionsAdapter(
     private val context: Context,

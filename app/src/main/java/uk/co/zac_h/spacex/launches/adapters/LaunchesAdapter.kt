@@ -4,27 +4,21 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
 import androidx.core.content.ContextCompat
-import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemLaunchesBinding
-import uk.co.zac_h.spacex.model.spacex.Launch
-import uk.co.zac_h.spacex.utils.LAUNCH_SHORT_KEY
+import uk.co.zac_h.spacex.dto.spacex.Launch
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
-import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
-import java.util.*
-import kotlin.collections.ArrayList
 
 class LaunchesAdapter(private val context: Context) :
     RecyclerView.Adapter<LaunchesAdapter.ViewHolder>() {
 
-    private var launches: ArrayList<Launch> = ArrayList()
+    private var launches: List<Launch> = emptyList()
     //private var filteredLaunches: ArrayList<Launch> = launches
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
@@ -64,13 +58,14 @@ class LaunchesAdapter(private val context: Context) :
             flightNumber.text = context.getString(R.string.flight_number, launch.flightNumber)
             vehicle.text = launch.rocket?.name
             missionName.text = launch.missionName
-            date.text = launch.launchDate?.dateUnix?.formatDateMillisLong(launch.datePrecision)
+            date.text = launch.launchDate?.dateUnix?.formatDateMillisLong(/*launch.datePrecision*/)
 
             root.setOnClickListener {
                 root.findNavController().navigate(
-                    R.id.action_launch_item_to_launch_details_container_fragment,
-                    bundleOf(LAUNCH_SHORT_KEY to launch),
-                    null,
+                    NavGraphDirections.actionLaunchItemToLaunchDetailsContainer(
+                        launch.missionName,
+                        launch.id
+                    ),
                     FragmentNavigatorExtras(root to launch.id)
                 )
             }
@@ -79,7 +74,7 @@ class LaunchesAdapter(private val context: Context) :
 
     override fun getItemCount(): Int = launches.size
 
-    fun update(newList: ArrayList<Launch>) {
+    fun update(newList: List<Launch>) {
         launches = newList
         notifyDataSetChanged()
     }

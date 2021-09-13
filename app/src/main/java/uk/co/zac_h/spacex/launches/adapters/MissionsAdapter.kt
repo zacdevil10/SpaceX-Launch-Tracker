@@ -3,13 +3,13 @@ package uk.co.zac_h.spacex.launches.adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
+import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemMissionBinding
-import uk.co.zac_h.spacex.model.spacex.Launch
+import uk.co.zac_h.spacex.dto.spacex.Launch
 
 class MissionsAdapter(
     private val context: Context,
@@ -35,9 +35,10 @@ class MissionsAdapter(
 
             root.setOnClickListener {
                 root.findNavController().navigate(
-                    R.id.missions_to_launch_details_container_fragment,
-                    bundleOf("launch_id" to launch.id),
-                    null,
+                    NavGraphDirections.missionsToLaunchDetailsContainerFragment(
+                        launch.missionName,
+                        launch.id
+                    ),
                     FragmentNavigatorExtras(root to launch.id)
                 )
             }

@@ -13,7 +13,7 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentStatisticsBinding
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsAdapter
 
-class StatisticsFragment : BaseFragment(), StatisticsContract.View {
+class StatisticsFragment : BaseFragment() {
 
     override val title by lazy { getString(R.string.menu_statistics) }
 
@@ -38,11 +38,11 @@ class StatisticsFragment : BaseFragment(), StatisticsContract.View {
 
         binding.statisticsRecycler.apply {
             layoutManager = LinearLayoutManager(this@StatisticsFragment.context)
-            adapter = StatisticsAdapter(context, this@StatisticsFragment)
+            adapter = StatisticsAdapter(context, ::openWebLink)
         }
     }
 
-    override fun openWebLink(link: String) {
+    private fun openWebLink(link: String) {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 }

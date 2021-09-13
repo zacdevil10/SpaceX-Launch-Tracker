@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.base
 
-import uk.co.zac_h.spacex.rest.SpaceXInterface
+import uk.co.zac_h.spacex.retrofit.NetworkModule
+import uk.co.zac_h.spacex.retrofit.SpaceXService
 
 interface NetworkInterface {
 
@@ -14,20 +15,20 @@ interface NetworkInterface {
     }
 
     interface Presenter<T> {
-        fun get(api: SpaceXInterface = SpaceXInterface.create()) {}
-        fun get(data: Any, api: SpaceXInterface = SpaceXInterface.create()) {}
-        fun getOrUpdate(response: T, api: SpaceXInterface = SpaceXInterface.create()) {
+        fun get(api: SpaceXService = NetworkModule.providesSpaceXHttpClientV4()) {}
+        fun get(data: Any, api: SpaceXService = NetworkModule.providesSpaceXHttpClientV4()) {}
+        fun getOrUpdate(response: T, api: SpaceXService = NetworkModule.providesSpaceXHttpClientV4()) {
             get(api)
         }
-        fun getOrUpdate(response: T, data: Any, api: SpaceXInterface = SpaceXInterface.create()) {
+        fun getOrUpdate(response: T, data: Any, api: SpaceXService = NetworkModule.providesSpaceXHttpClientV4()) {
             get(data, api)
         }
         fun cancelRequest()
     }
 
     interface Interactor<T> {
-        fun get(api: SpaceXInterface, listener: Callback<T>) {}
-        fun get(data: Any, api: SpaceXInterface, listener: Callback<T>) {}
+        fun get(api: SpaceXService, listener: Callback<T>) {}
+        fun get(data: Any, api: SpaceXService, listener: Callback<T>) {}
         fun cancelAllRequests()
     }
 

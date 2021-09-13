@@ -3,10 +3,16 @@ package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 import android.animation.ValueAnimator
 import android.graphics.Color
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
@@ -15,37 +21,32 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
+import uk.co.zac_h.spacex.ApiResult
+import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchHistoryBinding
 import uk.co.zac_h.spacex.statistics.adapters.Statistics
 import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 
-class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistoryView {
+class LaunchHistoryFragment : BaseFragment() {
 
     override val title by lazy { getString(Statistics.LAUNCH_HISTORY.title) }
 
     private lateinit var binding: FragmentLaunchHistoryBinding
 
-    private var presenter: LaunchHistoryContract.LaunchHistoryPresenter? = null
+    private val viewModel: LaunchHistoryViewModel by viewModels()
 
-    private var filter: LaunchHistoryFilter? = null
-    private var filterVisible = false
+    private val navArgs: LaunchHistoryFragmentArgs by navArgs()
 
-    private lateinit var launchStats: ArrayList<HistoryStatsModel>
-
-    private var heading: String? = null
+    private var launchStats: List<HistoryStatsModel> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
-
-        heading = arguments?.getString("heading")
-        launchStats = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
-        filterVisible = savedInstanceState?.getBoolean("filter") ?: false
     }
 
     override fun onCreateView(
@@ -62,29 +63,29 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
+        viewModel.get()
+
         binding.toolbarLayout.toolbar.apply {
             setup()
             createOptionsMenu(R.menu.menu_statistics_filter)
         }
 
-        binding.launchHistoryConstraint.transitionName = heading
+        binding.launchHistoryConstraint.transitionName = getString(navArgs.type.title)
 
         binding.tint.setOnClickListener {
             toggleFilterVisibility(false)
         }
 
-        presenter = LaunchHistoryPresenterImpl(this, LaunchHistoryInteractorImpl())
-
         binding.launchHistoryChipGroup.setOnCheckedChangeListener { _, checkedId ->
-            filter = when (checkedId) {
-                binding.launchHistorySuccessToggle.id -> LaunchHistoryFilter.SUCCESSES
-                binding.launchHistoryFailureToggle.id -> LaunchHistoryFilter.FAILURES
-                else -> null
-            }
-            presenter?.updateFilter(launchStats)
+            viewModel.setFilter(
+                when (checkedId) {
+                    binding.launchHistorySuccessToggle.id -> LaunchHistoryFilter.SUCCESSES
+                    binding.launchHistoryFailureToggle.id -> LaunchHistoryFilter.FAILURES
+                    else -> null
+                }
+            )
+            viewModel.get()
         }
-
-        presenter?.getOrUpdate(launchStats)
 
         //Pie chart appearance
         binding.launchHistoryPieChart.apply {
@@ -103,51 +104,37 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
                 textColor = ContextCompat.getColor(context, R.color.color_on_background)
             }
         }
+
+        viewModel.launchHistory.observe(viewLifecycleOwner) { response ->
+            when (response.status) {
+                ApiResult.Status.PENDING -> showProgress()
+                ApiResult.Status.SUCCESS -> response.data?.let {
+                    val animate = viewModel.cacheLocation != Repository.RequestLocation.CACHE
+                    update(animate, it)
+                    setSuccessRate(it, animate)
+                }
+                ApiResult.Status.FAILURE -> showError(response.error?.message)
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        presenter?.showFilter(filterVisible)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.apply {
-            putParcelableArrayList("launches", launchStats)
-            putBoolean("filter", filterVisible)
-        }
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.cancelRequest()
+        toggleFilterVisibility(viewModel.filterState)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.filter -> {
-            presenter?.showFilter(!filterVisible)
+            toggleFilterVisibility(!viewModel.filterState)
             true
         }
-        R.id.reload -> {
-            apiState = ApiState.PENDING
-            launchStats.clear()
-            presenter?.getOrUpdate(null)
-            true
-        }
+        R.id.reload -> true.also { viewModel.get(CachePolicy.REFRESH) }
         else -> super.onOptionsItemSelected(item)
     }
 
-    override fun update(data: Any, response: List<HistoryStatsModel>) {
-        apiState = ApiState.SUCCESS
-        if (launchStats.isEmpty()) launchStats.addAll(response)
-
-        val colors = ArrayList<Int>()
-
-        colors.add(ColorTemplate.rgb("29b6f6"))
-        colors.add(ColorTemplate.rgb("9ccc65"))
-        colors.add(ColorTemplate.rgb("ff7043"))
-
-        val entries = ArrayList<PieEntry>()
+    fun update(animate: Boolean, response: List<HistoryStatsModel>) {
+        hideProgress()
+        launchStats = response
 
         var falconOne = 0
         var falconNine = 0
@@ -155,17 +142,17 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
 
         response.forEach {
             when (it.rocket) {
-                RocketType.FALCON_ONE -> falconOne = when (filter) {
+                RocketType.FALCON_ONE -> falconOne = when (viewModel.filterValue) {
                     LaunchHistoryFilter.SUCCESSES -> it.successes
                     LaunchHistoryFilter.FAILURES -> it.failures
                     else -> it.successes + it.failures
                 }
-                RocketType.FALCON_NINE -> falconNine = when (filter) {
+                RocketType.FALCON_NINE -> falconNine = when (viewModel.filterValue) {
                     LaunchHistoryFilter.SUCCESSES -> it.successes
                     LaunchHistoryFilter.FAILURES -> it.failures
                     else -> it.successes + it.failures
                 }
-                RocketType.FALCON_HEAVY -> falconHeavy = when (filter) {
+                RocketType.FALCON_HEAVY -> falconHeavy = when (viewModel.filterValue) {
                     LaunchHistoryFilter.SUCCESSES -> it.successes
                     LaunchHistoryFilter.FAILURES -> it.failures
                     else -> it.successes + it.failures
@@ -173,15 +160,19 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
             }
         }
 
-        entries.apply {
-            if (falconOne > 0) add(PieEntry(falconOne.toFloat(), "Falcon 1"))
-            if (falconNine > 0) add(PieEntry(falconNine.toFloat(), "Falcon 9"))
-            if (falconHeavy > 0) add(PieEntry(falconHeavy.toFloat(), "Falcon Heavy"))
-        }
+        val entries = listOfNotNull(
+            if (falconOne > 0) PieEntry(falconOne.toFloat(), "Falcon 1") else null,
+            if (falconNine > 0) PieEntry(falconNine.toFloat(), "Falcon 9") else null,
+            if (falconHeavy > 0) PieEntry(falconHeavy.toFloat(), "Falcon Heavy") else null
+        )
 
         val dataSet = PieDataSet(entries, "").apply {
             sliceSpace = 3f
-            setColors(colors)
+            colors = listOf(
+                ColorTemplate.rgb("29b6f6"),
+                ColorTemplate.rgb("9ccc65"),
+                ColorTemplate.rgb("ff7043"),
+            )
             valueFormatter = object : ValueFormatter() {
                 override fun getFormattedValue(value: Float): String {
                     return "" + value.toInt()
@@ -189,20 +180,18 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
             }
         }
 
-        val pieData = PieData(dataSet).apply {
-            setValueTextColor(Color.WHITE)
-            setValueTextSize(11f)
-        }
-
         binding.launchHistoryPieChart.apply {
-            this.centerText = getString(R.string.pie_chart_title, "2006 - 2020")
+            centerText = getString(R.string.pie_chart_title, "2006 - 2020")
                 .generateCenterSpannableText()
-            this.data = pieData
-            if (data == true) animateY(1400, Easing.EaseInOutCubic) else invalidate()
+            data = PieData(dataSet).apply {
+                setValueTextColor(Color.WHITE)
+                setValueTextSize(11f)
+            }
+            if (animate) animateY(1400, Easing.EaseInOutCubic) else invalidate()
         }
     }
 
-    override fun setSuccessRate(stats: List<HistoryStatsModel>, animate: Boolean) {
+    private fun setSuccessRate(stats: List<HistoryStatsModel>, animate: Boolean) {
         stats.forEach {
             when (it.rocket) {
                 RocketType.FALCON_ONE -> {
@@ -236,7 +225,7 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
         }.start() else progressBar?.progress = successRate
     }
 
-    override fun toggleFilterVisibility(filterVisible: Boolean) {
+    private fun toggleFilterVisibility(filterVisible: Boolean) {
         binding.launchHistoryFilterConstraint.apply {
             when (filterVisible) {
                 true -> {
@@ -263,26 +252,22 @@ class LaunchHistoryFragment : BaseFragment(), LaunchHistoryContract.LaunchHistor
             }
         }
 
-        this.filterVisible = filterVisible
+        viewModel.showFilter(filterVisible)
     }
 
-    override fun showProgress() {
+    fun showProgress() {
         binding.toolbarLayout.progress.show()
     }
 
-    override fun hideProgress() {
+    fun hideProgress() {
         binding.toolbarLayout.progress.hide()
     }
 
-    override fun showError(error: String) {
-        apiState = ApiState.FAILED
+    fun showError(error: String?) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> presenter?.getOrUpdate(null)
-            ApiState.SUCCESS -> {
-            }
-        }
+        viewModel.get()
     }
 }

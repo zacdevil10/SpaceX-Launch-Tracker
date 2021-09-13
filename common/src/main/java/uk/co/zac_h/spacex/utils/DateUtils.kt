@@ -1,8 +1,5 @@
 package uk.co.zac_h.spacex.utils
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-import uk.co.zac_h.spacex.model.spacex.DatePrecision
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -10,9 +7,11 @@ private const val SECOND_MILLIS = 1000
 private const val MINUTE_MILLIS = 60 * SECOND_MILLIS
 private const val HOUR_MILLIS = 60 * MINUTE_MILLIS
 
-fun Long.formatDateMillisLong(precision: DatePrecision? = null): String =
+fun Long.formatDateMillisLong(
+    //precision: DatePrecision? = null
+): String =
     SimpleDateFormat(
-        precision?.precision ?: "dd MMM yy - HH:mm zzz",
+        /*precision?.precision ?:*/ "dd MMM yy - HH:mm zzz",
         Locale.ENGLISH
     ).apply {
         timeZone = TimeZone.getDefault()
@@ -102,9 +101,8 @@ fun getString(
     }
 }
 
-@Parcelize
 data class EventDate(
     val dateUtc: String? = null,
     val dateUnix: Long? = null,
     val dateLocal: String? = null
-) : Parcelable
+)

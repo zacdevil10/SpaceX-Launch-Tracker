@@ -3,15 +3,14 @@ package uk.co.zac_h.spacex.launches.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemVehicleBinding
-import uk.co.zac_h.spacex.model.spacex.LaunchCore
-import uk.co.zac_h.spacex.model.spacex.Ship
+import uk.co.zac_h.spacex.dto.spacex.Ship
+import uk.co.zac_h.spacex.launches.details.LaunchDetailsContainerFragmentDirections
 
 class LaunchDetailsShipsAdapter : RecyclerView.Adapter<LaunchDetailsShipsAdapter.ViewHolder>() {
 
@@ -51,9 +50,10 @@ class LaunchDetailsShipsAdapter : RecyclerView.Adapter<LaunchDetailsShipsAdapter
     class ViewHolder(val binding: ListItemVehicleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(ship: Ship) {
             binding.root.findNavController().navigate(
-                R.id.action_launch_details_container_fragment_to_ship_details_fragment,
-                bundleOf("ship" to ship),
-                null,
+                LaunchDetailsContainerFragmentDirections.actionLaunchDetailsContainerFragmentToShipDetailsFragment(
+                    ship.name,
+                    ship.id
+                ),
                 FragmentNavigatorExtras(binding.vehicleCard to ship.id)
             )
         }

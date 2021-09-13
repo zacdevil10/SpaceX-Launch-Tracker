@@ -4,13 +4,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemFirstStageBinding
-import uk.co.zac_h.spacex.model.spacex.LaunchCore
+import uk.co.zac_h.spacex.dto.spacex.LaunchCore
+import uk.co.zac_h.spacex.launches.details.LaunchDetailsContainerFragmentDirections
 import uk.co.zac_h.spacex.utils.orUnknown
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
@@ -43,14 +43,12 @@ class FirstStageAdapter : RecyclerView.Adapter<FirstStageAdapter.ViewHolder>() {
                 }
             }
 
-            core.core?.let {
+            core.core?.let { core ->
                 firstStageDetailsIndicator.visibility = View.VISIBLE
                 firstStageCard.setOnClickListener {
                     root.findNavController().navigate(
-                        R.id.action_launch_details_container_fragment_to_core_details_fragment,
-                        bundleOf("core" to core.core),
-                        null,
-                        FragmentNavigatorExtras(firstStageCard to (core.core?.id.orEmpty()))
+                        LaunchDetailsContainerFragmentDirections.actionLaunchDetailsContainerFragmentToCoreDetailsFragment(core.serial, core.id),
+                        FragmentNavigatorExtras(firstStageCard to (core.id))
                     )
                 }
             } ?: run {

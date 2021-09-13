@@ -1,37 +1,28 @@
 package uk.co.zac_h.spacex.about.company
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
+import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.NetworkInterface
 import uk.co.zac_h.spacex.databinding.FragmentCompanyBinding
-import uk.co.zac_h.spacex.model.spacex.Company
-import uk.co.zac_h.spacex.utils.ApiState
-import uk.co.zac_h.spacex.utils.Keys.CompanyKeys
+import uk.co.zac_h.spacex.dto.spacex.Company
 import uk.co.zac_h.spacex.utils.openWebLink
+import uk.co.zac_h.spacex.utils.orUnknown
 
-class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
+@AndroidEntryPoint
+class CompanyFragment : BaseFragment() {
 
     override val title: String by lazy { getString(R.string.menu_company) }
 
+    private val viewModel: CompanyViewModel by viewModels()
+
     private lateinit var binding: FragmentCompanyBinding
-
-    private var presenter: NetworkInterface.Presenter<Company?>? = null
-
-    private var companyInfo: Company? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        companyInfo = savedInstanceState?.getParcelable(CompanyKeys.COMPANY_INFO)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,25 +36,20 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
 
         binding.toolbarLayout.toolbar.setup()
 
-        presenter = CompanyPresenterImpl(this, CompanyInteractorImpl())
+        viewModel.company.observe(viewLifecycleOwner) { result ->
+            when (result.status) {
+                ApiResult.Status.PENDING -> showProgress()
+                ApiResult.Status.SUCCESS -> result.data?.let { update(it) }
+                ApiResult.Status.FAILURE -> showError(result.error?.message.orUnknown())
+            }
+        }
 
-        presenter?.getOrUpdate(companyInfo)
+        viewModel.getCompany()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable(CompanyKeys.COMPANY_INFO, companyInfo)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.cancelRequest()
-    }
-
-    override fun update(response: Company) {
-        apiState = ApiState.SUCCESS
-        companyInfo = response
+    fun update(response: Company) {
         with(binding) {
+            hideProgress()
             response.headquarters?.let {
                 companyAddress.text = getString(R.string.address, it.address, it.city, it.state)
             }
@@ -95,24 +81,20 @@ class CompanyFragment : BaseFragment(), NetworkInterface.View<Company> {
         }
     }
 
-    override fun showProgress() {
+    fun showProgress() {
         binding.toolbarLayout.progress.show()
     }
 
-    override fun hideProgress() {
+    fun hideProgress() {
         binding.toolbarLayout.progress.hide()
     }
 
-    override fun showError(error: String) {
-        apiState = ApiState.FAILED
+    fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        when (apiState) {
-            ApiState.PENDING, ApiState.FAILED -> presenter?.getOrUpdate(companyInfo)
-            ApiState.SUCCESS -> Log.i(title, "Network available and data loaded")
-        }
+        viewModel.getCompany()
     }
 
 }
