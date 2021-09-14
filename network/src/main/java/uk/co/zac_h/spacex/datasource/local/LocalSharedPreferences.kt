@@ -27,7 +27,7 @@ abstract class LocalSharedPreferences<R>(
 
     private fun getAll(): MutableMap<String, *>? = preferences.all
 
-    abstract fun getValue(key: String): R
+    abstract fun getValue(key: String, default: R): R
 
     abstract fun add(key: String, value: R)
 
