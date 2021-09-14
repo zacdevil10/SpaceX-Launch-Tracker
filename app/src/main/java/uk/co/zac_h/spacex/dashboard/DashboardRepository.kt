@@ -16,7 +16,7 @@ class DashboardRepository @Inject constructor(
 
     val allPreferences = preferences.allLiveData
 
-    fun getSectionState(section: String): Boolean = preferences.getValue(section)
+    fun getSectionState(section: String): Boolean = preferences.getValue(section, true)
 
     fun updateSection(section: String, visible: Boolean) {
         preferences.add(section, visible)
