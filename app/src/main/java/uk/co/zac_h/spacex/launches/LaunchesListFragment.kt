@@ -86,10 +86,9 @@ class LaunchesListFragment : BaseFragment() {
     }
 
     fun update(response: List<Launch>?) {
-        if (response == null) return
         hideProgress()
 
-        launchesAdapter.update(response)
+        launchesAdapter.submitList(response)
     }
 
     fun showProgress() {

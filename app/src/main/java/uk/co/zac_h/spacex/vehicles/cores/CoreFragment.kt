@@ -45,7 +45,7 @@ class CoreFragment : BaseFragment(), SearchView.OnQueryTextListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        coreAdapter = CoreAdapter(requireContext()) { viewModel.selectedId = it }
+        coreAdapter = CoreAdapter(requireContext())
 
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())

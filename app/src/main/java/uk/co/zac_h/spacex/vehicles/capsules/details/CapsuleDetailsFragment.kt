@@ -82,7 +82,7 @@ class CapsuleDetailsFragment : BaseFragment() {
                 capsuleDetailsMissionsRecycler.apply {
                     layoutManager = LinearLayoutManager(this@CapsuleDetailsFragment.context)
                     setHasFixedSize(true)
-                    adapter = MissionsAdapter(context, launches)
+                    adapter = MissionsAdapter(context).also { it.submitList(launches) }
                 }
             } ?: run { capsuleDetailsMissionLabel.visibility = View.GONE }
 

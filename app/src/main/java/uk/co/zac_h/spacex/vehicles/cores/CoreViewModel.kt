@@ -25,8 +25,6 @@ class CoreViewModel @Inject constructor(
     private val _cores = MutableLiveData<ApiResult<List<Core>>>()
     val cores: LiveData<ApiResult<List<Core>>> = _cores
 
-    var selectedId = ""
-
     val cacheLocation: Repository.RequestLocation
         get() = repository.cacheLocation
 

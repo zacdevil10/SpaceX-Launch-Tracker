@@ -25,12 +25,12 @@ class CoreDetailsFragment : BaseFragment() {
 
     private lateinit var binding: FragmentCoreDetailsBinding
 
+    private lateinit var missionsAdapter: MissionsAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
-
-        viewModel.selectedId = navArgs.id
     }
 
     override fun onCreateView(
@@ -49,37 +49,39 @@ class CoreDetailsFragment : BaseFragment() {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
+        binding.coreDetailsScrollview.transitionName = navArgs.id
+
         binding.toolbarLayout.toolbar.setup()
 
+        missionsAdapter = MissionsAdapter(requireContext())
+
+        binding.coreDetailsMissionRecycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+            adapter = missionsAdapter
+        }
+
         viewModel.cores.observe(viewLifecycleOwner) { result ->
-            result.data?.first { it.id == viewModel.selectedId }?.let { update(it) }
+            result.data?.first { it.id == navArgs.id }?.let { update(it) }
         }
     }
 
     private fun update(core: Core?) {
-        core?.apply {
-            with(binding) {
-                coreDetailsScrollview.transitionName = id
-
-                coreDetailsSerialText.text = serial
-                coreDetailsBlockText.text = block ?: "TBD"
-                coreDetailsDetailsText.text = lastUpdate
-                status?.let {
+        with(binding) {
+            core?.let { core ->
+                coreDetailsSerialText.text = core.serial
+                coreDetailsBlockText.text = core.block ?: "TBD"
+                coreDetailsDetailsText.text = core.lastUpdate
+                core.status?.let {
                     coreDetailsStatusText.text = it.status
                 }
-                coreDetailsReuseText.text = reuseCount.toString()
-                coreDetailsRtlsAttemptsText.text = attemptsRtls.toString()
-                coreDetailsRtlsLandingsText.text = landingsRtls.toString()
-                coreDetailsAsdsAttemptsText.text = attemptsAsds.toString()
-                coreDetailsAsdsLandingsText.text = landingsAsds.toString()
+                coreDetailsReuseText.text = core.reuseCount.toString()
+                coreDetailsRtlsAttemptsText.text = core.attemptsRtls.toString()
+                coreDetailsRtlsLandingsText.text = core.landingsRtls.toString()
+                coreDetailsAsdsAttemptsText.text = core.attemptsAsds.toString()
+                coreDetailsAsdsLandingsText.text = core.landingsAsds.toString()
 
-                launches?.let {
-                    coreDetailsMissionRecycler.apply {
-                        layoutManager = LinearLayoutManager(requireContext())
-                        setHasFixedSize(true)
-                        adapter = MissionsAdapter(context, it)
-                    }
-                }
+                missionsAdapter.submitList(core.launches)
 
                 toolbarLayout.progress.hide()
             }

@@ -6,6 +6,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemFirstStageBinding
@@ -14,16 +16,15 @@ import uk.co.zac_h.spacex.launches.details.LaunchDetailsContainerFragmentDirecti
 import uk.co.zac_h.spacex.utils.orUnknown
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
-class FirstStageAdapter : RecyclerView.Adapter<FirstStageAdapter.ViewHolder>() {
-
-    private var cores: List<LaunchCore> = emptyList()
+class FirstStageAdapter :
+    ListAdapter<LaunchCore, FirstStageAdapter.ViewHolder>(LaunchCoreComparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
         ListItemFirstStageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val core = cores[position]
+        val core = getItem(position)
 
         holder.binding.apply {
             firstStageCard.transitionName = core.core?.id
@@ -47,7 +48,10 @@ class FirstStageAdapter : RecyclerView.Adapter<FirstStageAdapter.ViewHolder>() {
                 firstStageDetailsIndicator.visibility = View.VISIBLE
                 firstStageCard.setOnClickListener {
                     root.findNavController().navigate(
-                        LaunchDetailsContainerFragmentDirections.actionLaunchDetailsContainerFragmentToCoreDetailsFragment(core.serial, core.id),
+                        LaunchDetailsContainerFragmentDirections.actionLaunchDetailsContainerFragmentToCoreDetailsFragment(
+                            core.serial,
+                            core.id
+                        ),
                         FragmentNavigatorExtras(firstStageCard to (core.id))
                     )
                 }
@@ -55,13 +59,6 @@ class FirstStageAdapter : RecyclerView.Adapter<FirstStageAdapter.ViewHolder>() {
                 firstStageDetailsIndicator.visibility = View.GONE
             }
         }
-    }
-
-    override fun getItemCount(): Int = cores.size
-
-    fun update(list: List<LaunchCore>) {
-        cores = list
-        notifyDataSetChanged()
     }
 
     private fun ImageView.successFailureImage(success: Boolean) {
@@ -73,4 +70,17 @@ class FirstStageAdapter : RecyclerView.Adapter<FirstStageAdapter.ViewHolder>() {
     }
 
     class ViewHolder(val binding: ListItemFirstStageBinding) : RecyclerView.ViewHolder(binding.root)
+
+    object LaunchCoreComparator : DiffUtil.ItemCallback<LaunchCore>() {
+
+        override fun areItemsTheSame(oldItem: LaunchCore, newItem: LaunchCore) = oldItem == newItem
+
+        override fun areContentsTheSame(oldItem: LaunchCore, newItem: LaunchCore) =
+            oldItem.id == newItem.id
+                    && oldItem.core?.id == newItem.core?.id
+                    && oldItem.reused == newItem.reused
+                    && oldItem.landingSuccess == newItem.landingSuccess
+                    && oldItem.landingAttempt == newItem.landingAttempt
+                    && oldItem.core?.serial == newItem.core?.serial
+    }
 }

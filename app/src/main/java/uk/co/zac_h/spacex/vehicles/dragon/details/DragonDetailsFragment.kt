@@ -32,6 +32,8 @@ class DragonDetailsFragment : BaseFragment() {
     private lateinit var binding: FragmentDragonDetailsBinding
     private lateinit var toolbarBinding: CollapsingToolbarBinding
 
+    private lateinit var dragonThrusterAdapter: DragonThrusterAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -51,6 +53,14 @@ class DragonDetailsFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
+
+        dragonThrusterAdapter = DragonThrusterAdapter(requireContext())
+
+        binding.dragonDetailsThrusterRecycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+            adapter = dragonThrusterAdapter
+        }
 
         viewModel.dragons.observe(viewLifecycleOwner) { result ->
             result.data?.first { it.id == viewModel.selectedId }?.let { update(it) }
@@ -108,13 +118,7 @@ class DragonDetailsFragment : BaseFragment() {
                 dragonDetailsShieldTempText.text =
                     it.heatShield?.temp.toString() //TODO: Format with units
 
-                dragonDetailsThrusterRecycler.apply {
-                    layoutManager = LinearLayoutManager(requireContext())
-                    setHasFixedSize(true)
-                    adapter = it.thrusters?.let { thrusters ->
-                        DragonThrusterAdapter(requireContext(), thrusters)
-                    }
-                }
+                dragonThrusterAdapter.submitList(it.thrusters)
 
                 it.launchPayloadMass?.let { launchPayloadMass ->
                     dragonDetailsLaunchMassText.text = getString(

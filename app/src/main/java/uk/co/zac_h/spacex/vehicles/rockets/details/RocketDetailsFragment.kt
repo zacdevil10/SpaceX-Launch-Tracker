@@ -32,6 +32,8 @@ class RocketDetailsFragment : BaseFragment() {
     private lateinit var binding: FragmentRocketDetailsBinding
     private lateinit var toolbarBinding: CollapsingToolbarBinding
 
+    private lateinit var rocketPayloadAdapter: RocketPayloadAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -51,6 +53,14 @@ class RocketDetailsFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
+
+        rocketPayloadAdapter = RocketPayloadAdapter(requireContext())
+
+        binding.rocketDetailsPayloadRecycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
+            adapter = rocketPayloadAdapter
+        }
 
         viewModel.rockets.observe(viewLifecycleOwner) { result ->
             result.data?.first { it.id == viewModel.selectedId }?.let { update(it) }
@@ -158,13 +168,7 @@ class RocketDetailsFragment : BaseFragment() {
                     )
                 }
 
-                rocketDetailsPayloadRecycler.apply {
-                    layoutManager = LinearLayoutManager(requireContext())
-                    setHasFixedSize(true)
-                    adapter = it.payloadWeights?.let { payloadWeights ->
-                        RocketPayloadAdapter(requireContext(), payloadWeights)
-                    }
-                }
+                rocketPayloadAdapter.submitList(it.payloadWeights)
             }
         }
     }
