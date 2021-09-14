@@ -38,10 +38,8 @@
                 android:textAlignment="center"
                 android:textAppearance="?textAppearanceHeadline4"
                 android:textColor="?colorSecondary"
-                android:visibility="gone"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="T-43:13:23:55"
-                tools:visibility="visible" />
+                tools:text="T-43:13:23:55" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/launch_details_watch_now"

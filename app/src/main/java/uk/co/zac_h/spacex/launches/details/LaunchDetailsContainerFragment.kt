@@ -5,6 +5,7 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
@@ -23,6 +24,7 @@ import uk.co.zac_h.spacex.launches.details.crew.LaunchDetailsCrewFragment
 import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsFragment
 import uk.co.zac_h.spacex.launches.details.payloads.LaunchDetailsPayloadsFragment
 import uk.co.zac_h.spacex.launches.details.ships.LaunchDetailsShipsFragment
+import uk.co.zac_h.spacex.utils.*
 
 class LaunchDetailsContainerFragment : BaseFragment() {
 
@@ -111,6 +113,7 @@ class LaunchDetailsContainerFragment : BaseFragment() {
     }
 
     private fun update(launch: Launch) {
+        binding.launchDetailsBottomNavigation.menu.clear()
         if (launch.crew.isNullOrEmpty().not() || launch.ships.isNullOrEmpty().not()) {
             if (launch.crew.isNullOrEmpty().not() && launch.ships.isNullOrEmpty().not()) {
                 binding.launchDetailsBottomNavigation.inflateMenu(R.menu.launch_details_bottom_nav_menu_all)
@@ -123,7 +126,11 @@ class LaunchDetailsContainerFragment : BaseFragment() {
             binding.launchDetailsBottomNavigation.inflateMenu(R.menu.launch_details_bottom_nav_menu)
         }
 
-        //presenter?.startCountdown(launch.launchDate?.dateUnix, launch.tbd)
+        val time = launch.launchDate?.dateUnix?.times(1000)?.minus(System.currentTimeMillis()) ?: 0
+        if (launch.tbd == false && time >= 0) {
+            setCountdown(launch, time)
+            binding.launchDetailsCountdownContainer.visibility = View.VISIBLE
+        }
 
         if (selectedItem == null) {
             replaceFragment(LaunchDetailsFragment())
@@ -132,15 +139,23 @@ class LaunchDetailsContainerFragment : BaseFragment() {
         }
     }
 
-    fun setCountdown(time: Long) {
+    private fun setCountdown(launch: Launch, time: Long) {
         countdownTimer?.cancel()
         countdownTimer = object : CountDownTimer(time, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                //presenter?.updateCountdown(millisUntilFinished)
+            override fun onTick(time: Long) {
+                updateCountdown(
+                    String.format(
+                        "T-%02d:%02d:%02d:%02d",
+                        time.toCountdownDays(),
+                        time.toCountdownHours(),
+                        time.toCountdownMinutes(),
+                        time.toCountdownSeconds()
+                    )
+                )
             }
 
             override fun onFinish() {
-                /*launchShort?.links?.webcast?.let { link ->
+                launch.links?.webcast?.let { link ->
                     binding.launchDetailsCountdown.visibility = View.GONE
                     binding.launchDetailsWatchNow.apply {
                         visibility = View.VISIBLE
@@ -148,7 +163,7 @@ class LaunchDetailsContainerFragment : BaseFragment() {
                             openWebLink(link)
                         }
                     }
-                }*/
+                }
             }
         }
 
@@ -170,16 +185,8 @@ class LaunchDetailsContainerFragment : BaseFragment() {
         return true
     }
 
-    fun showCountdown() {
-        binding.launchDetailsCountdown.visibility = View.VISIBLE
-    }
-
-    fun hideCountdown() {
-        binding.launchDetailsCountdown.visibility = View.GONE
-    }
-
     private fun showError(error: String?) {
-
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {

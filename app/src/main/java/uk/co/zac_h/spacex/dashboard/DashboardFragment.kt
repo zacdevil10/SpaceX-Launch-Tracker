@@ -30,8 +30,6 @@ class DashboardFragment : BaseFragment() {
 
     private lateinit var binding: FragmentDashboardBinding
 
-    private var nextLaunchModel: Launch? = null
-    private var latestLaunchModel: Launch? = null
     private lateinit var pinnedAdapter: LaunchesAdapter
     private var pinnedArray: ArrayList<Launch> = ArrayList()
 
@@ -119,7 +117,7 @@ class DashboardFragment : BaseFragment() {
                         val time = it.launchDate?.dateUnix?.times(1000)
                             ?.minus(System.currentTimeMillis()) ?: 0
                         if (it.tbd == false && time >= 0) {
-                            setCountdown(time)
+                            setCountdown(it, time)
                             binding.next.countdown.visibility = View.VISIBLE
                             binding.next.heading.visibility = View.GONE
                         } else {
@@ -174,14 +172,8 @@ class DashboardFragment : BaseFragment() {
 
     fun update(data: Any, response: Launch) {
         when (data) {
-            Upcoming.NEXT -> {
-                nextLaunchModel = response
-                update(binding.next, response)
-            }
-            Upcoming.LATEST -> {
-                latestLaunchModel = response
-                update(binding.latest, response)
-            }
+            Upcoming.NEXT -> update(binding.next, response)
+            Upcoming.LATEST -> update(binding.latest, response)
             else -> updatePinnedList(data as String, response)
         }
     }
@@ -232,7 +224,7 @@ class DashboardFragment : BaseFragment() {
         pinnedAdapter.submitList(pinnedArray)
     }
 
-    private fun setCountdown(time: Long) {
+    private fun setCountdown(launch: Launch, time: Long) {
         countdownTimer?.cancel()
         countdownTimer = object : CountDownTimer(time, 1000) {
             override fun onTick(time: Long) {
@@ -248,7 +240,7 @@ class DashboardFragment : BaseFragment() {
             }
 
             override fun onFinish() {
-                nextLaunchModel?.links?.webcast?.let { link ->
+                launch.links?.webcast?.let { link ->
                     binding.next.countdown.visibility = View.GONE
                     binding.next.watchNow.apply {
                         visibility = View.VISIBLE
