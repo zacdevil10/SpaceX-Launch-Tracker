@@ -69,7 +69,7 @@ class DashboardFragment : BaseFragment() {
         }
 
         pinnedAdapter = LaunchesAdapter(requireContext()).also {
-            it.update(pinnedArray)
+            it.submitList(pinnedArray)
         }
 
         binding.pinned.pinnedRecycler.apply {
@@ -100,7 +100,7 @@ class DashboardFragment : BaseFragment() {
                     }
                     false -> {
                         pinnedArray.removeAll { it.id == e.key }
-                        pinnedAdapter.update(pinnedArray)
+                        pinnedAdapter.submitList(pinnedArray)
                         //pinnedSharedPreferences.removePinnedLaunch(e.key)
                     }
                 }
@@ -152,8 +152,8 @@ class DashboardFragment : BaseFragment() {
         }
 
         viewModel.pinnedLaunches.observe(viewLifecycleOwner) { response ->
-            val launches = response.mapNotNull { it.data }
-            pinnedAdapter.update(launches)
+            val launches = response.map { it.data }
+            pinnedAdapter.submitList(launches)
             binding.pinned.progress.hide()
         }
     }
@@ -229,7 +229,7 @@ class DashboardFragment : BaseFragment() {
 
         pinnedArray.sortByDescending { it.flightNumber }
 
-        pinnedAdapter.update(pinnedArray)
+        pinnedAdapter.submitList(pinnedArray)
     }
 
     private fun setCountdown(time: Long) {

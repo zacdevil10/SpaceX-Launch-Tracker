@@ -3,16 +3,16 @@ package uk.co.zac_h.spacex.vehicles.adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemDragonThrusterBinding
 import uk.co.zac_h.spacex.dto.spacex.DragonThrusterConfiguration
 import uk.co.zac_h.spacex.utils.metricFormat
 
-class DragonThrusterAdapter(
-    private val context: Context,
-    private val thrusters: List<DragonThrusterConfiguration>
-) : RecyclerView.Adapter<DragonThrusterAdapter.ViewHolder>() {
+class DragonThrusterAdapter(private val context: Context) :
+    ListAdapter<DragonThrusterConfiguration, DragonThrusterAdapter.ViewHolder>(Comparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
@@ -23,9 +23,8 @@ class DragonThrusterAdapter(
             )
         )
 
-    @ExperimentalStdlibApi
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val thruster = thrusters[position]
+        val thruster = getItem(position)
 
         holder.binding.apply {
             listItemDragonThrusterTypeText.text = thruster.type
@@ -43,9 +42,20 @@ class DragonThrusterAdapter(
         }
     }
 
-    override fun getItemCount(): Int = thrusters.size
-
     class ViewHolder(val binding: ListItemDragonThrusterBinding) :
         RecyclerView.ViewHolder(binding.root)
+
+    object Comparator : DiffUtil.ItemCallback<DragonThrusterConfiguration>() {
+
+        override fun areItemsTheSame(
+            oldItem: DragonThrusterConfiguration,
+            newItem: DragonThrusterConfiguration
+        ) = oldItem == newItem
+
+        override fun areContentsTheSame(
+            oldItem: DragonThrusterConfiguration,
+            newItem: DragonThrusterConfiguration
+        ) = oldItem.type == newItem.type
+    }
 
 }

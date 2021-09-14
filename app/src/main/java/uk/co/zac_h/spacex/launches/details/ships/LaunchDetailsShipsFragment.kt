@@ -52,15 +52,16 @@ class LaunchDetailsShipsFragment : BaseFragment() {
             when (response.status) {
                 ApiResult.Status.PENDING -> {
                 }
-                ApiResult.Status.SUCCESS -> response.data?.ships?.let { update(it) }.also {
+                ApiResult.Status.SUCCESS -> {
                     binding.swipeRefresh.isRefreshing = false
+                    update(response.data?.ships)
                 }
                 ApiResult.Status.FAILURE -> binding.swipeRefresh.isRefreshing = false
             }
         }
     }
 
-    private fun update(response: List<Ship>) {
-        shipsAdapter.update(response)
+    private fun update(response: List<Ship>?) {
+        shipsAdapter.submitList(response)
     }
 }

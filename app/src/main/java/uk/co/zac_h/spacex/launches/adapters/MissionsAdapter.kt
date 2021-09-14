@@ -5,27 +5,23 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemMissionBinding
 import uk.co.zac_h.spacex.dto.spacex.Launch
 
-class MissionsAdapter(
-    private val context: Context,
-    private val launches: List<Launch>
-) : RecyclerView.Adapter<MissionsAdapter.ViewHolder>() {
+class MissionsAdapter(private val context: Context) :
+    ListAdapter<Launch, MissionsAdapter.ViewHolder>(Comparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
-        ListItemMissionBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
+        ListItemMissionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val launch = launches[position]
+        val launch = getItem(position)
 
         holder.binding.apply {
             root.transitionName = launch.id
@@ -45,7 +41,12 @@ class MissionsAdapter(
         }
     }
 
-    override fun getItemCount(): Int = launches.size
-
     class ViewHolder(val binding: ListItemMissionBinding) : RecyclerView.ViewHolder(binding.root)
+
+    object Comparator : DiffUtil.ItemCallback<Launch>() {
+
+        override fun areItemsTheSame(oldItem: Launch, newItem: Launch) = oldItem == newItem
+
+        override fun areContentsTheSame(oldItem: Launch, newItem: Launch) = oldItem.id == newItem.id
+    }
 }

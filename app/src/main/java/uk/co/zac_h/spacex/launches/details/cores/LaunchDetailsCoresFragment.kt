@@ -52,15 +52,16 @@ class LaunchDetailsCoresFragment : BaseFragment() {
             when (response.status) {
                 ApiResult.Status.PENDING -> {
                 }
-                ApiResult.Status.SUCCESS -> response.data?.cores?.let { update(it) }.also {
+                ApiResult.Status.SUCCESS -> {
                     binding.swipeRefresh.isRefreshing = false
+                    update(response.data?.cores)
                 }
                 ApiResult.Status.FAILURE -> binding.swipeRefresh.isRefreshing = false
             }
         }
     }
 
-    private fun update(response: List<LaunchCore>) {
-        coresAdapter.update(response)
+    private fun update(response: List<LaunchCore>?) {
+        coresAdapter.submitList(response)
     }
 }

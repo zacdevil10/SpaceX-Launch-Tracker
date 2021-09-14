@@ -17,10 +17,8 @@ import uk.co.zac_h.spacex.dto.reddit.RedditPost
 import uk.co.zac_h.spacex.utils.convertDate
 import uk.co.zac_h.spacex.utils.views.HtmlTextView
 
-class RedditAdapter(
-    diffCallback: DiffUtil.ItemCallback<RedditPost> = RedditComparator,
-    private val openLink: (String) -> Unit
-) : PagingDataAdapter<RedditPost, RedditAdapter.ViewHolder>(diffCallback) {
+class RedditAdapter(private val openLink: (String) -> Unit) :
+    PagingDataAdapter<RedditPost, RedditAdapter.ViewHolder>(RedditComparator) {
 
     companion object {
         const val REDDIT = "https://www.reddit.com"

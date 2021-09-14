@@ -14,7 +14,7 @@ import uk.co.zac_h.spacex.databinding.ListItemCoreBinding
 import uk.co.zac_h.spacex.dto.spacex.Core
 import uk.co.zac_h.spacex.vehicles.VehiclesFragmentDirections
 
-class CoreAdapter(private val context: Context, val setSelected: (String) -> Unit) :
+class CoreAdapter(private val context: Context) :
     ListAdapter<Core, CoreAdapter.ViewHolder>(CoreComparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
@@ -48,14 +48,8 @@ class CoreAdapter(private val context: Context, val setSelected: (String) -> Uni
             }
             listItemCoreFlightsText.text = (core.launches?.size ?: 0).toString()
 
-            listItemCoreSpecsButton.setOnClickListener {
-                setSelected(core.id)
-                holder.bind(core)
-            }
-            listItemCoreCard.setOnClickListener {
-                setSelected(core.id)
-                holder.bind(core)
-            }
+            listItemCoreSpecsButton.setOnClickListener { holder.bind(core) }
+            listItemCoreCard.setOnClickListener { holder.bind(core) }
         }
     }
 
@@ -95,7 +89,10 @@ class CoreAdapter(private val context: Context, val setSelected: (String) -> Uni
     class ViewHolder(val binding: ListItemCoreBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(core: Core) {
             binding.root.findNavController().navigate(
-                VehiclesFragmentDirections.actionVehiclesPageFragmentToCoreDetailsFragment(core.serial, core.id),
+                VehiclesFragmentDirections.actionVehiclesPageFragmentToCoreDetailsFragment(
+                    core.serial,
+                    core.id
+                ),
                 FragmentNavigatorExtras(binding.listItemCoreCard to core.id)
             )
         }

@@ -27,9 +27,8 @@ import uk.co.zac_h.spacex.utils.views.HtmlTextView
 
 class TwitterFeedAdapter(
     private val context: Context,
-    private val openLink: (String) -> Unit,
-    diffCallback: DiffUtil.ItemCallback<TimelineTweetModel> = TwitterComparator
-) : PagingDataAdapter<TimelineTweetModel, TwitterFeedAdapter.ViewHolder>(diffCallback) {
+    private val openLink: (String) -> Unit
+) : PagingDataAdapter<TimelineTweetModel, TwitterFeedAdapter.ViewHolder>(TwitterComparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(

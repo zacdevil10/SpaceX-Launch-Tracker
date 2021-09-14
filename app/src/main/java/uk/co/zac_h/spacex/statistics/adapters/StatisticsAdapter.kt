@@ -84,10 +84,14 @@ class StatisticsAdapter(private val context: Context, private val openWebLink: (
             StatisticsFragmentDirections.actionStatisticsFragmentToLaunchMass(Statistics.MASS_TO_ORBIT)
         Statistics.FAIRING_RECOVERY ->
             StatisticsFragmentDirections.actionStatisticsFragmentToFairingRecovery(Statistics.FAIRING_RECOVERY)
-        Statistics.LAUNCHPADS ->
-            StatisticsFragmentDirections.actionStatisticsFragmentToPadStats(Statistics.LAUNCHPADS, PadType.LAUNCHPAD)
-        Statistics.LANDING_PADS ->
-            StatisticsFragmentDirections.actionStatisticsFragmentToPadStats(Statistics.LANDING_PADS, PadType.LANDING_PAD)
+        Statistics.LAUNCHPADS -> StatisticsFragmentDirections.actionStatisticsFragmentToPadStats(
+            Statistics.LAUNCHPADS,
+            PadType.LAUNCHPAD
+        )
+        Statistics.LANDING_PADS -> StatisticsFragmentDirections.actionStatisticsFragmentToPadStats(
+            Statistics.LANDING_PADS,
+            PadType.LANDING_PAD
+        )
     }
 
     override fun getItemCount(): Int = items.size + 1

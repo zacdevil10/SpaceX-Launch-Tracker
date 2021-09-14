@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.NavGraphDirections
@@ -16,10 +18,7 @@ import uk.co.zac_h.spacex.dto.spacex.Launch
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 
 class LaunchesAdapter(private val context: Context) :
-    RecyclerView.Adapter<LaunchesAdapter.ViewHolder>() {
-
-    private var launches: List<Launch> = emptyList()
-    //private var filteredLaunches: ArrayList<Launch> = launches
+    ListAdapter<Launch, LaunchesAdapter.ViewHolder>(Comparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
         ListItemLaunchesBinding.inflate(
@@ -30,7 +29,7 @@ class LaunchesAdapter(private val context: Context) :
     )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val launch = launches[position]
+        val launch = getItem(position)
 
         holder.binding.apply {
             root.transitionName = launch.id
@@ -70,13 +69,6 @@ class LaunchesAdapter(private val context: Context) :
                 )
             }
         }
-    }
-
-    override fun getItemCount(): Int = launches.size
-
-    fun update(newList: List<Launch>) {
-        launches = newList
-        notifyDataSetChanged()
     }
 
     /*override fun getFilter(): Filter = object : Filter() {
@@ -121,4 +113,11 @@ class LaunchesAdapter(private val context: Context) :
     }*/
 
     class ViewHolder(val binding: ListItemLaunchesBinding) : RecyclerView.ViewHolder(binding.root)
+
+    object Comparator : DiffUtil.ItemCallback<Launch>() {
+
+        override fun areItemsTheSame(oldItem: Launch, newItem: Launch) = oldItem == newItem
+
+        override fun areContentsTheSame(oldItem: Launch, newItem: Launch) = oldItem.id == newItem.id
+    }
 }

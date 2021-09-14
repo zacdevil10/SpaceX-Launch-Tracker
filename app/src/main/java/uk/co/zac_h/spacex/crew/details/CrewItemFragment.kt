@@ -109,12 +109,12 @@ class CrewItemFragment : BaseFragment() {
         }
         binding.crewAgency.text = person.agency
 
-        person.launches?.let {
+        person.launches?.let { launches ->
             binding.missionsRecycler.apply {
                 layoutManager = LinearLayoutManager(context)
-                adapter = CrewMissionsAdapter(context, it)
+                adapter = CrewMissionsAdapter(context).also { it.submitList(launches) }
             }
-            if (it.isEmpty()) binding.crewMissionLabel.visibility = View.GONE
+            if (launches.isEmpty()) binding.crewMissionLabel.visibility = View.GONE
         }
     }
 }

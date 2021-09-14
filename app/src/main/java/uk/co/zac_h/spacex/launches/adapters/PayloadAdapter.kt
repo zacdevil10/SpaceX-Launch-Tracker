@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemPayloadBinding
@@ -11,9 +13,7 @@ import uk.co.zac_h.spacex.dto.spacex.Payload
 import uk.co.zac_h.spacex.utils.formatCustomers
 
 class PayloadAdapter(private var context: Context) :
-    RecyclerView.Adapter<PayloadAdapter.ViewHolder>() {
-
-    private var payloads: List<Payload> = emptyList()
+    ListAdapter<Payload, PayloadAdapter.ViewHolder>(Comparator) {
 
     private var expandedPosition = 0
 
@@ -26,7 +26,7 @@ class PayloadAdapter(private var context: Context) :
     )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val payload = payloads.get(position)
+        val payload = getItem(position)
 
         val isExpanded = position == expandedPosition
 
@@ -137,12 +137,13 @@ class PayloadAdapter(private var context: Context) :
         }
     }
 
-    override fun getItemCount(): Int = payloads.size
-
-    fun update(list: List<Payload>) {
-        payloads = list
-        notifyDataSetChanged()
-    }
-
     class ViewHolder(val binding: ListItemPayloadBinding) : RecyclerView.ViewHolder(binding.root)
+
+    object Comparator : DiffUtil.ItemCallback<Payload>() {
+
+        override fun areItemsTheSame(oldItem: Payload, newItem: Payload) = oldItem == newItem
+
+        override fun areContentsTheSame(oldItem: Payload, newItem: Payload) =
+            oldItem.id == newItem.id
+    }
 }

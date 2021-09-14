@@ -63,15 +63,15 @@ class ShipDetailsFragment : BaseFragment() {
 
     private fun update(ship: Ship?) {
         with(binding) {
-            ship?.let {
-                shipDetailsCoordinator.transitionName = it.id
+            ship?.let { ship ->
+                shipDetailsCoordinator.transitionName = ship.id
 
                 Glide.with(requireContext())
-                    .load(it.image)
+                    .load(ship.image)
                     .error(R.drawable.ic_baseline_error_outline_24)
                     .into(toolbarBinding.header)
 
-                when (it.active) {
+                when (ship.active) {
                     true -> shipDetailsStatusImage.setImageAndTint(
                         R.drawable.ic_check_circle_black_24dp,
                         R.color.success
@@ -82,18 +82,18 @@ class ShipDetailsFragment : BaseFragment() {
                     )
                 }
 
-                shipDetailsTypeText.text = it.type
-                shipDetailsRolesText.text = it.roles?.joinToString(", ")
-                shipDetailsPortText.text = it.homePort
+                shipDetailsTypeText.text = ship.type
+                shipDetailsRolesText.text = ship.roles?.joinToString(", ")
+                shipDetailsPortText.text = ship.homePort
 
-                it.yearBuilt?.let { yearBuilt ->
+                ship.yearBuilt?.let { yearBuilt ->
                     shipDetailsBuiltText.text = yearBuilt.toString()
                 } ?: run {
                     shipDetailsBuiltLabel.visibility = View.GONE
                     shipDetailsBuiltText.visibility = View.GONE
                 }
 
-                it.mass?.let { mass ->
+                ship.mass?.let { mass ->
                     shipDetailsMassText.text = getString(
                         R.string.mass_formatted,
                         mass.kg,
@@ -104,11 +104,11 @@ class ShipDetailsFragment : BaseFragment() {
                     shipDetailsMassText.visibility = View.GONE
                 }
 
-                it.launches?.let {
+                ship.launches?.let { launches ->
                     shipDetailsMissionRecycler.apply {
                         layoutManager = LinearLayoutManager(this@ShipDetailsFragment.context)
                         setHasFixedSize(true)
-                        adapter = MissionsAdapter(context, it)
+                        adapter = MissionsAdapter(context).also { it.submitList(launches) }
                     }
                 } ?: run {
                     shipDetailsMissionLabel.visibility = View.GONE
