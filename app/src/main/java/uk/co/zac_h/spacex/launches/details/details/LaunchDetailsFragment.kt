@@ -28,11 +28,6 @@ class LaunchDetailsFragment : BaseFragment() {
 
     private lateinit var binding: FragmentLaunchDetailsBinding
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -58,27 +53,6 @@ class LaunchDetailsFragment : BaseFragment() {
                 ApiResult.Status.FAILURE -> binding.swipeRefresh.isRefreshing = false
             }
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(
-            if (viewModel.isPinned()) R.menu.menu_details_alternate else R.menu.menu_details,
-            menu
-        )
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.pin -> {
-            viewModel.pinLaunch(true)
-            activity?.invalidateOptionsMenu()
-            true
-        }
-        R.id.unpin -> {
-            viewModel.pinLaunch(false)
-            activity?.invalidateOptionsMenu()
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
     }
 
     private fun update(response: Launch) {

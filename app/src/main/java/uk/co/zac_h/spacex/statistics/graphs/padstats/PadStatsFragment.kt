@@ -51,12 +51,7 @@ class PadStatsFragment : BaseFragment() {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        binding.toolbarLayout.toolbar.apply {
-            setup()
-            createOptionsMenu(R.menu.menu_statistics_reload)
-        }
-
-        binding.padStatsConstraint.transitionName = getString(navArgs.type.title)
+        binding.padStatsLaunchSitesRecycler.transitionName = getString(navArgs.type.title)
 
         padsAdapter = PadStatsSitesAdapter()
 
@@ -102,11 +97,11 @@ class PadStatsFragment : BaseFragment() {
     }
 
     fun showProgress() {
-        binding.toolbarLayout.progress.show()
+
     }
 
     fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
+
     }
 
     fun showError(error: String?) {

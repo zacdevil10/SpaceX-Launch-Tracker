@@ -10,7 +10,6 @@ import com.google.android.material.transition.Hold
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentVehiclesBinding
-import uk.co.zac_h.spacex.databinding.ToolbarTabBinding
 import uk.co.zac_h.spacex.utils.ViewPagerAdapter
 import uk.co.zac_h.spacex.vehicles.capsules.CapsulesFragment
 import uk.co.zac_h.spacex.vehicles.cores.CoreFragment
@@ -23,7 +22,6 @@ class VehiclesFragment : BaseFragment() {
     override val title by lazy { getString(R.string.vehicles_label) }
 
     private lateinit var binding: FragmentVehiclesBinding
-    private lateinit var toolbarLayout: ToolbarTabBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +33,6 @@ class VehiclesFragment : BaseFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentVehiclesBinding.inflate(inflater, container, false).apply {
-        toolbarLayout = ToolbarTabBinding.bind(this.root)
         binding = this
     }.root
 
@@ -50,8 +47,7 @@ class VehiclesFragment : BaseFragment() {
             CapsulesFragment()
         )
 
-        toolbarLayout.toolbar.setSupportActionBar()
-        toolbarLayout.toolbar.setupWithTabLayout(toolbarLayout.tabLayout, TabLayout.MODE_SCROLLABLE)
+        binding.tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
 
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
@@ -68,7 +64,7 @@ class VehiclesFragment : BaseFragment() {
             R.drawable.ic_dragon
         )
 
-        toolbarLayout.tabLayout.apply {
+        binding.tabLayout.apply {
             setupWithViewPager(binding.vehiclesViewPager)
             for (position in 0..tabCount) {
                 getTabAt(position)?.setIcon(tabIcons[position])

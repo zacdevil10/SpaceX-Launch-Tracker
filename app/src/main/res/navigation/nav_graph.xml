@@ -8,6 +8,7 @@
     <fragment
         android:id="@+id/dashboard_page_fragment"
         android:name="uk.co.zac_h.spacex.dashboard.DashboardFragment"
+        android:label="@string/menu_home"
         app:enterAnim="@android:anim/fade_in"
         tools:layout="@layout/fragment_dashboard">
 

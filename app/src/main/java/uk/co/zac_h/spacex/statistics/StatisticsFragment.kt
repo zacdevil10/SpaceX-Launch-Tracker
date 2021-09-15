@@ -33,9 +33,6 @@ class StatisticsFragment : BaseFragment() {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        binding.toolbarLayout.progress.hide()
-        binding.toolbarLayout.toolbar.setup()
-
         binding.statisticsRecycler.apply {
             layoutManager = LinearLayoutManager(this@StatisticsFragment.context)
             adapter = StatisticsAdapter(context, ::openWebLink)

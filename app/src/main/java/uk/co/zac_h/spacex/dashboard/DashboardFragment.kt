@@ -37,6 +37,7 @@ class DashboardFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
 
         exitTransition = MaterialFadeThrough()
         reenterTransition = MaterialFadeThrough()
@@ -56,15 +57,8 @@ class DashboardFragment : BaseFragment() {
         view.doOnPreDraw { startPostponedEnterTransition() }
         postponeEnterTransition()
 
-        binding.toolbarLayout.progress.hide()
-
         viewModel.getLaunch("next")
         viewModel.getLaunch("latest")
-
-        binding.toolbarLayout.toolbar.apply {
-            setup()
-            createOptionsMenu(R.menu.menu_dashboard)
-        }
 
         pinnedAdapter = LaunchesAdapter(requireContext()).also {
             it.submitList(pinnedArray)
@@ -160,6 +154,11 @@ class DashboardFragment : BaseFragment() {
         super.onDestroyView()
         countdownTimer?.cancel()
         countdownTimer = null
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_dashboard, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {

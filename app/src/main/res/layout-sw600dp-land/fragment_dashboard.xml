@@ -1,65 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".dashboard.DashboardFragment">
 
-    <include
-        android:id="@+id/toolbar_layout"
-        layout="@layout/toolbar_progress" />
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/refresh"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_layout">
+        android:layout_height="match_parent">
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/scroll_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:animateLayoutChanges="true"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:padding="@dimen/small_margin">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <LinearLayout
+                android:id="@+id/dashboard_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
                 android:animateLayoutChanges="true"
-                android:clipChildren="false"
-                android:clipToPadding="false"
-                android:padding="@dimen/small_margin">
-
-                <LinearLayout
-                    android:id="@+id/dashboard_container"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:animateLayoutChanges="true"
-                    android:orientation="vertical"
-                    app:layout_constraintEnd_toStartOf="@id/pinned"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <include
-                        android:id="@+id/next"
-                        layout="@layout/list_item_dashboard_launch" />
-
-                    <include
-                        android:id="@+id/latest"
-                        layout="@layout/list_item_dashboard_launch" />
-
-                </LinearLayout>
+                android:orientation="vertical"
+                app:layout_constraintEnd_toStartOf="@id/pinned"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <include
-                    android:id="@+id/pinned"
-                    layout="@layout/dashboard_pinned_layout" />
+                    android:id="@+id/next"
+                    layout="@layout/list_item_dashboard_launch" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                <include
+                    android:id="@+id/latest"
+                    layout="@layout/list_item_dashboard_launch" />
 
-        </androidx.core.widget.NestedScrollView>
+            </LinearLayout>
 
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <include
+                android:id="@+id/pinned"
+                layout="@layout/dashboard_pinned_layout" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

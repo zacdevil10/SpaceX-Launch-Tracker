@@ -5,20 +5,12 @@
     android:id="@+id/capsule_details_constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_background"
-    tools:context=".vehicles.capsules.details.CapsuleDetailsFragment"
-    tools:ignore="Overdraw">
-
-    <include
-        android:id="@+id/toolbar_layout"
-        layout="@layout/toolbar_progress" />
+    tools:context=".vehicles.capsules.details.CapsuleDetailsFragment">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/capsule_details_scrollview"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_layout">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

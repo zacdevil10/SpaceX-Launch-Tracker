@@ -37,4 +37,6 @@
 
     <color name="color_primary_translucent">#819ca9</color>
 
+    <color name="test">#000000</color>
+
 </resources>

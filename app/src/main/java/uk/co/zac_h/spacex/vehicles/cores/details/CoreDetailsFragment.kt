@@ -51,8 +51,6 @@ class CoreDetailsFragment : BaseFragment() {
 
         binding.coreDetailsScrollview.transitionName = navArgs.id
 
-        binding.toolbarLayout.toolbar.setup()
-
         missionsAdapter = MissionsAdapter(requireContext())
 
         binding.coreDetailsMissionRecycler.apply {
@@ -82,8 +80,6 @@ class CoreDetailsFragment : BaseFragment() {
                 coreDetailsAsdsLandingsText.text = core.landingsAsds.toString()
 
                 missionsAdapter.submitList(core.launches)
-
-                toolbarLayout.progress.hide()
             }
         }
     }

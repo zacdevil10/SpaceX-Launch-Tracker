@@ -64,11 +64,6 @@ class FairingRecoveryFragment : BaseFragment() {
 
         viewModel.get()
 
-        binding.toolbarLayout.toolbar.apply {
-            setup()
-            createOptionsMenu(R.menu.menu_statistics_reload)
-        }
-
         binding.fairingRecoveryConstraint.transitionName = getString(navArgs.type.title)
 
         val keyAdapter = StatisticsKeyAdapter(requireContext(), false)
@@ -162,11 +157,11 @@ class FairingRecoveryFragment : BaseFragment() {
     }
 
     fun showProgress() {
-        binding.toolbarLayout.progress.show()
+
     }
 
     fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
+
     }
 
     fun showError(error: String?) {

@@ -48,8 +48,6 @@ class CapsuleDetailsFragment : BaseFragment() {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        binding.toolbarLayout.toolbar.setup()
-
         viewModel.capsules.observe(viewLifecycleOwner) { result ->
             update(result.data?.first { it.id == navArgs.id })
         }
@@ -57,8 +55,6 @@ class CapsuleDetailsFragment : BaseFragment() {
 
     private fun update(capsule: Capsule?) {
         with(binding) {
-            toolbarLayout.toolbar.setup()
-
             capsuleDetailsConstraint.transitionName = capsule?.id
 
             capsule?.type?.let {
@@ -85,8 +81,6 @@ class CapsuleDetailsFragment : BaseFragment() {
                     adapter = MissionsAdapter(context).also { it.submitList(launches) }
                 }
             } ?: run { capsuleDetailsMissionLabel.visibility = View.GONE }
-
-            toolbarLayout.progress.hide()
         }
     }
 }
