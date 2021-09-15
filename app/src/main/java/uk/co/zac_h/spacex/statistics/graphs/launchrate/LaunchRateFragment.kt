@@ -65,11 +65,6 @@ class LaunchRateFragment : BaseFragment() {
 
         viewModel.get()
 
-        binding.toolbarLayout.toolbar.apply {
-            setup()
-            createOptionsMenu(R.menu.menu_statistics_reload)
-        }
-
         binding.launchRateConstraint.transitionName = getString(navArgs.type.title)
 
         val keyAdapter = StatisticsKeyAdapter(requireContext(), false)
@@ -175,11 +170,11 @@ class LaunchRateFragment : BaseFragment() {
     }
 
     fun showProgress() {
-        binding.toolbarLayout.progress.show()
+
     }
 
     fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
+
     }
 
     fun showError(error: String?) {

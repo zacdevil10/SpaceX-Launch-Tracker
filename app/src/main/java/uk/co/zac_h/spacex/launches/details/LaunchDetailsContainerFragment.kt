@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.transition.MaterialContainerTransform
@@ -16,7 +17,6 @@ import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsContainerBinding
 import uk.co.zac_h.spacex.dto.spacex.Launch
 import uk.co.zac_h.spacex.launches.details.cores.LaunchDetailsCoresFragment
@@ -45,7 +45,9 @@ class LaunchDetailsContainerFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition = MaterialContainerTransform()
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.nav_host
+        }
 
         exitTransition = MaterialElevationScale(false)
         reenterTransition = MaterialElevationScale(true)
@@ -70,16 +72,31 @@ class LaunchDetailsContainerFragment : BaseFragment() {
 
         binding.fragmentLaunchDetailsContainer.transitionName = navArgs.launchId
 
-        viewModel.getLaunch()
+        binding.close.setOnClickListener {
+            findNavController().navigateUp()
+        }
 
-        (activity as MainActivity).setSupportActionBar(binding.toolbarLayout.toolbar)
-        binding.toolbarLayout.toolbar.setup()
+        binding.pin.setImageState(
+            intArrayOf(if (viewModel.isPinned()) android.R.attr.state_activated else -android.R.attr.state_activated),
+            true
+        )
+
+        binding.pin.setOnClickListener {
+            val pinned = viewModel.isPinned()
+            viewModel.pinLaunch(!pinned)
+            binding.pin.setImageState(
+                intArrayOf(if (pinned) -android.R.attr.state_activated else android.R.attr.state_activated),
+                true
+            )
+        }
+
+        viewModel.getLaunch()
 
         viewModel.launch.observe(viewLifecycleOwner) { response ->
             when (response.status) {
-                ApiResult.Status.PENDING -> binding.toolbarLayout.progress.show()
+                ApiResult.Status.PENDING -> {
+                }
                 ApiResult.Status.SUCCESS -> {
-                    binding.toolbarLayout.progress.hide()
                     response.data?.let { update(it) }
                 }
                 ApiResult.Status.FAILURE -> showError(response.error?.message)

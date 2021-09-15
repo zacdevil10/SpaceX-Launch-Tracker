@@ -41,11 +41,6 @@ class HistoryFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbarLayout.toolbar.apply {
-            setup()
-            createOptionsMenu(R.menu.menu_history)
-        }
-
         historyAdapter = HistoryAdapter(requireContext(), ::openWebLink)
 
         val isTabletLand = resources.getBoolean(R.bool.isTabletLand)
@@ -107,18 +102,18 @@ class HistoryFragment : BaseFragment() {
     }
 
     fun showProgress() {
-        binding.toolbarLayout.progress.show()
+
     }
 
     fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
+
     }
 
     fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
-    fun toggleSwipeRefresh(isRefreshing: Boolean) {
+    private fun toggleSwipeRefresh(isRefreshing: Boolean) {
         binding.swipeRefresh.isRefreshing = isRefreshing
     }
 

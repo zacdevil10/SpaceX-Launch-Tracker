@@ -64,11 +64,6 @@ class LaunchMassFragment : BaseFragment() {
 
         viewModel.get()
 
-        binding.toolbarLayout.toolbar.apply {
-            setup()
-            createOptionsMenu(R.menu.menu_statistics_filter)
-        }
-
         binding.launchMassConstraint.transitionName = getString(navArgs.type.title)
 
         binding.launchMassFilterTint.setOnClickListener {
@@ -411,11 +406,11 @@ class LaunchMassFragment : BaseFragment() {
     }
 
     fun showProgress() {
-        binding.toolbarLayout.progress.show()
+
     }
 
     fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
+
     }
 
     fun showError(error: String?) {

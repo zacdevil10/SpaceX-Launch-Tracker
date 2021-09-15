@@ -55,8 +55,6 @@ class CrewFragment : BaseFragment() {
             binding.root.doOnPreDraw { startPostponedEnterTransition() }
         }
 
-        binding.toolbarLayout.toolbar.setup()
-
         crewAdapter = CrewAdapter()
 
         binding.crewRecycler.apply {
@@ -93,11 +91,11 @@ class CrewFragment : BaseFragment() {
     }
 
     private fun showProgress() {
-        binding.toolbarLayout.progress.show()
+
     }
 
     private fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
+
     }
 
     private fun showError(error: String?) {

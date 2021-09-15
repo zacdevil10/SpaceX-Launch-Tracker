@@ -6,8 +6,24 @@
     android:layout_height="match_parent"
     tools:context=".news.NewsFragment">
 
-    <include
-        layout="@layout/toolbar_tab" />
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:elevation="@dimen/toolbar_elevation">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            style="@style/Widget.MaterialComponents.TabLayout.Colored"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:elevation="@dimen/toolbar_elevation"
+            android:textColor="?colorOnSurface"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:tabIndicatorColor="?colorSecondary"
+            app:tabInlineLabel="true" />
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/news_view_pager"

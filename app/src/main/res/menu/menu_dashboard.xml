@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/edit"
-        android:icon="@drawable/ic_mode_edit_black_24dp"
+        android:icon="@drawable/ic_baseline_settings_24"
         android:title="@string/edit_label"
         app:showAsAction="ifRoom" />
 

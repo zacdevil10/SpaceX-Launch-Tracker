@@ -65,11 +65,6 @@ class LaunchHistoryFragment : BaseFragment() {
 
         viewModel.get()
 
-        binding.toolbarLayout.toolbar.apply {
-            setup()
-            createOptionsMenu(R.menu.menu_statistics_filter)
-        }
-
         binding.launchHistoryConstraint.transitionName = getString(navArgs.type.title)
 
         binding.tint.setOnClickListener {
@@ -256,11 +251,11 @@ class LaunchHistoryFragment : BaseFragment() {
     }
 
     fun showProgress() {
-        binding.toolbarLayout.progress.show()
+
     }
 
     fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
+
     }
 
     fun showError(error: String?) {
