@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.crew.CrewFragmentDirections
 import uk.co.zac_h.spacex.databinding.GridItemCrewBinding
 import uk.co.zac_h.spacex.dto.spacex.Crew
@@ -30,7 +29,6 @@ class CrewAdapter : ListAdapter<Crew, CrewAdapter.ViewHolder>(CrewComparator) {
             title.text = person.name
 
             gridItemCrewConstraint.setOnClickListener {
-                MainActivity.currentPosition = position
                 holder.bind(person)
             }
         }

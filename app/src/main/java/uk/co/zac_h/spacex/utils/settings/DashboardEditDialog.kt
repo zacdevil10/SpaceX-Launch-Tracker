@@ -5,18 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.PREFERENCES_NEXT_LAUNCH
 import uk.co.zac_h.spacex.PREFERENCES_PINNED_LAUNCH
 import uk.co.zac_h.spacex.PREFERENCES_PREVIOUS_LAUNCH
 import uk.co.zac_h.spacex.dashboard.DashboardViewModel
 import uk.co.zac_h.spacex.databinding.DialogDashboardEditBinding
+import uk.co.zac_h.spacex.utils.BottomDrawerFragment
+import uk.co.zac_h.spacex.utils.BottomSheetComponent
 
 @AndroidEntryPoint
-class DashboardEditDialog : BottomSheetDialogFragment() {
+class DashboardEditDialog : BottomDrawerFragment() {
 
     private lateinit var binding: DialogDashboardEditBinding
+
+    override val bottomSheetComponent: BottomSheetComponent by lazy {
+        binding.container
+    }
 
     private val viewModel: DashboardViewModel by viewModels()
 
@@ -31,11 +36,14 @@ class DashboardEditDialog : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.dialogDashboardEditNext.isChecked = viewModel.getDashboardSectionState(PREFERENCES_NEXT_LAUNCH)
+        binding.dialogDashboardEditNext.isChecked =
+            viewModel.getDashboardSectionState(PREFERENCES_NEXT_LAUNCH)
 
-        binding.dialogDashboardEditPrevious.isChecked = viewModel.getDashboardSectionState(PREFERENCES_PREVIOUS_LAUNCH)
+        binding.dialogDashboardEditPrevious.isChecked =
+            viewModel.getDashboardSectionState(PREFERENCES_PREVIOUS_LAUNCH)
 
-        binding.dialogDashboardEditPinned.isChecked = viewModel.getDashboardSectionState(PREFERENCES_PINNED_LAUNCH)
+        binding.dialogDashboardEditPinned.isChecked =
+            viewModel.getDashboardSectionState(PREFERENCES_PINNED_LAUNCH)
 
         binding.dialogDashboardEditNext.setOnCheckedChangeListener { _, isChecked ->
             update(PREFERENCES_NEXT_LAUNCH, isChecked)
@@ -48,7 +56,6 @@ class DashboardEditDialog : BottomSheetDialogFragment() {
         binding.dialogDashboardEditPinned.setOnCheckedChangeListener { _, isChecked ->
             update(PREFERENCES_PINNED_LAUNCH, isChecked)
         }
-
     }
 
     private fun update(id: String, isChecked: Boolean) {

@@ -11,7 +11,6 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
 import uk.co.zac_h.spacex.crew.CrewViewModel
 import uk.co.zac_h.spacex.crew.adapters.CrewPagerAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewDetailsBinding
@@ -45,7 +44,7 @@ class CrewPagerFragment : BaseFragment() {
 
         binding.crewPager.apply {
             adapter = crewPagerAdapter
-            setCurrentItem(MainActivity.currentPosition, false)
+            //setCurrentItem(MainActivity.currentPosition, false)
             setPageTransformer(true, DepthPageTransformer())
 
             addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -55,7 +54,7 @@ class CrewPagerFragment : BaseFragment() {
 
                 override fun onPageSelected(position: Int) {
                     activity?.title = (crew[position] as BaseFragment).title
-                    MainActivity.currentPosition = position
+                    //MainActivity.currentPosition = position
                 }
             })
         }
@@ -80,13 +79,13 @@ class CrewPagerFragment : BaseFragment() {
                 names: MutableList<String>?,
                 sharedElements: MutableMap<String, View>?
             ) {
-                val currentFragment = crew[MainActivity.currentPosition]
+                /*val currentFragment = crew[MainActivity.currentPosition]
                 val view = currentFragment.view
                 view?.let {
                     names?.get(0)?.let { name ->
                         sharedElements?.put(name, view.findViewById(R.id.item_crew_constraint))
                     }
-                } ?: return
+                } ?: return*/
             }
         })
     }
