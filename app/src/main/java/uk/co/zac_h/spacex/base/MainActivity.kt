@@ -8,103 +8,45 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ActivityMainBinding
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(),
-    OnNetworkStateChangeListener.NetworkStateReceiverListener,
-    NavController.OnDestinationChangedListener {
+class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedListener {
 
-    private val startDestinations = mutableSetOf(
-        R.id.dashboard_page_fragment,
-        R.id.news_page_fragment,
-        R.id.launches_page_fragment,
-        R.id.crew_page_fragment,
-        R.id.vehicles_page_fragment,
-        R.id.statistics_page_fragment
-    )
-
-    private lateinit var binding: ActivityMainBinding
-
-    private var snackbar: Snackbar? = null
+    private val binding: ActivityMainBinding by lazy {
+        ActivityMainBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        (application as App).preferencesRepo.themeModeLive.observe(this, { mode ->
+        (application as App).preferencesRepo.themeModeLive.observe(this) { mode ->
             mode?.let { delegate.localNightMode = it }
-        })
+        }
 
         super.onCreate(savedInstanceState)
-
-        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        savedInstanceState?.let {
-            currentPosition = it.getInt(CREW_POSITION_KEY)
-        }
-
-        (application as App).networkStateChangeListener.apply {
-            addListener(this@MainActivity)
-            registerReceiver()
-        }
-
-        snackbar = Snackbar.make(
-            binding.drawerLayout,
-            R.string.network_connection,
-            Snackbar.LENGTH_INDEFINITE
-        ).apply {
-            setAction(R.string.dismiss_label) { dismiss() }
-        }
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
+        val navController = navHostFragment.navController
 
-        navHostFragment.navController.addOnDestinationChangedListener(this)
+        binding.bottomAppBar.setupWithNavController(navController)
+        binding.navView.setupWithNavController(navController)
 
-        binding.navView.setupWithNavController(navHostFragment.navController)
+        navController.addOnDestinationChangedListener(this)
 
-        val appBarConfig = AppBarConfiguration.Builder(startDestinations)
-            .setOpenableLayout(binding.drawerLayout).build()
+        val navBottomSheetBehavior = BottomSheetBehavior.from(binding.navView)
+        navBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
-        setSupportActionBar(binding.bottomAppBar)
-        binding.bottomAppBar.setupWithNavController(navHostFragment.navController, appBarConfig)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        (application as App).networkStateChangeListener.updateState()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt(CREW_POSITION_KEY, currentPosition)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        snackbar = null
-        (application as App).networkStateChangeListener.apply {
-            removeListener(this@MainActivity)
-            unregisterReceiver()
+        binding.bottomAppBar.setNavigationOnClickListener {
+            navBottomSheetBehavior.state = when (navBottomSheetBehavior.state) {
+                BottomSheetBehavior.STATE_HIDDEN -> BottomSheetBehavior.STATE_HALF_EXPANDED
+                else -> BottomSheetBehavior.STATE_HIDDEN
+            }
         }
-    }
-
-    override fun networkAvailable() {
-        snackbar?.dismiss()
-    }
-
-    override fun networkLost() {
-        snackbar?.show()
-    }
-
-    companion object {
-        const val CREW_POSITION_KEY = "crew_pager_position"
-        var currentPosition: Int = 0
     }
 
     override fun onDestinationChanged(
@@ -142,13 +84,14 @@ class MainActivity : AppCompatActivity(),
             R.id.history_page_fragment -> setAppBarForHistory()
             R.id.about_page_fragment -> setAppBarForAbout()
             //Settings dialogs
-            //R.id.theme_alert_dialog,
-            //R.id.dashboard_edit_dialog -> showAppBar()
+            //R.id.theme_alert_dialog ->
+            //R.id.dashboard_edit_dialog ->
         }
     }
 
     private fun setAppBarForDashboard() {
         binding.run {
+            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_menu_24)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.hide()
@@ -157,6 +100,8 @@ class MainActivity : AppCompatActivity(),
 
     private fun setAppBarForLaunches() {
         binding.run {
+            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_menu_24)
+            fab.setImageResource(R.drawable.ic_filter_list_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.show()
@@ -170,6 +115,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun setAppBarForNews() {
         binding.run {
+            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_menu_24)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.hide()
@@ -178,6 +124,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun setAppBarForCrew() {
         binding.run {
+            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_menu_24)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.hide()
@@ -191,6 +138,8 @@ class MainActivity : AppCompatActivity(),
 
     private fun setAppBarForVehicles() {
         binding.run {
+            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_menu_24)
+            fab.setImageResource(R.drawable.ic_sort_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.show()
@@ -214,6 +163,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun setAppBarForCoreDetails() {
         binding.run {
+            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.hide()
@@ -222,6 +172,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun setAppBarForCapsuleDetails() {
         binding.run {
+            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.hide()
@@ -230,6 +181,8 @@ class MainActivity : AppCompatActivity(),
 
     private fun setAppBarForStatistics(hasFilter: Boolean) {
         binding.run {
+            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_menu_24)
+            fab.setImageResource(R.drawable.ic_filter_list_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             if (hasFilter) fab.show() else fab.hide()
@@ -238,6 +191,8 @@ class MainActivity : AppCompatActivity(),
 
     private fun setAppBarForHistory() {
         binding.run {
+            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
+            fab.setImageResource(R.drawable.ic_sort_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.show()
@@ -246,6 +201,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun setAppBarForCompany() {
         binding.run {
+            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.hide()
@@ -254,6 +210,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun setAppBarForAbout() {
         binding.run {
+            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.hide()

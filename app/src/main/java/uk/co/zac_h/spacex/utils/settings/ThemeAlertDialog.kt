@@ -6,14 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.App
 import uk.co.zac_h.spacex.databinding.DialogThemeAlertBinding
+import uk.co.zac_h.spacex.utils.BottomDrawerFragment
+import uk.co.zac_h.spacex.utils.BottomSheetComponent
 
-class ThemeAlertDialog : BottomSheetDialogFragment() {
+class ThemeAlertDialog : BottomDrawerFragment() {
 
     private lateinit var binding: DialogThemeAlertBinding
+
+    override val bottomSheetComponent: BottomSheetComponent by lazy { binding.container }
 
     private val itemsP = arrayOf("Dark theme", "Battery saver only", "Light theme")
     private val itemsQ = arrayOf("Dark theme", "System theme", "Light theme")

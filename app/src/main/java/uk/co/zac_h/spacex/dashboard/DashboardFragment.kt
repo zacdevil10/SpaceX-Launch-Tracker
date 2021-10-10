@@ -163,7 +163,7 @@ class DashboardFragment : BaseFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
         R.id.edit -> {
-            findNavController().navigate(R.id.action_dashboard_page_fragment_to_dashboard_edit_dialog)
+            //findNavController().navigate(R.id.action_dashboard_page_fragment_to_dashboard_edit_dialog)
             true
         }
         else -> super.onOptionsItemSelected(item)

@@ -24,37 +24,36 @@
             android:id="@id/vehicles_page_fragment"
             android:icon="@drawable/ic_rocket"
             android:title="@string/menu_vehicles" />
+
+        <item android:title="@string/menu_about_spacex">
+            <menu>
+                <item
+                    android:id="@id/statistics_page_fragment"
+                    android:icon="@drawable/ic_data_usage_black_24dp"
+                    android:title="@string/menu_statistics" />
+                <item
+                    android:id="@+id/history_page_fragment"
+                    android:icon="@drawable/ic_history_black_24dp"
+                    android:title="@string/menu_history" />
+                <item
+                    android:id="@+id/company_page_fragment"
+                    android:icon="@drawable/domain"
+                    android:title="@string/menu_company" />
+            </menu>
+        </item>
+
+        <item android:title="@string/menu_about">
+            <menu>
+                <item
+                    android:id="@id/theme_alert_dialog"
+                    android:icon="@drawable/ic_brightness_6_black_24dp"
+                    android:title="@string/theme_label" />
+                <item
+                    android:id="@id/about_page_fragment"
+                    android:icon="@drawable/ic_info_outline_black_24dp"
+                    android:title="@string/menu_about" />
+            </menu>
+        </item>
     </group>
-
-    <item android:title="@string/menu_about_spacex">
-        <menu>
-            <item
-                android:id="@id/statistics_page_fragment"
-                android:checkable="true"
-                android:icon="@drawable/ic_data_usage_black_24dp"
-                android:title="@string/menu_statistics" />
-            <item
-                android:id="@+id/history_page_fragment"
-                android:icon="@drawable/ic_history_black_24dp"
-                android:title="@string/menu_history" />
-            <item
-                android:id="@+id/company_page_fragment"
-                android:icon="@drawable/domain"
-                android:title="@string/menu_company" />
-        </menu>
-    </item>
-
-    <item android:title="@string/menu_about">
-        <menu>
-            <item
-                android:id="@id/theme_alert_dialog"
-                android:icon="@drawable/ic_brightness_6_black_24dp"
-                android:title="@string/theme_label" />
-            <item
-                android:id="@id/about_page_fragment"
-                android:icon="@drawable/ic_info_outline_black_24dp"
-                android:title="@string/menu_about" />
-        </menu>
-    </item>
 
 </menu>
