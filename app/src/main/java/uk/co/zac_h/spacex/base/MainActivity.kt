@@ -4,21 +4,37 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
 import android.view.View
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ActivityMainBinding
+import uk.co.zac_h.spacex.utils.AlphaSlideAction
+import uk.co.zac_h.spacex.utils.BottomDrawerCallback
+import uk.co.zac_h.spacex.utils.OnStateChangedAction
+import uk.co.zac_h.spacex.utils.VisibilityStateAction
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedListener {
 
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
+    }
+
+    private val navBottomSheetBehavior: BottomSheetBehavior<NavigationView> by lazy {
+        BottomSheetBehavior.from(binding.navView)
+    }
+
+    private val closeNavDrawerOnBackPressed = object : OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            navBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,7 +54,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
         navController.addOnDestinationChangedListener(this)
 
-        val navBottomSheetBehavior = BottomSheetBehavior.from(binding.navView)
         navBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
         binding.bottomAppBar.setNavigationOnClickListener {
@@ -47,6 +62,23 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                 else -> BottomSheetBehavior.STATE_HIDDEN
             }
         }
+
+        navBottomSheetBehavior.addBottomSheetCallback(BottomDrawerCallback().apply {
+            addOnSlideAction(AlphaSlideAction(binding.scrim))
+            addOnStateChangedAction(VisibilityStateAction(binding.scrim))
+            addOnStateChangedAction(object : OnStateChangedAction {
+                override fun onStateChanged(sheet: View, newState: Int) {
+                    closeNavDrawerOnBackPressed.isEnabled =
+                        newState != BottomSheetBehavior.STATE_HIDDEN
+                }
+            })
+        })
+
+        binding.scrim.setOnClickListener {
+            navBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        onBackPressedDispatcher.addCallback(this, closeNavDrawerOnBackPressed)
     }
 
     override fun onDestinationChanged(
