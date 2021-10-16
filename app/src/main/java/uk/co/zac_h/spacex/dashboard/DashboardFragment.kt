@@ -38,7 +38,6 @@ class DashboardFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
 
         exitTransition = MaterialFadeThrough()
         reenterTransition = MaterialFadeThrough()
@@ -155,19 +154,6 @@ class DashboardFragment : BaseFragment() {
         super.onDestroyView()
         countdownTimer?.cancel()
         countdownTimer = null
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_dashboard, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.edit -> {
-            //findNavController().navigate(R.id.action_dashboard_page_fragment_to_dashboard_edit_dialog)
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
     }
 
     fun update(data: Any, response: Launch) {

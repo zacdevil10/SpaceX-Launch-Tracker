@@ -362,6 +362,10 @@
         app:destination="@id/dashboard_edit_dialog" />
 
     <action
+        android:id="@+id/action_to_theme_dialog"
+        app:destination="@id/theme_alert_dialog" />
+
+    <action
         android:id="@+id/action_launch_item_to_launch_details_container"
         app:destination="@id/launch_details_container_fragment"
         app:exitAnim="@android:anim/fade_out" />
