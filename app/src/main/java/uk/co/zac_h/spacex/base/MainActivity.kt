@@ -3,39 +3,45 @@ package uk.co.zac_h.spacex.base
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
-import androidx.activity.OnBackPressedCallback
+import androidx.activity.viewModels
+import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
+import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ActivityMainBinding
-import uk.co.zac_h.spacex.utils.AlphaSlideAction
-import uk.co.zac_h.spacex.utils.BottomDrawerCallback
-import uk.co.zac_h.spacex.utils.OnStateChangedAction
-import uk.co.zac_h.spacex.utils.VisibilityStateAction
+import uk.co.zac_h.spacex.utils.*
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedListener {
+class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedListener,
+    Toolbar.OnMenuItemClickListener {
 
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
+    private val viewModel: MainViewModel by viewModels()
+
     private val navBottomSheetBehavior: BottomSheetBehavior<NavigationView> by lazy {
         BottomSheetBehavior.from(binding.navView)
     }
 
-    private val closeNavDrawerOnBackPressed = object : OnBackPressedCallback(false) {
-        override fun handleOnBackPressed() {
-            navBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        }
+    private val closeNavDrawerOnBackPressed by lazy {
+        BottomSheetBackPressed(navBottomSheetBehavior)
     }
+
+    private val openableNavView by lazy { BottomSheetOpenable(navBottomSheetBehavior) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as App).preferencesRepo.themeModeLive.observe(this) { mode ->
@@ -49,30 +55,33 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
         val navController = navHostFragment.navController
 
-        binding.bottomAppBar.setupWithNavController(navController)
+        val appBarConfig = AppBarConfiguration
+            .Builder(viewModel.startDestinations)
+            .setOpenableLayout(openableNavView)
+            .build()
+
+        //setSupportActionBar(binding.bottomAppBar)
+
+        binding.bottomAppBar.setupWithNavController(navController, appBarConfig)
         binding.navView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener(this)
 
         navBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
-        binding.bottomAppBar.setNavigationOnClickListener {
-            navBottomSheetBehavior.state = when (navBottomSheetBehavior.state) {
-                BottomSheetBehavior.STATE_HIDDEN -> BottomSheetBehavior.STATE_HALF_EXPANDED
-                else -> BottomSheetBehavior.STATE_HIDDEN
-            }
-        }
-
         navBottomSheetBehavior.addBottomSheetCallback(BottomDrawerCallback().apply {
             addOnSlideAction(AlphaSlideAction(binding.scrim))
             addOnStateChangedAction(VisibilityStateAction(binding.scrim))
-            addOnStateChangedAction(object : OnStateChangedAction {
-                override fun onStateChanged(sheet: View, newState: Int) {
-                    closeNavDrawerOnBackPressed.isEnabled =
-                        newState != BottomSheetBehavior.STATE_HIDDEN
-                }
+            addOnStateChangedAction(BackPressedStateAction(closeNavDrawerOnBackPressed))
+            addOnStateChangedAction(ShowHideFabStateAction(binding.fab) { viewModel.isFabVisible })
+            addOnStateChangedAction(ChangeSettingsMenuStateAction { showSettings ->
+                binding.bottomAppBar.replaceMenu(
+                    if (showSettings) R.menu.menu_settings else getBottomAppBarMenuForDestination()
+                )
             })
         })
+
+        binding.bottomAppBar.setOnMenuItemClickListener(this)
 
         binding.scrim.setOnClickListener {
             navBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
@@ -119,24 +128,38 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             //R.id.theme_alert_dialog ->
             //R.id.dashboard_edit_dialog ->
         }
+        binding.bottomAppBar.replaceMenu(getBottomAppBarMenuForDestination(destination))
+    }
+
+    override fun onMenuItemClick(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.edit -> {
+                navigateToEditDashboard()
+            }
+            R.id.settings -> {
+                navigateToSettings()
+                openableNavView.close()
+            }
+        }
+        return true
     }
 
     private fun setAppBarForDashboard() {
         binding.run {
-            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_menu_24)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.hide()
+            viewModel.isFabVisible = false
         }
     }
 
     private fun setAppBarForLaunches() {
         binding.run {
-            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_menu_24)
             fab.setImageResource(R.drawable.ic_filter_list_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.show()
+            viewModel.isFabVisible = true
         }
     }
 
@@ -147,105 +170,114 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     private fun setAppBarForNews() {
         binding.run {
-            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_menu_24)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.hide()
+            viewModel.isFabVisible = false
         }
     }
 
     private fun setAppBarForCrew() {
         binding.run {
-            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_menu_24)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.hide()
+            viewModel.isFabVisible = false
         }
     }
 
     private fun setAppBarForCrewDetails() {
         hideAppBar()
         binding.fab.hide()
+        viewModel.isFabVisible = false
     }
 
     private fun setAppBarForVehicles() {
         binding.run {
-            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_menu_24)
             fab.setImageResource(R.drawable.ic_sort_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.show()
+            viewModel.isFabVisible = true
         }
     }
 
     private fun setAppBarForRocketDetails() {
         hideAppBar()
         binding.fab.hide()
+        viewModel.isFabVisible = false
     }
 
     private fun setAppBarForDragonDetails() {
         hideAppBar()
         binding.fab.hide()
+        viewModel.isFabVisible = false
     }
 
     private fun setAppBarForShipDetails() {
         hideAppBar()
         binding.fab.hide()
+        viewModel.isFabVisible = false
     }
 
     private fun setAppBarForCoreDetails() {
         binding.run {
-            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.hide()
+            viewModel.isFabVisible = false
         }
     }
 
     private fun setAppBarForCapsuleDetails() {
         binding.run {
-            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.hide()
+            viewModel.isFabVisible = false
         }
     }
 
     private fun setAppBarForStatistics(hasFilter: Boolean) {
         binding.run {
-            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_menu_24)
             fab.setImageResource(R.drawable.ic_filter_list_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            if (hasFilter) fab.show() else fab.hide()
+            if (hasFilter) {
+                fab.show()
+                viewModel.isFabVisible = true
+            } else {
+                fab.hide()
+                viewModel.isFabVisible = false
+            }
         }
     }
 
     private fun setAppBarForHistory() {
         binding.run {
-            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
             fab.setImageResource(R.drawable.ic_sort_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.show()
+            viewModel.isFabVisible = true
         }
     }
 
     private fun setAppBarForCompany() {
         binding.run {
-            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.hide()
+            viewModel.isFabVisible = false
         }
     }
 
     private fun setAppBarForAbout() {
         binding.run {
-            bottomAppBar.setNavigationIcon(R.drawable.ic_baseline_arrow_back_24)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.hide()
+            viewModel.isFabVisible = false
         }
     }
 
@@ -266,5 +298,22 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                 }
             })
         }
+    }
+
+    @MenuRes
+    private fun getBottomAppBarMenuForDestination(destination: NavDestination? = null): Int {
+        val dest = destination ?: findNavController(R.id.nav_host).currentDestination
+        return when (dest?.id) {
+            R.id.dashboard_page_fragment -> R.menu.menu_dashboard
+            else -> R.menu.menu_empty
+        }
+    }
+
+    private fun navigateToSettings() {
+        findNavController(R.id.nav_host).navigate(NavGraphDirections.actionToThemeDialog())
+    }
+
+    private fun navigateToEditDashboard() {
+        findNavController(R.id.nav_host).navigate(NavGraphDirections.actionToDashboardEditDialog())
     }
 }
