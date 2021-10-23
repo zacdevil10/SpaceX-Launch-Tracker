@@ -5,6 +5,8 @@
     android:id="@+id/launch_history_constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="84dp"
+    android:background="@color/color_background"
     tools:context=".statistics.graphs.launchhistory.LaunchHistoryFragment">
 
     <androidx.core.widget.NestedScrollView
