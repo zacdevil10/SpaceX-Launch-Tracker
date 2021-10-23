@@ -9,7 +9,7 @@ import kotlin.math.max
 class BottomDrawerCallback : BottomSheetBehavior.BottomSheetCallback() {
 
     private val onSlideActions: MutableList<OnSlideActions> = mutableListOf()
-    private val onStateChangedActions: MutableList<OnStateChangedAction> = mutableListOf()
+    val onStateChangedActions: MutableList<OnStateChangedAction> = mutableListOf()
 
     private var lastSlideOffset = -1.0F
     private var halfExpandedSlideOffset = Float.MAX_VALUE

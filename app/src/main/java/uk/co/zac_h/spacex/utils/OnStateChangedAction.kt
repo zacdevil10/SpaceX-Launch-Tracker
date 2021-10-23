@@ -1,6 +1,11 @@
 package uk.co.zac_h.spacex.utils
 
+import android.app.Activity
+import android.content.Context
+import android.os.IBinder
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import androidx.customview.widget.Openable
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
@@ -62,6 +67,30 @@ class BackPressedStateAction<T : View>(private val callback: BottomSheetBackPres
 
     override fun onStateChanged(sheet: View, newState: Int) {
         callback.isEnabled = newState != BottomSheetBehavior.STATE_HIDDEN
+    }
+
+}
+
+class HideBottomSheet(
+    private val openable: Openable
+) : OnStateChangedAction {
+
+    override fun onStateChanged(sheet: View, newState: Int) {
+        openable.close()
+    }
+
+}
+
+class HideKeyboard(
+    private val context: Context,
+    private val view: IBinder
+) : OnStateChangedAction {
+
+    override fun onStateChanged(sheet: View, newState: Int) {
+        val ime = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+            ime.hideSoftInputFromWindow(view, 0)
+        }
     }
 
 }

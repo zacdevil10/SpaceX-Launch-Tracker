@@ -29,13 +29,13 @@ class DashboardViewModel @Inject constructor(
     val pinnedLaunches: LiveData<MutableList<ApiResult<Launch>>> = _pinnedLaunches
     private val pinned: MutableList<ApiResult<Launch>> = mutableListOf()
 
-    val pinnedLiveData = pinnedPreferencesRepository.pinnedLive/*.map {
-        it.filterNot { item ->
+    val pinnedLiveData = pinnedPreferencesRepository.pinnedLive.map {
+        it.filter { item ->
             val keep = item.value as Boolean
             if (!keep) pinnedPreferencesRepository.removePinnedLaunch(item.key)
             keep
         }
-    }*/
+    }
 
     val dashboardLiveData = repository.allPreferences.map { it }
 

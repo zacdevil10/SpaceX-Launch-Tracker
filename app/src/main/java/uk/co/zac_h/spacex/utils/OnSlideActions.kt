@@ -2,7 +2,6 @@ package uk.co.zac_h.spacex.utils
 
 import android.view.View
 import androidx.annotation.FloatRange
-import com.google.android.material.shape.MaterialShapeDrawable
 
 interface OnSlideActions {
 
@@ -16,17 +15,6 @@ interface OnSlideActions {
         ) slideOffset: Float
     )
 
-}
-
-class ContainerSheetTransformSlideAction(
-    private val container: View,
-    private val foregroundShapeDrawable: MaterialShapeDrawable
-) : OnSlideActions {
-
-    override fun onSlide(sheet: View, slideOffset: Float) {
-        val progress = slideOffset.normalize(0F, 0.25F, 1F, 0F)
-        foregroundShapeDrawable.interpolation = progress
-    }
 }
 
 class AlphaSlideAction(
