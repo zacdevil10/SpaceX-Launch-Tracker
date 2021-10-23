@@ -5,11 +5,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.navGraphViewModels
+import androidx.viewpager.widget.ViewPager
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesBinding
+import uk.co.zac_h.spacex.launches.filter.LaunchesFilterViewModel
 import uk.co.zac_h.spacex.utils.ViewPagerAdapter
 
 @AndroidEntryPoint
@@ -20,6 +23,8 @@ class LaunchesFragment : BaseFragment() {
     private val viewModel: LaunchesViewModel by navGraphViewModels(R.id.nav_graph) {
         defaultViewModelProviderFactory
     }
+
+    private val filterViewModel: LaunchesFilterViewModel by activityViewModels { defaultViewModelProviderFactory }
 
     private lateinit var binding: FragmentLaunchesBinding
 
@@ -43,6 +48,16 @@ class LaunchesFragment : BaseFragment() {
         postponeEnterTransition()
 
         binding.launchesViewPager.adapter = ViewPagerAdapter(childFragmentManager, fragments)
+
+        binding.launchesViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {}
+
+            override fun onPageScrolled(p: Int, pOffset: Float, pOffsetPixels: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                filterViewModel.selectedPage.value = position
+            }
+        })
 
         val tabIcons = listOf(
             R.drawable.ic_baseline_schedule_24,

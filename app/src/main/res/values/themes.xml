@@ -26,7 +26,6 @@
         <item name="navigationViewStyle">@style/Widget.AppTheme.NavigationView</item>
         <item name="toolbarStyle">@style/Widget.MaterialComponents.Toolbar.PrimarySurface</item>
         <item name="android:spinnerItemStyle">@style/SpinnerItem</item>
-        <item name="bottomSheetStyle">@style/Base.BottomSheetStyle</item>
     </style>
 
     <style name="Base.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -34,11 +33,6 @@
         <!--Remap legacy AppCompat attributes to MaterialComponent attributes-->
         <item name="colorPrimaryDark">?colorPrimaryVariant</item>
         <item name="colorAccent">?colorSecondary</item>
-    </style>
-
-    <style name="Base.BottomSheetStyle" parent="Widget.MaterialComponents.BottomSheet.Modal">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">@dimen/cardview_default_radius</item>
     </style>
 
 

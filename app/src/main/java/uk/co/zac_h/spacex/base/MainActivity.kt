@@ -9,6 +9,8 @@ import androidx.activity.viewModels
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.customview.widget.Openable
+import androidx.fragment.app.commit
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
@@ -20,6 +22,7 @@ import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.about.history.filter.HistoryFilterFragment
 import uk.co.zac_h.spacex.databinding.ActivityMainBinding
 import uk.co.zac_h.spacex.utils.*
 
@@ -43,6 +46,20 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     private val openableNavView by lazy { BottomSheetOpenable(navBottomSheetBehavior) }
 
+    private var bottomDrawerFragment: BottomDrawerFragment? = null
+
+    private val openableBottomDrawer: Openable = object : Openable {
+        override fun isOpen(): Boolean = false
+
+        override fun open() {
+            bottomDrawerFragment?.open()
+        }
+
+        override fun close() {
+            bottomDrawerFragment?.close()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as App).preferencesRepo.themeModeLive.observe(this) { mode ->
             mode?.let { delegate.localNightMode = it }
@@ -59,8 +76,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             .Builder(viewModel.startDestinations)
             .setOpenableLayout(openableNavView)
             .build()
-
-        //setSupportActionBar(binding.bottomAppBar)
 
         binding.bottomAppBar.setupWithNavController(navController, appBarConfig)
         binding.navView.setupWithNavController(navController)
@@ -79,6 +94,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                     if (showSettings) R.menu.menu_settings else getBottomAppBarMenuForDestination()
                 )
             })
+            addOnStateChangedAction(HideBottomSheet(openableBottomDrawer))
         })
 
         binding.bottomAppBar.setOnMenuItemClickListener(this)
@@ -95,6 +111,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         destination: NavDestination,
         arguments: Bundle?
     ) {
+        //Setup toolbar for destination
         when (destination.id) {
             //Launches
             R.id.dashboard_page_fragment -> setAppBarForDashboard()
@@ -124,11 +141,13 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             R.id.company_page_fragment -> setAppBarForCompany()
             R.id.history_page_fragment -> setAppBarForHistory()
             R.id.about_page_fragment -> setAppBarForAbout()
-            //Settings dialogs
-            //R.id.theme_alert_dialog ->
-            //R.id.dashboard_edit_dialog ->
         }
+        //Close any open bottom sheets
+        openableBottomDrawer.close()
+        //Set toolbar menu for destination
         binding.bottomAppBar.replaceMenu(getBottomAppBarMenuForDestination(destination))
+
+        setBottomDrawerForDestination(destination)
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
@@ -142,6 +161,29 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             }
         }
         return true
+    }
+
+    private fun setBottomDrawerForDestination(destination: NavDestination) {
+        bottomDrawerFragment = when (destination.id) {
+            R.id.history_page_fragment -> HistoryFilterFragment()
+            else -> null
+        }
+
+        bottomDrawerFragment?.let { fragment ->
+            supportFragmentManager.commit {
+                replace(R.id.bottom_drawer, fragment)
+            }
+            binding.fab.setOnClickListener {
+                fragment.toggle()
+            }
+            fragment.addOnStateChangedAction(
+                ShowHideFabStateAction(binding.fab) {
+                    viewModel.isFabVisible
+                }
+            )
+        } ?: run {
+            binding.fab.setOnClickListener(null)
+        }
     }
 
     private fun setAppBarForDashboard() {
