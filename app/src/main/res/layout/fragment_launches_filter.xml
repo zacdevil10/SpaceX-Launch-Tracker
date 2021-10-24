@@ -37,8 +37,12 @@
             android:id="@+id/search_layout"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp"
             app:boxBackgroundColor="@android:color/transparent"
             app:endIconMode="clear_text"
+            app:hintEnabled="false"
             app:layout_constraintBottom_toTopOf="@id/toolbar_guideline"
             app:layout_constraintEnd_toStartOf="@id/advanced_filter_toggle"
             app:layout_constraintStart_toEndOf="@id/back_button"
@@ -84,6 +88,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/date_range_label"
             app:layout_constraintTop_toBottomOf="@id/search_layout">
 
@@ -101,9 +108,17 @@
                 android:layout_height="wrap_content"
                 android:visibility="gone"
                 app:icon="@drawable/ic_baseline_close_24"
-                tools:visibility="visible"/>
+                tools:visibility="visible" />
 
         </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:background="@color/divider"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

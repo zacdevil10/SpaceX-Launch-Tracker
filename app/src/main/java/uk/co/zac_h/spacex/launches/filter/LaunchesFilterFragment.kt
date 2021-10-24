@@ -21,6 +21,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesFilterBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.utils.ToggleableOpenable
+import uk.co.zac_h.spacex.utils.formatRange
 
 @AndroidEntryPoint
 class LaunchesFilterFragment : Fragment() {
@@ -102,6 +103,10 @@ class LaunchesFilterFragment : Fragment() {
 
             binding.datePicker.isChecked = it.isFiltered()
 
+            binding.datePicker.text = range?.let {
+                "${range.first.formatRange()}-${range.second.formatRange()}"
+            } ?: "Select"
+
             dateRangePicker(range)
         }
 
@@ -117,7 +122,7 @@ class LaunchesFilterFragment : Fragment() {
         }
     }
 
-    fun dateRangePicker(range: Pair<Long, Long>? = null): MaterialDatePicker<Pair<Long, Long>> =
+    private fun dateRangePicker(range: Pair<Long, Long>? = null): MaterialDatePicker<Pair<Long, Long>> =
         MaterialDatePicker.Builder.dateRangePicker().apply {
             setTitleText("Select date range")
             if (range != null) setSelection(range)
