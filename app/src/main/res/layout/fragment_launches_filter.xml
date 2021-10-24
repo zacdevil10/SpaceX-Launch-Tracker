@@ -79,7 +79,17 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:visibility="gone"
-            app:constraint_referenced_ids="date_range_group,date_range_label,order_group,order_label,rocket_label,rocket_group_scrollview"
+            app:constraint_referenced_ids="
+            date_range_group,
+            date_range_label,
+            order_group,
+            order_label,
+            rocket_label,
+            rocket_group_scrollview,
+            sort_by_label,
+            sort_by_button,
+            group_by_label,
+            group_by_button"
             tools:visibility="visible" />
 
         <TextView
@@ -186,9 +196,8 @@
             android:id="@+id/rocket_group_scrollview"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:scrollbars="none"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginStart="8dp"
             app:layout_constraintStart_toEndOf="@id/toolbar_label_guideline"
             app:layout_constraintTop_toBottomOf="@id/order_group">
 
@@ -197,9 +206,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:paddingStart="8dp"
-                android:layout_marginTop="8dp"
                 android:paddingEnd="16dp"
-                android:layout_marginBottom="8dp"
                 app:singleLine="true">
 
                 <com.google.android.material.chip.Chip
@@ -233,6 +240,66 @@
             </com.google.android.material.chip.ChipGroup>
 
         </HorizontalScrollView>
+
+        <TextView
+            android:id="@+id/sort_by_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Sort by:"
+            android:textAppearance="?textAppearanceOverline"
+            app:layout_constraintBottom_toBottomOf="@id/sort_by_button"
+            app:layout_constraintEnd_toStartOf="@id/toolbar_label_guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/sort_by_button" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/sort_by_button"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Flight number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/toolbar_label_guideline"
+            app:layout_constraintTop_toBottomOf="@id/rocket_group_scrollview" />
+
+        <TextView
+            android:id="@+id/group_by_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Group by:"
+            android:textAppearance="?textAppearanceOverline"
+            app:layout_constraintBottom_toBottomOf="@id/group_by_button"
+            app:layout_constraintEnd_toStartOf="@id/toolbar_label_guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/group_by_button" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/group_by_button"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="None"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/toolbar_label_guideline"
+            app:layout_constraintTop_toBottomOf="@id/sort_by_button" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/reset_button"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Reset"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/group_by_button" />
 
         <View
             android:layout_width="0dp"

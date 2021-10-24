@@ -14,7 +14,7 @@ import uk.co.zac_h.spacex.dto.spacex.*
 import uk.co.zac_h.spacex.statistics.StatisticsRepository
 import uk.co.zac_h.spacex.utils.LaunchHistoryFilter
 import uk.co.zac_h.spacex.utils.RocketIds
-import uk.co.zac_h.spacex.utils.RocketType
+import uk.co.zac_h.spacex.utils.RocketTypeOld
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 import javax.inject.Inject
 
@@ -44,9 +44,9 @@ class LaunchHistoryViewModel @Inject constructor(
             val result = response.await().map { launches -> launches.docs.map { Launch(it) } }
 
             _launchHistory.value = result.map { launches ->
-                val falconOne = HistoryStatsModel(RocketType.FALCON_ONE)
-                val falconNine = HistoryStatsModel(RocketType.FALCON_NINE)
-                val falconHeavy = HistoryStatsModel(RocketType.FALCON_HEAVY)
+                val falconOne = HistoryStatsModel(RocketTypeOld.FALCON_ONE)
+                val falconNine = HistoryStatsModel(RocketTypeOld.FALCON_NINE)
+                val falconHeavy = HistoryStatsModel(RocketTypeOld.FALCON_HEAVY)
 
                 launches.forEach {
                     when (it.rocket?.id) {
