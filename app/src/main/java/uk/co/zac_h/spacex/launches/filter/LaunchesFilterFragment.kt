@@ -115,6 +115,22 @@ class LaunchesFilterFragment : Fragment() {
             dateRangePicker(range)
         }
 
+        viewModel.filterClass.order.observe(viewLifecycleOwner) {
+            when (it) {
+                LaunchesFilterOrder.ASCENDING -> binding.ascending.isChecked = true
+                LaunchesFilterOrder.DESCENDING -> binding.descending.isChecked = true
+            }
+        }
+
+        viewModel.filterClass.rocketType.observe(viewLifecycleOwner) {
+            if (it.rockets.isNullOrEmpty()) {
+                binding.falconOneChip.isChecked = false
+                binding.falconNineChip.isChecked = false
+                binding.falconHeavyChip.isChecked = false
+                binding.starshipChip.isChecked = false
+            }
+        }
+
         viewModel.getLaunches()
 
         binding.advancedFilterToggle.setOnClickListener {
@@ -153,6 +169,11 @@ class LaunchesFilterFragment : Fragment() {
         binding.falconNineChip.setOnCheckedChangeListener(chipListener)
         binding.falconHeavyChip.setOnCheckedChangeListener(chipListener)
         binding.starshipChip.setOnCheckedChangeListener(chipListener)
+
+        binding.resetButton.setOnClickListener {
+            viewModel.filterClass.reset()
+            binding.searchLayout.editText?.setText("")
+        }
     }
 
     private fun dateRangePicker(range: Pair<Long, Long>? = null): MaterialDatePicker<Pair<Long, Long>> =

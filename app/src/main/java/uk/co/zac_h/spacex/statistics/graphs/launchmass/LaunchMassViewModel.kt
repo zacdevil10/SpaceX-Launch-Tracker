@@ -28,7 +28,7 @@ class LaunchMassViewModel @Inject constructor(
     val cacheLocation: Repository.RequestLocation
         get() = repository.cacheLocation
 
-    var filterRocket: RocketType? = null
+    var filterRocket: RocketTypeOld? = null
 
     var filterType: LaunchMassViewType? = LaunchMassViewType.ROCKETS
 

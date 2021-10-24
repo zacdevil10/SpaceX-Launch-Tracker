@@ -143,17 +143,17 @@ class LaunchHistoryFragment : BaseFragment() {
 
         response.forEach {
             when (it.rocket) {
-                RocketType.FALCON_ONE -> falconOne = when (viewModel.filterValue) {
+                RocketTypeOld.FALCON_ONE -> falconOne = when (viewModel.filterValue) {
                     LaunchHistoryFilter.SUCCESSES -> it.successes
                     LaunchHistoryFilter.FAILURES -> it.failures
                     else -> it.successes + it.failures
                 }
-                RocketType.FALCON_NINE -> falconNine = when (viewModel.filterValue) {
+                RocketTypeOld.FALCON_NINE -> falconNine = when (viewModel.filterValue) {
                     LaunchHistoryFilter.SUCCESSES -> it.successes
                     LaunchHistoryFilter.FAILURES -> it.failures
                     else -> it.successes + it.failures
                 }
-                RocketType.FALCON_HEAVY -> falconHeavy = when (viewModel.filterValue) {
+                RocketTypeOld.FALCON_HEAVY -> falconHeavy = when (viewModel.filterValue) {
                     LaunchHistoryFilter.SUCCESSES -> it.successes
                     LaunchHistoryFilter.FAILURES -> it.failures
                     else -> it.successes + it.failures
@@ -195,19 +195,19 @@ class LaunchHistoryFragment : BaseFragment() {
     private fun setSuccessRate(stats: List<HistoryStatsModel>, animate: Boolean) {
         stats.forEach {
             when (it.rocket) {
-                RocketType.FALCON_ONE -> {
+                RocketTypeOld.FALCON_ONE -> {
                     animateProgress(animate, it.successRate, binding.falconOneRateProgress)
 
                     binding.falconOnePercentText.text =
                         getString(R.string.percentage, it.successRate)
                 }
-                RocketType.FALCON_NINE -> {
+                RocketTypeOld.FALCON_NINE -> {
                     animateProgress(animate, it.successRate, binding.falconNineRateProgress)
 
                     binding.falconNinePercentText.text =
                         getString(R.string.percentage, it.successRate)
                 }
-                RocketType.FALCON_HEAVY -> {
+                RocketTypeOld.FALCON_HEAVY -> {
                     animateProgress(animate, it.successRate, binding.falconHeavyRateProgress)
 
                     binding.falconHeavyPercentText.text =

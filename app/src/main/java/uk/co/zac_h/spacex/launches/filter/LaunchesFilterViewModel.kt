@@ -28,18 +28,18 @@ class LaunchesFilterViewModel @Inject constructor(
                         {
                             filter.search.filter()?.let { searchTerm ->
                                 it.missionName?.lowercase()?.contains(searchTerm)
-                            } ?: true
+                            }
                         },
                         {
                             filter.dateRange.filter?.let { dateRange ->
                                 it.launchDate?.dateUnix?.times(1000) in dateRange
-                            } ?: true
+                            }
                         },
                         if (filter.rocket.isFiltered) {
                             {
                                 filter.rocket.rockets?.let { rockets ->
                                     it.rocket?.type in rockets
-                                } ?: true
+                                }
                             }
                         } else null
                     ).sortedBy(filter.order) { launch ->
@@ -59,13 +59,13 @@ class LaunchesFilterViewModel @Inject constructor(
         }
     }
 
-    fun <T> Iterable<T>.filterAll(vararg predicates: ((T) -> Boolean)?): List<T> {
+    private fun <T> Iterable<T>.filterAll(vararg predicates: ((T) -> Boolean?)?): List<T> {
         return filter { value ->
-            predicates.filterNotNull().all { it(value) }
+            predicates.filterNotNull().all { it(value) ?: true }
         }
     }
 
-    inline fun <T, R : Comparable<R>> Iterable<T>.sortedBy(
+    private inline fun <T, R : Comparable<R>> Iterable<T>.sortedBy(
         direction: LaunchesFilterOrder,
         crossinline selector: (T) -> R?
     ): List<T> {

@@ -80,6 +80,13 @@ class LaunchesFilterTest @Inject constructor() : MediatorLiveData<LaunchesFilter
         _rocketType.value = LaunchesFilterRocket(rockets)
     }
 
+    fun reset() {
+        _search.value = StringFilter()
+        _date.value = DateRangeFilter()
+        _order.value = LaunchesFilterOrder.ASCENDING
+        _rocketType.value = LaunchesFilterRocket()
+    }
+
     private fun combine(vararg filters: Filterable?): LaunchesFilter {
         val stringFilter: StringFilter =
             filters.filterIsInstance<StringFilter>().firstOrNull() ?: StringFilter()
