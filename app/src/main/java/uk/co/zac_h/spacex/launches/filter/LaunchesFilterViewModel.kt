@@ -20,24 +20,34 @@ class LaunchesFilterViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _launchesLiveData = MutableLiveData<ApiResult<List<Launch>>>()
-    val launchesLiveData: LiveData<ApiResult<List<Launch>>> = _launchesLiveData.switchMap { result ->
-        filterClass.map { filter ->
-            result.map {
-                it.filterAll(
-                    {
-                        filter.search.filter()?.let { searchTerm ->
-                            it.missionName?.lowercase()?.contains(searchTerm)
-                        } ?: true
-                    },
-                    {
-                        filter.dateRange.filter?.let { dateRange ->
-                            it.launchDate?.dateUnix?.times(1000) in dateRange
-                        } ?: true
+    val launchesLiveData: LiveData<ApiResult<List<Launch>>> =
+        _launchesLiveData.switchMap { result ->
+            filterClass.map { filter ->
+                result.map {
+                    it.filterAll(
+                        {
+                            filter.search.filter()?.let { searchTerm ->
+                                it.missionName?.lowercase()?.contains(searchTerm)
+                            } ?: true
+                        },
+                        {
+                            filter.dateRange.filter?.let { dateRange ->
+                                it.launchDate?.dateUnix?.times(1000) in dateRange
+                            } ?: true
+                        },
+                        if (filter.rocket.isFiltered) {
+                            {
+                                filter.rocket.rockets?.let { rockets ->
+                                    it.rocket?.type in rockets
+                                } ?: true
+                            }
+                        } else null
+                    ).sortedBy(filter.order) { launch ->
+                        launch.flightNumber
                     }
-                )
+                }
             }
         }
-    }
 
     fun getLaunches(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
         viewModelScope.launch {
@@ -45,21 +55,25 @@ class LaunchesFilterViewModel @Inject constructor(
                 repository.fetch(key = "launches", query = query, cachePolicy = cachePolicy)
             }
 
-            _launchesLiveData.value = response.await().map { data ->
-                data.docs.map { Launch(it) }.sortedBy { it.flightNumber }
-            }
-
-            filterClass.updateSearch("")
+            _launchesLiveData.value = response.await().map { data -> data.docs.map { Launch(it) } }
         }
     }
 
-    fun <T> Iterable<T>.filterAll(vararg predicates: (T) -> Boolean): List<T> {
+    fun <T> Iterable<T>.filterAll(vararg predicates: ((T) -> Boolean)?): List<T> {
         return filter { value ->
-            predicates.all { it(value) }
+            predicates.filterNotNull().all { it(value) }
         }
     }
 
-    fun Iterable<Boolean>.reduce() = contains(true) && !contains(false)
+    inline fun <T, R : Comparable<R>> Iterable<T>.sortedBy(
+        direction: LaunchesFilterOrder,
+        crossinline selector: (T) -> R?
+    ): List<T> {
+        return when (direction) {
+            LaunchesFilterOrder.ASCENDING -> sortedWith(compareBy(selector))
+            LaunchesFilterOrder.DESCENDING -> sortedWith(compareByDescending(selector))
+        }
+    }
 
     private val query = QueryModel(
         options = QueryOptionsModel(
