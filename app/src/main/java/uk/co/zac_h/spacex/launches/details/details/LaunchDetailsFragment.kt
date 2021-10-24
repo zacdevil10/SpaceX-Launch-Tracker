@@ -15,7 +15,6 @@ import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
-import uk.co.zac_h.spacex.dto.spacex.DatePrecision
 import uk.co.zac_h.spacex.dto.spacex.Launch
 import uk.co.zac_h.spacex.launches.details.LaunchDetailsContainerViewModel
 import uk.co.zac_h.spacex.utils.*
@@ -74,7 +73,7 @@ class LaunchDetailsFragment : BaseFragment() {
             launchDetailsSiteNameText.text = response.launchpad?.name
 
             launchDetailsDateText.text = response.datePrecision?.let { datePrecision ->
-                response.launchDate?.dateUnix?.formatDateMillisLong(/*datePrecision*/)
+                response.launchDate?.dateUnix?.formatDateMillisLong(datePrecision)
             }
 
             response.staticFireDate?.dateUnix?.let { date ->

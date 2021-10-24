@@ -57,7 +57,7 @@ class LaunchesAdapter(private val context: Context) :
             flightNumber.text = context.getString(R.string.flight_number, launch.flightNumber)
             vehicle.text = launch.rocket?.name
             missionName.text = launch.missionName
-            date.text = launch.launchDate?.dateUnix?.formatDateMillisLong(/*launch.datePrecision*/)
+            date.text = launch.launchDate?.dateUnix?.formatDateMillisLong(launch.datePrecision)
 
             root.setOnClickListener {
                 root.findNavController().navigate(

@@ -2,6 +2,7 @@ package uk.co.zac_h.spacex.dto.spacex
 
 import com.squareup.moshi.Json
 import uk.co.zac_h.spacex.*
+import uk.co.zac_h.spacex.utils.DatePrecision
 import uk.co.zac_h.spacex.utils.EventDate
 
 data class LaunchDocsModel(
@@ -298,15 +299,6 @@ data class LaunchCore(
         landingPad = response.landingPad?.let { LandingPad(it) }
     )
 
-}
-
-enum class DatePrecision(val precision: String) {
-    HALF("yyyy"),
-    QUARTER("yyyy"),
-    YEAR("yyyy"),
-    MONTH("MMM yyyy"),
-    DAY("dd MMM yyyy"),
-    HOUR("dd MMM yy - HH:mm zzz")
 }
 
 enum class Upcoming(val text: String, val upcoming: Boolean) {
