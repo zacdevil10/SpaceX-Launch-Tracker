@@ -90,7 +90,7 @@ data class LandingLegsModel(
 
 data class Rocket(
     val name: String?,
-    val type: String?,
+    val type: RocketType?,
     val isActive: Boolean?,
     val stages: Int?,
     val boosters: Int?,
@@ -117,7 +117,7 @@ data class Rocket(
         response: RocketResponse
     ) : this(
         name = response.name,
-        type = response.type,
+        type = response.name.toRocketType(),
         isActive = response.isActive,
         stages = response.stages,
         boosters = response.boosters,
@@ -140,6 +140,16 @@ data class Rocket(
         id = response.id
     )
 
+    companion object {
+        private fun String?.toRocketType() = when (this) {
+            "Falcon 1" -> RocketType.FALCON_ONE
+            "Falcon 9" -> RocketType.FALCON_NINE
+            "Falcon Heavy" -> RocketType.FALCON_HEAVY
+            "Starship" -> RocketType.STARSHIP
+            else -> null
+        }
+    }
+
 }
 
 data class PayloadWeights(
@@ -156,4 +166,8 @@ data class PayloadWeights(
         mass = formatMass(response.kg, response.lb)
     )
 
+}
+
+enum class RocketType {
+    FALCON_ONE, FALCON_NINE, FALCON_HEAVY, STARSHIP
 }

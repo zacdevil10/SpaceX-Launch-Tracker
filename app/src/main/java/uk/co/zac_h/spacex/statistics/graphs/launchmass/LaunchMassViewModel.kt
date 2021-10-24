@@ -46,7 +46,8 @@ class LaunchMassViewModel @Inject constructor(
             _launchMass.value = result.map { launches ->
                 ArrayList<LaunchMassStatsModel>().apply {
                     launches.forEach { launch ->
-                        val year = launch.launchDate?.dateUnix?.formatDateMillisYYYY() ?: return@forEach
+                        val year =
+                            launch.launchDate?.dateUnix?.formatDateMillisYYYY() ?: return@forEach
 
                         if (none { it.year == year }) add(LaunchMassStatsModel(year))
 

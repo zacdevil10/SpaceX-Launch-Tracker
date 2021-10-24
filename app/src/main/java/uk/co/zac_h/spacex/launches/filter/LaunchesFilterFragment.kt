@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.core.widget.doOnTextChanged
@@ -19,6 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesFilterBinding
+import uk.co.zac_h.spacex.dto.spacex.RocketType
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.utils.ToggleableOpenable
 import uk.co.zac_h.spacex.utils.formatRange
@@ -87,12 +89,14 @@ class LaunchesFilterFragment : Fragment() {
         }
 
         viewModel.launchesLiveData.observe(viewLifecycleOwner) { result ->
-            if (result.status == ApiResult.Status.SUCCESS) launchesAdapter.submitList(result.data)
+            if (result.status == ApiResult.Status.SUCCESS) launchesAdapter.submitList(result.data) {
+                binding.list.scrollToPosition(0)
+            }
         }
 
         viewModel.filterClass.search.observe(viewLifecycleOwner) {
             if (binding.searchLayout.editText?.text.isNullOrEmpty()) {
-                if (it.isFiltered()) binding.searchLayout.editText?.setText(it.filter.orEmpty())
+                if (it.isFiltered) binding.searchLayout.editText?.setText(it.filter.orEmpty())
             }
         }
 
@@ -101,7 +105,8 @@ class LaunchesFilterFragment : Fragment() {
                 Pair(range.first, range.last)
             }
 
-            binding.datePicker.isChecked = it.isFiltered()
+            binding.datePicker.isChecked = it.isFiltered
+            binding.dateRangeClearButton.isChecked = it.isFiltered
 
             binding.datePicker.text = range?.let {
                 "${range.first.formatRange()}-${range.second.formatRange()}"
@@ -120,6 +125,34 @@ class LaunchesFilterFragment : Fragment() {
             viewModel.filterClass.clearDateRange()
             it.visibility = View.GONE
         }
+
+        binding.orderGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
+            if (isChecked) {
+                when (checkedId) {
+                    R.id.ascending -> viewModel.filterClass.setOrder(LaunchesFilterOrder.ASCENDING)
+                    R.id.descending -> viewModel.filterClass.setOrder(LaunchesFilterOrder.DESCENDING)
+                }
+            }
+        }
+
+        val chipListener = CompoundButton.OnCheckedChangeListener { _, _ ->
+            val rockets: List<RocketType> = binding.rocketGroup.checkedChipIds.mapNotNull {
+                when (it) {
+                    R.id.falcon_nine_chip -> RocketType.FALCON_NINE
+                    R.id.falcon_heavy_chip -> RocketType.FALCON_HEAVY
+                    R.id.falcon_one_chip -> RocketType.FALCON_ONE
+                    R.id.starship_chip -> RocketType.STARSHIP
+                    else -> null
+                }
+            }
+
+            viewModel.filterClass.setRockets(rockets)
+        }
+
+        binding.falconOneChip.setOnCheckedChangeListener(chipListener)
+        binding.falconNineChip.setOnCheckedChangeListener(chipListener)
+        binding.falconHeavyChip.setOnCheckedChangeListener(chipListener)
+        binding.starshipChip.setOnCheckedChangeListener(chipListener)
     }
 
     private fun dateRangePicker(range: Pair<Long, Long>? = null): MaterialDatePicker<Pair<Long, Long>> =
