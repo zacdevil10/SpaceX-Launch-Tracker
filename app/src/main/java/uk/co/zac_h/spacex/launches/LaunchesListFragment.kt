@@ -3,7 +3,6 @@ package uk.co.zac_h.spacex.launches
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,7 +14,6 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
 import uk.co.zac_h.spacex.dto.spacex.Launch
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
-import uk.co.zac_h.spacex.launches.filter.LaunchesFilterViewModel
 import java.util.*
 
 @AndroidEntryPoint
@@ -28,8 +26,6 @@ class LaunchesListFragment : BaseFragment() {
     }
 
     private val flowViewModel: FlowTypeViewModel by viewModels()
-
-    private val filterViewModel: LaunchesFilterViewModel by activityViewModels { defaultViewModelProviderFactory }
 
     private var searchText: String = ""
 
@@ -69,11 +65,6 @@ class LaunchesListFragment : BaseFragment() {
             layoutManager = LinearLayoutManager(this@LaunchesListFragment.context)
             setHasFixedSize(true)
             adapter = launchesAdapter
-        }
-
-        filterViewModel.searchText.observe(viewLifecycleOwner) {
-            searchText = it
-            viewModel.getLaunches()
         }
 
         viewModel.launchesLiveData.observe(viewLifecycleOwner) { result ->

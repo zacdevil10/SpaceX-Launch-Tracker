@@ -186,7 +186,7 @@ class DashboardFragment : BaseFragment() {
             missionName.text = response.missionName
 
             date.text =
-                response.launchDate?.dateUnix?.formatDateMillisLong(/*response.datePrecision*/)
+                response.launchDate?.dateUnix?.formatDateMillisLong(response.datePrecision)
 
             dashboardLaunch.let { card ->
                 card.setOnClickListener {

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_background"
+    tools:context=".launches.filter.LaunchesFilterFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/search_toolbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/toolbar_guideline"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="?attr/actionBarSize" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/back_button"
+            style="?attr/toolbarNavigationButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:src="@drawable/ic_baseline_arrow_back_24"
+            app:layout_constraintBottom_toTopOf="@id/toolbar_guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/search_layout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:boxBackgroundColor="@android:color/transparent"
+            app:endIconMode="clear_text"
+            app:layout_constraintBottom_toTopOf="@id/toolbar_guideline"
+            app:layout_constraintEnd_toStartOf="@id/advanced_filter_toggle"
+            app:layout_constraintStart_toEndOf="@id/back_button"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Search" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/advanced_filter_toggle"
+            style="?attr/toolbarNavigationButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:src="@drawable/ic_filter_list_black_24dp"
+            app:layout_constraintBottom_toTopOf="@id/toolbar_guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/toolbar_group"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:constraint_referenced_ids="date_range_group,date_range_label"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/date_range_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="Date range:"
+            app:layout_constraintBottom_toBottomOf="@id/date_range_group"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/date_range_group" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/date_range_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintStart_toEndOf="@id/date_range_label"
+            app:layout_constraintTop_toBottomOf="@id/search_layout">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/date_picker"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/date_range_clear_button"
+                style="@style/Widget.AppTheme.Button.OutlinedButton.IconOnly"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:icon="@drawable/ic_baseline_close_24"
+                tools:visibility="visible"/>
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/search_toolbar" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
