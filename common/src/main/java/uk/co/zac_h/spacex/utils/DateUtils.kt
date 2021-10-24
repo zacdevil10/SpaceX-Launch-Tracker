@@ -45,6 +45,9 @@ fun String.dateStringToMillis(): Long? =
         0
     }
 
+fun Long.formatRange(): String =
+    SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(this))
+
 fun Long.convertDate(): String {
     var dateMilli = this
     if (dateMilli < 1000000000000L) {
