@@ -28,7 +28,8 @@ class LaunchesFilterViewModel @Inject constructor(
                 result.map {
                     it.filterAll(
                         if (filter.search.isFiltered) { launch ->
-                            launch.missionName?.lowercase()?.contains(filter.search.filter)
+                            launch.missionName?.lowercase()
+                                ?.contains(filter.search.filter.lowercase())
                         } else null,
                         {
                             filter.dateRange.filter?.let { dateRange ->

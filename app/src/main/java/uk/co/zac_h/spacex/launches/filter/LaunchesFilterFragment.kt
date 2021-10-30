@@ -1,10 +1,13 @@
 package uk.co.zac_h.spacex.launches.filter
 
+import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import android.widget.CompoundButton
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
@@ -106,7 +109,7 @@ class LaunchesFilterFragment : Fragment() {
 
         viewModel.launchesLiveData.observe(viewLifecycleOwner) { result ->
             if (result.status == ApiResult.Status.SUCCESS) launchesAdapter.submitList(result.data) {
-                binding.list.scrollToPosition(0)
+                //binding.list.scrollToPosition(0)
             }
         }
 
@@ -119,6 +122,15 @@ class LaunchesFilterFragment : Fragment() {
                 if (text?.toString().orEmpty() != it.filter) {
                     setText(it.filter)
                 }
+            }
+
+            setOnEditorActionListener { _, id, _ ->
+                if (id == EditorInfo.IME_ACTION_SEARCH) {
+                    val ime = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                    ime.hideSoftInputFromWindow(view.windowToken, 0)
+                    binding.searchLayout.clearFocus()
+                    true
+                } else false
             }
         }
 
