@@ -41,6 +41,8 @@ class LaunchesFilterFragment : Fragment() {
 
     private lateinit var launchesAdapter: LaunchesAdapter
 
+    private var shouldScroll: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -58,6 +60,8 @@ class LaunchesFilterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        shouldScroll = false
+
         view.doOnPreDraw { startPostponedEnterTransition() }
         postponeEnterTransition()
 
@@ -73,7 +77,8 @@ class LaunchesFilterFragment : Fragment() {
             addTarget(binding.container)
         }
 
-        val filterBehavior: BottomSheetBehavior<FrameLayout> = BottomSheetBehavior.from(binding.filterBottomSheet)
+        val filterBehavior: BottomSheetBehavior<FrameLayout> =
+            BottomSheetBehavior.from(binding.filterBottomSheet)
 
         val openableFilter = BottomSheetOpenable(filterBehavior)
 
@@ -105,8 +110,12 @@ class LaunchesFilterFragment : Fragment() {
 
         viewModel.launchesLiveData.observe(viewLifecycleOwner) { result ->
             if (result.status == ApiResult.Status.SUCCESS) launchesAdapter.submitList(result.data) {
-                binding.list.scrollToPosition(0)
+                if (shouldScroll) binding.list.scrollToPosition(0)
             }
+        }
+
+        viewModel.filter.observe(viewLifecycleOwner) {
+            shouldScroll = true
         }
 
         binding.searchLayout.editText?.apply {
@@ -122,7 +131,8 @@ class LaunchesFilterFragment : Fragment() {
 
             setOnEditorActionListener { _, id, _ ->
                 if (id == EditorInfo.IME_ACTION_SEARCH) {
-                    val ime = context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                    val ime =
+                        context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
                     ime.hideSoftInputFromWindow(view.windowToken, 0)
                     binding.searchLayout.clearFocus()
                     true
