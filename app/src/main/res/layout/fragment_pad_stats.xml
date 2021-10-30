@@ -7,6 +7,6 @@
     android:background="@color/color_background"
     android:clipToPadding="false"
     android:paddingTop="@dimen/small_margin"
-    android:paddingBottom="?attr/actionBarSize"
+    android:paddingBottom="84dp"
     tools:context=".statistics.graphs.padstats.PadStatsFragment"
     tools:listitem="@layout/list_item_pad_stats" />
