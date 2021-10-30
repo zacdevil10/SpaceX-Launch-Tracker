@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:background="@color/color_background"
     tools:context=".launches.filter.LaunchesFilterFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/search_toolbar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,13 +23,6 @@
             android:layout_height="0dp"
             android:orientation="horizontal"
             app:layout_constraintGuide_begin="?attr/actionBarSize" />
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/toolbar_label_guideline"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.25" />
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/back_button"
@@ -53,7 +45,7 @@
             app:endIconMode="clear_text"
             app:hintEnabled="false"
             app:layout_constraintBottom_toTopOf="@id/toolbar_guideline"
-            app:layout_constraintEnd_toStartOf="@id/advanced_filter_toggle"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/back_button"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -64,260 +56,78 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/advanced_filter_toggle"
-            style="?attr/toolbarNavigationButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:src="@drawable/ic_filter_list_black_24dp"
-            app:layout_constraintBottom_toTopOf="@id/toolbar_guideline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.constraintlayout.widget.Group
-            android:id="@+id/toolbar_group"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:visibility="gone"
-            app:constraint_referenced_ids="
-            date_range_group,
-            date_range_label,
-            order_group,
-            order_label,
-            rocket_label,
-            rocket_group_scrollview,
-            sort_by_label,
-            sort_by_button,
-            group_by_label,
-            group_by_button"
-            tools:visibility="visible" />
-
-        <TextView
-            android:id="@+id/date_range_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Date range:"
-            android:textAppearance="?textAppearanceOverline"
-            app:layout_constraintBottom_toBottomOf="@id/date_range_group"
-            app:layout_constraintEnd_toStartOf="@id/toolbar_label_guideline"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/date_range_group" />
-
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/date_range_group"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/toolbar_label_guideline"
-            app:layout_constraintTop_toBottomOf="@id/search_layout">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/date_picker"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.8"
-                android:text="Select"
-                tools:text="21/10/2030-01/12/2043" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/date_range_clear_button"
-                style="@style/Widget.AppTheme.Button.OutlinedButton.IconOnly"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.2"
-                android:visibility="gone"
-                app:icon="@drawable/ic_baseline_close_24"
-                tools:visibility="visible" />
-
-        </com.google.android.material.button.MaterialButtonToggleGroup>
-
-        <TextView
-            android:id="@+id/order_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Order:"
-            android:textAppearance="?textAppearanceOverline"
-            app:layout_constraintBottom_toBottomOf="@id/order_group"
-            app:layout_constraintEnd_toStartOf="@id/toolbar_label_guideline"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/order_group" />
-
-        <com.google.android.material.button.MaterialButtonToggleGroup
-            android:id="@+id/order_group"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            app:checkedButton="@id/ascending"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/toolbar_label_guideline"
-            app:layout_constraintTop_toBottomOf="@id/date_range_group"
-            app:selectionRequired="true"
-            app:singleSelection="true">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/ascending"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:text="Asc" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/descending"
-                style="?attr/materialButtonOutlinedStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:text="Desc" />
-
-        </com.google.android.material.button.MaterialButtonToggleGroup>
-
-        <TextView
-            android:id="@+id/rocket_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Rocket:"
-            android:textAppearance="?textAppearanceOverline"
-            app:layout_constraintBottom_toBottomOf="@id/rocket_group_scrollview"
-            app:layout_constraintEnd_toStartOf="@id/toolbar_label_guideline"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/rocket_group_scrollview" />
-
-        <HorizontalScrollView
-            android:id="@+id/rocket_group_scrollview"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:scrollbars="none"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/toolbar_label_guideline"
-            app:layout_constraintTop_toBottomOf="@id/order_group">
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/rocket_group"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:paddingStart="8dp"
-                android:paddingEnd="16dp"
-                app:singleLine="true">
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/falcon_nine_chip"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Falcon 9" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/falcon_heavy_chip"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Falcon Heavy" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/falcon_one_chip"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Falcon 1" />
-
-                <com.google.android.material.chip.Chip
-                    android:id="@+id/starship_chip"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Starship" />
-
-            </com.google.android.material.chip.ChipGroup>
-
-        </HorizontalScrollView>
-
-        <TextView
-            android:id="@+id/sort_by_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Sort by:"
-            android:textAppearance="?textAppearanceOverline"
-            app:layout_constraintBottom_toBottomOf="@id/sort_by_button"
-            app:layout_constraintEnd_toStartOf="@id/toolbar_label_guideline"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/sort_by_button" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/sort_by_button"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="Flight number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/toolbar_label_guideline"
-            app:layout_constraintTop_toBottomOf="@id/rocket_group_scrollview" />
-
-        <TextView
-            android:id="@+id/group_by_label"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Group by:"
-            android:textAppearance="?textAppearanceOverline"
-            app:layout_constraintBottom_toBottomOf="@id/group_by_button"
-            app:layout_constraintEnd_toStartOf="@id/toolbar_label_guideline"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/group_by_button" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/group_by_button"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="None"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/toolbar_label_guideline"
-            app:layout_constraintTop_toBottomOf="@id/sort_by_button" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/reset_button"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="Reset"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/group_by_button" />
-
         <View
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:background="@color/divider"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/toolbar_guideline"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar_guideline"
+            tools:listitem="@layout/list_item_launches" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/search_toolbar" />
+    <View
+        android:id="@+id/scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:background="?attr/scrimBackground"
+        android:visibility="gone" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <FrameLayout
+        android:id="@+id/filter_bottom_sheet"
+        style="?attr/bottomSheetStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_background"
+        app:behavior_hideable="true"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <include
+            android:id="@+id/launches_filter"
+            layout="@layout/launches_filter" />
+
+    </FrameLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|end"
+        app:layout_anchorGravity="top|end"
+        app:layout_anchor="@id/filter_bottom_sheet"
+        android:orientation="vertical"
+        app:layout_dodgeInsetEdges="bottom">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/reset_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            app:backgroundTint="@color/color_background"
+            android:src="@drawable/ic_baseline_close_24"
+            android:tint="@color/color_on_background" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/filter_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/ic_filter_list_black_24dp" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

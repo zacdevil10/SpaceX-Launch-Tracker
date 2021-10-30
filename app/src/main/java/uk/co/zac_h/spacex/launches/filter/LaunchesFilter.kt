@@ -4,6 +4,7 @@ import androidx.core.util.Pair
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import uk.co.zac_h.spacex.dto.spacex.RocketType
 import javax.inject.Inject
 
@@ -34,11 +35,15 @@ class LaunchesFilterTest @Inject constructor() : MediatorLiveData<LaunchesFilter
     val date: LiveData<DateRangeFilter> = _date
 
     private val _order: MutableLiveData<LaunchesFilterOrder> =
-        MutableLiveData(LaunchesFilterOrder.ASCENDING)
+        MutableLiveData(LaunchesFilterOrder(FilterOrder.ASCENDING))
     val order: LiveData<LaunchesFilterOrder> = _order
 
     private val _rocketType: MutableLiveData<LaunchesFilterRocket> = MutableLiveData()
     val rocketType: LiveData<LaunchesFilterRocket> = _rocketType
+
+    val isFiltered: LiveData<Boolean> = this.map {
+        it.search.isFiltered || it.rocket.isFiltered || it.dateRange.isFiltered || it.order.isFiltered
+    }
 
     init {
         val merge = {
@@ -72,8 +77,8 @@ class LaunchesFilterTest @Inject constructor() : MediatorLiveData<LaunchesFilter
         _date.value = DateRangeFilter()
     }
 
-    fun setOrder(order: LaunchesFilterOrder) {
-        _order.value = order
+    fun setOrder(order: FilterOrder) {
+        _order.value = LaunchesFilterOrder(order)
     }
 
     fun setRockets(rockets: List<RocketType>) {
@@ -83,7 +88,7 @@ class LaunchesFilterTest @Inject constructor() : MediatorLiveData<LaunchesFilter
     fun reset() {
         _search.value = StringFilter()
         _date.value = DateRangeFilter()
-        _order.value = LaunchesFilterOrder.ASCENDING
+        _order.value = LaunchesFilterOrder(FilterOrder.ASCENDING)
         _rocketType.value = LaunchesFilterRocket()
     }
 
@@ -94,7 +99,7 @@ class LaunchesFilterTest @Inject constructor() : MediatorLiveData<LaunchesFilter
             filters.filterIsInstance<DateRangeFilter>().firstOrNull() ?: DateRangeFilter()
         val orderFilter: LaunchesFilterOrder =
             filters.filterIsInstance<LaunchesFilterOrder>().firstOrNull()
-                ?: LaunchesFilterOrder.ASCENDING
+                ?: LaunchesFilterOrder(FilterOrder.ASCENDING)
         val rocketsFilter: LaunchesFilterRocket =
             filters.filterIsInstance<LaunchesFilterRocket>().firstOrNull() ?: LaunchesFilterRocket()
 
@@ -123,8 +128,16 @@ value class DateRangeFilter(val filter: LongRange? = null) : Filterable {
 
 interface Filterable
 
-enum class LaunchesFilterOrder : Filterable {
+enum class FilterOrder : Filterable {
     ASCENDING, DESCENDING
+}
+
+@JvmInline
+value class LaunchesFilterOrder(val order: FilterOrder) : Filterable {
+
+    val isFiltered: Boolean
+        get() = order != FilterOrder.ASCENDING
+
 }
 
 @JvmInline

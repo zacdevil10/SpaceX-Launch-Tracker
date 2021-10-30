@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CompoundButton
+import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.core.widget.doOnTextChanged
@@ -14,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.transition.Slide
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.transition.MaterialContainerTransform
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,8 +24,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesFilterBinding
 import uk.co.zac_h.spacex.dto.spacex.RocketType
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
-import uk.co.zac_h.spacex.utils.ToggleableOpenable
-import uk.co.zac_h.spacex.utils.formatRange
+import uk.co.zac_h.spacex.utils.*
 
 @AndroidEntryPoint
 class LaunchesFilterFragment : Fragment() {
@@ -34,20 +35,14 @@ class LaunchesFilterFragment : Fragment() {
 
     private lateinit var launchesAdapter: LaunchesAdapter
 
-    private val openableFilter: ToggleableOpenable by lazy {
-        object : ToggleableOpenable() {
+    private val filterBehavior: BottomSheetBehavior<FrameLayout> by lazy {
+        BottomSheetBehavior.from(binding.filterBottomSheet)
+    }
 
-            override fun isOpen(): Boolean = binding.toolbarGroup.visibility == View.VISIBLE
+    private val openableFilter by lazy { BottomSheetOpenable(filterBehavior) }
 
-            override fun close() {
-                binding.toolbarGroup.visibility = View.GONE
-            }
-
-            override fun open() {
-                binding.toolbarGroup.visibility = View.VISIBLE
-            }
-
-        }
+    private val closeFilterOnBackPressed by lazy {
+        BottomSheetBackPressed(filterBehavior)
     }
 
     override fun onCreateView(
@@ -70,6 +65,19 @@ class LaunchesFilterFragment : Fragment() {
         }
         returnTransition = Slide().apply {
             addTarget(binding.container)
+        }
+
+        filterBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        filterBehavior.addBottomSheetCallback(BottomDrawerCallback().apply {
+            addOnSlideAction(AlphaSlideAction(binding.scrim))
+            addOnStateChangedAction(VisibilityStateAction(binding.scrim))
+            addOnStateChangedAction(BackPressedStateAction(closeFilterOnBackPressed))
+            addOnStateChangedAction(FabVisibilityStateAction(binding.filterFab))
+        })
+
+        binding.scrim.setOnClickListener {
+            filterBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         }
 
         launchesAdapter = LaunchesAdapter(requireContext())
@@ -105,10 +113,10 @@ class LaunchesFilterFragment : Fragment() {
                 Pair(range.first, range.last)
             }
 
-            binding.datePicker.isChecked = it.isFiltered
-            binding.dateRangeClearButton.isChecked = it.isFiltered
+            binding.launchesFilter.datePicker.isChecked = it.isFiltered
+            binding.launchesFilter.dateRangeClearButton.isChecked = it.isFiltered
 
-            binding.datePicker.text = range?.let {
+            binding.launchesFilter.datePicker.text = range?.let {
                 "${range.first.formatRange()}-${range.second.formatRange()}"
             } ?: "Select"
 
@@ -116,64 +124,74 @@ class LaunchesFilterFragment : Fragment() {
         }
 
         viewModel.filterClass.order.observe(viewLifecycleOwner) {
-            when (it) {
-                LaunchesFilterOrder.ASCENDING -> binding.ascending.isChecked = true
-                LaunchesFilterOrder.DESCENDING -> binding.descending.isChecked = true
+            when (it.order) {
+                FilterOrder.ASCENDING -> binding.launchesFilter.ascending.isChecked = true
+                FilterOrder.DESCENDING -> binding.launchesFilter.descending.isChecked = true
             }
         }
 
         viewModel.filterClass.rocketType.observe(viewLifecycleOwner) {
             if (it.rockets.isNullOrEmpty()) {
-                binding.falconOneChip.isChecked = false
-                binding.falconNineChip.isChecked = false
-                binding.falconHeavyChip.isChecked = false
-                binding.starshipChip.isChecked = false
+                binding.launchesFilter.falconOneChip.isChecked = false
+                binding.launchesFilter.falconNineChip.isChecked = false
+                binding.launchesFilter.falconHeavyChip.isChecked = false
+                binding.launchesFilter.starshipChip.isChecked = false
             }
         }
 
         viewModel.getLaunches()
 
-        binding.advancedFilterToggle.setOnClickListener {
-            openableFilter.toggle()
+        binding.filterFab.setOnClickListener {
+            openableFilter.open()
         }
 
-        binding.dateRangeClearButton.setOnClickListener {
+        binding.launchesFilter.dateRangeClearButton.setOnClickListener {
             viewModel.filterClass.clearDateRange()
             it.visibility = View.GONE
         }
 
-        binding.orderGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
+        binding.launchesFilter.orderGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
             if (isChecked) {
                 when (checkedId) {
-                    R.id.ascending -> viewModel.filterClass.setOrder(LaunchesFilterOrder.ASCENDING)
-                    R.id.descending -> viewModel.filterClass.setOrder(LaunchesFilterOrder.DESCENDING)
+                    R.id.ascending -> viewModel.filterClass.setOrder(FilterOrder.ASCENDING)
+                    R.id.descending -> viewModel.filterClass.setOrder(FilterOrder.DESCENDING)
                 }
             }
         }
 
         val chipListener = CompoundButton.OnCheckedChangeListener { _, _ ->
-            val rockets: List<RocketType> = binding.rocketGroup.checkedChipIds.mapNotNull {
-                when (it) {
-                    R.id.falcon_nine_chip -> RocketType.FALCON_NINE
-                    R.id.falcon_heavy_chip -> RocketType.FALCON_HEAVY
-                    R.id.falcon_one_chip -> RocketType.FALCON_ONE
-                    R.id.starship_chip -> RocketType.STARSHIP
-                    else -> null
+            val rockets: List<RocketType> =
+                binding.launchesFilter.rocketGroup.checkedChipIds.mapNotNull {
+                    when (it) {
+                        R.id.falcon_nine_chip -> RocketType.FALCON_NINE
+                        R.id.falcon_heavy_chip -> RocketType.FALCON_HEAVY
+                        R.id.falcon_one_chip -> RocketType.FALCON_ONE
+                        R.id.starship_chip -> RocketType.STARSHIP
+                        else -> null
+                    }
                 }
-            }
 
             viewModel.filterClass.setRockets(rockets)
         }
 
-        binding.falconOneChip.setOnCheckedChangeListener(chipListener)
-        binding.falconNineChip.setOnCheckedChangeListener(chipListener)
-        binding.falconHeavyChip.setOnCheckedChangeListener(chipListener)
-        binding.starshipChip.setOnCheckedChangeListener(chipListener)
+        binding.launchesFilter.falconOneChip.setOnCheckedChangeListener(chipListener)
+        binding.launchesFilter.falconNineChip.setOnCheckedChangeListener(chipListener)
+        binding.launchesFilter.falconHeavyChip.setOnCheckedChangeListener(chipListener)
+        binding.launchesFilter.starshipChip.setOnCheckedChangeListener(chipListener)
 
-        binding.resetButton.setOnClickListener {
+        binding.resetFab.setOnClickListener {
             viewModel.filterClass.reset()
             binding.searchLayout.editText?.setText("")
         }
+
+        viewModel.filterClass.isFiltered.observe(viewLifecycleOwner) {
+            if (it) binding.resetFab.show() else binding.resetFab.hide()
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            closeFilterOnBackPressed
+        )
     }
 
     private fun dateRangePicker(range: Pair<Long, Long>? = null): MaterialDatePicker<Pair<Long, Long>> =
@@ -181,20 +199,21 @@ class LaunchesFilterFragment : Fragment() {
             setTitleText("Select date range")
             if (range != null) setSelection(range)
         }.build().also { datePicker ->
-            binding.datePicker.setOnClickListener {
+            binding.launchesFilter.datePicker.setOnClickListener {
                 datePicker.show(childFragmentManager, "date_range_picker_tag")
             }
 
-            binding.dateRangeClearButton.visibility = if (range == null) View.GONE else View.VISIBLE
+            binding.launchesFilter.dateRangeClearButton.visibility =
+                if (range == null) View.GONE else View.VISIBLE
 
             datePicker.addOnPositiveButtonClickListener {
                 viewModel.filterClass.setRange(it)
             }
             datePicker.addOnCancelListener {
-                binding.datePicker.isChecked = range != null
+                binding.launchesFilter.datePicker.isChecked = range != null
             }
             datePicker.addOnNegativeButtonClickListener {
-                binding.datePicker.isChecked = range != null
+                binding.launchesFilter.datePicker.isChecked = range != null
             }
         }
 

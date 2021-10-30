@@ -203,7 +203,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             fab.setOnClickListener {
                 findNavController(R.id.nav_host).navigate(LaunchesFragmentDirections.actionLaunchesToFilter())
             }
-            fab.setImageResource(R.drawable.ic_filter_list_black_24dp)
+            fab.setImageResource(R.drawable.ic_search_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.show()
