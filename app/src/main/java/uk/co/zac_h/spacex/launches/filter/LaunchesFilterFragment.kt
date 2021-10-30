@@ -104,7 +104,7 @@ class LaunchesFilterFragment : Fragment() {
             }
 
             viewModel.filter.search.observe(viewLifecycleOwner) {
-                if (text?.toString().orEmpty() == it.filter) {
+                if (text?.toString().orEmpty() != it.filter) {
                     if (it.isFiltered) setText(it.filter)
                 }
             }
