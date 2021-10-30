@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemLaunchesBinding
-import uk.co.zac_h.spacex.dto.spacex.Launch
+import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.utils.formatDateMillisLong
 
 class LaunchesAdapter(private val context: Context) :
@@ -70,47 +70,6 @@ class LaunchesAdapter(private val context: Context) :
             }
         }
     }
-
-    /*override fun getFilter(): Filter = object : Filter() {
-        override fun performFiltering(s: CharSequence?): FilterResults {
-            val filterResults = FilterResults()
-            s?.let {
-                filteredLaunches = when {
-                    it.isEmpty() -> launches
-                    else -> {
-                        val filteredList = ArrayList<Launch>()
-                        launches.forEach { launch ->
-                            if (launch.missionName?.lowercase().toString().contains(it.toString().lowercase())
-                                or launch.launchDate?.dateUnix?.formatDateMillisYYYY().toString().contains(it)
-                                or launch.flightNumber.toString().contains(it)) {
-                                filteredList.add(launch)
-                                return@forEach
-                            }
-
-                            launch.rocket?.name?.let { rocketName ->
-                                if (rocketName.lowercase().contains(s)) {
-                                    filteredList.add(launch)
-                                }
-                            }
-                        }
-
-                        filteredList
-                    }
-                }
-
-                filterResults.values = filteredLaunches
-                filterResults.count = filteredLaunches.size
-            }
-            return filterResults
-        }
-
-        override fun publishResults(
-            charSequence: CharSequence?,
-            filterResults: FilterResults?
-        ) {
-            notifyDataSetChanged()
-        }
-    }*/
 
     class ViewHolder(val binding: ListItemLaunchesBinding) : RecyclerView.ViewHolder(binding.root)
 

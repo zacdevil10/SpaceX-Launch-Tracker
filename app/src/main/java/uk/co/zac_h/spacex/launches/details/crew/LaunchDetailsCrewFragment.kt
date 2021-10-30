@@ -9,9 +9,9 @@ import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.crew.Crew
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCrewBinding
-import uk.co.zac_h.spacex.dto.spacex.Crew
 import uk.co.zac_h.spacex.launches.details.LaunchDetailsContainerViewModel
 
 class LaunchDetailsCrewFragment : BaseFragment() {

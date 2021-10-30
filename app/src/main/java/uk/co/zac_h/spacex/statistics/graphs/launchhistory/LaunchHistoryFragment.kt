@@ -29,6 +29,8 @@ import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchHistoryBinding
 import uk.co.zac_h.spacex.statistics.adapters.Statistics
+import uk.co.zac_h.spacex.types.LaunchHistoryFilter
+import uk.co.zac_h.spacex.types.RocketType
 import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 
@@ -143,17 +145,17 @@ class LaunchHistoryFragment : BaseFragment() {
 
         response.forEach {
             when (it.rocket) {
-                RocketTypeOld.FALCON_ONE -> falconOne = when (viewModel.filterValue) {
+                RocketType.FALCON_ONE -> falconOne = when (viewModel.filterValue) {
                     LaunchHistoryFilter.SUCCESSES -> it.successes
                     LaunchHistoryFilter.FAILURES -> it.failures
                     else -> it.successes + it.failures
                 }
-                RocketTypeOld.FALCON_NINE -> falconNine = when (viewModel.filterValue) {
+                RocketType.FALCON_NINE -> falconNine = when (viewModel.filterValue) {
                     LaunchHistoryFilter.SUCCESSES -> it.successes
                     LaunchHistoryFilter.FAILURES -> it.failures
                     else -> it.successes + it.failures
                 }
-                RocketTypeOld.FALCON_HEAVY -> falconHeavy = when (viewModel.filterValue) {
+                RocketType.FALCON_HEAVY -> falconHeavy = when (viewModel.filterValue) {
                     LaunchHistoryFilter.SUCCESSES -> it.successes
                     LaunchHistoryFilter.FAILURES -> it.failures
                     else -> it.successes + it.failures
@@ -195,19 +197,19 @@ class LaunchHistoryFragment : BaseFragment() {
     private fun setSuccessRate(stats: List<HistoryStatsModel>, animate: Boolean) {
         stats.forEach {
             when (it.rocket) {
-                RocketTypeOld.FALCON_ONE -> {
+                RocketType.FALCON_ONE -> {
                     animateProgress(animate, it.successRate, binding.falconOneRateProgress)
 
                     binding.falconOnePercentText.text =
                         getString(R.string.percentage, it.successRate)
                 }
-                RocketTypeOld.FALCON_NINE -> {
+                RocketType.FALCON_NINE -> {
                     animateProgress(animate, it.successRate, binding.falconNineRateProgress)
 
                     binding.falconNinePercentText.text =
                         getString(R.string.percentage, it.successRate)
                 }
-                RocketTypeOld.FALCON_HEAVY -> {
+                RocketType.FALCON_HEAVY -> {
                     animateProgress(animate, it.successRate, binding.falconHeavyRateProgress)
 
                     binding.falconHeavyPercentText.text =

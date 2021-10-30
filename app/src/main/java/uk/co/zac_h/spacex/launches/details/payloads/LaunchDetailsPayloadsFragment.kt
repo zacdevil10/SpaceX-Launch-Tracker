@@ -12,7 +12,7 @@ import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
-import uk.co.zac_h.spacex.dto.spacex.Payload
+import uk.co.zac_h.spacex.launches.Payload
 import uk.co.zac_h.spacex.launches.adapters.PayloadAdapter
 import uk.co.zac_h.spacex.launches.details.LaunchDetailsContainerViewModel
 

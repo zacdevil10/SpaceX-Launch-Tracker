@@ -1,7 +1,7 @@
 package uk.co.zac_h.spacex.utils
 
 import org.junit.Test
-import uk.co.zac_h.spacex.model.spacex.DatePrecision
+import uk.co.zac_h.spacex.types.DatePrecision
 import java.text.SimpleDateFormat
 import java.util.*
 

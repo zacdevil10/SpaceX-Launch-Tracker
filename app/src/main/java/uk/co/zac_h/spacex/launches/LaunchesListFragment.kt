@@ -12,7 +12,6 @@ import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
-import uk.co.zac_h.spacex.dto.spacex.Launch
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import java.util.*
 

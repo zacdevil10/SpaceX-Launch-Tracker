@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.*
-import uk.co.zac_h.spacex.dto.spacex.Capsule
 import uk.co.zac_h.spacex.dto.spacex.QueryModel
 import uk.co.zac_h.spacex.dto.spacex.QueryOptionsModel
 import uk.co.zac_h.spacex.dto.spacex.QueryPopulateModel

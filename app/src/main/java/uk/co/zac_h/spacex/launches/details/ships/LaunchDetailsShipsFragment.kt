@@ -11,9 +11,9 @@ import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
-import uk.co.zac_h.spacex.dto.spacex.Ship
 import uk.co.zac_h.spacex.launches.adapters.LaunchDetailsShipsAdapter
 import uk.co.zac_h.spacex.launches.details.LaunchDetailsContainerViewModel
+import uk.co.zac_h.spacex.vehicles.ships.Ship
 
 class LaunchDetailsShipsFragment : BaseFragment() {
 

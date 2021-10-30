@@ -13,10 +13,10 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.CollapsingToolbarBinding
 import uk.co.zac_h.spacex.databinding.FragmentRocketDetailsBinding
-import uk.co.zac_h.spacex.dto.spacex.Rocket
 import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.setImageAndTint
 import uk.co.zac_h.spacex.vehicles.adapters.RocketPayloadAdapter
+import uk.co.zac_h.spacex.vehicles.rockets.Rocket
 import uk.co.zac_h.spacex.vehicles.rockets.RocketViewModel
 
 class RocketDetailsFragment : BaseFragment() {

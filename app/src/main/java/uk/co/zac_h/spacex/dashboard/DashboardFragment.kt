@@ -17,9 +17,9 @@ import uk.co.zac_h.spacex.*
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
 import uk.co.zac_h.spacex.databinding.ListItemDashboardLaunchBinding
-import uk.co.zac_h.spacex.dto.spacex.Launch
-import uk.co.zac_h.spacex.dto.spacex.Upcoming
+import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
+import uk.co.zac_h.spacex.types.Upcoming
 import uk.co.zac_h.spacex.utils.*
 
 @AndroidEntryPoint

@@ -213,7 +213,7 @@
 
         <argument
             android:name="padType"
-            app:argType="uk.co.zac_h.spacex.utils.PadType" />
+            app:argType="uk.co.zac_h.spacex.types.PadType" />
 
     </fragment>
 

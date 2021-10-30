@@ -22,8 +22,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesFilterBinding
-import uk.co.zac_h.spacex.dto.spacex.RocketType
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
+import uk.co.zac_h.spacex.types.Order
+import uk.co.zac_h.spacex.types.RocketType
 import uk.co.zac_h.spacex.utils.*
 
 @AndroidEntryPoint
@@ -67,28 +68,23 @@ class LaunchesFilterFragment : Fragment() {
             addTarget(binding.container)
         }
 
-        filterBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        filterBehavior.apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
 
-        filterBehavior.addBottomSheetCallback(BottomDrawerCallback().apply {
-            addOnSlideAction(AlphaSlideAction(binding.scrim))
-            addOnStateChangedAction(VisibilityStateAction(binding.scrim))
-            addOnStateChangedAction(BackPressedStateAction(closeFilterOnBackPressed))
-            addOnStateChangedAction(FabVisibilityStateAction(binding.filterFab))
-        })
+            addBottomSheetCallback(BottomDrawerCallback().apply {
+                addOnSlideAction(AlphaSlideAction(binding.scrim))
+                addOnStateChangedAction(VisibilityStateAction(binding.scrim))
+                addOnStateChangedAction(BackPressedStateAction(closeFilterOnBackPressed))
+                addOnStateChangedAction(FabVisibilityStateAction(binding.filterFab))
+            })
 
-        binding.scrim.setOnClickListener {
-            filterBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            binding.scrim.setOnClickListener {
+                state = BottomSheetBehavior.STATE_HIDDEN
+            }
         }
 
+        //Setup launches list
         launchesAdapter = LaunchesAdapter(requireContext())
-
-        binding.backButton.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
-        binding.searchLayout.editText?.doOnTextChanged { text, _, _, _ ->
-            viewModel.filterClass.updateSearch(text)
-        }
 
         binding.list.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -102,13 +98,19 @@ class LaunchesFilterFragment : Fragment() {
             }
         }
 
-        viewModel.filterClass.search.observe(viewLifecycleOwner) {
-            if (binding.searchLayout.editText?.text.isNullOrEmpty()) {
-                if (it.isFiltered) binding.searchLayout.editText?.setText(it.filter.orEmpty())
+        binding.searchLayout.editText?.apply {
+            doOnTextChanged { text, _, _, _ ->
+                viewModel.filter.search(text)
+            }
+
+            viewModel.filter.search.observe(viewLifecycleOwner) {
+                if (text?.toString().orEmpty() == it.filter) {
+                    if (it.isFiltered) setText(it.filter)
+                }
             }
         }
 
-        viewModel.filterClass.date.observe(viewLifecycleOwner) {
+        viewModel.filter.date.observe(viewLifecycleOwner) {
             val range = it.filter?.let { range ->
                 Pair(range.first, range.last)
             }
@@ -123,14 +125,14 @@ class LaunchesFilterFragment : Fragment() {
             dateRangePicker(range)
         }
 
-        viewModel.filterClass.order.observe(viewLifecycleOwner) {
+        viewModel.filter.order.observe(viewLifecycleOwner) {
             when (it.order) {
-                FilterOrder.ASCENDING -> binding.launchesFilter.ascending.isChecked = true
-                FilterOrder.DESCENDING -> binding.launchesFilter.descending.isChecked = true
+                Order.ASCENDING -> binding.launchesFilter.ascending.isChecked = true
+                Order.DESCENDING -> binding.launchesFilter.descending.isChecked = true
             }
         }
 
-        viewModel.filterClass.rocketType.observe(viewLifecycleOwner) {
+        viewModel.filter.rocketType.observe(viewLifecycleOwner) {
             if (it.rockets.isNullOrEmpty()) {
                 binding.launchesFilter.falconOneChip.isChecked = false
                 binding.launchesFilter.falconNineChip.isChecked = false
@@ -146,15 +148,15 @@ class LaunchesFilterFragment : Fragment() {
         }
 
         binding.launchesFilter.dateRangeClearButton.setOnClickListener {
-            viewModel.filterClass.clearDateRange()
+            viewModel.filter.clearDateFilter()
             it.visibility = View.GONE
         }
 
-        binding.launchesFilter.orderGroup.addOnButtonCheckedListener { group, checkedId, isChecked ->
+        binding.launchesFilter.orderGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (isChecked) {
                 when (checkedId) {
-                    R.id.ascending -> viewModel.filterClass.setOrder(FilterOrder.ASCENDING)
-                    R.id.descending -> viewModel.filterClass.setOrder(FilterOrder.DESCENDING)
+                    R.id.ascending -> viewModel.filter.setOrder(Order.ASCENDING)
+                    R.id.descending -> viewModel.filter.setOrder(Order.DESCENDING)
                 }
             }
         }
@@ -171,7 +173,7 @@ class LaunchesFilterFragment : Fragment() {
                     }
                 }
 
-            viewModel.filterClass.setRockets(rockets)
+            viewModel.filter.filterByRocketType(rockets)
         }
 
         binding.launchesFilter.falconOneChip.setOnCheckedChangeListener(chipListener)
@@ -180,12 +182,16 @@ class LaunchesFilterFragment : Fragment() {
         binding.launchesFilter.starshipChip.setOnCheckedChangeListener(chipListener)
 
         binding.resetFab.setOnClickListener {
-            viewModel.filterClass.reset()
-            binding.searchLayout.editText?.setText("")
+            viewModel.filter.clear()
         }
 
-        viewModel.filterClass.isFiltered.observe(viewLifecycleOwner) {
+        viewModel.filter.isFiltered.observe(viewLifecycleOwner) {
             if (it) binding.resetFab.show() else binding.resetFab.hide()
+        }
+
+        //Setup back navigation
+        binding.backButton.setOnClickListener {
+            findNavController().navigateUp()
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(
@@ -207,7 +213,7 @@ class LaunchesFilterFragment : Fragment() {
                 if (range == null) View.GONE else View.VISIBLE
 
             datePicker.addOnPositiveButtonClickListener {
-                viewModel.filterClass.setRange(it)
+                viewModel.filter.filterByDate(it)
             }
             datePicker.addOnCancelListener {
                 binding.launchesFilter.datePicker.isChecked = range != null
