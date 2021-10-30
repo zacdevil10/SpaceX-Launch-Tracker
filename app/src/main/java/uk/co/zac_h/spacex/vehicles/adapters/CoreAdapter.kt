@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemCoreBinding
-import uk.co.zac_h.spacex.dto.spacex.Core
 import uk.co.zac_h.spacex.vehicles.VehiclesFragmentDirections
+import uk.co.zac_h.spacex.vehicles.cores.Core
 
 class CoreAdapter(private val context: Context) :
     ListAdapter<Core, CoreAdapter.ViewHolder>(CoreComparator) {

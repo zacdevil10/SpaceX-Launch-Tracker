@@ -15,10 +15,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.*
 import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.crew.Crew
 import uk.co.zac_h.spacex.crew.CrewViewModel
 import uk.co.zac_h.spacex.crew.adapters.CrewMissionsAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewItemBinding
-import uk.co.zac_h.spacex.dto.spacex.Crew
 import uk.co.zac_h.spacex.dto.spacex.CrewStatus
 import kotlin.math.roundToInt
 

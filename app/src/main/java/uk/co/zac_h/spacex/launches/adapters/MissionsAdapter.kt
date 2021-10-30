@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemMissionBinding
-import uk.co.zac_h.spacex.dto.spacex.Launch
+import uk.co.zac_h.spacex.launches.Launch
 
 class MissionsAdapter(private val context: Context) :
     ListAdapter<Launch, MissionsAdapter.ViewHolder>(Comparator) {

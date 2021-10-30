@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemVehicleBinding
-import uk.co.zac_h.spacex.dto.spacex.Rocket
 import uk.co.zac_h.spacex.vehicles.VehiclesFragmentDirections
+import uk.co.zac_h.spacex.vehicles.rockets.Rocket
 
 class RocketsAdapter(val setSelected: (String) -> Unit) :
     ListAdapter<Rocket, RocketsAdapter.ViewHolder>(RocketComparator) {

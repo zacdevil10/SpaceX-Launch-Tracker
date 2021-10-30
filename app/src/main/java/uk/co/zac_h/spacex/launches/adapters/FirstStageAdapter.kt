@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemFirstStageBinding
-import uk.co.zac_h.spacex.dto.spacex.LaunchCore
+import uk.co.zac_h.spacex.launches.LaunchCore
 import uk.co.zac_h.spacex.launches.details.LaunchDetailsContainerFragmentDirections
 import uk.co.zac_h.spacex.utils.orUnknown
 import uk.co.zac_h.spacex.utils.setImageAndTint

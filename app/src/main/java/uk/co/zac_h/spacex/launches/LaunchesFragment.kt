@@ -5,14 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.navGraphViewModels
-import androidx.viewpager.widget.ViewPager
+import com.google.android.material.transition.MaterialElevationScale
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesBinding
-import uk.co.zac_h.spacex.launches.filter.LaunchesFilterViewModel
 import uk.co.zac_h.spacex.utils.ViewPagerAdapter
 
 @AndroidEntryPoint
@@ -24,14 +22,19 @@ class LaunchesFragment : BaseFragment() {
         defaultViewModelProviderFactory
     }
 
-    private val filterViewModel: LaunchesFilterViewModel by activityViewModels { defaultViewModelProviderFactory }
-
     private lateinit var binding: FragmentLaunchesBinding
 
     private val fragments: List<BaseFragment> = listOf(
         LaunchesListFragment.newInstance(LaunchType.UPCOMING),
         LaunchesListFragment.newInstance(LaunchType.PAST)
     )
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,16 +51,6 @@ class LaunchesFragment : BaseFragment() {
         postponeEnterTransition()
 
         binding.launchesViewPager.adapter = ViewPagerAdapter(childFragmentManager, fragments)
-
-        binding.launchesViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageScrollStateChanged(state: Int) {}
-
-            override fun onPageScrolled(p: Int, pOffset: Float, pOffsetPixels: Int) {}
-
-            override fun onPageSelected(position: Int) {
-                filterViewModel.selectedPage.value = position
-            }
-        })
 
         val tabIcons = listOf(
             R.drawable.ic_baseline_schedule_24,

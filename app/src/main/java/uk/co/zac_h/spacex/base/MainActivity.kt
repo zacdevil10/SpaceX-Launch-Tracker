@@ -24,6 +24,7 @@ import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.history.filter.HistoryFilterFragment
 import uk.co.zac_h.spacex.databinding.ActivityMainBinding
+import uk.co.zac_h.spacex.launches.LaunchesFragmentDirections
 import uk.co.zac_h.spacex.utils.*
 
 @AndroidEntryPoint
@@ -111,12 +112,20 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         destination: NavDestination,
         arguments: Bundle?
     ) {
+        //Close any open bottom sheets
+        openableBottomDrawer.close()
+        //Set toolbar menu for destination
+        binding.bottomAppBar.replaceMenu(getBottomAppBarMenuForDestination(destination))
+
+        setBottomDrawerForDestination(destination)
+
         //Setup toolbar for destination
         when (destination.id) {
             //Launches
             R.id.dashboard_page_fragment -> setAppBarForDashboard()
             R.id.launches_page_fragment -> setAppBarForLaunches()
             R.id.launch_details_container_fragment -> setAppBarForLaunchDetails()
+            R.id.launches_filter_fragment -> setAppBarForSearch()
             //News
             R.id.news_page_fragment -> setAppBarForNews()
             //Crew
@@ -142,12 +151,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             R.id.history_page_fragment -> setAppBarForHistory()
             R.id.about_page_fragment -> setAppBarForAbout()
         }
-        //Close any open bottom sheets
-        openableBottomDrawer.close()
-        //Set toolbar menu for destination
-        binding.bottomAppBar.replaceMenu(getBottomAppBarMenuForDestination(destination))
-
-        setBottomDrawerForDestination(destination)
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
@@ -197,7 +200,10 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     private fun setAppBarForLaunches() {
         binding.run {
-            fab.setImageResource(R.drawable.ic_filter_list_black_24dp)
+            fab.setOnClickListener {
+                findNavController(R.id.nav_host).navigate(LaunchesFragmentDirections.actionLaunchesToFilter())
+            }
+            fab.setImageResource(R.drawable.ic_search_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             fab.show()
@@ -321,6 +327,10 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             fab.hide()
             viewModel.isFabVisible = false
         }
+    }
+
+    private fun setAppBarForSearch() {
+        hideAppBar()
     }
 
     private fun hideAppBar() {
