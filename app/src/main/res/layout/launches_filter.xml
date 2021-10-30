@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="Filter"
+        android:text="@string/filter_heading"
         android:textAppearance="?textAppearanceHeadline5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +33,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Date range:"
+        android:text="@string/date_range_label"
         android:textAppearance="?textAppearanceOverline"
         app:layout_constraintBottom_toBottomOf="@id/date_range_group"
         app:layout_constraintEnd_toStartOf="@id/toolbar_label_guideline"
@@ -57,7 +57,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
-            android:text="Select"
+            android:text="@string/date_picker_button_label"
             tools:text="21/10/2030-01/12/2043" />
 
         <com.google.android.material.button.MaterialButton
@@ -87,7 +87,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Order:"
+        android:text="@string/order_label"
         android:textAppearance="?textAppearanceOverline"
         app:layout_constraintBottom_toBottomOf="@id/order_group"
         app:layout_constraintEnd_toStartOf="@id/toolbar_label_guideline"
@@ -114,7 +114,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="Asc" />
+            android:text="@string/ascending_button_label" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/descending"
@@ -122,7 +122,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
-            android:text="Desc" />
+            android:text="@string/descending_button_label" />
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -141,7 +141,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:text="Rocket:"
+        android:text="@string/rocket_type_label"
         android:textAppearance="?textAppearanceOverline"
         app:layout_constraintBottom_toBottomOf="@id/rocket_group_scrollview"
         app:layout_constraintEnd_toStartOf="@id/toolbar_label_guideline"
@@ -171,28 +171,28 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Falcon 9" />
+                android:text="@string/falcon_9" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/falcon_heavy_chip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Falcon Heavy" />
+                android:text="@string/falcon_heavy" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/falcon_one_chip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Falcon 1" />
+                android:text="@string/falcon_1" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/starship_chip"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Starship" />
+                android:text="@string/starship" />
 
         </com.google.android.material.chip.ChipGroup>
 
