@@ -12,7 +12,7 @@ class BottomSheetOpenable<T : View>(private val behavior: BottomSheetBehavior<T>
     override fun open() {
         behavior.state = if (isOpen) {
             BottomSheetBehavior.STATE_HIDDEN
-        } else BottomSheetBehavior.STATE_EXPANDED
+        } else BottomSheetBehavior.STATE_HALF_EXPANDED
     }
 
     override fun close() {
