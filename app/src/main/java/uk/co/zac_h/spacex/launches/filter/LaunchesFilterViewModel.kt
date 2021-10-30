@@ -42,7 +42,7 @@ class LaunchesFilterViewModel @Inject constructor(
                                 }
                             }
                         } else null
-                    ).sortedBy(filter.order) { launch ->
+                    ).sortedBy(filter.order.order) { launch ->
                         launch.flightNumber
                     }
                 }
@@ -66,12 +66,12 @@ class LaunchesFilterViewModel @Inject constructor(
     }
 
     private inline fun <T, R : Comparable<R>> Iterable<T>.sortedBy(
-        direction: LaunchesFilterOrder,
+        direction: FilterOrder,
         crossinline selector: (T) -> R?
     ): List<T> {
         return when (direction) {
-            LaunchesFilterOrder.ASCENDING -> sortedWith(compareBy(selector))
-            LaunchesFilterOrder.DESCENDING -> sortedWith(compareByDescending(selector))
+            FilterOrder.ASCENDING -> sortedWith(compareBy(selector))
+            FilterOrder.DESCENDING -> sortedWith(compareByDescending(selector))
         }
     }
 

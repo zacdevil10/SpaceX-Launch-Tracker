@@ -50,6 +50,20 @@ class ShowHideFabStateAction(
 
 }
 
+class FabVisibilityStateAction(
+    private val fab: FloatingActionButton
+) : OnStateChangedAction {
+
+    override fun onStateChanged(sheet: View, newState: Int) {
+        if (newState != BottomSheetBehavior.STATE_HIDDEN) {
+            fab.visibility = View.GONE
+        } else {
+            fab.show()
+        }
+    }
+
+}
+
 class VisibilityStateAction(
     private val view: View
 ) : OnStateChangedAction {
