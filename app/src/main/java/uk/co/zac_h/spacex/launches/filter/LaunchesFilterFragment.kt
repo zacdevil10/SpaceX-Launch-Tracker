@@ -41,6 +41,8 @@ class LaunchesFilterFragment : Fragment() {
 
     private lateinit var launchesAdapter: LaunchesAdapter
 
+    private lateinit var filterBehavior: BottomSheetBehavior<FrameLayout>
+
     private var shouldScroll: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,8 +79,7 @@ class LaunchesFilterFragment : Fragment() {
             addTarget(binding.container)
         }
 
-        val filterBehavior: BottomSheetBehavior<FrameLayout> =
-            BottomSheetBehavior.from(binding.filterBottomSheet)
+        filterBehavior = BottomSheetBehavior.from(binding.filterBottomSheet)
 
         val openableFilter = BottomSheetOpenable(filterBehavior)
 
@@ -228,6 +229,12 @@ class LaunchesFilterFragment : Fragment() {
             viewLifecycleOwner,
             closeFilterOnBackPressed
         )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        filterBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        shouldScroll = false
     }
 
     private fun dateRangePicker(range: Pair<Long, Long>? = null): MaterialDatePicker<Pair<Long, Long>> =
