@@ -14,7 +14,6 @@ import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewBinding
-import uk.co.zac_h.spacex.dto.spacex.Crew
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 
 class CrewFragment : BaseFragment() {
@@ -55,8 +54,6 @@ class CrewFragment : BaseFragment() {
             binding.root.doOnPreDraw { startPostponedEnterTransition() }
         }
 
-        binding.toolbarLayout.toolbar.setup()
-
         crewAdapter = CrewAdapter()
 
         binding.crewRecycler.apply {
@@ -93,11 +90,11 @@ class CrewFragment : BaseFragment() {
     }
 
     private fun showProgress() {
-        binding.toolbarLayout.progress.show()
+
     }
 
     private fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
+
     }
 
     private fun showError(error: String?) {

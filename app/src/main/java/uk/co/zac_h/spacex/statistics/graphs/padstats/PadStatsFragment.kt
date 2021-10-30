@@ -8,6 +8,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
@@ -15,7 +16,7 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentPadStatsBinding
 import uk.co.zac_h.spacex.dto.spacex.StatsPadModel
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
-import uk.co.zac_h.spacex.utils.PadType
+import uk.co.zac_h.spacex.types.PadType
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 
 class PadStatsFragment : BaseFragment() {
@@ -34,7 +35,12 @@ class PadStatsFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        sharedElementEnterTransition = MaterialContainerTransform()
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.nav_host
+        }
+
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
     }
 
     override fun onCreateView(
@@ -51,12 +57,7 @@ class PadStatsFragment : BaseFragment() {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        binding.toolbarLayout.toolbar.apply {
-            setup()
-            createOptionsMenu(R.menu.menu_statistics_reload)
-        }
-
-        binding.padStatsConstraint.transitionName = getString(navArgs.type.title)
+        binding.padStatsLaunchSitesRecycler.transitionName = getString(navArgs.type.title)
 
         padsAdapter = PadStatsSitesAdapter()
 
@@ -102,11 +103,11 @@ class PadStatsFragment : BaseFragment() {
     }
 
     fun showProgress() {
-        binding.toolbarLayout.progress.show()
+
     }
 
     fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
+
     }
 
     fun showError(error: String?) {

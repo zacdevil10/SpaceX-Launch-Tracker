@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemRocketPayloadBinding
-import uk.co.zac_h.spacex.dto.spacex.PayloadWeights
+import uk.co.zac_h.spacex.vehicles.rockets.PayloadWeights
 
 class RocketPayloadAdapter(private val context: Context) :
     ListAdapter<PayloadWeights, RocketPayloadAdapter.ViewHolder>(Comparator) {

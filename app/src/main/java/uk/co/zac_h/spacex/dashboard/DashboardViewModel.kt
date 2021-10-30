@@ -6,10 +6,10 @@ import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.async
-import uk.co.zac_h.spacex.dto.spacex.Launch
 import uk.co.zac_h.spacex.dto.spacex.QueryModel
 import uk.co.zac_h.spacex.dto.spacex.QueryOptionsModel
 import uk.co.zac_h.spacex.dto.spacex.QueryPopulateModel
+import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.utils.repo.PinnedPreferencesRepository
 import javax.inject.Inject
 
@@ -29,13 +29,13 @@ class DashboardViewModel @Inject constructor(
     val pinnedLaunches: LiveData<MutableList<ApiResult<Launch>>> = _pinnedLaunches
     private val pinned: MutableList<ApiResult<Launch>> = mutableListOf()
 
-    val pinnedLiveData = pinnedPreferencesRepository.pinnedLive/*.map {
-        it.filterNot { item ->
+    val pinnedLiveData = pinnedPreferencesRepository.pinnedLive.map {
+        it.filter { item ->
             val keep = item.value as Boolean
             if (!keep) pinnedPreferencesRepository.removePinnedLaunch(item.key)
             keep
         }
-    }*/
+    }
 
     val dashboardLiveData = repository.allPreferences.map { it }
 

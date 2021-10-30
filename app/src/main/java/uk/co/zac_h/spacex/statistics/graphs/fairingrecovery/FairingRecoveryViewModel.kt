@@ -11,6 +11,7 @@ import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.async
 import uk.co.zac_h.spacex.dto.spacex.*
+import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.statistics.StatisticsRepository
 import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.FairingRecoveryModel
@@ -44,7 +45,7 @@ class FairingRecoveryViewModel @Inject constructor(
 
                         val stat = first { newList -> newList.year == year }
 
-                        if (it.fairings?.recoveryAttempt == true && it.fairings?.isRecovered == true) {
+                        if (it.fairings?.recoveryAttempt == true && it.fairings.isRecovered == true) {
                             stat.successes++
                         } else stat.failures++
                     }

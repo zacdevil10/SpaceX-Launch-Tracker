@@ -12,7 +12,6 @@ import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
-import uk.co.zac_h.spacex.dto.spacex.Launch
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import java.util.*
 
@@ -26,6 +25,8 @@ class LaunchesListFragment : BaseFragment() {
     }
 
     private val flowViewModel: FlowTypeViewModel by viewModels()
+
+    private var searchText: String = ""
 
     private lateinit var type: LaunchType
 
@@ -88,7 +89,9 @@ class LaunchesListFragment : BaseFragment() {
     fun update(response: List<Launch>?) {
         hideProgress()
 
-        launchesAdapter.submitList(response)
+        launchesAdapter.submitList(response?.filter {
+            it.missionName?.lowercase()?.contains(searchText) ?: true
+        })
     }
 
     fun showProgress() {

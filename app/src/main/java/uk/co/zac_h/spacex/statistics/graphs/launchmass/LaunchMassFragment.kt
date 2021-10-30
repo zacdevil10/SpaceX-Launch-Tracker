@@ -17,6 +17,7 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
@@ -25,6 +26,8 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchMassBinding
 import uk.co.zac_h.spacex.statistics.adapters.Statistics
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
+import uk.co.zac_h.spacex.types.LaunchMassViewType
+import uk.co.zac_h.spacex.types.RocketType
 import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.LaunchMassStatsModel
@@ -46,7 +49,12 @@ class LaunchMassFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        sharedElementEnterTransition = MaterialContainerTransform()
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.nav_host
+        }
+
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
     }
 
     override fun onCreateView(
@@ -63,11 +71,6 @@ class LaunchMassFragment : BaseFragment() {
         view.doOnPreDraw { startPostponedEnterTransition() }
 
         viewModel.get()
-
-        binding.toolbarLayout.toolbar.apply {
-            setup()
-            createOptionsMenu(R.menu.menu_statistics_filter)
-        }
 
         binding.launchMassConstraint.transitionName = getString(navArgs.type.title)
 
@@ -411,11 +414,11 @@ class LaunchMassFragment : BaseFragment() {
     }
 
     fun showProgress() {
-        binding.toolbarLayout.progress.show()
+
     }
 
     fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
+
     }
 
     fun showError(error: String?) {

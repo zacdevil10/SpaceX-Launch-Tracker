@@ -10,7 +10,6 @@ import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.async
-import uk.co.zac_h.spacex.dto.spacex.Rocket
 import javax.inject.Inject
 
 @HiltViewModel

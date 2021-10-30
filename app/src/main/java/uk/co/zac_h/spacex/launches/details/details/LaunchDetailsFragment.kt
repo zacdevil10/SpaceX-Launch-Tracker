@@ -15,9 +15,9 @@ import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
-import uk.co.zac_h.spacex.dto.spacex.DatePrecision
-import uk.co.zac_h.spacex.dto.spacex.Launch
+import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.launches.details.LaunchDetailsContainerViewModel
+import uk.co.zac_h.spacex.types.DatePrecision
 import uk.co.zac_h.spacex.utils.*
 
 class LaunchDetailsFragment : BaseFragment() {
@@ -27,11 +27,6 @@ class LaunchDetailsFragment : BaseFragment() {
     }
 
     private lateinit var binding: FragmentLaunchDetailsBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,27 +55,6 @@ class LaunchDetailsFragment : BaseFragment() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(
-            if (viewModel.isPinned()) R.menu.menu_details_alternate else R.menu.menu_details,
-            menu
-        )
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.pin -> {
-            viewModel.pinLaunch(true)
-            activity?.invalidateOptionsMenu()
-            true
-        }
-        R.id.unpin -> {
-            viewModel.pinLaunch(false)
-            activity?.invalidateOptionsMenu()
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
-    }
-
     private fun update(response: Launch) {
         Glide.with(this@LaunchDetailsFragment)
             .load(response.links?.missionPatch?.patchSmall)
@@ -100,7 +74,7 @@ class LaunchDetailsFragment : BaseFragment() {
             launchDetailsSiteNameText.text = response.launchpad?.name
 
             launchDetailsDateText.text = response.datePrecision?.let { datePrecision ->
-                response.launchDate?.dateUnix?.formatDateMillisLong(/*datePrecision*/)
+                response.launchDate?.dateUnix?.formatDateMillisLong(datePrecision)
             }
 
             response.staticFireDate?.dateUnix?.let { date ->

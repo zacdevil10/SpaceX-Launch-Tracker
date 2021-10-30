@@ -7,15 +7,9 @@
     android:layout_height="match_parent"
     tools:context=".about.company.CompanyFragment">
 
-    <include
-        android:id="@+id/toolbar_layout"
-        layout="@layout/toolbar_progress" />
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_layout">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="600dp"

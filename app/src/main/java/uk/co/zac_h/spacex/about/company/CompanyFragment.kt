@@ -34,8 +34,6 @@ class CompanyFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbarLayout.toolbar.setup()
-
         viewModel.company.observe(viewLifecycleOwner) { result ->
             when (result.status) {
                 ApiResult.Status.PENDING -> showProgress()
@@ -82,11 +80,11 @@ class CompanyFragment : BaseFragment() {
     }
 
     fun showProgress() {
-        binding.toolbarLayout.progress.show()
+
     }
 
     fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
+
     }
 
     fun showError(error: String) {

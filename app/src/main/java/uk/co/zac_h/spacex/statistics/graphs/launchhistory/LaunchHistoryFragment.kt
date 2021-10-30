@@ -21,6 +21,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
@@ -28,6 +29,8 @@ import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchHistoryBinding
 import uk.co.zac_h.spacex.statistics.adapters.Statistics
+import uk.co.zac_h.spacex.types.LaunchHistoryFilter
+import uk.co.zac_h.spacex.types.RocketType
 import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 
@@ -46,7 +49,12 @@ class LaunchHistoryFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition = MaterialContainerTransform()
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.nav_host
+        }
+
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
     }
 
     override fun onCreateView(
@@ -64,11 +72,6 @@ class LaunchHistoryFragment : BaseFragment() {
         view.doOnPreDraw { startPostponedEnterTransition() }
 
         viewModel.get()
-
-        binding.toolbarLayout.toolbar.apply {
-            setup()
-            createOptionsMenu(R.menu.menu_statistics_filter)
-        }
 
         binding.launchHistoryConstraint.transitionName = getString(navArgs.type.title)
 
@@ -256,11 +259,11 @@ class LaunchHistoryFragment : BaseFragment() {
     }
 
     fun showProgress() {
-        binding.toolbarLayout.progress.show()
+
     }
 
     fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
+
     }
 
     fun showError(error: String?) {

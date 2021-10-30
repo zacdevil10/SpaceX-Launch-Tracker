@@ -6,6 +6,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -13,6 +14,7 @@ import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
+import uk.co.zac_h.spacex.about.history.filter.HistoryFilterViewModel
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentHistoryBinding
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
@@ -27,9 +29,13 @@ class HistoryFragment : BaseFragment() {
 
     private val viewModel: HistoryViewModel by viewModels()
 
+    private val filterViewModel: HistoryFilterViewModel by activityViewModels()
+
     private lateinit var binding: FragmentHistoryBinding
 
     private lateinit var historyAdapter: HistoryAdapter
+
+    private var searchText: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,11 +46,6 @@ class HistoryFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding.toolbarLayout.toolbar.apply {
-            setup()
-            createOptionsMenu(R.menu.menu_history)
-        }
 
         historyAdapter = HistoryAdapter(requireContext(), ::openWebLink)
 
@@ -80,6 +81,11 @@ class HistoryFragment : BaseFragment() {
             }
         }
 
+        filterViewModel.searchText.observe(viewLifecycleOwner) {
+            searchText = it
+            viewModel.getHistory()
+        }
+
         viewModel.getHistory()
     }
 
@@ -98,7 +104,9 @@ class HistoryFragment : BaseFragment() {
     }
 
     fun update(response: List<HistoryHeaderModel>) {
-        historyAdapter.submitList(response)
+        historyAdapter.submitList(response.filter {
+            it.historyModel?.title?.lowercase()?.contains(searchText) ?: true
+        })
 
         binding.historyRecycler.apply {
             smoothScrollToPosition(0)
@@ -107,18 +115,18 @@ class HistoryFragment : BaseFragment() {
     }
 
     fun showProgress() {
-        binding.toolbarLayout.progress.show()
+
     }
 
     fun hideProgress() {
-        binding.toolbarLayout.progress.hide()
+
     }
 
     fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
-    fun toggleSwipeRefresh(isRefreshing: Boolean) {
+    private fun toggleSwipeRefresh(isRefreshing: Boolean) {
         binding.swipeRefresh.isRefreshing = isRefreshing
     }
 

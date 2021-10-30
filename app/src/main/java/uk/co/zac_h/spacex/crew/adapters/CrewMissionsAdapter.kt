@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemCrewMissionBinding
-import uk.co.zac_h.spacex.dto.spacex.Launch
+import uk.co.zac_h.spacex.launches.Launch
 
 class CrewMissionsAdapter(private val context: Context) :
     ListAdapter<Launch, CrewMissionsAdapter.ViewHolder>(CrewMissionComparator) {

@@ -17,9 +17,9 @@ import uk.co.zac_h.spacex.*
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
 import uk.co.zac_h.spacex.databinding.ListItemDashboardLaunchBinding
-import uk.co.zac_h.spacex.dto.spacex.Launch
-import uk.co.zac_h.spacex.dto.spacex.Upcoming
+import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
+import uk.co.zac_h.spacex.types.Upcoming
 import uk.co.zac_h.spacex.utils.*
 
 @AndroidEntryPoint
@@ -57,15 +57,8 @@ class DashboardFragment : BaseFragment() {
         view.doOnPreDraw { startPostponedEnterTransition() }
         postponeEnterTransition()
 
-        binding.toolbarLayout.progress.hide()
-
         viewModel.getLaunch("next")
         viewModel.getLaunch("latest")
-
-        binding.toolbarLayout.toolbar.apply {
-            setup()
-            createOptionsMenu(R.menu.menu_dashboard)
-        }
 
         pinnedAdapter = LaunchesAdapter(requireContext()).also {
             it.submitList(pinnedArray)
@@ -163,14 +156,6 @@ class DashboardFragment : BaseFragment() {
         countdownTimer = null
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.edit -> {
-            findNavController().navigate(R.id.action_dashboard_page_fragment_to_dashboard_edit_dialog)
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
-    }
-
     fun update(data: Any, response: Launch) {
         when (data) {
             Upcoming.NEXT -> update(binding.next, response)
@@ -201,7 +186,7 @@ class DashboardFragment : BaseFragment() {
             missionName.text = response.missionName
 
             date.text =
-                response.launchDate?.dateUnix?.formatDateMillisLong(/*response.datePrecision*/)
+                response.launchDate?.dateUnix?.formatDateMillisLong(response.datePrecision)
 
             dashboardLaunch.let { card ->
                 card.setOnClickListener {

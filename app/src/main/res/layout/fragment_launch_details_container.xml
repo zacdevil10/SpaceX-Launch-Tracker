@@ -12,39 +12,47 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <include
-            android:id="@+id/toolbar_layout"
-            layout="@layout/toolbar_progress" />
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/launch_details_countdown_container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
             android:background="@color/color_background"
             android:elevation="@dimen/toolbar_elevation"
-            android:paddingStart="@dimen/medium_margin"
-            android:paddingTop="@dimen/small_margin"
-            android:paddingEnd="@dimen/medium_margin"
-            android:paddingBottom="@dimen/small_margin"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/toolbar_layout"
-            tools:visibility="visible">
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/close"
+                style="?attr/toolbarNavigationButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:src="@drawable/ic_baseline_close_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/launch_details_countdown"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
                 android:letterSpacing="0.1"
                 android:textAlignment="center"
                 android:textAppearance="?textAppearanceHeadline4"
                 android:textColor="?colorSecondary"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/countdown_space"
+                app:layout_constraintStart_toEndOf="@id/close"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="T-43:13:23:55" />
+                tools:text="T-43:13:23:55"
+                tools:visibility="visible" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/launch_details_watch_now"
                 style="?materialButtonOutlinedStyle"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:text="@string/watch_live_label"
                 android:textColor="?colorError"
@@ -52,6 +60,18 @@
                 app:icon="@drawable/ic_play_arrow_black_24dp"
                 app:iconGravity="textStart"
                 app:iconTint="?colorError"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/countdown_space"
+                app:layout_constraintStart_toEndOf="@id/close"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <Space
+                android:id="@+id/countdown_space"
+                style="?attr/toolbarNavigationButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -61,9 +81,21 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/launch_details_countdown_container" />
+            app:layout_constraintTop_toBottomOf="@id/launch_details_countdown_container"
+            android:name="uk.co.zac_h.spacex.launches.details.details.LaunchDetailsFragment" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/pin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="72dp"
+        app:layout_anchor="@id/launch_details_bottom_navigation"
+        app:layout_anchorGravity="top|end"
+        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+        app:srcCompat="@drawable/pin_unpin" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/launch_details_bottom_navigation"

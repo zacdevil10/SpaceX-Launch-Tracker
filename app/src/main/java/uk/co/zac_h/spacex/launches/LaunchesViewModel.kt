@@ -5,11 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
-import uk.co.zac_h.spacex.dto.spacex.Launch
+import uk.co.zac_h.spacex.async
 import uk.co.zac_h.spacex.dto.spacex.QueryModel
 import uk.co.zac_h.spacex.dto.spacex.QueryOptionsModel
 import uk.co.zac_h.spacex.dto.spacex.QueryPopulateModel
@@ -21,12 +20,12 @@ class LaunchesViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _launchesLiveData =
-        MutableLiveData<ApiResult<Map<LaunchType, List<Launch>>>>(ApiResult.pending())
+        MutableLiveData<ApiResult<Map<LaunchType, List<Launch>>>>()
     val launchesLiveData: LiveData<ApiResult<Map<LaunchType, List<Launch>>>> = _launchesLiveData
 
     fun getLaunches(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
         viewModelScope.launch {
-            val response = async {
+            val response = async(_launchesLiveData) {
                 _launchesLiveData.value = ApiResult.pending()
                 repository.fetch(
                     key = "launches",

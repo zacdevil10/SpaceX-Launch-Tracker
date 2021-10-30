@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.navigation.navGraphViewModels
+import com.google.android.material.transition.MaterialElevationScale
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesBinding
-import uk.co.zac_h.spacex.databinding.ToolbarTabBinding
 import uk.co.zac_h.spacex.utils.ViewPagerAdapter
 
 @AndroidEntryPoint
@@ -23,19 +23,24 @@ class LaunchesFragment : BaseFragment() {
     }
 
     private lateinit var binding: FragmentLaunchesBinding
-    private lateinit var toolbarBinding: ToolbarTabBinding
 
     private val fragments: List<BaseFragment> = listOf(
         LaunchesListFragment.newInstance(LaunchType.UPCOMING),
         LaunchesListFragment.newInstance(LaunchType.PAST)
     )
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchesBinding.inflate(inflater, container, false).apply {
-        toolbarBinding = ToolbarTabBinding.bind(this.root)
         binding = this
     }.root
 
@@ -45,8 +50,6 @@ class LaunchesFragment : BaseFragment() {
         view.doOnPreDraw { startPostponedEnterTransition() }
         postponeEnterTransition()
 
-        toolbarBinding.toolbar.setup()
-
         binding.launchesViewPager.adapter = ViewPagerAdapter(childFragmentManager, fragments)
 
         val tabIcons = listOf(
@@ -54,7 +57,7 @@ class LaunchesFragment : BaseFragment() {
             R.drawable.ic_history_black_24dp
         )
 
-        toolbarBinding.tabLayout.apply {
+        binding.tabLayout.apply {
             setupWithViewPager(binding.launchesViewPager)
             for (position in 0..tabCount) {
                 getTabAt(position)?.setIcon(tabIcons[position])
