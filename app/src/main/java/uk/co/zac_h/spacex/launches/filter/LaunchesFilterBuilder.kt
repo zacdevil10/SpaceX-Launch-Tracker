@@ -12,8 +12,8 @@ import uk.co.zac_h.spacex.types.RocketType
 
 class LaunchesFilterBuilder : MediatorLiveData<LaunchesFilter>() {
 
-    private val _search = MutableLiveData(StringFilter())
-    val search: LiveData<StringFilter> = _search
+    private val _search = MutableLiveData(SearchFilter())
+    val search: LiveData<SearchFilter> = _search
 
     private val _date = MutableLiveData(DateRangeFilter())
     val date: LiveData<DateRangeFilter> = _date
@@ -45,7 +45,7 @@ class LaunchesFilterBuilder : MediatorLiveData<LaunchesFilter>() {
     }
 
     fun search(value: CharSequence? = null) {
-        _search.value = StringFilter(value?.toString().orEmpty())
+        _search.value = SearchFilter(value?.toString().orEmpty())
     }
 
     fun filterByDate(range: Pair<Long, Long>) {
@@ -65,26 +65,17 @@ class LaunchesFilterBuilder : MediatorLiveData<LaunchesFilter>() {
     }
 
     fun clear() {
-        _search.value = StringFilter()
+        _search.value = SearchFilter()
         _date.value = DateRangeFilter()
         _order.value = LaunchesFilterOrder()
         _rocketType.value = LaunchesFilterRocket()
     }
 
-    private fun combine(vararg filters: Filterable?): LaunchesFilter {
-        val stringFilter: StringFilter =
-            filters.filterIsInstance<StringFilter>().firstOrNull() ?: StringFilter()
-
-        val dateRangeFilter: DateRangeFilter =
-            filters.filterIsInstance<DateRangeFilter>().firstOrNull() ?: DateRangeFilter()
-
-        val orderFilter: LaunchesFilterOrder =
-            filters.filterIsInstance<LaunchesFilterOrder>().firstOrNull() ?: LaunchesFilterOrder()
-
-        val rocketsFilter: LaunchesFilterRocket =
-            filters.filterIsInstance<LaunchesFilterRocket>().firstOrNull() ?: LaunchesFilterRocket()
-
-        return LaunchesFilter(stringFilter, dateRangeFilter, orderFilter, rocketsFilter)
-    }
+    private fun combine(vararg filters: Filterable?) = LaunchesFilter(
+        filters.filterIsInstance<SearchFilter>().firstOrNull() ?: SearchFilter(),
+        filters.filterIsInstance<DateRangeFilter>().firstOrNull() ?: DateRangeFilter(),
+        filters.filterIsInstance<LaunchesFilterOrder>().firstOrNull() ?: LaunchesFilterOrder(),
+        filters.filterIsInstance<LaunchesFilterRocket>().firstOrNull() ?: LaunchesFilterRocket()
+    )
 
 }
