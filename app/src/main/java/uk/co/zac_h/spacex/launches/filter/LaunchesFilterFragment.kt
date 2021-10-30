@@ -9,6 +9,7 @@ import android.widget.CompoundButton
 import android.widget.FrameLayout
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
+import androidx.core.view.doOnPreDraw
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -18,6 +19,7 @@ import androidx.transition.Slide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialElevationScale
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.R
@@ -46,6 +48,13 @@ class LaunchesFilterFragment : Fragment() {
         BottomSheetBackPressed(filterBehavior)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -55,6 +64,9 @@ class LaunchesFilterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.doOnPreDraw { startPostponedEnterTransition() }
+        postponeEnterTransition()
 
         enterTransition = MaterialContainerTransform().apply {
             startView = requireActivity().findViewById(R.id.fab)
@@ -105,7 +117,7 @@ class LaunchesFilterFragment : Fragment() {
 
             viewModel.filter.search.observe(viewLifecycleOwner) {
                 if (text?.toString().orEmpty() != it.filter) {
-                    if (it.isFiltered) setText(it.filter)
+                    setText(it.filter)
                 }
             }
         }
