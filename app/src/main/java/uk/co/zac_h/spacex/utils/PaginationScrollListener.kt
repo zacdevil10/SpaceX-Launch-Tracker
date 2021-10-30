@@ -18,7 +18,6 @@ abstract class PaginationScrollListener(
             if (findFirstCompletelyVisibleItemPosition() == 0) onScrollTop()
 
             if (dy > 0 && !isScrollUpVisible() && findFirstVisibleItemPosition() > 15) {
-                println("Doing this")
                 onScrolledDown()
             }
         }
