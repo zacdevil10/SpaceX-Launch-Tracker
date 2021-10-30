@@ -41,16 +41,6 @@ class LaunchesFilterFragment : Fragment() {
 
     private lateinit var launchesAdapter: LaunchesAdapter
 
-    private val filterBehavior: BottomSheetBehavior<FrameLayout> by lazy {
-        BottomSheetBehavior.from(binding.filterBottomSheet)
-    }
-
-    private val openableFilter by lazy { BottomSheetOpenable(filterBehavior) }
-
-    private val closeFilterOnBackPressed by lazy {
-        BottomSheetBackPressed(filterBehavior)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -83,6 +73,12 @@ class LaunchesFilterFragment : Fragment() {
             addTarget(binding.container)
         }
 
+        val filterBehavior: BottomSheetBehavior<FrameLayout> = BottomSheetBehavior.from(binding.filterBottomSheet)
+
+        val openableFilter = BottomSheetOpenable(filterBehavior)
+
+        val closeFilterOnBackPressed = BottomSheetBackPressed(filterBehavior)
+
         filterBehavior.apply {
             state = BottomSheetBehavior.STATE_HIDDEN
 
@@ -109,7 +105,7 @@ class LaunchesFilterFragment : Fragment() {
 
         viewModel.launchesLiveData.observe(viewLifecycleOwner) { result ->
             if (result.status == ApiResult.Status.SUCCESS) launchesAdapter.submitList(result.data) {
-                //binding.list.scrollToPosition(0)
+                binding.list.scrollToPosition(0)
             }
         }
 
