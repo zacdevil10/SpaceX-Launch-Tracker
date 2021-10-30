@@ -5,7 +5,7 @@ import uk.co.zac_h.spacex.types.Order
 import uk.co.zac_h.spacex.types.RocketType
 
 @JvmInline
-value class StringFilter(val filter: String = "") : Filterable {
+value class SearchFilter(val filter: String = "") : Filterable {
 
     override val isFiltered: Boolean
         get() = filter.isNotEmpty()
