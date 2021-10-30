@@ -11,7 +11,8 @@ import uk.co.zac_h.spacex.dto.spacex.QueryOptionsModel
 import uk.co.zac_h.spacex.dto.spacex.QueryPopulateModel
 import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.launches.LaunchesRepository
-import uk.co.zac_h.spacex.types.Order
+import uk.co.zac_h.spacex.utils.filterAll
+import uk.co.zac_h.spacex.utils.sortedBy
 import javax.inject.Inject
 
 @HiltViewModel
@@ -58,20 +59,6 @@ class LaunchesFilterViewModel @Inject constructor(
 
             _launchesLiveData.value = response.await().map { data -> data.docs.map { Launch(it) } }
         }
-    }
-
-    private fun <T> Iterable<T>.filterAll(vararg predicates: ((T) -> Boolean?)?): List<T> {
-        return filter { value ->
-            predicates.filterNotNull().all { it(value) ?: true }
-        }
-    }
-
-    private inline fun <T, R : Comparable<R>> Iterable<T>.sortedBy(
-        direction: Order,
-        crossinline selector: (T) -> R?
-    ): List<T> = when (direction) {
-        Order.ASCENDING -> sortedWith(compareBy(selector))
-        Order.DESCENDING -> sortedWith(compareByDescending(selector))
     }
 
     private val query = QueryModel(
