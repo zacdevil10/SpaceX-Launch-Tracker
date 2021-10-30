@@ -6,30 +6,30 @@ import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.async
-import uk.co.zac_h.spacex.dto.spacex.Launch
 import uk.co.zac_h.spacex.dto.spacex.QueryModel
 import uk.co.zac_h.spacex.dto.spacex.QueryOptionsModel
 import uk.co.zac_h.spacex.dto.spacex.QueryPopulateModel
+import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.launches.LaunchesRepository
+import uk.co.zac_h.spacex.types.Order
 import javax.inject.Inject
 
 @HiltViewModel
 class LaunchesFilterViewModel @Inject constructor(
-    private val repository: LaunchesRepository,
-    val filterClass: LaunchesFilterTest
+    private val repository: LaunchesRepository
 ) : ViewModel() {
+
+    val filter: LaunchesFilterBuilder = LaunchesFilterBuilder()
 
     private val _launchesLiveData = MutableLiveData<ApiResult<List<Launch>>>()
     val launchesLiveData: LiveData<ApiResult<List<Launch>>> =
         _launchesLiveData.switchMap { result ->
-            filterClass.map { filter ->
+            filter.map { filter ->
                 result.map {
                     it.filterAll(
-                        {
-                            filter.search.filter()?.let { searchTerm ->
-                                it.missionName?.lowercase()?.contains(searchTerm)
-                            }
-                        },
+                        if (filter.search.isFiltered) { launch ->
+                            launch.missionName?.lowercase()?.contains(filter.search.filter)
+                        } else null,
                         {
                             filter.dateRange.filter?.let { dateRange ->
                                 it.launchDate?.dateUnix?.times(1000) in dateRange
@@ -66,13 +66,11 @@ class LaunchesFilterViewModel @Inject constructor(
     }
 
     private inline fun <T, R : Comparable<R>> Iterable<T>.sortedBy(
-        direction: FilterOrder,
+        direction: Order,
         crossinline selector: (T) -> R?
-    ): List<T> {
-        return when (direction) {
-            FilterOrder.ASCENDING -> sortedWith(compareBy(selector))
-            FilterOrder.DESCENDING -> sortedWith(compareByDescending(selector))
-        }
+    ): List<T> = when (direction) {
+        Order.ASCENDING -> sortedWith(compareBy(selector))
+        Order.DESCENDING -> sortedWith(compareByDescending(selector))
     }
 
     private val query = QueryModel(

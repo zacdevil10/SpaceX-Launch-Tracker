@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemVehicleBinding
-import uk.co.zac_h.spacex.dto.spacex.Ship
 import uk.co.zac_h.spacex.launches.details.LaunchDetailsContainerFragmentDirections
+import uk.co.zac_h.spacex.vehicles.ships.Ship
 
 class LaunchDetailsShipsAdapter :
     ListAdapter<Ship, LaunchDetailsShipsAdapter.ViewHolder>(Comparator) {

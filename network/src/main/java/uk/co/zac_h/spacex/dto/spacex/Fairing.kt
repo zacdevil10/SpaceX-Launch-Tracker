@@ -33,7 +33,7 @@ data class FairingQueriedResponse(
     @field:Json(name = SPACEX_FIELD_FAIRING_LAUNCHES) val launches: List<LaunchResponse>?
 )
 
-data class Fairing(
+/*data class Fairing(
     val serial: String,
     val version: FairingVersion?,
     val status: FairingStatus?,
@@ -95,7 +95,7 @@ data class Fairing(
         }
     }
 
-}
+}*/
 
 enum class FairingStatus(val status: String) {
     ACTIVE(SPACEX_ACTIVE),

@@ -11,7 +11,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemIllustrationsFooterBinding
 import uk.co.zac_h.spacex.databinding.ListItemStatisticsBinding
 import uk.co.zac_h.spacex.statistics.StatisticsFragmentDirections
-import uk.co.zac_h.spacex.utils.PadType
+import uk.co.zac_h.spacex.types.PadType
 
 class StatisticsAdapter(private val context: Context, private val openWebLink: (String) -> Unit) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {

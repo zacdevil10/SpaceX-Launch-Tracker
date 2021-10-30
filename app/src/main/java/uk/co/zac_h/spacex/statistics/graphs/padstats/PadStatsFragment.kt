@@ -16,7 +16,7 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentPadStatsBinding
 import uk.co.zac_h.spacex.dto.spacex.StatsPadModel
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
-import uk.co.zac_h.spacex.utils.PadType
+import uk.co.zac_h.spacex.types.PadType
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 
 class PadStatsFragment : BaseFragment() {

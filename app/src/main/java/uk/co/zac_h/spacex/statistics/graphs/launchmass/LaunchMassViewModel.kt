@@ -11,7 +11,10 @@ import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.async
 import uk.co.zac_h.spacex.dto.spacex.*
+import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.statistics.StatisticsRepository
+import uk.co.zac_h.spacex.types.LaunchMassViewType
+import uk.co.zac_h.spacex.types.RocketType
 import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.models.LaunchMassStatsModel
 import uk.co.zac_h.spacex.utils.models.OrbitMassModel
@@ -28,7 +31,7 @@ class LaunchMassViewModel @Inject constructor(
     val cacheLocation: Repository.RequestLocation
         get() = repository.cacheLocation
 
-    var filterRocket: RocketTypeOld? = null
+    var filterRocket: RocketType? = null
 
     var filterType: LaunchMassViewType? = LaunchMassViewType.ROCKETS
 
@@ -53,15 +56,18 @@ class LaunchMassViewModel @Inject constructor(
 
                         val stat = first { it.year == year }
 
-                        when (launch.rocket?.id) {
-                            RocketIds.FALCON_ONE -> launch.payloads?.forEach { payload ->
+                        when (launch.rocket?.type) {
+                            RocketType.FALCON_ONE -> launch.payloads?.forEach { payload ->
                                 updateOrbitMass(stat.falconOne, payload.orbit, payload.mass?.kg)
                             }
-                            RocketIds.FALCON_NINE -> launch.payloads?.forEach { payload ->
+                            RocketType.FALCON_NINE -> launch.payloads?.forEach { payload ->
                                 updateOrbitMass(stat.falconNine, payload.orbit, payload.mass?.kg)
                             }
-                            RocketIds.FALCON_HEAVY -> launch.payloads?.forEach { payload ->
+                            RocketType.FALCON_HEAVY -> launch.payloads?.forEach { payload ->
                                 updateOrbitMass(stat.falconHeavy, payload.orbit, payload.mass?.kg)
+                            }
+                            RocketType.STARSHIP -> launch.payloads?.forEach { payload ->
+                                updateOrbitMass(stat.starship, payload.orbit, payload.mass?.kg)
                             }
                         }
                     }

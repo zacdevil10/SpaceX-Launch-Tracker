@@ -12,7 +12,6 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
-import uk.co.zac_h.spacex.dto.spacex.Core
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
 

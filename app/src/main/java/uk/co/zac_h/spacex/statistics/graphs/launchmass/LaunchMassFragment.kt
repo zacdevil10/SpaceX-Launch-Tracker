@@ -26,6 +26,8 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchMassBinding
 import uk.co.zac_h.spacex.statistics.adapters.Statistics
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
+import uk.co.zac_h.spacex.types.LaunchMassViewType
+import uk.co.zac_h.spacex.types.RocketType
 import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.LaunchMassStatsModel
@@ -78,9 +80,9 @@ class LaunchMassFragment : BaseFragment() {
 
         binding.launchMassRocketChipGroup.setOnCheckedChangeListener { _, checkedId ->
             viewModel.filterRocket = when (checkedId) {
-                binding.launchMassFalconOneToggle.id -> RocketTypeOld.FALCON_ONE
-                binding.launchMassFalconNineToggle.id -> RocketTypeOld.FALCON_NINE
-                binding.launchMassFalconHeavyToggle.id -> RocketTypeOld.FALCON_HEAVY
+                binding.launchMassFalconOneToggle.id -> RocketType.FALCON_ONE
+                binding.launchMassFalconNineToggle.id -> RocketType.FALCON_NINE
+                binding.launchMassFalconHeavyToggle.id -> RocketType.FALCON_HEAVY
                 else -> null
             }
             viewModel.get()
@@ -117,9 +119,9 @@ class LaunchMassFragment : BaseFragment() {
                         val keys: List<KeysModel> = when (viewModel.filterType) {
                             LaunchMassViewType.ROCKETS -> {
                                 when (viewModel.filterRocket) {
-                                    RocketTypeOld.FALCON_ONE -> populateRocketKey(f1 = stats.falconOne)
-                                    RocketTypeOld.FALCON_NINE -> populateRocketKey(f9 = stats.falconNine)
-                                    RocketTypeOld.FALCON_HEAVY -> populateRocketKey(fh = stats.falconHeavy)
+                                    RocketType.FALCON_ONE -> populateRocketKey(f1 = stats.falconOne)
+                                    RocketType.FALCON_NINE -> populateRocketKey(f9 = stats.falconNine)
+                                    RocketType.FALCON_HEAVY -> populateRocketKey(fh = stats.falconHeavy)
                                     else -> populateRocketKey(
                                         stats.falconOne,
                                         stats.falconNine,
@@ -129,9 +131,9 @@ class LaunchMassFragment : BaseFragment() {
                             }
                             LaunchMassViewType.ORBIT -> {
                                 when (viewModel.filterRocket) {
-                                    RocketTypeOld.FALCON_ONE -> populateOrbitKey(f1 = stats.falconOne)
-                                    RocketTypeOld.FALCON_NINE -> populateOrbitKey(f9 = stats.falconNine)
-                                    RocketTypeOld.FALCON_HEAVY -> populateOrbitKey(fh = stats.falconHeavy)
+                                    RocketType.FALCON_ONE -> populateOrbitKey(f1 = stats.falconOne)
+                                    RocketType.FALCON_NINE -> populateOrbitKey(f9 = stats.falconNine)
+                                    RocketType.FALCON_HEAVY -> populateOrbitKey(fh = stats.falconHeavy)
                                     else -> populateOrbitKey(
                                         stats.falconOne,
                                         stats.falconNine,
@@ -206,9 +208,9 @@ class LaunchMassFragment : BaseFragment() {
             colors.add(ColorTemplate.rgb("6d4c41"))
         } else {
             when (viewModel.filterRocket) {
-                RocketTypeOld.FALCON_ONE -> colors.add(ColorTemplate.rgb("29b6f6"))
-                RocketTypeOld.FALCON_NINE -> colors.add(ColorTemplate.rgb("9ccc65"))
-                RocketTypeOld.FALCON_HEAVY -> colors.add(ColorTemplate.rgb("ff7043"))
+                RocketType.FALCON_ONE -> colors.add(ColorTemplate.rgb("29b6f6"))
+                RocketType.FALCON_NINE -> colors.add(ColorTemplate.rgb("9ccc65"))
+                RocketType.FALCON_HEAVY -> colors.add(ColorTemplate.rgb("ff7043"))
                 else -> {
                     colors.add(ColorTemplate.rgb("29b6f6"))
                     colors.add(ColorTemplate.rgb("9ccc65"))
@@ -224,9 +226,9 @@ class LaunchMassFragment : BaseFragment() {
 
         response.forEach {
             val newMax = when (viewModel.filterRocket) {
-                RocketTypeOld.FALCON_ONE -> it.falconOne.total
-                RocketTypeOld.FALCON_NINE -> it.falconNine.total
-                RocketTypeOld.FALCON_HEAVY -> it.falconHeavy.total
+                RocketType.FALCON_ONE -> it.falconOne.total
+                RocketType.FALCON_NINE -> it.falconNine.total
+                RocketType.FALCON_HEAVY -> it.falconHeavy.total
                 else -> it.falconOne.total + it.falconNine.total + it.falconHeavy.total
             }
 
@@ -241,9 +243,9 @@ class LaunchMassFragment : BaseFragment() {
                     it.year.toFloat(),
                     when (viewModel.filterType) {
                         LaunchMassViewType.ROCKETS -> when (viewModel.filterRocket) {
-                            RocketTypeOld.FALCON_ONE -> floatArrayOf(it.falconOne.total)
-                            RocketTypeOld.FALCON_NINE -> floatArrayOf(it.falconNine.total)
-                            RocketTypeOld.FALCON_HEAVY -> floatArrayOf(it.falconHeavy.total)
+                            RocketType.FALCON_ONE -> floatArrayOf(it.falconOne.total)
+                            RocketType.FALCON_NINE -> floatArrayOf(it.falconNine.total)
+                            RocketType.FALCON_HEAVY -> floatArrayOf(it.falconHeavy.total)
                             else -> floatArrayOf(
                                 it.falconOne.total,
                                 it.falconNine.total,
@@ -251,9 +253,9 @@ class LaunchMassFragment : BaseFragment() {
                             )
                         }
                         LaunchMassViewType.ORBIT -> when (viewModel.filterRocket) {
-                            RocketTypeOld.FALCON_ONE -> orbitsToArray(it.falconOne)
-                            RocketTypeOld.FALCON_NINE -> orbitsToArray(it.falconNine)
-                            RocketTypeOld.FALCON_HEAVY -> orbitsToArray(it.falconHeavy)
+                            RocketType.FALCON_ONE -> orbitsToArray(it.falconOne)
+                            RocketType.FALCON_NINE -> orbitsToArray(it.falconNine)
+                            RocketType.FALCON_HEAVY -> orbitsToArray(it.falconHeavy)
                             else -> floatArrayOf(
                                 it.falconOne.LEO + it.falconNine.LEO + it.falconHeavy.LEO,
                                 it.falconOne.GTO + it.falconNine.GTO + it.falconHeavy.GTO,
@@ -282,9 +284,9 @@ class LaunchMassFragment : BaseFragment() {
 
             stackLabels = when (viewModel.filterType) {
                 LaunchMassViewType.ROCKETS -> when (viewModel.filterRocket) {
-                    RocketTypeOld.FALCON_ONE -> arrayOf("Falcon 1")
-                    RocketTypeOld.FALCON_NINE -> arrayOf("Falcon 9")
-                    RocketTypeOld.FALCON_HEAVY -> arrayOf("Falcon Heavy")
+                    RocketType.FALCON_ONE -> arrayOf("Falcon 1")
+                    RocketType.FALCON_NINE -> arrayOf("Falcon 9")
+                    RocketType.FALCON_HEAVY -> arrayOf("Falcon Heavy")
                     else -> arrayOf("Falcon 1", "Falcon 9", "Falcon Heavy")
                 }
                 LaunchMassViewType.ORBIT -> arrayOf(

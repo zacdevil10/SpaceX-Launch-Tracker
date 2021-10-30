@@ -11,8 +11,9 @@ import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.async
 import uk.co.zac_h.spacex.dto.spacex.*
+import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.statistics.StatisticsRepository
-import uk.co.zac_h.spacex.utils.RocketIds
+import uk.co.zac_h.spacex.types.RocketType
 import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.RateStatsModel
 import javax.inject.Inject
@@ -46,10 +47,10 @@ class LaunchRateViewModel @Inject constructor(
                         val stat = first { newList -> newList.year == year }
 
                         if (it.upcoming == false) it.success?.let { success ->
-                            if (success) when (it.rocket?.id) {
-                                RocketIds.FALCON_ONE -> stat.falconOne++
-                                RocketIds.FALCON_NINE -> stat.falconNine++
-                                RocketIds.FALCON_HEAVY -> stat.falconHeavy++
+                            if (success) when (it.rocket?.type) {
+                                RocketType.FALCON_ONE -> stat.falconOne++
+                                RocketType.FALCON_NINE -> stat.falconNine++
+                                RocketType.FALCON_HEAVY -> stat.falconHeavy++
                                 else -> return@forEach
                             } else stat.failure++
                         } else stat.planned++
