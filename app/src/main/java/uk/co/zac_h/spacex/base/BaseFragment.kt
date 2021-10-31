@@ -1,17 +1,14 @@
 package uk.co.zac_h.spacex.base
 
-import android.os.Bundle
-import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import javax.inject.Inject
 
 @AndroidEntryPoint
 abstract class BaseFragment : Fragment(),
@@ -19,36 +16,21 @@ abstract class BaseFragment : Fragment(),
 
     open val title: String by lazy { getString(R.string.app_name) }
 
-    private lateinit var navController: NavController
-
-    private lateinit var appBarConfig: AppBarConfiguration
-
-    private val applicationContext by lazy { requireContext().applicationContext as App }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        navController = NavHostFragment.findNavController(this)
-        appBarConfig = AppBarConfiguration.Builder(applicationContext.startDestinations).build()
-    }
+    @Inject
+    lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
     override fun onStart() {
         super.onStart()
-        applicationContext.networkStateChangeListener.addListener(this)
+        networkStateChangeListener.addListener(this)
     }
 
     override fun onStop() {
         super.onStop()
-        applicationContext.networkStateChangeListener.removeListener(this)
-    }
-
-    protected fun Toolbar.setup() {
-        //setupWithNavController(navController, appBarConfig)
-        title = this@BaseFragment.title
+        networkStateChangeListener.removeListener(this)
     }
 
     protected fun setup(toolbar: Toolbar, toolbarLayout: CollapsingToolbarLayout) {
-        NavigationUI.setupWithNavController(toolbarLayout, toolbar, navController, appBarConfig)
+        NavigationUI.setupWithNavController(toolbarLayout, toolbar, findNavController())
         toolbar.title = title
     }
 }

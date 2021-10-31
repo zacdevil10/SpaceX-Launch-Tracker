@@ -19,6 +19,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
@@ -26,10 +27,12 @@ import uk.co.zac_h.spacex.about.history.filter.HistoryFilterFragment
 import uk.co.zac_h.spacex.databinding.ActivityMainBinding
 import uk.co.zac_h.spacex.launches.LaunchesFragmentDirections
 import uk.co.zac_h.spacex.utils.*
+import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedListener,
-    Toolbar.OnMenuItemClickListener {
+    Toolbar.OnMenuItemClickListener, OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
@@ -61,6 +64,11 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         }
     }
 
+    private var snackbar: Snackbar? = null
+
+    @Inject
+    lateinit var networkStateChangeListener: OnNetworkStateChangeListener
+
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as App).preferencesRepo.themeModeLive.observe(this) { mode ->
             mode?.let { delegate.localNightMode = it }
@@ -77,6 +85,20 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             .Builder(viewModel.startDestinations)
             .setOpenableLayout(openableNavView)
             .build()
+
+        networkStateChangeListener.apply {
+            addListener(this@MainActivity)
+            registerReceiver()
+        }
+
+        snackbar = Snackbar.make(
+            binding.coordinator,
+            R.string.network_connection,
+            Snackbar.LENGTH_INDEFINITE
+        ).apply {
+            anchorView = binding.bottomAppBar
+            setAction(R.string.dismiss_label) { dismiss() }
+        }
 
         binding.bottomAppBar.setupWithNavController(navController, appBarConfig)
         binding.navView.setupWithNavController(navController)
@@ -105,6 +127,28 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         }
 
         onBackPressedDispatcher.addCallback(this, closeNavDrawerOnBackPressed)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        networkStateChangeListener.updateState()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        snackbar = null
+        networkStateChangeListener.apply {
+            removeListener(this@MainActivity)
+            unregisterReceiver()
+        }
+    }
+
+    override fun networkAvailable() {
+        snackbar?.dismiss()
+    }
+
+    override fun networkLost() {
+        snackbar?.show()
     }
 
     override fun onDestinationChanged(
