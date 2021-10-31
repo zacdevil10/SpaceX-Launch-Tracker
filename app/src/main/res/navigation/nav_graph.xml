@@ -71,7 +71,7 @@
     <fragment
         android:id="@+id/crew_detail_page_fragment"
         android:name="uk.co.zac_h.spacex.crew.details.CrewItemFragment"
-        tools:layout="@layout/fragment_crew_details">
+        tools:layout="@layout/fragment_crew_item">
 
         <argument
             android:name="id"
