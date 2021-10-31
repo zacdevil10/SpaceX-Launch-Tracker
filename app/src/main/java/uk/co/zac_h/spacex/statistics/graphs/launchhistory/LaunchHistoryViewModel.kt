@@ -81,7 +81,7 @@ class LaunchHistoryViewModel @Inject constructor(
                     }
                 }
 
-                listOf(falconOne, falconNine, falconHeavy)
+                listOf(falconOne, falconNine, falconHeavy, starship)
             }
         }
     }
@@ -90,7 +90,11 @@ class LaunchHistoryViewModel @Inject constructor(
         QueryUpcomingLaunchesModel(false),
         QueryOptionsModel(
             false, listOf(
-                QueryPopulateModel("rocket", populate = "", select = listOf("success_rate_pct"))
+                QueryPopulateModel(
+                    "rocket",
+                    populate = "",
+                    select = listOf("name", "success_rate_pct")
+                )
             ), "", listOf("rocket", "success"), 100000
         )
     )

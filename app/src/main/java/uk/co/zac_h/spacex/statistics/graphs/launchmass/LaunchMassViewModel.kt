@@ -86,7 +86,7 @@ class LaunchMassViewModel @Inject constructor(
                     populate = "",
                     select = listOf("mass_kg", "orbit")
                 ),
-                QueryPopulateModel("rocket", populate = "", select = listOf("id"))
+                QueryPopulateModel("rocket", populate = "", select = listOf("id", "name"))
             ),
             QueryLaunchesSortByDate("asc"),
             listOf("payloads", "name", "date_unix", "rocket"),
