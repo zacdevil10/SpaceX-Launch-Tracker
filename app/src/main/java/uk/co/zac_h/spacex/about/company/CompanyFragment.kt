@@ -11,7 +11,6 @@ import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentCompanyBinding
-import uk.co.zac_h.spacex.dto.spacex.Company
 import uk.co.zac_h.spacex.utils.openWebLink
 import uk.co.zac_h.spacex.utils.orUnknown
 
@@ -53,15 +52,12 @@ class CompanyFragment : BaseFragment() {
             }
 
             response.website?.let { website ->
-                companyWebsite.visibility = View.VISIBLE
                 companyWebsite.setOnClickListener { openWebLink(website) }
             }
             response.twitter?.let { twitter ->
-                companyTwitter.visibility = View.VISIBLE
                 companyTwitter.setOnClickListener { openWebLink(twitter) }
             }
             response.flickr?.let { flickr ->
-                companyAlbum.visibility = View.VISIBLE
                 companyAlbum.setOnClickListener { openWebLink(flickr) }
             }
 
@@ -79,12 +75,14 @@ class CompanyFragment : BaseFragment() {
         }
     }
 
-    fun showProgress() {
-
+    private fun showProgress() {
+        binding.content.visibility = View.INVISIBLE
+        binding.progress.show()
     }
 
-    fun hideProgress() {
-
+    private fun hideProgress() {
+        binding.content.visibility = View.VISIBLE
+        binding.progress.hide()
     }
 
     fun showError(error: String) {
