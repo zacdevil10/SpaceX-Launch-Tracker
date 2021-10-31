@@ -65,7 +65,7 @@ class LaunchRateViewModel @Inject constructor(
         QueryOptionsModel(
             false,
             listOf(
-                QueryPopulateModel("rocket", populate = "", select = listOf("id"))
+                QueryPopulateModel("rocket", populate = "", select = listOf("id", "name"))
             ),
             QueryLaunchesSortByDate("asc"),
             listOf("rocket", "success", "upcoming", "date_unix"),

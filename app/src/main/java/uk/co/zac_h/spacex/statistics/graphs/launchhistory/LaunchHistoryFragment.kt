@@ -142,6 +142,7 @@ class LaunchHistoryFragment : BaseFragment() {
         var falconOne = 0
         var falconNine = 0
         var falconHeavy = 0
+        var starship = 0
 
         response.forEach {
             when (it.rocket) {
@@ -160,13 +161,19 @@ class LaunchHistoryFragment : BaseFragment() {
                     LaunchHistoryFilter.FAILURES -> it.failures
                     else -> it.successes + it.failures
                 }
+                RocketType.STARSHIP -> starship = when (viewModel.filterValue) {
+                    LaunchHistoryFilter.SUCCESSES -> it.successes
+                    LaunchHistoryFilter.FAILURES -> it.failures
+                    else -> it.successes + it.failures
+                }
             }
         }
 
         val entries = listOfNotNull(
             if (falconOne > 0) PieEntry(falconOne.toFloat(), "Falcon 1") else null,
             if (falconNine > 0) PieEntry(falconNine.toFloat(), "Falcon 9") else null,
-            if (falconHeavy > 0) PieEntry(falconHeavy.toFloat(), "Falcon Heavy") else null
+            if (falconHeavy > 0) PieEntry(falconHeavy.toFloat(), "Falcon Heavy") else null,
+            if (starship > 0) PieEntry(starship.toFloat(), "Starship") else null
         )
 
         val dataSet = PieDataSet(entries, "").apply {
@@ -175,6 +182,7 @@ class LaunchHistoryFragment : BaseFragment() {
                 ColorTemplate.rgb("29b6f6"),
                 ColorTemplate.rgb("9ccc65"),
                 ColorTemplate.rgb("ff7043"),
+                ColorTemplate.rgb("757575")
             )
             valueFormatter = object : ValueFormatter() {
                 override fun getFormattedValue(value: Float): String {
@@ -214,6 +222,9 @@ class LaunchHistoryFragment : BaseFragment() {
 
                     binding.falconHeavyPercentText.text =
                         getString(R.string.percentage, it.successRate)
+                }
+                RocketType.STARSHIP -> {
+                    //TODO: Add success rate for starship once launches are recorded in API
                 }
             }
         }
