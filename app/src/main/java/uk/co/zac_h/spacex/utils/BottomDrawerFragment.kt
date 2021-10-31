@@ -34,12 +34,6 @@ abstract class BottomDrawerFragment : Fragment(), Openable {
 
             addOnStateChangedAction(VisibilityStateAction(scrim))
             addOnStateChangedAction(BackPressedStateAction(closeDrawerOnBackPressed))
-            addOnStateChangedAction(
-                HideKeyboard(
-                    requireContext(),
-                    requireActivity().window.decorView.windowToken
-                )
-            )
         }
 
         behaviour.addBottomSheetCallback(bottomSheetCallback)
