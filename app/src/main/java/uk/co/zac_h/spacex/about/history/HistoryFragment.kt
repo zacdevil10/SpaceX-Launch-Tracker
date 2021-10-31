@@ -59,7 +59,6 @@ class HistoryFragment : BaseFragment() {
             ) else LinearLayoutManager(this@HistoryFragment.context)
             adapter = historyAdapter
             addItemDecoration(HeaderItemDecoration(this, historyAdapter.isHeader(), isTabletLand))
-            itemAnimator = null
         }
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -68,15 +67,15 @@ class HistoryFragment : BaseFragment() {
 
         viewModel.history.observe(viewLifecycleOwner) {
             when (it.status) {
-                ApiResult.Status.PENDING -> showProgress()
+                ApiResult.Status.PENDING -> if (historyAdapter.itemCount == 0) showProgress()
                 ApiResult.Status.SUCCESS -> {
-                    hideProgress()
-                    toggleSwipeRefresh(false)
-                    it.data?.let { data -> update(data) }
+                    if (historyAdapter.itemCount == 0) hideProgress()
+                    update(it.data)
+                    binding.swipeRefresh.isRefreshing = false
                 }
                 ApiResult.Status.FAILURE -> {
                     showError(it.error?.message.orUnknown())
-                    toggleSwipeRefresh(false)
+                    binding.swipeRefresh.isRefreshing = false
                 }
             }
         }
@@ -87,6 +86,8 @@ class HistoryFragment : BaseFragment() {
         }
 
         viewModel.getHistory()
+
+        historyAdapter.itemCount
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
@@ -103,31 +104,28 @@ class HistoryFragment : BaseFragment() {
         return true
     }
 
-    fun update(response: List<HistoryHeaderModel>) {
-        historyAdapter.submitList(response.filter {
+    fun update(response: List<HistoryHeaderModel>?) {
+        historyAdapter.submitList(response?.filter {
             it.historyModel?.title?.lowercase()?.contains(searchText) ?: true
-        })
-
-        binding.historyRecycler.apply {
-            smoothScrollToPosition(0)
-            scheduleLayoutAnimation()
+        }) {
+            binding.historyRecycler.apply {
+                smoothScrollToPosition(0)
+            }
         }
     }
 
-    fun showProgress() {
-
+    private fun showProgress() {
+        binding.historyRecycler.visibility = View.INVISIBLE
+        binding.progress.show()
     }
 
-    fun hideProgress() {
-
+    private fun hideProgress() {
+        binding.historyRecycler.visibility = View.VISIBLE
+        binding.progress.hide()
     }
 
-    fun showError(error: String) {
+    private fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding.swipeRefresh.isRefreshing = isRefreshing
     }
 
     override fun networkAvailable() {

@@ -2,9 +2,11 @@ package uk.co.zac_h.spacex.base
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.app.Activity
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
 import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
@@ -156,6 +158,9 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         destination: NavDestination,
         arguments: Bundle?
     ) {
+        //Close keyboard
+        val ime = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        ime.hideSoftInputFromWindow(binding.root.windowToken, 0)
         //Close any open bottom sheets
         openableBottomDrawer.close()
         //Set toolbar menu for destination
@@ -224,9 +229,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                 fragment.toggle()
             }
             fragment.addOnStateChangedAction(
-                ShowHideFabStateAction(binding.fab) {
-                    viewModel.isFabVisible
-                }
+                ShowHideFabStateAction(binding.fab) { viewModel.isFabVisible }
             )
         } ?: run {
             binding.fab.setOnClickListener(null)
@@ -347,11 +350,10 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     private fun setAppBarForHistory() {
         binding.run {
-            fab.setImageResource(R.drawable.ic_sort_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.show()
-            viewModel.isFabVisible = true
+            fab.hide()
+            viewModel.isFabVisible = false
         }
     }
 

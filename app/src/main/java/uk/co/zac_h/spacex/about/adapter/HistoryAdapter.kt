@@ -9,8 +9,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.databinding.ListItemHistoryEventBinding
 import uk.co.zac_h.spacex.databinding.ListItemHistoryHeadingBinding
-import uk.co.zac_h.spacex.utils.animateFromRightWithOffset
-import uk.co.zac_h.spacex.utils.animationScaleUpWithOffset
 import uk.co.zac_h.spacex.utils.formatDateMillisDDMMM
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 
@@ -45,22 +43,16 @@ class HistoryAdapter(
                 lineBottom.visibility =
                     if (position == itemCount.minus(1)) View.INVISIBLE else View.VISIBLE
 
-                marker.startAnimation(animationScaleUpWithOffset(context))
-
                 date.text =
                     event.historyModel?.event?.dateUnix?.formatDateMillisDDMMM()
-                date.startAnimation(animateFromRightWithOffset(context, 0))
 
                 title.text = event.historyModel?.title
-                title.startAnimation(animateFromRightWithOffset(context, 40))
 
                 details.text = event.historyModel?.details
-                details.startAnimation(animateFromRightWithOffset(context, 80))
 
                 article.apply {
                     event.historyModel?.article?.let { link ->
                         visibility = View.VISIBLE
-                        startAnimation(animateFromRightWithOffset(this@HistoryAdapter.context, 240))
 
                         setOnClickListener {
                             openWebLink(link)
