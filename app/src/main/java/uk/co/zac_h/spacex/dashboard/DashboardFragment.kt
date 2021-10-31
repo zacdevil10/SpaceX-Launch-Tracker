@@ -25,8 +25,6 @@ import uk.co.zac_h.spacex.utils.*
 @AndroidEntryPoint
 class DashboardFragment : BaseFragment() {
 
-    override val title: String by lazy { getString(R.string.menu_home) }
-
     private val viewModel: DashboardViewModel by viewModels()
 
     private lateinit var binding: FragmentDashboardBinding

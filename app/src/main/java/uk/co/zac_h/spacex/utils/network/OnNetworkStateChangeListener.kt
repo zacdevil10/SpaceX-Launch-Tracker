@@ -7,8 +7,14 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.net.Network
 import android.os.Build
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class OnNetworkStateChangeListener(private val context: Context) {
+@Singleton
+class OnNetworkStateChangeListener @Inject constructor(
+    @ApplicationContext val context: Context
+) {
 
     private val listeners: MutableSet<NetworkStateReceiverListener> = HashSet()
 
