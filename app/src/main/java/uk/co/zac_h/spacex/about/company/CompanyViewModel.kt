@@ -5,15 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
-import uk.co.zac_h.spacex.dto.spacex.Company
-import uk.co.zac_h.spacex.dto.spacex.CompanyResponse
-import uk.co.zac_h.spacex.dto.spacex.QueryModel
-import uk.co.zac_h.spacex.map
 import javax.inject.Inject
 
 @HiltViewModel
