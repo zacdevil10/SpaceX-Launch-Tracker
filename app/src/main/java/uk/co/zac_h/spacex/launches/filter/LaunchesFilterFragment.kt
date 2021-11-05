@@ -10,6 +10,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.CompoundButton
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.core.view.doOnPreDraw
@@ -110,8 +111,17 @@ class LaunchesFilterFragment : Fragment() {
         }
 
         viewModel.launchesLiveData.observe(viewLifecycleOwner) { result ->
-            if (result.status == ApiResult.Status.SUCCESS) launchesAdapter.submitList(result.data) {
-                if (shouldScroll) binding.list.scrollToPosition(0)
+            when (result.status) {
+                ApiResult.Status.PENDING -> if (launchesAdapter.itemCount == 0) {
+                    binding.progress.show()
+                }
+                ApiResult.Status.SUCCESS -> {
+                    binding.progress.hide()
+                    launchesAdapter.submitList(result.data) {
+                        if (shouldScroll) binding.list.scrollToPosition(0)
+                    }
+                }
+                ApiResult.Status.FAILURE -> showError(result.error?.message)
             }
         }
 
@@ -259,5 +269,9 @@ class LaunchesFilterFragment : Fragment() {
                 binding.launchesFilter.datePicker.isChecked = range != null
             }
         }
+
+    private fun showError(error: String?) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    }
 
 }
