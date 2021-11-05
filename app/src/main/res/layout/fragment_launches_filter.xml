@@ -8,8 +8,16 @@
     android:background="@color/color_background"
     tools:context=".launches.filter.LaunchesFilterFragment">
 
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progress"
+        style="?attr/circularProgressIndicatorStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="true" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/search_toolbar"
+        android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
@@ -52,9 +60,9 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="textCapWords"
+                android:hint="@string/search"
                 android:imeOptions="actionSearch"
-                android:hint="@string/search" />
+                android:inputType="textCapWords" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
