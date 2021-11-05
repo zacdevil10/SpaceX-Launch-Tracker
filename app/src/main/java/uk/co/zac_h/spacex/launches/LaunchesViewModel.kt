@@ -12,6 +12,7 @@ import uk.co.zac_h.spacex.async
 import uk.co.zac_h.spacex.dto.spacex.QueryModel
 import uk.co.zac_h.spacex.dto.spacex.QueryOptionsModel
 import uk.co.zac_h.spacex.dto.spacex.QueryPopulateModel
+import uk.co.zac_h.spacex.types.LaunchType
 import javax.inject.Inject
 
 @HiltViewModel

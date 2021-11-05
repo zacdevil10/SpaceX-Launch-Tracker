@@ -11,6 +11,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesBinding
+import uk.co.zac_h.spacex.types.LaunchType
 import uk.co.zac_h.spacex.utils.ViewPagerAdapter
 
 @AndroidEntryPoint
@@ -74,6 +75,3 @@ class LaunchesFragment : BaseFragment() {
     }
 }
 
-enum class LaunchType(val typeString: String) {
-    UPCOMING("upcoming"), PAST("past")
-}
