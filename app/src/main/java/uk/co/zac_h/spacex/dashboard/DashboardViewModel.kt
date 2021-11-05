@@ -19,64 +19,46 @@ class DashboardViewModel @Inject constructor(
     pinnedPreferencesRepository: PinnedPreferencesRepository
 ) : ViewModel() {
 
-    private val _nextLaunch = MutableLiveData<ApiResult<Launch>>()
-    val nextLaunch: LiveData<ApiResult<Launch>> = _nextLaunch
+    private val _launches = MutableLiveData<ApiResult<List<Launch>>>()
 
-    private val _latestLaunch = MutableLiveData<ApiResult<Launch>>()
-    val latestLaunch: LiveData<ApiResult<Launch>> = _latestLaunch
+    val pinnedLaunches: LiveData<ApiResult<List<Launch>>> =
+        pinnedPreferencesRepository.pinnedLive.switchMap { pinned ->
+            _launches.map { response ->
+                response.map { launches ->
+                    launches.filter { launch ->
+                        launch.id in pinned.keys && pinned[launch.id] == true
+                    }
+                }
+            }
+        }
 
-    private val _pinnedLaunches = MutableLiveData<MutableList<ApiResult<Launch>>>()
-    val pinnedLaunches: LiveData<MutableList<ApiResult<Launch>>> = _pinnedLaunches
-    private val pinned: MutableList<ApiResult<Launch>> = mutableListOf()
+    val nextLaunch: LiveData<ApiResult<Launch>> = _launches.map { result ->
+        result.map {
+            it.sortedBy { launch -> launch.flightNumber }
+                .first { launch -> launch.upcoming == true }
+        }
+    }
 
-    val pinnedLiveData = pinnedPreferencesRepository.pinnedLive.map {
-        it.filter { item ->
-            val keep = item.value as Boolean
-            if (!keep) pinnedPreferencesRepository.removePinnedLaunch(item.key)
-            keep
+    val latestLaunch: LiveData<ApiResult<Launch>> = _launches.map { result ->
+        result.map {
+            it.sortedBy { launch -> launch.flightNumber }
+                .last { launch -> launch.upcoming == false }
         }
     }
 
     val dashboardLiveData = repository.allPreferences.map { it }
 
-    fun getLaunch(id: String, cachePolicy: CachePolicy = CachePolicy.EXPIRES) {
+    fun getLaunches(cachePolicy: CachePolicy = CachePolicy.EXPIRES) {
         viewModelScope.launch {
-            val response = async(
-                when (id) {
-                    "next" -> _nextLaunch
-                    "latest" -> _latestLaunch
-                    else -> null
-                }
-            ) {
+            val response = async(_launches) {
                 repository.fetch(key = "launches", query = query, cachePolicy = cachePolicy)
             }
 
-            val launch = response.await().map { docsModel ->
-                Launch(
-                    docsModel.docs.filter {
-                        when (id) {
-                            "next" -> it.upcoming == true
-                            "latest" -> it.upcoming == false
-                            else -> it.id == id
-                        }
-                    }.sortedBy { it.flightNumber }.let {
-                        when (id) {
-                            "next" -> it.first()
-                            "latest" -> it.last()
-                            else -> it.first()
-                        }
-                    }
-                )
+            val launches = response.await().map { docsModel ->
+                docsModel.docs.map { Launch(it) }
             }
 
-            when (id) {
-                "next" -> _nextLaunch.value = launch
-                "latest" -> _latestLaunch.value = launch
-                else -> {
-                    if (pinned.none { it.data?.id == launch.data?.id }) pinned.add(launch)
-                    _pinnedLaunches.value = pinned
-                }
-            }
+            _launches.value = launches
         }
     }
 

@@ -4,14 +4,12 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.*
 import android.widget.Toast
-import androidx.core.content.ContextCompat.getDrawable
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
-import com.google.android.material.transition.MaterialFadeThrough
+import com.google.android.material.transition.MaterialElevationScale
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.*
 import uk.co.zac_h.spacex.base.BaseFragment
@@ -26,18 +24,18 @@ class DashboardFragment : BaseFragment() {
 
     private val viewModel: DashboardViewModel by viewModels()
 
-    private lateinit var binding: FragmentDashboardBinding
+    private var _binding: FragmentDashboardBinding? = null
+    private val binding get() = checkNotNull(_binding) { "Binding is null" }
 
     private lateinit var pinnedAdapter: LaunchesAdapter
-    private var pinnedArray: ArrayList<Launch> = ArrayList()
 
     private var countdownTimer: CountDownTimer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        exitTransition = MaterialFadeThrough()
-        reenterTransition = MaterialFadeThrough()
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
     }
 
     override fun onCreateView(
@@ -45,7 +43,7 @@ class DashboardFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentDashboardBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,12 +52,9 @@ class DashboardFragment : BaseFragment() {
         view.doOnPreDraw { startPostponedEnterTransition() }
         postponeEnterTransition()
 
-        viewModel.getLaunch("next")
-        viewModel.getLaunch("latest")
+        viewModel.getLaunches()
 
-        pinnedAdapter = LaunchesAdapter(requireContext()).also {
-            it.submitList(pinnedArray)
-        }
+        pinnedAdapter = LaunchesAdapter(requireContext())
 
         binding.pinned.pinnedRecycler.apply {
             layoutManager = LinearLayoutManager(this@DashboardFragment.context)
@@ -67,35 +62,26 @@ class DashboardFragment : BaseFragment() {
         }
 
         binding.refresh.setOnRefreshListener {
-            viewModel.getLaunch("next", CachePolicy.REFRESH)
-            viewModel.getLaunch("latest", CachePolicy.REFRESH)
+            viewModel.getLaunches(CachePolicy.REFRESH)
         }
 
         viewModel.dashboardLiveData.observe(viewLifecycleOwner) { entries ->
             entries?.forEach {
                 when (it.key) {
-                    PREFERENCES_NEXT_LAUNCH -> showNextLaunch(it.value as Boolean)
-                    PREFERENCES_PREVIOUS_LAUNCH -> showLatestLaunch(it.value as Boolean)
-                    PREFERENCES_PINNED_LAUNCH -> showPinnedList(it.value as Boolean)
+                    PREFERENCES_NEXT_LAUNCH -> toggleCardVisibility(
+                        binding.next.dashboardLaunch,
+                        it.value as Boolean
+                    )
+                    PREFERENCES_PREVIOUS_LAUNCH -> toggleCardVisibility(
+                        binding.latest.dashboardLaunch,
+                        it.value as Boolean
+                    )
+                    PREFERENCES_PINNED_LAUNCH -> toggleCardVisibility(
+                        binding.pinned.dashboardPinned,
+                        it.value as Boolean
+                    )
                 }
             }
-        }
-
-        viewModel.pinnedLiveData.observe(viewLifecycleOwner) { mode ->
-            mode?.forEach { e ->
-                when (e.value) {
-                    true -> if (pinnedArray.none { it.id == e.key }) {
-                        viewModel.getLaunch(e.key)
-                    }
-                    false -> {
-                        pinnedArray.removeAll { it.id == e.key }
-                        pinnedAdapter.submitList(pinnedArray)
-                        //pinnedSharedPreferences.removePinnedLaunch(e.key)
-                    }
-                }
-            }
-
-            if (mode.isNullOrEmpty()) showPinnedMessage()
         }
 
         viewModel.nextLaunch.observe(viewLifecycleOwner) { response ->
@@ -141,9 +127,16 @@ class DashboardFragment : BaseFragment() {
         }
 
         viewModel.pinnedLaunches.observe(viewLifecycleOwner) { response ->
-            val launches = response.map { it.data }
-            pinnedAdapter.submitList(launches)
-            binding.pinned.progress.hide()
+            when (response.status) {
+                ApiResult.Status.PENDING -> binding.pinned.progress.show()
+                ApiResult.Status.SUCCESS -> {
+                    pinnedAdapter.submitList(response.data)
+                    binding.pinned.progress.hide()
+                    binding.pinned.pinnedMessage.visibility =
+                        if (response.data.isNullOrEmpty()) View.VISIBLE else View.GONE
+                }
+                ApiResult.Status.FAILURE -> showError(response.error?.message)
+            }
         }
     }
 
@@ -151,13 +144,13 @@ class DashboardFragment : BaseFragment() {
         super.onDestroyView()
         countdownTimer?.cancel()
         countdownTimer = null
+        _binding = null
     }
 
     fun update(data: Any, response: Launch) {
         when (data) {
             Upcoming.NEXT -> update(binding.next, response)
             Upcoming.LATEST -> update(binding.latest, response)
-            else -> updatePinnedList(data as String, response)
         }
     }
 
@@ -169,21 +162,12 @@ class DashboardFragment : BaseFragment() {
                 if (response.upcoming == true) R.string.next_launch else R.string.latest_launch
             )
 
-            Glide.with(this@DashboardFragment)
-                .load(response.links?.missionPatch?.patchSmall)
-                .error(getDrawable(requireContext(), R.drawable.ic_mission_patch))
-                .fallback(getDrawable(requireContext(), R.drawable.ic_mission_patch))
-                .placeholder(getDrawable(requireContext(), R.drawable.ic_mission_patch))
-                .into(missionPatch)
+            requireContext().loadPatch(response.links?.missionPatch?.patchSmall, missionPatch)
 
             flightNumber.text = getString(R.string.flight_number, response.flightNumber)
-
             vehicle.text = response.rocket?.name
-
             missionName.text = response.missionName
-
-            date.text =
-                response.launchDate?.dateUnix?.formatDateMillisLong(response.datePrecision)
+            date.text = response.launchDate?.dateUnix?.formatDateMillisLong(response.datePrecision)
 
             dashboardLaunch.let { card ->
                 card.setOnClickListener {
@@ -199,27 +183,18 @@ class DashboardFragment : BaseFragment() {
         }
     }
 
-    private fun updatePinnedList(id: String, pinnedLaunch: Launch) {
-        if (pinnedArray.none { it.id == id }) pinnedArray.add(pinnedLaunch)
-
-        pinnedArray.sortByDescending { it.flightNumber }
-
-        pinnedAdapter.submitList(pinnedArray)
-    }
-
     private fun setCountdown(launch: Launch, time: Long) {
         countdownTimer?.cancel()
         countdownTimer = object : CountDownTimer(time, 1000) {
             override fun onTick(time: Long) {
-                updateCountdown(
-                    String.format(
-                        "T-%02d:%02d:%02d:%02d",
-                        time.toCountdownDays(),
-                        time.toCountdownHours(),
-                        time.toCountdownMinutes(),
-                        time.toCountdownSeconds()
-                    )
+                binding.next.countdown.text = String.format(
+                    "T-%02d:%02d:%02d:%02d",
+                    time.toCountdownDays(),
+                    time.toCountdownHours(),
+                    time.toCountdownMinutes(),
+                    time.toCountdownSeconds()
                 )
+
             }
 
             override fun onFinish() {
@@ -238,37 +213,15 @@ class DashboardFragment : BaseFragment() {
         countdownTimer?.start()
     }
 
-    fun updateCountdown(countdown: String) {
-        binding.next.countdown.text = countdown
+    private fun toggleCardVisibility(view: View, visible: Boolean) {
+        view.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
-    private fun showPinnedMessage() {
-        binding.pinned.progress.hide()
-        if (pinnedArray.isEmpty()) binding.pinned.pinnedMessage.visibility = View.VISIBLE
-    }
-
-    fun hidePinnedMessage() {
-        binding.pinned.pinnedMessage.visibility = View.GONE
-    }
-
-    private fun showNextLaunch(visible: Boolean) {
-        binding.next.dashboardLaunch.visibility = if (visible) View.VISIBLE else View.GONE
-    }
-
-    private fun showLatestLaunch(visible: Boolean) {
-        binding.latest.dashboardLaunch.visibility = if (visible) View.VISIBLE else View.GONE
-    }
-
-    private fun showPinnedList(visible: Boolean) {
-        binding.pinned.dashboardPinned.visibility = if (visible) View.VISIBLE else View.GONE
-    }
-
-    fun showError(error: String?) {
+    private fun showError(error: String?) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        viewModel.getLaunch("next")
-        viewModel.getLaunch("latest")
+        viewModel.getLaunches()
     }
 }
