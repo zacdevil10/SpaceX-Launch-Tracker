@@ -86,8 +86,6 @@ class HistoryFragment : BaseFragment() {
         }
 
         viewModel.getHistory()
-
-        historyAdapter.itemCount
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {

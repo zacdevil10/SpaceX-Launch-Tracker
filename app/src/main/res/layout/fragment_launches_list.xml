@@ -11,16 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.material.progressindicator.LinearProgressIndicator
+        <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/progress"
-            android:layout_width="match_parent"
+            style="?attr/circularProgressIndicatorStyle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:elevation="@dimen/toolbar_elevation"
             android:indeterminate="true"
-            app:hideAnimationBehavior="outward"
-            app:indicatorColor="?colorSecondary"
-            app:layout_constraintTop_toTopOf="parent"
-            app:showAnimationBehavior="inward" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/launches_recycler"

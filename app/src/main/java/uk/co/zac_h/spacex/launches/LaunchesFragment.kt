@@ -22,7 +22,8 @@ class LaunchesFragment : BaseFragment() {
         defaultViewModelProviderFactory
     }
 
-    private lateinit var binding: FragmentLaunchesBinding
+    private var _binding: FragmentLaunchesBinding? = null
+    private val binding get() = checkNotNull(_binding) { "Binding is null" }
 
     private val fragments: List<BaseFragment> = listOf(
         LaunchesListFragment.newInstance(LaunchType.UPCOMING),
@@ -41,7 +42,7 @@ class LaunchesFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchesBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,6 +66,11 @@ class LaunchesFragment : BaseFragment() {
         }
 
         viewModel.getLaunches()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 

@@ -30,7 +30,8 @@ class LaunchesListFragment : BaseFragment() {
 
     private lateinit var type: LaunchType
 
-    private lateinit var binding: FragmentLaunchesListBinding
+    private var _binding: FragmentLaunchesListBinding? = null
+    private val binding get() = checkNotNull(_binding) { "Binding is null" }
 
     private lateinit var launchesAdapter: LaunchesAdapter
 
@@ -52,7 +53,7 @@ class LaunchesListFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchesListBinding.inflate(inflater, container, false).apply {
-        binding = this
+        _binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -68,16 +69,20 @@ class LaunchesListFragment : BaseFragment() {
 
         viewModel.launchesLiveData.observe(viewLifecycleOwner) { result ->
             when (result.status) {
-                ApiResult.Status.PENDING -> showProgress()
+                ApiResult.Status.PENDING -> if (launchesAdapter.itemCount == 0) binding.progress.show()
                 ApiResult.Status.SUCCESS -> result.data?.let {
-                    toggleSwipeRefresh(false)
+                    binding.swipeRefresh.isRefreshing = false
+                    binding.progress.hide()
                     when (flowViewModel.type) {
                         LaunchType.UPCOMING -> update(it[flowViewModel.type]?.sortedBy { launch -> launch.flightNumber })
                         LaunchType.PAST -> update(it[flowViewModel.type]?.sortedByDescending { launch -> launch.flightNumber })
                     }
 
                 }
-                ApiResult.Status.FAILURE -> showError(result.error?.message)
+                ApiResult.Status.FAILURE -> {
+                    showError(result.error?.message)
+                    binding.swipeRefresh.isRefreshing = false
+                }
             }
         }
 
@@ -86,27 +91,18 @@ class LaunchesListFragment : BaseFragment() {
         }
     }
 
-    fun update(response: List<Launch>?) {
-        hideProgress()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
+    private fun update(response: List<Launch>?) {
         launchesAdapter.submitList(response?.filter {
             it.missionName?.lowercase()?.contains(searchText) ?: true
         })
     }
 
-    fun showProgress() {
-        binding.progress.show()
-    }
-
-    fun hideProgress() {
-        binding.progress.hide()
-    }
-
-    fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding.swipeRefresh.isRefreshing = isRefreshing
-    }
-
-    fun showError(error: String?) {
+    private fun showError(error: String?) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
