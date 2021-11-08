@@ -55,6 +55,7 @@
     <string name="clear_label">Clear</string>
     <string name="apply_label">Apply</string>
     <string name="filter_launches_description">Open launches filter</string>
+    <string name="date_picker_label">Select date range</string>
 
     <!--Launch Details-->
     <string name="mission_patch">Mission patch</string>
