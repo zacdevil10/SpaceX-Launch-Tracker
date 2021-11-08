@@ -52,6 +52,8 @@
     <string name="ascending_button_label">Asc</string>
     <string name="descending_button_label">Desc</string>
     <string name="rocket_type_label">Rocket:</string>
+    <string name="clear_label">Clear</string>
+    <string name="apply_label">Apply</string>
 
     <!--Launch Details-->
     <string name="mission_patch">Mission patch</string>

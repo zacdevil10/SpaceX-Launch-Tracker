@@ -37,28 +37,16 @@ class ChangeSettingsMenuStateAction(
 
 class ShowHideFabStateAction(
     private val fab: FloatingActionButton,
-    private val defaultState: () -> Boolean
+    private val defaultState: (() -> Boolean)? = null
 ) : OnStateChangedAction {
 
     override fun onStateChanged(sheet: View, newState: Int) {
         if (newState != BottomSheetBehavior.STATE_HIDDEN) {
             fab.hide()
         } else {
-            if (defaultState()) fab.show()
-        }
-    }
-
-}
-
-class FabVisibilityStateAction(
-    private val fab: FloatingActionButton
-) : OnStateChangedAction {
-
-    override fun onStateChanged(sheet: View, newState: Int) {
-        if (newState != BottomSheetBehavior.STATE_HIDDEN) {
-            fab.visibility = View.GONE
-        } else {
-            fab.show()
+            defaultState?.invoke()?.let {
+                if (it) fab.show()
+            } ?: fab.show()
         }
     }
 
