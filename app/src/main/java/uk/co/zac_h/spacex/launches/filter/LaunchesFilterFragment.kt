@@ -93,7 +93,7 @@ class LaunchesFilterFragment : Fragment() {
                 addOnSlideAction(AlphaSlideAction(binding.scrim))
                 addOnStateChangedAction(VisibilityStateAction(binding.scrim))
                 addOnStateChangedAction(BackPressedStateAction(closeFilterOnBackPressed))
-                addOnStateChangedAction(FabVisibilityStateAction(binding.filterFab))
+                addOnStateChangedAction(ShowHideFabStateAction(binding.filterFab))
             })
 
             binding.scrim.setOnClickListener {
@@ -194,11 +194,9 @@ class LaunchesFilterFragment : Fragment() {
         }
 
         binding.launchesFilter.orderGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            if (isChecked) {
-                when (checkedId) {
-                    R.id.ascending -> viewModel.filter.setOrder(Order.ASCENDING)
-                    R.id.descending -> viewModel.filter.setOrder(Order.DESCENDING)
-                }
+            if (isChecked) when (checkedId) {
+                R.id.ascending -> viewModel.filter.setOrder(Order.ASCENDING)
+                R.id.descending -> viewModel.filter.setOrder(Order.DESCENDING)
             }
         }
 
@@ -222,12 +220,18 @@ class LaunchesFilterFragment : Fragment() {
         binding.launchesFilter.falconHeavyChip.setOnCheckedChangeListener(chipListener)
         binding.launchesFilter.starshipChip.setOnCheckedChangeListener(chipListener)
 
-        binding.resetFab.setOnClickListener {
+        binding.launchesFilter.reset.setOnClickListener {
             viewModel.filter.clear()
         }
 
+        binding.launchesFilter.apply.setOnClickListener {
+            binding.launchesFilter.apply.isChecked = !binding.launchesFilter.apply.isChecked
+            openableFilter.close()
+        }
+
         viewModel.filter.isFiltered.observe(viewLifecycleOwner) {
-            if (it) binding.resetFab.show() else binding.resetFab.hide()
+            binding.launchesFilter.reset.isChecked = it
+            binding.launchesFilter.apply.isChecked = it
         }
 
         //Setup back navigation
