@@ -54,6 +54,7 @@
     <string name="rocket_type_label">Rocket:</string>
     <string name="clear_label">Clear</string>
     <string name="apply_label">Apply</string>
+    <string name="filter_launches_description">Open launches filter</string>
 
     <!--Launch Details-->
     <string name="mission_patch">Mission patch</string>
@@ -250,7 +251,5 @@
     <!-- Crew -->
     <string name="agency_label">Agency</string>
     <string name="more_icon_desc">More Icon</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

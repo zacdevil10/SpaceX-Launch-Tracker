@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.CompoundButton
-import android.widget.FrameLayout
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.core.view.doOnPreDraw
@@ -28,6 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesFilterBinding
+import uk.co.zac_h.spacex.databinding.LaunchesFilterBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.types.Order
 import uk.co.zac_h.spacex.types.RocketType
@@ -39,10 +40,11 @@ class LaunchesFilterFragment : Fragment() {
     private val viewModel: LaunchesFilterViewModel by viewModels()
 
     private lateinit var binding: FragmentLaunchesFilterBinding
+    private lateinit var launchFilter: LaunchesFilterBinding
 
     private lateinit var launchesAdapter: LaunchesAdapter
 
-    private lateinit var filterBehavior: BottomSheetBehavior<FrameLayout>
+    private lateinit var filterBehavior: BottomSheetBehavior<ConstraintLayout>
 
     private var shouldScroll: Boolean = false
 
@@ -57,6 +59,7 @@ class LaunchesFilterFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentLaunchesFilterBinding.inflate(inflater, container, false).apply {
+        launchFilter = LaunchesFilterBinding.bind(this.filterBottomSheet)
         binding = this
     }.root
 
@@ -156,10 +159,10 @@ class LaunchesFilterFragment : Fragment() {
                 Pair(range.first, range.last)
             }
 
-            binding.launchesFilter.datePicker.isChecked = it.isFiltered
-            binding.launchesFilter.dateRangeClearButton.isChecked = it.isFiltered
+            launchFilter.datePicker.isChecked = it.isFiltered
+            launchFilter.dateRangeClearButton.isChecked = it.isFiltered
 
-            binding.launchesFilter.datePicker.text = range?.let {
+            launchFilter.datePicker.text = range?.let {
                 "${range.first.formatRange()}-${range.second.formatRange()}"
             } ?: "Select"
 
@@ -168,17 +171,17 @@ class LaunchesFilterFragment : Fragment() {
 
         viewModel.filter.order.observe(viewLifecycleOwner) {
             when (it.order) {
-                Order.ASCENDING -> binding.launchesFilter.ascending.isChecked = true
-                Order.DESCENDING -> binding.launchesFilter.descending.isChecked = true
+                Order.ASCENDING -> launchFilter.ascending.isChecked = true
+                Order.DESCENDING -> launchFilter.descending.isChecked = true
             }
         }
 
         viewModel.filter.rocketType.observe(viewLifecycleOwner) {
             if (it.rockets.isNullOrEmpty()) {
-                binding.launchesFilter.falconOneChip.isChecked = false
-                binding.launchesFilter.falconNineChip.isChecked = false
-                binding.launchesFilter.falconHeavyChip.isChecked = false
-                binding.launchesFilter.starshipChip.isChecked = false
+                launchFilter.falconOneChip.isChecked = false
+                launchFilter.falconNineChip.isChecked = false
+                launchFilter.falconHeavyChip.isChecked = false
+                launchFilter.starshipChip.isChecked = false
             }
         }
 
@@ -188,12 +191,12 @@ class LaunchesFilterFragment : Fragment() {
             openableFilter.open()
         }
 
-        binding.launchesFilter.dateRangeClearButton.setOnClickListener {
+        launchFilter.dateRangeClearButton.setOnClickListener {
             viewModel.filter.clearDateFilter()
             it.visibility = View.GONE
         }
 
-        binding.launchesFilter.orderGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
+        launchFilter.orderGroup.addOnButtonCheckedListener { _, checkedId, isChecked ->
             if (isChecked) when (checkedId) {
                 R.id.ascending -> viewModel.filter.setOrder(Order.ASCENDING)
                 R.id.descending -> viewModel.filter.setOrder(Order.DESCENDING)
@@ -202,7 +205,7 @@ class LaunchesFilterFragment : Fragment() {
 
         val chipListener = CompoundButton.OnCheckedChangeListener { _, _ ->
             val rockets: List<RocketType> =
-                binding.launchesFilter.rocketGroup.checkedChipIds.mapNotNull {
+                launchFilter.rocketGroup.checkedChipIds.mapNotNull {
                     when (it) {
                         R.id.falcon_nine_chip -> RocketType.FALCON_NINE
                         R.id.falcon_heavy_chip -> RocketType.FALCON_HEAVY
@@ -215,23 +218,23 @@ class LaunchesFilterFragment : Fragment() {
             viewModel.filter.filterByRocketType(rockets)
         }
 
-        binding.launchesFilter.falconOneChip.setOnCheckedChangeListener(chipListener)
-        binding.launchesFilter.falconNineChip.setOnCheckedChangeListener(chipListener)
-        binding.launchesFilter.falconHeavyChip.setOnCheckedChangeListener(chipListener)
-        binding.launchesFilter.starshipChip.setOnCheckedChangeListener(chipListener)
+        launchFilter.falconOneChip.setOnCheckedChangeListener(chipListener)
+        launchFilter.falconNineChip.setOnCheckedChangeListener(chipListener)
+        launchFilter.falconHeavyChip.setOnCheckedChangeListener(chipListener)
+        launchFilter.starshipChip.setOnCheckedChangeListener(chipListener)
 
-        binding.launchesFilter.reset.setOnClickListener {
+        launchFilter.reset.setOnClickListener {
             viewModel.filter.clear()
         }
 
-        binding.launchesFilter.apply.setOnClickListener {
-            binding.launchesFilter.apply.isChecked = !binding.launchesFilter.apply.isChecked
+        launchFilter.apply.setOnClickListener {
+            launchFilter.apply.isChecked = !launchFilter.apply.isChecked
             openableFilter.close()
         }
 
         viewModel.filter.isFiltered.observe(viewLifecycleOwner) {
-            binding.launchesFilter.reset.isChecked = it
-            binding.launchesFilter.apply.isChecked = it
+            launchFilter.reset.isChecked = it
+            launchFilter.apply.isChecked = it
         }
 
         //Setup back navigation
@@ -256,21 +259,21 @@ class LaunchesFilterFragment : Fragment() {
             setTitleText("Select date range")
             if (range != null) setSelection(range)
         }.build().also { datePicker ->
-            binding.launchesFilter.datePicker.setOnClickListener {
+            launchFilter.datePicker.setOnClickListener {
                 datePicker.show(childFragmentManager, "date_range_picker_tag")
             }
 
-            binding.launchesFilter.dateRangeClearButton.visibility =
+            launchFilter.dateRangeClearButton.visibility =
                 if (range == null) View.GONE else View.VISIBLE
 
             datePicker.addOnPositiveButtonClickListener {
                 viewModel.filter.filterByDate(it)
             }
             datePicker.addOnCancelListener {
-                binding.launchesFilter.datePicker.isChecked = range != null
+                launchFilter.datePicker.isChecked = range != null
             }
             datePicker.addOnNegativeButtonClickListener {
-                binding.launchesFilter.datePicker.isChecked = range != null
+                launchFilter.datePicker.isChecked = range != null
             }
         }
 
