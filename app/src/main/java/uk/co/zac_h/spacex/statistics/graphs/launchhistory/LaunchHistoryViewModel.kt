@@ -78,6 +78,7 @@ class LaunchHistoryViewModel @Inject constructor(
                             }
                             starship.successRate = it.rocket.successRate ?: 0
                         }
+                        else -> return@forEach
                     }
                 }
 

@@ -79,16 +79,13 @@ class DragonDetailsFragment : BaseFragment() {
 
                 dragonDetailsText.text = it.description
 
-                when (it.active) {
-                    true -> dragonDetailsStatusImage.setImageAndTint(
-                        R.drawable.ic_check_circle_black_24dp,
-                        R.color.success
-                    )
-                    false -> dragonDetailsStatusImage.setImageAndTint(
-                        R.drawable.ic_remove_circle_black_24dp,
-                        R.color.failed
-                    )
-                }
+                if (it.active == true) dragonDetailsStatusImage.setImageAndTint(
+                    R.drawable.ic_check_circle_black_24dp,
+                    R.color.success
+                ) else dragonDetailsStatusImage.setImageAndTint(
+                    R.drawable.ic_remove_circle_black_24dp,
+                    R.color.failed
+                )
 
                 dragonDetailsCrewCapacityText.text = it.crewCapacity.toString()
                 dragonDetailsFirstFlightText.text = it.firstFlight
@@ -170,16 +167,13 @@ class DragonDetailsFragment : BaseFragment() {
 
                 dragonDetailsSolarArrayText.text = (it.trunk?.cargo?.solarArray ?: 0).toString()
 
-                when (it.trunk?.cargo?.unpressurizedCargo) {
-                    true -> dragonDetailsUnpressurizedCargoImage.setImageAndTint(
-                        R.drawable.ic_check_circle_black_24dp,
-                        R.color.success
-                    )
-                    false -> dragonDetailsUnpressurizedCargoImage.setImageAndTint(
-                        R.drawable.ic_remove_circle_black_24dp,
-                        R.color.failed
-                    )
-                }
+                if (it.trunk?.cargo?.unpressurizedCargo == true) dragonDetailsUnpressurizedCargoImage.setImageAndTint(
+                    R.drawable.ic_check_circle_black_24dp,
+                    R.color.success
+                ) else dragonDetailsUnpressurizedCargoImage.setImageAndTint(
+                    R.drawable.ic_remove_circle_black_24dp,
+                    R.color.failed
+                )
             }
         }
     }

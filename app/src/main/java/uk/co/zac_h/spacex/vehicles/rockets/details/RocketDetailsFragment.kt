@@ -79,16 +79,13 @@ class RocketDetailsFragment : BaseFragment() {
 
                 rocketDetailsText.text = it.description
 
-                when (it.isActive) {
-                    true -> rocketDetailsStatusImage.setImageAndTint(
-                        R.drawable.ic_check_circle_black_24dp,
-                        R.color.success
-                    )
-                    false -> rocketDetailsStatusImage.setImageAndTint(
-                        R.drawable.ic_remove_circle_black_24dp,
-                        R.color.failed
-                    )
-                }
+                if (it.isActive == true) rocketDetailsStatusImage.setImageAndTint(
+                    R.drawable.ic_check_circle_black_24dp,
+                    R.color.success
+                ) else rocketDetailsStatusImage.setImageAndTint(
+                    R.drawable.ic_remove_circle_black_24dp,
+                    R.color.failed
+                )
 
                 rocketDetailsCostText.text = it.costPerLaunch
                 rocketDetailsSuccessText.text =
@@ -119,16 +116,13 @@ class RocketDetailsFragment : BaseFragment() {
                 }
 
                 it.firstStage?.let { firstStage ->
-                    when (firstStage.reusable) {
-                        true -> rocketDetailsReusableImage.setImageAndTint(
-                            R.drawable.ic_check_circle_black_24dp,
-                            R.color.success
-                        )
-                        false -> rocketDetailsReusableImage.setImageAndTint(
-                            R.drawable.ic_remove_circle_black_24dp,
-                            R.color.failed
-                        )
-                    }
+                    if (firstStage.reusable == true) rocketDetailsReusableImage.setImageAndTint(
+                        R.drawable.ic_check_circle_black_24dp,
+                        R.color.success
+                    ) else rocketDetailsReusableImage.setImageAndTint(
+                        R.drawable.ic_remove_circle_black_24dp,
+                        R.color.failed
+                    )
 
                     rocketDetailsEnginesFirstText.text = firstStage.engines.toString()
                     rocketDetailsFuelFirstText.text = getString(

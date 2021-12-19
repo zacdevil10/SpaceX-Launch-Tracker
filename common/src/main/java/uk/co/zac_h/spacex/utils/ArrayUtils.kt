@@ -8,11 +8,6 @@ fun <T> ArrayList<T>.addAllExcludingPosition(list: List<T>, position: Int) {
     }
 }
 
-fun <T> ArrayList<T>.clearAndAdd(list: List<T>) {
-    this.clear()
-    this.addAll(list)
-}
-
 fun <T> Iterable<T>.reverse(value: Boolean): List<T> {
     val list = toMutableList()
     if (value) list.reverse()

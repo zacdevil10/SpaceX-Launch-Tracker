@@ -93,8 +93,7 @@ fun getString(
             calendar.time = date
             calendar.add(Calendar.DATE, 7)
 
-            val formattedDate: String
-            formattedDate = if (calendar.time < currentDate) {
+            val formattedDate: String = if (calendar.time < currentDate) {
                 moreThanSevenDays.format(date)
             } else {
                 lessThanSevenDays.format(date)

@@ -95,7 +95,8 @@
         app:layout_anchor="@id/launch_details_bottom_navigation"
         app:layout_anchorGravity="top|end"
         app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
-        app:srcCompat="@drawable/pin_unpin" />
+        app:srcCompat="@drawable/pin_unpin"
+        android:contentDescription="@string/pin_launch_to_dashboard_desc" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/launch_details_bottom_navigation"
