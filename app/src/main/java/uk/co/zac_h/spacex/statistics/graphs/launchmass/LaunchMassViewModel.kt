@@ -69,6 +69,7 @@ class LaunchMassViewModel @Inject constructor(
                             RocketType.STARSHIP -> launch.payloads?.forEach { payload ->
                                 updateOrbitMass(stat.starship, payload.orbit, payload.mass?.kg)
                             }
+                            else -> return@forEach
                         }
                     }
                 }

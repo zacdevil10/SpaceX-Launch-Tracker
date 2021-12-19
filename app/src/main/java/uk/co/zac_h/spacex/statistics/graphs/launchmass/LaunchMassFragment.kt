@@ -172,7 +172,7 @@ class LaunchMassFragment : BaseFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.filter -> {
+        /*R.id.filter -> {
             binding.statisticsBarChart.key.visibility = View.GONE
             binding.statisticsBarChart.barChart.apply {
                 onTouchListener.setLastHighlighted(null)
@@ -180,7 +180,7 @@ class LaunchMassFragment : BaseFragment() {
             }
             toggleFilterVisibility(!viewModel.filterState)
             true
-        }
+        }*/
         R.id.reload -> {
             viewModel.get(CachePolicy.REFRESH)
             true

@@ -46,14 +46,11 @@ class LandingHistoryViewModel @Inject constructor(
                         val stat = first { newList -> newList.year == year }
 
                         it.cores?.forEach { core ->
-                            when (core.landingSuccess) {
-                                true -> when (core.landingType) {
-                                    "Ocean" -> stat.ocean++
-                                    "RTLS" -> stat.rtls++
-                                    "ASDS" -> stat.asds++
-                                }
-                                false -> stat.failures++
-                            }
+                            if (core.landingSuccess == true) when (core.landingType) {
+                                "Ocean" -> stat.ocean++
+                                "RTLS" -> stat.rtls++
+                                "ASDS" -> stat.asds++
+                            } else stat.failures++
                         }
                     }
                 }

@@ -25,7 +25,6 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.about.history.filter.HistoryFilterFragment
 import uk.co.zac_h.spacex.databinding.ActivityMainBinding
 import uk.co.zac_h.spacex.launches.LaunchesFragmentDirections
 import uk.co.zac_h.spacex.utils.*
@@ -217,7 +216,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     private fun setBottomDrawerForDestination(destination: NavDestination) {
         bottomDrawerFragment = when (destination.id) {
-            R.id.history_page_fragment -> HistoryFilterFragment()
+            //R.id.history_page_fragment -> HistoryFilterFragment()
             else -> null
         }
 

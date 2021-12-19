@@ -127,10 +127,10 @@ class LaunchHistoryFragment : BaseFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.filter -> {
+        /*R.id.filter -> {
             toggleFilterVisibility(!viewModel.filterState)
             true
-        }
+        }*/
         R.id.reload -> true.also { viewModel.get(CachePolicy.REFRESH) }
         else -> super.onOptionsItemSelected(item)
     }

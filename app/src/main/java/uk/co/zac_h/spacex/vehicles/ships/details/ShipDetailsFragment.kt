@@ -75,16 +75,13 @@ class ShipDetailsFragment : BaseFragment() {
                     .error(R.drawable.ic_baseline_error_outline_24)
                     .into(toolbarBinding.header)
 
-                when (ship.active) {
-                    true -> shipDetailsStatusImage.setImageAndTint(
-                        R.drawable.ic_check_circle_black_24dp,
-                        R.color.success
-                    )
-                    false -> shipDetailsStatusImage.setImageAndTint(
-                        R.drawable.ic_remove_circle_black_24dp,
-                        R.color.failed
-                    )
-                }
+                if (ship.active == true) shipDetailsStatusImage.setImageAndTint(
+                    R.drawable.ic_check_circle_black_24dp,
+                    R.color.success
+                ) else shipDetailsStatusImage.setImageAndTint(
+                    R.drawable.ic_remove_circle_black_24dp,
+                    R.color.failed
+                )
 
                 shipDetailsTypeText.text = ship.type
                 shipDetailsRolesText.text = ship.roles?.joinToString(", ")

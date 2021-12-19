@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.about.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import uk.co.zac_h.spacex.utils.formatDateMillisDDMMM
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 
 class HistoryAdapter(
-    private var context: Context,
     private var openWebLink: (String) -> Unit
 ) : ListAdapter<HistoryHeaderModel, RecyclerView.ViewHolder>(HistoryComparator) {
 

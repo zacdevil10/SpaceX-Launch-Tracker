@@ -59,7 +59,7 @@ class HistoryFragment : BaseFragment() {
         view.doOnPreDraw { startPostponedEnterTransition() }
         postponeEnterTransition()
 
-        historyAdapter = HistoryAdapter(requireContext(), ::openWebLink)
+        historyAdapter = HistoryAdapter(::openWebLink)
 
         val isTabletLand = resources.getBoolean(R.bool.isTabletLand)
 
