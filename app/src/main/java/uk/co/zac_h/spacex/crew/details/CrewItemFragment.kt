@@ -1,12 +1,9 @@
 package uk.co.zac_h.spacex.crew.details
 
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.marginTop
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,7 +17,6 @@ import uk.co.zac_h.spacex.crew.CrewViewModel
 import uk.co.zac_h.spacex.crew.adapters.CrewMissionsAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewItemBinding
 import uk.co.zac_h.spacex.dto.spacex.CrewStatus
-import kotlin.math.roundToInt
 
 class CrewItemFragment : BaseFragment() {
 
@@ -50,43 +46,20 @@ class CrewItemFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        with(binding) {
-            itemCrewConstraint.transitionName = navArgs.id
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.crewBottomSheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
-            val typedVal = TypedValue()
-            val initialMargin = indicator.marginTop
-            val bottomSheetBehavior = BottomSheetBehavior.from(crewBottomSheet)
-
-            bottomSheetBehavior.apply {
-                state = BottomSheetBehavior.STATE_COLLAPSED
-
-                addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                        requireContext().theme.resolveAttribute(
-                            android.R.attr.actionBarSize,
-                            typedVal,
-                            true
-                        ).let {
-                            val actionBarHeight = TypedValue.complexToDimensionPixelSize(
-                                typedVal.data,
-                                requireContext().resources.displayMetrics
-                            )
-
-                            indicator.layoutParams =
-                                (indicator.layoutParams as ConstraintLayout.LayoutParams).apply {
-                                    topMargin =
-                                        (initialMargin + (actionBarHeight * slideOffset)).roundToInt()
-                                }
-
-                        }
-                    }
-
-                    override fun onStateChanged(bottomSheet: View, newState: Int) {
-
-                    }
-                })
-            }
-        }
+        update(
+            Crew(
+                id = navArgs.id,
+                image = navArgs.url,
+                name = null,
+                status = null,
+                agency = null,
+                wikipedia = null,
+                role = null
+            )
+        )
 
         viewModel.crew.observe(viewLifecycleOwner) { result ->
             result.data?.find { it.id == navArgs.id }?.let { update(it) }
@@ -96,6 +69,8 @@ class CrewItemFragment : BaseFragment() {
     }
 
     private fun update(person: Crew) {
+        binding.itemCrewConstraint.transitionName = person.id
+
         Glide.with(requireContext()).load(person.image).into(binding.crewImage)
 
         binding.crewName.text = person.name

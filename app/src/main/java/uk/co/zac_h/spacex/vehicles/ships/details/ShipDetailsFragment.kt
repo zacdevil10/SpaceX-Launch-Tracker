@@ -10,6 +10,7 @@ import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.CollapsingToolbarBinding
@@ -36,6 +37,9 @@ class ShipDetailsFragment : BaseFragment() {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
+
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
     }
 
     override fun onCreateView(
@@ -56,6 +60,8 @@ class ShipDetailsFragment : BaseFragment() {
 
         setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
 
+        binding.shipDetailsCoordinator.transitionName = navArgs.id
+
         viewModel.ships.observe(viewLifecycleOwner) { result ->
             update(result.data?.first { it.id == navArgs.id })
         }
@@ -64,8 +70,6 @@ class ShipDetailsFragment : BaseFragment() {
     private fun update(ship: Ship?) {
         with(binding) {
             ship?.let { ship ->
-                shipDetailsCoordinator.transitionName = ship.id
-
                 Glide.with(requireContext())
                     .load(ship.image)
                     .error(R.drawable.ic_baseline_error_outline_24)

@@ -58,9 +58,6 @@ class LaunchDetailsCrewFragment : BaseFragment() {
     }
 
     fun update(response: List<Crew>) {
-        /*if (apiState != ApiResult.Status.SUCCESS) binding.launchDetailsCrewRecycler.layoutAnimation =
-            animateLayoutFromBottom(requireContext())
-        */
         crewAdapter.submitList(response)
         binding.launchDetailsCrewRecycler.scheduleLayoutAnimation()
     }
