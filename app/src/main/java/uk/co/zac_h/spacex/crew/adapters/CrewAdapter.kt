@@ -39,7 +39,10 @@ class CrewAdapter : ListAdapter<Crew, CrewAdapter.ViewHolder>(CrewComparator) {
 
         fun bind(person: Crew) {
             binding.root.findNavController().navigate(
-                CrewFragmentDirections.actionCrewFragmentToCrewDetailsFragment(person.id),
+                CrewFragmentDirections.actionCrewFragmentToCrewDetailsFragment(
+                    person.id,
+                    person.image.orEmpty()
+                ),
                 FragmentNavigatorExtras(binding.root to person.id)
             )
         }

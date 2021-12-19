@@ -10,7 +10,6 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialElevationScale
-import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.*
 import uk.co.zac_h.spacex.base.BaseFragment
@@ -37,8 +36,6 @@ class DashboardFragment : BaseFragment() {
 
         exitTransition = MaterialElevationScale(false)
         reenterTransition = MaterialElevationScale(true)
-
-        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, true)
     }
 
     override fun onCreateView(

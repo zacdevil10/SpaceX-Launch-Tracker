@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.material.transition.MaterialSharedAxis
 import uk.co.zac_h.spacex.BuildConfig
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
@@ -14,6 +15,13 @@ class AboutFragment : BaseFragment() {
     override val title: String by lazy { getString(R.string.menu_about) }
 
     private lateinit var binding: FragmentAboutBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.Y, true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.Y, false)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
