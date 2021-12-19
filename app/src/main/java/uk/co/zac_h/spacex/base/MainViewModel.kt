@@ -11,6 +11,7 @@ class MainViewModel : ViewModel() {
         R.id.dashboard_page_fragment,
         R.id.news_page_fragment,
         R.id.launches_page_fragment,
+        R.id.crew_page_fragment,
         R.id.vehicles_page_fragment,
         R.id.statistics_page_fragment
     )
