@@ -4,13 +4,13 @@ import android.animation.ValueAnimator
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.github.mikephil.charting.animation.Easing
@@ -23,15 +23,15 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.ApiResult
-import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchHistoryBinding
 import uk.co.zac_h.spacex.statistics.adapters.Statistics
+import uk.co.zac_h.spacex.statistics.graphs.launchhistory.filter.LaunchHistoryFilterViewModel
 import uk.co.zac_h.spacex.types.LaunchHistoryFilter
 import uk.co.zac_h.spacex.types.RocketType
-import uk.co.zac_h.spacex.utils.*
+import uk.co.zac_h.spacex.utils.generateCenterSpannableText
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 
 class LaunchHistoryFragment : BaseFragment() {
@@ -41,6 +41,7 @@ class LaunchHistoryFragment : BaseFragment() {
     private lateinit var binding: FragmentLaunchHistoryBinding
 
     private val viewModel: LaunchHistoryViewModel by viewModels()
+    private val filterViewModel: LaunchHistoryFilterViewModel by activityViewModels()
 
     private val navArgs: LaunchHistoryFragmentArgs by navArgs()
 
@@ -75,18 +76,8 @@ class LaunchHistoryFragment : BaseFragment() {
 
         binding.launchHistoryConstraint.transitionName = getString(navArgs.type.title)
 
-        binding.tint.setOnClickListener {
-            toggleFilterVisibility(false)
-        }
-
-        binding.launchHistoryChipGroup.setOnCheckedChangeListener { _, checkedId ->
-            viewModel.setFilter(
-                when (checkedId) {
-                    binding.launchHistorySuccessToggle.id -> LaunchHistoryFilter.SUCCESSES
-                    binding.launchHistoryFailureToggle.id -> LaunchHistoryFilter.FAILURES
-                    else -> null
-                }
-            )
+        filterViewModel.filter.observe(viewLifecycleOwner) {
+            viewModel.setFilter(it)
             viewModel.get()
         }
 
@@ -119,20 +110,6 @@ class LaunchHistoryFragment : BaseFragment() {
                 ApiResult.Status.FAILURE -> showError(response.error?.message)
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        toggleFilterVisibility(viewModel.filterState)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        /*R.id.filter -> {
-            toggleFilterVisibility(!viewModel.filterState)
-            true
-        }*/
-        R.id.reload -> true.also { viewModel.get(CachePolicy.REFRESH) }
-        else -> super.onOptionsItemSelected(item)
     }
 
     fun update(animate: Boolean, response: List<HistoryStatsModel>) {
@@ -237,36 +214,6 @@ class LaunchHistoryFragment : BaseFragment() {
                 progressBar?.progress = valueAnim.animatedValue as Int
             }
         }.start() else progressBar?.progress = successRate
-    }
-
-    private fun toggleFilterVisibility(filterVisible: Boolean) {
-        binding.launchHistoryFilterConstraint.apply {
-            when (filterVisible) {
-                true -> {
-                    visibility = View.VISIBLE
-                    startAnimation(animateEnterFromTop(context))
-                }
-                false -> {
-                    visibility = View.GONE
-                    startAnimation(animateExitToTop(context))
-                }
-            }
-        }
-
-        binding.tint.apply {
-            when (filterVisible) {
-                true -> {
-                    visibility = View.VISIBLE
-                    startAnimation(animateFadeIn(context))
-                }
-                false -> {
-                    visibility = View.GONE
-                    startAnimation(animateFadeOut(context))
-                }
-            }
-        }
-
-        viewModel.showFilter(filterVisible)
     }
 
     fun showProgress() {

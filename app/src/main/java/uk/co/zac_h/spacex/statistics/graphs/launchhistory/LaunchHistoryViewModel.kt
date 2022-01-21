@@ -35,9 +35,6 @@ class LaunchHistoryViewModel @Inject constructor(
     var filterValue: LaunchHistoryFilter? = null
         private set
 
-    var filterState: Boolean = false
-        private set
-
     fun get(cachePolicy: CachePolicy = CachePolicy.EXPIRES) {
         viewModelScope.launch {
             val response = async(_launchHistory) {
@@ -102,10 +99,6 @@ class LaunchHistoryViewModel @Inject constructor(
 
     fun setFilter(filter: LaunchHistoryFilter?) {
         filterValue = filter
-    }
-
-    fun showFilter(visibility: Boolean) {
-        filterState = visibility
     }
 
 }
