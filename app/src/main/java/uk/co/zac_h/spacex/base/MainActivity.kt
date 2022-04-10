@@ -28,6 +28,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ActivityMainBinding
 import uk.co.zac_h.spacex.launches.LaunchesFragmentDirections
 import uk.co.zac_h.spacex.statistics.graphs.launchhistory.filter.LaunchHistoryFilterFragment
+import uk.co.zac_h.spacex.statistics.graphs.launchmass.filter.LaunchMassFilterFragment
 import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
 import javax.inject.Inject
@@ -219,6 +220,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         bottomDrawerFragment = when (destination.id) {
             //R.id.history_page_fragment -> HistoryFilterFragment()
             R.id.launch_history_fragment -> LaunchHistoryFilterFragment()
+            R.id.launch_mass_fragment -> LaunchMassFilterFragment()
             else -> null
         }
 

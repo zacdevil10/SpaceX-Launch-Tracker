@@ -15,7 +15,7 @@ import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.statistics.StatisticsRepository
 import uk.co.zac_h.spacex.types.LaunchMassViewType
 import uk.co.zac_h.spacex.types.RocketType
-import uk.co.zac_h.spacex.utils.*
+import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.LaunchMassStatsModel
 import uk.co.zac_h.spacex.utils.models.OrbitMassModel
 import javax.inject.Inject
@@ -32,10 +32,9 @@ class LaunchMassViewModel @Inject constructor(
         get() = repository.cacheLocation
 
     var filterRocket: RocketType? = null
+        private set
 
     var filterType: LaunchMassViewType? = LaunchMassViewType.ROCKETS
-
-    var filterState: Boolean = false
         private set
 
     fun get(cachePolicy: CachePolicy = CachePolicy.EXPIRES) {
@@ -95,10 +94,6 @@ class LaunchMassViewModel @Inject constructor(
         )
     )
 
-    fun showFilter(visibility: Boolean) {
-        filterState = visibility
-    }
-
     private fun updateOrbitMass(model: OrbitMassModel, orbit: String?, mass: Float?) {
         mass?.let {
             model.total += mass
@@ -117,6 +112,14 @@ class LaunchMassViewModel @Inject constructor(
                 else -> model.other += mass
             }
         }
+    }
+
+    fun setRocketFilter(value: RocketType?) {
+        filterRocket = value
+    }
+
+    fun setTypeFilter(value: LaunchMassViewType?) {
+        filterType = value
     }
 
 }
