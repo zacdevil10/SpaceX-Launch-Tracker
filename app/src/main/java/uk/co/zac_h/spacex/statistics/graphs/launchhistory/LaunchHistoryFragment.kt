@@ -112,6 +112,12 @@ class LaunchHistoryFragment : BaseFragment() {
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        filterViewModel.clear()
+    }
+
     fun update(animate: Boolean, response: List<HistoryStatsModel>) {
         hideProgress()
         launchStats = response

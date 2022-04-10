@@ -1,9 +1,12 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchmass
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,16 +22,16 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.ApiResult
-import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchMassBinding
 import uk.co.zac_h.spacex.statistics.adapters.Statistics
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
+import uk.co.zac_h.spacex.statistics.graphs.launchmass.filter.LaunchMassFilterViewModel
 import uk.co.zac_h.spacex.types.LaunchMassViewType
 import uk.co.zac_h.spacex.types.RocketType
-import uk.co.zac_h.spacex.utils.*
+import uk.co.zac_h.spacex.utils.add
 import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.LaunchMassStatsModel
 import uk.co.zac_h.spacex.utils.models.OrbitMassModel
@@ -40,6 +43,7 @@ class LaunchMassFragment : BaseFragment() {
     private lateinit var binding: FragmentLaunchMassBinding
 
     private val viewModel: LaunchMassViewModel by viewModels()
+    private val filterViewModel: LaunchMassFilterViewModel by activityViewModels()
 
     private val navArgs: LaunchMassFragmentArgs by navArgs()
 
@@ -74,26 +78,13 @@ class LaunchMassFragment : BaseFragment() {
 
         binding.launchMassConstraint.transitionName = getString(navArgs.type.title)
 
-        binding.launchMassFilterTint.setOnClickListener {
-            toggleFilterVisibility(false)
-        }
-
-        binding.launchMassRocketChipGroup.setOnCheckedChangeListener { _, checkedId ->
-            viewModel.filterRocket = when (checkedId) {
-                binding.launchMassFalconOneToggle.id -> RocketType.FALCON_ONE
-                binding.launchMassFalconNineToggle.id -> RocketType.FALCON_NINE
-                binding.launchMassFalconHeavyToggle.id -> RocketType.FALCON_HEAVY
-                else -> null
-            }
+        filterViewModel.filterRocket.observe(viewLifecycleOwner) {
+            viewModel.setRocketFilter(it)
             viewModel.get()
         }
 
-        binding.launchMassTypeChipGroup.setOnCheckedChangeListener { _, checkedId ->
-            viewModel.filterType = when (checkedId) {
-                binding.launchMassRocketToggle.id -> LaunchMassViewType.ROCKETS
-                binding.launchMassOrbitToggle.id -> LaunchMassViewType.ORBIT
-                else -> null
-            }
+        filterViewModel.filterType.observe(viewLifecycleOwner) {
+            viewModel.setTypeFilter(it)
             viewModel.get()
         }
 
@@ -166,26 +157,10 @@ class LaunchMassFragment : BaseFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        toggleFilterVisibility(viewModel.filterState)
-    }
+    override fun onDestroyView() {
+        super.onDestroyView()
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        /*R.id.filter -> {
-            binding.statisticsBarChart.key.visibility = View.GONE
-            binding.statisticsBarChart.barChart.apply {
-                onTouchListener.setLastHighlighted(null)
-                highlightValues(null)
-            }
-            toggleFilterVisibility(!viewModel.filterState)
-            true
-        }*/
-        R.id.reload -> {
-            viewModel.get(CachePolicy.REFRESH)
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
+        filterViewModel.clear()
     }
 
     fun update(data: Any, response: List<LaunchMassStatsModel>) {
@@ -382,36 +357,6 @@ class LaunchMassFragment : BaseFragment() {
         orbitMassModel.ED_L1,
         orbitMassModel.other
     )
-
-    private fun toggleFilterVisibility(filterVisible: Boolean) {
-        binding.launchMassFilterConstraint.apply {
-            when (filterVisible) {
-                true -> {
-                    visibility = View.VISIBLE
-                    startAnimation(animateEnterFromTop(context))
-                }
-                false -> {
-                    visibility = View.GONE
-                    startAnimation(animateExitToTop(context))
-                }
-            }
-        }
-
-        binding.launchMassFilterTint.apply {
-            when (filterVisible) {
-                true -> {
-                    visibility = View.VISIBLE
-                    startAnimation(animateFadeIn(context))
-                }
-                false -> {
-                    visibility = View.GONE
-                    startAnimation(animateFadeOut(context))
-                }
-            }
-        }
-
-        viewModel.showFilter(filterVisible)
-    }
 
     fun showProgress() {
 
