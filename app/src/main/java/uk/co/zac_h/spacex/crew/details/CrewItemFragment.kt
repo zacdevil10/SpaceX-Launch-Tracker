@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -66,6 +67,10 @@ class CrewItemFragment : BaseFragment() {
         }
 
         viewModel.get()
+
+        binding.close.setOnClickListener {
+            findNavController().navigateUp()
+        }
     }
 
     private fun update(person: Crew) {
