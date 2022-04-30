@@ -32,6 +32,7 @@
     <string name="filter_successes">Successes</string>
     <string name="filter_failures">Failures</string>
     <string name="filter">Filter:</string>
+    <string name="reset">Reset</string>
 
     <!--Rocket names-->
     <string name="falcon_1">Falcon 1</string>
