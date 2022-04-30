@@ -1,9 +1,11 @@
 package uk.co.zac_h.spacex.vehicles.cores
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.ApiResult
@@ -12,10 +14,13 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
+import uk.co.zac_h.spacex.types.Order
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
+import uk.co.zac_h.spacex.vehicles.VehiclesFilterViewModel
+import uk.co.zac_h.spacex.vehicles.VehiclesPage
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
 
-class CoreFragment : BaseFragment(), SearchView.OnQueryTextListener {
+class CoreFragment : BaseFragment() {
 
     override var title: String = "Cores"
 
@@ -25,14 +30,9 @@ class CoreFragment : BaseFragment(), SearchView.OnQueryTextListener {
         defaultViewModelProviderFactory
     }
 
+    private val filterViewModel: VehiclesFilterViewModel by activityViewModels()
+
     private lateinit var coreAdapter: CoreAdapter
-
-    private lateinit var searchView: SearchView
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,40 +70,12 @@ class CoreFragment : BaseFragment(), SearchView.OnQueryTextListener {
             }
         }
 
-        viewModel.getCores()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_vehicles_cores, menu)
-
-        searchView = menu.findItem(R.id.app_bar_search).actionView as SearchView
-        searchView.setOnQueryTextListener(this)
-
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.sort_new -> handleSortItemClick(false)
-        R.id.sort_old -> handleSortItemClick(true)
-        else -> super.onOptionsItemSelected(item)
-    }
-
-    private fun handleSortItemClick(order: Boolean): Boolean {
-        if (viewModel.getOrder() == order) viewModel.apply {
-            setOrder(!order)
-            getCores()
+        filterViewModel.order.observe(viewLifecycleOwner) {
+            viewModel.order = it[VehiclesPage.CORES] ?: Order.ASCENDING
+            viewModel.getCores()
         }
-        return true
-    }
 
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        //coreAdapter.filter.filter(query)
-        return false
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
-        //coreAdapter.filter.filter(newText)
-        return false
+        viewModel.getCores()
     }
 
     private fun update(response: List<Core>) {

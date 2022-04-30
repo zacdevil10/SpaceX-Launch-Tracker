@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.ApiResult
@@ -15,6 +16,8 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.dto.spacex.Dragon
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
+import uk.co.zac_h.spacex.vehicles.VehiclesFilterViewModel
+import uk.co.zac_h.spacex.vehicles.VehiclesPage
 import uk.co.zac_h.spacex.vehicles.adapters.DragonAdapter
 
 class DragonFragment : BaseFragment() {
@@ -26,6 +29,8 @@ class DragonFragment : BaseFragment() {
     private val viewModel: DragonViewModel by navGraphViewModels(R.id.nav_graph) {
         defaultViewModelProviderFactory
     }
+
+    private val filterViewModel: VehiclesFilterViewModel by activityViewModels()
 
     private lateinit var dragonAdapter: DragonAdapter
 
@@ -63,6 +68,11 @@ class DragonFragment : BaseFragment() {
                     showError(result.error?.message)
                 }
             }
+        }
+
+        filterViewModel.order.observe(viewLifecycleOwner) {
+            viewModel.setOrder(it[VehiclesPage.DRAGON])
+            viewModel.getDragons()
         }
 
         viewModel.getDragons()

@@ -31,6 +31,7 @@ import uk.co.zac_h.spacex.statistics.graphs.launchhistory.filter.LaunchHistoryFi
 import uk.co.zac_h.spacex.statistics.graphs.launchmass.filter.LaunchMassFilterFragment
 import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.vehicles.VehiclesFilterFragment
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -221,6 +222,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             //R.id.history_page_fragment -> HistoryFilterFragment()
             R.id.launch_history_fragment -> LaunchHistoryFilterFragment()
             R.id.launch_mass_fragment -> LaunchMassFilterFragment()
+            R.id.vehicles_page_fragment -> VehiclesFilterFragment()
             else -> null
         }
 
