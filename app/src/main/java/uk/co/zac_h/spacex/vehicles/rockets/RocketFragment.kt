@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.ApiResult
@@ -14,6 +15,8 @@ import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
+import uk.co.zac_h.spacex.vehicles.VehiclesFilterViewModel
+import uk.co.zac_h.spacex.vehicles.VehiclesPage
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
 
 class RocketFragment : BaseFragment() {
@@ -25,6 +28,8 @@ class RocketFragment : BaseFragment() {
     private val viewModel: RocketViewModel by navGraphViewModels(R.id.nav_graph) {
         defaultViewModelProviderFactory
     }
+
+    private val filterViewModel: VehiclesFilterViewModel by activityViewModels()
 
     private lateinit var rocketsAdapter: RocketsAdapter
 
@@ -63,6 +68,11 @@ class RocketFragment : BaseFragment() {
                     showError(result.error?.message)
                 }
             }
+        }
+
+        filterViewModel.order.observe(viewLifecycleOwner) {
+            viewModel.setOrder(it[VehiclesPage.ROCKETS])
+            viewModel.getRockets()
         }
 
         viewModel.getRockets()

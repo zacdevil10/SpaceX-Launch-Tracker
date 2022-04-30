@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.activityViewModels
+import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.transition.Hold
 import uk.co.zac_h.spacex.R
@@ -22,6 +24,8 @@ class VehiclesFragment : BaseFragment() {
     override val title by lazy { getString(R.string.vehicles_label) }
 
     private lateinit var binding: FragmentVehiclesBinding
+
+    private val viewModel: VehiclesFilterViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +58,16 @@ class VehiclesFragment : BaseFragment() {
 
         binding.vehiclesViewPager.apply {
             adapter = ViewPagerAdapter(childFragmentManager, fragments)
+            addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageScrolled(p: Int, p1: Float, p2: Int) {}
+
+                override fun onPageSelected(position: Int) {
+                    viewModel.setVehiclesPage(position)
+                }
+
+                override fun onPageScrollStateChanged(state: Int) {}
+
+            })
         }
 
         val tabIcons = listOf(

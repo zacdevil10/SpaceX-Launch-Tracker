@@ -1,21 +1,25 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.widget.SearchView
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
+import uk.co.zac_h.spacex.types.Order
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
+import uk.co.zac_h.spacex.vehicles.VehiclesFilterViewModel
+import uk.co.zac_h.spacex.vehicles.VehiclesPage
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
 
-class CapsulesFragment : BaseFragment(), SearchView.OnQueryTextListener {
+class CapsulesFragment : BaseFragment() {
 
     override var title: String = "Capsules"
 
@@ -23,14 +27,9 @@ class CapsulesFragment : BaseFragment(), SearchView.OnQueryTextListener {
 
     private val viewModel: CapsulesViewModel by viewModels()
 
+    private val filterViewModel: VehiclesFilterViewModel by activityViewModels()
+
     private lateinit var capsulesAdapter: CapsulesAdapter
-
-    private lateinit var searchView: SearchView
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,40 +68,12 @@ class CapsulesFragment : BaseFragment(), SearchView.OnQueryTextListener {
             }
         }
 
-        viewModel.get()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_vehicles_cores, menu)
-
-        searchView = menu.findItem(R.id.app_bar_search).actionView as SearchView
-        searchView.setOnQueryTextListener(this)
-
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.sort_new -> handleSortItemClick(false)
-        R.id.sort_old -> handleSortItemClick(true)
-        else -> super.onOptionsItemSelected(item)
-    }
-
-    private fun handleSortItemClick(order: Boolean): Boolean {
-        if (viewModel.getOrder() == order) viewModel.apply {
-            setOrder(!order)
-            get()
+        filterViewModel.order.observe(viewLifecycleOwner) {
+            viewModel.order = it[VehiclesPage.CAPSULES] ?: Order.ASCENDING
+            viewModel.get()
         }
-        return true
-    }
 
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        //capsulesAdapter.filter.filter(query)
-        return false
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
-        //capsulesAdapter.filter.filter(newText)
-        return false
+        viewModel.get()
     }
 
     private fun update(response: List<Capsule>) {

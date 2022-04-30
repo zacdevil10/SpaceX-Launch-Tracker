@@ -1,16 +1,14 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.*
 import uk.co.zac_h.spacex.dto.spacex.QueryModel
 import uk.co.zac_h.spacex.dto.spacex.QueryOptionsModel
 import uk.co.zac_h.spacex.dto.spacex.QueryPopulateModel
-import uk.co.zac_h.spacex.utils.reverse
+import uk.co.zac_h.spacex.types.Order
+import uk.co.zac_h.spacex.utils.sortedBy
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,7 +17,20 @@ class CapsulesViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _capsules = MutableLiveData<ApiResult<List<Capsule>>>()
-    val capsules: LiveData<ApiResult<List<Capsule>>> = _capsules
+    val capsules: LiveData<ApiResult<List<Capsule>>> = _capsules.map { result ->
+        result.map {
+            it.sortedBy(order) { capsule ->
+                capsule.serial
+            }
+        }
+    }
+
+    var order: Order = repository.getOrder()
+        get() = repository.getOrder()
+        set(value) {
+            field = value
+            repository.setOrder(value)
+        }
 
     val cacheLocation: Repository.RequestLocation
         get() = repository.cacheLocation
@@ -31,14 +42,10 @@ class CapsulesViewModel @Inject constructor(
             }
 
             _capsules.value = response.await().map {
-                it.docs.map { capsule -> Capsule(capsule) }.reverse(getOrder())
+                it.docs.map { capsule -> Capsule(capsule) }
             }
         }
     }
-
-    fun getOrder() = repository.getOrder()
-
-    fun setOrder(order: Boolean) = repository.setOrder(order)
 
     private val query = QueryModel(
         "",
