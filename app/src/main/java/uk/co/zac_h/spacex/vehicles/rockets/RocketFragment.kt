@@ -11,10 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
-import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.VehiclesFilterViewModel
 import uk.co.zac_h.spacex.vehicles.VehiclesPage
 import uk.co.zac_h.spacex.vehicles.adapters.RocketsAdapter
@@ -60,8 +58,13 @@ class RocketFragment : BaseFragment() {
             when (result.status) {
                 ApiResult.Status.PENDING -> showProgress()
                 ApiResult.Status.SUCCESS -> {
+                    hideProgress()
                     binding.swipeRefresh.isRefreshing = false
-                    result.data?.let { data -> update(data) }
+                    result.data?.let { data ->
+                        rocketsAdapter.submitList(data) {
+                            binding.recycler.smoothScrollToPosition(0)
+                        }
+                    }
                 }
                 ApiResult.Status.FAILURE -> {
                     binding.swipeRefresh.isRefreshing = false
@@ -76,15 +79,6 @@ class RocketFragment : BaseFragment() {
         }
 
         viewModel.getRockets()
-    }
-
-    private fun update(response: List<Rocket>) {
-        hideProgress()
-        rocketsAdapter.submitList(response)
-        if (viewModel.cacheLocation == Repository.RequestLocation.REMOTE) {
-            binding.recycler.layoutAnimation = animateLayoutFromBottom(requireContext())
-            binding.recycler.scheduleLayoutAnimation()
-        }
     }
 
     private fun showProgress() {

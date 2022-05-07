@@ -10,11 +10,9 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
-import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.types.Order
-import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 import uk.co.zac_h.spacex.vehicles.VehiclesFilterViewModel
 import uk.co.zac_h.spacex.vehicles.VehiclesPage
 import uk.co.zac_h.spacex.vehicles.adapters.CapsulesAdapter
@@ -59,7 +57,11 @@ class CapsulesFragment : BaseFragment() {
                 ApiResult.Status.SUCCESS -> {
                     hideProgress()
                     binding.swipeRefresh.isRefreshing = false
-                    result.data?.let { data -> update(data) }
+                    result.data?.let { data ->
+                        capsulesAdapter.submitList(data) {
+                            binding.recycler.smoothScrollToPosition(0)
+                        }
+                    }
                 }
                 ApiResult.Status.FAILURE -> {
                     binding.swipeRefresh.isRefreshing = false
@@ -74,14 +76,6 @@ class CapsulesFragment : BaseFragment() {
         }
 
         viewModel.get()
-    }
-
-    private fun update(response: List<Capsule>) {
-        capsulesAdapter.submitList(response)
-        if (viewModel.cacheLocation == Repository.RequestLocation.REMOTE) {
-            binding.recycler.layoutAnimation = animateLayoutFromBottom(requireContext())
-            binding.recycler.scheduleLayoutAnimation()
-        }
     }
 
     private fun showProgress() {
