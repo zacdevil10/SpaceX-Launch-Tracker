@@ -75,7 +75,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.4.2'
 
     //Glide
-    implementation 'com.github.bumptech.glide:glide:4.13.1'
+    implementation 'com.github.bumptech.glide:glide:4.13.2'
 
     //MP Chart library
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
@@ -84,7 +84,7 @@ dependencies {
     implementation 'com.github.zacdevil10:MediaRecyclerView:v0.2.0-beta'
 
     //Firebase
-    implementation platform('com.google.firebase:firebase-bom:29.0.0')
+    implementation platform('com.google.firebase:firebase-bom:30.0.1')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-core'
@@ -96,8 +96,8 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:1.4.1"
 
     //Hilt
-    implementation 'com.google.dagger:hilt-android:2.41'
-    kapt 'com.google.dagger:hilt-compiler:2.41'
+    implementation 'com.google.dagger:hilt-android:2.42'
+    kapt 'com.google.dagger:hilt-compiler:2.42'
 
     //Paging
     implementation "androidx.paging:paging-runtime-ktx:3.1.1"
