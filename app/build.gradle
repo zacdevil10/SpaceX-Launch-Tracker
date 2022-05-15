@@ -54,6 +54,7 @@ android {
             dimension "firebaseEnv"
         }
     }
+    namespace 'uk.co.zac_h.spacex'
 }
 
 dependencies {

@@ -29,6 +29,7 @@ android {
             testCoverageEnabled true
         }
     }
+    namespace 'uk.co.zac_h'
 }
 
 dependencies {
