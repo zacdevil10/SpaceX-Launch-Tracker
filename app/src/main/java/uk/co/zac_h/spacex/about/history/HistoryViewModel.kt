@@ -13,7 +13,7 @@ import uk.co.zac_h.spacex.dto.spacex.History
 import uk.co.zac_h.spacex.dto.spacex.QueryHistorySort
 import uk.co.zac_h.spacex.dto.spacex.QueryModel
 import uk.co.zac_h.spacex.dto.spacex.QueryOptionsModel
-import uk.co.zac_h.spacex.utils.Keys.HistoryKeys
+import uk.co.zac_h.spacex.types.Order
 import uk.co.zac_h.spacex.utils.models.HistoryHeaderModel
 import uk.co.zac_h.spacex.utils.splitHistoryListByDate
 import javax.inject.Inject
@@ -30,10 +30,17 @@ class HistoryViewModel @Inject constructor(
         get() = QueryModel(
             options = QueryOptionsModel(
                 pagination = false,
-                sort = QueryHistorySort(if (repository.getOrder()) HistoryKeys.ORDER_DESCENDING else HistoryKeys.ORDER_ASCENDING),
+                sort = QueryHistorySort(order.order),
                 limit = 1000000
             )
         )
+
+    var order: Order = repository.getOrder()
+        get() = repository.getOrder()
+        set(value) {
+            field = value
+            repository.setOrder(value)
+        }
 
     fun getHistory(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
         viewModelScope.launch {
@@ -46,9 +53,5 @@ class HistoryViewModel @Inject constructor(
             }
         }
     }
-
-    fun getOrder() = repository.getOrder()
-
-    fun setOrder(order: Boolean) = repository.setOrder(order)
 
 }
