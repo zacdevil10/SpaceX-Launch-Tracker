@@ -2,19 +2,19 @@ package uk.co.zac_h.spacex.about.history
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.doOnPreDraw
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.transition.MaterialElevationScale
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
+import uk.co.zac_h.spacex.about.history.filter.HistoryFilterViewModel
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentHistoryBinding
 import uk.co.zac_h.spacex.utils.openWebLink
@@ -27,6 +27,8 @@ class HistoryFragment : BaseFragment() {
     override val title: String by lazy { getString(R.string.menu_history) }
 
     private val viewModel: HistoryViewModel by viewModels()
+
+    private val filterViewModel: HistoryFilterViewModel by activityViewModels()
 
     private lateinit var binding: FragmentHistoryBinding
 
@@ -78,6 +80,11 @@ class HistoryFragment : BaseFragment() {
                     binding.swipeRefresh.isRefreshing = false
                 }
             }
+        }
+
+        filterViewModel.order.observe(viewLifecycleOwner) {
+            viewModel.order = it
+            viewModel.getHistory(CachePolicy.REFRESH)
         }
 
         viewModel.getHistory()
