@@ -42,7 +42,7 @@ class CoreFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        coreAdapter = CoreAdapter(requireContext())
+        coreAdapter = CoreAdapter()
 
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -62,7 +62,7 @@ class CoreFragment : BaseFragment() {
                     binding.swipeRefresh.isRefreshing = false
                     result.data?.let { data ->
                         coreAdapter.submitList(data) {
-                            binding.recycler.smoothScrollToPosition(0)
+                            binding.recycler.scrollToPosition(0)
                         }
                     }
                 }

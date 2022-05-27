@@ -61,7 +61,7 @@ class DragonFragment : BaseFragment() {
                     binding.swipeRefresh.isRefreshing = false
                     result.data?.let { data ->
                         dragonAdapter.submitList(data) {
-                            binding.recycler.smoothScrollToPosition(0)
+                            binding.recycler.scrollToPosition(0)
                         }
                     }
                 }

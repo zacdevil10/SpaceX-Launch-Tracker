@@ -20,7 +20,7 @@ class CapsulesViewModel @Inject constructor(
     val capsules: LiveData<ApiResult<List<Capsule>>> = _capsules.map { result ->
         result.map {
             it.sortedBy(order) { capsule ->
-                capsule.serial
+                capsule.serial?.drop(0)
             }
         }
     }
