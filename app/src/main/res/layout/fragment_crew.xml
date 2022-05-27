@@ -5,6 +5,7 @@
     android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingBottom="?attr/actionBarSize"
     tools:context=".crew.CrewFragment">
 
     <androidx.recyclerview.widget.RecyclerView
