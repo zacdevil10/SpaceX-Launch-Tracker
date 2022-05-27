@@ -75,8 +75,9 @@ class CapsuleDetailsFragment : BaseFragment() {
                 capsuleDetailsStatusText.text = it.status
             }
             capsuleDetailsReuseText.text = capsule?.reuseCount.toString()
-            capsuleDetailsLandingText.text =
-                ((capsule?.landLandings ?: 0) + (capsule?.waterLandings ?: 0)).toString()
+
+            val totalLandings = capsule?.landLandings?.plus(capsule.waterLandings ?: 0) ?: 0
+            capsuleDetailsLandingText.text = totalLandings.toString()
 
             capsule?.launches?.let { launches ->
                 capsuleDetailsMissionsRecycler.apply {

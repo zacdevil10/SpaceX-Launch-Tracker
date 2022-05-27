@@ -59,7 +59,7 @@ class CapsulesFragment : BaseFragment() {
                     binding.swipeRefresh.isRefreshing = false
                     result.data?.let { data ->
                         capsulesAdapter.submitList(data) {
-                            binding.recycler.smoothScrollToPosition(0)
+                            binding.recycler.scrollToPosition(0)
                         }
                     }
                 }

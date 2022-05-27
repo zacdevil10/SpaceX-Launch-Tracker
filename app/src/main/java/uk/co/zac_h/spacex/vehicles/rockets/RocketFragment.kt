@@ -62,7 +62,7 @@ class RocketFragment : BaseFragment() {
                     binding.swipeRefresh.isRefreshing = false
                     result.data?.let { data ->
                         rocketsAdapter.submitList(data) {
-                            binding.recycler.smoothScrollToPosition(0)
+                            binding.recycler.scrollToPosition(0)
                         }
                     }
                 }

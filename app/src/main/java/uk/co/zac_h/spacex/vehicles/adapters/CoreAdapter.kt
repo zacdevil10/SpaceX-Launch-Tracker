@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.vehicles.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +13,7 @@ import uk.co.zac_h.spacex.databinding.ListItemCoreBinding
 import uk.co.zac_h.spacex.vehicles.VehiclesFragmentDirections
 import uk.co.zac_h.spacex.vehicles.cores.Core
 
-class CoreAdapter(private val context: Context) :
-    ListAdapter<Core, CoreAdapter.ViewHolder>(CoreComparator) {
+class CoreAdapter : ListAdapter<Core, CoreAdapter.ViewHolder>(CoreComparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
         ListItemCoreBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -30,7 +28,7 @@ class CoreAdapter(private val context: Context) :
             listItemCoreSerial.text = core.serial
 
             core.block?.let {
-                listItemCoreBlockText.text = context.getString(R.string.block, it)
+                listItemCoreBlockText.text = root.context.getString(R.string.block, it)
                 listItemCoreTitleSeparator.visibility = View.VISIBLE
             } ?: run {
                 listItemCoreBlockText.text = ""
