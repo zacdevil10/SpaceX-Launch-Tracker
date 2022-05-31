@@ -1,7 +1,10 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
@@ -20,8 +23,6 @@ import uk.co.zac_h.spacex.types.PadType
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 
 class PadStatsFragment : BaseFragment() {
-
-    override val title: String by lazy { getString(navArgs.type.title) }
 
     private lateinit var binding: FragmentPadStatsBinding
 

@@ -29,8 +29,6 @@ import uk.co.zac_h.spacex.utils.*
 
 class LaunchDetailsContainerFragment : BaseFragment() {
 
-    override val title: String by lazy { navArgs.label ?: title }
-
     private val navArgs: LaunchDetailsContainerFragmentArgs by navArgs()
 
     private val viewModel: LaunchDetailsContainerViewModel by navGraphViewModels(R.id.nav_graph) {

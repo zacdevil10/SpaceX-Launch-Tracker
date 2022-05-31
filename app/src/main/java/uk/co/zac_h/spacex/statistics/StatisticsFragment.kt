@@ -9,14 +9,11 @@ import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialElevationScale
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentStatisticsBinding
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsAdapter
 
 class StatisticsFragment : BaseFragment() {
-
-    override val title by lazy { getString(R.string.menu_statistics) }
 
     private lateinit var binding: FragmentStatisticsBinding
 
