@@ -13,10 +13,8 @@ import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentCapsuleDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
-import uk.co.zac_h.spacex.utils.*
 import uk.co.zac_h.spacex.vehicles.capsules.Capsule
 import uk.co.zac_h.spacex.vehicles.capsules.CapsulesViewModel
-import java.util.*
 
 class CapsuleDetailsFragment : BaseFragment() {
 
@@ -83,7 +81,7 @@ class CapsuleDetailsFragment : BaseFragment() {
                 capsuleDetailsMissionsRecycler.apply {
                     layoutManager = LinearLayoutManager(this@CapsuleDetailsFragment.context)
                     setHasFixedSize(true)
-                    adapter = MissionsAdapter(context).also { it.submitList(launches) }
+                    adapter = MissionsAdapter().also { it.submitList(launches) }
                 }
             } ?: run { capsuleDetailsMissionLabel.visibility = View.GONE }
         }

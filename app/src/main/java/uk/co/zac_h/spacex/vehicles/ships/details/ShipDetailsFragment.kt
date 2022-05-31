@@ -109,7 +109,7 @@ class ShipDetailsFragment : BaseFragment() {
                     shipDetailsMissionRecycler.apply {
                         layoutManager = LinearLayoutManager(this@ShipDetailsFragment.context)
                         setHasFixedSize(true)
-                        adapter = MissionsAdapter(context).also { it.submitList(launches) }
+                        adapter = MissionsAdapter().also { it.submitList(launches) }
                     }
                 } ?: run {
                     shipDetailsMissionLabel.visibility = View.GONE

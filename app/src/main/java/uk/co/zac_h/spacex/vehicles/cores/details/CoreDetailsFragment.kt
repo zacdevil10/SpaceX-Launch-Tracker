@@ -10,6 +10,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
+import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
@@ -48,14 +49,12 @@ class CoreDetailsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getCores()
-
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
         binding.coreDetailsScrollview.transitionName = navArgs.id
 
-        missionsAdapter = MissionsAdapter(requireContext())
+        missionsAdapter = MissionsAdapter()
 
         binding.coreDetailsMissionRecycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -64,8 +63,17 @@ class CoreDetailsFragment : BaseFragment() {
         }
 
         viewModel.cores.observe(viewLifecycleOwner) { result ->
-            result.data?.first { it.id == navArgs.id }?.let { update(it) }
+            when (result.status) {
+                ApiResult.Status.PENDING -> binding.progress.show()
+                ApiResult.Status.SUCCESS -> result.data?.first { it.id == navArgs.id }?.let {
+                    update(it)
+                    binding.progress.hide()
+                }
+                ApiResult.Status.FAILURE -> {}
+            }
         }
+
+        viewModel.getCores()
     }
 
     private fun update(core: Core?) {
@@ -74,9 +82,7 @@ class CoreDetailsFragment : BaseFragment() {
                 coreDetailsSerialText.text = core.serial
                 coreDetailsBlockText.text = core.block ?: "TBD"
                 coreDetailsDetailsText.text = core.lastUpdate
-                core.status?.let {
-                    coreDetailsStatusText.text = it.status
-                }
+                coreDetailsStatusText.text = core.status.status
                 coreDetailsReuseText.text = core.reuseCount.toString()
                 coreDetailsRtlsAttemptsText.text = core.attemptsRtls.toString()
                 coreDetailsRtlsLandingsText.text = core.landingsRtls.toString()

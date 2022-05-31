@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.launches.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
@@ -13,8 +12,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemMissionBinding
 import uk.co.zac_h.spacex.launches.Launch
 
-class MissionsAdapter(private val context: Context) :
-    ListAdapter<Launch, MissionsAdapter.ViewHolder>(Comparator) {
+class MissionsAdapter : ListAdapter<Launch, MissionsAdapter.ViewHolder>(Comparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
         ListItemMissionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -27,7 +25,7 @@ class MissionsAdapter(private val context: Context) :
             root.transitionName = launch.id
             missionName.text = launch.missionName
             missionFlightNumber.text =
-                context.getString(R.string.flight_number, launch.flightNumber)
+                root.resources.getString(R.string.flight_number, launch.flightNumber)
 
             root.setOnClickListener {
                 root.findNavController().navigate(
