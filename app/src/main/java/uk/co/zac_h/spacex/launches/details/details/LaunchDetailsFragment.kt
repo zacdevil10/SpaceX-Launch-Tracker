@@ -4,7 +4,9 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.os.Bundle
 import android.provider.CalendarContract
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.navigation.navGraphViewModels
@@ -18,7 +20,8 @@ import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
 import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.launches.details.LaunchDetailsContainerViewModel
 import uk.co.zac_h.spacex.types.DatePrecision
-import uk.co.zac_h.spacex.utils.*
+import uk.co.zac_h.spacex.utils.formatDateMillisLong
+import uk.co.zac_h.spacex.utils.openWebLink
 
 class LaunchDetailsFragment : BaseFragment() {
 
@@ -43,11 +46,10 @@ class LaunchDetailsFragment : BaseFragment() {
             viewModel.getLaunch(CachePolicy.REFRESH)
         }
 
-        viewModel.launch.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                ApiResult.Status.PENDING -> {
-                }
-                ApiResult.Status.SUCCESS -> response.data?.let { update(it) }.also {
+        viewModel.launch.observe(viewLifecycleOwner) { result ->
+            when (result.status) {
+                ApiResult.Status.PENDING -> {}
+                ApiResult.Status.SUCCESS -> result.data?.let { update(it) }.also {
                     binding.swipeRefresh.isRefreshing = false
                 }
                 ApiResult.Status.FAILURE -> binding.swipeRefresh.isRefreshing = false

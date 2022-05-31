@@ -16,6 +16,17 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal">
 
+            <com.google.android.material.progressindicator.LinearProgressIndicator
+                android:id="@+id/progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:elevation="@dimen/card_elevation"
+                android:indeterminate="true"
+                app:hideAnimationBehavior="outward"
+                app:indicatorColor="?colorSecondary"
+                app:layout_constraintTop_toTopOf="parent"
+                app:showAnimationBehavior="inward" />
+
             <TextView
                 android:id="@+id/core_details_serial_label"
                 android:layout_width="wrap_content"
