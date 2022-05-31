@@ -10,13 +10,13 @@ import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
-import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.CollapsingToolbarBinding
 import uk.co.zac_h.spacex.databinding.FragmentShipDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
 import uk.co.zac_h.spacex.utils.setImageAndTint
+import uk.co.zac_h.spacex.utils.setupCollapsingToolbar
 import uk.co.zac_h.spacex.vehicles.ships.Ship
 import uk.co.zac_h.spacex.vehicles.ships.ShipsViewModel
 
@@ -36,10 +36,9 @@ class ShipDetailsFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition = MaterialContainerTransform()
-
-        exitTransition = MaterialElevationScale(false)
-        reenterTransition = MaterialElevationScale(true)
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.nav_host
+        }
     }
 
     override fun onCreateView(
@@ -58,7 +57,7 @@ class ShipDetailsFragment : BaseFragment() {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
+        toolbarBinding.toolbar.setupCollapsingToolbar(title)
 
         binding.shipDetailsCoordinator.transitionName = navArgs.id
 

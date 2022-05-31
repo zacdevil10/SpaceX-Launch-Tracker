@@ -15,6 +15,7 @@ import uk.co.zac_h.spacex.databinding.CollapsingToolbarBinding
 import uk.co.zac_h.spacex.databinding.FragmentRocketDetailsBinding
 import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.setImageAndTint
+import uk.co.zac_h.spacex.utils.setupCollapsingToolbar
 import uk.co.zac_h.spacex.vehicles.adapters.RocketPayloadAdapter
 import uk.co.zac_h.spacex.vehicles.rockets.Rocket
 import uk.co.zac_h.spacex.vehicles.rockets.RocketViewModel
@@ -37,7 +38,9 @@ class RocketDetailsFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition = MaterialContainerTransform()
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.nav_host
+        }
     }
 
     override fun onCreateView(
@@ -52,7 +55,7 @@ class RocketDetailsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
+        toolbarBinding.toolbar.setupCollapsingToolbar(title)
 
         rocketPayloadAdapter = RocketPayloadAdapter(requireContext())
 
