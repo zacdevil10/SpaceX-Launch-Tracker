@@ -21,8 +21,6 @@ import uk.co.zac_h.spacex.dto.spacex.CrewStatus
 
 class CrewItemFragment : BaseFragment() {
 
-    override var title: String = "Crew"
-
     private lateinit var binding: FragmentCrewItemBinding
 
     private val viewModel: CrewViewModel by navGraphViewModels(R.id.nav_graph) {

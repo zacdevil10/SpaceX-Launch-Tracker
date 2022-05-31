@@ -18,8 +18,6 @@ import uk.co.zac_h.spacex.utils.ViewPagerAdapter
 @AndroidEntryPoint
 class LaunchesFragment : BaseFragment() {
 
-    override val title: String by lazy { getString(R.string.menu_launches) }
-
     private val viewModel: LaunchesViewModel by navGraphViewModels(R.id.nav_graph) {
         defaultViewModelProviderFactory
     }

@@ -24,8 +24,6 @@ import uk.co.zac_h.spacex.utils.views.HeaderItemDecoration
 @AndroidEntryPoint
 class HistoryFragment : BaseFragment() {
 
-    override val title: String by lazy { getString(R.string.menu_history) }
-
     private val viewModel: HistoryViewModel by viewModels()
 
     private val filterViewModel: HistoryFilterViewModel by activityViewModels()

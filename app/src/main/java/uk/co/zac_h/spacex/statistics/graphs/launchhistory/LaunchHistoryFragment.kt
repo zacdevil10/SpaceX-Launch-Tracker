@@ -27,7 +27,6 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchHistoryBinding
-import uk.co.zac_h.spacex.statistics.adapters.Statistics
 import uk.co.zac_h.spacex.statistics.graphs.launchhistory.filter.LaunchHistoryFilterViewModel
 import uk.co.zac_h.spacex.types.LaunchHistoryFilter
 import uk.co.zac_h.spacex.types.RocketType
@@ -35,8 +34,6 @@ import uk.co.zac_h.spacex.utils.generateCenterSpannableText
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 
 class LaunchHistoryFragment : BaseFragment() {
-
-    override val title by lazy { getString(Statistics.LAUNCH_HISTORY.title) }
 
     private lateinit var binding: FragmentLaunchHistoryBinding
 

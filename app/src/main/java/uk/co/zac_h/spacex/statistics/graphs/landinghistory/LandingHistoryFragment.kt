@@ -26,14 +26,11 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLandingHistoryBinding
-import uk.co.zac_h.spacex.statistics.adapters.Statistics
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
 import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.LandingHistoryModel
 
 class LandingHistoryFragment : BaseFragment() {
-
-    override val title by lazy { getString(Statistics.LANDING_HISTORY.title) }
 
     private lateinit var binding: FragmentLandingHistoryBinding
 

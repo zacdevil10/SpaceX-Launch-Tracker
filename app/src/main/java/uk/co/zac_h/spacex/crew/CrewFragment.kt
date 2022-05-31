@@ -18,8 +18,6 @@ import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 
 class CrewFragment : BaseFragment() {
 
-    override val title: String by lazy { getString(R.string.menu_crew) }
-
     private val viewModel: CrewViewModel by navGraphViewModels(R.id.nav_graph) {
         defaultViewModelProviderFactory
     }

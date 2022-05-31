@@ -17,8 +17,6 @@ import uk.co.zac_h.spacex.utils.orUnknown
 @AndroidEntryPoint
 class CompanyFragment : BaseFragment() {
 
-    override val title: String by lazy { getString(R.string.menu_company) }
-
     private val viewModel: CompanyViewModel by viewModels()
 
     private lateinit var binding: FragmentCompanyBinding
