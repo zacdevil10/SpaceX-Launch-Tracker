@@ -9,9 +9,7 @@ import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.async
-import uk.co.zac_h.spacex.dto.spacex.QueryModel
-import uk.co.zac_h.spacex.dto.spacex.QueryOptionsModel
-import uk.co.zac_h.spacex.dto.spacex.QueryPopulateModel
+import uk.co.zac_h.spacex.query.LaunchQuery
 import uk.co.zac_h.spacex.types.LaunchType
 import javax.inject.Inject
 
@@ -30,7 +28,7 @@ class LaunchesViewModel @Inject constructor(
                 _launchesLiveData.value = ApiResult.pending()
                 repository.fetch(
                     key = "launches",
-                    query = query,
+                    query = LaunchQuery.query,
                     cachePolicy = cachePolicy
                 )
             }
@@ -43,40 +41,4 @@ class LaunchesViewModel @Inject constructor(
         }
     }
 
-    private val query = QueryModel(
-        options = QueryOptionsModel(
-            pagination = false,
-            populate = listOf(
-                QueryPopulateModel(path = "rocket", populate = "", select = listOf("name")),
-                QueryPopulateModel(
-                    path = "cores",
-                    populate = listOf(
-                        QueryPopulateModel(
-                            path = "landpad",
-                            populate = "",
-                            select = listOf("name")
-                        ),
-                        QueryPopulateModel(
-                            path = "core",
-                            populate = "",
-                            select = listOf("reuse_count")
-                        )
-                    ),
-                    select = ""
-                )
-            ),
-            select = listOf(
-                "flight_number",
-                "name",
-                "date_unix",
-                "rocket",
-                "cores",
-                "links",
-                "date_precision",
-                "upcoming",
-                "tbd"
-            ),
-            limit = 10000
-        )
-    )
 }

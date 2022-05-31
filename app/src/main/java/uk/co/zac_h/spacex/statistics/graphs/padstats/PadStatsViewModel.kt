@@ -9,7 +9,8 @@ import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.async
-import uk.co.zac_h.spacex.dto.spacex.*
+import uk.co.zac_h.spacex.dto.spacex.StatsPadModel
+import uk.co.zac_h.spacex.query.StatisticsQuery
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,7 +25,11 @@ class PadStatsViewModel @Inject constructor(
     fun getLaunchpads(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
         viewModelScope.launch {
             val response = async(_stats) {
-                launchpadRepository.fetch(key = "launchpads", query = launchQuery, cachePolicy = cachePolicy)
+                launchpadRepository.fetch(
+                    key = "launchpads",
+                    query = StatisticsQuery.launchPadQuery,
+                    cachePolicy = cachePolicy
+                )
             }
 
             val result = response.await().map { launches -> launches.docs.map { Launchpad(it) } }
@@ -45,7 +50,11 @@ class PadStatsViewModel @Inject constructor(
     fun getLandingPads(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
         viewModelScope.launch {
             val response = async(_stats) {
-                landingPadRepository.fetch(key = "landing_pads", query = landQuery, cachePolicy = cachePolicy)
+                landingPadRepository.fetch(
+                    key = "landing_pads",
+                    query = StatisticsQuery.landingPadQuery,
+                    cachePolicy = cachePolicy
+                )
             }
 
             val result = response.await().map { launches -> launches.docs.map { LandingPad(it) } }
@@ -64,26 +73,5 @@ class PadStatsViewModel @Inject constructor(
         }
     }
 
-    private val launchQuery = QueryModel(
-        "",
-        QueryOptionsModel(
-            false,
-            "",
-            "",
-            listOf("full_name", "launch_attempts", "launch_successes", "status"),
-            100000
-        )
-    )
-
-    private val landQuery = QueryModel(
-        "",
-        QueryOptionsModel(
-            false,
-            "",
-            "",
-            listOf("full_name", "landing_attempts", "landing_successes", "status", "type"),
-            100000
-        )
-    )
 
 }

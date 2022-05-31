@@ -10,11 +10,8 @@ import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.async
-import uk.co.zac_h.spacex.dto.spacex.QueryModel
-import uk.co.zac_h.spacex.dto.spacex.QueryOptionsModel
-import uk.co.zac_h.spacex.dto.spacex.QueryPopulateModel
-import uk.co.zac_h.spacex.dto.spacex.QueryUpcomingLaunchesModel
 import uk.co.zac_h.spacex.launches.Launch
+import uk.co.zac_h.spacex.query.StatisticsQuery
 import uk.co.zac_h.spacex.statistics.StatisticsRepository
 import uk.co.zac_h.spacex.types.LaunchHistoryFilter
 import uk.co.zac_h.spacex.types.RocketType
@@ -38,7 +35,11 @@ class LaunchHistoryViewModel @Inject constructor(
     fun get(cachePolicy: CachePolicy = CachePolicy.EXPIRES) {
         viewModelScope.launch {
             val response = async(_launchHistory) {
-                repository.fetch(key = "launch_history", query = query, cachePolicy = cachePolicy)
+                repository.fetch(
+                    key = "launch_history",
+                    query = StatisticsQuery.launchHistoryQuery,
+                    cachePolicy = cachePolicy
+                )
             }
 
             val result = response.await().map { launches -> launches.docs.map { Launch(it) } }
@@ -83,19 +84,6 @@ class LaunchHistoryViewModel @Inject constructor(
             }
         }
     }
-
-    private val query = QueryModel(
-        QueryUpcomingLaunchesModel(false),
-        QueryOptionsModel(
-            false, listOf(
-                QueryPopulateModel(
-                    "rocket",
-                    populate = "",
-                    select = listOf("name", "success_rate_pct")
-                )
-            ), "", listOf("rocket", "success"), 100000
-        )
-    )
 
     fun setFilter(filter: LaunchHistoryFilter?) {
         filterValue = filter

@@ -10,9 +10,7 @@ import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.async
-import uk.co.zac_h.spacex.dto.spacex.QueryModel
-import uk.co.zac_h.spacex.dto.spacex.QueryOptionsModel
-import uk.co.zac_h.spacex.dto.spacex.QueryPopulateModel
+import uk.co.zac_h.spacex.query.CrewQuery
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,25 +27,11 @@ class CrewViewModel @Inject constructor(
     fun get(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
         viewModelScope.launch {
             val response = async(_crew) {
-                repository.fetch("crew", query = query, cachePolicy = cachePolicy)
+                repository.fetch("crew", query = CrewQuery.query, cachePolicy = cachePolicy)
             }
 
             _crew.value = response.await().map { result -> result.docs.map { Crew(it) } }
         }
     }
-
-    private val query = QueryModel(
-        "",
-        QueryOptionsModel(
-            false,
-            listOf(
-                QueryPopulateModel(
-                    "launches",
-                    select = listOf("flight_number", "name", "date_unix"),
-                    populate = ""
-                )
-            ), "", "", 100000
-        )
-    )
 
 }

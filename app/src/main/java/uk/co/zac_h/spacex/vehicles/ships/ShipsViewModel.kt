@@ -7,9 +7,7 @@ import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.async
-import uk.co.zac_h.spacex.dto.spacex.QueryModel
-import uk.co.zac_h.spacex.dto.spacex.QueryOptionsModel
-import uk.co.zac_h.spacex.dto.spacex.QueryPopulateModel
+import uk.co.zac_h.spacex.query.VehicleQuery
 import uk.co.zac_h.spacex.types.Order
 import uk.co.zac_h.spacex.utils.sortedBy
 import javax.inject.Inject
@@ -36,29 +34,16 @@ class ShipsViewModel @Inject constructor(
     fun getShips(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
         viewModelScope.launch {
             val response = async(_ships) {
-                repository.fetch(key = "rockets", query = query, cachePolicy = cachePolicy)
+                repository.fetch(
+                    key = "rockets",
+                    query = VehicleQuery.shipQuery,
+                    cachePolicy = cachePolicy
+                )
             }
 
             _ships.value = response.await().map { it.docs.map { ship -> Ship(ship) } }
         }
     }
-
-    private val query = QueryModel(
-        query = "",
-        options = QueryOptionsModel(
-            false,
-            populate = listOf(
-                QueryPopulateModel(
-                    path = "launches",
-                    select = listOf("flight_number", "name"),
-                    populate = ""
-                )
-            ),
-            sort = "",
-            select = "",
-            limit = 200
-        )
-    )
 
     fun setOrder(order: Order?) {
         this.order = order ?: Order.ASCENDING
