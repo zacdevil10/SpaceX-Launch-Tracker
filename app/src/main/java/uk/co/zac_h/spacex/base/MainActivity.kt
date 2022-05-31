@@ -304,21 +304,30 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     }
 
     private fun setAppBarForRocketDetails() {
-        hideAppBar()
-        binding.fab.hide()
-        viewModel.isFabVisible = false
+        binding.run {
+            bottomAppBar.visibility = View.VISIBLE
+            bottomAppBar.performShow()
+            fab.hide()
+            viewModel.isFabVisible = false
+        }
     }
 
     private fun setAppBarForDragonDetails() {
-        hideAppBar()
-        binding.fab.hide()
-        viewModel.isFabVisible = false
+        binding.run {
+            bottomAppBar.visibility = View.VISIBLE
+            bottomAppBar.performShow()
+            fab.hide()
+            viewModel.isFabVisible = false
+        }
     }
 
     private fun setAppBarForShipDetails() {
-        hideAppBar()
-        binding.fab.hide()
-        viewModel.isFabVisible = false
+        binding.run {
+            bottomAppBar.visibility = View.VISIBLE
+            bottomAppBar.performShow()
+            fab.hide()
+            viewModel.isFabVisible = false
+        }
     }
 
     private fun setAppBarForCoreDetails() {

@@ -16,6 +16,7 @@ import uk.co.zac_h.spacex.databinding.FragmentDragonDetailsBinding
 import uk.co.zac_h.spacex.dto.spacex.Dragon
 import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.setImageAndTint
+import uk.co.zac_h.spacex.utils.setupCollapsingToolbar
 import uk.co.zac_h.spacex.vehicles.adapters.DragonThrusterAdapter
 import uk.co.zac_h.spacex.vehicles.dragon.DragonViewModel
 
@@ -37,7 +38,9 @@ class DragonDetailsFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition = MaterialContainerTransform()
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.nav_host
+        }
     }
 
     override fun onCreateView(
@@ -52,7 +55,7 @@ class DragonDetailsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        setup(toolbarBinding.toolbar, toolbarBinding.toolbarLayout)
+        toolbarBinding.toolbar.setupCollapsingToolbar(title)
 
         dragonThrusterAdapter = DragonThrusterAdapter(requireContext())
 
