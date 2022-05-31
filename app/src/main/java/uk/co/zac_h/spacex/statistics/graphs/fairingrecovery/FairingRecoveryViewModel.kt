@@ -10,8 +10,8 @@ import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.async
-import uk.co.zac_h.spacex.dto.spacex.*
 import uk.co.zac_h.spacex.launches.Launch
+import uk.co.zac_h.spacex.query.StatisticsQuery
 import uk.co.zac_h.spacex.statistics.StatisticsRepository
 import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.FairingRecoveryModel
@@ -31,7 +31,11 @@ class FairingRecoveryViewModel @Inject constructor(
     fun get(cachePolicy: CachePolicy = CachePolicy.EXPIRES) {
         viewModelScope.launch {
             val response = async(_fairingRecovery) {
-                repository.fetch(key = "fairing", query = query, cachePolicy = cachePolicy)
+                repository.fetch(
+                    key = "fairing",
+                    query = StatisticsQuery.fairingQuery,
+                    cachePolicy = cachePolicy
+                )
             }
 
             val result = response.await().map { launches -> launches.docs.map { Launch(it) } }
@@ -53,16 +57,5 @@ class FairingRecoveryViewModel @Inject constructor(
             }
         }
     }
-
-    private val query = QueryModel(
-        QueryFairingRecovery(true),
-        QueryOptionsModel(
-            false,
-            "",
-            QueryLaunchesSortByDate("asc"),
-            listOf("fairings", "date_unix"),
-            1000000
-        )
-    )
 
 }

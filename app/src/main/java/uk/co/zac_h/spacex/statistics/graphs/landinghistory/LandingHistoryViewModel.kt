@@ -10,8 +10,8 @@ import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.async
-import uk.co.zac_h.spacex.dto.spacex.*
 import uk.co.zac_h.spacex.launches.Launch
+import uk.co.zac_h.spacex.query.StatisticsQuery
 import uk.co.zac_h.spacex.statistics.StatisticsRepository
 import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.LandingHistoryModel
@@ -31,7 +31,11 @@ class LandingHistoryViewModel @Inject constructor(
     fun get(cachePolicy: CachePolicy = CachePolicy.EXPIRES) {
         viewModelScope.launch {
             val response = async(_landingHistory) {
-                repository.fetch(key = "landing_history", query = query, cachePolicy = cachePolicy)
+                repository.fetch(
+                    key = "landing_history",
+                    query = StatisticsQuery.landingHistoryQuery,
+                    cachePolicy = cachePolicy
+                )
             }
 
             val result = response.await().map { launches -> launches.docs.map { Launch(it) } }
@@ -57,19 +61,5 @@ class LandingHistoryViewModel @Inject constructor(
             }
         }
     }
-
-    private val query = QueryModel(
-        QueryLandingHistory(true),
-        QueryOptionsModel(
-            false,
-            listOf(
-                QueryPopulateModel("cores.core", listOf("id"), ""),
-                QueryPopulateModel("cores.landpad", listOf("id"), "")
-            ),
-            QueryLaunchesSortByDate("asc"),
-            listOf("cores", "date_local", "date_unix"),
-            1000000
-        )
-    )
 
 }

@@ -10,8 +10,8 @@ import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.async
-import uk.co.zac_h.spacex.dto.spacex.*
 import uk.co.zac_h.spacex.launches.Launch
+import uk.co.zac_h.spacex.query.StatisticsQuery
 import uk.co.zac_h.spacex.statistics.StatisticsRepository
 import uk.co.zac_h.spacex.types.LaunchMassViewType
 import uk.co.zac_h.spacex.types.RocketType
@@ -40,7 +40,11 @@ class LaunchMassViewModel @Inject constructor(
     fun get(cachePolicy: CachePolicy = CachePolicy.EXPIRES) {
         viewModelScope.launch {
             val response = async(_launchMass) {
-                repository.fetch(key = "launch_mass", query = query, cachePolicy = cachePolicy)
+                repository.fetch(
+                    key = "launch_mass",
+                    query = StatisticsQuery.launchMassQuery,
+                    cachePolicy = cachePolicy
+                )
             }
 
             val result = response.await().map { launches -> launches.docs.map { Launch(it) } }
@@ -75,24 +79,6 @@ class LaunchMassViewModel @Inject constructor(
             }
         }
     }
-
-    private val query = QueryModel(
-        QueryUpcomingSuccessLaunchesModel(upcoming = false, success = true),
-        QueryOptionsModel(
-            false,
-            listOf(
-                QueryPopulateModel(
-                    "payloads",
-                    populate = "",
-                    select = listOf("mass_kg", "orbit")
-                ),
-                QueryPopulateModel("rocket", populate = "", select = listOf("id", "name"))
-            ),
-            QueryLaunchesSortByDate("asc"),
-            listOf("payloads", "name", "date_unix", "rocket"),
-            1000000
-        )
-    )
 
     private fun updateOrbitMass(model: OrbitMassModel, orbit: String?, mass: Float?) {
         mass?.let {

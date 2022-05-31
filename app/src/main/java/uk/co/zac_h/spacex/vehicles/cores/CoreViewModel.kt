@@ -7,9 +7,7 @@ import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.async
-import uk.co.zac_h.spacex.dto.spacex.QueryModel
-import uk.co.zac_h.spacex.dto.spacex.QueryOptionsModel
-import uk.co.zac_h.spacex.dto.spacex.QueryPopulateModel
+import uk.co.zac_h.spacex.query.VehicleQuery
 import uk.co.zac_h.spacex.types.Order
 import uk.co.zac_h.spacex.utils.sortedBy
 import javax.inject.Inject
@@ -41,7 +39,11 @@ class CoreViewModel @Inject constructor(
     fun getCores(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
         viewModelScope.launch {
             val response = async(_cores) {
-                repository.fetch(key = "cores", query = query, cachePolicy = cachePolicy)
+                repository.fetch(
+                    key = "cores",
+                    query = VehicleQuery.coreQuery,
+                    cachePolicy = cachePolicy
+                )
             }
 
             _cores.value = response.await().map {
@@ -49,19 +51,5 @@ class CoreViewModel @Inject constructor(
             }
         }
     }
-
-    private val query = QueryModel(
-        options = QueryOptionsModel(
-            pagination = false,
-            populate = listOf(
-                QueryPopulateModel(
-                    "launches",
-                    select = listOf("name", "flight_number"),
-                    populate = ""
-                )
-            ),
-            limit = 100000
-        )
-    )
 
 }
