@@ -2,7 +2,9 @@ package uk.co.zac_h.spacex.dashboard
 
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
@@ -55,7 +57,7 @@ class DashboardFragment : BaseFragment() {
 
         viewModel.getLaunches()
 
-        pinnedAdapter = LaunchesAdapter(requireContext())
+        pinnedAdapter = LaunchesAdapter()
 
         binding.pinned.pinnedRecycler.apply {
             layoutManager = LinearLayoutManager(this@DashboardFragment.context)

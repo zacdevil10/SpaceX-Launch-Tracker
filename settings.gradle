@@ -1,2 +1,3 @@
 include ':app', ':core', ':network'
 rootProject.name='SpaceX'
+include ':widget'

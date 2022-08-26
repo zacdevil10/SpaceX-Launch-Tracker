@@ -103,7 +103,7 @@ class LaunchesFilterFragment : Fragment() {
         }
 
         //Setup launches list
-        launchesAdapter = LaunchesAdapter(requireContext())
+        launchesAdapter = LaunchesAdapter()
 
         binding.list.apply {
             layoutManager = LinearLayoutManager(requireContext())

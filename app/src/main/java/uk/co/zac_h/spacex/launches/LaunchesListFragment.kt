@@ -60,7 +60,7 @@ class LaunchesListFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        launchesAdapter = LaunchesAdapter(requireContext())
+        launchesAdapter = LaunchesAdapter()
 
         binding.launchesRecycler.apply {
             layoutManager = LinearLayoutManager(this@LaunchesListFragment.context)
