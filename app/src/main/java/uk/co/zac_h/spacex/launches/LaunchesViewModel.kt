@@ -28,7 +28,7 @@ class LaunchesViewModel @Inject constructor(
                 _launchesLiveData.value = ApiResult.pending()
                 repository.fetch(
                     key = "launches",
-                    query = LaunchQuery.query,
+                    query = LaunchQuery.launchesQuery,
                     cachePolicy = cachePolicy
                 )
             }

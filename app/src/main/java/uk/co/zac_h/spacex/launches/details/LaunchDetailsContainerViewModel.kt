@@ -5,16 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
-import uk.co.zac_h.spacex.async
-import uk.co.zac_h.spacex.dto.spacex.QueryLaunchesQueryModel
-import uk.co.zac_h.spacex.dto.spacex.QueryModel
-import uk.co.zac_h.spacex.dto.spacex.QueryOptionsModel
-import uk.co.zac_h.spacex.dto.spacex.QueryPopulateModel
 import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.launches.LaunchesRepository
+import uk.co.zac_h.spacex.query.LaunchQuery
 import uk.co.zac_h.spacex.utils.repo.PinnedPreferencesRepository
 import javax.inject.Inject
 
@@ -31,11 +28,29 @@ class LaunchDetailsContainerViewModel @Inject constructor(
 
     fun getLaunch(cachePolicy: CachePolicy = CachePolicy.EXPIRES) {
         viewModelScope.launch {
-            val response = async(_launch) {
-                repository.fetch(key = launchID, query = query, cachePolicy = cachePolicy)
+            val shortResponse = repository.fetchFromCache(key = "launches") ?: ApiResult.pending()
+
+            _launch.value = shortResponse.map {
+                Launch(it.docs.first { launch -> launch.id == launchID })
             }
 
-            _launch.value = response.await().map { Launch(it.docs.first()) }
+            val response = async {
+                repository.fetch(
+                    key = launchID,
+                    query = LaunchQuery.launchDetailsQuery(launchID),
+                    cachePolicy = cachePolicy
+                )
+            }
+
+            val result = response.await()
+
+            _launch.value = when (result.status) {
+                ApiResult.Status.PENDING -> shortResponse.map {
+                    Launch(it.docs.first { launch -> launch.id == launchID })
+                }
+                ApiResult.Status.SUCCESS -> result.map { Launch(it.docs.first()) }
+                ApiResult.Status.FAILURE -> result.map { Launch(it.docs.first()) }
+            }
         }
     }
 
@@ -44,87 +59,4 @@ class LaunchDetailsContainerViewModel @Inject constructor(
     fun pinLaunch(pinned: Boolean) {
         pinnedPreferencesRepository.setPinnedLaunch(launchID, pinned)
     }
-
-    private val query: QueryModel
-        get() = QueryModel(
-            query = QueryLaunchesQueryModel(_id = launchID),
-            options = QueryOptionsModel(
-                false,
-                populate = listOf(
-                    QueryPopulateModel("launchpad", select = listOf("name"), populate = ""),
-                    QueryPopulateModel("rocket", populate = "", select = listOf("name")),
-                    QueryPopulateModel(
-                        "cores",
-                        populate = listOf(
-                            QueryPopulateModel(
-                                "core",
-                                populate = listOf(
-                                    QueryPopulateModel(
-                                        "launches",
-                                        select = listOf("name", "flight_number"),
-                                        populate = ""
-                                    )
-                                ),
-                                select = ""
-                            ),
-                            QueryPopulateModel(
-                                "landpad",
-                                select = "",
-                                populate = listOf(
-                                    QueryPopulateModel(
-                                        "launches",
-                                        select = listOf("id"),
-                                        populate = ""
-                                    )
-                                )
-                            )
-                        ),
-                        select = ""
-                    ),
-                    QueryPopulateModel(
-                        "crew.crew",
-                        populate = listOf(
-                            QueryPopulateModel(
-                                "launches",
-                                populate = "",
-                                select = listOf("flight_number", "name", "date_unix")
-                            )
-                        ),
-                        select = ""
-                    ),
-                    QueryPopulateModel("payloads", populate = "", select = ""),
-                    QueryPopulateModel(
-                        "ships",
-                        populate = listOf(
-                            QueryPopulateModel(
-                                "launches",
-                                populate = "",
-                                select = listOf("name", "flight_number")
-                            )
-                        ),
-                        select = ""
-                    )
-                ),
-                sort = "",
-                select = listOf(
-                    "links",
-                    "static_fire_date_unix",
-                    "tbd",
-                    "net",
-                    "rocket",
-                    "details",
-                    "launchpad",
-                    "flight_number",
-                    "name",
-                    "date_unix",
-                    "date_precision",
-                    "upcoming",
-                    "cores",
-                    "crew",
-                    "payloads",
-                    "ships"
-                ),
-                limit = 1
-            )
-        )
 }
