@@ -1,7 +1,9 @@
 package uk.co.zac_h.spacex.launches
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.navGraphViewModels
@@ -14,7 +16,6 @@ import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.types.LaunchType
-import java.util.*
 
 @AndroidEntryPoint
 class LaunchesListFragment : BaseFragment() {
@@ -44,7 +45,6 @@ class LaunchesListFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
 
         if (::type.isInitialized) flowViewModel.type = type
     }

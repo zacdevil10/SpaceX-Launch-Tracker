@@ -30,10 +30,10 @@ import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
 import uk.co.zac_h.spacex.statistics.graphs.launchmass.filter.LaunchMassFilterViewModel
 import uk.co.zac_h.spacex.types.LaunchMassViewType
 import uk.co.zac_h.spacex.types.RocketType
-import uk.co.zac_h.spacex.utils.add
 import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.LaunchMassStatsModel
 import uk.co.zac_h.spacex.utils.models.OrbitMassModel
+import uk.co.zac_h.spacex.utils.sum
 
 class LaunchMassFragment : BaseFragment() {
 
@@ -48,7 +48,6 @@ class LaunchMassFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
 
         sharedElementEnterTransition = MaterialContainerTransform().apply {
             drawingViewId = R.id.nav_host
@@ -301,34 +300,34 @@ class LaunchMassFragment : BaseFragment() {
         fh: OrbitMassModel? = null
     ): List<KeysModel> =
         listOfNotNull(
-            0f.add(f1?.LEO, f9?.LEO, fh?.LEO).let {
+            sum(f1?.LEO, f9?.LEO, fh?.LEO).let {
                 if (it > 0) KeysModel("LEO", it) else null
             },
-            0f.add(f1?.GTO, f9?.GTO, fh?.GTO).let {
+            sum(f1?.GTO, f9?.GTO, fh?.GTO).let {
                 if (it > 0) KeysModel("GTO", it) else null
             },
-            0f.add(f1?.SSO, f9?.SSO, fh?.SSO).let {
+            sum(f1?.SSO, f9?.SSO, fh?.SSO).let {
                 if (it > 0) KeysModel("SSO", it) else null
             },
-            0f.add(f1?.ISS, f9?.ISS, fh?.ISS).let {
+            sum(f1?.ISS, f9?.ISS, fh?.ISS).let {
                 if (it > 0) KeysModel("ISS", it) else null
             },
-            0f.add(f1?.HCO, f9?.HCO, fh?.HCO).let {
+            sum(f1?.HCO, f9?.HCO, fh?.HCO).let {
                 if (it > 0) KeysModel("HCO", it) else null
             },
-            0f.add(f1?.MEO, f9?.MEO, fh?.MEO).let {
+            sum(f1?.MEO, f9?.MEO, fh?.MEO).let {
                 if (it > 0) KeysModel("MEO", it) else null
             },
-            0f.add(f1?.SO, f9?.SO, fh?.SO).let {
+            sum(f1?.SO, f9?.SO, fh?.SO).let {
                 if (it > 0) KeysModel("SO", it) else null
             },
-            0f.add(f1?.ED_L1, f9?.ED_L1, fh?.ED_L1).let {
+            sum(f1?.ED_L1, f9?.ED_L1, fh?.ED_L1).let {
                 if (it > 0) KeysModel("ED-L1", it) else null
             },
-            0f.add(f1?.other, f9?.other, fh?.other).let {
+            sum(f1?.other, f9?.other, fh?.other).let {
                 if (it > 0) KeysModel("Other", it) else null
             },
-            KeysModel("Total", 0f.add(f1?.total, f9?.total, fh?.total))
+            KeysModel("Total", sum(f1?.total, f9?.total, fh?.total))
         )
 
     fun populateRocketKey(
@@ -340,7 +339,7 @@ class LaunchMassFragment : BaseFragment() {
             f1?.let { if (it.total > 0) KeysModel("Falcon 1", it.total) else null },
             f9?.let { if (it.total > 0) KeysModel("Falcon 9", it.total) else null },
             fh?.let { if (it.total > 0) KeysModel("Falcon Heavy", it.total) else null },
-            KeysModel("Total", 0f.add(f1?.total, f9?.total, fh?.total))
+            KeysModel("Total", sum(f1?.total, f9?.total, fh?.total))
         )
 
     private fun orbitsToArray(orbitMassModel: OrbitMassModel): FloatArray = floatArrayOf(
