@@ -2,7 +2,6 @@ package uk.co.zac_h.spacex.statistics.graphs.padstats
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.ApiResult
-import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentPadStatsBinding
@@ -34,7 +32,6 @@ class PadStatsFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
 
         sharedElementEnterTransition = MaterialContainerTransform().apply {
             drawingViewId = R.id.nav_host
@@ -82,17 +79,6 @@ class PadStatsFragment : BaseFragment() {
                 ApiResult.Status.FAILURE -> showError(response.error?.message)
             }
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.reload -> {
-            when (navArgs.padType) {
-                PadType.LANDING_PAD -> viewModel.getLandingPads(CachePolicy.REFRESH)
-                PadType.LAUNCHPAD -> viewModel.getLaunchpads(CachePolicy.REFRESH)
-            }
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
     }
 
     fun update(response: List<StatsPadModel>) {
