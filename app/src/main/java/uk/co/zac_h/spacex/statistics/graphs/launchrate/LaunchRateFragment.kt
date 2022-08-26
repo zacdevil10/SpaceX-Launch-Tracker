@@ -2,7 +2,6 @@ package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -21,7 +20,6 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.ApiResult
-import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.base.BaseFragment
@@ -42,7 +40,6 @@ class LaunchRateFragment : BaseFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
 
         sharedElementEnterTransition = MaterialContainerTransform().apply {
             drawingViewId = R.id.nav_host
@@ -119,14 +116,6 @@ class LaunchRateFragment : BaseFragment() {
                 ApiResult.Status.FAILURE -> showError(response.error?.message)
             }
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.reload -> {
-            viewModel.get(CachePolicy.REFRESH)
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
     }
 
     fun update(animate: Boolean, response: List<RateStatsModel>) {
