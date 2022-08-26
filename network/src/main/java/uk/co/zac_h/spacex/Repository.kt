@@ -14,7 +14,7 @@ abstract class Repository<T>(
         key: String,
         query: QueryModel = QueryModel(),
         cachePolicy: CachePolicy
-    ) = try {
+    ): ApiResult<T> = try {
         when (cachePolicy) {
             CachePolicy.NEVER -> fetch(query)
             CachePolicy.ALWAYS -> cache.get(key)?.value.also { location = RequestLocation.CACHE }
@@ -33,6 +33,8 @@ abstract class Repository<T>(
     } catch (e: Throwable) {
         ApiResult.failure(e)
     }
+
+    fun fetchFromCache(key: String): ApiResult<T>? = cache.get(key)?.value
 
     private suspend fun fetchAndCache(key: String, query: QueryModel): ApiResult<T> =
         fetch(query).also { cache.store(data = it, key = key) }

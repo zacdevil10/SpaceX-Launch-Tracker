@@ -49,7 +49,7 @@ class DashboardViewModel @Inject constructor(
     fun getLaunches(cachePolicy: CachePolicy = CachePolicy.EXPIRES) {
         viewModelScope.launch {
             val response = async(_launches) {
-                repository.fetch(key = "launches", query = LaunchQuery.query, cachePolicy = cachePolicy)
+                repository.fetch(key = "launches", query = LaunchQuery.launchesQuery, cachePolicy = cachePolicy)
             }
 
             val launches = response.await().map { docsModel ->
