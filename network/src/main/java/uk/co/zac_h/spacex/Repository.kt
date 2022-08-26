@@ -31,7 +31,7 @@ abstract class Repository<T>(
             }
         } ?: fetchAndCache(key, query)
     } catch (e: Throwable) {
-        ApiResult.failure(e)
+        ApiResult.Failure(e)
     }
 
     fun fetchFromCache(key: String): ApiResult<T>? = cache.get(key)?.value

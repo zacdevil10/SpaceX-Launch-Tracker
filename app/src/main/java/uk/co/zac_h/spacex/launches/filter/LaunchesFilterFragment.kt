@@ -112,17 +112,17 @@ class LaunchesFilterFragment : Fragment() {
         }
 
         viewModel.launchesLiveData.observe(viewLifecycleOwner) { result ->
-            when (result.status) {
-                ApiResult.Status.PENDING -> if (launchesAdapter.itemCount == 0) {
+            when (result) {
+                is ApiResult.Pending -> if (launchesAdapter.itemCount == 0) {
                     binding.progress.show()
                 }
-                ApiResult.Status.SUCCESS -> {
+                is ApiResult.Success -> {
                     binding.progress.hide()
                     launchesAdapter.submitList(result.data) {
                         if (shouldScroll) binding.list.scrollToPosition(0)
                     }
                 }
-                ApiResult.Status.FAILURE -> showError(result.error?.message)
+                is ApiResult.Failure -> showError(result.exception.message)
             }
         }
 

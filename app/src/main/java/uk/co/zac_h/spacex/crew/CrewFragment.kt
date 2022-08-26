@@ -64,16 +64,16 @@ class CrewFragment : BaseFragment() {
         }
 
         viewModel.crew.observe(viewLifecycleOwner) { result ->
-            when (result.status) {
-                ApiResult.Status.PENDING -> showProgress()
-                ApiResult.Status.SUCCESS -> {
+            when (result) {
+                is ApiResult.Pending -> showProgress()
+                is ApiResult.Success -> {
                     binding.swipeRefresh.isRefreshing = false
                     hideProgress()
                     update(result.data)
                 }
-                ApiResult.Status.FAILURE -> {
+                is ApiResult.Failure -> {
                     binding.swipeRefresh.isRefreshing = false
-                    showError(result.error?.message)
+                    showError(result.exception.message)
                 }
             }
         }

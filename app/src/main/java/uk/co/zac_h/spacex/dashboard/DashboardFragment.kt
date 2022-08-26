@@ -88,9 +88,9 @@ class DashboardFragment : BaseFragment() {
         }
 
         viewModel.nextLaunch.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                ApiResult.Status.PENDING -> binding.next.progress.show()
-                ApiResult.Status.SUCCESS -> {
+            when (response) {
+                is ApiResult.Pending -> binding.next.progress.show()
+                is ApiResult.Success -> {
                     binding.refresh.isRefreshing = false
                     binding.next.progress.hide()
                     response.data?.let {
@@ -107,38 +107,38 @@ class DashboardFragment : BaseFragment() {
                         update(Upcoming.NEXT, it)
                     }
                 }
-                ApiResult.Status.FAILURE -> {
+                is ApiResult.Failure -> {
                     binding.refresh.isRefreshing = false
-                    showError(response.error?.message)
+                    showError(response.exception.message)
                 }
             }
         }
 
         viewModel.latestLaunch.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                ApiResult.Status.PENDING -> binding.latest.progress.show()
-                ApiResult.Status.SUCCESS -> {
+            when (response) {
+                is ApiResult.Pending -> binding.latest.progress.show()
+                is ApiResult.Success -> {
                     binding.refresh.isRefreshing = false
                     binding.latest.progress.hide()
                     response.data?.let { update(Upcoming.LATEST, it) }
                 }
-                ApiResult.Status.FAILURE -> {
+                is ApiResult.Failure -> {
                     binding.refresh.isRefreshing = false
-                    showError(response.error?.message)
+                    showError(response.exception.message)
                 }
             }
         }
 
         viewModel.pinnedLaunches.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                ApiResult.Status.PENDING -> binding.pinned.progress.show()
-                ApiResult.Status.SUCCESS -> {
+            when (response) {
+                is ApiResult.Pending -> binding.pinned.progress.show()
+                is ApiResult.Success -> {
                     pinnedAdapter.submitList(response.data)
                     binding.pinned.progress.hide()
                     binding.pinned.pinnedMessage.visibility =
                         if (response.data.isNullOrEmpty()) View.VISIBLE else View.GONE
                 }
-                ApiResult.Status.FAILURE -> showError(response.error?.message)
+                is ApiResult.Failure -> showError(response.exception.message)
             }
         }
     }

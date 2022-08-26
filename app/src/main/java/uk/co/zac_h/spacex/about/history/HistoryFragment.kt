@@ -64,17 +64,17 @@ class HistoryFragment : BaseFragment() {
         }
 
         viewModel.history.observe(viewLifecycleOwner) {
-            when (it.status) {
-                ApiResult.Status.PENDING -> if (historyAdapter.itemCount == 0) showProgress()
-                ApiResult.Status.SUCCESS -> {
+            when (it) {
+                is ApiResult.Pending -> if (historyAdapter.itemCount == 0) showProgress()
+                is ApiResult.Success -> {
                     if (historyAdapter.itemCount == 0) hideProgress()
                     binding.swipeRefresh.isRefreshing = false
                     historyAdapter.submitList(it.data) {
                         binding.historyRecycler.smoothScrollToPosition(0)
                     }
                 }
-                ApiResult.Status.FAILURE -> {
-                    showError(it.error?.message.orUnknown())
+                is ApiResult.Failure -> {
+                    showError(it.exception.message.orUnknown())
                     binding.swipeRefresh.isRefreshing = false
                 }
             }

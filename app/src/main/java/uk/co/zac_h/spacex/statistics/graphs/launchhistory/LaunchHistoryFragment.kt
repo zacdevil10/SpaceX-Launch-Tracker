@@ -97,14 +97,14 @@ class LaunchHistoryFragment : BaseFragment() {
         }
 
         viewModel.launchHistory.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                ApiResult.Status.PENDING -> showProgress()
-                ApiResult.Status.SUCCESS -> response.data?.let {
+            when (response) {
+                is ApiResult.Pending -> showProgress()
+                is ApiResult.Success -> response.data?.let {
                     val animate = viewModel.cacheLocation != Repository.RequestLocation.CACHE
                     update(animate, it)
                     setSuccessRate(it, animate)
                 }
-                ApiResult.Status.FAILURE -> showError(response.error?.message)
+                is ApiResult.Failure -> showError(response.exception.message)
             }
         }
     }

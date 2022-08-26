@@ -143,12 +143,12 @@ class LaunchMassFragment : BaseFragment() {
         }
 
         viewModel.launchMass.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                ApiResult.Status.PENDING -> showProgress()
-                ApiResult.Status.SUCCESS -> response.data?.let {
+            when (response) {
+                is ApiResult.Pending -> showProgress()
+                is ApiResult.Success -> response.data?.let {
                     update(viewModel.cacheLocation != Repository.RequestLocation.CACHE, it)
                 }
-                ApiResult.Status.FAILURE -> showError(response.error?.message)
+                is ApiResult.Failure -> showError(response.exception.message)
             }
         }
     }

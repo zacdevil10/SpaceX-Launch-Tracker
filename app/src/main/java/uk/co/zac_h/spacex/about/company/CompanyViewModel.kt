@@ -16,7 +16,7 @@ class CompanyViewModel @Inject constructor(
     private val repository: CompanyRepository
 ) : ViewModel() {
 
-    private val _company = MutableLiveData<ApiResult<Company>>(ApiResult.pending())
+    private val _company = MutableLiveData<ApiResult<Company>>(ApiResult.Pending)
     val company: LiveData<ApiResult<Company>> = _company
 
     fun getCompany() {

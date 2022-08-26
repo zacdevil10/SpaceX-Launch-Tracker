@@ -28,7 +28,7 @@ class LaunchDetailsContainerViewModel @Inject constructor(
 
     fun getLaunch(cachePolicy: CachePolicy = CachePolicy.EXPIRES) {
         viewModelScope.launch {
-            val shortResponse = repository.fetchFromCache(key = "launches") ?: ApiResult.pending()
+            val shortResponse = repository.fetchFromCache(key = "launches") ?: ApiResult.Pending
 
             _launch.value = shortResponse.map {
                 Launch(it.docs.first { launch -> launch.id == launchID })
@@ -44,12 +44,12 @@ class LaunchDetailsContainerViewModel @Inject constructor(
 
             val result = response.await()
 
-            _launch.value = when (result.status) {
-                ApiResult.Status.PENDING -> shortResponse.map {
+            _launch.value = when (result) {
+                is ApiResult.Pending -> shortResponse.map {
                     Launch(it.docs.first { launch -> launch.id == launchID })
                 }
-                ApiResult.Status.SUCCESS -> result.map { Launch(it.docs.first()) }
-                ApiResult.Status.FAILURE -> result.map { Launch(it.docs.first()) }
+                is ApiResult.Success -> result.map { Launch(it.docs.first()) }
+                is ApiResult.Failure -> result
             }
         }
     }

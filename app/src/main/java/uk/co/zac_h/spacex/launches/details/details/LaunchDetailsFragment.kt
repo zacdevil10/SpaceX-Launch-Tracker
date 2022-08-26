@@ -47,12 +47,12 @@ class LaunchDetailsFragment : BaseFragment() {
         }
 
         viewModel.launch.observe(viewLifecycleOwner) { result ->
-            when (result.status) {
-                ApiResult.Status.PENDING -> {}
-                ApiResult.Status.SUCCESS -> result.data?.let { update(it) }.also {
+            when (result) {
+                is ApiResult.Pending -> {}
+                is ApiResult.Success -> result.data?.let { update(it) }.also {
                     binding.swipeRefresh.isRefreshing = false
                 }
-                ApiResult.Status.FAILURE -> binding.swipeRefresh.isRefreshing = false
+                is ApiResult.Failure -> binding.swipeRefresh.isRefreshing = false
             }
         }
     }
