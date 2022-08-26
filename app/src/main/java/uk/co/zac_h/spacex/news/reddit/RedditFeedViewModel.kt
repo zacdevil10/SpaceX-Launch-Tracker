@@ -13,17 +13,7 @@ class RedditFeedViewModel @Inject constructor(
     private val repository: RedditFeedRepository
 ) : ViewModel() {
 
-    val redditFeed: LiveData<PagingData<RedditPost>> = Pager(
-        PagingConfig(pageSize = 15)
-    ) {
+    val redditFeed: LiveData<PagingData<RedditPost>> = Pager(PagingConfig(pageSize = 15)) {
         repository.redditPagingSource
     }.liveData.cachedIn(viewModelScope)
-
-    var orderPosition = 0
-
-    fun setOrder(order: String, position: Int) {
-        orderPosition = position
-        repository.order = order
-    }
-
 }

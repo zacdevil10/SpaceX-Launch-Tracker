@@ -1,18 +1,14 @@
 package uk.co.zac_h.spacex.news.reddit
 
 import android.os.Bundle
-import android.view.*
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.REDDIT_PARAM_ORDER_HOT
-import uk.co.zac_h.spacex.REDDIT_PARAM_ORDER_NEW
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentRedditFeedBinding
 import uk.co.zac_h.spacex.news.adapters.RedditAdapter
@@ -28,11 +24,6 @@ class RedditFeedFragment : BaseFragment() {
     private lateinit var binding: FragmentRedditFeedBinding
 
     private lateinit var redditAdapter: RedditAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -77,43 +68,6 @@ class RedditFeedFragment : BaseFragment() {
                 error?.let {
                     showError(error.error.message)
                 }
-            }
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_reddit, menu)
-
-        val item = menu.findItem(R.id.reddit_order).actionView as Spinner
-        item.apply {
-            adapter = ArrayAdapter.createFromResource(
-                context,
-                R.array.order,
-                android.R.layout.simple_spinner_item
-            ).apply {
-                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            }
-            setSelection(viewModel.orderPosition)
-            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    p0: AdapterView<*>?,
-                    p1: View?,
-                    position: Int,
-                    p3: Long
-                ) {
-                    if (viewModel.orderPosition != position) when (position) {
-                        0 -> {
-                            viewModel.setOrder(REDDIT_PARAM_ORDER_HOT, position)
-                            redditAdapter.refresh()
-                        }
-                        1 -> {
-                            viewModel.setOrder(REDDIT_PARAM_ORDER_NEW, position)
-                            redditAdapter.refresh()
-                        }
-                    }
-                }
-
-                override fun onNothingSelected(p0: AdapterView<*>?) {}
             }
         }
     }

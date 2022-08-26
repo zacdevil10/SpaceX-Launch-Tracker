@@ -10,14 +10,12 @@ class RedditPagingSource(
     private val httpService: RedditService
 ) : PagingSource<String, RedditPost>() {
 
-    var order: String = REDDIT_PARAM_ORDER_HOT
-
     override suspend fun load(params: LoadParams<String>): LoadResult<String, RedditPost> =
         try {
             val nextPage = params.key
             val response = httpService.getRedditFeed(
                 subreddit = "SpaceX",
-                order = order,
+                order = REDDIT_PARAM_ORDER_HOT,
                 id = nextPage,
                 limit = params.loadSize
             )
@@ -31,5 +29,4 @@ class RedditPagingSource(
         }
 
     override fun getRefreshKey(state: PagingState<String, RedditPost>): String? = null
-
 }
