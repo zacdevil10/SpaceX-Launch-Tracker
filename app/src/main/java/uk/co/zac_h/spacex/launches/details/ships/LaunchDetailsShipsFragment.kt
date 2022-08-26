@@ -49,14 +49,13 @@ class LaunchDetailsShipsFragment : BaseFragment() {
         }
 
         viewModel.launch.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                ApiResult.Status.PENDING -> {
-                }
-                ApiResult.Status.SUCCESS -> {
+            when (response) {
+                is ApiResult.Pending -> {}
+                is ApiResult.Success -> {
                     binding.swipeRefresh.isRefreshing = false
                     update(response.data?.ships)
                 }
-                ApiResult.Status.FAILURE -> binding.swipeRefresh.isRefreshing = false
+                is ApiResult.Failure -> binding.swipeRefresh.isRefreshing = false
             }
         }
     }

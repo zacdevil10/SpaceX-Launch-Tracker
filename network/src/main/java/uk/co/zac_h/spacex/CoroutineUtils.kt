@@ -9,6 +9,6 @@ fun <T, R> CoroutineScope.async(
     liveData: MutableLiveData<ApiResult<T>>?,
     block: suspend CoroutineScope.() -> ApiResult<R>
 ): Deferred<ApiResult<R>> = async {
-    liveData?.value = ApiResult.pending()
+    liveData?.value = ApiResult.Pending
     block.invoke(this)
 }

@@ -25,7 +25,7 @@ class LaunchesViewModel @Inject constructor(
     fun getLaunches(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
         viewModelScope.launch {
             val response = async(_launchesLiveData) {
-                _launchesLiveData.value = ApiResult.pending()
+                _launchesLiveData.value = ApiResult.Pending
                 repository.fetch(
                     key = "launches",
                     query = LaunchQuery.launchesQuery,

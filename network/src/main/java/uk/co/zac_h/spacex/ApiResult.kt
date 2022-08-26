@@ -3,41 +3,36 @@ package uk.co.zac_h.spacex
 import kotlinx.coroutines.Deferred
 import retrofit2.Response
 
-data class ApiResult<out T>(
-    val status: Status,
-    val data: T? = null,
-    val error: Throwable? = null
-) {
+sealed class ApiResult<out R> {
 
-    companion object {
-        fun <T> pending(): ApiResult<T> = ApiResult(status = Status.PENDING)
+    object Pending : ApiResult<Nothing>()
+    data class Success<out T>(internal val result: T) : ApiResult<T>()
+    data class Failure(val exception: Throwable) : ApiResult<Nothing>()
 
-        fun <T> success(data: T?): ApiResult<T> = ApiResult(status = Status.SUCCESS, data = data)
-
-        fun <T> failure(error: Throwable): ApiResult<T> =
-            ApiResult(status = Status.FAILURE, error = error)
+    fun <T> map(transform: (value: R) -> T): ApiResult<T> = when (this) {
+        is Pending -> this
+        is Success -> Success(this.result.let(transform))
+        is Failure -> this
     }
 
-    enum class Status {
-        PENDING,
-        SUCCESS,
-        FAILURE
-    }
+    val data: R?
+        get() = if (this is Success) this.result else null
 
-    fun <R> map(transform: (value: T) -> R): ApiResult<R> =
-        ApiResult(status, data?.let(transform), error)
-
+    fun getDataOrNull(): R? = if (this is Success) this.result else null
 }
 
-
 suspend fun <R, T> Deferred<Response<T>>.map(transform: (value: T) -> R): ApiResult<R> = try {
-    ApiResult.success(this.await().body()?.let(transform))
+    this.await().body()?.let {
+        ApiResult.Success(it.let(transform))
+    } ?: ApiResult.Failure(IllegalArgumentException("No body found"))
 } catch (e: Throwable) {
-    ApiResult.failure(e)
+    ApiResult.Failure(e)
 }
 
 fun <R, T> Response<T>.map(transform: (value: T) -> R): ApiResult<R> = try {
-    ApiResult.success(this.body()?.let(transform))
+    this.body()?.let {
+        ApiResult.Success(it.let(transform))
+    } ?: ApiResult.Failure(IllegalArgumentException("No body found"))
 } catch (e: Throwable) {
-    ApiResult.failure(e)
+    ApiResult.Failure(e)
 }

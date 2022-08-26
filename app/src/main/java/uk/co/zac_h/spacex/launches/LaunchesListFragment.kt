@@ -69,9 +69,9 @@ class LaunchesListFragment : BaseFragment() {
         }
 
         viewModel.launchesLiveData.observe(viewLifecycleOwner) { result ->
-            when (result.status) {
-                ApiResult.Status.PENDING -> if (launchesAdapter.itemCount == 0) binding.progress.show()
-                ApiResult.Status.SUCCESS -> result.data?.let {
+            when (result) {
+                is ApiResult.Pending -> if (launchesAdapter.itemCount == 0) binding.progress.show()
+                is ApiResult.Success -> result.data?.let {
                     binding.swipeRefresh.isRefreshing = false
                     binding.progress.hide()
                     when (flowViewModel.type) {
@@ -80,8 +80,8 @@ class LaunchesListFragment : BaseFragment() {
                     }
 
                 }
-                ApiResult.Status.FAILURE -> {
-                    showError(result.error?.message)
+                is ApiResult.Failure -> {
+                    showError(result.exception.message)
                     binding.swipeRefresh.isRefreshing = false
                 }
             }

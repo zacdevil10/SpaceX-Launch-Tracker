@@ -55,9 +55,9 @@ class ShipsFragment : BaseFragment() {
         }
 
         viewModel.ships.observe(viewLifecycleOwner) { result ->
-            when (result.status) {
-                ApiResult.Status.PENDING -> showProgress()
-                ApiResult.Status.SUCCESS -> {
+            when (result) {
+                is ApiResult.Pending -> showProgress()
+                is ApiResult.Success -> {
                     hideProgress()
                     binding.swipeRefresh.isRefreshing = false
                     result.data?.let { data ->
@@ -66,9 +66,9 @@ class ShipsFragment : BaseFragment() {
                         }
                     }
                 }
-                ApiResult.Status.FAILURE -> {
+                is ApiResult.Failure -> {
                     binding.swipeRefresh.isRefreshing = false
-                    showError(result.error?.message)
+                    showError(result.exception.message)
                 }
             }
         }

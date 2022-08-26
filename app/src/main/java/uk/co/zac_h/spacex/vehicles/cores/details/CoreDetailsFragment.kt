@@ -63,13 +63,13 @@ class CoreDetailsFragment : BaseFragment() {
         }
 
         viewModel.cores.observe(viewLifecycleOwner) { result ->
-            when (result.status) {
-                ApiResult.Status.PENDING -> binding.progress.show()
-                ApiResult.Status.SUCCESS -> result.data?.first { it.id == navArgs.id }?.let {
+            when (result) {
+                is  ApiResult.Pending -> binding.progress.show()
+                is ApiResult.Success -> result.data?.first { it.id == navArgs.id }?.let {
                     update(it)
                     binding.progress.hide()
                 }
-                ApiResult.Status.FAILURE -> {}
+                is  ApiResult.Failure -> {}
             }
         }
 

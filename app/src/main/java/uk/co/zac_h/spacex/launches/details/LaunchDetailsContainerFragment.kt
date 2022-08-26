@@ -92,13 +92,12 @@ class LaunchDetailsContainerFragment : BaseFragment() {
         viewModel.getLaunch()
 
         viewModel.launch.observe(viewLifecycleOwner) { response ->
-            when (response.status) {
-                ApiResult.Status.PENDING -> {
-                }
-                ApiResult.Status.SUCCESS -> {
+            when (response) {
+                is ApiResult.Pending -> {}
+                is ApiResult.Success -> {
                     response.data?.let { update(it) }
                 }
-                ApiResult.Status.FAILURE -> showError(response.error?.message)
+                is ApiResult.Failure -> showError(response.exception.message)
             }
         }
 

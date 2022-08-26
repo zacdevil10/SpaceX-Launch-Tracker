@@ -32,10 +32,10 @@ class CompanyFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.company.observe(viewLifecycleOwner) { result ->
-            when (result.status) {
-                ApiResult.Status.PENDING -> showProgress()
-                ApiResult.Status.SUCCESS -> result.data?.let { update(it) }
-                ApiResult.Status.FAILURE -> showError(result.error?.message.orUnknown())
+            when (result) {
+                is ApiResult.Pending -> showProgress()
+                is ApiResult.Success -> result.data?.let { update(it) }
+                is ApiResult.Failure -> showError(result.exception.message.orUnknown())
             }
         }
 
