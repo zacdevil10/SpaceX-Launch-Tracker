@@ -17,10 +17,6 @@
 
     <string name="detail_capsule">Capsule</string>
 
-
-    <string name="flight_number">Flight %1$d</string>
-    <string name="reused">Reused</string>
-
     <!-- Dashboard -->
     <string name="no_pinned_launches_found_label">No pinned launches found</string>
     <string name="next_launch">Next</string>
