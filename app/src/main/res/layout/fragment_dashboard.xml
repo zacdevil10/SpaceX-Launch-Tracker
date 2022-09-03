@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/refresh"
     android:layout_width="match_parent"
@@ -20,13 +21,17 @@
             android:animateLayoutChanges="true"
             android:orientation="vertical">
 
-            <include
+            <uk.co.zac_h.widget.DashboardView
                 android:id="@+id/next"
-                layout="@layout/list_item_dashboard_launch" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:type="next" />
 
-            <include
+            <uk.co.zac_h.widget.DashboardView
                 android:id="@+id/latest"
-                layout="@layout/list_item_dashboard_launch" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:type="latest" />
 
             <include
                 android:id="@+id/pinned"

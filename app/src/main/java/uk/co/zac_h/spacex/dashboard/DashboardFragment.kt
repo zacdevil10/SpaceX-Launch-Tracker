@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.doOnPreDraw
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -16,11 +17,11 @@ import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.*
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentDashboardBinding
-import uk.co.zac_h.spacex.databinding.ListItemDashboardLaunchBinding
 import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.types.Upcoming
 import uk.co.zac_h.spacex.utils.*
+import uk.co.zac_h.widget.DashboardView
 
 @AndroidEntryPoint
 class DashboardFragment : BaseFragment() {
@@ -71,18 +72,10 @@ class DashboardFragment : BaseFragment() {
         viewModel.dashboardLiveData.observe(viewLifecycleOwner) { entries ->
             entries?.forEach {
                 when (it.key) {
-                    PREFERENCES_NEXT_LAUNCH -> toggleCardVisibility(
-                        binding.next.dashboardLaunch,
-                        it.value as Boolean
-                    )
-                    PREFERENCES_PREVIOUS_LAUNCH -> toggleCardVisibility(
-                        binding.latest.dashboardLaunch,
-                        it.value as Boolean
-                    )
-                    PREFERENCES_PINNED_LAUNCH -> toggleCardVisibility(
-                        binding.pinned.dashboardPinned,
-                        it.value as Boolean
-                    )
+                    PREFERENCES_NEXT_LAUNCH -> binding.next.isVisible = it.value as Boolean
+                    PREFERENCES_PREVIOUS_LAUNCH -> binding.latest.isVisible = it.value as Boolean
+                    PREFERENCES_PINNED_LAUNCH ->
+                        binding.pinned.dashboardPinned.isVisible = it.value as Boolean
                 }
             }
         }
@@ -98,11 +91,6 @@ class DashboardFragment : BaseFragment() {
                             ?.minus(System.currentTimeMillis()) ?: 0
                         if (it.tbd == false && time >= 0) {
                             setCountdown(it, time)
-                            binding.next.countdown.visibility = View.VISIBLE
-                            binding.next.heading.visibility = View.GONE
-                        } else {
-                            binding.next.countdown.visibility = View.GONE
-                            binding.next.heading.visibility = View.VISIBLE
                         }
                         update(Upcoming.NEXT, it)
                     }
@@ -157,31 +145,26 @@ class DashboardFragment : BaseFragment() {
         }
     }
 
-    fun update(binding: ListItemDashboardLaunchBinding, response: Launch) {
-        with(binding) {
-            dashboardLaunch.transitionName = response.id
+    fun update(dashboardView: DashboardView, response: Launch) {
+        with(dashboardView) {
+            transitionName = response.id
 
-            heading.setText(
-                if (response.upcoming == true) R.string.next_launch else R.string.latest_launch
-            )
+            launchView.apply {
+                patch = response.links?.missionPatch?.patchSmall
+                flightNumber = response.flightNumber
+                vehicle = response.rocket?.name
+                missionName = response.missionName
+                date = response.launchDate?.dateUnix?.formatDateMillisLong(response.datePrecision)
+            }
 
-            requireContext().loadPatch(response.links?.missionPatch?.patchSmall, missionPatch)
-
-            flightNumber.text = getString(R.string.flight_number, response.flightNumber)
-            vehicle.text = response.rocket?.name
-            missionName.text = response.missionName
-            date.text = response.launchDate?.dateUnix?.formatDateMillisLong(response.datePrecision)
-
-            dashboardLaunch.let { card ->
-                card.setOnClickListener {
-                    findNavController().navigate(
-                        NavGraphDirections.actionLaunchItemToLaunchDetailsContainer(
-                            response.missionName,
-                            response.id
-                        ),
-                        FragmentNavigatorExtras(card to response.id)
-                    )
-                }
+            setOnClickListener {
+                findNavController().navigate(
+                    NavGraphDirections.actionLaunchItemToLaunchDetailsContainer(
+                        response.missionName,
+                        response.id
+                    ),
+                    FragmentNavigatorExtras(dashboardView to response.id)
+                )
             }
         }
     }
@@ -190,34 +173,25 @@ class DashboardFragment : BaseFragment() {
         countdownTimer?.cancel()
         countdownTimer = object : CountDownTimer(time, 1000) {
             override fun onTick(time: Long) {
-                binding.next.countdown.text = String.format(
+                binding.next.countdown = String.format(
                     "T-%02d:%02d:%02d:%02d",
                     time.toCountdownDays(),
                     time.toCountdownHours(),
                     time.toCountdownMinutes(),
                     time.toCountdownSeconds()
                 )
-
             }
 
             override fun onFinish() {
                 launch.links?.webcast?.let { link ->
-                    binding.next.countdown.visibility = View.GONE
-                    binding.next.watchNow.apply {
-                        visibility = View.VISIBLE
-                        setOnClickListener {
-                            openWebLink(link)
-                        }
+                    binding.next.finish {
+                        openWebLink(link)
                     }
                 }
             }
         }
 
         countdownTimer?.start()
-    }
-
-    private fun toggleCardVisibility(view: View, visible: Boolean) {
-        view.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
     private fun showError(error: String?) {

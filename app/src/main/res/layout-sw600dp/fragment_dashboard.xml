@@ -21,13 +21,15 @@
             android:animateLayoutChanges="true"
             android:orientation="vertical">
 
-            <include
+            <uk.co.zac_h.widget.DashboardView
                 android:id="@+id/next"
-                layout="@layout/list_item_dashboard_launch" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-            <include
+            <uk.co.zac_h.widget.DashboardView
                 android:id="@+id/latest"
-                layout="@layout/list_item_dashboard_launch" />
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <include
                 android:id="@+id/pinned"

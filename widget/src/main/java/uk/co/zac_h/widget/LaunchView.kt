@@ -73,4 +73,8 @@ class LaunchView @JvmOverloads constructor(
                 text = value
             }
         }
+
+    init {
+        binding.missionName.isSelected = true
+    }
 }

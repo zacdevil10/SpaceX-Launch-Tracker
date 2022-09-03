@@ -39,62 +39,26 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:showAnimationBehavior="inward" />
 
-            <ImageView
-                android:id="@+id/launch_details_mission_patch_image"
-                android:layout_width="@dimen/mission_patch_width"
-                android:layout_height="@dimen/mission_patch_width"
-                android:layout_marginStart="@dimen/medium_margin"
+            <uk.co.zac_h.widget.LaunchView
+                android:id="@+id/launch_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/medium_margin"
                 android:layout_marginTop="@dimen/medium_margin"
-                android:contentDescription="@string/mission_patch"
-                android:paddingEnd="@dimen/medium_margin"
-                android:src="@drawable/ic_mission_patch"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="RtlSymmetry" />
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/launch_details_number_text"
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier"
+                app:barrierDirection="end"
+                app:constraint_referenced_ids="launch_details_static_fire_date_label, launch_details_site_name_label"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/medium_margin"
-                app:layout_constraintStart_toEndOf="@id/launch_details_mission_patch_image"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Flight 84" />
-
-            <TextView
-                android:id="@+id/launch_details_rocket_type_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:layout_marginEnd="@dimen/large_margin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Falcon Heavy" />
-
-            <TextView
-                android:id="@+id/launch_details_mission_name_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/large_margin"
-                android:textAppearance="?textAppearanceHeadline5"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/launch_details_mission_patch_image"
-                app:layout_constraintTop_toBottomOf="@id/launch_details_number_text"
-                tools:text="Crew Dragon In Flight Abort Test" />
-
-            <TextView
-                android:id="@+id/launch_details_date_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/large_margin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/launch_details_mission_name_text"
-                app:layout_constraintTop_toBottomOf="@id/launch_details_mission_name_text"
-                tools:text="04 Nov 19 - 00:00 BST" />
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/launch_details_static_fire_date_label"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/xsmall_margin"
                 android:text="@string/static_fire_label"
@@ -102,8 +66,8 @@
                 android:textStyle="bold"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="@id/launch_details_static_fire_date_text"
-                app:layout_constraintEnd_toStartOf="@id/launch_details_static_fire_date_text"
-                app:layout_constraintStart_toStartOf="@id/launch_details_date_text"
+                app:layout_constraintEnd_toStartOf="@id/barrier"
+                app:layout_constraintStart_toStartOf="@id/launch_view"
                 app:layout_constraintTop_toTopOf="@id/launch_details_static_fire_date_text"
                 tools:visibility="visible" />
 
@@ -111,12 +75,12 @@
                 android:id="@+id/launch_details_static_fire_date_text"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/xsmall_margin"
+                android:layout_marginTop="@dimen/medium_margin"
                 android:layout_marginEnd="@dimen/large_margin"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/launch_details_static_fire_date_label"
-                app:layout_constraintTop_toBottomOf="@id/launch_details_date_text"
+                app:layout_constraintStart_toEndOf="@id/barrier"
+                app:layout_constraintTop_toBottomOf="@id/launch_view"
                 tools:text="04 Nov 19 - 00:00 BST"
                 tools:visibility="visible" />
 
@@ -129,7 +93,7 @@
                 android:textAppearance="?textAppearanceOverline"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/launch_details_site_name_text"
-                app:layout_constraintEnd_toStartOf="@id/launch_details_site_name_text"
+                app:layout_constraintEnd_toStartOf="@id/barrier"
                 app:layout_constraintStart_toStartOf="@id/launch_details_static_fire_date_label"
                 app:layout_constraintTop_toTopOf="@id/launch_details_site_name_text" />
 
@@ -140,7 +104,7 @@
                 android:layout_marginTop="@dimen/xsmall_margin"
                 android:layout_marginEnd="@dimen/large_margin"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/launch_details_site_name_label"
+                app:layout_constraintStart_toEndOf="@id/barrier"
                 app:layout_constraintTop_toBottomOf="@id/launch_details_static_fire_date_text"
                 tools:text="CCAFS SLC 40" />
 
