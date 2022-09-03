@@ -7,8 +7,6 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemVehicleBinding
 import uk.co.zac_h.spacex.vehicles.VehiclesFragmentDirections
 import uk.co.zac_h.spacex.vehicles.rockets.Rocket
@@ -23,25 +21,23 @@ class RocketsAdapter(val setSelected: (String) -> Unit) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val rocket = getItem(position)
 
-        holder.binding.apply {
-            vehicleCard.transitionName = rocket.id
+        with(holder.binding) {
+            vehicleView.apply {
+                transitionName = rocket.id
+                image = rocket.flickr?.random()
+                title = rocket.name
+                vehicleSpecs.setOnClickListener {
+                    setSelected(rocket.id)
+                    holder.bind(rocket)
+                }
+                setOnClickListener {
+                    setSelected(rocket.id)
+                    holder.bind(rocket)
+                }
+            }
 
-            Glide.with(root)
-                .load(rocket.flickr?.random())
-                .error(R.drawable.ic_baseline_error_outline_24)
-                .into(vehicleImage)
-
-            vehicleName.text = rocket.name
             vehicleDetails.text = rocket.description
 
-            vehicleCard.setOnClickListener {
-                setSelected(rocket.id)
-                holder.bind(rocket)
-            }
-            vehicleSpecs.setOnClickListener {
-                setSelected(rocket.id)
-                holder.bind(rocket)
-            }
         }
     }
 
@@ -49,7 +45,7 @@ class RocketsAdapter(val setSelected: (String) -> Unit) :
         fun bind(rocket: Rocket) {
             binding.root.findNavController().navigate(
                 VehiclesFragmentDirections.actionVehiclesPageFragmentToRocketDetailsFragment(rocket.name),
-                FragmentNavigatorExtras(binding.vehicleCard to rocket.id)
+                FragmentNavigatorExtras(binding.vehicleView to rocket.id)
             )
         }
     }

@@ -5,80 +5,33 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/vehicle_card"
+    <uk.co.zac_h.widget.VehicleView
+        android:id="@+id/vehicle_view"
         android:layout_width="344dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/xlarge_margin"
-        android:layout_marginTop="@dimen/small_margin"
-        android:layout_marginEnd="@dimen/xlarge_margin"
-        android:layout_marginBottom="@dimen/small_margin"
         android:clickable="true"
         android:focusable="true"
-        app:cardElevation="@dimen/card_elevation"
+        app:buttonText="@string/vehicle_specs_label"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <TextView
+            android:id="@+id/vehicle_details"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/small_margin"
+            android:layout_marginEnd="@dimen/large_margin"
+            android:ellipsize="end"
+            android:maxLines="5"
+            android:textAppearance="?textAppearanceBody1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/vehicle_name"
+            tools:text="@tools:sample/lorem/random" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/vehicle_image"
-                android:layout_width="0dp"
-                android:layout_height="192dp"
-                android:contentDescription="@string/rocket_image_desc"
-                android:scaleType="center"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/vehicle_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:layout_marginEnd="@dimen/large_margin"
-                android:gravity="bottom"
-                android:textAppearance="?textAppearanceHeadline6"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/vehicle_image"
-                tools:text="Falcon 9" />
-
-            <TextView
-                android:id="@+id/vehicle_details"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/small_margin"
-                android:layout_marginEnd="@dimen/large_margin"
-                android:ellipsize="end"
-                android:maxLines="5"
-                android:textAppearance="?textAppearanceBody1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/vehicle_name"
-                tools:text="@tools:sample/lorem/random" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/vehicle_specs"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/small_margin"
-                android:layout_marginTop="@dimen/small_margin"
-                android:layout_marginBottom="@dimen/small_margin"
-                android:text="@string/vehicle_specs_label"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/vehicle_details" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.google.android.material.card.MaterialCardView>
+    </uk.co.zac_h.widget.VehicleView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

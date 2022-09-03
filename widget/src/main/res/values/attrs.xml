@@ -8,4 +8,8 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="VehicleView">
+        <attr name="buttonText" format="string|reference" />
+    </declare-styleable>
+
 </resources>
