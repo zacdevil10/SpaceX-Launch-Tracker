@@ -7,8 +7,6 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemVehicleBinding
 import uk.co.zac_h.spacex.dto.spacex.Dragon
 import uk.co.zac_h.spacex.vehicles.VehiclesFragmentDirections
@@ -23,25 +21,22 @@ class DragonAdapter(val setSelected: (String) -> Unit) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val dragon = getItem(position)
 
-        holder.binding.apply {
-            vehicleCard.transitionName = dragon.id
+        with(holder.binding) {
+            vehicleView.apply {
+                transitionName = dragon.id
+                image = dragon.flickr?.random()
+                title = dragon.name
+                vehicleSpecs.setOnClickListener {
+                    setSelected(dragon.id)
+                    holder.bind(dragon)
+                }
+                setOnClickListener {
+                    setSelected(dragon.id)
+                    holder.bind(dragon)
+                }
+            }
 
-            Glide.with(root)
-                .load(dragon.flickr?.random())
-                .error(R.drawable.ic_baseline_error_outline_24)
-                .into(vehicleImage)
-
-            vehicleName.text = dragon.name
             vehicleDetails.text = dragon.description
-
-            vehicleCard.setOnClickListener {
-                setSelected(dragon.id)
-                holder.bind(dragon)
-            }
-            vehicleSpecs.setOnClickListener {
-                setSelected(dragon.id)
-                holder.bind(dragon)
-            }
         }
     }
 
@@ -49,7 +44,7 @@ class DragonAdapter(val setSelected: (String) -> Unit) :
         fun bind(dragon: Dragon) {
             binding.root.findNavController().navigate(
                 VehiclesFragmentDirections.actionVehiclesPageFragmentToDragonDetailsFragment(dragon.name),
-                FragmentNavigatorExtras(binding.vehicleCard to dragon.id)
+                FragmentNavigatorExtras(binding.vehicleView to dragon.id)
             )
         }
     }
