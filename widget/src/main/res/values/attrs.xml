@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="DashboardView">
+        <attr name="type" format="enum">
+            <enum name="next" value="0" />
+            <enum name="latest" value="1" />
+        </attr>
+    </declare-styleable>
+
+</resources>

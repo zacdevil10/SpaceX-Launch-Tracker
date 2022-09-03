@@ -22,7 +22,6 @@
     <string name="next_launch">Next</string>
     <string name="latest_launch">Previous</string>
     <string name="customise_dashboard_label">Customise dashboard</string>
-    <string name="watch_live_label">WATCH LIVE</string>
 
     <!--Filter labels-->
     <string name="filter_successes">Successes</string>

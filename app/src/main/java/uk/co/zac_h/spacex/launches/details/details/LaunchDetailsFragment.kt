@@ -8,9 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.navigation.navGraphViewModels
-import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
@@ -58,26 +56,18 @@ class LaunchDetailsFragment : BaseFragment() {
     }
 
     private fun update(response: Launch) {
-        Glide.with(this@LaunchDetailsFragment)
-            .load(response.links?.missionPatch?.patchSmall)
-            .error(ContextCompat.getDrawable(requireContext(), R.drawable.ic_mission_patch))
-            .fallback(ContextCompat.getDrawable(requireContext(), R.drawable.ic_mission_patch))
-            .placeholder(ContextCompat.getDrawable(requireContext(), R.drawable.ic_mission_patch))
-            .into(binding.launchDetailsMissionPatchImage)
-
         with(binding) {
-            launchDetailsNumberText.text = getString(
-                R.string.flight_number,
-                response.flightNumber
-            )
-            launchDetailsRocketTypeText.text = response.rocket?.name
-            launchDetailsMissionNameText.text = response.missionName
+            launchView.apply {
+                patch = response.links?.missionPatch?.patchSmall
+                flightNumber = response.flightNumber
+                vehicle = response.rocket?.name
+                missionName = response.missionName
+                date = response.datePrecision?.let { datePrecision ->
+                    response.launchDate?.dateUnix?.formatDateMillisLong(datePrecision)
+                }
+            }
 
             launchDetailsSiteNameText.text = response.launchpad?.name
-
-            launchDetailsDateText.text = response.datePrecision?.let { datePrecision ->
-                response.launchDate?.dateUnix?.formatDateMillisLong(datePrecision)
-            }
 
             response.staticFireDate?.dateUnix?.let { date ->
                 launchDetailsStaticFireDateLabel.visibility = View.VISIBLE

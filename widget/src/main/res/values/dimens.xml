@@ -9,4 +9,6 @@
     <dimen name="xxlarge_margin">48dp</dimen>
     <dimen name="xxxlarge_margin">64dp</dimen>
 
+    <dimen name="card_elevation">4dp</dimen>
+
 </resources>
