@@ -3,10 +3,6 @@ package uk.co.zac_h.spacex.dto.spacex
 import com.squareup.moshi.Json
 import uk.co.zac_h.spacex.*
 
-data class LandingPadDocsModel(
-    @field:Json(name = "docs") val docs: List<LandingPadQueriedResponse>
-)
-
 data class LandingPadResponse(
     @field:Json(name = SPACEX_FIELD_LANDING_PAD_NAME) val name: String?,
     @field:Json(name = SPACEX_FIELD_LANDING_PAD_FULL_NAME) val fullName: String?,

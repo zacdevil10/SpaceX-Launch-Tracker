@@ -3,10 +3,6 @@ package uk.co.zac_h.spacex.dto.spacex
 import com.squareup.moshi.Json
 import uk.co.zac_h.spacex.*
 
-data class RocketDocsModel(
-    @field:Json(name = "docs") val docs: List<RocketResponse>
-)
-
 data class RocketResponse(
     @field:Json(name = SPACEX_FIELD_ROCKET_NAME) val name: String?,
     @field:Json(name = SPACEX_FIELD_ROCKET_TYPE) val type: String?,

@@ -3,10 +3,6 @@ package uk.co.zac_h.spacex.dto.spacex
 import com.squareup.moshi.Json
 import uk.co.zac_h.spacex.*
 
-data class CoreDocsModel(
-    @field:Json(name = "docs") val docs: List<CoreQueriedResponse>
-)
-
 data class CoreQueriedResponse(
     @field:Json(name = SPACEX_FIELD_CORE_SERIAL) val serial: String?,
     @field:Json(name = SPACEX_FIELD_CORE_BLOCK) val block: String?,
