@@ -31,9 +31,9 @@ class LaunchHistoryFilterFragment : BottomDrawerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.launchHistoryChipGroup.setOnCheckedChangeListener { _, checkedId ->
+        binding.launchHistoryChipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             viewModel.setFilter(
-                when (checkedId) {
+                when (checkedIds.firstOrNull()) {
                     binding.launchHistorySuccessToggle.id -> LaunchHistoryFilter.SUCCESSES
                     binding.launchHistoryFailureToggle.id -> LaunchHistoryFilter.FAILURES
                     else -> null

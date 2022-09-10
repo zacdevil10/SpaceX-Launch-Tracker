@@ -4,13 +4,14 @@ import uk.co.zac_h.spacex.Cache
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.datasource.remote.CrewDataSourceClient
 import uk.co.zac_h.spacex.datasource.remote.RemoteDataSource
-import uk.co.zac_h.spacex.dto.spacex.CrewDocsModel
+import uk.co.zac_h.spacex.dto.spacex.CrewQueriedResponse
+import uk.co.zac_h.spacex.dto.spacex.NetworkDocsResponse
 import javax.inject.Inject
 
 class CrewRepository @Inject constructor(
-    @CrewDataSourceClient crewDataSource: RemoteDataSource<CrewDocsModel>,
-    cache: Cache<CrewDocsModel>
-) : Repository<CrewDocsModel>(crewDataSource, cache) {
+    @CrewDataSourceClient crewDataSource: RemoteDataSource<NetworkDocsResponse<CrewQueriedResponse>>,
+    cache: Cache<NetworkDocsResponse<CrewQueriedResponse>>
+) : Repository<NetworkDocsResponse<CrewQueriedResponse>>(crewDataSource, cache) {
 
     val cacheLocation: RequestLocation
         get() = location

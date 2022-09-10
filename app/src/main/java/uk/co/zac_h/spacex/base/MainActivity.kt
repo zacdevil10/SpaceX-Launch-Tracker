@@ -400,14 +400,14 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             bottomAppBar.performHide()
             bottomAppBar.animate().setListener(object : AnimatorListenerAdapter() {
                 var isCanceled = false
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     if (isCanceled) return
 
                     bottomAppBar.visibility = View.GONE
                     fab.visibility = View.INVISIBLE
                 }
 
-                override fun onAnimationCancel(animation: Animator?) {
+                override fun onAnimationCancel(animation: Animator) {
                     isCanceled = true
                 }
             })

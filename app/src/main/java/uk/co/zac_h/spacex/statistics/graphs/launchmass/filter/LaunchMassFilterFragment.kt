@@ -31,9 +31,9 @@ class LaunchMassFilterFragment : BottomDrawerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.launchMassRocketChipGroup.setOnCheckedChangeListener { _, checkedId ->
+        binding.launchMassRocketChipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             viewModel.setRocketFilter(
-                when (checkedId) {
+                when (checkedIds.firstOrNull()) {
                     binding.launchMassFalconOneToggle.id -> RocketType.FALCON_ONE
                     binding.launchMassFalconNineToggle.id -> RocketType.FALCON_NINE
                     binding.launchMassFalconHeavyToggle.id -> RocketType.FALCON_HEAVY
@@ -42,9 +42,9 @@ class LaunchMassFilterFragment : BottomDrawerFragment() {
             )
         }
 
-        binding.launchMassTypeChipGroup.setOnCheckedChangeListener { _, checkedId ->
+        binding.launchMassTypeChipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
             viewModel.setTypeFilter(
-                when (checkedId) {
+                when (checkedIds.firstOrNull()) {
                     binding.launchMassRocketToggle.id -> LaunchMassViewType.ROCKETS
                     binding.launchMassOrbitToggle.id -> LaunchMassViewType.ORBIT
                     else -> null
@@ -60,5 +60,4 @@ class LaunchMassFilterFragment : BottomDrawerFragment() {
             binding.launchMassRocketToggle.isChecked = true
         }
     }
-
 }
