@@ -1,5 +1,5 @@
 package uk.co.zac_h.spacex.filter
 
-interface Filterable {
+interface Filter {
     val isFiltered: Boolean
 }
