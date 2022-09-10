@@ -3,10 +3,6 @@ package uk.co.zac_h.spacex.dto.spacex
 import com.squareup.moshi.Json
 import uk.co.zac_h.spacex.*
 
-data class LaunchDocsModel(
-    @field:Json(name = "docs") val docs: List<LaunchQueriedResponse>
-)
-
 data class LaunchResponse(
     @field:Json(name = SPACEX_FIELD_LAUNCH_FLIGHT_NUMBER) val flightNumber: Int?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_NAME) val missionName: String?,

@@ -7,8 +7,7 @@ const val SPACEX_BASE_URL_V5 = "https://api.spacexdata.com/v5/"
 const val TWITTER_BASE_URL = "https://api.twitter.com/1.1/"
 const val REDDIT_BASE_URL = "https://reddit.com/"
 
-/*SpaceX =================================================================================
-=========================================================================================>*/
+//region SpaceX
 
 //Endpoints
 const val SPACEX_CAPSULES = "capsules"
@@ -19,10 +18,6 @@ const val SPACEX_DRAGONS = "dragons"
 const val SPACEX_LANDING_PADS = "landpads"
 
 const val SPACEX_LAUNCHES = "launches"
-const val SPACEX_LAUNCHES_PAST = "$SPACEX_LAUNCHES/past"
-const val SPACEX_LAUNCHES_UPCOMING = "$SPACEX_LAUNCHES/upcoming"
-const val SPACEX_LAUNCHES_LATEST = "$SPACEX_LAUNCHES/latest"
-const val SPACEX_LAUNCHES_NEXT = "$SPACEX_LAUNCHES/next"
 
 const val SPACEX_LAUNCHPADS = "launchpads"
 const val SPACEX_PAYLOADS = "payloads"
@@ -35,35 +30,21 @@ const val SPACEX_HISTORY = "history"
 const val SPACEX_QUERY = "/query"
 
 const val SPACEX_PARAM_ID = "id"
-const val SPACEX_GET_BY_PARAM_ID = "/{$SPACEX_PARAM_ID}"
 
 //Query
 const val SPACEX_CAPSULES_QUERY = "$SPACEX_CAPSULES$SPACEX_QUERY"
 const val SPACEX_CORES_QUERY = "$SPACEX_CORES$SPACEX_QUERY"
 const val SPACEX_CREW_QUERY = "$SPACEX_CREW$SPACEX_QUERY"
-const val SPACEX_DRAGONS_QUERY = "$SPACEX_DRAGONS$SPACEX_QUERY"
 const val SPACEX_LANDING_PADS_QUERY = "$SPACEX_LANDING_PADS$SPACEX_QUERY"
 const val SPACEX_LAUNCHES_QUERY = "$SPACEX_LAUNCHES$SPACEX_QUERY"
 const val SPACEX_LAUNCHPADS_QUERY = "$SPACEX_LAUNCHPADS$SPACEX_QUERY"
-const val SPACEX_PAYLOADS_QUERY = "$SPACEX_PAYLOADS$SPACEX_QUERY"
-const val SPACEX_ROADSTER_QUERY = "$SPACEX_ROADSTER$SPACEX_QUERY"
-const val SPACEX_ROCKETS_QUERY = "$SPACEX_ROCKETS$SPACEX_QUERY"
 const val SPACEX_SHIPS_QUERY = "$SPACEX_SHIPS$SPACEX_QUERY"
-const val SPACEX_STARLINK_QUERY = "$SPACEX_STARLINK$SPACEX_QUERY"
 const val SPACEX_HISTORY_QUERY = "$SPACEX_HISTORY$SPACEX_QUERY"
 
 //Fields
 const val SPACEX_FIELD_ID = "id"
 
-const val SPACEX_FIELD_KG = "kg"
-const val SPACEX_FIELD_LB = "lb"
-const val SPACEX_FIELD_METERS = "meters"
-const val SPACEX_FIELD_FEET = "feet"
-const val SPACEX_FIELD_CUBIC_METERS = "cubic_meters"
-const val SPACEX_FIELD_CUBIC_FEET = "cubic_feet"
-
-
-//CAPSULE___________________________________________________________________________________________
+//CAPSULE
 const val SPACEX_FIELD_CAPSULE_SERIAL = "serial"
 const val SPACEX_FIELD_CAPSULE_STATUS = "status"
 const val SPACEX_FIELD_CAPSULE_TYPE = "type"
@@ -74,7 +55,6 @@ const val SPACEX_FIELD_CAPSULE_LAND_LANDINGS = "land_landings"
 const val SPACEX_FIELD_CAPSULE_LAST_UPDATE = "last_update"
 const val SPACEX_FIELD_CAPSULE_LAUNCHES = "launches"
 
-const val SPACEX_CAPSULE_STATUS_UNKNOWN = "unknown"
 const val SPACEX_CAPSULE_STATUS_ACTIVE = "active"
 const val SPACEX_CAPSULE_STATUS_RETIRED = "retired"
 const val SPACEX_CAPSULE_STATUS_DESTROYED = "destroyed"
@@ -83,7 +63,7 @@ const val SPACEX_CAPSULE_TYPE_DRAGON_1 = "Dragon 1.0"
 const val SPACEX_CAPSULE_TYPE_DRAGON_1_1 = "Dragon 1.1"
 const val SPACEX_CAPSULE_TYPE_DRAGON_2 = "Dragon 2.0"
 
-//COMPANY___________________________________________________________________________________________
+//COMPANY
 const val SPACEX_FIELD_COMPANY_NAME = "name"
 const val SPACEX_FIELD_COMPANY_FOUNDER = "founder"
 const val SPACEX_FIELD_COMPANY_FOUNDED = "founded"
@@ -107,7 +87,7 @@ const val SPACEX_FIELD_COMPANY_TWITTER = "twitter"
 const val SPACEX_FIELD_COMPANY_ELON_TWITTER = "elon_twitter"
 const val SPACEX_FIELD_COMPANY_SUMMARY = "summary"
 
-//CORE______________________________________________________________________________________________
+//CORE
 const val SPACEX_FIELD_CORE_SERIAL = "serial"
 const val SPACEX_FIELD_CORE_BLOCK = "block"
 const val SPACEX_FIELD_CORE_STATUS = "status"
@@ -121,12 +101,11 @@ const val SPACEX_FIELD_CORE_LAUNCHES = "launches"
 
 const val SPACEX_CORE_STATUS_ACTIVE = "active"
 const val SPACEX_CORE_STATUS_INACTIVE = "inactive"
-const val SPACEX_CORE_STATUS_UNKNOWN = "unknown"
 const val SPACEX_CORE_STATUS_EXPENDED = "expended"
 const val SPACEX_CORE_STATUS_LOST = "lost"
 const val SPACEX_CORE_STATUS_RETIRED = "retired"
 
-//CREW______________________________________________________________________________________________
+//CREW
 const val SPACEX_FIELD_CREW_NAME = "name"
 const val SPACEX_FIELD_CREW_STATUS = "status"
 const val SPACEX_FIELD_CREW_AGENCY = "agency"
@@ -139,7 +118,7 @@ const val SPACEX_CREW_STATUS_INACTIVE = "inactive"
 const val SPACEX_CREW_STATUS_RETIRED = "retired"
 const val SPACEX_CREW_STATUS_UNKNOWN = "unknown"
 
-//DRAGON____________________________________________________________________________________________
+//DRAGON
 const val SPACEX_FIELD_DRAGON_NAME = "name"
 const val SPACEX_FIELD_DRAGON_TYPE = "type"
 const val SPACEX_FIELD_DRAGON_ACTIVE = "active"
@@ -179,7 +158,7 @@ const val SPACEX_FIELD_DRAGON_FLICKR_IMAGES = "flickr_images"
 const val SPACEX_FIELD_DRAGON_WIKIPEDIA = "wikipedia"
 const val SPACEX_FIELD_DRAGON_DESCRIPTION = "description"
 
-//LANDING PAD_______________________________________________________________________________________
+//LANDING PAD
 const val SPACEX_FIELD_LANDING_PAD_NAME = "name"
 const val SPACEX_FIELD_LANDING_PAD_FULL_NAME = "full_name"
 const val SPACEX_FIELD_LANDING_PAD_STATUS = "status"
@@ -196,12 +175,11 @@ const val SPACEX_FIELD_LANDING_PAD_LAUNCHES = "launches"
 
 const val SPACEX_LANDING_PAD_STATUS_ACTIVE = "active"
 const val SPACEX_LANDING_PAD_STATUS_INACTIVE = "inactive"
-const val SPACEX_LANDING_PAD_STATUS_UNKNOWN = "unknown"
 const val SPACEX_LANDING_PAD_STATUS_RETIRED = "retired"
 const val SPACEX_LANDING_PAD_STATUS_LOST = "lost"
 const val SPACEX_LANDING_PAD_STATUS_UNDER_CONSTRUCTION = "under construction"
 
-//LAUNCH____________________________________________________________________________________________
+//LAUNCH
 const val SPACEX_FIELD_LAUNCH_FLIGHT_NUMBER = "flight_number"
 const val SPACEX_FIELD_LAUNCH_NAME = "name"
 const val SPACEX_FIELD_LAUNCH_DATE_UTC = "date_utc"
@@ -254,7 +232,6 @@ const val SPACEX_FIELD_LAUNCH_REDDIT_RECOVERY = "recovery"
 const val SPACEX_FIELD_LAUNCH_FLICKR = "flickr"
 const val SPACEX_FIELD_LAUNCH_FLICKR_SMALL = "small"
 const val SPACEX_FIELD_LAUNCH_FLICKR_ORIGINAL = "original"
-const val SPACEX_FIELD_LAUNCH_PRESSKIT = "presskit"
 const val SPACEX_FIELD_LAUNCH_WEBCAST = "webcast"
 const val SPACEX_FIELD_LAUNCH_YOUTUBE_ID = "youtube_id"
 const val SPACEX_FIELD_LAUNCH_ARTICLE = "article"
@@ -268,7 +245,7 @@ const val SPACEX_LAUNCH_DATE_PRECISION_MONTH = "month"
 const val SPACEX_LAUNCH_DATE_PRECISION_DAY = "day"
 const val SPACEX_LAUNCH_DATE_PRECISION_HOUR = "hour"
 
-//Launchpad_________________________________________________________________________________________
+//Launchpad
 const val SPACEX_FIELD_LAUNCHPAD_NAME = "name"
 const val SPACEX_FIELD_LAUNCHPAD_FULL_NAME = "full_name"
 const val SPACEX_FIELD_LAUNCHPAD_STATUS = "status"
@@ -282,7 +259,7 @@ const val SPACEX_FIELD_LAUNCHPAD_LAUNCH_SUCCESSES = "launch_successes"
 const val SPACEX_FIELD_LAUNCHPAD_ROCKETS = "rockets"
 const val SPACEX_FIELD_LAUNCHPAD_LAUNCHES = "launches"
 
-//Payload___________________________________________________________________________________________
+//Payload
 const val SPACEX_FIELD_PAYLOAD_NAME = "name"
 const val SPACEX_FIELD_PAYLOAD_TYPE = "type"
 const val SPACEX_FIELD_PAYLOAD_REUSED = "reused"
@@ -318,7 +295,7 @@ const val SPACEX_FIELD_PAYLOAD_DRAGON_MANIFEST = "manifest"
 const val SPACEX_FIELD_PAYLOAD_DRAGON_WATER_LANDING = "water_landing"
 const val SPACEX_FIELD_PAYLOAD_DRAGON_LAND_LANDING = "land_landing"
 
-//Fairing___________________________________________________________________________________________
+//Fairing
 const val SPACEX_FIELD_FAIRING_SERIAL = "serial"
 const val SPACEX_FIELD_FAIRING_VERSION = "version"
 const val SPACEX_FIELD_FAIRING_STATUS = "status"
@@ -334,7 +311,7 @@ const val SPACEX_FAIRING_VERSION_1 = "1.0"
 const val SPACEX_FAIRING_VERSION_2 = "2.0"
 const val SPACEX_FAIRING_VERSION_2_1 = "2.1"
 
-//Roadster__________________________________________________________________________________________
+//Roadster
 const val SPACEX_FIELD_ROADSTER_NAME = "name"
 const val SPACEX_FIELD_ROADSTER_LAUNCH_DATE_UTC = "launch_date_utc"
 const val SPACEX_FIELD_ROADSTER_LAUNCH_DATE_UNIX = "launch_date_unix"
@@ -362,7 +339,7 @@ const val SPACEX_FIELD_ROADSTER_WIKI = "wikipedia"
 const val SPACEX_FIELD_ROADSTER_VIDEO = "video"
 const val SPACEX_FIELD_ROADSTER_DETAILS = "details"
 
-//Rocket____________________________________________________________________________________________
+//Rocket
 const val SPACEX_FIELD_ROCKET_NAME = "name"
 const val SPACEX_FIELD_ROCKET_TYPE = "type"
 const val SPACEX_FIELD_ROCKET_ACTIVE = "active"
@@ -417,7 +394,7 @@ const val SPACEX_FIELD_ROCKET_FLICKR = "flickr_images"
 const val SPACEX_FIELD_ROCKET_WIKIPEDIA = "wikipedia"
 const val SPACEX_FIELD_ROCKET_DESCRIPTION = "description"
 
-//Ship______________________________________________________________________________________________
+//Ship
 const val SPACEX_FIELD_SHIP_NAME = "name"
 const val SPACEX_FIELD_SHIP_LEGACY_ID = "legacy_id"
 const val SPACEX_FIELD_SHIP_MODEL = "model"
@@ -442,10 +419,7 @@ const val SPACEX_FIELD_SHIP_LINK = "link"
 const val SPACEX_FIELD_SHIP_IMAGE = "image"
 const val SPACEX_FIELD_SHIP_LAUNCHES = "launches"
 
-//Starlink__________________________________________________________________________________________
-const val SPACEX_FIELD_STARLINK_ = ""
-
-//History___________________________________________________________________________________________
+//History
 const val SPACEX_FIELD_HISTORY_LINKS = "links"
 const val SPACEX_FIELD_HISTORY_TITLE = "title"
 const val SPACEX_FIELD_HISTORY_EVENT_DATE_UTC = "event_date_utc"
@@ -453,7 +427,7 @@ const val SPACEX_FIELD_HISTORY_EVENT_DATE_UNIX = "event_date_unix"
 const val SPACEX_FIELD_HISTORY_DETAILS = "details"
 const val SPACEX_FIELD_HISTORY_ARTICLE = "article"
 
-//Status____________________________________________________________________________________________
+//Status
 const val SPACEX_ACTIVE = "Active"
 const val SPACEX_INACTIVE = "Inactive"
 const val SPACEX_UNKNOWN = "Unknown"
@@ -463,11 +437,9 @@ const val SPACEX_RETIRED = "Retired"
 const val SPACEX_DESTROYED = "Destroyed"
 const val SPACEX_UNDER_CONSTRUCTION = "Under construction"
 
-/*<=======================================================================================
-====================================================================================SpaceX
+//endregion
 
-Twitter ==================================================================================
-=========================================================================================>*/
+//region Twitter
 
 const val TWITTER_TIMELINE = "statuses/user_timeline.json"
 
@@ -478,11 +450,9 @@ const val TWITTER_QUERY_TWEET_MODE = "tweet_mode"
 const val TWITTER_QUERY_COUNT = "count"
 const val TWITTER_QUERY_MAX_ID = "max_id"
 
-/*<=======================================================================================
-====================================================================================Twitter
+//endregion
 
-Reddit ==================================================================================
-=========================================================================================>*/
+//region Reddit
 
 const val REDDIT_PARAM_SUBREDDIT = "subreddit"
 const val REDDIT_PARAM_ORDER = "order"
@@ -496,8 +466,7 @@ const val REDDIT_PARAM_ORDER_NEW = "new"
 
 const val REDDIT_QUERY_AFTER = "after"
 
-/*<=======================================================================================
-====================================================================================Reddit*/
+//endregion
 
 const val DEFAULT_PREFERENCES = "default_preferences"
 const val DASHBOARD_PREFERENCES = "dashboard_preferences"

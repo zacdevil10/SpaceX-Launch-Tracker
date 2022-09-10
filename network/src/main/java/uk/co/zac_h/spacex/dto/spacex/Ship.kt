@@ -3,10 +3,6 @@ package uk.co.zac_h.spacex.dto.spacex
 import com.squareup.moshi.Json
 import uk.co.zac_h.spacex.*
 
-data class ShipsDocsModel(
-    @field:Json(name = "docs") val docs: List<ShipQueriedResponse>
-)
-
 data class ShipResponse(
     @field:Json(name = SPACEX_FIELD_SHIP_NAME) val name: String?,
     @field:Json(name = SPACEX_FIELD_SHIP_LEGACY_ID) val legacyId: String?,

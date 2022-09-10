@@ -6,10 +6,6 @@ import uk.co.zac_h.spacex.dto.spacex.MassFormatted.Companion.formatMass
 import uk.co.zac_h.spacex.utils.EventDate
 import java.text.DecimalFormat
 
-data class RoadsterDocsModel(
-    @field:Json(name = "docs") val docs: List<RoadsterResponse>
-)
-
 data class RoadsterResponse(
     @field:Json(name = SPACEX_FIELD_ROADSTER_NAME) val name: String?,
     @field:Json(name = SPACEX_FIELD_ROADSTER_LAUNCH_DATE_UTC) val launchDateUtc: String?,

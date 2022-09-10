@@ -3,10 +3,6 @@ package uk.co.zac_h.spacex.dto.spacex
 import com.squareup.moshi.Json
 import uk.co.zac_h.spacex.*
 
-data class FairingDocsModel(
-    @field:Json(name = "docs") val docs: List<FairingQueriedResponse>
-)
-
 data class FairingResponse(
     @field:Json(name = SPACEX_FIELD_FAIRING_SERIAL) val serial: String,
     @field:Json(name = SPACEX_FIELD_FAIRING_VERSION) val version: String?,

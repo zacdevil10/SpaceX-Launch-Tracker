@@ -4,10 +4,6 @@ import com.squareup.moshi.Json
 import uk.co.zac_h.spacex.*
 import uk.co.zac_h.spacex.dto.spacex.MassFormatted.Companion.formatMass
 
-data class DragonDocsModel(
-    @field:Json(name = "docs") val docs: List<DragonResponse>
-)
-
 data class DragonResponse(
     @field:Json(name = SPACEX_FIELD_DRAGON_NAME) val name: String?,
     @field:Json(name = SPACEX_FIELD_DRAGON_TYPE) val type: String?,

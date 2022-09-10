@@ -4,10 +4,6 @@ import com.squareup.moshi.Json
 import uk.co.zac_h.spacex.*
 import uk.co.zac_h.spacex.utils.EventDate
 
-data class HistoryDocsModel(
-    @field:Json(name = "docs") val docs: List<HistoryResponse>
-)
-
 data class HistoryResponse(
     @field:Json(name = SPACEX_FIELD_HISTORY_LINKS) val links: HistoryLinksModel?,
     @field:Json(name = SPACEX_FIELD_HISTORY_TITLE) val title: String?,

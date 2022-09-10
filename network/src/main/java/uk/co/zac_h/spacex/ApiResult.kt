@@ -17,8 +17,6 @@ sealed class ApiResult<out R> {
 
     val data: R?
         get() = if (this is Success) this.result else null
-
-    fun getDataOrNull(): R? = if (this is Success) this.result else null
 }
 
 suspend fun <R, T> Deferred<Response<T>>.map(transform: (value: T) -> R): ApiResult<R> = try {

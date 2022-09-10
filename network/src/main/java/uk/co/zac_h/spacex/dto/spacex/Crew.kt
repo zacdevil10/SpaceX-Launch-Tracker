@@ -3,10 +3,6 @@ package uk.co.zac_h.spacex.dto.spacex
 import com.squareup.moshi.Json
 import uk.co.zac_h.spacex.*
 
-data class CrewDocsModel(
-    @field:Json(name = "docs") val docs: List<CrewQueriedResponse>
-)
-
 data class CrewResponse(
     @field:Json(name = SPACEX_FIELD_CREW_NAME) val name: String?,
     @field:Json(name = SPACEX_FIELD_CREW_STATUS) val status: String,

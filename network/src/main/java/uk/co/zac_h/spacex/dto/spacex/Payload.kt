@@ -3,10 +3,6 @@ package uk.co.zac_h.spacex.dto.spacex
 import com.squareup.moshi.Json
 import uk.co.zac_h.spacex.*
 
-data class PayloadDocsModel(
-    @field:Json(name = "docs") val docs: List<PayloadQueriedResponse>
-)
-
 data class PayloadResponse(
     @field:Json(name = SPACEX_FIELD_PAYLOAD_NAME) val name: String?,
     @field:Json(name = SPACEX_FIELD_PAYLOAD_TYPE) val type: String?,

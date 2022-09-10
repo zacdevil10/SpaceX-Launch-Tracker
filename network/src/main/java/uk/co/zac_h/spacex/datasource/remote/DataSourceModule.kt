@@ -18,7 +18,7 @@ abstract class DataSourceModule {
 
     @Binds
     @HistoryDataSourceClient
-    abstract fun bindHistoryDataSource(historyDataSource: HistoryDataSource): RemoteDataSource<HistoryDocsModel>
+    abstract fun bindHistoryDataSource(historyDataSource: HistoryDataSource): RemoteDataSource<NetworkDocsResponse<HistoryResponse>>
 
     @Binds
     @CompanyDataSourceClient
@@ -26,15 +26,15 @@ abstract class DataSourceModule {
 
     @Binds
     @LaunchesDataSourceClient
-    abstract fun bindLaunchesDataSource(launchesDataSource: LaunchesDataSource): RemoteDataSource<LaunchDocsModel>
+    abstract fun bindLaunchesDataSource(launchesDataSource: LaunchesDataSource): RemoteDataSource<NetworkDocsResponse<LaunchQueriedResponse>>
 
     @Binds
     @LaunchpadDataSourceClient
-    abstract fun bindLaunchpadDataSource(launchpadDataSource: LaunchpadDataSource): RemoteDataSource<LaunchpadDocsModel>
+    abstract fun bindLaunchpadDataSource(launchpadDataSource: LaunchpadDataSource): RemoteDataSource<NetworkDocsResponse<LaunchpadQueriedResponse>>
 
     @Binds
     @LandingPadDataSourceClient
-    abstract fun bindLandingPadDataSource(landingPadDataSource: LandingPadDataSource): RemoteDataSource<LandingPadDocsModel>
+    abstract fun bindLandingPadDataSource(landingPadDataSource: LandingPadDataSource): RemoteDataSource<NetworkDocsResponse<LandingPadQueriedResponse>>
 
     @Binds
     @RocketDataSourceClient
@@ -46,19 +46,19 @@ abstract class DataSourceModule {
 
     @Binds
     @ShipDataSourceClient
-    abstract fun bindShipDataSource(shipDataSource: ShipDataSource): RemoteDataSource<ShipsDocsModel>
+    abstract fun bindShipDataSource(shipDataSource: ShipDataSource): RemoteDataSource<NetworkDocsResponse<ShipQueriedResponse>>
 
     @Binds
     @CoreDataSourceClient
-    abstract fun bindCoreDataSource(coreDataSource: CoreDataSource): RemoteDataSource<CoreDocsModel>
+    abstract fun bindCoreDataSource(coreDataSource: CoreDataSource): RemoteDataSource<NetworkDocsResponse<CoreQueriedResponse>>
 
     @Binds
     @CapsuleDataSourceClient
-    abstract fun bindCapsuleDataSource(capsuleDataSource: CapsuleDataSource): RemoteDataSource<CapsulesDocsModel>
+    abstract fun bindCapsuleDataSource(capsuleDataSource: CapsuleDataSource): RemoteDataSource<NetworkDocsResponse<CapsuleQueriedResponse>>
 
     @Binds
     @CrewDataSourceClient
-    abstract fun bindCrewDataSource(crewDataSource: CrewDataSource): RemoteDataSource<CrewDocsModel>
+    abstract fun bindCrewDataSource(crewDataSource: CrewDataSource): RemoteDataSource<NetworkDocsResponse<CrewQueriedResponse>>
 
 }
 

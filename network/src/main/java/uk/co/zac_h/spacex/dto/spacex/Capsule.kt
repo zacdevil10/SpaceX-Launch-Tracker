@@ -3,10 +3,6 @@ package uk.co.zac_h.spacex.dto.spacex
 import com.squareup.moshi.Json
 import uk.co.zac_h.spacex.*
 
-data class CapsulesDocsModel(
-    @field:Json(name = "docs") val docs: List<CapsuleQueriedResponse>
-)
-
 data class CapsuleQueriedResponse(
     @field:Json(name = SPACEX_FIELD_CAPSULE_SERIAL) val serial: String?,
     @field:Json(name = SPACEX_FIELD_CAPSULE_STATUS) val status: String?,
