@@ -5,14 +5,15 @@ import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.datasource.local.DashboardPreferencesDataSource
 import uk.co.zac_h.spacex.datasource.remote.LaunchesDataSourceClient
 import uk.co.zac_h.spacex.datasource.remote.RemoteDataSource
-import uk.co.zac_h.spacex.dto.spacex.LaunchDocsModel
+import uk.co.zac_h.spacex.dto.spacex.LaunchQueriedResponse
+import uk.co.zac_h.spacex.dto.spacex.NetworkDocsResponse
 import javax.inject.Inject
 
 class DashboardRepository @Inject constructor(
-    @LaunchesDataSourceClient launchesDataSource: RemoteDataSource<LaunchDocsModel>,
-    cache: Cache<LaunchDocsModel>,
+    @LaunchesDataSourceClient launchesDataSource: RemoteDataSource<NetworkDocsResponse<LaunchQueriedResponse>>,
+    cache: Cache<NetworkDocsResponse<LaunchQueriedResponse>>,
     private val preferences: DashboardPreferencesDataSource
-) : Repository<LaunchDocsModel>(launchesDataSource, cache) {
+) : Repository<NetworkDocsResponse<LaunchQueriedResponse>>(launchesDataSource, cache) {
 
     val allPreferences = preferences.allLiveData
 

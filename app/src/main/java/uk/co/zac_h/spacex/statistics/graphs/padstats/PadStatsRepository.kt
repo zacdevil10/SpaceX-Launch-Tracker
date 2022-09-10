@@ -5,16 +5,17 @@ import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.datasource.remote.LandingPadDataSourceClient
 import uk.co.zac_h.spacex.datasource.remote.LaunchpadDataSourceClient
 import uk.co.zac_h.spacex.datasource.remote.RemoteDataSource
-import uk.co.zac_h.spacex.dto.spacex.LandingPadDocsModel
-import uk.co.zac_h.spacex.dto.spacex.LaunchpadDocsModel
+import uk.co.zac_h.spacex.dto.spacex.LandingPadQueriedResponse
+import uk.co.zac_h.spacex.dto.spacex.LaunchpadQueriedResponse
+import uk.co.zac_h.spacex.dto.spacex.NetworkDocsResponse
 import javax.inject.Inject
 
 class LaunchpadRepository @Inject constructor(
-    @LaunchpadDataSourceClient launchpadDataSourceClient: RemoteDataSource<LaunchpadDocsModel>,
-    cache: Cache<LaunchpadDocsModel>
-) : Repository<LaunchpadDocsModel>(launchpadDataSourceClient, cache)
+    @LaunchpadDataSourceClient launchpadDataSourceClient: RemoteDataSource<NetworkDocsResponse<LaunchpadQueriedResponse>>,
+    cache: Cache<NetworkDocsResponse<LaunchpadQueriedResponse>>
+) : Repository<NetworkDocsResponse<LaunchpadQueriedResponse>>(launchpadDataSourceClient, cache)
 
 class LandingPadRepository @Inject constructor(
-    @LandingPadDataSourceClient landingPadDataSourceClient: RemoteDataSource<LandingPadDocsModel>,
-    cache: Cache<LandingPadDocsModel>
-) : Repository<LandingPadDocsModel>(landingPadDataSourceClient, cache)
+    @LandingPadDataSourceClient landingPadDataSourceClient: RemoteDataSource<NetworkDocsResponse<LandingPadQueriedResponse>>,
+    cache: Cache<NetworkDocsResponse<LandingPadQueriedResponse>>
+) : Repository<NetworkDocsResponse<LandingPadQueriedResponse>>(landingPadDataSourceClient, cache)

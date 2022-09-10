@@ -4,16 +4,17 @@ import uk.co.zac_h.spacex.Cache
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.datasource.remote.CoreDataSourceClient
 import uk.co.zac_h.spacex.datasource.remote.RemoteDataSource
-import uk.co.zac_h.spacex.dto.spacex.CoreDocsModel
+import uk.co.zac_h.spacex.dto.spacex.CoreQueriedResponse
+import uk.co.zac_h.spacex.dto.spacex.NetworkDocsResponse
 import uk.co.zac_h.spacex.types.Order
 import uk.co.zac_h.spacex.utils.OrderSharedPreferences
 import javax.inject.Inject
 
 class CoreRepository @Inject constructor(
-    @CoreDataSourceClient coreDataSource: RemoteDataSource<CoreDocsModel>,
-    cache: Cache<CoreDocsModel>,
+    @CoreDataSourceClient coreDataSource: RemoteDataSource<NetworkDocsResponse<CoreQueriedResponse>>,
+    cache: Cache<NetworkDocsResponse<CoreQueriedResponse>>,
     private val sharedPreferences: OrderSharedPreferences
-) : Repository<CoreDocsModel>(coreDataSource, cache) {
+) : Repository<NetworkDocsResponse<CoreQueriedResponse>>(coreDataSource, cache) {
 
     val cacheLocation: RequestLocation
         get() = location

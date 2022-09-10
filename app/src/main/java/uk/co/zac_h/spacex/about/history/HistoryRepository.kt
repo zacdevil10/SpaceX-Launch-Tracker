@@ -4,17 +4,18 @@ import uk.co.zac_h.spacex.Cache
 import uk.co.zac_h.spacex.Repository
 import uk.co.zac_h.spacex.datasource.remote.HistoryDataSourceClient
 import uk.co.zac_h.spacex.datasource.remote.RemoteDataSource
-import uk.co.zac_h.spacex.dto.spacex.HistoryDocsModel
+import uk.co.zac_h.spacex.dto.spacex.HistoryResponse
+import uk.co.zac_h.spacex.dto.spacex.NetworkDocsResponse
 import uk.co.zac_h.spacex.types.Order
 import uk.co.zac_h.spacex.utils.Keys
 import uk.co.zac_h.spacex.utils.OrderSharedPreferences
 import javax.inject.Inject
 
 class HistoryRepository @Inject constructor(
-    @HistoryDataSourceClient historyDataSource: RemoteDataSource<HistoryDocsModel>,
-    cache: Cache<HistoryDocsModel>,
+    @HistoryDataSourceClient historyDataSource: RemoteDataSource<NetworkDocsResponse<HistoryResponse>>,
+    cache: Cache<NetworkDocsResponse<HistoryResponse>>,
     private val sharedPreferences: OrderSharedPreferences
-) : Repository<HistoryDocsModel>(historyDataSource, cache) {
+) : Repository<NetworkDocsResponse<HistoryResponse>>(historyDataSource, cache) {
 
     fun getOrder(): Order = if (sharedPreferences.isSortedNew(Keys.HistoryKeys.HISTORY_ORDER)) {
         Order.ASCENDING
