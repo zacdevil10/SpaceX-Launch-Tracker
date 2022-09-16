@@ -161,9 +161,9 @@ class DashboardFragment : BaseFragment() {
                 findNavController().navigate(
                     NavGraphDirections.actionLaunchItemToLaunchDetailsContainer(
                         response.missionName,
-                        response.id
+                        response.id.orEmpty()
                     ),
-                    FragmentNavigatorExtras(dashboardView to response.id)
+                    FragmentNavigatorExtras(dashboardView to response.id.orEmpty())
                 )
             }
         }

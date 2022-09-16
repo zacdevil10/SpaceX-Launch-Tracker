@@ -38,7 +38,7 @@ data class Launch(
     val cores: List<LaunchCore>?,
     val links: LaunchLinks?,
     val autoUpdate: Boolean?,
-    val id: String
+    val id: String?
 ) {
 
     constructor(
@@ -192,7 +192,7 @@ data class Payload(
     val apoapsisKm: Float?,
     val inclination: Float?,
     val period: Float?,
-    val lifespan: Int?,
+    val lifespan: Float?,
     val epoch: String?,
     val meanMotion: Float?,
     val raan: Float?,

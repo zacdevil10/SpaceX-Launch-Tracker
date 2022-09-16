@@ -48,9 +48,9 @@ class LaunchesAdapter : ListAdapter<Launch, LaunchesAdapter.ViewHolder>(Comparat
                 root.findNavController().navigate(
                     NavGraphDirections.actionLaunchItemToLaunchDetailsContainer(
                         launch.missionName,
-                        launch.id
+                        launch.id.orEmpty()
                     ),
-                    FragmentNavigatorExtras(root to launch.id)
+                    FragmentNavigatorExtras(root to launch.id.orEmpty())
                 )
             }
         }
