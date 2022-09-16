@@ -6,11 +6,9 @@ import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.async
-import uk.co.zac_h.spacex.dto.spacex.QueryModel
-import uk.co.zac_h.spacex.dto.spacex.QueryOptionsModel
-import uk.co.zac_h.spacex.dto.spacex.QueryPopulateModel
 import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.launches.LaunchesRepository
+import uk.co.zac_h.spacex.query.LaunchQuery
 import uk.co.zac_h.spacex.utils.filterAll
 import uk.co.zac_h.spacex.utils.sortedBy
 import javax.inject.Inject
@@ -54,48 +52,14 @@ class LaunchesFilterViewModel @Inject constructor(
     fun getLaunches(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
         viewModelScope.launch {
             val response = async(_launchesLiveData) {
-                repository.fetch(key = "launches", query = query, cachePolicy = cachePolicy)
+                repository.fetch(
+                    key = "launches",
+                    query = LaunchQuery.launchesQuery,
+                    cachePolicy = cachePolicy
+                )
             }
 
             _launchesLiveData.value = response.await().map { data -> data.docs.map { Launch(it) } }
         }
     }
-
-    private val query = QueryModel(
-        options = QueryOptionsModel(
-            pagination = false,
-            populate = listOf(
-                QueryPopulateModel(path = "rocket", populate = "", select = listOf("name")),
-                QueryPopulateModel(
-                    path = "cores",
-                    populate = listOf(
-                        QueryPopulateModel(
-                            path = "landpad",
-                            populate = "",
-                            select = listOf("name")
-                        ),
-                        QueryPopulateModel(
-                            path = "core",
-                            populate = "",
-                            select = listOf("reuse_count")
-                        )
-                    ),
-                    select = ""
-                )
-            ),
-            select = listOf(
-                "flight_number",
-                "name",
-                "date_unix",
-                "rocket",
-                "cores",
-                "links",
-                "date_precision",
-                "upcoming",
-                "tbd"
-            ),
-            limit = 10000
-        )
-    )
-
 }

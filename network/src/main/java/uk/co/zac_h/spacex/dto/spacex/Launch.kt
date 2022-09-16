@@ -29,7 +29,7 @@ data class LaunchResponse(
     @field:Json(name = SPACEX_FIELD_LAUNCH_CORES) val cores: List<LaunchCoreResponse>?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_LINKS) val links: LaunchLinks?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_AUTO_UPDATE) val autoUpdate: Boolean?,
-    @field:Json(name = SPACEX_FIELD_ID) val id: String
+    @field:Json(name = SPACEX_FIELD_ID) val id: String?
 )
 
 data class LaunchQueriedResponse(
@@ -58,7 +58,7 @@ data class LaunchQueriedResponse(
     @field:Json(name = SPACEX_FIELD_LAUNCH_CORES) val cores: List<LaunchCoreQueriedResponse>?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_LINKS) val links: LaunchLinks?,
     @field:Json(name = SPACEX_FIELD_LAUNCH_AUTO_UPDATE) val autoUpdate: Boolean?,
-    @field:Json(name = SPACEX_FIELD_ID) val id: String
+    @field:Json(name = SPACEX_FIELD_ID) val id: String?
 )
 
 data class LaunchFailures(
