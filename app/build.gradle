@@ -97,7 +97,7 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:1.5.3"
 
     //Hilt
-    implementation 'com.google.dagger:hilt-android:2.43.2'
+    implementation 'com.google.dagger:hilt-android:2.44'
     kapt 'com.google.dagger:hilt-compiler:2.44'
 
     //Paging
