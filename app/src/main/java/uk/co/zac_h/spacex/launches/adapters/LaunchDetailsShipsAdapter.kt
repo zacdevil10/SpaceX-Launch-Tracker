@@ -53,5 +53,4 @@ class LaunchDetailsShipsAdapter :
 
         override fun areContentsTheSame(oldItem: Ship, newItem: Ship) = oldItem.id == newItem.id
     }
-
 }

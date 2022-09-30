@@ -90,7 +90,6 @@ data class FairingQueriedResponse(
             else -> FairingVersion.UNKNOWN
         }
     }
-
 }*/
 
 enum class FairingStatus(val status: String) {

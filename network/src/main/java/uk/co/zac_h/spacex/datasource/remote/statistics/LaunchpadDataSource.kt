@@ -15,5 +15,4 @@ class LaunchpadDataSource @Inject constructor(
     private suspend fun getLaunchpads(body: QueryModel) = httpService.queryLaunchpads(body)
 
     override suspend fun fetchAsync(query: QueryModel) = getLaunchpads(query)
-
 }

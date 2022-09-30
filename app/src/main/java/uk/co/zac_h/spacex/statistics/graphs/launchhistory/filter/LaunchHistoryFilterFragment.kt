@@ -46,5 +46,4 @@ class LaunchHistoryFilterFragment : BottomDrawerFragment() {
             binding.launchHistoryFailureToggle.isChecked = false
         }
     }
-
 }

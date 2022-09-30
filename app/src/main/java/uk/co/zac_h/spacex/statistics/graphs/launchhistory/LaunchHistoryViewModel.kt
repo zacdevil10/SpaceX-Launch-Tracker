@@ -88,5 +88,4 @@ class LaunchHistoryViewModel @Inject constructor(
     fun setFilter(filter: LaunchHistoryFilter?) {
         filterValue = filter
     }
-
 }

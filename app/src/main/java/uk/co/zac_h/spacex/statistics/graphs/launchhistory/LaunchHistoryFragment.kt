@@ -98,7 +98,7 @@ class LaunchHistoryFragment : BaseFragment() {
 
         viewModel.launchHistory.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is ApiResult.Pending -> showProgress()
+                is ApiResult.Pending -> {}
                 is ApiResult.Success -> response.data?.let {
                     val animate = viewModel.cacheLocation != Repository.RequestLocation.CACHE
                     update(animate, it)
@@ -116,7 +116,6 @@ class LaunchHistoryFragment : BaseFragment() {
     }
 
     fun update(animate: Boolean, response: List<HistoryStatsModel>) {
-        hideProgress()
         launchStats = response
 
         var falconOne = 0
@@ -217,14 +216,6 @@ class LaunchHistoryFragment : BaseFragment() {
                 progressBar?.progress = valueAnim.animatedValue as Int
             }
         }.start() else progressBar?.progress = successRate
-    }
-
-    fun showProgress() {
-
-    }
-
-    fun hideProgress() {
-
     }
 
     fun showError(error: String?) {

@@ -22,5 +22,4 @@ class DashboardRepository @Inject constructor(
     fun updateSection(section: String, visible: Boolean) {
         preferences.add(section, visible)
     }
-
 }

@@ -69,5 +69,4 @@ class DashboardViewModel @Inject constructor(
     fun hideDashboardSection(section: String) {
         repository.updateSection(section, false)
     }
-
 }

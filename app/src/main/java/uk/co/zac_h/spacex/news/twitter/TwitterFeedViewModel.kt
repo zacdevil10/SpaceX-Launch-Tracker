@@ -18,5 +18,4 @@ class TwitterFeedViewModel @Inject constructor(
     ) {
         repository.twitterPagingSource
     }.liveData.cachedIn(viewModelScope)
-
 }

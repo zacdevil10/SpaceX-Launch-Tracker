@@ -37,7 +37,6 @@ class RocketsAdapter(val setSelected: (String) -> Unit) :
             }
 
             vehicleDetails.text = rocket.description
-
         }
     }
 
@@ -55,6 +54,5 @@ class RocketsAdapter(val setSelected: (String) -> Unit) :
         override fun areItemsTheSame(oldItem: Rocket, newItem: Rocket) = oldItem == newItem
 
         override fun areContentsTheSame(oldItem: Rocket, newItem: Rocket) = oldItem.id == newItem.id
-
     }
 }

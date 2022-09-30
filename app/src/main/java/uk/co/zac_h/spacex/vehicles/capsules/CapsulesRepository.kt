@@ -32,5 +32,4 @@ class CapsulesRepository @Inject constructor(
             Order.DESCENDING -> false
         }
     )
-
 }

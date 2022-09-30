@@ -51,5 +51,4 @@ class CoreViewModel @Inject constructor(
             }
         }
     }
-
 }

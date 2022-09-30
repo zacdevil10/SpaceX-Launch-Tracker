@@ -51,7 +51,5 @@ class ShipsAdapter : ListAdapter<Ship, ShipsAdapter.ViewHolder>(ShipComparator) 
         override fun areItemsTheSame(oldItem: Ship, newItem: Ship) = oldItem == newItem
 
         override fun areContentsTheSame(oldItem: Ship, newItem: Ship) = oldItem.id == newItem.id
-
     }
-
 }

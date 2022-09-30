@@ -45,5 +45,4 @@ class RocketViewModel @Inject constructor(
     fun setOrder(order: Order?) {
         this.order = order ?: Order.ASCENDING
     }
-
 }

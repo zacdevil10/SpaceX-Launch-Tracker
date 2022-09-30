@@ -57,5 +57,4 @@ class DashboardEditDialog : BottomSheetDialogFragment() {
     private fun update(id: String, isChecked: Boolean) {
         if (isChecked) viewModel.showDashboardSection(id) else viewModel.hideDashboardSection(id)
     }
-
 }

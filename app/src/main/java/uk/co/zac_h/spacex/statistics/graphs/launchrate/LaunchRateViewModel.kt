@@ -63,5 +63,4 @@ class LaunchRateViewModel @Inject constructor(
             }
         }
     }
-
 }

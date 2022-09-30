@@ -15,5 +15,4 @@ class StatisticsRepository @Inject constructor(
 
     val cacheLocation: RequestLocation
         get() = location
-
 }

@@ -18,12 +18,12 @@ class BottomSheetOpenable<T : View>(private val behavior: BottomSheetBehavior<T>
     override fun close() {
         behavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
-
 }
 
 class BottomSheetBackPressed<T : View>(
     private val behavior: BottomSheetBehavior<T>
 ) : OnBackPressedCallback(false) {
+
     override fun handleOnBackPressed() {
         behavior.state = BottomSheetBehavior.STATE_HIDDEN
     }

@@ -76,5 +76,4 @@ class LaunchesFilterBuilder : MediatorLiveData<LaunchesFilter>() {
         filters.filterIsInstance<FilterOrder>().firstOrNull() ?: FilterOrder(),
         filters.filterIsInstance<RocketTypeFilter>().firstOrNull() ?: RocketTypeFilter()
     )
-
 }

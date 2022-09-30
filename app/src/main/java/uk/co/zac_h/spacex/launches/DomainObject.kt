@@ -288,5 +288,4 @@ data class PayloadDragon(
         waterLanding = response.waterLanding,
         landLanding = response.landLanding
     )
-
 }

@@ -180,5 +180,4 @@ class DragonDetailsFragment : BaseFragment() {
             }
         }
     }
-
 }

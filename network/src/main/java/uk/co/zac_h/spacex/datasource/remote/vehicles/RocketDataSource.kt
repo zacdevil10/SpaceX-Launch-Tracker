@@ -14,5 +14,4 @@ class RocketDataSource @Inject constructor(
     private suspend fun getRockets() = httpService.getRockets()
 
     override suspend fun fetchAsync(query: QueryModel) = getRockets()
-
 }

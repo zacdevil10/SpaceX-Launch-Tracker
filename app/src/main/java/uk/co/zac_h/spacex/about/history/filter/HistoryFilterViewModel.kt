@@ -23,5 +23,4 @@ class HistoryFilterViewModel @Inject constructor(
     fun reset() {
         _order.value = Order.DESCENDING
     }
-
 }

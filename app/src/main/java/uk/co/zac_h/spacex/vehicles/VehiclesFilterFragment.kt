@@ -50,5 +50,4 @@ class VehiclesFilterFragment : BottomDrawerFragment() {
             viewModel.reset()
         }
     }
-
 }

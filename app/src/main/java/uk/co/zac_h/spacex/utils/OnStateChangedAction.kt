@@ -12,7 +12,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 interface OnStateChangedAction {
 
     fun onStateChanged(sheet: View, newState: Int)
-
 }
 
 class ChangeSettingsMenuStateAction(
@@ -32,7 +31,6 @@ class ChangeSettingsMenuStateAction(
             }
         }
     }
-
 }
 
 class ShowHideFabStateAction(
@@ -49,7 +47,6 @@ class ShowHideFabStateAction(
             } ?: fab.show()
         }
     }
-
 }
 
 class VisibilityStateAction(
@@ -62,7 +59,6 @@ class VisibilityStateAction(
             else -> view.visibility = View.VISIBLE
         }
     }
-
 }
 
 class BackPressedStateAction<T : View>(private val callback: BottomSheetBackPressed<T>) : OnStateChangedAction {
@@ -70,7 +66,6 @@ class BackPressedStateAction<T : View>(private val callback: BottomSheetBackPres
     override fun onStateChanged(sheet: View, newState: Int) {
         callback.isEnabled = newState != BottomSheetBehavior.STATE_HIDDEN
     }
-
 }
 
 class HideBottomSheet(
@@ -80,7 +75,6 @@ class HideBottomSheet(
     override fun onStateChanged(sheet: View, newState: Int) {
         openable.close()
     }
-
 }
 
 class HideKeyboard(
@@ -94,5 +88,4 @@ class HideKeyboard(
             ime.hideSoftInputFromWindow(view, 0)
         }
     }
-
 }

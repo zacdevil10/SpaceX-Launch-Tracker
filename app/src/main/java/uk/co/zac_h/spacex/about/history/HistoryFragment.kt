@@ -47,16 +47,18 @@ class HistoryFragment : BaseFragment() {
 
         historyAdapter = HistoryAdapter(::openWebLink)
 
-        val isTabletLand = resources.getBoolean(R.bool.isTabletLand)
+        val isTabletLandscape = resources.getBoolean(R.bool.isTabletLand)
 
         binding.historyRecycler.apply {
-            layoutManager = if (isTabletLand) LinearLayoutManager(
+            layoutManager = if (isTabletLandscape) LinearLayoutManager(
                 this@HistoryFragment.context,
                 LinearLayoutManager.HORIZONTAL,
                 false
             ) else LinearLayoutManager(this@HistoryFragment.context)
             adapter = historyAdapter
-            addItemDecoration(HeaderItemDecoration(this, historyAdapter.isHeader(), isTabletLand))
+            addItemDecoration(
+                HeaderItemDecoration(this, historyAdapter.isHeader(), isTabletLandscape)
+            )
         }
 
         binding.swipeRefresh.setOnRefreshListener {

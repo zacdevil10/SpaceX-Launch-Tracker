@@ -40,5 +40,4 @@ class LaunchesViewModel @Inject constructor(
             }
         }
     }
-
 }

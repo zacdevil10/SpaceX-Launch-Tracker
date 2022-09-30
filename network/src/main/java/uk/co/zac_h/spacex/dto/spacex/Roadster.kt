@@ -97,5 +97,4 @@ data class Roadster(
     companion object {
         private fun Double?.format() = DecimalFormat("#,###.00").format(this)
     }
-
 }

@@ -14,5 +14,4 @@ class DragonDataSource @Inject constructor(
     private suspend fun getDragons() = httpService.getDragons()
 
     override suspend fun fetchAsync(query: QueryModel) = getDragons()
-
 }

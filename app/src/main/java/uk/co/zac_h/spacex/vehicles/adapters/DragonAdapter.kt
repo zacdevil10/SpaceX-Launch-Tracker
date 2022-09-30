@@ -54,6 +54,5 @@ class DragonAdapter(val setSelected: (String) -> Unit) :
         override fun areItemsTheSame(oldItem: Dragon, newItem: Dragon) = oldItem == newItem
 
         override fun areContentsTheSame(oldItem: Dragon, newItem: Dragon) = oldItem.id == newItem.id
-
     }
 }

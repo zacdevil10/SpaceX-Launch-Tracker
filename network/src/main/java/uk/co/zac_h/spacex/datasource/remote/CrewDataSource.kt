@@ -12,5 +12,4 @@ class CrewDataSource @Inject constructor(
 ) : RemoteDataSource<NetworkDocsResponse<CrewQueriedResponse>> {
 
     override suspend fun fetchAsync(query: QueryModel) = httpService.queryCrewMembers(query)
-
 }

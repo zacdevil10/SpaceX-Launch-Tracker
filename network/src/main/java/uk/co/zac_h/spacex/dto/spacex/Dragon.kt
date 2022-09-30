@@ -112,5 +112,4 @@ data class Dragon(
         description = response.description,
         id = response.id
     )
-
 }

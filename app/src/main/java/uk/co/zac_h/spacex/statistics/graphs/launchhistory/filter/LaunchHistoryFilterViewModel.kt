@@ -17,5 +17,4 @@ class LaunchHistoryFilterViewModel : ViewModel() {
     fun clear() {
         _filter.value = null
     }
-
 }
