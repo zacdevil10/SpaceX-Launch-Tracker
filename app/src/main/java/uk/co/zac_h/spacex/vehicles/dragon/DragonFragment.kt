@@ -95,5 +95,4 @@ class DragonFragment : BaseFragment() {
     override fun networkAvailable() {
         viewModel.getDragons()
     }
-
 }

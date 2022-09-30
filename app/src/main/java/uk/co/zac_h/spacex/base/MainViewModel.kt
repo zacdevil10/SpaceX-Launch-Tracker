@@ -15,5 +15,4 @@ class MainViewModel : ViewModel() {
         R.id.vehicles_page_fragment,
         R.id.statistics_page_fragment
     )
-
 }

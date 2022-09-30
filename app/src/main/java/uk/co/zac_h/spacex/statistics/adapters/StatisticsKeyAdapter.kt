@@ -42,5 +42,4 @@ class StatisticsKeyAdapter(
             oldItem.label == newItem.label && oldItem.value == newItem.value
 
     }
-
 }

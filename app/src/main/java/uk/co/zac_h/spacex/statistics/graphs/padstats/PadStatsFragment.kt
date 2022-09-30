@@ -72,7 +72,7 @@ class PadStatsFragment : BaseFragment() {
 
         viewModel.stats.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is ApiResult.Pending -> showProgress()
+                is ApiResult.Pending -> {}
                 is ApiResult.Success -> response.data?.let {
                     update(it)
                 }
@@ -82,19 +82,10 @@ class PadStatsFragment : BaseFragment() {
     }
 
     fun update(response: List<StatsPadModel>) {
-        hideProgress()
         binding.padStatsLaunchSitesRecycler.layoutAnimation =
             animateLayoutFromBottom(requireContext())
         padsAdapter.submitList(response)
         binding.padStatsLaunchSitesRecycler.scheduleLayoutAnimation()
-    }
-
-    fun showProgress() {
-
-    }
-
-    fun hideProgress() {
-
     }
 
     fun showError(error: String?) {

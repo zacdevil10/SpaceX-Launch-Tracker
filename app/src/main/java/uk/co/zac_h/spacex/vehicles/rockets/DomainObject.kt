@@ -65,7 +65,6 @@ data class Rocket(
             else -> null
         }
     }
-
 }
 
 data class PayloadWeights(
@@ -81,5 +80,4 @@ data class PayloadWeights(
         name = response.name,
         mass = MassFormatted.formatMass(response.kg, response.lb)
     )
-
 }

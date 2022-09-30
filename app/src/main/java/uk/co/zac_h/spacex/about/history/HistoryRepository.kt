@@ -30,5 +30,4 @@ class HistoryRepository @Inject constructor(
             Order.DESCENDING -> false
         }
     )
-
 }

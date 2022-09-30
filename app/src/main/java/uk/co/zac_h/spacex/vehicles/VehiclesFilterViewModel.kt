@@ -30,7 +30,6 @@ class VehiclesFilterViewModel : ViewModel() {
         _order.value?.put(vehiclesPage, Order.ASCENDING)
         _order.value = _order.value
     }
-
 }
 
 enum class VehiclesPage(val page: Int) {

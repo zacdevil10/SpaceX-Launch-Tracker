@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.FragmentHistoryFilterBinding
 import uk.co.zac_h.spacex.types.Order
@@ -51,5 +50,4 @@ class HistoryFilterFragment : BottomDrawerFragment() {
             viewModel.reset()
         }
     }
-
 }

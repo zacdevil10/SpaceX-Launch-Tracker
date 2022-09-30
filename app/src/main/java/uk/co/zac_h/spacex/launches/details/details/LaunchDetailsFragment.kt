@@ -127,5 +127,5 @@ class LaunchDetailsFragment : BaseFragment() {
             Toast.makeText(context, "No supported calendar apps found.", Toast.LENGTH_SHORT).show()
         }
     }
-
 }
+

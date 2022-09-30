@@ -72,6 +72,4 @@ class PadStatsViewModel @Inject constructor(
             }
         }
     }
-
-
 }

@@ -19,5 +19,4 @@ object CrewQuery {
             ), "", "", 100000
         )
     )
-
 }

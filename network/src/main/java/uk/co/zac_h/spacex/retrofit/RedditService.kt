@@ -16,5 +16,4 @@ interface RedditService {
         @Query(REDDIT_PARAM_LIMIT) limit: Int,
         @Query(REDDIT_QUERY_AFTER) id: String? = null
     ): Response<SubredditModel>
-
 }

@@ -15,5 +15,4 @@ class ShipsRepository @Inject constructor(
 
     val cacheLocation: RequestLocation
         get() = location
-
 }

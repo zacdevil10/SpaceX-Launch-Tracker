@@ -33,5 +33,4 @@ class CrewViewModel @Inject constructor(
             _crew.value = response.await().map { result -> result.docs.map { Crew(it) } }
         }
     }
-
 }

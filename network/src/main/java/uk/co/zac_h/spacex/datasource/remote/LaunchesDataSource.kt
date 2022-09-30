@@ -14,5 +14,4 @@ class LaunchesDataSource @Inject constructor(
     private suspend fun getLaunches(query: QueryModel) = httpService.queryLaunches(query)
 
     override suspend fun fetchAsync(query: QueryModel) = getLaunches(query)
-
 }

@@ -59,7 +59,6 @@ abstract class DataSourceModule {
     @Binds
     @CrewDataSourceClient
     abstract fun bindCrewDataSource(crewDataSource: CrewDataSource): RemoteDataSource<NetworkDocsResponse<CrewQueriedResponse>>
-
 }
 
 @Qualifier

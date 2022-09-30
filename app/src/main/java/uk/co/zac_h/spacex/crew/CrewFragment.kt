@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.doOnPreDraw
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.transition.MaterialElevationScale
@@ -65,10 +66,9 @@ class CrewFragment : BaseFragment() {
 
         viewModel.crew.observe(viewLifecycleOwner) { result ->
             when (result) {
-                is ApiResult.Pending -> showProgress()
+                is ApiResult.Pending -> {}
                 is ApiResult.Success -> {
                     binding.swipeRefresh.isRefreshing = false
-                    hideProgress()
                     update(result.data)
                 }
                 is ApiResult.Failure -> {
@@ -87,19 +87,11 @@ class CrewFragment : BaseFragment() {
         }
     }
 
-    private fun showProgress() {
-
-    }
-
-    private fun hideProgress() {
-
-    }
-
     private fun showError(error: String?) {
-
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-
+        viewModel.get()
     }
 }

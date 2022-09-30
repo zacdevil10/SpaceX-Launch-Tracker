@@ -11,5 +11,4 @@ class TwitterFeedRepository @Inject constructor(
 
     val twitterPagingSource: TwitterPagingSource
         get() = TwitterPagingSource(httpService)
-
 }

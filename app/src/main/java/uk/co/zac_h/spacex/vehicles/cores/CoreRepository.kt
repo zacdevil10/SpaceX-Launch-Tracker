@@ -32,5 +32,4 @@ class CoreRepository @Inject constructor(
             Order.DESCENDING -> false
         }
     )
-
 }

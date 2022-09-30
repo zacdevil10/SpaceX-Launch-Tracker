@@ -90,7 +90,7 @@ class CrewItemFragment : BaseFragment() {
         person.launches?.let { launches ->
             binding.missionsRecycler.apply {
                 layoutManager = LinearLayoutManager(context)
-                adapter = CrewMissionsAdapter(context).also { it.submitList(launches) }
+                adapter = CrewMissionsAdapter().also { it.submitList(launches) }
             }
             if (launches.isEmpty()) binding.crewMissionLabel.visibility = View.GONE
         }

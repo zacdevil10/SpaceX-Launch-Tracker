@@ -51,5 +51,4 @@ class CapsulesViewModel @Inject constructor(
             }
         }
     }
-
 }

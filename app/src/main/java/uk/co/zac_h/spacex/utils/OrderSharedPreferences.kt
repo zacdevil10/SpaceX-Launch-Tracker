@@ -22,6 +22,5 @@ class OrderSharedPreferences @Inject constructor(
 
         fun build(context: Context): OrderSharedPreferences =
             OrderSharedPreferences(context)
-
     }
 }

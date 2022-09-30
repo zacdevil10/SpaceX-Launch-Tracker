@@ -80,3 +80,4 @@ class RedditFeedFragment : BaseFragment() {
         redditAdapter.retry()
     }
 }
+

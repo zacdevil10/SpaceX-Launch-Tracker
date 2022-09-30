@@ -105,7 +105,7 @@ class FairingRecoveryFragment : BaseFragment() {
 
         viewModel.fairingRecovery.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is ApiResult.Pending -> showProgress()
+                is ApiResult.Pending -> {}
                 is ApiResult.Success -> response.data?.let {
                     update(viewModel.cacheLocation != Repository.RequestLocation.CACHE, it)
                 }
@@ -115,7 +115,6 @@ class FairingRecoveryFragment : BaseFragment() {
     }
 
     fun update(data: Boolean, response: List<FairingRecoveryModel>) {
-        hideProgress()
         statsList = response
 
         var max = 0f
@@ -149,14 +148,6 @@ class FairingRecoveryFragment : BaseFragment() {
             this.data = BarData(listOf(set))
             invalidate()
         }
-    }
-
-    fun showProgress() {
-
-    }
-
-    fun hideProgress() {
-
     }
 
     fun showError(error: String?) {

@@ -48,5 +48,4 @@ class ShipsViewModel @Inject constructor(
     fun setOrder(order: Order?) {
         this.order = order ?: Order.ASCENDING
     }
-
 }

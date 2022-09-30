@@ -107,5 +107,4 @@ class LaunchMassViewModel @Inject constructor(
     fun setTypeFilter(value: LaunchMassViewType?) {
         filterType = value
     }
-
 }

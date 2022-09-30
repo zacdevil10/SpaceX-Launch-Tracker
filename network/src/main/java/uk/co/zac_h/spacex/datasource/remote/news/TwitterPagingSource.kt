@@ -29,5 +29,4 @@ class TwitterPagingSource(
         }
 
     override fun getRefreshKey(state: PagingState<Long, TimelineTweetModel>): Long? = null
-
 }

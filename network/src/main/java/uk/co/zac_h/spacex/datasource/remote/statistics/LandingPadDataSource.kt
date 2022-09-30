@@ -15,5 +15,4 @@ class LandingPadDataSource @Inject constructor(
     private suspend fun getLandingPads(body: QueryModel) = httpService.queryLandingPads(body)
 
     override suspend fun fetchAsync(query: QueryModel) = getLandingPads(query)
-
 }

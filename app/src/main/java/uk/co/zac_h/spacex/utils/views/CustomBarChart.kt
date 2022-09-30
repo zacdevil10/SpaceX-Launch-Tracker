@@ -47,5 +47,4 @@ class CustomBarChart : BarChart {
             textColor = ContextCompat.getColor(context, R.color.color_on_background)
         }
     }
-
 }

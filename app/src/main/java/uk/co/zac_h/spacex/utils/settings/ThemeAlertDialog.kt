@@ -60,6 +60,4 @@ class ThemeAlertDialog : BottomSheetDialogFragment() {
 
     private fun getVersionList(): Array<String> =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) itemsQ else itemsP
-
-
 }

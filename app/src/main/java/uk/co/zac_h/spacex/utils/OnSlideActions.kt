@@ -14,7 +14,6 @@ interface OnSlideActions {
             toInclusive = true
         ) slideOffset: Float
     )
-
 }
 
 class AlphaSlideAction(
@@ -24,5 +23,4 @@ class AlphaSlideAction(
     override fun onSlide(sheet: View, slideOffset: Float) {
         view.alpha = slideOffset.normalize(-1F, 0F, 0F, 1F)
     }
-
 }

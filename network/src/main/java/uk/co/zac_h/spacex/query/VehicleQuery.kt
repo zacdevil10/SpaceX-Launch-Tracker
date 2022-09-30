@@ -55,5 +55,4 @@ object VehicleQuery {
             limit = 200
         )
     )
-
 }

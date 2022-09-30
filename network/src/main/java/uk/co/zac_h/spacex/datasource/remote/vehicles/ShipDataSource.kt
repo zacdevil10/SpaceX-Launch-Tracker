@@ -15,5 +15,4 @@ class ShipDataSource @Inject constructor(
     private suspend fun getShips(query: QueryModel) = httpService.queryShips(query)
 
     override suspend fun fetchAsync(query: QueryModel) = getShips(query)
-
 }

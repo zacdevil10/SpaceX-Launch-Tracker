@@ -17,5 +17,4 @@ interface TwitterService {
         @Query(TWITTER_QUERY_COUNT) count: Int,
         @Query(TWITTER_QUERY_MAX_ID) maxId: Long? = null
     ): Response<List<TimelineTweetModel>>
-
 }

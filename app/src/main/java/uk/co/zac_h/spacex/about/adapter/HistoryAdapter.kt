@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemHistoryEventBinding
 import uk.co.zac_h.spacex.databinding.ListItemHistoryHeadingBinding
 import uk.co.zac_h.spacex.utils.formatDateMillisDDMMM
@@ -17,20 +18,21 @@ class HistoryAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
-            0 -> HeaderViewHolder(
+            R.layout.list_item_history_heading -> HeaderViewHolder(
                 ListItemHistoryHeadingBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
-            else -> ViewHolder(
+            R.layout.list_item_history_event -> ViewHolder(
                 ListItemHistoryEventBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
                 )
             )
+            else -> throw IllegalArgumentException("Invalid layout type for history adapter")
         }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -41,11 +43,8 @@ class HistoryAdapter(
                 lineBottom.visibility =
                     if (position == itemCount.minus(1)) View.INVISIBLE else View.VISIBLE
 
-                date.text =
-                    event.historyModel?.event?.dateUnix?.formatDateMillisDDMMM()
-
+                date.text = event.historyModel?.event?.dateUnix?.formatDateMillisDDMMM()
                 title.text = event.historyModel?.title
-
                 details.text = event.historyModel?.details
 
                 article.apply {
@@ -71,7 +70,11 @@ class HistoryAdapter(
 
     fun isHeader(): (itemPosition: Int) -> Boolean = { getItem(it).isHeader }
 
-    override fun getItemViewType(position: Int): Int = if (getItem(position).isHeader) 0 else 1
+    override fun getItemViewType(position: Int): Int = if (getItem(position).isHeader) {
+        R.layout.list_item_history_heading
+    } else {
+        R.layout.list_item_history_event
+    }
 
     inner class ViewHolder(val binding: ListItemHistoryEventBinding) :
         RecyclerView.ViewHolder(binding.root)

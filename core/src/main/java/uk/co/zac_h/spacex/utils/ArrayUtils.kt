@@ -14,10 +14,8 @@ fun <T> Iterable<T>.reverse(value: Boolean): List<T> {
     return list
 }
 
-fun <T> Iterable<T>.filterAll(vararg predicates: ((T) -> Boolean?)?): List<T> {
-    return filter { value ->
-        predicates.filterNotNull().all { it(value) ?: true }
-    }
+fun <T> Iterable<T>.filterAll(vararg predicates: ((T) -> Boolean?)?): List<T> = filter { value ->
+    predicates.filterNotNull().all { it(value) ?: true }
 }
 
 inline fun <T, R : Comparable<R>> Iterable<T>.sortedBy(

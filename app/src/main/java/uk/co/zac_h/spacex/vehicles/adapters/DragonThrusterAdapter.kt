@@ -57,5 +57,4 @@ class DragonThrusterAdapter(private val context: Context) :
             newItem: DragonThrusterConfiguration
         ) = oldItem.type == newItem.type
     }
-
 }

@@ -281,5 +281,4 @@ class LaunchesFilterFragment : Fragment() {
     private fun showError(error: String?) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
-
 }

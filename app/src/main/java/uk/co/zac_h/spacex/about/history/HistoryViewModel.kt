@@ -53,5 +53,4 @@ class HistoryViewModel @Inject constructor(
             }
         }
     }
-
 }

@@ -144,7 +144,7 @@ class LaunchMassFragment : BaseFragment() {
 
         viewModel.launchMass.observe(viewLifecycleOwner) { response ->
             when (response) {
-                is ApiResult.Pending -> showProgress()
+                is ApiResult.Pending -> {}
                 is ApiResult.Success -> response.data?.let {
                     update(viewModel.cacheLocation != Repository.RequestLocation.CACHE, it)
                 }
@@ -160,7 +160,6 @@ class LaunchMassFragment : BaseFragment() {
     }
 
     fun update(data: Any, response: List<LaunchMassStatsModel>) {
-        hideProgress()
         statsList = response
 
         binding.statisticsBarChart.key.visibility = View.GONE
@@ -353,14 +352,6 @@ class LaunchMassFragment : BaseFragment() {
         orbitMassModel.ED_L1,
         orbitMassModel.other
     )
-
-    fun showProgress() {
-
-    }
-
-    fun hideProgress() {
-
-    }
 
     fun showError(error: String?) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()

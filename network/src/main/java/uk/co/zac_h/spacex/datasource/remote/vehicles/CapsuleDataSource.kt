@@ -15,5 +15,4 @@ class CapsuleDataSource @Inject constructor(
     private suspend fun getCores(query: QueryModel) = httpService.queryCapsules(query)
 
     override suspend fun fetchAsync(query: QueryModel) = getCores(query)
-
 }

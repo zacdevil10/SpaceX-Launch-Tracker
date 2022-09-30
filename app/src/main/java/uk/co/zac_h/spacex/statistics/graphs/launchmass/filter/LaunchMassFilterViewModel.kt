@@ -27,5 +27,4 @@ class LaunchMassFilterViewModel : ViewModel() {
         setRocketFilter(null)
         setTypeFilter(LaunchMassViewType.ROCKETS)
     }
-
 }

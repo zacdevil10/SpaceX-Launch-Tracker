@@ -61,5 +61,4 @@ class LandingHistoryViewModel @Inject constructor(
             }
         }
     }
-
 }

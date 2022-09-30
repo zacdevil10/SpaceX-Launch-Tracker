@@ -62,5 +62,4 @@ abstract class BottomDrawerFragment : Fragment(), Openable {
     fun addOnStateChangedAction(action: OnStateChangedAction) {
         bottomSheetCallback.addOnStateChangedAction(action)
     }
-
 }

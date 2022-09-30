@@ -15,5 +15,4 @@ class CrewRepository @Inject constructor(
 
     val cacheLocation: RequestLocation
         get() = location
-
 }

@@ -14,5 +14,4 @@ class CompanyDataSource @Inject constructor(
     private suspend fun getCompany() = httpService.getCompanyInfo()
 
     override suspend fun fetchAsync(query: QueryModel) = getCompany()
-
 }

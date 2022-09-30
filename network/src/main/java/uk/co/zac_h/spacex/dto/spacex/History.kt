@@ -34,5 +34,4 @@ data class History(
         details = response.details,
         id = response.id
     )
-
 }

@@ -15,5 +15,4 @@ class HistoryDataSource @Inject constructor(
     private suspend fun getHistory(body: QueryModel) = httpService.queryHistory(body)
 
     override suspend fun fetchAsync(query: QueryModel) = getHistory(query)
-
 }

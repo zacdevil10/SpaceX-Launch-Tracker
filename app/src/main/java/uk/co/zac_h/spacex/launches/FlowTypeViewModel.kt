@@ -9,5 +9,4 @@ import javax.inject.Inject
 class FlowTypeViewModel @Inject constructor() : ViewModel() {
 
     lateinit var type: LaunchType
-
 }

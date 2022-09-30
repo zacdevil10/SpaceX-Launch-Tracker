@@ -10,5 +10,4 @@ class FirebaseMessagingService : FirebaseMessagingService() {
             "next" -> NextLaunchNotification.notify(this, remoteMessage.data["message"], 1)
         }
     }
-
 }

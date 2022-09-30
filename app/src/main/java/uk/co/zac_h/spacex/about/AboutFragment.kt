@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import uk.co.zac_h.spacex.BuildConfig
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentAboutBinding
 
-class AboutFragment : BaseFragment() {
+class AboutFragment : Fragment() {
 
     private lateinit var binding: FragmentAboutBinding
 

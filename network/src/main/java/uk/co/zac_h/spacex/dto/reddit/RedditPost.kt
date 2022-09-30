@@ -79,5 +79,4 @@ data class RedditPost(
         redditDomain = data.redditDomain,
         permalink = data.permalink
     )
-
 }
