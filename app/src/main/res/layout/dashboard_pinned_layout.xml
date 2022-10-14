@@ -56,7 +56,7 @@
             android:layout_marginBottom="@dimen/medium_margin"
             android:text="@string/no_pinned_launches_found_label"
             android:textAppearance="?textAppearanceOverline"
-            android:visibility="gone"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

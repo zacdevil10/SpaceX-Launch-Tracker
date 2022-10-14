@@ -123,7 +123,7 @@ class DashboardFragment : BaseFragment() {
                     pinnedAdapter.submitList(response.data)
                     binding.pinned.progress.hide()
                     binding.pinned.pinnedMessage.visibility =
-                        if (response.data.isNullOrEmpty()) View.VISIBLE else View.GONE
+                        if (response.data.isNullOrEmpty()) View.VISIBLE else View.INVISIBLE
                 }
                 is ApiResult.Failure -> showError(response.exception.message)
             }
