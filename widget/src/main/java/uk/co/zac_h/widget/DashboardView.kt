@@ -50,9 +50,11 @@ class DashboardView @JvmOverloads constructor(
             }
             DashboardViewType.LATEST -> {
                 binding.heading.setText(R.string.latest_launch_heading)
+                binding.countdownContainer.isVisible = false
             }
             DashboardViewType.PINNED -> {
                 binding.heading.setText(R.string.pinned_launches_heading)
+                binding.countdownContainer.isVisible = false
             }
         }
     }
