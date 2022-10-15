@@ -38,6 +38,8 @@ class LaunchDetailsCrewFragment : BaseFragment() {
             setHasFixedSize(true)
             adapter = crewAdapter
         }
+
+        viewModel.launch?.crew?.let { update(it) }
     }
 
     fun update(response: List<Crew>) {

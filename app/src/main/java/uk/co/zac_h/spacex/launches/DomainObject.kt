@@ -61,7 +61,7 @@ data class Launch(
         upcoming = null,
         details = response.mission?.description,
         fairings = null,
-        crew = null,
+        crew = response.rocket?.spacecraftStage?.launchCrew?.mapNotNull { it?.let { Crew(it) } },
         shipIds = null,
         capsules = null,
         payloadIds = null,

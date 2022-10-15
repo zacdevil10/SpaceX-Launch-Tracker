@@ -54,7 +54,8 @@ data class LaunchResponse(
     data class Rocket(
         @field:Json(name = "id") val id: Int,
         @field:Json(name = "configuration") val configuration: Configuration?,
-        @field:Json(name = "launcher_stage") val launcherStage: List<LauncherStage?>?
+        @field:Json(name = "launcher_stage") val launcherStage: List<LauncherStage?>?,
+        @field:Json(name = "spacecraft_stage") val spacecraftStage: SpacecraftStage?
     ) {
 
         data class Configuration(
@@ -89,6 +90,46 @@ data class LaunchResponse(
                     @field:Json(name = "description") val description: String?,
                     @field:Json(name = "successful_landings") val successfulLandings: Int?,
                 )
+            }
+        }
+
+        data class SpacecraftStage(
+            @field:Json(name = "id") val id: Int,
+            @field:Json(name = "destination") val destination: String?,
+            @field:Json(name = "launch_crew") val launchCrew: List<LaunchCrew?>?
+        ) {
+
+            data class LaunchCrew(
+                @field:Json(name = "id") val id: Int,
+                @field:Json(name = "role") val role: Role?,
+                @field:Json(name = "astronaut") val astronaut: Astronaut?,
+            ) {
+
+                data class Role(
+                    @field:Json(name = "id") val id: Int,
+                    @field:Json(name = "role") val role: String?,
+                    @field:Json(name = "priority") val priority: Int?
+                )
+
+                data class Astronaut(
+                    @field:Json(name = "id") val id: Int,
+                    @field:Json(name = "name") val name: String?,
+                    @field:Json(name = "status") val status: Status?,
+                    @field:Json(name = "agency") val agency: Agency?,
+                    @field:Json(name = "bio") val bio: String?,
+                    @field:Json(name = "profile_image") val profileImage: String?,
+                ) {
+
+                    data class Status(
+                        @field:Json(name = "id") val id: Int,
+                        @field:Json(name = "name") val name: String?,
+                    )
+
+                    data class Agency(
+                        @field:Json(name = "id") val id: Int,
+                        @field:Json(name = "name") val name: String?
+                    )
+                }
             }
         }
     }

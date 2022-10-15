@@ -28,9 +28,9 @@ class CrewAdapter : ListAdapter<Crew, CrewAdapter.ViewHolder>(CrewComparator) {
 
             title.text = person.name
 
-            gridItemCrewConstraint.setOnClickListener {
+            /*gridItemCrewConstraint.setOnClickListener {
                 holder.bind(person)
-            }
+            }*/
         }
     }
 
