@@ -13,7 +13,7 @@ class LaunchesPreviousPagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, LaunchResponse> = try {
         val response = httpService.getPreviousLaunches(
             limit = params.loadSize,
-            offset = params.key ?: 1
+            offset = params.key ?: 0
         )
 
         val nextOffset: Int? = response.body()?.next?.let {
