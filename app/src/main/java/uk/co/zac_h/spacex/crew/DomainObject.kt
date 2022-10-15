@@ -20,6 +20,18 @@ data class Crew(
 ) {
 
     constructor(
+        response: LaunchResponse.Rocket.SpacecraftStage.LaunchCrew
+    ) : this(
+        name = response.astronaut?.name,
+        status = response.astronaut?.status?.name?.toCrewStatus(),
+        agency = response.astronaut?.agency?.name,
+        image = response.astronaut?.profileImage,
+        wikipedia = null,
+        role = response.role?.role,
+        id = response.id.toString()
+    )
+
+    constructor(
         response: CrewResponse
     ) : this(
         name = response.name,

@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipe_refresh"
+    android:id="@+id/launch_details_crew_recycler"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_background"
-    tools:context=".launches.details.crew.LaunchDetailsCrewFragment">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/launch_details_crew_recycler"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingStart="@dimen/medium_margin"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="6"
-        tools:ignore="RtlSymmetry"
-        tools:listitem="@layout/grid_item_crew" />
-
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    android:clipToPadding="false"
+    android:paddingStart="@dimen/medium_margin"
+    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+    app:spanCount="6"
+    tools:context=".launches.details.crew.LaunchDetailsCrewFragment"
+    tools:ignore="RtlSymmetry"
+    tools:listitem="@layout/grid_item_crew" />
