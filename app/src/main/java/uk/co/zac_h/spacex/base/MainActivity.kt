@@ -246,8 +246,8 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             fab.setImageResource(R.drawable.ic_search_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.show()
-            viewModel.isFabVisible = true
+            fab.hide()
+            viewModel.isFabVisible = false
         }
     }
 
