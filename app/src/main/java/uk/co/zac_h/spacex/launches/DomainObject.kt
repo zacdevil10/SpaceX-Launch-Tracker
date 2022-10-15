@@ -181,13 +181,14 @@ data class LaunchCore(
         response: LaunchResponse.Rocket.LauncherStage
     ) : this(
         id = response.id.toString(),
+        core = response.launcher?.let { Core(it) },
         flight = response.launcherFlightNumber,
         gridfins = null,
         legs = null,
         reused = response.reused,
-        landingAttempt = null,
-        landingSuccess = null,
-        landingType = null,
+        landingAttempt = response.landing?.attempt,
+        landingSuccess = response.landing?.success,
+        landingType = response.landing?.type?.abbrev,
         landingPad = response.landing?.location?.let { LandingPad(it) }
     )
 

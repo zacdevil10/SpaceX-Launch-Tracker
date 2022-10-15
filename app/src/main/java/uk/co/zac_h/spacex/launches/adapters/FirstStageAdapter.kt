@@ -4,15 +4,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemFirstStageBinding
 import uk.co.zac_h.spacex.launches.LaunchCore
-import uk.co.zac_h.spacex.launches.details.LaunchDetailsContainerFragmentDirections
 import uk.co.zac_h.spacex.utils.orUnknown
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
@@ -44,7 +41,7 @@ class FirstStageAdapter :
                 }
             }
 
-            core.core?.let { core ->
+            /*core.core?.let { core ->
                 firstStageDetailsIndicator.visibility = View.VISIBLE
                 firstStageCard.setOnClickListener {
                     root.findNavController().navigate(
@@ -57,7 +54,9 @@ class FirstStageAdapter :
                 }
             } ?: run {
                 firstStageDetailsIndicator.visibility = View.GONE
-            }
+            }*/
+
+            firstStageDetailsIndicator.visibility = View.GONE
         }
     }
 

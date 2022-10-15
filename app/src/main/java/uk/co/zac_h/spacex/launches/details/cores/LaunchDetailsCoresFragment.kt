@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.launches.details.cores
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +42,10 @@ class LaunchDetailsCoresFragment : BaseFragment() {
             layoutManager = LinearLayoutManager(context)
             adapter = coresAdapter
         }
+
+        Log.d("Launch Details Cores", "${viewModel.launch?.cores}")
+
+        update(viewModel.launch?.cores)
     }
 
     private fun update(response: List<LaunchCore>?) {

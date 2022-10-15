@@ -4,12 +4,13 @@ import uk.co.zac_h.spacex.*
 import uk.co.zac_h.spacex.dto.spacex.CoreQueriedResponse
 import uk.co.zac_h.spacex.dto.spacex.CoreResponse
 import uk.co.zac_h.spacex.dto.spacex.CoreStatus
+import uk.co.zac_h.spacex.dto.spacex.LaunchResponse
 import uk.co.zac_h.spacex.launches.Launch
 
 data class Core(
     val serial: String?,
     val block: String?,
-    val status: CoreStatus,
+    val status: CoreStatus?,
     val reuseCount: Int?,
     val attemptsRtls: Int?,
     val landingsRtls: Int?,
@@ -20,6 +21,21 @@ data class Core(
     val launches: List<Launch>? = null,
     val id: String
 ) {
+
+    constructor(
+        response: LaunchResponse.Rocket.LauncherStage.Launcher
+    ) : this(
+        serial = response.serialNumber,
+        block = null,
+        status = response.status?.toCoreStatus(),
+        reuseCount = response.flights,
+        attemptsRtls = null,
+        landingsRtls = null,
+        attemptsAsds = null,
+        landingsAsds = null,
+        lastUpdate = null,
+        id = response.id.toString()
+    )
 
     constructor(
         response: CoreResponse

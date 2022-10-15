@@ -9,6 +9,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import uk.co.zac_h.spacex.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 
 @Module
@@ -52,11 +53,17 @@ object NetworkModule {
     private inline fun <reified T> createClient(baseUrl: String): T = Retrofit.Builder().apply {
         baseUrl(baseUrl)
         addConverterFactory(MoshiConverterFactory.create())
+        client(okHttpClient())
         client(loggingClient())
     }.build().create(T::class.java)
 
     private fun loggingClient() = OkHttpClient.Builder()
         .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        .build()
+
+    private fun okHttpClient() = OkHttpClient.Builder()
+        .readTimeout(1, TimeUnit.MINUTES)
+        .connectTimeout(1, TimeUnit.MINUTES)
         .build()
 
 }

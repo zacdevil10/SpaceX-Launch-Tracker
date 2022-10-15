@@ -82,7 +82,7 @@ class CoreDetailsFragment : BaseFragment() {
                 coreDetailsSerialText.text = core.serial
                 coreDetailsBlockText.text = core.block ?: "TBD"
                 coreDetailsDetailsText.text = core.lastUpdate
-                coreDetailsStatusText.text = core.status.status
+                coreDetailsStatusText.text = core.status?.status
                 coreDetailsReuseText.text = core.reuseCount.toString()
                 coreDetailsRtlsAttemptsText.text = core.attemptsRtls.toString()
                 coreDetailsRtlsLandingsText.text = core.landingsRtls.toString()

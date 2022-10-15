@@ -72,8 +72,16 @@ data class LaunchResponse(
             @field:Json(name = "type") val type: String?,
             @field:Json(name = "reused") val reused: Boolean?,
             @field:Json(name = "launcher_flight_number") val launcherFlightNumber: Int?,
+            @field:Json(name = "launcher") val launcher: Launcher?,
             @field:Json(name = "landing") val landing: Landing?,
         ) {
+
+            data class Launcher(
+                @field:Json(name = "id") val id: Int,
+                @field:Json(name = "serial_number") val serialNumber: String?,
+                @field:Json(name = "status") val status: String?,
+                @field:Json(name = "flights") val flights: Int?,
+            )
 
             data class Landing(
                 @field:Json(name = "id") val id: Int,
@@ -81,6 +89,7 @@ data class LaunchResponse(
                 @field:Json(name = "success") val success: Boolean?,
                 @field:Json(name = "description") val description: String?,
                 @field:Json(name = "location") val location: Location?,
+                @field:Json(name = "type") val type: Type?,
             ) {
 
                 data class Location(
@@ -89,6 +98,13 @@ data class LaunchResponse(
                     @field:Json(name = "abbrev") val abbrev: String?,
                     @field:Json(name = "description") val description: String?,
                     @field:Json(name = "successful_landings") val successfulLandings: Int?,
+                )
+
+                data class Type(
+                    @field:Json(name = "id") val id: Int,
+                    @field:Json(name = "name") val name: String?,
+                    @field:Json(name = "abbrev") val abbrev: String?,
+                    @field:Json(name = "description") val description: String?
                 )
             }
         }
