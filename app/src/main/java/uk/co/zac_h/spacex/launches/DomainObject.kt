@@ -45,7 +45,9 @@ data class Launch(
         response: LaunchResponse
     ) : this(
         flightNumber = response.agencyLaunchAttemptCount,
-        missionName = response.name?.split(" | ")?.filter { !it.contains("Falcon 9 Block") }
+        missionName = response.name?.split(" | ")
+            ?.filter { !it.contains("Falcon 9 Block") }
+            ?.filter { !it.contains("Falcon Heavy") }
             ?.joinToString(" | "),
         launchDate = EventDate(
             dateUtc = response.net
