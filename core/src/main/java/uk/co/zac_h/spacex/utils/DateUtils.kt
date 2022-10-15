@@ -24,6 +24,13 @@ fun String.formatDate(): String {
     }.format(date)
 }
 
+fun String.toMillis(): Long? = SimpleDateFormat(
+    "yyyy-MM-dd'T'HH:mm:ss",
+    Locale.ENGLISH
+).apply {
+    timeZone = TimeZone.getTimeZone("UTC")
+}.parse(this)?.time
+
 fun Long.formatDateMillisLong(
     precision: DatePrecision? = null
 ): String =

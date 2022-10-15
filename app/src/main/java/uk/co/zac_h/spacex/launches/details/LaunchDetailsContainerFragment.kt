@@ -22,7 +22,6 @@ import uk.co.zac_h.spacex.launches.details.crew.LaunchDetailsCrewFragment
 import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsFragment
 import uk.co.zac_h.spacex.launches.details.payloads.LaunchDetailsPayloadsFragment
 import uk.co.zac_h.spacex.launches.details.ships.LaunchDetailsShipsFragment
-import uk.co.zac_h.spacex.types.DatePrecision
 import uk.co.zac_h.spacex.utils.*
 
 class LaunchDetailsContainerFragment : BaseFragment() {
@@ -111,17 +110,11 @@ class LaunchDetailsContainerFragment : BaseFragment() {
             binding.launchDetailsBottomNavigation.inflateMenu(R.menu.launch_details_bottom_nav_menu)
         }
 
-        val acceptedPrecision = listOf(
-            DatePrecision.DAY,
-            DatePrecision.HOUR
-        )
-
-        if (launch.datePrecision in acceptedPrecision) {
-            val time = launch.launchDate?.dateUnix?.times(1000)?.minus(System.currentTimeMillis()) ?: 0
-            if (launch.tbd == false && time >= 0) {
-                setCountdown(launch, time)
-                binding.launchDetailsCountdown.visibility = View.VISIBLE
-            }
+        val dateUnix = launch.launchDate?.dateUtc?.toMillis()
+        val time = dateUnix?.minus(System.currentTimeMillis()) ?: 0
+        if (time >= 0) {
+            setCountdown(launch, time)
+            binding.launchDetailsCountdown.visibility = View.VISIBLE
         }
 
         if (selectedItem == null) {
