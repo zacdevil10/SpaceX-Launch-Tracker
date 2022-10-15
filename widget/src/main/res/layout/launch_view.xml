@@ -5,24 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/flight_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?textAppearanceCaption"
-        app:layout_constraintStart_toEndOf="@id/mission_patch"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Flight 73" />
-
-    <TextView
-        android:id="@+id/vehicle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?textAppearanceCaption"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/flight_number"
-        tools:text="Falcon 9" />
-
     <ImageView
         android:id="@+id/mission_patch"
         android:layout_width="72dp"
@@ -39,7 +21,6 @@
         android:id="@+id/mission_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/xsmall_margin"
         android:layout_marginEnd="@dimen/small_margin"
         android:ellipsize="marquee"
         android:focusable="true"
@@ -48,9 +29,9 @@
         android:scrollHorizontally="true"
         android:singleLine="true"
         android:textAppearance="?textAppearanceHeadline6"
-        app:layout_constraintEnd_toStartOf="@id/reused"
+        app:layout_constraintEnd_toStartOf="@id/vehicle"
         app:layout_constraintStart_toEndOf="@id/mission_patch"
-        app:layout_constraintTop_toBottomOf="@id/flight_number"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="Nusantara Satu (PSN-6) / GTO-1 / Beresheet" />
 
     <TextView
@@ -67,16 +48,26 @@
         tools:text="14 Oct 2019 - 12:35" />
 
     <TextView
+        android:id="@+id/vehicle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?textAppearanceCaption"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Falcon 9" />
+
+    <TextView
         android:id="@+id/reused"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/reused"
         android:textAppearance="?textAppearanceOverline"
         android:textColor="@color/color_secondary"
+        android:layout_marginTop="@dimen/xsmall_margin"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/mission_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/mission_name" />
+        app:layout_constraintTop_toBottomOf="@id/vehicle"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/landing_pad"
@@ -84,8 +75,11 @@
         android:layout_height="wrap_content"
         android:textAppearance="?textAppearanceOverline"
         android:textColor="@color/color_secondary"
-        app:layout_constraintBottom_toBottomOf="@id/date"
+        android:layout_marginTop="@dimen/xsmall_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reused"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/date" />
+        tools:text="@tools:sample/lorem"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

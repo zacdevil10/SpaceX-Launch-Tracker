@@ -26,7 +26,7 @@ abstract class DataSourceModule {
 
     @Binds
     @LaunchesDataSourceClient
-    abstract fun bindLaunchesDataSource(launchesDataSource: LaunchesDataSource): RemoteDataSource<NetworkDocsResponse<LaunchQueriedResponse>>
+    abstract fun bindLaunchesDataSource(launchesDataSource: LaunchesDataSource): RemoteDataSource<NetworkDocsResponse<LegacyLaunchQueriedResponse>>
 
     @Binds
     @LaunchpadDataSourceClient

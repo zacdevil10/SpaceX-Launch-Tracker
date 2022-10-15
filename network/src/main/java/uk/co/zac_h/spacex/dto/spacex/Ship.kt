@@ -53,6 +53,6 @@ data class ShipQueriedResponse(
     @field:Json(name = SPACEX_FIELD_SHIP_LAST_AIS_UPDATE) val lastUpdate: String?,
     @field:Json(name = SPACEX_FIELD_SHIP_LINK) val link: String?,
     @field:Json(name = SPACEX_FIELD_SHIP_IMAGE) val image: String?,
-    @field:Json(name = SPACEX_FIELD_SHIP_LAUNCHES) val launches: List<LaunchQueriedResponse>?,
+    @field:Json(name = SPACEX_FIELD_SHIP_LAUNCHES) val launches: List<LegacyLaunchQueriedResponse>?,
     @field:Json(name = SPACEX_FIELD_ID) val id: String
 )

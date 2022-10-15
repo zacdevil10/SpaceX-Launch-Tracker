@@ -19,7 +19,7 @@ data class CrewQueriedResponse(
     @field:Json(name = SPACEX_FIELD_CREW_AGENCY) val agency: String?,
     @field:Json(name = SPACEX_FIELD_CREW_IMAGE) val image: String?,
     @field:Json(name = SPACEX_FIELD_CREW_WIKI) val wikipedia: String?,
-    @field:Json(name = SPACEX_FIELD_CREW_LAUNCHES) val launches: List<LaunchResponse>?,
+    @field:Json(name = SPACEX_FIELD_CREW_LAUNCHES) val launches: List<LegacyLaunchResponse>?,
     @field:Json(name = SPACEX_FIELD_ID) val id: String
 )
 

@@ -5,20 +5,18 @@ import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.commit
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
-import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsContainerBinding
 import uk.co.zac_h.spacex.launches.Launch
+import uk.co.zac_h.spacex.launches.LaunchesViewModel
 import uk.co.zac_h.spacex.launches.details.cores.LaunchDetailsCoresFragment
 import uk.co.zac_h.spacex.launches.details.crew.LaunchDetailsCrewFragment
 import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsFragment
@@ -29,9 +27,7 @@ import uk.co.zac_h.spacex.utils.*
 
 class LaunchDetailsContainerFragment : BaseFragment() {
 
-    private val navArgs: LaunchDetailsContainerFragmentArgs by navArgs()
-
-    private val viewModel: LaunchDetailsContainerViewModel by navGraphViewModels(R.id.nav_graph) {
+    private val viewModel: LaunchesViewModel by navGraphViewModels(R.id.nav_graph) {
         defaultViewModelProviderFactory
     }
 
@@ -51,8 +47,6 @@ class LaunchDetailsContainerFragment : BaseFragment() {
         exitTransition = MaterialElevationScale(false)
         reenterTransition = MaterialElevationScale(true)
 
-        viewModel.launchID = navArgs.launchId
-
         selectedItem = savedInstanceState?.getInt("selected_item")
     }
 
@@ -69,37 +63,13 @@ class LaunchDetailsContainerFragment : BaseFragment() {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        binding.fragmentLaunchDetailsContainer.transitionName = navArgs.launchId
+        binding.fragmentLaunchDetailsContainer.transitionName = viewModel.launch?.id
 
         binding.close.setOnClickListener {
             findNavController().navigateUp()
         }
 
-        binding.pin.setImageState(
-            intArrayOf(if (viewModel.isPinned()) android.R.attr.state_activated else -android.R.attr.state_activated),
-            true
-        )
-
-        binding.pin.setOnClickListener {
-            val pinned = viewModel.isPinned()
-            viewModel.pinLaunch(!pinned)
-            binding.pin.setImageState(
-                intArrayOf(if (pinned) -android.R.attr.state_activated else android.R.attr.state_activated),
-                true
-            )
-        }
-
-        viewModel.getLaunch()
-
-        viewModel.launch.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is ApiResult.Pending -> {}
-                is ApiResult.Success -> {
-                    response.data?.let { update(it) }
-                }
-                is ApiResult.Failure -> showError(response.exception.message)
-            }
-        }
+        viewModel.launch?.let { update(it) }
 
         binding.launchDetailsBottomNavigation.setOnItemSelectedListener {
             if (selectedItem != it.itemId) {
@@ -205,13 +175,5 @@ class LaunchDetailsContainerFragment : BaseFragment() {
             replace(R.id.launch_details_fragment, fragment)
         }
         return true
-    }
-
-    private fun showError(error: String?) {
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
-    }
-
-    override fun networkAvailable() {
-        viewModel.getLaunch()
     }
 }

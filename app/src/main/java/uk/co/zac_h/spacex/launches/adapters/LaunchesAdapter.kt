@@ -1,18 +1,17 @@
 package uk.co.zac_h.spacex.launches.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.databinding.ListItemLaunchesBinding
 import uk.co.zac_h.spacex.launches.Launch
-import uk.co.zac_h.spacex.utils.formatDateMillisLong
+import uk.co.zac_h.spacex.utils.formatDate
 
-class LaunchesAdapter : ListAdapter<Launch, LaunchesAdapter.ViewHolder>(Comparator) {
+class LaunchesAdapter(val onClick: (Launch, View) -> Unit) :
+    PagingDataAdapter<Launch, LaunchesAdapter.ViewHolder>(Comparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
         ListItemLaunchesBinding.inflate(
@@ -25,33 +24,28 @@ class LaunchesAdapter : ListAdapter<Launch, LaunchesAdapter.ViewHolder>(Comparat
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val launch = getItem(position)
 
-        with(holder.binding) {
-            root.transitionName = launch.id
+        launch?.let {
+            with(holder.binding) {
+                root.transitionName = launch.id
 
-            launchView.apply {
-                patch = launch.links?.missionPatch?.patchSmall
-                flightNumber = launch.flightNumber
-                vehicle = launch.rocket?.name
-                missionName = launch.missionName
-                date = launch.launchDate?.dateUnix?.formatDateMillisLong(launch.datePrecision)
+                launchView.apply {
+                    patch = launch.links?.missionPatch?.patchSmall
+                    vehicle = launch.rocket?.name
+                    missionName = launch.missionName
+                    date = launch.launchDate?.dateUtc?.formatDate()
 
-                if (launch.rocket?.name == "Falcon 9") {
-                    isReused = launch.cores?.first()?.reused ?: false
-                    landingPad = launch.cores?.first()?.landingPad?.name
-                } else {
-                    isReused = false
-                    landingPad = null
+                    if (launch.rocket?.name == "Falcon 9") {
+                        isReused = launch.cores?.firstOrNull()?.reused ?: false
+                        landingPad = launch.cores?.firstOrNull()?.landingPad?.name
+                    } else {
+                        isReused = false
+                        landingPad = null
+                    }
                 }
-            }
 
-            root.setOnClickListener {
-                root.findNavController().navigate(
-                    NavGraphDirections.actionLaunchItemToLaunchDetailsContainer(
-                        launch.missionName,
-                        launch.id.orEmpty()
-                    ),
-                    FragmentNavigatorExtras(root to launch.id.orEmpty())
-                )
+                root.setOnClickListener {
+                    onClick(launch, root)
+                }
             }
         }
     }

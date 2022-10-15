@@ -24,6 +24,24 @@ data class LandingPad(
 ) {
 
     constructor(
+        response: LaunchResponse.Rocket.LauncherStage.Landing.Location
+    ) : this(
+        name = response.abbrev,
+        fullName = response.name,
+        status = null,
+        type = null,
+        locality = null,
+        region = null,
+        lat = null,
+        lng = null,
+        landingAttempts = null,
+        landingSuccesses = response.successfulLandings,
+        wikipedia = null,
+        details = response.description,
+        id = response.id.toString()
+    )
+
+    constructor(
         response: LandingPadResponse
     ) : this(
         name = response.name,
@@ -90,6 +108,22 @@ data class Launchpad(
     val launches: List<Launch>? = null,
     var id: String
 ) {
+
+    constructor(
+        response: LaunchResponse.Pad
+    ) : this(
+        name = response.name,
+        fullName = response.name,
+        status = null,
+        locality = null,
+        region = null,
+        timezone = null,
+        lat = response.latitude?.toFloat(),
+        lng = response.longitude?.toFloat(),
+        launchAttempts = null,
+        launchSuccesses = null,
+        id = response.id.toString()
+    )
 
     constructor(
         response: LaunchpadResponse

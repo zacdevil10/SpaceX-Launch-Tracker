@@ -5,18 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.navGraphViewModels
-import uk.co.zac_h.spacex.ApiResult
-import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.crew.Crew
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCrewBinding
-import uk.co.zac_h.spacex.launches.details.LaunchDetailsContainerViewModel
+import uk.co.zac_h.spacex.launches.LaunchesViewModel
 
 class LaunchDetailsCrewFragment : BaseFragment() {
 
-    private val viewModel: LaunchDetailsContainerViewModel by navGraphViewModels(R.id.nav_graph) {
+    private val viewModel: LaunchesViewModel by navGraphViewModels(R.id.nav_graph) {
         defaultViewModelProviderFactory
     }
 
@@ -39,20 +37,6 @@ class LaunchDetailsCrewFragment : BaseFragment() {
         binding.launchDetailsCrewRecycler.apply {
             setHasFixedSize(true)
             adapter = crewAdapter
-        }
-
-        binding.swipeRefresh.setOnRefreshListener {
-            viewModel.getLaunch(CachePolicy.REFRESH)
-        }
-
-        viewModel.launch.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is ApiResult.Pending -> {}
-                is ApiResult.Success -> response.data?.crew?.let { update(it) }.also {
-                    binding.swipeRefresh.isRefreshing = false
-                }
-                is ApiResult.Failure -> binding.swipeRefresh.isRefreshing = false
-            }
         }
     }
 

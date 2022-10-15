@@ -16,6 +16,11 @@ import javax.inject.Qualifier
 object NetworkModule {
 
     @Provides
+    @LaunchLibraryClient
+    fun providesLaunchLibraryHttpClient(): LaunchLibraryService =
+        createClient(MOCK_LAUNCH_LIBRARY_BASE_URL)
+
+    @Provides
     @SpaceXHttpClientV4
     fun providesSpaceXHttpClientV4(): SpaceXService = createClient(SPACEX_BASE_URL_V4)
 
@@ -55,6 +60,10 @@ object NetworkModule {
         .build()
 
 }
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class LaunchLibraryClient
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)

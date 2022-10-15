@@ -38,11 +38,49 @@ data class Launch(
     val cores: List<LaunchCore>?,
     val links: LaunchLinks?,
     val autoUpdate: Boolean?,
-    val id: String?
+    val id: String
 ) {
 
     constructor(
         response: LaunchResponse
+    ) : this(
+        flightNumber = response.agencyLaunchAttemptCount,
+        missionName = response.name?.split(" | ")?.filter { !it.contains("Falcon 9 Block") }
+            ?.joinToString(" | "),
+        launchDate = EventDate(
+            dateUtc = response.net
+        ),
+        datePrecision = null,
+        staticFireDate = null,
+        tbd = response.status?.id == 2,
+        net = response.net != null,
+        window = null,
+        rocket = response.rocket?.let { Rocket(it) },
+        success = response.status?.id == 3,
+        failures = null,
+        upcoming = null,
+        details = response.mission?.description,
+        fairings = null,
+        crew = null,
+        shipIds = null,
+        capsules = null,
+        payloadIds = null,
+        launchpadId = response.pad?.id.toString(),
+        launchpad = response.pad?.let { Launchpad(it) },
+        cores = response.rocket?.launcherStage?.mapNotNull { it?.let { LaunchCore(it) } },
+        links = LaunchLinks(
+            missionPatch = MissionPatch(
+                response.missionPatches?.firstOrNull()?.imageUrl,
+                response.missionPatches?.firstOrNull()?.imageUrl
+            ),
+            webcast = response.video?.firstOrNull()?.url
+        ),
+        autoUpdate = null,
+        id = response.id
+    )
+
+    constructor(
+        response: LegacyLaunchResponse
     ) : this(
         flightNumber = response.flightNumber,
         missionName = response.missionName,
@@ -73,11 +111,11 @@ data class Launch(
         cores = response.cores?.map { LaunchCore(it) },
         links = response.links,
         autoUpdate = response.autoUpdate,
-        id = response.id
+        id = response.id.orEmpty()
     )
 
     constructor(
-        response: LaunchQueriedResponse
+        response: LegacyLaunchQueriedResponse
     ) : this(
         flightNumber = response.flightNumber,
         missionName = response.missionName,
@@ -109,7 +147,7 @@ data class Launch(
         cores = response.cores?.map { LaunchCore(it) },
         links = response.links,
         autoUpdate = response.autoUpdate,
-        id = response.id
+        id = response.id.orEmpty()
     )
 
     companion object {
@@ -138,6 +176,20 @@ data class LaunchCore(
     var landingPadId: String? = null,
     var landingPad: LandingPad? = null
 ) {
+
+    constructor(
+        response: LaunchResponse.Rocket.LauncherStage
+    ) : this(
+        id = response.id.toString(),
+        flight = response.launcherFlightNumber,
+        gridfins = null,
+        legs = null,
+        reused = response.reused,
+        landingAttempt = null,
+        landingSuccess = null,
+        landingType = null,
+        landingPad = response.landing?.location?.let { LandingPad(it) }
+    )
 
     constructor(
         response: LaunchCoreResponse

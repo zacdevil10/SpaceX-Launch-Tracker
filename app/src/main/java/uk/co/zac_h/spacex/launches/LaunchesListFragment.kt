@@ -1,21 +1,26 @@
 package uk.co.zac_h.spacex.launches
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
+import androidx.paging.LoadState
+import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import uk.co.zac_h.spacex.ApiResult
-import uk.co.zac_h.spacex.CachePolicy
+import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.types.LaunchType
+import uk.co.zac_h.spacex.utils.orUnknown
 
 @AndroidEntryPoint
 class LaunchesListFragment : BaseFragment() {
@@ -27,8 +32,6 @@ class LaunchesListFragment : BaseFragment() {
     }
 
     private val flowViewModel: FlowTypeViewModel by viewModels()
-
-    private var searchText: String = ""
 
     private lateinit var type: LaunchType
 
@@ -60,7 +63,7 @@ class LaunchesListFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        launchesAdapter = LaunchesAdapter()
+        launchesAdapter = LaunchesAdapter { launch, root -> onItemClick(launch, root) }
 
         binding.launchesRecycler.apply {
             layoutManager = LinearLayoutManager(this@LaunchesListFragment.context)
@@ -68,27 +71,36 @@ class LaunchesListFragment : BaseFragment() {
             adapter = launchesAdapter
         }
 
-        viewModel.launchesLiveData.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is ApiResult.Pending -> if (launchesAdapter.itemCount == 0) binding.progress.show()
-                is ApiResult.Success -> result.data?.let {
-                    binding.swipeRefresh.isRefreshing = false
-                    binding.progress.hide()
-                    when (flowViewModel.type) {
-                        LaunchType.UPCOMING -> update(it[flowViewModel.type]?.sortedBy { launch -> launch.flightNumber })
-                        LaunchType.PAST -> update(it[flowViewModel.type]?.sortedByDescending { launch -> launch.flightNumber })
-                    }
-
-                }
-                is ApiResult.Failure -> {
-                    showError(result.exception.message)
-                    binding.swipeRefresh.isRefreshing = false
-                }
+        when (type) {
+            LaunchType.UPCOMING -> viewModel.upcomingLaunchesLiveData.observe(viewLifecycleOwner) { pagingData ->
+                launchesAdapter.submitData(lifecycle, pagingData.map { Launch(it) })
+            }
+            LaunchType.PAST -> viewModel.previousLaunchesLiveData.observe(viewLifecycleOwner) { pagingData ->
+                launchesAdapter.submitData(lifecycle, pagingData.map { Launch(it) })
             }
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.getLaunches(CachePolicy.REFRESH)
+            launchesAdapter.refresh()
+        }
+
+        launchesAdapter.addLoadStateListener {
+            if (it.refresh is LoadState.Loading) {
+                binding.progress.show()
+            } else {
+                binding.swipeRefresh.isRefreshing = false
+
+                if (it.refresh is LoadState.NotLoading) binding.progress.hide()
+
+                val error = when {
+                    it.prepend is LoadState.Error -> it.prepend as LoadState.Error
+                    it.append is LoadState.Error -> it.append as LoadState.Error
+                    it.refresh is LoadState.Error -> it.refresh as LoadState.Error
+                    else -> null
+                }
+
+                error?.error?.message?.let { message -> showError(message) }
+            }
         }
     }
 
@@ -97,17 +109,21 @@ class LaunchesListFragment : BaseFragment() {
         _binding = null
     }
 
-    private fun update(response: List<Launch>?) {
-        launchesAdapter.submitList(response?.filter {
-            it.missionName?.lowercase()?.contains(searchText) ?: true
-        })
+    private fun onItemClick(launch: Launch, root: View) {
+        viewModel.launch = launch
+
+        findNavController().navigate(
+            NavGraphDirections.actionLaunchItemToLaunchDetailsContainer(),
+            FragmentNavigatorExtras(root to launch.id)
+        )
     }
 
-    private fun showError(error: String?) {
+    private fun showError(error: String) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+        Log.e("Launches Network Error", error.orUnknown())
     }
 
     override fun networkAvailable() {
-        viewModel.getLaunches()
+        launchesAdapter.retry()
     }
 }

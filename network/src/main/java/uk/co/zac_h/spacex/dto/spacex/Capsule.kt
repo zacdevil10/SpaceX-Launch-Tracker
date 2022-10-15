@@ -12,7 +12,7 @@ data class CapsuleQueriedResponse(
     @field:Json(name = SPACEX_FIELD_CAPSULE_WATER_LANDINGS) val waterLandings: Int?,
     @field:Json(name = SPACEX_FIELD_CAPSULE_LAND_LANDINGS) val landLandings: Int?,
     @field:Json(name = SPACEX_FIELD_CAPSULE_LAST_UPDATE) val lastUpdate: String?,
-    @field:Json(name = SPACEX_FIELD_CAPSULE_LAUNCHES) val launches: List<LaunchResponse>?,
+    @field:Json(name = SPACEX_FIELD_CAPSULE_LAUNCHES) val launches: List<LegacyLaunchResponse>?,
     @field:Json(name = SPACEX_FIELD_ID) val id: String
 )
 

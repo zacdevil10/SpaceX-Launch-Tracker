@@ -28,7 +28,7 @@ interface SpaceXService {
     suspend fun queryLandingPads(@Body body: QueryModel): Response<NetworkDocsResponse<LandingPadQueriedResponse>>
 
     @POST(SPACEX_LAUNCHES_QUERY)
-    suspend fun queryLaunches(@Body body: QueryModel): Response<NetworkDocsResponse<LaunchQueriedResponse>>
+    suspend fun queryLaunches(@Body body: QueryModel): Response<NetworkDocsResponse<LegacyLaunchQueriedResponse>>
 
     @POST(SPACEX_LAUNCHPADS_QUERY)
     suspend fun queryLaunchpads(@Body body: QueryModel): Response<NetworkDocsResponse<LaunchpadQueriedResponse>>

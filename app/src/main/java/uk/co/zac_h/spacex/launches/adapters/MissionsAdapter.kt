@@ -29,10 +29,7 @@ class MissionsAdapter : ListAdapter<Launch, MissionsAdapter.ViewHolder>(Comparat
 
             root.setOnClickListener {
                 root.findNavController().navigate(
-                    NavGraphDirections.missionsToLaunchDetailsContainerFragment(
-                        launch.missionName,
-                        launch.id.orEmpty()
-                    ),
+                    NavGraphDirections.missionsToLaunchDetailsContainerFragment(),
                     FragmentNavigatorExtras(root to launch.id.orEmpty())
                 )
             }

@@ -8,7 +8,6 @@ class MainViewModel : ViewModel() {
     var isFabVisible: Boolean = false
 
     val startDestinations = mutableSetOf(
-        R.id.dashboard_page_fragment,
         R.id.news_page_fragment,
         R.id.launches_page_fragment,
         R.id.crew_page_fragment,

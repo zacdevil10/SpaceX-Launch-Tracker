@@ -3,19 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/dashboard_page_fragment">
-
-    <fragment
-        android:id="@+id/dashboard_page_fragment"
-        android:name="uk.co.zac_h.spacex.dashboard.DashboardFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_dashboard">
-
-        <action
-            android:id="@+id/action_dashboard_page_fragment_to_dashboard_edit_dialog"
-            app:destination="@id/dashboard_edit_dialog" />
-
-    </fragment>
+    app:startDestination="@id/launches_page_fragment">
 
     <fragment
         android:id="@+id/news_page_fragment"
@@ -255,15 +243,6 @@
             android:id="@+id/launchDetailsLink"
             app:uri="spacex://launch_details={launch_id}" />
 
-        <argument
-            android:name="label"
-            app:argType="string"
-            app:nullable="true" />
-
-        <argument
-            android:name="launch_id"
-            app:argType="string" />
-
     </fragment>
 
     <fragment
@@ -341,14 +320,6 @@
     <dialog
         android:id="@+id/theme_alert_dialog"
         android:name="uk.co.zac_h.spacex.utils.settings.ThemeAlertDialog" />
-
-    <dialog
-        android:id="@+id/dashboard_edit_dialog"
-        android:name="uk.co.zac_h.spacex.utils.settings.DashboardEditDialog" />
-
-    <action
-        android:id="@+id/action_to_dashboard_edit_dialog"
-        app:destination="@id/dashboard_edit_dialog" />
 
     <action
         android:id="@+id/action_to_theme_dialog"
