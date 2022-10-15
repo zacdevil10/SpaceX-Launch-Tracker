@@ -38,7 +38,7 @@ data class PayloadQueriedResponse(
     @field:Json(name = SPACEX_FIELD_PAYLOAD_NAME) val name: String?,
     @field:Json(name = SPACEX_FIELD_PAYLOAD_TYPE) val type: String?,
     @field:Json(name = SPACEX_FIELD_PAYLOAD_REUSED) val reused: Boolean?,
-    @field:Json(name = SPACEX_FIELD_PAYLOAD_LAUNCH) val launch: LaunchResponse?,
+    @field:Json(name = SPACEX_FIELD_PAYLOAD_LAUNCH) val launch: LegacyLaunchResponse?,
     @field:Json(name = SPACEX_FIELD_PAYLOAD_CUSTOMERS) val customers: List<String>?,
     @field:Json(name = SPACEX_FIELD_PAYLOAD_NORAD_IDS) val noradIds: List<Int>?,
     @field:Json(name = SPACEX_FIELD_PAYLOAD_NATIONALITIES) val nationalities: List<String>?,

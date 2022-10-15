@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.datasource.remote
 
-import uk.co.zac_h.spacex.dto.spacex.LaunchQueriedResponse
+import uk.co.zac_h.spacex.dto.spacex.LegacyLaunchQueriedResponse
 import uk.co.zac_h.spacex.dto.spacex.NetworkDocsResponse
 import uk.co.zac_h.spacex.dto.spacex.QueryModel
 import uk.co.zac_h.spacex.retrofit.SpaceXHttpClientV5
@@ -9,7 +9,7 @@ import javax.inject.Inject
 
 class LaunchesDataSource @Inject constructor(
     @SpaceXHttpClientV5 private val httpService: SpaceXService
-) : RemoteDataSource<NetworkDocsResponse<LaunchQueriedResponse>> {
+) : RemoteDataSource<NetworkDocsResponse<LegacyLaunchQueriedResponse>> {
 
     private suspend fun getLaunches(query: QueryModel) = httpService.queryLaunches(query)
 

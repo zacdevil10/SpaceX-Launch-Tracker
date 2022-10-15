@@ -31,6 +31,6 @@ data class LaunchpadQueriedResponse(
     @field:Json(name = SPACEX_FIELD_LAUNCHPAD_LAUNCH_ATTEMPTS) val launchAttempts: Int?,
     @field:Json(name = SPACEX_FIELD_LAUNCHPAD_LAUNCH_SUCCESSES) val launchSuccesses: Int?,
     @field:Json(name = SPACEX_FIELD_LAUNCHPAD_ROCKETS) val rockets: List<RocketResponse>?,
-    @field:Json(name = SPACEX_FIELD_LAUNCHPAD_LAUNCHES) val launches: List<LaunchResponse>?,
+    @field:Json(name = SPACEX_FIELD_LAUNCHPAD_LAUNCHES) val launches: List<LegacyLaunchResponse>?,
     @field:Json(name = SPACEX_FIELD_ID) var id: String
 )

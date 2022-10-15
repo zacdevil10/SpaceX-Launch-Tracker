@@ -26,7 +26,7 @@ data class FairingQueriedResponse(
     @field:Json(name = SPACEX_FIELD_FAIRING_WATER_LANDING_ATTEMPTS) val waterLandingAttempts: Int?,
     @field:Json(name = SPACEX_FIELD_FAIRING_WATER_LANDING) val waterLanding: Int?,
     @field:Json(name = SPACEX_FIELD_FAIRING_LAST_UPDATE) val lastUpdate: String?,
-    @field:Json(name = SPACEX_FIELD_FAIRING_LAUNCHES) val launches: List<LaunchResponse>?
+    @field:Json(name = SPACEX_FIELD_FAIRING_LAUNCHES) val launches: List<LegacyLaunchResponse>?
 )
 
 /*data class Fairing(

@@ -33,6 +33,6 @@ data class LandingPadQueriedResponse(
     @field:Json(name = SPACEX_FIELD_LANDING_PAD_LANDING_SUCCESS) val landingSuccesses: Int?,
     @field:Json(name = SPACEX_FIELD_LANDING_PAD_WIKI) val wikipedia: String?,
     @field:Json(name = SPACEX_FIELD_LANDING_PAD_DETAILS) val details: String?,
-    @field:Json(name = SPACEX_FIELD_LANDING_PAD_LAUNCHES) val launches: List<LaunchResponse>?,
+    @field:Json(name = SPACEX_FIELD_LANDING_PAD_LAUNCHES) val launches: List<LegacyLaunchResponse>?,
     @field:Json(name = SPACEX_FIELD_ID) val id: String
 )

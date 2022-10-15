@@ -29,13 +29,6 @@ class LaunchView @JvmOverloads constructor(
                 .into(binding.missionPatch)
         }
 
-    var flightNumber: Int? = null
-        set(value) {
-            field = value
-
-            binding.flightNumber.text = context.getString(R.string.flight_number, value)
-        }
-
     var vehicle: String? = null
         set(value) {
             field = value

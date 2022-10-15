@@ -6,18 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import uk.co.zac_h.spacex.ApiResult
-import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
+import uk.co.zac_h.spacex.launches.LaunchesViewModel
 import uk.co.zac_h.spacex.launches.adapters.LaunchDetailsShipsAdapter
-import uk.co.zac_h.spacex.launches.details.LaunchDetailsContainerViewModel
 import uk.co.zac_h.spacex.vehicles.ships.Ship
 
 class LaunchDetailsShipsFragment : BaseFragment() {
 
-    private val viewModel: LaunchDetailsContainerViewModel by navGraphViewModels(R.id.nav_graph) {
+    private val viewModel: LaunchesViewModel by navGraphViewModels(R.id.nav_graph) {
         defaultViewModelProviderFactory
     }
 
@@ -42,21 +40,6 @@ class LaunchDetailsShipsFragment : BaseFragment() {
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = shipsAdapter
-        }
-
-        binding.swipeRefresh.setOnRefreshListener {
-            viewModel.getLaunch(CachePolicy.REFRESH)
-        }
-
-        viewModel.launch.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is ApiResult.Pending -> {}
-                is ApiResult.Success -> {
-                    binding.swipeRefresh.isRefreshing = false
-                    update(response.data?.ships)
-                }
-                is ApiResult.Failure -> binding.swipeRefresh.isRefreshing = false
-            }
         }
     }
 

@@ -2,13 +2,10 @@ package uk.co.zac_h.spacex.launches.filter
 
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.CachePolicy
-import uk.co.zac_h.spacex.async
 import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.launches.LaunchesRepository
-import uk.co.zac_h.spacex.query.LaunchQuery
 import uk.co.zac_h.spacex.utils.filterAll
 import uk.co.zac_h.spacex.utils.sortedBy
 import javax.inject.Inject
@@ -50,7 +47,7 @@ class LaunchesFilterViewModel @Inject constructor(
         }
 
     fun getLaunches(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
-        viewModelScope.launch {
+        /*viewModelScope.launch {
             val response = async(_launchesLiveData) {
                 repository.fetch(
                     key = "launches",
@@ -60,6 +57,6 @@ class LaunchesFilterViewModel @Inject constructor(
             }
 
             _launchesLiveData.value = response.await().map { data -> data.docs.map { Launch(it) } }
-        }
+        }*/
     }
 }

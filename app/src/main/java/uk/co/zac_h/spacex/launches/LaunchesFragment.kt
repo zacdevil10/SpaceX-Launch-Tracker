@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
-import androidx.navigation.navGraphViewModels
 import com.google.android.material.transition.MaterialElevationScale
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
@@ -17,10 +16,6 @@ import uk.co.zac_h.spacex.utils.ViewPagerAdapter
 
 @AndroidEntryPoint
 class LaunchesFragment : BaseFragment() {
-
-    private val viewModel: LaunchesViewModel by navGraphViewModels(R.id.nav_graph) {
-        defaultViewModelProviderFactory
-    }
 
     private var _binding: FragmentLaunchesBinding? = null
     private val binding get() = checkNotNull(_binding) { "Binding is null" }
@@ -66,8 +61,6 @@ class LaunchesFragment : BaseFragment() {
                 getTabAt(position)?.setIcon(tabIcons[position])
             }
         }
-
-        viewModel.getLaunches()
     }
 
     override fun onDestroyView() {

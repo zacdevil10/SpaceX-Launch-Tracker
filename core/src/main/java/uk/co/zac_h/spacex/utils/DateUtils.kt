@@ -8,6 +8,22 @@ private const val SECOND_MILLIS = 1000
 private const val MINUTE_MILLIS = 60 * SECOND_MILLIS
 private const val HOUR_MILLIS = 60 * MINUTE_MILLIS
 
+fun String.formatDate(): String {
+    val date = SimpleDateFormat(
+        "yyyy-MM-dd'T'HH:mm:ss",
+        Locale.ENGLISH
+    ).apply {
+        timeZone = TimeZone.getTimeZone("UTC")
+    }.parse(this)
+
+    return SimpleDateFormat(
+        "dd MMM yy - HH:mm zzz",
+        Locale.ENGLISH
+    ).apply {
+        timeZone = TimeZone.getDefault()
+    }.format(date)
+}
+
 fun Long.formatDateMillisLong(
     precision: DatePrecision? = null
 ): String =

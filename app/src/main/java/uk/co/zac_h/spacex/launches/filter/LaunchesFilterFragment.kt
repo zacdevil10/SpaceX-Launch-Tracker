@@ -103,7 +103,7 @@ class LaunchesFilterFragment : Fragment() {
         }
 
         //Setup launches list
-        launchesAdapter = LaunchesAdapter()
+        //launchesAdapter = LaunchesAdapter { launch, view -> onItemClick(launch, view) }
 
         binding.list.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -118,9 +118,9 @@ class LaunchesFilterFragment : Fragment() {
                 }
                 is ApiResult.Success -> {
                     binding.progress.hide()
-                    launchesAdapter.submitList(result.data) {
+                    /*launchesAdapter.submitList(result.data) {
                         if (shouldScroll) binding.list.scrollToPosition(0)
-                    }
+                    }*/
                 }
                 is ApiResult.Failure -> showError(result.exception.message)
             }

@@ -13,7 +13,7 @@ data class CoreQueriedResponse(
     @field:Json(name = SPACEX_FIELD_CORE_ASDS_ATTEMPTS) val attemptsAsds: Int?,
     @field:Json(name = SPACEX_FIELD_CORE_ASDS_LANDINGS) val landingsAsds: Int?,
     @field:Json(name = SPACEX_FIELD_CORE_LAST_UPDATE) val lastUpdate: String?,
-    @field:Json(name = SPACEX_FIELD_CORE_LAUNCHES) val launches: List<LaunchResponse>?,
+    @field:Json(name = SPACEX_FIELD_CORE_LAUNCHES) val launches: List<LegacyLaunchResponse>?,
     @field:Json(name = SPACEX_FIELD_ID) val id: String
 )
 

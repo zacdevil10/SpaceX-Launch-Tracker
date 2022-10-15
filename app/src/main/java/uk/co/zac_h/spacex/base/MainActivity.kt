@@ -174,7 +174,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         //Setup toolbar for destination
         when (destination.id) {
             //Launches
-            R.id.dashboard_page_fragment -> setAppBarForDashboard()
             R.id.launches_page_fragment -> setAppBarForLaunches()
             R.id.launch_details_container_fragment -> setAppBarForLaunchDetails()
             R.id.launches_filter_fragment -> setAppBarForSearch()
@@ -207,9 +206,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            R.id.edit -> {
-                navigateToEditDashboard()
-            }
             R.id.settings -> {
                 navigateToSettings()
                 openableNavView.close()
@@ -239,15 +235,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             )
         } ?: run {
             binding.fab.setOnClickListener(null)
-        }
-    }
-
-    private fun setAppBarForDashboard() {
-        binding.run {
-            bottomAppBar.visibility = View.VISIBLE
-            bottomAppBar.performShow()
-            fab.hide()
-            viewModel.isFabVisible = false
         }
     }
 
@@ -418,16 +405,11 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     private fun getBottomAppBarMenuForDestination(destination: NavDestination? = null): Int {
         val dest = destination ?: findNavController(R.id.nav_host).currentDestination
         return when (dest?.id) {
-            R.id.dashboard_page_fragment -> R.menu.menu_dashboard
             else -> R.menu.menu_empty
         }
     }
 
     private fun navigateToSettings() {
         findNavController(R.id.nav_host).navigate(NavGraphDirections.actionToThemeDialog())
-    }
-
-    private fun navigateToEditDashboard() {
-        findNavController(R.id.nav_host).navigate(NavGraphDirections.actionToDashboardEditDialog())
     }
 }

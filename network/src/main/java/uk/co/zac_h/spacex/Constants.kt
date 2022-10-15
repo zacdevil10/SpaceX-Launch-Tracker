@@ -1,15 +1,23 @@
 package uk.co.zac_h.spacex
 
 //Hosts
+const val MOCK_LAUNCH_LIBRARY_BASE_URL = "https://lldev.thespacedevs.com/2.2.0/"
+const val LAUNCH_LIBRARY_BASE_URL = "https://ll.thespacedevs.com/2.2.0/"
+const val TWITTER_BASE_URL = "https://api.twitter.com/1.1/"
+const val REDDIT_BASE_URL = "https://reddit.com/"
+
+//Legacy API
 const val SPACEX_STAGE_BASE_URL = "https://stage.spacexdata.com/v4/"
 const val SPACEX_BASE_URL_V4 = "https://api.spacexdata.com/v4/"
 const val SPACEX_BASE_URL_V5 = "https://api.spacexdata.com/v5/"
-const val TWITTER_BASE_URL = "https://api.twitter.com/1.1/"
-const val REDDIT_BASE_URL = "https://reddit.com/"
 
 //region SpaceX
 
 //Endpoints
+const val SPACEX_PREVIOUS_LAUNCHES = "launch/previous"
+const val SPACEX_UPCOMING_LAUNCHES = "launch/upcoming"
+
+//Legacy endpoints
 const val SPACEX_CAPSULES = "capsules"
 const val SPACEX_COMPANY = "company"
 const val SPACEX_CORES = "cores"
