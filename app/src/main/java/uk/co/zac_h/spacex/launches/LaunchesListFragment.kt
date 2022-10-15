@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
@@ -14,6 +15,8 @@ import androidx.paging.LoadState
 import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
@@ -84,22 +87,24 @@ class LaunchesListFragment : BaseFragment() {
             launchesAdapter.refresh()
         }
 
-        launchesAdapter.addLoadStateListener {
-            if (it.refresh is LoadState.Loading) {
-                binding.progress.show()
-            } else {
-                binding.swipeRefresh.isRefreshing = false
+        viewLifecycleOwner.lifecycleScope.launch {
+            launchesAdapter.loadStateFlow.collectLatest {
+                if (it.refresh is LoadState.Loading) {
+                    binding.progress.show()
+                } else {
+                    binding.swipeRefresh.isRefreshing = false
 
-                if (it.refresh is LoadState.NotLoading) binding.progress.hide()
+                    if (it.refresh is LoadState.NotLoading) binding.progress.hide()
 
-                val error = when {
-                    it.prepend is LoadState.Error -> it.prepend as LoadState.Error
-                    it.append is LoadState.Error -> it.append as LoadState.Error
-                    it.refresh is LoadState.Error -> it.refresh as LoadState.Error
-                    else -> null
+                    val error = when {
+                        it.prepend is LoadState.Error -> it.prepend as LoadState.Error
+                        it.append is LoadState.Error -> it.append as LoadState.Error
+                        it.refresh is LoadState.Error -> it.refresh as LoadState.Error
+                        else -> null
+                    }
+
+                    error?.error?.message?.let { message -> showError(message) }
                 }
-
-                error?.error?.message?.let { message -> showError(message) }
             }
         }
     }
