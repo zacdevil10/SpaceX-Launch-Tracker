@@ -2,12 +2,9 @@ package uk.co.zac_h.spacex.launches.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemMissionBinding
 import uk.co.zac_h.spacex.launches.Launch
@@ -27,12 +24,12 @@ class MissionsAdapter : ListAdapter<Launch, MissionsAdapter.ViewHolder>(Comparat
             missionFlightNumber.text =
                 root.resources.getString(R.string.flight_number, launch.flightNumber)
 
-            root.setOnClickListener {
+            /*root.setOnClickListener {
                 root.findNavController().navigate(
                     NavGraphDirections.missionsToLaunchDetailsContainerFragment(),
                     FragmentNavigatorExtras(root to launch.id.orEmpty())
                 )
-            }
+            }*/
         }
     }
 
