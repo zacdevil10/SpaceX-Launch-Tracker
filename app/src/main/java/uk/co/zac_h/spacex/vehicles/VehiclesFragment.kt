@@ -13,11 +13,8 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentVehiclesBinding
 import uk.co.zac_h.spacex.utils.ViewPagerAdapter
-import uk.co.zac_h.spacex.vehicles.capsules.CapsulesFragment
-import uk.co.zac_h.spacex.vehicles.cores.CoreFragment
 import uk.co.zac_h.spacex.vehicles.dragon.DragonFragment
 import uk.co.zac_h.spacex.vehicles.rockets.RocketFragment
-import uk.co.zac_h.spacex.vehicles.ships.ShipsFragment
 
 class VehiclesFragment : BaseFragment() {
 
@@ -46,12 +43,12 @@ class VehiclesFragment : BaseFragment() {
         val fragments: List<BaseFragment> = listOf(
             RocketFragment(),
             DragonFragment(),
-            ShipsFragment(),
-            CoreFragment(),
-            CapsulesFragment()
+            //ShipsFragment(),
+            //CoreFragment(),
+            //CapsulesFragment()
         )
 
-        binding.tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+        binding.tabLayout.tabMode = TabLayout.MODE_FIXED
 
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
@@ -73,9 +70,9 @@ class VehiclesFragment : BaseFragment() {
         val tabIcons = listOf(
             R.drawable.ic_rocket,
             R.drawable.ic_dragon,
-            R.drawable.ic_baseline_directions_boat_24,
-            R.drawable.ic_core,
-            R.drawable.ic_dragon
+            //R.drawable.ic_baseline_directions_boat_24,
+            //R.drawable.ic_core,
+            //R.drawable.ic_dragon
         )
 
         binding.tabLayout.apply {
