@@ -15,8 +15,8 @@ android {
         applicationId "uk.co.zac_h.spacex"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 210010511
-        versionName "1.5.11"
+        versionCode 210010600
+        versionName "1.6.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
