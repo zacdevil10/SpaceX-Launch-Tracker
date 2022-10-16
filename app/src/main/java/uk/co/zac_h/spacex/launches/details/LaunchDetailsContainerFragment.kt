@@ -20,7 +20,6 @@ import uk.co.zac_h.spacex.launches.LaunchesViewModel
 import uk.co.zac_h.spacex.launches.details.cores.LaunchDetailsCoresFragment
 import uk.co.zac_h.spacex.launches.details.crew.LaunchDetailsCrewFragment
 import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsFragment
-import uk.co.zac_h.spacex.launches.details.payloads.LaunchDetailsPayloadsFragment
 import uk.co.zac_h.spacex.launches.details.ships.LaunchDetailsShipsFragment
 import uk.co.zac_h.spacex.utils.*
 
@@ -76,7 +75,6 @@ class LaunchDetailsContainerFragment : BaseFragment() {
                 when (it.itemId) {
                     R.id.launch_details_details -> replaceFragment(LaunchDetailsFragment())
                     R.id.launch_details_cores -> replaceFragment(LaunchDetailsCoresFragment())
-                    R.id.launch_details_payloads -> replaceFragment(LaunchDetailsPayloadsFragment())
                     R.id.launch_details_crew -> replaceFragment(LaunchDetailsCrewFragment())
                     R.id.launch_details_ships -> replaceFragment(LaunchDetailsShipsFragment())
                 }
