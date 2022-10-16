@@ -23,11 +23,23 @@ class LaunchesUpcomingPagingSource(
             nextOffsetQuery?.toInt()
         }
 
-        LoadResult.Page(
-            data = checkNotNull(response.body()?.results),
-            prevKey = null,
-            nextKey = nextOffset
-        )
+        if (response.isSuccessful) {
+            LoadResult.Page(
+                data = checkNotNull(response.body()?.results),
+                prevKey = null,
+                nextKey = nextOffset
+            )
+        } else {
+            response.code()
+            LoadResult.Error(
+                Exception(
+                    when (response.code()) {
+                        429 -> "Too many request have been made. There is a limit of 15 requests per hour."
+                        else -> response.errorBody()?.string()
+                    }
+                )
+            )
+        }
     } catch (e: Exception) {
         LoadResult.Error(e)
     }
