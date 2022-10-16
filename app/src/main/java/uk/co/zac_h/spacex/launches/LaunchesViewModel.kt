@@ -14,13 +14,13 @@ class LaunchesViewModel @Inject constructor(
 ) : ViewModel() {
 
     val upcomingLaunchesLiveData: LiveData<PagingData<LaunchResponse>> = Pager(
-        PagingConfig(pageSize = 5)
+        PagingConfig(pageSize = 20)
     ) {
         repository.upcomingLaunchesPagingSource
     }.liveData.cachedIn(viewModelScope)
 
     val previousLaunchesLiveData: LiveData<PagingData<LaunchResponse>> = Pager(
-        PagingConfig(pageSize = 5)
+        PagingConfig(pageSize = 30)
     ) {
         repository.previousLaunchesPagingSource
     }.liveData.cachedIn(viewModelScope)

@@ -27,17 +27,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.progressindicator.LinearProgressIndicator
-                android:id="@+id/progress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:elevation="@dimen/card_elevation"
-                android:indeterminate="true"
-                app:hideAnimationBehavior="outward"
-                app:indicatorColor="?colorSecondary"
-                app:layout_constraintTop_toTopOf="parent"
-                app:showAnimationBehavior="inward" />
-
             <uk.co.zac_h.widget.LaunchView
                 android:id="@+id/launch_view"
                 android:layout_width="0dp"
