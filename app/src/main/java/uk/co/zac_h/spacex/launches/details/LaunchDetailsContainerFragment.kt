@@ -14,6 +14,7 @@ import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.core.utils.*
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsContainerBinding
 import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.launches.LaunchesViewModel
@@ -21,7 +22,7 @@ import uk.co.zac_h.spacex.launches.details.cores.LaunchDetailsCoresFragment
 import uk.co.zac_h.spacex.launches.details.crew.LaunchDetailsCrewFragment
 import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsFragment
 import uk.co.zac_h.spacex.launches.details.ships.LaunchDetailsShipsFragment
-import uk.co.zac_h.spacex.utils.*
+import uk.co.zac_h.spacex.utils.openWebLink
 
 class LaunchDetailsContainerFragment : BaseFragment() {
 

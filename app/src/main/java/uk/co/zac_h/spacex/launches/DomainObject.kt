@@ -1,12 +1,12 @@
 package uk.co.zac_h.spacex.launches
 
-import uk.co.zac_h.spacex.*
+import uk.co.zac_h.spacex.core.types.DatePrecision
+import uk.co.zac_h.spacex.core.utils.EventDate
 import uk.co.zac_h.spacex.crew.Crew
-import uk.co.zac_h.spacex.dto.spacex.*
+import uk.co.zac_h.spacex.network.*
+import uk.co.zac_h.spacex.network.dto.spacex.*
 import uk.co.zac_h.spacex.statistics.graphs.padstats.LandingPad
 import uk.co.zac_h.spacex.statistics.graphs.padstats.Launchpad
-import uk.co.zac_h.spacex.types.DatePrecision
-import uk.co.zac_h.spacex.utils.EventDate
 import uk.co.zac_h.spacex.vehicles.cores.Core
 import uk.co.zac_h.spacex.vehicles.rockets.Rocket
 import uk.co.zac_h.spacex.vehicles.ships.Ship

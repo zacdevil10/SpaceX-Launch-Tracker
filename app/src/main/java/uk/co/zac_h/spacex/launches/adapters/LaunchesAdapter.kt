@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import uk.co.zac_h.spacex.core.utils.formatDate
 import uk.co.zac_h.spacex.databinding.ListItemLaunchesBinding
 import uk.co.zac_h.spacex.launches.Launch
-import uk.co.zac_h.spacex.utils.formatDate
 
 class LaunchesAdapter(val onClick: (Launch, View) -> Unit) :
     PagingDataAdapter<Launch, LaunchesAdapter.ViewHolder>(Comparator) {

@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.core.utils.formatCustomers
 import uk.co.zac_h.spacex.databinding.ListItemPayloadBinding
 import uk.co.zac_h.spacex.launches.Payload
-import uk.co.zac_h.spacex.utils.formatCustomers
 
 class PayloadAdapter(private var context: Context) :
     ListAdapter<Payload, PayloadAdapter.ViewHolder>(Comparator) {

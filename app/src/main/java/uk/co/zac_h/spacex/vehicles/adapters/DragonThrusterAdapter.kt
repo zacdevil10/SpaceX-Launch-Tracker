@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.core.utils.metricFormat
 import uk.co.zac_h.spacex.databinding.ListItemDragonThrusterBinding
-import uk.co.zac_h.spacex.dto.spacex.DragonThrusterConfiguration
-import uk.co.zac_h.spacex.utils.metricFormat
+import uk.co.zac_h.spacex.network.dto.spacex.DragonThrusterConfiguration
 
 class DragonThrusterAdapter(private val context: Context) :
     ListAdapter<DragonThrusterConfiguration, DragonThrusterAdapter.ViewHolder>(Comparator) {

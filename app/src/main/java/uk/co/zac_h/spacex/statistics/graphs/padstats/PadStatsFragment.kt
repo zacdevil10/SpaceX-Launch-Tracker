@@ -11,13 +11,13 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
-import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.core.types.PadType
 import uk.co.zac_h.spacex.databinding.FragmentPadStatsBinding
-import uk.co.zac_h.spacex.dto.spacex.StatsPadModel
+import uk.co.zac_h.spacex.network.ApiResult
+import uk.co.zac_h.spacex.network.dto.spacex.StatsPadModel
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
-import uk.co.zac_h.spacex.types.PadType
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 
 class PadStatsFragment : BaseFragment() {

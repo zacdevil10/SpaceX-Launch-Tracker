@@ -1,11 +1,11 @@
 package uk.co.zac_h.spacex.crew
 
-import uk.co.zac_h.spacex.SPACEX_CREW_STATUS_ACTIVE
-import uk.co.zac_h.spacex.SPACEX_CREW_STATUS_INACTIVE
-import uk.co.zac_h.spacex.SPACEX_CREW_STATUS_RETIRED
-import uk.co.zac_h.spacex.dto.spacex.*
+import uk.co.zac_h.spacex.core.utils.orUnknown
 import uk.co.zac_h.spacex.launches.Launch
-import uk.co.zac_h.spacex.utils.orUnknown
+import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_ACTIVE
+import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_INACTIVE
+import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_RETIRED
+import uk.co.zac_h.spacex.network.dto.spacex.*
 
 data class Crew(
     val name: String?,

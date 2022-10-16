@@ -1,9 +1,9 @@
 package uk.co.zac_h.spacex.launches
 
-import uk.co.zac_h.spacex.datasource.remote.launches.LaunchesPreviousPagingSource
-import uk.co.zac_h.spacex.datasource.remote.launches.LaunchesUpcomingPagingSource
-import uk.co.zac_h.spacex.retrofit.LaunchLibraryClient
-import uk.co.zac_h.spacex.retrofit.LaunchLibraryService
+import uk.co.zac_h.spacex.network.datasource.remote.launches.LaunchesPreviousPagingSource
+import uk.co.zac_h.spacex.network.datasource.remote.launches.LaunchesUpcomingPagingSource
+import uk.co.zac_h.spacex.network.retrofit.LaunchLibraryClient
+import uk.co.zac_h.spacex.network.retrofit.LaunchLibraryService
 import javax.inject.Inject
 
 class LaunchesRepository @Inject constructor(

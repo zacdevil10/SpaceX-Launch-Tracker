@@ -29,7 +29,7 @@ android {
             testCoverageEnabled true
         }
     }
-    namespace 'uk.co.zac_h'
+    namespace 'uk.co.zac_h.spacex.core'
 }
 
 dependencies {

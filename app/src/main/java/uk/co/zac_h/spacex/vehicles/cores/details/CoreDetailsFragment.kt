@@ -10,10 +10,10 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
-import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
 import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
+import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.vehicles.cores.Core
 import uk.co.zac_h.spacex.vehicles.cores.CoreViewModel
 

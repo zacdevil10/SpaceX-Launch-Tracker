@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.databinding.ListItemVehicleBinding
-import uk.co.zac_h.spacex.dto.spacex.Dragon
+import uk.co.zac_h.spacex.network.dto.spacex.Dragon
 import uk.co.zac_h.spacex.vehicles.VehiclesFragmentDirections
 
 class DragonAdapter(val setSelected: (String) -> Unit) :

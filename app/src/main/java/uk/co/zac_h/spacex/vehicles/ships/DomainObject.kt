@@ -1,9 +1,9 @@
 package uk.co.zac_h.spacex.vehicles.ships
 
-import uk.co.zac_h.spacex.dto.spacex.MassFormatted
-import uk.co.zac_h.spacex.dto.spacex.ShipQueriedResponse
-import uk.co.zac_h.spacex.dto.spacex.ShipResponse
 import uk.co.zac_h.spacex.launches.Launch
+import uk.co.zac_h.spacex.network.dto.spacex.MassFormatted
+import uk.co.zac_h.spacex.network.dto.spacex.ShipQueriedResponse
+import uk.co.zac_h.spacex.network.dto.spacex.ShipResponse
 
 data class Ship(
     val name: String?,

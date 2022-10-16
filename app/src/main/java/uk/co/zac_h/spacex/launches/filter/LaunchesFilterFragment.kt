@@ -23,13 +23,15 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
 import dagger.hilt.android.AndroidEntryPoint
-import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.core.types.Order
+import uk.co.zac_h.spacex.core.types.RocketType
+import uk.co.zac_h.spacex.core.utils.formatRange
+import uk.co.zac_h.spacex.core.utils.hideKeyboard
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesFilterBinding
 import uk.co.zac_h.spacex.databinding.LaunchesFilterBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
-import uk.co.zac_h.spacex.types.Order
-import uk.co.zac_h.spacex.types.RocketType
+import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.utils.*
 
 @AndroidEntryPoint

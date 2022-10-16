@@ -27,7 +27,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <uk.co.zac_h.widget.LaunchView
+            <uk.co.zac_h.spacex.widget.LaunchView
                 android:id="@+id/launch_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

@@ -6,12 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
-import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.core.utils.orUnknown
 import uk.co.zac_h.spacex.databinding.FragmentCompanyBinding
+import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.utils.openWebLink
-import uk.co.zac_h.spacex.utils.orUnknown
 
 class CompanyFragment : BaseFragment() {
 

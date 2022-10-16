@@ -1,8 +1,8 @@
 package uk.co.zac_h.spacex.about.company
 
-import uk.co.zac_h.spacex.dto.spacex.CompanyAddress
-import uk.co.zac_h.spacex.dto.spacex.CompanyResponse
-import uk.co.zac_h.spacex.utils.orUnknown
+import uk.co.zac_h.spacex.core.utils.orUnknown
+import uk.co.zac_h.spacex.network.dto.spacex.CompanyAddress
+import uk.co.zac_h.spacex.network.dto.spacex.CompanyResponse
 import java.text.DecimalFormat
 
 data class Company(

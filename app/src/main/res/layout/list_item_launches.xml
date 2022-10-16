@@ -11,13 +11,13 @@
     android:paddingEnd="@dimen/large_margin"
     android:paddingBottom="@dimen/medium_margin">
 
-    <uk.co.zac_h.widget.LaunchView
+    <uk.co.zac_h.spacex.widget.LaunchView
         android:id="@+id/launch_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
