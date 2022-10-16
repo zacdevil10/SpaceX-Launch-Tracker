@@ -1,13 +1,13 @@
 package uk.co.zac_h.spacex.about.history
 
-import uk.co.zac_h.spacex.Cache
-import uk.co.zac_h.spacex.Repository
-import uk.co.zac_h.spacex.datasource.remote.HistoryDataSourceClient
-import uk.co.zac_h.spacex.datasource.remote.RemoteDataSource
-import uk.co.zac_h.spacex.dto.spacex.HistoryResponse
-import uk.co.zac_h.spacex.dto.spacex.NetworkDocsResponse
-import uk.co.zac_h.spacex.types.Order
-import uk.co.zac_h.spacex.utils.Keys
+import uk.co.zac_h.spacex.core.types.Order
+import uk.co.zac_h.spacex.core.utils.Keys
+import uk.co.zac_h.spacex.network.Cache
+import uk.co.zac_h.spacex.network.Repository
+import uk.co.zac_h.spacex.network.datasource.remote.HistoryDataSourceClient
+import uk.co.zac_h.spacex.network.datasource.remote.RemoteDataSource
+import uk.co.zac_h.spacex.network.dto.spacex.HistoryResponse
+import uk.co.zac_h.spacex.network.dto.spacex.NetworkDocsResponse
 import uk.co.zac_h.spacex.utils.OrderSharedPreferences
 import javax.inject.Inject
 

@@ -13,11 +13,10 @@ import androidx.navigation.navGraphViewModels
 import com.google.android.material.button.MaterialButton
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.core.utils.formatDate
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
 import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.launches.LaunchesViewModel
-import uk.co.zac_h.spacex.types.DatePrecision
-import uk.co.zac_h.spacex.utils.formatDate
 import uk.co.zac_h.spacex.utils.openWebLink
 
 class LaunchDetailsFragment : BaseFragment() {
@@ -68,10 +67,7 @@ class LaunchDetailsFragment : BaseFragment() {
 
             launchDetailsWatchButton.setLink(response.links?.webcast)
 
-            if (response.datePrecision == DatePrecision.DAY ||
-                response.datePrecision == DatePrecision.HOUR &&
-                response.upcoming == true
-            ) {
+            if (response.upcoming == true) {
                 launchDetailsCalendarButton.visibility = View.VISIBLE
                 launchDetailsCalendarButton.setOnClickListener {
                     createEvent(response)

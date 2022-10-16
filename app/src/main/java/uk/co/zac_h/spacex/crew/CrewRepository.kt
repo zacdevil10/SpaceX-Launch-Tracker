@@ -1,11 +1,11 @@
 package uk.co.zac_h.spacex.crew
 
-import uk.co.zac_h.spacex.Cache
-import uk.co.zac_h.spacex.Repository
-import uk.co.zac_h.spacex.datasource.remote.CrewDataSourceClient
-import uk.co.zac_h.spacex.datasource.remote.RemoteDataSource
-import uk.co.zac_h.spacex.dto.spacex.CrewQueriedResponse
-import uk.co.zac_h.spacex.dto.spacex.NetworkDocsResponse
+import uk.co.zac_h.spacex.network.Cache
+import uk.co.zac_h.spacex.network.Repository
+import uk.co.zac_h.spacex.network.datasource.remote.CrewDataSourceClient
+import uk.co.zac_h.spacex.network.datasource.remote.RemoteDataSource
+import uk.co.zac_h.spacex.network.dto.spacex.CrewQueriedResponse
+import uk.co.zac_h.spacex.network.dto.spacex.NetworkDocsResponse
 import javax.inject.Inject
 
 class CrewRepository @Inject constructor(

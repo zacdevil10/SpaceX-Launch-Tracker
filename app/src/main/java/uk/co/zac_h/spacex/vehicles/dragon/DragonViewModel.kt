@@ -3,13 +3,13 @@ package uk.co.zac_h.spacex.vehicles.dragon
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import uk.co.zac_h.spacex.ApiResult
-import uk.co.zac_h.spacex.CachePolicy
-import uk.co.zac_h.spacex.Repository
-import uk.co.zac_h.spacex.async
-import uk.co.zac_h.spacex.dto.spacex.Dragon
-import uk.co.zac_h.spacex.types.Order
-import uk.co.zac_h.spacex.utils.sortedBy
+import uk.co.zac_h.spacex.core.types.Order
+import uk.co.zac_h.spacex.core.utils.sortedBy
+import uk.co.zac_h.spacex.network.ApiResult
+import uk.co.zac_h.spacex.network.CachePolicy
+import uk.co.zac_h.spacex.network.Repository
+import uk.co.zac_h.spacex.network.async
+import uk.co.zac_h.spacex.network.dto.spacex.Dragon
 import javax.inject.Inject
 
 @HiltViewModel

@@ -2,12 +2,12 @@ package uk.co.zac_h.spacex.launches.filter
 
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import uk.co.zac_h.spacex.ApiResult
-import uk.co.zac_h.spacex.CachePolicy
+import uk.co.zac_h.spacex.core.utils.filterAll
+import uk.co.zac_h.spacex.core.utils.sortedBy
 import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.launches.LaunchesRepository
-import uk.co.zac_h.spacex.utils.filterAll
-import uk.co.zac_h.spacex.utils.sortedBy
+import uk.co.zac_h.spacex.network.ApiResult
+import uk.co.zac_h.spacex.network.CachePolicy
 import javax.inject.Inject
 
 @HiltViewModel

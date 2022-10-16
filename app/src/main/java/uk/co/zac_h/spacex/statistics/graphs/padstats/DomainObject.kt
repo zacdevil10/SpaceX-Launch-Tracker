@@ -1,8 +1,8 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
-import uk.co.zac_h.spacex.*
-import uk.co.zac_h.spacex.dto.spacex.*
 import uk.co.zac_h.spacex.launches.Launch
+import uk.co.zac_h.spacex.network.*
+import uk.co.zac_h.spacex.network.dto.spacex.*
 import uk.co.zac_h.spacex.vehicles.rockets.Rocket
 
 data class LandingPad(

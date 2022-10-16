@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <uk.co.zac_h.widget.VehicleView
+    <uk.co.zac_h.spacex.widget.VehicleView
         android:id="@+id/vehicle_view"
         android:layout_width="344dp"
         android:layout_height="wrap_content"
@@ -32,6 +32,6 @@
             app:layout_constraintTop_toBottomOf="@id/vehicle_name"
             tools:text="@tools:sample/lorem/random" />
 
-    </uk.co.zac_h.widget.VehicleView>
+    </uk.co.zac_h.spacex.widget.VehicleView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

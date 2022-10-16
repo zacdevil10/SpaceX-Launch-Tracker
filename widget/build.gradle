@@ -30,7 +30,7 @@ android {
     buildFeatures {
         viewBinding true
     }
-    namespace 'uk.co.zac_h.widget'
+    namespace 'uk.co.zac_h.spacex.widget'
 }
 
 dependencies {

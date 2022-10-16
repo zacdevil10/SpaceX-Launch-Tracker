@@ -1,11 +1,11 @@
 package uk.co.zac_h.spacex.vehicles.cores
 
-import uk.co.zac_h.spacex.*
-import uk.co.zac_h.spacex.dto.spacex.CoreQueriedResponse
-import uk.co.zac_h.spacex.dto.spacex.CoreResponse
-import uk.co.zac_h.spacex.dto.spacex.CoreStatus
-import uk.co.zac_h.spacex.dto.spacex.LaunchResponse
 import uk.co.zac_h.spacex.launches.Launch
+import uk.co.zac_h.spacex.network.*
+import uk.co.zac_h.spacex.network.dto.spacex.CoreQueriedResponse
+import uk.co.zac_h.spacex.network.dto.spacex.CoreResponse
+import uk.co.zac_h.spacex.network.dto.spacex.CoreStatus
+import uk.co.zac_h.spacex.network.dto.spacex.LaunchResponse
 
 data class Core(
     val serial: String?,

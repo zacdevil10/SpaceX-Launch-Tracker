@@ -1,8 +1,8 @@
 package uk.co.zac_h.spacex.news.reddit
 
-import uk.co.zac_h.spacex.datasource.remote.news.RedditPagingSource
-import uk.co.zac_h.spacex.retrofit.RedditHttpClient
-import uk.co.zac_h.spacex.retrofit.RedditService
+import uk.co.zac_h.spacex.network.datasource.remote.news.RedditPagingSource
+import uk.co.zac_h.spacex.network.retrofit.RedditHttpClient
+import uk.co.zac_h.spacex.network.retrofit.RedditService
 import javax.inject.Inject
 
 class RedditFeedRepository @Inject constructor(

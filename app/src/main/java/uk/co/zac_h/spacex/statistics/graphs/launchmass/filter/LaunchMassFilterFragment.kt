@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
+import uk.co.zac_h.spacex.core.types.LaunchMassViewType
+import uk.co.zac_h.spacex.core.types.RocketType
 import uk.co.zac_h.spacex.databinding.FragmentLaunchMassFilterBinding
-import uk.co.zac_h.spacex.types.LaunchMassViewType
-import uk.co.zac_h.spacex.types.RocketType
 import uk.co.zac_h.spacex.utils.BottomDrawerFragment
 
 class LaunchMassFilterFragment : BottomDrawerFragment() {

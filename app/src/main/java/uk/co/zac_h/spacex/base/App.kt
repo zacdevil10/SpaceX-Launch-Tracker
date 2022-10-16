@@ -3,7 +3,7 @@ package uk.co.zac_h.spacex.base
 import android.app.Application
 import android.content.Context
 import dagger.hilt.android.HiltAndroidApp
-import uk.co.zac_h.spacex.DEFAULT_PREFERENCES
+import uk.co.zac_h.spacex.network.DEFAULT_PREFERENCES
 import uk.co.zac_h.spacex.utils.repo.ThemePreferenceRepository
 
 @HiltAndroidApp

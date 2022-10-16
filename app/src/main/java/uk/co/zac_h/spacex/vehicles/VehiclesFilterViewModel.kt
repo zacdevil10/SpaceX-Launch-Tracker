@@ -1,7 +1,7 @@
 package uk.co.zac_h.spacex.vehicles
 
 import androidx.lifecycle.*
-import uk.co.zac_h.spacex.types.Order
+import uk.co.zac_h.spacex.core.types.Order
 
 class VehiclesFilterViewModel : ViewModel() {
 

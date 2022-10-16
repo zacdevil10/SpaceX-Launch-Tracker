@@ -6,14 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import uk.co.zac_h.spacex.ApiResult
-import uk.co.zac_h.spacex.CachePolicy
-import uk.co.zac_h.spacex.Repository
-import uk.co.zac_h.spacex.async
+import uk.co.zac_h.spacex.core.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.launches.Launch
-import uk.co.zac_h.spacex.query.StatisticsQuery
+import uk.co.zac_h.spacex.network.ApiResult
+import uk.co.zac_h.spacex.network.CachePolicy
+import uk.co.zac_h.spacex.network.Repository
+import uk.co.zac_h.spacex.network.async
+import uk.co.zac_h.spacex.network.query.StatisticsQuery
 import uk.co.zac_h.spacex.statistics.StatisticsRepository
-import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.LandingHistoryModel
 import javax.inject.Inject
 

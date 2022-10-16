@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.core.types.Order
 import uk.co.zac_h.spacex.databinding.FragmentVehiclesFilterBinding
-import uk.co.zac_h.spacex.types.Order
 import uk.co.zac_h.spacex.utils.BottomDrawerFragment
 
 class VehiclesFilterFragment : BottomDrawerFragment() {

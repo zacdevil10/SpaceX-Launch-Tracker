@@ -11,13 +11,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.transition.MaterialContainerTransform
-import uk.co.zac_h.spacex.*
+import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.crew.Crew
 import uk.co.zac_h.spacex.crew.CrewViewModel
 import uk.co.zac_h.spacex.crew.adapters.CrewMissionsAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewItemBinding
-import uk.co.zac_h.spacex.dto.spacex.CrewStatus
+import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_ACTIVE
+import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_INACTIVE
+import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_RETIRED
+import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_UNKNOWN
+import uk.co.zac_h.spacex.network.dto.spacex.CrewStatus
 
 class CrewItemFragment : BaseFragment() {
 

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import uk.co.zac_h.spacex.dto.spacex.LaunchResponse
+import uk.co.zac_h.spacex.network.dto.spacex.LaunchResponse
 import javax.inject.Inject
 
 @HiltViewModel

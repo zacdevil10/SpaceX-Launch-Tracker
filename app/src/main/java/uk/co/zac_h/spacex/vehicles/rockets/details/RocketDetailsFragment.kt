@@ -11,11 +11,11 @@ import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.core.utils.metricFormat
+import uk.co.zac_h.spacex.core.utils.setupCollapsingToolbar
 import uk.co.zac_h.spacex.databinding.CollapsingToolbarBinding
 import uk.co.zac_h.spacex.databinding.FragmentRocketDetailsBinding
-import uk.co.zac_h.spacex.utils.metricFormat
 import uk.co.zac_h.spacex.utils.setImageAndTint
-import uk.co.zac_h.spacex.utils.setupCollapsingToolbar
 import uk.co.zac_h.spacex.vehicles.adapters.RocketPayloadAdapter
 import uk.co.zac_h.spacex.vehicles.rockets.Rocket
 import uk.co.zac_h.spacex.vehicles.rockets.RocketViewModel

@@ -19,9 +19,9 @@ import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.core.utils.orUnknown
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
-import uk.co.zac_h.spacex.utils.orUnknown
 
 @AndroidEntryPoint
 class PreviousLaunchesListFragment : BaseFragment() {

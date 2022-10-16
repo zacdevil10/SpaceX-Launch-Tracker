@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.utils.models
 
-import uk.co.zac_h.spacex.types.RocketType
+import uk.co.zac_h.spacex.core.types.RocketType
 
 data class HistoryStatsModel(
     val rocket: RocketType,

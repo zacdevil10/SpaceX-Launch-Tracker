@@ -5,23 +5,23 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.map
-import uk.co.zac_h.spacex.filter.*
-import uk.co.zac_h.spacex.types.Order
-import uk.co.zac_h.spacex.types.RocketType
+import uk.co.zac_h.spacex.core.filter.SearchFilter
+import uk.co.zac_h.spacex.core.types.Order
+import uk.co.zac_h.spacex.core.types.RocketType
 
-class LaunchesFilterBuilder : MediatorLiveData<LaunchesFilter>() {
+class LaunchesFilterBuilder : MediatorLiveData<uk.co.zac_h.spacex.core.filter.LaunchesFilter>() {
 
     private val _search = MutableLiveData(SearchFilter())
     val search: LiveData<SearchFilter> = _search
 
-    private val _date = MutableLiveData(DateRangeFilter())
-    val date: LiveData<DateRangeFilter> = _date
+    private val _date = MutableLiveData(uk.co.zac_h.spacex.core.filter.DateRangeFilter())
+    val date: LiveData<uk.co.zac_h.spacex.core.filter.DateRangeFilter> = _date
 
-    private val _order = MutableLiveData(FilterOrder())
-    val order: LiveData<FilterOrder> = _order
+    private val _order = MutableLiveData(uk.co.zac_h.spacex.core.filter.FilterOrder())
+    val order: LiveData<uk.co.zac_h.spacex.core.filter.FilterOrder> = _order
 
-    private val _rocketType = MutableLiveData(RocketTypeFilter())
-    val rocketType: LiveData<RocketTypeFilter> = _rocketType
+    private val _rocketType = MutableLiveData(uk.co.zac_h.spacex.core.filter.RocketTypeFilter())
+    val rocketType: LiveData<uk.co.zac_h.spacex.core.filter.RocketTypeFilter> = _rocketType
 
     val isFiltered: LiveData<Boolean> = this.map {
         it.search.isFiltered || it.rocket.isFiltered || it.dateRange.isFiltered || it.order.isFiltered
@@ -48,32 +48,36 @@ class LaunchesFilterBuilder : MediatorLiveData<LaunchesFilter>() {
     }
 
     fun filterByDate(range: Pair<Long, Long>) {
-        _date.value = DateRangeFilter(range.first..range.second)
+        _date.value = uk.co.zac_h.spacex.core.filter.DateRangeFilter(range.first..range.second)
     }
 
     fun clearDateFilter() {
-        _date.value = DateRangeFilter()
+        _date.value = uk.co.zac_h.spacex.core.filter.DateRangeFilter()
     }
 
     fun setOrder(order: Order) {
-        _order.value = FilterOrder(order)
+        _order.value = uk.co.zac_h.spacex.core.filter.FilterOrder(order)
     }
 
     fun filterByRocketType(rockets: List<RocketType>) {
-        _rocketType.value = RocketTypeFilter(rockets)
+        _rocketType.value = uk.co.zac_h.spacex.core.filter.RocketTypeFilter(rockets)
     }
 
     fun clear() {
         _search.value = SearchFilter()
-        _date.value = DateRangeFilter()
-        _order.value = FilterOrder()
-        _rocketType.value = RocketTypeFilter()
+        _date.value = uk.co.zac_h.spacex.core.filter.DateRangeFilter()
+        _order.value = uk.co.zac_h.spacex.core.filter.FilterOrder()
+        _rocketType.value = uk.co.zac_h.spacex.core.filter.RocketTypeFilter()
     }
 
-    private fun combine(vararg filters: Filter?) = LaunchesFilter(
-        filters.filterIsInstance<SearchFilter>().firstOrNull() ?: SearchFilter(),
-        filters.filterIsInstance<DateRangeFilter>().firstOrNull() ?: DateRangeFilter(),
-        filters.filterIsInstance<FilterOrder>().firstOrNull() ?: FilterOrder(),
-        filters.filterIsInstance<RocketTypeFilter>().firstOrNull() ?: RocketTypeFilter()
-    )
+    private fun combine(vararg filters: uk.co.zac_h.spacex.core.filter.Filter?) =
+        uk.co.zac_h.spacex.core.filter.LaunchesFilter(
+            filters.filterIsInstance<SearchFilter>().firstOrNull() ?: SearchFilter(),
+            filters.filterIsInstance<uk.co.zac_h.spacex.core.filter.DateRangeFilter>().firstOrNull()
+                ?: uk.co.zac_h.spacex.core.filter.DateRangeFilter(),
+            filters.filterIsInstance<uk.co.zac_h.spacex.core.filter.FilterOrder>().firstOrNull()
+                ?: uk.co.zac_h.spacex.core.filter.FilterOrder(),
+            filters.filterIsInstance<uk.co.zac_h.spacex.core.filter.RocketTypeFilter>()
+                .firstOrNull() ?: uk.co.zac_h.spacex.core.filter.RocketTypeFilter()
+        )
 }

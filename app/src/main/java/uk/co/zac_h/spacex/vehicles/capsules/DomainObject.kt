@@ -1,11 +1,11 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
-import uk.co.zac_h.spacex.*
-import uk.co.zac_h.spacex.dto.spacex.CapsuleQueriedResponse
-import uk.co.zac_h.spacex.dto.spacex.CapsuleResponse
-import uk.co.zac_h.spacex.dto.spacex.CapsuleStatus
-import uk.co.zac_h.spacex.dto.spacex.CapsuleType
 import uk.co.zac_h.spacex.launches.Launch
+import uk.co.zac_h.spacex.network.*
+import uk.co.zac_h.spacex.network.dto.spacex.CapsuleQueriedResponse
+import uk.co.zac_h.spacex.network.dto.spacex.CapsuleResponse
+import uk.co.zac_h.spacex.network.dto.spacex.CapsuleStatus
+import uk.co.zac_h.spacex.network.dto.spacex.CapsuleType
 
 data class Capsule(
     val serial: String?,
