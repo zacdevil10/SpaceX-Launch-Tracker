@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_background"
     android:clipToPadding="false"
-    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     app:spanCount="2"
     tools:context=".launches.details.crew.LaunchDetailsCrewFragment"
     tools:ignore="RtlSymmetry"

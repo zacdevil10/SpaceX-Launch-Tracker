@@ -17,11 +17,6 @@ import uk.co.zac_h.spacex.crew.Crew
 import uk.co.zac_h.spacex.crew.CrewViewModel
 import uk.co.zac_h.spacex.crew.adapters.CrewMissionsAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewItemBinding
-import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_ACTIVE
-import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_INACTIVE
-import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_RETIRED
-import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_UNKNOWN
-import uk.co.zac_h.spacex.network.dto.spacex.CrewStatus
 
 class CrewItemFragment : BaseFragment() {
 
@@ -82,12 +77,7 @@ class CrewItemFragment : BaseFragment() {
 
         binding.crewName.text = person.name
         person.status?.let { status ->
-            binding.crewStatus.text = when (status) {
-                CrewStatus.ACTIVE -> SPACEX_CREW_STATUS_ACTIVE
-                CrewStatus.INACTIVE -> SPACEX_CREW_STATUS_INACTIVE
-                CrewStatus.RETIRED -> SPACEX_CREW_STATUS_RETIRED
-                CrewStatus.UNKNOWN -> SPACEX_CREW_STATUS_UNKNOWN
-            }.replaceFirstChar { it.uppercase() }
+            binding.crewStatus.text = status.status
         }
         binding.crewAgency.text = person.agency
 

@@ -8,9 +8,9 @@ import androidx.navigation.navGraphViewModels
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.crew.Crew
-import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCrewBinding
 import uk.co.zac_h.spacex.launches.LaunchesViewModel
+import uk.co.zac_h.spacex.launches.adapters.LaunchCrewAdapter
 
 class LaunchDetailsCrewFragment : BaseFragment() {
 
@@ -20,7 +20,7 @@ class LaunchDetailsCrewFragment : BaseFragment() {
 
     private lateinit var binding: FragmentLaunchDetailsCrewBinding
 
-    private lateinit var crewAdapter: CrewAdapter
+    private lateinit var crewAdapter: LaunchCrewAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,10 +32,10 @@ class LaunchDetailsCrewFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        crewAdapter = CrewAdapter()
+        crewAdapter = LaunchCrewAdapter()
 
         binding.launchDetailsCrewRecycler.apply {
-            setHasFixedSize(true)
+            setHasFixedSize(false)
             adapter = crewAdapter
         }
 
