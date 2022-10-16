@@ -11,7 +11,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesBinding
-import uk.co.zac_h.spacex.types.LaunchType
 import uk.co.zac_h.spacex.utils.ViewPagerAdapter
 
 @AndroidEntryPoint
@@ -21,8 +20,8 @@ class LaunchesFragment : BaseFragment() {
     private val binding get() = checkNotNull(_binding) { "Binding is null" }
 
     private val fragments: List<BaseFragment> = listOf(
-        LaunchesListFragment.newInstance(LaunchType.UPCOMING),
-        LaunchesListFragment.newInstance(LaunchType.PAST)
+        UpcomingLaunchesListFragment(),
+        PreviousLaunchesListFragment()
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

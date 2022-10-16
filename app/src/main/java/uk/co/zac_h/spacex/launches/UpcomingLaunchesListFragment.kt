@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
@@ -22,38 +21,21 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
-import uk.co.zac_h.spacex.types.LaunchType
 import uk.co.zac_h.spacex.utils.orUnknown
 
 @AndroidEntryPoint
-class LaunchesListFragment : BaseFragment() {
+class UpcomingLaunchesListFragment : BaseFragment() {
 
-    override val title: String by lazy { type.typeString }
+    override val title: String by lazy { "upcoming" }
 
     private val viewModel: LaunchesViewModel by navGraphViewModels(R.id.nav_graph) {
         defaultViewModelProviderFactory
     }
 
-    private val flowViewModel: FlowTypeViewModel by viewModels()
-
-    private lateinit var type: LaunchType
-
     private var _binding: FragmentLaunchesListBinding? = null
     private val binding get() = checkNotNull(_binding) { "Binding is null" }
 
     private lateinit var launchesAdapter: LaunchesAdapter
-
-    companion object {
-        fun newInstance(type: LaunchType) = LaunchesListFragment().apply {
-            this.type = type
-        }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        if (::type.isInitialized) flowViewModel.type = type
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,18 +51,13 @@ class LaunchesListFragment : BaseFragment() {
         launchesAdapter = LaunchesAdapter { launch, root -> onItemClick(launch, root) }
 
         binding.launchesRecycler.apply {
-            layoutManager = LinearLayoutManager(this@LaunchesListFragment.context)
+            layoutManager = LinearLayoutManager(this@UpcomingLaunchesListFragment.context)
             setHasFixedSize(true)
             adapter = launchesAdapter
         }
 
-        when (type) {
-            LaunchType.UPCOMING -> viewModel.upcomingLaunchesLiveData.observe(viewLifecycleOwner) { pagingData ->
-                launchesAdapter.submitData(lifecycle, pagingData.map { Launch(it) })
-            }
-            LaunchType.PAST -> viewModel.previousLaunchesLiveData.observe(viewLifecycleOwner) { pagingData ->
-                launchesAdapter.submitData(lifecycle, pagingData.map { Launch(it) })
-            }
+        viewModel.upcomingLaunchesLiveData.observe(viewLifecycleOwner) { pagingData ->
+            launchesAdapter.submitData(lifecycle, pagingData.map { Launch(it) })
         }
 
         binding.swipeRefresh.setOnRefreshListener {
