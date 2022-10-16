@@ -2,15 +2,14 @@ package uk.co.zac_h.spacex.crew
 
 import uk.co.zac_h.spacex.core.utils.orUnknown
 import uk.co.zac_h.spacex.launches.Launch
-import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_ACTIVE
-import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_INACTIVE
-import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_RETIRED
+import uk.co.zac_h.spacex.network.*
 import uk.co.zac_h.spacex.network.dto.spacex.*
 
 data class Crew(
     val name: String?,
     val status: CrewStatus?,
     val agency: String?,
+    val bio: String? = null,
     val image: String?,
     val wikipedia: String?,
     val launchIds: List<String>? = null,
@@ -25,6 +24,7 @@ data class Crew(
         name = response.astronaut?.name,
         status = response.astronaut?.status?.name?.toCrewStatus(),
         agency = response.astronaut?.agency?.name,
+        bio = response.astronaut?.bio,
         image = response.astronaut?.profileImage,
         wikipedia = null,
         role = response.role?.role,
@@ -88,6 +88,8 @@ data class Crew(
             SPACEX_CREW_STATUS_ACTIVE -> CrewStatus.ACTIVE
             SPACEX_CREW_STATUS_INACTIVE -> CrewStatus.INACTIVE
             SPACEX_CREW_STATUS_RETIRED -> CrewStatus.RETIRED
+            SPACEX_CREW_STATUS_DECEASED -> CrewStatus.DECEASED
+            SPACEX_CREW_LOST_IN_TRAINING -> CrewStatus.LOST_IN_TRAINING
             else -> CrewStatus.UNKNOWN
         }
     }
