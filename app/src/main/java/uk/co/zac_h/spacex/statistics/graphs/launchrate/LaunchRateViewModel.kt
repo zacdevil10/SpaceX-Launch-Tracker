@@ -3,17 +3,9 @@ package uk.co.zac_h.spacex.statistics.graphs.launchrate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import uk.co.zac_h.spacex.core.types.RocketType
-import uk.co.zac_h.spacex.core.utils.formatDateMillisYYYY
-import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
-import uk.co.zac_h.spacex.network.Repository
-import uk.co.zac_h.spacex.network.async
-import uk.co.zac_h.spacex.network.query.StatisticsQuery
 import uk.co.zac_h.spacex.statistics.StatisticsRepository
 import uk.co.zac_h.spacex.utils.models.RateStatsModel
 import javax.inject.Inject
@@ -26,11 +18,11 @@ class LaunchRateViewModel @Inject constructor(
     private val _launchRate = MutableLiveData<ApiResult<List<RateStatsModel>>>()
     val launchRate: LiveData<ApiResult<List<RateStatsModel>>> = _launchRate
 
-    val cacheLocation: Repository.RequestLocation
-        get() = repository.cacheLocation
+    /*val cacheLocation: Repository.RequestLocation
+        get() = repository.cacheLocation*/
 
     fun get(cachePolicy: CachePolicy = CachePolicy.EXPIRES) {
-        viewModelScope.launch {
+        /*viewModelScope.launch {
             val response = async(_launchRate) {
                 repository.fetch(
                     key = "launch_rate",
@@ -61,6 +53,6 @@ class LaunchRateViewModel @Inject constructor(
                     }
                 }
             }
-        }
+        }*/
     }
 }

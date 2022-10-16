@@ -6,22 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
-import androidx.paging.LoadState
-import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.core.utils.orUnknown
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
 import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
+import uk.co.zac_h.spacex.network.ApiResult
+import uk.co.zac_h.spacex.network.CachePolicy
 
 @AndroidEntryPoint
 class UpcomingLaunchesListFragment : BaseFragment() {
@@ -56,34 +53,27 @@ class UpcomingLaunchesListFragment : BaseFragment() {
             adapter = launchesAdapter
         }
 
-        viewModel.upcomingLaunchesLiveData.observe(viewLifecycleOwner) { pagingData ->
-            launchesAdapter.submitData(lifecycle, pagingData.map { Launch(it) })
-        }
-
-        binding.swipeRefresh.setOnRefreshListener {
-            launchesAdapter.refresh()
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            launchesAdapter.loadStateFlow.collectLatest {
-                if (it.refresh is LoadState.Loading) {
-                    binding.progress.show()
-                } else {
+        viewModel.upcomingLaunchesLiveData.observe(viewLifecycleOwner) {
+            when (it) {
+                is ApiResult.Pending -> binding.progress.show()
+                is ApiResult.Success -> {
+                    binding.progress.hide()
                     binding.swipeRefresh.isRefreshing = false
 
-                    if (it.refresh is LoadState.NotLoading) binding.progress.hide()
-
-                    val error = when {
-                        it.prepend is LoadState.Error -> it.prepend as LoadState.Error
-                        it.append is LoadState.Error -> it.append as LoadState.Error
-                        it.refresh is LoadState.Error -> it.refresh as LoadState.Error
-                        else -> null
-                    }
-
-                    error?.error?.message?.let { message -> showError(message) }
+                    launchesAdapter.submitList(it.data)
+                }
+                is ApiResult.Failure -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    showError(it.exception.message.orUnknown())
                 }
             }
         }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.getUpcomingLaunches(CachePolicy.REFRESH)
+        }
+
+        viewModel.getUpcomingLaunches()
     }
 
     override fun onDestroyView() {
@@ -106,6 +96,6 @@ class UpcomingLaunchesListFragment : BaseFragment() {
     }
 
     override fun networkAvailable() {
-        launchesAdapter.retry()
+        viewModel.getUpcomingLaunches()
     }
 }

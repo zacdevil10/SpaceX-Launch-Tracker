@@ -28,7 +28,6 @@ import uk.co.zac_h.spacex.core.types.RocketType
 import uk.co.zac_h.spacex.core.utils.sum
 import uk.co.zac_h.spacex.databinding.FragmentLaunchMassBinding
 import uk.co.zac_h.spacex.network.ApiResult
-import uk.co.zac_h.spacex.network.Repository
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
 import uk.co.zac_h.spacex.statistics.graphs.launchmass.filter.LaunchMassFilterViewModel
 import uk.co.zac_h.spacex.utils.models.KeysModel
@@ -146,7 +145,7 @@ class LaunchMassFragment : BaseFragment() {
             when (response) {
                 is ApiResult.Pending -> {}
                 is ApiResult.Success -> response.data?.let {
-                    update(viewModel.cacheLocation != Repository.RequestLocation.CACHE, it)
+                    update(false/*viewModel.cacheLocation != Repository.RequestLocation.CACHE*/, it)
                 }
                 is ApiResult.Failure -> showError(response.exception.message)
             }

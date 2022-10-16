@@ -21,7 +21,7 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.core.utils.orUnknown
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesListBinding
-import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
+import uk.co.zac_h.spacex.launches.adapters.PaginatedLaunchesAdapter
 
 @AndroidEntryPoint
 class PreviousLaunchesListFragment : BaseFragment() {
@@ -35,7 +35,7 @@ class PreviousLaunchesListFragment : BaseFragment() {
     private var _binding: FragmentLaunchesListBinding? = null
     private val binding get() = checkNotNull(_binding) { "Binding is null" }
 
-    private lateinit var launchesAdapter: LaunchesAdapter
+    private lateinit var launchesAdapter: PaginatedLaunchesAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,7 +48,7 @@ class PreviousLaunchesListFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        launchesAdapter = LaunchesAdapter { launch, root -> onItemClick(launch, root) }
+        launchesAdapter = PaginatedLaunchesAdapter { launch, root -> onItemClick(launch, root) }
 
         binding.launchesRecycler.apply {
             layoutManager = LinearLayoutManager(this@PreviousLaunchesListFragment.context)
