@@ -12,8 +12,7 @@ interface LaunchLibraryService {
 
     @GET(SPACEX_UPCOMING_LAUNCHES)
     suspend fun getUpcomingLaunches(
-        @Query("limit") limit: Int,
-        @Query("offset") offset: Int,
+        @Query("limit") limit: Int = 10,
         @Query("search") search: String = "SpaceX",
         @Query("mode") mode: String = "detailed"
     ): Response<LaunchLibraryPaginatedResponse<LaunchResponse>>

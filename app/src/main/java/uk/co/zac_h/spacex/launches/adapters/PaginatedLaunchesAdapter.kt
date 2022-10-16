@@ -3,15 +3,15 @@ package uk.co.zac_h.spacex.launches.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.core.utils.formatDate
 import uk.co.zac_h.spacex.databinding.ListItemLaunchesBinding
 import uk.co.zac_h.spacex.launches.Launch
 
-class LaunchesAdapter(val onClick: (Launch, View) -> Unit) :
-    ListAdapter<Launch, LaunchesAdapter.ViewHolder>(Comparator) {
+class PaginatedLaunchesAdapter(val onClick: (Launch, View) -> Unit) :
+    PagingDataAdapter<Launch, PaginatedLaunchesAdapter.ViewHolder>(Comparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
         ListItemLaunchesBinding.inflate(

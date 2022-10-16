@@ -30,7 +30,7 @@ import uk.co.zac_h.spacex.core.utils.formatRange
 import uk.co.zac_h.spacex.core.utils.hideKeyboard
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesFilterBinding
 import uk.co.zac_h.spacex.databinding.LaunchesFilterBinding
-import uk.co.zac_h.spacex.launches.adapters.LaunchesAdapter
+import uk.co.zac_h.spacex.launches.adapters.PaginatedLaunchesAdapter
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.utils.*
 
@@ -42,7 +42,7 @@ class LaunchesFilterFragment : Fragment() {
     private lateinit var binding: FragmentLaunchesFilterBinding
     private lateinit var launchFilter: LaunchesFilterBinding
 
-    private lateinit var launchesAdapter: LaunchesAdapter
+    private lateinit var launchesAdapter: PaginatedLaunchesAdapter
 
     private lateinit var filterBehavior: BottomSheetBehavior<ConstraintLayout>
 

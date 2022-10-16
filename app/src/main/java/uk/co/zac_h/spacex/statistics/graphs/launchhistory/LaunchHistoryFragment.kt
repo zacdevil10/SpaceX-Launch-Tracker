@@ -29,7 +29,6 @@ import uk.co.zac_h.spacex.core.types.RocketType
 import uk.co.zac_h.spacex.core.utils.generateCenterSpannableText
 import uk.co.zac_h.spacex.databinding.FragmentLaunchHistoryBinding
 import uk.co.zac_h.spacex.network.ApiResult
-import uk.co.zac_h.spacex.network.Repository
 import uk.co.zac_h.spacex.statistics.graphs.launchhistory.filter.LaunchHistoryFilterViewModel
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 
@@ -100,7 +99,8 @@ class LaunchHistoryFragment : BaseFragment() {
             when (response) {
                 is ApiResult.Pending -> {}
                 is ApiResult.Success -> response.data?.let {
-                    val animate = viewModel.cacheLocation != Repository.RequestLocation.CACHE
+                    val animate =
+                        false/*viewModel.cacheLocation != Repository.RequestLocation.CACHE*/
                     update(animate, it)
                     setSuccessRate(it, animate)
                 }

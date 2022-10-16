@@ -3,16 +3,9 @@ package uk.co.zac_h.spacex.statistics.graphs.landinghistory
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import uk.co.zac_h.spacex.core.utils.formatDateMillisYYYY
-import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
-import uk.co.zac_h.spacex.network.Repository
-import uk.co.zac_h.spacex.network.async
-import uk.co.zac_h.spacex.network.query.StatisticsQuery
 import uk.co.zac_h.spacex.statistics.StatisticsRepository
 import uk.co.zac_h.spacex.utils.models.LandingHistoryModel
 import javax.inject.Inject
@@ -25,11 +18,11 @@ class LandingHistoryViewModel @Inject constructor(
     private val _landingHistory = MutableLiveData<ApiResult<List<LandingHistoryModel>>>()
     val landingHistory: LiveData<ApiResult<List<LandingHistoryModel>>> = _landingHistory
 
-    val cacheLocation: Repository.RequestLocation
-        get() = repository.cacheLocation
+    /*val cacheLocation: Repository.RequestLocation
+        get() = repository.cacheLocation*/
 
     fun get(cachePolicy: CachePolicy = CachePolicy.EXPIRES) {
-        viewModelScope.launch {
+        /*viewModelScope.launch {
             val response = async(_landingHistory) {
                 repository.fetch(
                     key = "landing_history",
@@ -59,6 +52,6 @@ class LandingHistoryViewModel @Inject constructor(
                     }
                 }
             }
-        }
+        }*/
     }
 }
