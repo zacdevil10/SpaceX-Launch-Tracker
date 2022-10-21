@@ -24,6 +24,22 @@ fun String.formatDate(): String {
     }.format(date)
 }
 
+fun String.formatCrewDate(): String {
+    val date = SimpleDateFormat(
+        "yyyy-MM-dd'T'HH:mm:ss",
+        Locale.ENGLISH
+    ).apply {
+        timeZone = TimeZone.getTimeZone("UTC")
+    }.parse(this)
+
+    return SimpleDateFormat(
+        "dd MMM yy",
+        Locale.ENGLISH
+    ).apply {
+        timeZone = TimeZone.getDefault()
+    }.format(date)
+}
+
 fun String.toMillis(): Long? = SimpleDateFormat(
     "yyyy-MM-dd'T'HH:mm:ss",
     Locale.ENGLISH

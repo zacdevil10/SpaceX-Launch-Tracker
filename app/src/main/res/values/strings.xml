@@ -246,7 +246,11 @@
     </string-array>
 
     <!-- Crew -->
-    <string name="agency_label">Agency</string>
+    <string name="crew_agency_label">Agency:</string>
+    <string name="crew_role_label">Role:</string>
+    <string name="crew_status_label">Status:</string>
+    <string name="crew_first_flight_label">First flight:</string>
+
     <string name="more_icon_desc">More Icon</string>
     <string name="pin_launch_to_dashboard_desc">Pin launch to dashboard</string>
     <string name="settings">Settings</string>

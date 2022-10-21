@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.transition.MaterialContainerTransform
@@ -15,8 +14,8 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.crew.Crew
 import uk.co.zac_h.spacex.crew.CrewViewModel
-import uk.co.zac_h.spacex.crew.adapters.CrewMissionsAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewItemBinding
+import uk.co.zac_h.spacex.network.dto.spacex.CrewStatus
 
 class CrewItemFragment : BaseFragment() {
 
@@ -52,7 +51,7 @@ class CrewItemFragment : BaseFragment() {
                 id = navArgs.id,
                 image = navArgs.url,
                 name = null,
-                status = null,
+                status = CrewStatus.UNKNOWN,
                 agency = null,
                 wikipedia = null,
                 role = null
@@ -80,13 +79,5 @@ class CrewItemFragment : BaseFragment() {
             binding.crewStatus.text = status.status
         }
         binding.crewAgency.text = person.agency
-
-        person.launches?.let { launches ->
-            binding.missionsRecycler.apply {
-                layoutManager = LinearLayoutManager(context)
-                adapter = CrewMissionsAdapter().also { it.submitList(launches) }
-            }
-            if (launches.isEmpty()) binding.crewMissionLabel.visibility = View.GONE
-        }
     }
 }

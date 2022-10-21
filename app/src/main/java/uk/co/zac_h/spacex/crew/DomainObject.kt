@@ -1,20 +1,19 @@
 package uk.co.zac_h.spacex.crew
 
+import uk.co.zac_h.spacex.core.utils.formatCrewDate
 import uk.co.zac_h.spacex.core.utils.orUnknown
-import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.network.*
 import uk.co.zac_h.spacex.network.dto.spacex.*
 
 data class Crew(
     val name: String?,
-    val status: CrewStatus?,
+    val status: CrewStatus,
     val agency: String?,
     val bio: String? = null,
     val image: String?,
     val wikipedia: String?,
-    val launchIds: List<String>? = null,
-    val launches: List<Launch>? = null,
     val role: String?,
+    val firstFlight: String? = null,
     val id: String
 ) {
 
@@ -22,12 +21,13 @@ data class Crew(
         response: LaunchResponse.Rocket.SpacecraftStage.LaunchCrew
     ) : this(
         name = response.astronaut?.name,
-        status = response.astronaut?.status?.name?.toCrewStatus(),
+        status = response.astronaut?.status?.name.toCrewStatus(),
         agency = response.astronaut?.agency?.name,
         bio = response.astronaut?.bio,
         image = response.astronaut?.profileImage,
         wikipedia = null,
         role = response.role?.role,
+        firstFlight = response.astronaut?.firstFlight?.formatCrewDate(),
         id = response.id.toString()
     )
 
@@ -39,7 +39,6 @@ data class Crew(
         agency = response.agency.orUnknown(),
         image = response.image,
         wikipedia = response.wikipedia,
-        launchIds = response.launches,
         role = null,
         id = response.id
     )
@@ -53,7 +52,6 @@ data class Crew(
         agency = response.agency.orUnknown(),
         image = response.image,
         wikipedia = response.wikipedia,
-        launches = response.launches?.map { Launch(it) },
         role = role,
         id = response.id
     )
@@ -62,7 +60,7 @@ data class Crew(
         response: LaunchCrewResponse
     ) : this(
         name = null,
-        status = null,
+        status = null.toCrewStatus(),
         agency = null,
         image = null,
         wikipedia = null,
@@ -78,7 +76,6 @@ data class Crew(
         agency = response.crew.agency,
         image = response.crew.image,
         wikipedia = response.crew.wikipedia,
-        launches = response.crew.launches?.map { Launch(it) },
         role = response.role,
         id = response.crew.id
     )
