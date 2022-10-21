@@ -134,6 +134,8 @@ data class LaunchResponse(
                     @field:Json(name = "agency") val agency: Agency?,
                     @field:Json(name = "bio") val bio: String?,
                     @field:Json(name = "profile_image") val profileImage: String?,
+                    @field:Json(name = "last_flight") val lastFlight: String?,
+                    @field:Json(name = "first_flight") val firstFlight: String?
                 ) {
 
                     data class Status(

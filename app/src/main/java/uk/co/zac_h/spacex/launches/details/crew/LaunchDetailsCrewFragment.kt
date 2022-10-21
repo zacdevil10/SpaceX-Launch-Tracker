@@ -4,7 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.navGraphViewModels
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.crew.Crew
@@ -22,6 +25,8 @@ class LaunchDetailsCrewFragment : BaseFragment() {
 
     private lateinit var crewAdapter: LaunchCrewAdapter
 
+    private lateinit var bottomSheetBehaviour: BottomSheetBehavior<ConstraintLayout>
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,7 +37,10 @@ class LaunchDetailsCrewFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        crewAdapter = LaunchCrewAdapter()
+        bottomSheetBehaviour = from(binding.standardBottomSheet)
+        bottomSheetBehaviour.state = STATE_COLLAPSED
+
+        crewAdapter = LaunchCrewAdapter { astronaut -> onClick(astronaut) }
 
         binding.launchDetailsCrewRecycler.apply {
             setHasFixedSize(false)
@@ -45,5 +53,18 @@ class LaunchDetailsCrewFragment : BaseFragment() {
     fun update(response: List<Crew>) {
         crewAdapter.submitList(response)
         binding.launchDetailsCrewRecycler.scheduleLayoutAnimation()
+    }
+
+    private fun onClick(astronaut: Crew) {
+        binding.apply {
+            title.text = astronaut.name
+            role.text = astronaut.role
+            agency.text = astronaut.agency
+            status.text = astronaut.status.status
+            firstFlight.text = astronaut.firstFlight
+            bio.text = astronaut.bio
+        }
+
+        bottomSheetBehaviour.state = STATE_EXPANDED
     }
 }

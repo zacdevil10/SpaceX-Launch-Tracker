@@ -252,8 +252,12 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     }
 
     private fun setAppBarForLaunchDetails() {
-        hideAppBar()
-        binding.fab.hide()
+        binding.run {
+            bottomAppBar.visibility = View.VISIBLE
+            bottomAppBar.performShow()
+            fab.hide()
+            viewModel.isFabVisible = false
+        }
     }
 
     private fun setAppBarForNews() {
