@@ -55,7 +55,7 @@ class VisibilityStateAction(
 
     override fun onStateChanged(sheet: View, newState: Int) {
         view.visibility = when (newState) {
-            BottomSheetBehavior.STATE_HIDDEN, BottomSheetBehavior.STATE_COLLAPSED -> View.GONE
+            BottomSheetBehavior.STATE_HIDDEN -> View.GONE
             else -> View.VISIBLE
         }
     }
@@ -66,6 +66,14 @@ class BackPressedStateAction<T : View>(private val callback: BottomSheetBackPres
 
     override fun onStateChanged(sheet: View, newState: Int) {
         callback.isEnabled = newState != BottomSheetBehavior.STATE_HIDDEN
+    }
+}
+
+class StandardBackPressedStateAction<T : View>(private val callback: StandardBottomSheetBackPressed<T>) :
+    OnStateChangedAction {
+
+    override fun onStateChanged(sheet: View, newState: Int) {
+        callback.isEnabled = newState != BottomSheetBehavior.STATE_COLLAPSED
     }
 }
 

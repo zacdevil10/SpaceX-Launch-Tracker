@@ -14,8 +14,13 @@ import uk.co.zac_h.spacex.crew.Crew
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCrewBinding
 import uk.co.zac_h.spacex.launches.LaunchesViewModel
 import uk.co.zac_h.spacex.launches.adapters.LaunchCrewAdapter
+import uk.co.zac_h.spacex.utils.BottomDrawerCallback
+import uk.co.zac_h.spacex.utils.StandardBackPressedStateAction
+import uk.co.zac_h.spacex.utils.StandardBottomSheetBackPressed
 
 class LaunchDetailsCrewFragment : BaseFragment() {
+
+    override var title: String = "Crew"
 
     private val viewModel: LaunchesViewModel by navGraphViewModels(R.id.nav_graph) {
         defaultViewModelProviderFactory
@@ -39,6 +44,14 @@ class LaunchDetailsCrewFragment : BaseFragment() {
 
         bottomSheetBehaviour = from(binding.standardBottomSheet)
         bottomSheetBehaviour.state = STATE_COLLAPSED
+
+        val back = StandardBottomSheetBackPressed(bottomSheetBehaviour)
+
+        bottomSheetBehaviour.addBottomSheetCallback(BottomDrawerCallback().apply {
+            addOnStateChangedAction(StandardBackPressedStateAction(back))
+        })
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, back)
 
         crewAdapter = LaunchCrewAdapter { astronaut -> onClick(astronaut) }
 

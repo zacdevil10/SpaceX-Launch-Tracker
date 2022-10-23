@@ -28,3 +28,12 @@ class BottomSheetBackPressed<T : View>(
         behavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 }
+
+class StandardBottomSheetBackPressed<T : View>(
+    private val behavior: BottomSheetBehavior<T>
+) : OnBackPressedCallback(false) {
+
+    override fun handleOnBackPressed() {
+        behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+}

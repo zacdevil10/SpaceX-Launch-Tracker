@@ -21,6 +21,8 @@ import uk.co.zac_h.spacex.utils.openWebLink
 
 class LaunchDetailsFragment : BaseFragment() {
 
+    override val title: String = "Details"
+
     private val viewModel: LaunchesViewModel by navGraphViewModels(R.id.nav_graph) {
         defaultViewModelProviderFactory
     }
