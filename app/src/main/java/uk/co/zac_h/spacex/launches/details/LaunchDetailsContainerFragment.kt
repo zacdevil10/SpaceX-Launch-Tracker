@@ -1,24 +1,21 @@
 package uk.co.zac_h.spacex.launches.details
 
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.core.utils.*
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsContainerBinding
 import uk.co.zac_h.spacex.launches.LaunchesViewModel
 import uk.co.zac_h.spacex.launches.details.cores.LaunchDetailsCoresFragment
 import uk.co.zac_h.spacex.launches.details.crew.LaunchDetailsCrewFragment
 import uk.co.zac_h.spacex.launches.details.details.LaunchDetailsFragment
+import uk.co.zac_h.spacex.utils.ViewPagerAdapter
 
 class LaunchDetailsContainerFragment : BaseFragment() {
 
@@ -27,10 +24,6 @@ class LaunchDetailsContainerFragment : BaseFragment() {
     }
 
     private lateinit var binding: FragmentLaunchDetailsContainerBinding
-
-    private var selectedItem: Int? = null
-
-    private var countdownTimer: CountDownTimer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,8 +34,6 @@ class LaunchDetailsContainerFragment : BaseFragment() {
 
         exitTransition = MaterialElevationScale(false)
         reenterTransition = MaterialElevationScale(true)
-
-        selectedItem = savedInstanceState?.getInt("selected_item")
     }
 
     override fun onCreateView(
@@ -60,45 +51,14 @@ class LaunchDetailsContainerFragment : BaseFragment() {
 
         binding.fragmentLaunchDetailsContainer.transitionName = viewModel.launch?.id
 
-        viewModel.launch?.let { update() }
-
-        binding.launchDetailsContainerTabs.addOnButtonCheckedListener { group, checkedId, isChecked ->
-            if (selectedItem != checkedId) {
-                selectedItem = checkedId
-                when (checkedId) {
-                    R.id.details -> replaceFragment(LaunchDetailsFragment())
-                    R.id.cores -> replaceFragment(LaunchDetailsCoresFragment())
-                    R.id.crew -> replaceFragment(LaunchDetailsCrewFragment())
-                }
-            }
-        }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        selectedItem?.let { outState.putInt("selected_item", it) }
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        countdownTimer?.cancel()
-        countdownTimer = null
-    }
-
-    private fun update() {
-        if (selectedItem == null) {
-            replaceFragment(LaunchDetailsFragment())
-        }
-    }
-
-    private fun replaceFragment(fragment: Fragment): Boolean {
-        childFragmentManager.commit {
-            setCustomAnimations(
-                R.anim.fade_in,
-                R.anim.fade_out
+        binding.viewPager.adapter = ViewPagerAdapter(
+            childFragmentManager,
+            listOfNotNull(
+                LaunchDetailsFragment(),
+                LaunchDetailsCoresFragment(),
+                if (!viewModel.launch?.crew.isNullOrEmpty()) LaunchDetailsCrewFragment() else null
             )
-            replace(R.id.launch_details_fragment, fragment)
-        }
-        return true
+        )
+        binding.tabLayout.setupWithViewPager(binding.viewPager)
     }
 }
