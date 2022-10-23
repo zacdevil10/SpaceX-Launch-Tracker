@@ -7,7 +7,7 @@ data class LaunchResponse(
     @field:Json(name = "id") val id: String,
     @field:Json(name = "url") val url: String?,
     @field:Json(name = "slug") val slug: String?,
-    @field:Json(name = "name") val name: String?,
+    @field:Json(name = "name") val name: String,
     @field:Json(name = "status") val status: Status?,
     @field:Json(name = "last_updated") val lastUpdated: String?,
     @field:Json(name = "net") val net: String?,

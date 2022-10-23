@@ -55,7 +55,7 @@ class LaunchDetailsContainerFragment : BaseFragment() {
             childFragmentManager,
             listOfNotNull(
                 LaunchDetailsFragment(),
-                LaunchDetailsCoresFragment(),
+                if (!viewModel.launch?.firstStage.isNullOrEmpty()) LaunchDetailsCoresFragment() else null,
                 if (!viewModel.launch?.crew.isNullOrEmpty()) LaunchDetailsCrewFragment() else null
             )
         )

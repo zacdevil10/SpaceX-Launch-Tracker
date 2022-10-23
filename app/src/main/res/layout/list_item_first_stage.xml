@@ -35,17 +35,6 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="B1047" />
 
-            <ImageView
-                android:id="@+id/first_stage_details_indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/more_icon_desc"
-                android:src="@drawable/ic_keyboard_arrow_right_black_24dp"
-                app:layout_constraintBottom_toBottomOf="@id/first_stage_core_serial"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@id/first_stage_core_serial"
-                app:tint="?colorOnBackground" />
-
             <View
                 android:id="@+id/separator"
                 android:layout_width="0dp"

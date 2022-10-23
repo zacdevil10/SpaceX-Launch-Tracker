@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemMissionBinding
 import uk.co.zac_h.spacex.launches.Launch
 
@@ -19,10 +18,7 @@ class MissionsAdapter : ListAdapter<Launch, MissionsAdapter.ViewHolder>(Comparat
         val launch = getItem(position)
 
         holder.binding.apply {
-            root.transitionName = launch.id
-            missionName.text = launch.missionName
-            missionFlightNumber.text =
-                root.resources.getString(R.string.flight_number, launch.flightNumber)
+
 
             /*root.setOnClickListener {
                 root.findNavController().navigate(
@@ -39,6 +35,6 @@ class MissionsAdapter : ListAdapter<Launch, MissionsAdapter.ViewHolder>(Comparat
 
         override fun areItemsTheSame(oldItem: Launch, newItem: Launch) = oldItem == newItem
 
-        override fun areContentsTheSame(oldItem: Launch, newItem: Launch) = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: Launch, newItem: Launch) = oldItem == newItem
     }
 }

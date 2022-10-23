@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.crew
 
-import uk.co.zac_h.spacex.core.utils.formatCrewDate
 import uk.co.zac_h.spacex.core.utils.orUnknown
 import uk.co.zac_h.spacex.network.*
 import uk.co.zac_h.spacex.network.dto.spacex.*
@@ -16,20 +15,6 @@ data class Crew(
     val firstFlight: String? = null,
     val id: String
 ) {
-
-    constructor(
-        response: LaunchResponse.Rocket.SpacecraftStage.LaunchCrew
-    ) : this(
-        name = response.astronaut?.name,
-        status = response.astronaut?.status?.name.toCrewStatus(),
-        agency = response.astronaut?.agency?.name,
-        bio = response.astronaut?.bio,
-        image = response.astronaut?.profileImage,
-        wikipedia = null,
-        role = response.role?.role,
-        firstFlight = response.astronaut?.firstFlight?.formatCrewDate(),
-        id = response.id.toString()
-    )
 
     constructor(
         response: CrewResponse
@@ -81,7 +66,7 @@ data class Crew(
     )
 
     companion object {
-        private fun String?.toCrewStatus() = when (this) {
+        fun String?.toCrewStatus() = when (this) {
             SPACEX_CREW_STATUS_ACTIVE -> CrewStatus.ACTIVE
             SPACEX_CREW_STATUS_INACTIVE -> CrewStatus.INACTIVE
             SPACEX_CREW_STATUS_RETIRED -> CrewStatus.RETIRED

@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.launches.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
@@ -10,54 +9,67 @@ import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.core.utils.orUnknown
 import uk.co.zac_h.spacex.databinding.ListItemFirstStageBinding
-import uk.co.zac_h.spacex.launches.LaunchCore
+import uk.co.zac_h.spacex.databinding.ListItemHeaderBinding
+import uk.co.zac_h.spacex.launches.FirstStageItem
 import uk.co.zac_h.spacex.utils.setImageAndTint
 
 class FirstStageAdapter :
-    ListAdapter<LaunchCore, FirstStageAdapter.ViewHolder>(LaunchCoreComparator) {
+    ListAdapter<RecyclerViewItem, RecyclerView.ViewHolder>(LaunchCoreComparator) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
-        ListItemFirstStageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-    )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+        when (viewType) {
+            R.layout.list_item_header -> HeaderViewHolder(
+                ListItemHeaderBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            R.layout.list_item_first_stage -> ViewHolder(
+                ListItemFirstStageBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            else -> throw IllegalArgumentException("Invalid viewType for FirstStageAdapter")
+        }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val core = getItem(position)
 
-        holder.binding.apply {
-            firstStageCard.transitionName = core.core?.id
+        when (holder) {
+            is HeaderViewHolder -> holder.binding.apply {
+                core as Header
+                header.text = core.title
+            }
+            is ViewHolder -> holder.binding.apply {
+                core as FirstStageItem
 
-            firstStageCoreSerial.text = core.core?.serial.orUnknown()
+                firstStageCard.transitionName = core.id
 
-            core.reused?.let { firstStageReusedImage.successFailureImage(it) }
+                firstStageCoreSerial.text = core.serial.orUnknown()
 
-            core.landingSuccess?.let { firstStageLandedImage.successFailureImage(it) }
+                core.reused?.let { firstStageReusedImage.successFailureImage(it) }
 
-            firstStageLandingImage.apply {
-                core.landingAttempt?.let { landingIntent ->
-                    if (landingIntent) when (core.landingType) {
-                        "ASDS" -> setImageAndTint(R.drawable.ic_waves, R.color.ocean)
-                        "RTLS" -> setImageAndTint(R.drawable.ic_landscape, R.color.landscape)
-                    } else successFailureImage(false)
+                core.landingSuccess?.let { firstStageLandedImage.successFailureImage(it) }
+
+                firstStageLandingImage.apply {
+                    core.landingAttempt?.let { landingIntent ->
+                        if (landingIntent) when (core.landingType) {
+                            "ASDS" -> setImageAndTint(R.drawable.ic_waves, R.color.ocean)
+                            "RTLS" -> setImageAndTint(R.drawable.ic_landscape, R.color.landscape)
+                        } else successFailureImage(false)
+                    }
                 }
             }
-
-            /*core.core?.let { core ->
-                firstStageDetailsIndicator.visibility = View.VISIBLE
-                firstStageCard.setOnClickListener {
-                    root.findNavController().navigate(
-                        LaunchDetailsContainerFragmentDirections.actionLaunchDetailsContainerFragmentToCoreDetailsFragment(
-                            core.serial,
-                            core.id
-                        ),
-                        FragmentNavigatorExtras(firstStageCard to (core.id))
-                    )
-                }
-            } ?: run {
-                firstStageDetailsIndicator.visibility = View.GONE
-            }*/
-
-            firstStageDetailsIndicator.visibility = View.GONE
         }
+    }
+
+    override fun getItemViewType(position: Int): Int = when (getItem(position)) {
+        is Header -> R.layout.list_item_header
+        is FirstStageItem -> R.layout.list_item_first_stage
+        else -> throw IllegalArgumentException("Invalid item type for FirstStageAdapter")
     }
 
     private fun ImageView.successFailureImage(success: Boolean) {
@@ -68,18 +80,42 @@ class FirstStageAdapter :
         }
     }
 
+    class HeaderViewHolder(val binding: ListItemHeaderBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
     class ViewHolder(val binding: ListItemFirstStageBinding) : RecyclerView.ViewHolder(binding.root)
 
-    object LaunchCoreComparator : DiffUtil.ItemCallback<LaunchCore>() {
+    object LaunchCoreComparator : DiffUtil.ItemCallback<RecyclerViewItem>() {
 
-        override fun areItemsTheSame(oldItem: LaunchCore, newItem: LaunchCore) = oldItem == newItem
-
-        override fun areContentsTheSame(oldItem: LaunchCore, newItem: LaunchCore) =
+        override fun areItemsTheSame(
+            oldItem: RecyclerViewItem,
+            newItem: RecyclerViewItem
+        ) = if (oldItem is FirstStageItem && newItem is FirstStageItem) {
             oldItem.id == newItem.id
-                    && oldItem.core?.id == newItem.core?.id
+        } else {
+            oldItem == newItem
+        }
+
+        override fun areContentsTheSame(
+            oldItem: RecyclerViewItem,
+            newItem: RecyclerViewItem
+        ) = if (oldItem is FirstStageItem && newItem is FirstStageItem) {
+            oldItem.serial == newItem.serial
+                    && oldItem.type == newItem.type
                     && oldItem.reused == newItem.reused
-                    && oldItem.landingSuccess == newItem.landingSuccess
                     && oldItem.landingAttempt == newItem.landingAttempt
-                    && oldItem.core?.serial == newItem.core?.serial
+                    && oldItem.landingSuccess == newItem.landingSuccess
+                    && oldItem.landingType == newItem.landingType
+        } else if (oldItem is Header && newItem is Header) {
+            oldItem.title == newItem.title
+        } else {
+            oldItem == newItem
+        }
     }
 }
+
+data class Header(
+    val title: String
+) : RecyclerViewItem
+
+interface RecyclerViewItem

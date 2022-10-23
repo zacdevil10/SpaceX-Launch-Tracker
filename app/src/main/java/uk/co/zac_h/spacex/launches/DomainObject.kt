@@ -1,228 +1,133 @@
 package uk.co.zac_h.spacex.launches
 
-import uk.co.zac_h.spacex.core.types.DatePrecision
-import uk.co.zac_h.spacex.core.utils.EventDate
+import uk.co.zac_h.spacex.core.types.CoreType
+import uk.co.zac_h.spacex.core.utils.formatCrewDate
+import uk.co.zac_h.spacex.core.utils.formatDate
 import uk.co.zac_h.spacex.crew.Crew
-import uk.co.zac_h.spacex.network.*
-import uk.co.zac_h.spacex.network.dto.spacex.*
-import uk.co.zac_h.spacex.statistics.graphs.padstats.LandingPad
+import uk.co.zac_h.spacex.crew.Crew.Companion.toCrewStatus
+import uk.co.zac_h.spacex.launches.adapters.RecyclerViewItem
+import uk.co.zac_h.spacex.network.dto.spacex.CrewStatus
+import uk.co.zac_h.spacex.network.dto.spacex.LaunchResponse
+import uk.co.zac_h.spacex.network.dto.spacex.Mass
+import uk.co.zac_h.spacex.network.dto.spacex.MassFormatted
 import uk.co.zac_h.spacex.statistics.graphs.padstats.Launchpad
-import uk.co.zac_h.spacex.vehicles.cores.Core
 import uk.co.zac_h.spacex.vehicles.rockets.Rocket
-import uk.co.zac_h.spacex.vehicles.ships.Ship
 
-data class Launch(
-    val flightNumber: Int?,
-    val missionName: String?,
-    val launchDate: EventDate?,
-    val datePrecision: DatePrecision?,
-    val staticFireDate: EventDate?,
-    val tbd: Boolean?,
-    val net: Boolean?,
-    val window: Int?,
-    val rocketId: String? = null,
-    val rocket: Rocket? = null,
-    val success: Boolean?,
-    val failures: List<LaunchFailures>?,
-    val upcoming: Boolean?,
-    val details: String?,
-    val fairings: Fairings?,
-    val crew: List<Crew>?,
-    val shipIds: List<String>? = null,
-    val ships: List<Ship>? = null,
-    val capsules: List<String>?,
-    val payloadIds: List<String>? = null,
-    val payloads: List<Payload>? = null,
-    val launchpadId: String? = null,
-    val launchpad: Launchpad? = null,
-    val cores: List<LaunchCore>?,
-    val links: LaunchLinks?,
-    val autoUpdate: Boolean?,
-    val id: String
-) {
+data class LaunchItem(
+    val id: String,
+    val upcoming: Boolean,
+    val missionPatch: String?,
+    val missionName: String,
+    val rocket: String?,
+    val launchDate: String?,
+    val launchLocation: String?,
+    val description: String?,
+    val webcast: String?,
+    val firstStage: List<FirstStageItem>?,
+    val crew: List<CrewItem>?
+) : RecyclerViewItem {
 
     constructor(
         response: LaunchResponse
     ) : this(
-        flightNumber = response.agencyLaunchAttemptCount,
-        missionName = response.name?.split(" | ")
-            ?.filter { !it.contains("Falcon 9 Block") }
-            ?.filter { !it.contains("Falcon Heavy") }
-            ?.joinToString(" | "),
-        launchDate = EventDate(
-            dateUtc = response.net
-        ),
-        datePrecision = null,
-        staticFireDate = null,
-        tbd = response.status?.id == 2,
-        net = response.net != null,
-        window = null,
-        rocket = response.rocket?.let { Rocket(it) },
-        success = response.status?.id == 3,
-        failures = null,
-        upcoming = null,
-        details = response.mission?.description,
-        fairings = null,
-        crew = response.rocket?.spacecraftStage?.launchCrew?.mapNotNull { it?.let { Crew(it) } },
-        shipIds = null,
-        capsules = null,
-        payloadIds = null,
-        launchpadId = response.pad?.id.toString(),
-        launchpad = response.pad?.let { Launchpad(it) },
-        cores = response.rocket?.launcherStage?.mapNotNull { it?.let { LaunchCore(it) } },
-        links = LaunchLinks(
-            missionPatch = MissionPatch(
-                response.missionPatches?.firstOrNull()?.imageUrl,
-                response.missionPatches?.firstOrNull()?.imageUrl
-            ),
-            webcast = response.video?.firstOrNull()?.url
-        ),
-        autoUpdate = null,
-        id = response.id
+        id = response.id,
+        upcoming = response.status?.id != 3,
+        missionPatch = response.missionPatches?.firstOrNull()?.imageUrl,
+        missionName = response.mission?.name ?: response.name,
+        rocket = response.rocket?.configuration?.name,
+        launchDate = response.net?.formatDate(),
+        launchLocation = response.pad?.name,
+        description = response.mission?.description,
+        webcast = response.video?.firstOrNull()?.url,
+        firstStage = response.rocket?.launcherStage?.mapNotNull { launcherStage ->
+            launcherStage?.let { FirstStageItem(it) }
+        },
+        crew = response.rocket?.spacecraftStage?.launchCrew?.mapNotNull { it?.let { CrewItem(it) } }
     )
-
-    constructor(
-        response: LegacyLaunchResponse
-    ) : this(
-        flightNumber = response.flightNumber,
-        missionName = response.missionName,
-        launchDate = EventDate(
-            dateUtc = response.launchDateUtc,
-            dateUnix = response.launchDateUnix,
-            dateLocal = response.launchDateLocal
-        ),
-        datePrecision = response.datePrecision.toDatePrecision(),
-        staticFireDate = EventDate(
-            dateUtc = response.staticFireDateUtc,
-            dateUnix = response.staticFireDateUnix
-        ),
-        tbd = response.tbd,
-        net = response.net,
-        window = response.window,
-        rocketId = response.rocket,
-        success = response.success,
-        failures = response.failures,
-        upcoming = response.upcoming,
-        details = response.details,
-        fairings = response.fairings,
-        crew = response.crew?.map { Crew(it) },
-        shipIds = response.ships,
-        capsules = response.capsules,
-        payloadIds = response.payloads,
-        launchpadId = response.launchpad,
-        cores = response.cores?.map { LaunchCore(it) },
-        links = response.links,
-        autoUpdate = response.autoUpdate,
-        id = response.id.orEmpty()
-    )
-
-    constructor(
-        response: LegacyLaunchQueriedResponse
-    ) : this(
-        flightNumber = response.flightNumber,
-        missionName = response.missionName,
-        launchDate = EventDate(
-            dateUtc = response.launchDateUtc,
-            dateUnix = response.launchDateUnix,
-            dateLocal = response.launchDateLocal
-        ),
-        datePrecision = response.datePrecision.toDatePrecision(),
-        staticFireDate = EventDate(
-            dateUtc = response.staticFireDateUtc,
-            dateUnix = response.staticFireDateUnix
-        ),
-        tbd = response.tbd,
-        net = response.net,
-        window = response.window,
-        rocketId = response.rocket?.id,
-        rocket = response.rocket?.let { Rocket(it) },
-        success = response.success,
-        failures = response.failures,
-        upcoming = response.upcoming,
-        details = response.details,
-        fairings = response.fairings,
-        crew = response.crew?.map { Crew(it) },
-        ships = response.ships?.map { Ship(it) },
-        capsules = response.capsules,
-        payloads = response.payloads?.map { Payload(it) },
-        launchpad = response.launchpad?.let { Launchpad(it) },
-        cores = response.cores?.map { LaunchCore(it) },
-        links = response.links,
-        autoUpdate = response.autoUpdate,
-        id = response.id.orEmpty()
-    )
-
-    companion object {
-        private fun String?.toDatePrecision() = when (this) {
-            SPACEX_LAUNCH_DATE_PRECISION_HALF -> DatePrecision.HALF
-            SPACEX_LAUNCH_DATE_PRECISION_QUARTER -> DatePrecision.QUARTER
-            SPACEX_LAUNCH_DATE_PRECISION_YEAR -> DatePrecision.YEAR
-            SPACEX_LAUNCH_DATE_PRECISION_MONTH -> DatePrecision.MONTH
-            SPACEX_LAUNCH_DATE_PRECISION_DAY -> DatePrecision.DAY
-            SPACEX_LAUNCH_DATE_PRECISION_HOUR -> DatePrecision.HOUR
-            else -> null
-        }
-    }
 }
 
-data class LaunchCore(
-    var id: String?,
-    var core: Core? = null,
-    var flight: Int?,
-    var gridfins: Boolean?,
-    var legs: Boolean?,
-    var reused: Boolean?,
-    var landingAttempt: Boolean?,
-    var landingSuccess: Boolean?,
-    var landingType: String?,
-    var landingPadId: String? = null,
-    var landingPad: LandingPad? = null
-) {
+data class FirstStageItem(
+    val id: String,
+    val serial: String?,
+    val type: CoreType,
+    val reused: Boolean?,
+    val landingAttempt: Boolean?,
+    val landingSuccess: Boolean?,
+    val landingType: String?,
+    val landingLocation: String?
+) : RecyclerViewItem {
 
     constructor(
         response: LaunchResponse.Rocket.LauncherStage
     ) : this(
         id = response.id.toString(),
-        core = response.launcher?.let { Core(it) },
-        flight = response.launcherFlightNumber,
-        gridfins = null,
-        legs = null,
+        serial = response.launcher?.serialNumber,
+        type = response.type.toCoreType(),
         reused = response.reused,
         landingAttempt = response.landing?.attempt,
         landingSuccess = response.landing?.success,
         landingType = response.landing?.type?.abbrev,
-        landingPad = response.landing?.location?.let { LandingPad(it) }
+        landingLocation = response.landing?.location?.abbrev
     )
+
+    companion object {
+        fun String?.toCoreType() = when (this) {
+            "Core" -> CoreType.CORE
+            "Strap-On Booster" -> CoreType.BOOSTER
+            else -> CoreType.OTHER
+        }
+    }
+}
+
+data class CrewItem(
+    val id: String,
+    val name: String?,
+    val status: CrewStatus,
+    val agency: String?,
+    val bio: String?,
+    val image: String?,
+    val role: String?,
+    val firstFlight: String?,
+) : RecyclerViewItem {
 
     constructor(
-        response: LaunchCoreResponse
+        response: LaunchResponse.Rocket.SpacecraftStage.LaunchCrew
     ) : this(
-        id = response.id,
-        flight = response.flight,
-        gridfins = response.gridfins,
-        legs = response.legs,
-        reused = response.reused,
-        landingAttempt = response.landingAttempt,
-        landingSuccess = response.landingSuccess,
-        landingType = response.landingType,
-        landingPadId = response.landingPad
+        id = response.id.toString(),
+        name = response.astronaut?.name,
+        status = response.astronaut?.status?.name.toCrewStatus(),
+        agency = response.astronaut?.agency?.name,
+        bio = response.astronaut?.bio,
+        image = response.astronaut?.profileImage,
+        role = response.role?.role,
+        firstFlight = response.astronaut?.firstFlight?.formatCrewDate()
     )
+}
+
+//Replace
+data class Launch(
+    val tbd: Boolean?,
+    val net: Boolean?,
+    val rocketId: String? = null,
+    val rocket: Rocket? = null,
+    val success: Boolean?,
+    val details: String?,
+    val crew: List<Crew>?,
+    val launchpadId: String? = null,
+    val launchpad: Launchpad? = null,
+) {
 
     constructor(
-        response: LaunchCoreQueriedResponse
+        response: LaunchResponse
     ) : this(
-        id = response.core?.id,
-        core = response.core?.let { Core(it) },
-        flight = response.flight,
-        gridfins = response.gridfins,
-        legs = response.legs,
-        reused = response.reused,
-        landingAttempt = response.landingAttempt,
-        landingSuccess = response.landingSuccess,
-        landingType = response.landingType,
-        landingPad = response.landingPad?.let { LandingPad(it) }
+        tbd = response.status?.id == 2,
+        net = response.net != null,
+        rocket = response.rocket?.let { Rocket(it) },
+        success = response.status?.id == 3,
+        details = response.mission?.description,
+        crew = emptyList(),
+        launchpadId = response.pad?.id.toString(),
     )
-
 }
 
 data class Payload(
@@ -255,74 +160,7 @@ data class Payload(
     val meanAnomaly: Float?,
     val dragon: PayloadDragon?,
     val id: String
-) {
-
-    constructor(
-        response: PayloadResponse
-    ) : this(
-        name = response.name,
-        type = response.type,
-        reused = response.reused,
-        launchId = response.launch,
-        customers = response.customers,
-        noradIds = response.noradIds,
-        nationalities = response.nationalities,
-        manufacturers = response.manufacturers,
-        mass = Mass(kg = response.massKg, lb = response.massLbs),
-        formattedMass = MassFormatted.formatMass(response.massKg, response.massLbs),
-        orbit = response.orbit,
-        referenceSystem = response.referenceSystem,
-        regime = response.regime,
-        longitude = response.longitude,
-        semiMajorAxisKm = response.semiMajorAxisKm,
-        eccentricity = response.eccentricity,
-        periapsisKm = response.periapsisKm,
-        apoapsisKm = response.apoapsisKm,
-        inclination = response.inclination,
-        period = response.period,
-        lifespan = response.lifespan,
-        epoch = response.epoch,
-        meanMotion = response.meanMotion,
-        raan = response.raan,
-        argOfPericenter = response.argOfPericenter,
-        meanAnomaly = response.meanAnomaly,
-        dragon = response.dragon?.let { PayloadDragon(it) },
-        id = response.id
-    )
-
-    constructor(
-        response: PayloadQueriedResponse
-    ) : this(
-        name = response.name,
-        type = response.type,
-        reused = response.reused,
-        launch = response.launch?.let { Launch(it) },
-        customers = response.customers,
-        noradIds = response.noradIds,
-        nationalities = response.nationalities,
-        manufacturers = response.manufacturers,
-        mass = Mass(kg = response.massKg, lb = response.massLbs),
-        formattedMass = MassFormatted.formatMass(response.massKg, response.massLbs),
-        orbit = response.orbit,
-        referenceSystem = response.referenceSystem,
-        regime = response.regime,
-        longitude = response.longitude,
-        semiMajorAxisKm = response.semiMajorAxisKm,
-        eccentricity = response.eccentricity,
-        periapsisKm = response.periapsisKm,
-        apoapsisKm = response.apoapsisKm,
-        inclination = response.inclination,
-        period = response.period,
-        lifespan = response.lifespan,
-        epoch = response.epoch,
-        meanMotion = response.meanMotion,
-        raan = response.raan,
-        argOfPericenter = response.argOfPericenter,
-        meanAnomaly = response.meanAnomaly,
-        dragon = response.dragon?.let { PayloadDragon(it) },
-        id = response.id
-    )
-}
+)
 
 data class PayloadDragon(
     val capsule: String?,
@@ -331,16 +169,4 @@ data class PayloadDragon(
     val manifest: String?,
     val waterLanding: Boolean?,
     val landLanding: Boolean?
-) {
-
-    constructor(
-        response: PayloadDragonResponse
-    ) : this(
-        capsule = response.capsule,
-        massReturned = MassFormatted.formatMass(response.massReturnedKg, response.massReturnedLbs),
-        flightTime = response.flightTime,
-        manifest = response.manifest,
-        waterLanding = response.waterLanding,
-        landLanding = response.landLanding
-    )
-}
+)

@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import uk.co.zac_h.spacex.crew.Crew
 import uk.co.zac_h.spacex.databinding.ListItemCrewBinding
+import uk.co.zac_h.spacex.launches.CrewItem
 
-class LaunchCrewAdapter(val onClick: (Crew) -> Unit) :
-    ListAdapter<Crew, LaunchCrewAdapter.ViewHolder>(LaunchCrewComparator) {
+class LaunchCrewAdapter(val onClick: (CrewItem) -> Unit) :
+    ListAdapter<CrewItem, LaunchCrewAdapter.ViewHolder>(LaunchCrewComparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
         ListItemCrewBinding.inflate(
@@ -39,10 +39,11 @@ class LaunchCrewAdapter(val onClick: (Crew) -> Unit) :
 
     inner class ViewHolder(val binding: ListItemCrewBinding) : RecyclerView.ViewHolder(binding.root)
 
-    object LaunchCrewComparator : DiffUtil.ItemCallback<Crew>() {
+    object LaunchCrewComparator : DiffUtil.ItemCallback<CrewItem>() {
 
-        override fun areItemsTheSame(oldItem: Crew, newItem: Crew) = oldItem == newItem
+        override fun areItemsTheSame(oldItem: CrewItem, newItem: CrewItem) = oldItem == newItem
 
-        override fun areContentsTheSame(oldItem: Crew, newItem: Crew) = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: CrewItem, newItem: CrewItem) =
+            oldItem.id == newItem.id
     }
 }
