@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentVerticalRecyclerviewBinding
-import uk.co.zac_h.spacex.launches.LaunchCore
 import uk.co.zac_h.spacex.launches.LaunchesViewModel
 import uk.co.zac_h.spacex.launches.adapters.FirstStageAdapter
+import uk.co.zac_h.spacex.launches.adapters.RecyclerViewItem
 
 class LaunchDetailsCoresFragment : BaseFragment() {
 
@@ -44,10 +44,10 @@ class LaunchDetailsCoresFragment : BaseFragment() {
             adapter = coresAdapter
         }
 
-        update(viewModel.launch?.cores)
+        update(viewModel.cores)
     }
 
-    private fun update(response: List<LaunchCore>?) {
+    private fun update(response: List<RecyclerViewItem>?) {
         coresAdapter.submitList(response)
     }
 }

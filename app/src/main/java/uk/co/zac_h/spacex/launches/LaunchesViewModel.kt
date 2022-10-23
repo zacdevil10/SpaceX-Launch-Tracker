@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import uk.co.zac_h.spacex.launches.adapters.Header
+import uk.co.zac_h.spacex.launches.adapters.RecyclerViewItem
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
 import uk.co.zac_h.spacex.network.async
@@ -18,8 +20,8 @@ class LaunchesViewModel @Inject constructor(
     private val repository: LaunchesRepository
 ) : ViewModel() {
 
-    private val _upcomingLaunchesLiveData = MutableLiveData<ApiResult<List<Launch>>>()
-    val upcomingLaunchesLiveData: LiveData<ApiResult<List<Launch>>> = _upcomingLaunchesLiveData
+    private val _upcomingLaunchesLiveData = MutableLiveData<ApiResult<List<LaunchItem>>>()
+    val upcomingLaunchesLiveData: LiveData<ApiResult<List<LaunchItem>>> = _upcomingLaunchesLiveData
 
     val previousLaunchesLiveData: LiveData<PagingData<LaunchResponse>> = Pager(
         PagingConfig(pageSize = 10)
@@ -27,7 +29,14 @@ class LaunchesViewModel @Inject constructor(
         repository.previousLaunchesPagingSource
     }.liveData.cachedIn(viewModelScope)
 
-    var launch: Launch? = null
+    var launch: LaunchItem? = null
+
+    val cores: List<RecyclerViewItem>
+        get() {
+            return launch?.firstStage?.apply {
+                if (this.size > 1) groupBy { it.type }.flatMap { listOf(Header(it.key.type)) + it.value }
+            } ?: emptyList()
+        }
 
     fun getUpcomingLaunches(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
         viewModelScope.launch {
@@ -36,7 +45,7 @@ class LaunchesViewModel @Inject constructor(
             }
 
             _upcomingLaunchesLiveData.value = response.await().map {
-                it.results.map { launch -> Launch(launch) }
+                it.results.map { launch -> LaunchItem(launch) }
             }
         }
     }

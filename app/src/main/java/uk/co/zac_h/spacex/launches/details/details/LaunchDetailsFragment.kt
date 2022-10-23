@@ -13,9 +13,8 @@ import androidx.navigation.navGraphViewModels
 import com.google.android.material.button.MaterialButton
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.core.utils.formatDate
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
-import uk.co.zac_h.spacex.launches.Launch
+import uk.co.zac_h.spacex.launches.LaunchItem
 import uk.co.zac_h.spacex.launches.LaunchesViewModel
 import uk.co.zac_h.spacex.utils.openWebLink
 
@@ -43,43 +42,38 @@ class LaunchDetailsFragment : BaseFragment() {
         viewModel.launch?.let { update(it) }
     }
 
-    private fun update(response: Launch) {
+    private fun update(response: LaunchItem) {
         with(binding) {
             launchView.apply {
-                patch = response.links?.missionPatch?.patchSmall
-                vehicle = response.rocket?.name
+                patch = response.missionPatch
+                vehicle = response.rocket
                 missionName = response.missionName
-                date = response.launchDate?.dateUtc?.formatDate()
+                date = response.launchDate
 
-                if (response.rocket?.name == "Falcon 9") {
-                    isReused = response.cores?.firstOrNull()?.reused ?: false
-                    landingPad = response.cores?.firstOrNull()?.landingPad?.name
+                if (response.rocket == "Falcon 9") {
+                    isReused = response.firstStage?.firstOrNull()?.reused ?: false
+                    landingPad = response.firstStage?.firstOrNull()?.landingLocation
                 } else {
                     isReused = false
                     landingPad = null
                 }
             }
 
-            launchDetailsSiteNameText.text = response.launchpad?.name
+            launchDetailsSiteNameText.text = response.launchLocation
 
             launchDetailsDetailsText.apply {
-                isVisible = !response.details.isNullOrEmpty()
-                text = response.details
+                isVisible = !response.description.isNullOrEmpty()
+                text = response.description
             }
 
-            launchDetailsWatchButton.setLink(response.links?.webcast)
+            launchDetailsWatchButton.setLink(response.webcast)
 
-            if (response.upcoming == true) {
+            if (response.upcoming) {
                 launchDetailsCalendarButton.visibility = View.VISIBLE
                 launchDetailsCalendarButton.setOnClickListener {
                     createEvent(response)
                 }
             } else launchDetailsCalendarButton.visibility = View.GONE
-
-            launchDetailsWikiButton.setLink(response.links?.wikipedia)
-            launchDetailsCampaignButton.setLink(response.links?.redditLinks?.campaign)
-            launchDetailsLaunchButton.setLink(response.links?.redditLinks?.launch)
-            launchDetailsMediaButton.setLink(response.links?.redditLinks?.media)
         }
     }
 
@@ -90,16 +84,16 @@ class LaunchDetailsFragment : BaseFragment() {
         } ?: run { visibility = View.GONE }
     }
 
-    private fun createEvent(launch: Launch) {
+    private fun createEvent(launch: LaunchItem) {
         val calendarIntent = Intent(Intent.ACTION_INSERT).apply {
             data = CalendarContract.Events.CONTENT_URI
             putExtra(
                 CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                launch.launchDate?.dateUnix?.times(1000L)
+                launch.launchDate
             )
             putExtra(
                 CalendarContract.EXTRA_EVENT_END_TIME,
-                launch.launchDate?.dateUnix?.times(1000L)?.plus(3600000)
+                launch.launchDate
             )
             putExtra(
                 CalendarContract.Events.TITLE,

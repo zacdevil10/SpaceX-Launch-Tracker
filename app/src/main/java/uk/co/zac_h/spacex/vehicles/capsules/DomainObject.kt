@@ -3,7 +3,6 @@ package uk.co.zac_h.spacex.vehicles.capsules
 import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.network.*
 import uk.co.zac_h.spacex.network.dto.spacex.CapsuleQueriedResponse
-import uk.co.zac_h.spacex.network.dto.spacex.CapsuleResponse
 import uk.co.zac_h.spacex.network.dto.spacex.CapsuleStatus
 import uk.co.zac_h.spacex.network.dto.spacex.CapsuleType
 
@@ -22,21 +21,6 @@ data class Capsule(
 ) {
 
     constructor(
-        response: CapsuleResponse
-    ) : this(
-        serial = response.serial,
-        status = response.status.toCapsuleStatus(),
-        type = response.type.toCapsuleType(),
-        dragon = response.dragon,
-        reuseCount = response.reuseCount,
-        waterLandings = response.waterLandings,
-        landLandings = response.landLandings,
-        lastUpdate = response.lastUpdate,
-        launchIds = response.launches,
-        id = response.id
-    )
-
-    constructor(
         response: CapsuleQueriedResponse
     ) : this(
         serial = response.serial,
@@ -47,7 +31,6 @@ data class Capsule(
         waterLandings = response.waterLandings,
         landLandings = response.landLandings,
         lastUpdate = response.lastUpdate,
-        launches = response.launches?.map { Launch(it) },
         id = response.id
     )
 

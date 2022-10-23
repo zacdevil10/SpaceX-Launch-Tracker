@@ -65,7 +65,6 @@ data class Core(
         attemptsAsds = response.attemptsAsds ?: 0,
         landingsAsds = response.landingsAsds ?: 0,
         lastUpdate = response.lastUpdate,
-        launches = response.launches?.map { Launch(it) },
         id = response.id
     )
 

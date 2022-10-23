@@ -81,7 +81,7 @@ class UpcomingLaunchesListFragment : BaseFragment() {
         _binding = null
     }
 
-    private fun onItemClick(launch: Launch, root: View) {
+    private fun onItemClick(launch: LaunchItem, root: View) {
         viewModel.launch = launch
 
         findNavController().navigate(

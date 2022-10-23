@@ -57,7 +57,7 @@ class PreviousLaunchesListFragment : BaseFragment() {
         }
 
         viewModel.previousLaunchesLiveData.observe(viewLifecycleOwner) { pagingData ->
-            launchesAdapter.submitData(lifecycle, pagingData.map { Launch(it) })
+            launchesAdapter.submitData(lifecycle, pagingData.map { LaunchItem(it) })
         }
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -91,7 +91,7 @@ class PreviousLaunchesListFragment : BaseFragment() {
         _binding = null
     }
 
-    private fun onItemClick(launch: Launch, root: View) {
+    private fun onItemClick(launch: LaunchItem, root: View) {
         viewModel.launch = launch
 
         findNavController().navigate(

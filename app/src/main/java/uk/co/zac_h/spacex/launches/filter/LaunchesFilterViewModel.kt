@@ -1,10 +1,11 @@
 package uk.co.zac_h.spacex.launches.filter
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import dagger.hilt.android.lifecycle.HiltViewModel
-import uk.co.zac_h.spacex.core.utils.filterAll
-import uk.co.zac_h.spacex.core.utils.sortedBy
-import uk.co.zac_h.spacex.launches.Launch
+import uk.co.zac_h.spacex.launches.LaunchItem
 import uk.co.zac_h.spacex.launches.LaunchesRepository
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
@@ -17,10 +18,11 @@ class LaunchesFilterViewModel @Inject constructor(
 
     val filter: LaunchesFilterBuilder = LaunchesFilterBuilder()
 
-    private val _launchesLiveData = MutableLiveData<ApiResult<List<Launch>>>()
-    val launchesLiveData: LiveData<ApiResult<List<Launch>>> =
-        _launchesLiveData.switchMap { result ->
-            filter.map { filter ->
+    private val _launchesLiveData = MutableLiveData<ApiResult<List<LaunchItem>>>()
+    val launchesLiveData: LiveData<ApiResult<List<LaunchItem>>> =
+        _launchesLiveData.map { result ->
+            result
+            /*filter.map { filter ->
                 result.map {
                     it.filterAll(
                         if (filter.search.isFiltered) { launch ->
@@ -43,7 +45,7 @@ class LaunchesFilterViewModel @Inject constructor(
                         launch.flightNumber
                     }
                 }
-            }
+            }*/
         }
 
     fun getLaunches(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {

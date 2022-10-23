@@ -10,8 +10,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.crew.Crew
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsCrewBinding
+import uk.co.zac_h.spacex.launches.CrewItem
 import uk.co.zac_h.spacex.launches.LaunchesViewModel
 import uk.co.zac_h.spacex.launches.adapters.LaunchCrewAdapter
 import uk.co.zac_h.spacex.utils.BottomDrawerCallback
@@ -63,12 +63,12 @@ class LaunchDetailsCrewFragment : BaseFragment() {
         viewModel.launch?.crew?.let { update(it) }
     }
 
-    fun update(response: List<Crew>) {
+    fun update(response: List<CrewItem>) {
         crewAdapter.submitList(response)
         binding.launchDetailsCrewRecycler.scheduleLayoutAnimation()
     }
 
-    private fun onClick(astronaut: Crew) {
+    private fun onClick(astronaut: CrewItem) {
         binding.apply {
             title.text = astronaut.name
             role.text = astronaut.role

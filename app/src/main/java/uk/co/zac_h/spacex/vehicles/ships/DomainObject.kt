@@ -84,7 +84,6 @@ data class Ship(
         lastUpdate = response.lastUpdate,
         link = response.link,
         image = response.image,
-        launches = response.launches?.map { Launch(it) },
         id = response.id
     )
 }

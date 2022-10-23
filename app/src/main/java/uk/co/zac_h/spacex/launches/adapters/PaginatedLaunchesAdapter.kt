@@ -6,12 +6,11 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import uk.co.zac_h.spacex.core.utils.formatDate
 import uk.co.zac_h.spacex.databinding.ListItemLaunchesBinding
-import uk.co.zac_h.spacex.launches.Launch
+import uk.co.zac_h.spacex.launches.LaunchItem
 
-class PaginatedLaunchesAdapter(val onClick: (Launch, View) -> Unit) :
-    PagingDataAdapter<Launch, PaginatedLaunchesAdapter.ViewHolder>(Comparator) {
+class PaginatedLaunchesAdapter(val onClick: (LaunchItem, View) -> Unit) :
+    PagingDataAdapter<LaunchItem, PaginatedLaunchesAdapter.ViewHolder>(Comparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
         ListItemLaunchesBinding.inflate(
@@ -29,14 +28,14 @@ class PaginatedLaunchesAdapter(val onClick: (Launch, View) -> Unit) :
                 root.transitionName = launch.id
 
                 launchView.apply {
-                    patch = launch.links?.missionPatch?.patchSmall
-                    vehicle = launch.rocket?.name
+                    patch = launch.missionPatch
+                    vehicle = launch.rocket
                     missionName = launch.missionName
-                    date = launch.launchDate?.dateUtc?.formatDate()
+                    date = launch.launchDate
 
-                    if (launch.rocket?.name == "Falcon 9") {
-                        isReused = launch.cores?.firstOrNull()?.reused ?: false
-                        landingPad = launch.cores?.firstOrNull()?.landingPad?.name
+                    if (launch.rocket == "Falcon 9") {
+                        isReused = launch.firstStage?.firstOrNull()?.reused ?: false
+                        landingPad = launch.firstStage?.firstOrNull()?.landingLocation
                     } else {
                         isReused = false
                         landingPad = null
@@ -52,10 +51,11 @@ class PaginatedLaunchesAdapter(val onClick: (Launch, View) -> Unit) :
 
     class ViewHolder(val binding: ListItemLaunchesBinding) : RecyclerView.ViewHolder(binding.root)
 
-    object Comparator : DiffUtil.ItemCallback<Launch>() {
+    object Comparator : DiffUtil.ItemCallback<LaunchItem>() {
 
-        override fun areItemsTheSame(oldItem: Launch, newItem: Launch) = oldItem == newItem
+        override fun areItemsTheSame(oldItem: LaunchItem, newItem: LaunchItem) = oldItem == newItem
 
-        override fun areContentsTheSame(oldItem: Launch, newItem: Launch) = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: LaunchItem, newItem: LaunchItem) =
+            oldItem.id == newItem.id
     }
 }
