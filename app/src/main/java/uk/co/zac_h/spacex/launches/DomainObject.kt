@@ -1,8 +1,7 @@
 package uk.co.zac_h.spacex.launches
 
 import uk.co.zac_h.spacex.core.types.CoreType
-import uk.co.zac_h.spacex.core.utils.formatCrewDate
-import uk.co.zac_h.spacex.core.utils.formatDate
+import uk.co.zac_h.spacex.core.utils.*
 import uk.co.zac_h.spacex.crew.Crew
 import uk.co.zac_h.spacex.crew.Crew.Companion.toCrewStatus
 import uk.co.zac_h.spacex.launches.adapters.RecyclerViewItem
@@ -20,6 +19,7 @@ data class LaunchItem(
     val missionName: String,
     val rocket: String?,
     val launchDate: String?,
+    val launchDateUnix: Long?,
     val launchLocation: String?,
     val description: String?,
     val webcast: String?,
@@ -36,6 +36,7 @@ data class LaunchItem(
         missionName = response.mission?.name ?: response.name,
         rocket = response.rocket?.configuration?.name,
         launchDate = response.net?.formatDate(),
+        launchDateUnix = response.net?.toMillis(),
         launchLocation = response.pad?.name,
         description = response.mission?.description,
         webcast = response.video?.firstOrNull()?.url,
@@ -44,6 +45,22 @@ data class LaunchItem(
         },
         crew = response.rocket?.spacecraftStage?.launchCrew?.mapNotNull { it?.let { CrewItem(it) } }
     )
+
+    fun countdown(): String? {
+        val remaining = calculateCountdown()
+
+        if (remaining < 0) return null
+
+        return String.format(
+            "T-%02d:%02d:%02d:%02d",
+            remaining.toCountdownDays(),
+            remaining.toCountdownHours(),
+            remaining.toCountdownMinutes(),
+            remaining.toCountdownSeconds()
+        )
+    }
+
+    private fun calculateCountdown() = launchDateUnix?.minus(System.currentTimeMillis()) ?: 0
 }
 
 data class FirstStageItem(
@@ -71,6 +88,7 @@ data class FirstStageItem(
     )
 
     companion object {
+
         fun String?.toCoreType() = when (this) {
             "Core" -> CoreType.CORE
             "Strap-On Booster" -> CoreType.BOOSTER
