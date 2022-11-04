@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.about.company
+package uk.co.zac_h.spacex.feature.company
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

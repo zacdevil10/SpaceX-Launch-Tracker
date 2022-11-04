@@ -1,10 +1,12 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
-    namespace 'uk.co.zac_h.spacex.feature.about'
+    namespace 'uk.co.zac_h.spacex.feature.company'
     compileSdk 33
 
     defaultConfig {
@@ -40,9 +42,19 @@ dependencies {
 
     implementation project(':core:common')
     implementation project(':core:ui')
+    implementation project(":network")
 
+    //MVVM
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
+    implementation "androidx.fragment:fragment-ktx:1.5.4"
+
+    //Navigation
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
+
+    //Hilt
+    implementation 'com.google.dagger:hilt-android:2.44'
+    kapt 'com.google.dagger:hilt-compiler:2.44'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
