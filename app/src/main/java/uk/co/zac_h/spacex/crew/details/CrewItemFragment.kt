@@ -75,7 +75,7 @@ class CrewItemFragment : BaseFragment() {
         Glide.with(requireContext()).load(person.image).into(binding.crewImage)
 
         binding.crewName.text = person.name
-        person.status?.let { status ->
+        person.status.let { status ->
             binding.crewStatus.text = status.status
         }
         binding.crewAgency.text = person.agency

@@ -98,7 +98,7 @@ class TwitterFeedFragment : BaseFragment() {
         }
     }
 
-    fun openWebLink(link: String) {
+    private fun openWebLink(link: String) {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
     }
 

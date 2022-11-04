@@ -75,7 +75,7 @@ data class LaunchItem(
 
         return when {
             !upcoming -> null
-            remaining < 0 -> resources.getString(R.string.watch_live_label)
+            remaining < 0 -> resources.getString(R.string.launches_webcast_live)
             else -> String.format(
                 "T-%02d:%02d:%02d:%02d",
                 remaining.toCountdownDays(),

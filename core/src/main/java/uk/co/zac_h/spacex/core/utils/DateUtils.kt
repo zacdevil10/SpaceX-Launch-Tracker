@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.core.utils
 
-import uk.co.zac_h.spacex.core.types.DatePrecision
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -46,16 +45,6 @@ fun String.toMillis(): Long? = SimpleDateFormat(
 ).apply {
     timeZone = TimeZone.getTimeZone("UTC")
 }.parse(this)?.time
-
-fun Long.formatDateMillisLong(
-    precision: DatePrecision? = null
-): String =
-    SimpleDateFormat(
-        precision?.precision ?: "dd MMM yy - HH:mm zzz",
-        Locale.ENGLISH
-    ).apply {
-        timeZone = TimeZone.getDefault()
-    }.format(Date(this.times(1000L)))
 
 fun Long.formatDateMillisShort(tbd: Boolean = false): String =
     SimpleDateFormat(

@@ -23,10 +23,6 @@ data class QueryPopulateModel(
     private var populate: Any
 )
 
-data class QueryLaunchesQueryModel(
-    private var _id: String
-)
-
 data class QueryUpcomingLaunchesModel(
     private var upcoming: Boolean
 )
@@ -34,10 +30,6 @@ data class QueryUpcomingLaunchesModel(
 data class QueryUpcomingSuccessLaunchesModel(
     private var upcoming: Boolean,
     private var success: Boolean
-)
-
-data class QueryLaunchesSortModel(
-    private var flight_number: String
 )
 
 data class QueryLaunchesSortByDate(

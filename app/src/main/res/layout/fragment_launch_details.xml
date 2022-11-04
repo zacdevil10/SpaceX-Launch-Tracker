@@ -295,7 +295,8 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     android:background="?selectableItemBackground"
-                    tools:src="@tools:sample/avatars" />
+                    tools:src="@tools:sample/avatars"
+                    tools:ignore="ContentDescription" />
 
                 <TextView
                     android:id="@+id/launch_site_label"
