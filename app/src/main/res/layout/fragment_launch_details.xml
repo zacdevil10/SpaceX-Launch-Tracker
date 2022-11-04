@@ -1,132 +1,284 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/swipe_refresh"
+    android:id="@+id/launch_details_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:background="@color/color_background"
-    tools:context=".launches.details.details.LaunchDetailsFragment"
-    tools:ignore="Overdraw">
+    android:paddingBottom="?attr/actionBarSize"
+    tools:context=".launches.details.details.LaunchDetailsFragment">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/launch_details_scroll_view"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/launch_details_card"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:paddingBottom="?attr/actionBarSize"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/large_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/launch_details_card"
+        <uk.co.zac_h.spacex.widget.CountdownView
+            android:id="@+id/countdown"
             android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:gravity="center"
+            android:letterSpacing="0.1"
+            android:paddingBottom="@dimen/small_margin"
+            android:textAppearance="?textAppearanceHeadline4"
+            android:textColor="?colorSecondary"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="T-43:13:23:55"
+            tools:visibility="visible" />
+
+        <uk.co.zac_h.spacex.widget.LaunchView
+            android:id="@+id/launch_view"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/medium_margin"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/countdown" />
 
-            <uk.co.zac_h.spacex.widget.LaunchView
-                android:id="@+id/launch_view"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/medium_margin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mission_card"
+            style="?materialCardViewOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/medium_margin"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/launch_view"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp">
 
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/barrier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="end"
-                app:constraint_referenced_ids="launch_details_site_name_label" />
-
-            <TextView
-                android:id="@+id/launch_details_site_name_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/xsmall_margin"
-                android:text="@string/launch_site_label"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@id/launch_details_site_name_text"
-                app:layout_constraintEnd_toStartOf="@id/barrier"
-                app:layout_constraintHorizontal_bias="0"
-                app:layout_constraintStart_toStartOf="@id/launch_view"
-                app:layout_constraintTop_toTopOf="@id/launch_details_site_name_text" />
-
-            <TextView
-                android:id="@+id/launch_details_site_name_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_margin"
-                android:layout_marginEnd="@dimen/large_margin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/barrier"
-                app:layout_constraintTop_toBottomOf="@id/launch_view"
-                tools:text="CCAFS SLC 40" />
-
-            <com.google.android.material.button.MaterialButtonToggleGroup
-                android:id="@+id/launch_details_button_bar_main"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:layout_marginEnd="@dimen/medium_margin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/launch_details_site_name_label">
+                android:layout_margin="@dimen/medium_margin">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/launch_details_watch_button"
-                    style="?attr/materialButtonStyle"
+                <TextView
+                    android:id="@+id/mission_label"
                     android:layout_width="0dp"
-                    android:layout_height="58dp"
-                    android:layout_weight="1"
-                    android:text="@string/watch_label"
-                    android:textAppearance="?textAppearanceBody2"
-                    android:visibility="gone"
-                    app:icon="@drawable/ic_play_arrow_black_24dp"
-                    app:iconGravity="textStart"
-                    tools:visibility="visible" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/xsmall_margin"
+                    android:text="Mission"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/launch_details_calendar_button"
-                    style="?attr/materialButtonStyle"
+                <TextView
+                    android:id="@+id/mission_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_margin"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/mission_label"
+                    tools:lines="6"
+                    tools:text="@tools:sample/lorem/random" />
+
+                <TextView
+                    android:id="@+id/type_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    android:text="Type:"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@id/type_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/mission_description" />
+
+                <TextView
+                    android:id="@+id/type_text"
                     android:layout_width="0dp"
-                    android:layout_height="58dp"
-                    android:layout_weight="1"
-                    android:text="@string/create_event_label"
-                    android:textAppearance="?textAppearanceBody2"
-                    android:visibility="gone"
-                    app:icon="@drawable/ic_calendar_plus"
-                    app:iconGravity="textStart"
-                    tools:visibility="visible" />
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@id/type_label"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/type_label"
+                    app:layout_constraintTop_toTopOf="@id/type_label"
+                    tools:text="Communications" />
 
-            </com.google.android.material.button.MaterialButtonToggleGroup>
+                <TextView
+                    android:id="@+id/orbit_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    android:text="Orbit:"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@id/orbit_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/type_label" />
 
-            <TextView
-                android:id="@+id/launch_details_details_text"
+                <TextView
+                    android:id="@+id/orbit_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintBottom_toBottomOf="@id/orbit_label"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/orbit_label"
+                    app:layout_constraintTop_toTopOf="@id/orbit_label"
+                    tools:text="Low Earth Orbit" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/status_card"
+            style="?materialCardViewOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/medium_margin"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mission_card"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:layout_marginEnd="@dimen/large_margin"
-                android:layout_marginBottom="@dimen/medium_margin"
-                android:textAppearance="@style/Details"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/launch_details_button_bar_main"
-                tools:lines="6"
-                tools:text="@tools:sample/lorem/random" />
+                android:layout_margin="@dimen/medium_margin">
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/status_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    android:text="@string/launches_status_label"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@id/status_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
+                <TextView
+                    android:id="@+id/status_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/status_label"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Go for Launch" />
 
-    </androidx.core.widget.NestedScrollView>
+                <TextView
+                    android:id="@+id/status_description"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_margin"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/status_label"
+                    tools:text="Go for Launch" />
 
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/launch_site_card"
+            style="?materialCardViewOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/medium_margin"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/status_card"
+            app:strokeColor="@color/divider"
+            app:strokeWidth="1dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/launch_site_image"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:src="@tools:sample/avatars" />
+
+                <TextView
+                    android:id="@+id/launch_site_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_marginTop="@dimen/medium_margin"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    android:layout_marginBottom="@dimen/medium_margin"
+                    android:text="@string/launches_launch_location_label"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/launch_site_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/launch_site_image" />
+
+                <TextView
+                    android:id="@+id/launch_site_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/medium_margin"
+                    android:layout_marginBottom="@dimen/medium_margin"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/launch_site_label"
+                    app:layout_constraintTop_toBottomOf="@id/launch_site_image"
+                    tools:text="Space Launch Comlex 4E" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/launch_details_watch_button"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="58dp"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/small_margin"
+            android:layout_marginEnd="@dimen/small_margin"
+            android:layout_weight="1"
+            android:text="@string/launches_watch_button_label"
+            android:textAppearance="?textAppearanceBody2"
+            android:visibility="gone"
+            app:icon="@drawable/ic_play_arrow_black_24dp"
+            app:iconGravity="textStart"
+            app:layout_constraintEnd_toStartOf="@id/launch_details_calendar_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/launch_site_card"
+            tools:visibility="visible" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/launch_details_calendar_button"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
+            android:layout_height="58dp"
+            android:layout_marginStart="@dimen/small_margin"
+            android:layout_marginTop="@dimen/small_margin"
+            android:layout_marginEnd="@dimen/medium_margin"
+            android:layout_weight="1"
+            android:text="@string/launches_event_button_label"
+            android:textAppearance="?textAppearanceBody2"
+            android:visibility="gone"
+            app:icon="@drawable/ic_calendar_plus"
+            app:iconGravity="textStart"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/launch_details_watch_button"
+            app:layout_constraintTop_toBottomOf="@id/launch_site_card"
+            tools:visibility="visible" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

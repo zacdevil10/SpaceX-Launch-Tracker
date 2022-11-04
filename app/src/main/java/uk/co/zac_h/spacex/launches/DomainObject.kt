@@ -1,5 +1,7 @@
 package uk.co.zac_h.spacex.launches
 
+import android.content.res.Resources
+import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.core.types.CoreType
 import uk.co.zac_h.spacex.core.utils.*
 import uk.co.zac_h.spacex.crew.Crew
@@ -21,7 +23,13 @@ data class LaunchItem(
     val launchDate: String?,
     val launchDateUnix: Long?,
     val launchLocation: String?,
+    val launchLocationMap: String?,
+    val launchLocationMapUrl: String?,
+    val status: String?,
+    val statusDescription: String?,
     val description: String?,
+    val type: String?,
+    val orbit: String?,
     val webcast: String?,
     val firstStage: List<FirstStageItem>?,
     val crew: List<CrewItem>?
@@ -38,7 +46,13 @@ data class LaunchItem(
         launchDate = response.net?.formatDate(),
         launchDateUnix = response.net?.toMillis(),
         launchLocation = response.pad?.name,
+        launchLocationMap = response.pad?.mapImage,
+        launchLocationMapUrl = response.pad?.mapUrl,
+        status = response.status?.name,
+        statusDescription = response.status?.description,
         description = response.mission?.description,
+        type = response.mission?.type,
+        orbit = response.mission?.orbit?.name,
         webcast = response.video?.firstOrNull()?.url,
         firstStage = response.rocket?.launcherStage?.mapNotNull { launcherStage ->
             launcherStage?.let { FirstStageItem(it) }
@@ -46,18 +60,20 @@ data class LaunchItem(
         crew = response.rocket?.spacecraftStage?.launchCrew?.mapNotNull { it?.let { CrewItem(it) } }
     )
 
-    fun countdown(): String? {
+    fun countdown(resources: Resources): String? {
         val remaining = calculateCountdown()
 
-        if (remaining < 0) return null
-
-        return String.format(
-            "T-%02d:%02d:%02d:%02d",
-            remaining.toCountdownDays(),
-            remaining.toCountdownHours(),
-            remaining.toCountdownMinutes(),
-            remaining.toCountdownSeconds()
-        )
+        return when {
+            !upcoming -> null
+            remaining < 0 -> resources.getString(R.string.watch_live_label)
+            else -> String.format(
+                "T-%02d:%02d:%02d:%02d",
+                remaining.toCountdownDays(),
+                remaining.toCountdownHours(),
+                remaining.toCountdownMinutes(),
+                remaining.toCountdownSeconds()
+            )
+        }
     }
 
     private fun calculateCountdown() = launchDateUnix?.minus(System.currentTimeMillis()) ?: 0

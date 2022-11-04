@@ -4,7 +4,7 @@
     <string name="reused">Reused</string>
 
     <!-- DashboardView -->
-    <string name="watch_live_label">WATCH LIVE</string>
+    <string name="watch_live_label">Live</string>
     <string name="next_launch_heading">Next</string>
     <string name="latest_launch_heading">Previous</string>
     <string name="pinned_launches_heading">Pinned</string>
