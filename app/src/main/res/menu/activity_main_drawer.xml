@@ -29,11 +29,11 @@
     <item android:title="@string/menu_about_spacex">
         <menu>
             <item
-                android:id="@+id/history_page_fragment"
+                android:id="@id/history_page_fragment"
                 android:icon="@drawable/ic_history_black_24dp"
                 android:title="@string/menu_history" />
             <item
-                android:id="@+id/company_page_fragment"
+                android:id="@id/company_nav_graph"
                 android:icon="@drawable/domain"
                 android:title="@string/menu_company" />
         </menu>

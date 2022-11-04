@@ -6,6 +6,7 @@
     app:startDestination="@id/launch_nav_graph">
 
     <include app:graph="@navigation/launch_nav_graph" />
+    <include app:graph="@navigation/company_nav_graph" />
     <include app:graph="@navigation/about_nav_graph" />
 
     <fragment
@@ -172,17 +173,6 @@
         <argument
             android:name="padType"
             app:argType="uk.co.zac_h.spacex.core.common.types.PadType" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/company_page_fragment"
-        android:name="uk.co.zac_h.spacex.about.company.CompanyFragment"
-        tools:layout="@layout/fragment_company">
-
-        <deepLink
-            android:id="@+id/deepLink"
-            app:uri="spacex://about/company" />
 
     </fragment>
 

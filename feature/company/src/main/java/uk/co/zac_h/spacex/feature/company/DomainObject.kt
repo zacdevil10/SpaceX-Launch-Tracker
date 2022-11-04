@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.about.company
+package uk.co.zac_h.spacex.feature.company
 
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.network.dto.spacex.CompanyAddress
