@@ -10,7 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.navigation.navGraphViewModels
-import com.google.android.material.button.MaterialButton
+import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.base.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchDetailsBinding
@@ -39,49 +39,56 @@ class LaunchDetailsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.launch?.let { update(it) }
-    }
+        viewModel.launch?.let { launch ->
+            with(binding) {
+                launchView.apply {
+                    with(launch.countdown(root.resources)) {
+                        countdown.isVisible = this != null
+                        countdown.countdown = { launch.countdown(resources) }
+                        if (this != null) countdown.startTimer()
+                    }
 
-    private fun update(response: LaunchItem) {
-        with(binding) {
-            launchView.apply {
-                patch = response.missionPatch
-                vehicle = response.rocket
-                missionName = response.missionName
-                date = response.launchDate
+                    patch = launch.missionPatch
+                    vehicle = launch.rocket
+                    missionName = launch.missionName
+                    date = launch.launchDate
 
-                if (response.rocket == "Falcon 9") {
-                    isReused = response.firstStage?.firstOrNull()?.reused ?: false
-                    landingPad = response.firstStage?.firstOrNull()?.landingLocation
-                } else {
-                    isReused = false
-                    landingPad = null
+                    if (launch.rocket == "Falcon 9") {
+                        isReused = launch.firstStage?.firstOrNull()?.reused ?: false
+                        landingPad = launch.firstStage?.firstOrNull()?.landingLocation
+                    } else {
+                        isReused = false
+                        landingPad = null
+                    }
+                }
+
+                missionDescription.apply {
+                    isVisible = !launch.description.isNullOrEmpty()
+                    text = launch.description
+                }
+                typeText.text = launch.type
+                orbitText.text = launch.orbit
+
+                launchSiteCard.isVisible = launch.launchLocation != null
+                launchSiteText.text = launch.launchLocation
+                Glide.with(requireContext()).load(launch.launchLocationMap).into(launchSiteImage)
+                launchSiteImage.setOnClickListener { openWebLink(launch.launchLocationMapUrl) }
+
+                statusCard.isVisible = launch.status != null && launch.statusDescription != null
+                statusText.text = launch.status
+                statusDescription.text = launch.statusDescription
+
+                launchDetailsWatchButton.apply {
+                    isVisible = launch.webcast != null
+                    setOnClickListener { openWebLink(launch.webcast) }
+                }
+
+                launchDetailsCalendarButton.apply {
+                    isVisible = launch.upcoming
+                    setOnClickListener { createEvent(launch) }
                 }
             }
-
-            launchDetailsSiteNameText.text = response.launchLocation
-
-            launchDetailsDetailsText.apply {
-                isVisible = !response.description.isNullOrEmpty()
-                text = response.description
-            }
-
-            launchDetailsWatchButton.setLink(response.webcast)
-
-            if (response.upcoming) {
-                launchDetailsCalendarButton.visibility = View.VISIBLE
-                launchDetailsCalendarButton.setOnClickListener {
-                    createEvent(response)
-                }
-            } else launchDetailsCalendarButton.visibility = View.GONE
         }
-    }
-
-    private fun MaterialButton.setLink(link: String?) {
-        link?.let {
-            visibility = View.VISIBLE
-            setOnClickListener { openWebLink(link) }
-        } ?: run { visibility = View.GONE }
     }
 
     private fun createEvent(launch: LaunchItem) {
@@ -89,11 +96,11 @@ class LaunchDetailsFragment : BaseFragment() {
             data = CalendarContract.Events.CONTENT_URI
             putExtra(
                 CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                launch.launchDate
+                launch.launchDateUnix
             )
             putExtra(
                 CalendarContract.EXTRA_EVENT_END_TIME,
-                launch.launchDate
+                launch.launchDateUnix
             )
             putExtra(
                 CalendarContract.Events.TITLE,

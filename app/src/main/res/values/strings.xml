@@ -17,11 +17,13 @@
 
     <string name="detail_capsule">Capsule</string>
 
-    <!-- Dashboard -->
-    <string name="no_pinned_launches_found_label">No pinned launches found</string>
-    <string name="next_launch">Next</string>
-    <string name="latest_launch">Previous</string>
-    <string name="customise_dashboard_label">Customise dashboard</string>
+    <!-- Launches -->
+    <string name="launches_webcast_live">Webcast Live</string>
+    <string name="launches_status_label">Status:</string>
+    <string name="launches_launch_location_label">Launch site:</string>
+    <string name="launches_watch_button_label">Watch</string>
+    <string name="launches_event_button_label">Create event</string>
+
 
     <!--Filter labels-->
     <string name="filter_successes">Successes</string>
@@ -54,7 +56,6 @@
     <string name="date_picker_label">Select date range</string>
 
     <!--Launch Details-->
-    <string name="mission_patch">Mission patch</string>
     <string name="first_stage">First Stage</string>
     <string name="payload_label">Payload</string>
     <string name="reused_status_desc">Reused status</string>

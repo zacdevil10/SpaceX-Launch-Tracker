@@ -32,11 +32,17 @@ class LaunchesViewModel @Inject constructor(
     var launch: LaunchItem? = null
 
     val cores: List<RecyclerViewItem>
-        get() {
-            return launch?.firstStage?.apply {
-                if (this.size > 1) groupBy { it.type }.flatMap { listOf(Header(it.key.type)) + it.value }
-            } ?: emptyList()
-        }
+        get() = launch?.firstStage?.let { firstStageList ->
+            if (firstStageList.size > 1) {
+                firstStageList.groupBy { firstStageItem ->
+                    firstStageItem.type
+                }.flatMap { firstStageItem ->
+                    listOf(Header(firstStageItem.key.type)) + firstStageItem.value
+                }
+            } else {
+                firstStageList
+            }
+        } ?: emptyList()
 
     fun getUpcomingLaunches(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
         viewModelScope.launch {

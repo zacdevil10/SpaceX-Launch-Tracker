@@ -7,16 +7,11 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemLaunchesBinding
 import uk.co.zac_h.spacex.databinding.ListItemLaunchesExpandedBinding
 import uk.co.zac_h.spacex.launches.LaunchItem
 import uk.co.zac_h.spacex.widget.LaunchView
-import kotlin.concurrent.timer
 
 class LaunchesAdapter(val onClick: (LaunchItem, View) -> Unit) :
     ListAdapter<LaunchItem, RecyclerView.ViewHolder>(Comparator) {
@@ -46,16 +41,11 @@ class LaunchesAdapter(val onClick: (LaunchItem, View) -> Unit) :
             is ExpandedViewHolder -> holder.binding.apply {
                 root.transitionName = launch.id
 
-                val remaining = launch.countdown()
+                val remaining = launch.countdown(root.resources)
 
                 countdown.isVisible = remaining != null
-                MainScope().launch {
-                    withContext(Dispatchers.IO) {
-                        timer(period = 1000L) {
-                            countdown.text = launch.countdown()
-                        }
-                    }
-                }
+                countdown.countdown = { launch.countdown(root.resources) }
+                if (remaining != null) countdown.startTimer()
 
                 launchView.bind(launch)
 
