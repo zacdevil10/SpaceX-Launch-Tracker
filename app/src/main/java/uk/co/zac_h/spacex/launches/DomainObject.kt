@@ -25,12 +25,14 @@ data class LaunchItem(
     val launchLocation: String?,
     val launchLocationMap: String?,
     val launchLocationMapUrl: String?,
-    val status: String?,
-    val statusDescription: String?,
+    val status: Status,
+    val holdReason: String?,
+    val failReason: String?,
     val description: String?,
     val type: String?,
     val orbit: String?,
     val webcast: String?,
+    val webcastLive: Boolean,
     val firstStage: List<FirstStageItem>?,
     val crew: List<CrewItem>?
 ) : RecyclerViewItem {
@@ -48,16 +50,24 @@ data class LaunchItem(
         launchLocation = response.pad?.name,
         launchLocationMap = response.pad?.mapImage,
         launchLocationMapUrl = response.pad?.mapUrl,
-        status = response.status?.name,
-        statusDescription = response.status?.description,
+        status = Status(response.status?.id, response.status?.name, response.status?.description),
+        holdReason = response.holdReason,
+        failReason = response.failReason,
         description = response.mission?.description,
         type = response.mission?.type,
         orbit = response.mission?.orbit?.name,
         webcast = response.video?.firstOrNull()?.url,
+        webcastLive = response.webcastLive ?: false,
         firstStage = response.rocket?.launcherStage?.mapNotNull { launcherStage ->
             launcherStage?.let { FirstStageItem(it) }
         },
         crew = response.rocket?.spacecraftStage?.launchCrew?.mapNotNull { it?.let { CrewItem(it) } }
+    )
+
+    data class Status(
+        val type: Int?,
+        val name: String?,
+        val description: String?
     )
 
     fun countdown(resources: Resources): String? {
