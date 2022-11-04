@@ -2,7 +2,8 @@ package uk.co.zac_h.spacex.crew
 
 import uk.co.zac_h.spacex.core.utils.orUnknown
 import uk.co.zac_h.spacex.network.*
-import uk.co.zac_h.spacex.network.dto.spacex.*
+import uk.co.zac_h.spacex.network.dto.spacex.CrewQueriedResponse
+import uk.co.zac_h.spacex.network.dto.spacex.CrewStatus
 
 data class Crew(
     val name: String?,
@@ -17,18 +18,6 @@ data class Crew(
 ) {
 
     constructor(
-        response: CrewResponse
-    ) : this(
-        name = response.name,
-        status = response.status.toCrewStatus(),
-        agency = response.agency.orUnknown(),
-        image = response.image,
-        wikipedia = response.wikipedia,
-        role = null,
-        id = response.id
-    )
-
-    constructor(
         response: CrewQueriedResponse,
         role: String? = null
     ) : this(
@@ -39,30 +28,6 @@ data class Crew(
         wikipedia = response.wikipedia,
         role = role,
         id = response.id
-    )
-
-    constructor(
-        response: LaunchCrewResponse
-    ) : this(
-        name = null,
-        status = null.toCrewStatus(),
-        agency = null,
-        image = null,
-        wikipedia = null,
-        role = response.role,
-        id = response.crew
-    )
-
-    constructor(
-        response: LaunchCrewQueriedResponse
-    ) : this(
-        name = response.crew.name,
-        status = response.crew.status.toCrewStatus(),
-        agency = response.crew.agency,
-        image = response.crew.image,
-        wikipedia = response.crew.wikipedia,
-        role = response.role,
-        id = response.crew.id
     )
 
     companion object {

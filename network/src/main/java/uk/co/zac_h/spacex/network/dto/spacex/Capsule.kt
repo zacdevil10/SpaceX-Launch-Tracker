@@ -16,19 +16,6 @@ data class CapsuleQueriedResponse(
     @field:Json(name = SPACEX_FIELD_ID) val id: String
 )
 
-data class CapsuleResponse(
-    @field:Json(name = SPACEX_FIELD_CAPSULE_SERIAL) val serial: String?,
-    @field:Json(name = SPACEX_FIELD_CAPSULE_STATUS) val status: String?,
-    @field:Json(name = SPACEX_FIELD_CAPSULE_TYPE) val type: String?,
-    @field:Json(name = SPACEX_FIELD_CAPSULE_DRAGON) val dragon: String?,
-    @field:Json(name = SPACEX_FIELD_CAPSULE_REUSE_COUNT) val reuseCount: Int?,
-    @field:Json(name = SPACEX_FIELD_CAPSULE_WATER_LANDINGS) val waterLandings: Int?,
-    @field:Json(name = SPACEX_FIELD_CAPSULE_LAND_LANDINGS) val landLandings: Int?,
-    @field:Json(name = SPACEX_FIELD_CAPSULE_LAST_UPDATE) val lastUpdate: String?,
-    @field:Json(name = SPACEX_FIELD_CAPSULE_LAUNCHES) val launches: List<String>?,
-    @field:Json(name = SPACEX_FIELD_ID) val id: String
-)
-
 enum class CapsuleStatus(val status: String) {
     UNKNOWN(SPACEX_UNKNOWN),
     ACTIVE(SPACEX_ACTIVE),

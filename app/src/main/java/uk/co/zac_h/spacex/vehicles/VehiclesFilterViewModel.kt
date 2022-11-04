@@ -10,8 +10,7 @@ class VehiclesFilterViewModel : ViewModel() {
         order.map { it[vehiclesPage] }
     }
 
-    var vehiclesPage: VehiclesPage = VehiclesPage.ROCKETS
-        private set
+    private var vehiclesPage: VehiclesPage = VehiclesPage.ROCKETS
 
     private val _order = MutableLiveData<MutableMap<VehiclesPage, Order>>(mutableMapOf())
     val order: LiveData<MutableMap<VehiclesPage, Order>> = _order

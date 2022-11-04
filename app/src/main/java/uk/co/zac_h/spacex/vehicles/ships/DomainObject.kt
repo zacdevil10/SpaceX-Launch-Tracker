@@ -3,7 +3,6 @@ package uk.co.zac_h.spacex.vehicles.ships
 import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.network.dto.spacex.MassFormatted
 import uk.co.zac_h.spacex.network.dto.spacex.ShipQueriedResponse
-import uk.co.zac_h.spacex.network.dto.spacex.ShipResponse
 
 data class Ship(
     val name: String?,
@@ -31,34 +30,6 @@ data class Ship(
     val launches: List<Launch>? = null,
     val id: String
 ) {
-
-    constructor(
-        response: ShipResponse
-    ) : this(
-        name = response.name,
-        legacyId = response.legacyId,
-        model = response.model,
-        type = response.type,
-        roles = response.roles,
-        active = response.active,
-        imo = response.imo,
-        mmsi = response.mmsi,
-        abs = response.abs,
-        shipClass = response.shipClass,
-        mass = MassFormatted.formatMass(response.massKg, response.massLbs),
-        yearBuilt = response.yearBuilt,
-        homePort = response.homePort,
-        status = response.status,
-        speed = response.speed,
-        course = response.course,
-        lat = response.lat,
-        lng = response.lng,
-        lastUpdate = response.lastUpdate,
-        link = response.link,
-        image = response.image,
-        launchIds = response.launches,
-        id = response.id
-    )
 
     constructor(
         response: ShipQueriedResponse
