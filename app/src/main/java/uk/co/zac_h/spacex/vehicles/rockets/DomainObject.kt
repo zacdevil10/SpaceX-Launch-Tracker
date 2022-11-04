@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.vehicles.rockets
 
-import uk.co.zac_h.spacex.core.types.RocketType
+import uk.co.zac_h.spacex.core.common.types.RocketType
 import uk.co.zac_h.spacex.network.dto.spacex.*
 import java.text.DecimalFormat
 

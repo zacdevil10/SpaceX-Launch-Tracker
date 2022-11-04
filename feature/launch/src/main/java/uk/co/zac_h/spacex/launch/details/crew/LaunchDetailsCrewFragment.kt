@@ -8,11 +8,11 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
-import uk.co.zac_h.spacex.core.bottomsheet.BottomDrawerCallback
-import uk.co.zac_h.spacex.core.bottomsheet.StandardBackPressedStateAction
-import uk.co.zac_h.spacex.core.bottomsheet.StandardBottomSheetBackPressed
-import uk.co.zac_h.spacex.core.fragment.BaseFragment
-import uk.co.zac_h.spacex.core.viewpager.ViewPagerFragment
+import uk.co.zac_h.spacex.core.common.bottomsheet.BottomDrawerCallback
+import uk.co.zac_h.spacex.core.common.bottomsheet.StandardBackPressedStateAction
+import uk.co.zac_h.spacex.core.common.bottomsheet.StandardBottomSheetBackPressed
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.launch.CrewItem
 import uk.co.zac_h.spacex.launch.LaunchesViewModel
 import uk.co.zac_h.spacex.launch.R

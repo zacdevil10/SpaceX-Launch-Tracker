@@ -43,8 +43,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
-    implementation project(':core')
-    implementation project(':widget')
+    implementation project(':core:common')
+    implementation project(':core:ui')
     implementation project(":network")
 
     //MVVM

@@ -26,8 +26,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.history.filter.HistoryFilterFragment
-import uk.co.zac_h.spacex.core.bottomsheet.*
-import uk.co.zac_h.spacex.core.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.core.common.bottomsheet.*
+import uk.co.zac_h.spacex.core.common.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.databinding.ActivityMainBinding
 import uk.co.zac_h.spacex.launch.LaunchesFragmentDirections
 import uk.co.zac_h.spacex.statistics.graphs.launchhistory.filter.LaunchHistoryFilterFragment

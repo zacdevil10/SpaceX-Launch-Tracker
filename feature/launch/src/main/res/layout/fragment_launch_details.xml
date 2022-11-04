@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <uk.co.zac_h.spacex.widget.CountdownView
+        <uk.co.zac_h.spacex.core.ui.CountdownView
             android:id="@+id/countdown"
             android:layout_width="match_parent"
             android:layout_height="48dp"
@@ -34,7 +34,7 @@
             tools:text="T-43:13:23:55"
             tools:visibility="visible" />
 
-        <uk.co.zac_h.spacex.widget.LaunchView
+        <uk.co.zac_h.spacex.core.ui.LaunchView
             android:id="@+id/launch_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -3,7 +3,7 @@ package uk.co.zac_h.spacex.statistics.graphs.launchhistory.filter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import uk.co.zac_h.spacex.core.types.LaunchHistoryFilter
+import uk.co.zac_h.spacex.core.common.types.LaunchHistoryFilter
 
 class LaunchHistoryFilterViewModel : ViewModel() {
 

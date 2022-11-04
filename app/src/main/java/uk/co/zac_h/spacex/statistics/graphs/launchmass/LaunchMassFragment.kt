@@ -22,10 +22,10 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.core.fragment.BaseFragment
-import uk.co.zac_h.spacex.core.types.LaunchMassViewType
-import uk.co.zac_h.spacex.core.types.RocketType
-import uk.co.zac_h.spacex.core.utils.sum
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.types.LaunchMassViewType
+import uk.co.zac_h.spacex.core.common.types.RocketType
+import uk.co.zac_h.spacex.core.common.utils.sum
 import uk.co.zac_h.spacex.databinding.FragmentLaunchMassBinding
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter

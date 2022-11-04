@@ -1,2 +1,4 @@
-rootProject.name='SpaceX'
-include ':app', ':core', ':network', ':widget', ':feature:launch'
+rootProject.name = 'SpaceX'
+include ':app', ':network', ':feature:launch'
+include ':core:ui'
+include ':core:common'

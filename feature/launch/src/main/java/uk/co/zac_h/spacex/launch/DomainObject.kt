@@ -1,9 +1,9 @@
 package uk.co.zac_h.spacex.launch
 
 import android.content.res.Resources
-import uk.co.zac_h.spacex.core.recyclerview.RecyclerViewItem
-import uk.co.zac_h.spacex.core.types.CoreType
-import uk.co.zac_h.spacex.core.utils.*
+import uk.co.zac_h.spacex.core.common.recyclerview.RecyclerViewItem
+import uk.co.zac_h.spacex.core.common.types.CoreType
+import uk.co.zac_h.spacex.core.common.utils.*
 import uk.co.zac_h.spacex.network.*
 import uk.co.zac_h.spacex.network.dto.spacex.CrewStatus
 import uk.co.zac_h.spacex.network.dto.spacex.LaunchResponse
