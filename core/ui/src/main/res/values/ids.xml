@@ -2,5 +2,6 @@
 <resources>
 
     <item name="nav_host" type="id" />
+    <item name="toolbar_fab" type="id" />
 
 </resources>

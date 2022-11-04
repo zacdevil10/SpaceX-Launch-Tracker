@@ -7,7 +7,8 @@
 
     <fragment
         android:id="@+id/launches_page_fragment"
-        android:name="uk.co.zac_h.spacex.launch.LaunchesFragment">
+        android:name="uk.co.zac_h.spacex.feature.launch.LaunchesFragment"
+        tools:layout="@layout/fragment_launches">
 
         <deepLink
             android:id="@+id/deepLink"
@@ -25,12 +26,12 @@
 
     <fragment
         android:id="@+id/launches_filter_fragment"
-        android:name="uk.co.zac_h.spacex.launches.filter.LaunchesFilterFragment"
+        android:name="uk.co.zac_h.spacex.feature.launch.filter.LaunchesFilterFragment"
         tools:layout="@layout/fragment_launches_filter" />
 
     <fragment
         android:id="@+id/launch_details_container_fragment"
-        android:name="uk.co.zac_h.spacex.launch.details.LaunchDetailsContainerFragment"
+        android:name="uk.co.zac_h.spacex.feature.launch.details.LaunchDetailsContainerFragment"
         tools:layout="@layout/fragment_launch_details_container" />
 
 </navigation>

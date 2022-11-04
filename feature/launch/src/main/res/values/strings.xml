@@ -9,6 +9,19 @@
     <string name="launches_event_button_label">Create event</string>
     <string name="launch_site_label">Launch site:</string>
 
+    <!--Launch Filter-->
+    <string name="filter_heading">Filter</string>
+    <string name="date_range_label">Date range:</string>
+    <string name="date_picker_button_label">Select</string>
+    <string name="order_label">Order:</string>
+    <string name="ascending_button_label">Asc</string>
+    <string name="descending_button_label">Desc</string>
+    <string name="rocket_type_label">Rocket:</string>
+    <string name="clear_label">Clear</string>
+    <string name="apply_label">Apply</string>
+    <string name="filter_launches_description">Open launches filter</string>
+    <string name="date_picker_label">Select date range</string>
+
     <!--Launch Details-->
     <string name="first_stage">First Stage</string>
     <string name="payload_label">Payload</string>
