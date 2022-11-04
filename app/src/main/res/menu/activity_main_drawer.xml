@@ -42,7 +42,7 @@
     <item android:title="@string/menu_about">
         <menu>
             <item
-                android:id="@id/about_page_fragment"
+                android:id="@id/about_nav_graph"
                 android:icon="@drawable/ic_info_outline_black_24dp"
                 android:title="@string/menu_about" />
         </menu>

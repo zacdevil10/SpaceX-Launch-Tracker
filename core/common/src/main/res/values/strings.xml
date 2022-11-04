@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="nav_header_title">SpaceX - Launch Tracker</string>
+    <string name="nav_header_subtitle">By Zac Hadjineophytou</string>
+
     <!--Menu-->
     <string name="search">Search</string>
 
