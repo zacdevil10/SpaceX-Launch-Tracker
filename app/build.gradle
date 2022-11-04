@@ -69,6 +69,7 @@ dependencies {
 
     //Feature
     implementation project(':feature:launch')
+    implementation project(':feature:about')
 
     //Core
     implementation project(':core:common')

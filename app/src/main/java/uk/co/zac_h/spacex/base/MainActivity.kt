@@ -201,7 +201,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             //About
             R.id.company_page_fragment -> setAppBarForCompany()
             R.id.history_page_fragment -> setAppBarForHistory()
-            R.id.about_page_fragment -> setAppBarForAbout()
+            R.id.about_fragment -> setAppBarForAbout()
         }
     }
 
