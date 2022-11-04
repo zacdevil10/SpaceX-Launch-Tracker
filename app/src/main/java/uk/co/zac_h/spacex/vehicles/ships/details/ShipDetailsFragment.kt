@@ -7,20 +7,19 @@ import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.core.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.image.setImageAndTint
 import uk.co.zac_h.spacex.core.utils.setupCollapsingToolbar
+import uk.co.zac_h.spacex.core.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.databinding.CollapsingToolbarBinding
 import uk.co.zac_h.spacex.databinding.FragmentShipDetailsBinding
-import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
-import uk.co.zac_h.spacex.utils.setImageAndTint
 import uk.co.zac_h.spacex.vehicles.ships.Ship
 import uk.co.zac_h.spacex.vehicles.ships.ShipsViewModel
 
-class ShipDetailsFragment : BaseFragment() {
+class ShipDetailsFragment : BaseFragment(), ViewPagerFragment {
 
     override val title: String by lazy { navArgs.label ?: title }
 
@@ -104,7 +103,7 @@ class ShipDetailsFragment : BaseFragment() {
                     shipDetailsMassText.visibility = View.GONE
                 }
 
-                ship.launches?.let { launches ->
+                /*ship.launches?.let { launches ->
                     shipDetailsMissionRecycler.apply {
                         layoutManager = LinearLayoutManager(this@ShipDetailsFragment.context)
                         setHasFixedSize(true)
@@ -112,7 +111,7 @@ class ShipDetailsFragment : BaseFragment() {
                     }
                 } ?: run {
                     shipDetailsMissionLabel.visibility = View.GONE
-                }
+                }*/
 
             }
         }
