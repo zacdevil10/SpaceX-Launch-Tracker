@@ -42,7 +42,7 @@ class CoreAdapter : ListAdapter<Core, CoreAdapter.ViewHolder>(CoreComparator) {
                 listItemCoreDetails.visibility = View.GONE
             }
             listItemCoreStatusText.text = core.status?.status
-            listItemCoreFlightsText.text = (core.launches?.size ?: 0).toString()
+            //listItemCoreFlightsText.text = (core.launches?.size ?: 0).toString()
 
             listItemCoreSpecsButton.setOnClickListener { holder.bind(core) }
             listItemCoreCard.setOnClickListener { holder.bind(core) }

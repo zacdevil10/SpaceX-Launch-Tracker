@@ -11,14 +11,15 @@ import androidx.fragment.app.viewModels
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.core.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.databinding.FragmentTwitterFeedBinding
 import uk.co.zac_h.spacex.news.adapters.TwitterFeedAdapter
 import uk.co.zac_h.spacex.utils.PaginationScrollListener
 import uk.co.zac_h.spacex.utils.animateEnterFromTop
 import uk.co.zac_h.spacex.utils.animateExitToTop
 
-class TwitterFeedFragment : BaseFragment() {
+class TwitterFeedFragment : BaseFragment(), ViewPagerFragment {
 
     override var title: String = "Twitter"
 

@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/launches_page_fragment">
+    app:startDestination="@id/launch_nav_graph">
+
+    <include app:graph="@navigation/launch_nav_graph" />
 
     <fragment
         android:id="@+id/news_page_fragment"
@@ -15,26 +17,6 @@
             app:uri="spacex://news" />
 
     </fragment>
-
-    <fragment
-        android:id="@+id/launches_page_fragment"
-        android:name="uk.co.zac_h.spacex.launches.LaunchesFragment"
-        tools:layout="@layout/fragment_launches">
-
-        <deepLink
-            android:id="@+id/deepLink"
-            app:uri="spacex://launches" />
-
-        <action
-            android:id="@+id/action_launches_to_filter"
-            app:destination="@id/launches_filter_fragment" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/launches_filter_fragment"
-        android:name="uk.co.zac_h.spacex.launches.filter.LaunchesFilterFragment"
-        tools:layout="@layout/fragment_launches_filter" />
 
     <fragment
         android:id="@+id/crew_page_fragment"
@@ -222,26 +204,6 @@
         <deepLink
             android:id="@+id/deepLink"
             app:uri="spacex://about/app" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/launch_details_container_fragment"
-        android:name="uk.co.zac_h.spacex.launches.details.LaunchDetailsContainerFragment"
-        tools:layout="@layout/fragment_launch_details_container">
-        <action
-            android:id="@+id/action_launch_details_container_fragment_to_core_details_fragment"
-            app:destination="@id/core_details_fragment" />
-        <action
-            android:id="@+id/action_launch_details_container_fragment_to_ship_details_fragment"
-            app:destination="@id/ship_details_fragment" />
-        <action
-            android:id="@+id/action_crew_fragment_to_crew_details_fragment"
-            app:destination="@id/crew_detail_page_fragment" />
-
-        <deepLink
-            android:id="@+id/launchDetailsLink"
-            app:uri="spacex://launch_details={launch_id}" />
 
     </fragment>
 

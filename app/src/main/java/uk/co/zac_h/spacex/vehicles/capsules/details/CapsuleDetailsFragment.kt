@@ -7,16 +7,15 @@ import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
-import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.core.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.databinding.FragmentCapsuleDetailsBinding
-import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
 import uk.co.zac_h.spacex.vehicles.capsules.Capsule
 import uk.co.zac_h.spacex.vehicles.capsules.CapsulesViewModel
 
-class CapsuleDetailsFragment : BaseFragment() {
+class CapsuleDetailsFragment : BaseFragment(), ViewPagerFragment {
 
     override val title: String by lazy { navArgs.label ?: title }
 
@@ -77,13 +76,13 @@ class CapsuleDetailsFragment : BaseFragment() {
             val totalLandings = capsule?.landLandings?.plus(capsule.waterLandings ?: 0) ?: 0
             capsuleDetailsLandingText.text = totalLandings.toString()
 
-            capsule?.launches?.let { launches ->
+            /*capsule?.launches?.let { launches ->
                 capsuleDetailsMissionsRecycler.apply {
                     layoutManager = LinearLayoutManager(this@CapsuleDetailsFragment.context)
                     setHasFixedSize(true)
-                    adapter = MissionsAdapter().also { it.submitList(launches) }
+                    adapter = uk.co.zac_h.spacex.launch.adapters.MissionsAdapter().also { it.submitList(launches) }
                 }
-            } ?: run { capsuleDetailsMissionLabel.visibility = View.GONE }
+            } ?: run { capsuleDetailsMissionLabel.visibility = View.GONE }*/
         }
     }
 }

@@ -10,13 +10,14 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.transition.Hold
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.core.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.viewpager.ViewPagerAdapter
+import uk.co.zac_h.spacex.core.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.databinding.FragmentVehiclesBinding
-import uk.co.zac_h.spacex.utils.ViewPagerAdapter
 import uk.co.zac_h.spacex.vehicles.dragon.DragonFragment
 import uk.co.zac_h.spacex.vehicles.rockets.RocketFragment
 
-class VehiclesFragment : BaseFragment() {
+class VehiclesFragment : BaseFragment(), ViewPagerFragment {
 
     override val title by lazy { getString(R.string.vehicles_label) }
 
@@ -40,7 +41,7 @@ class VehiclesFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val fragments: List<BaseFragment> = listOf(
+        val fragments: List<ViewPagerFragment> = listOf(
             RocketFragment(),
             DragonFragment(),
             //ShipsFragment(),

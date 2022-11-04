@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.core.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.viewpager.ViewPagerAdapter
 import uk.co.zac_h.spacex.databinding.FragmentNewsBinding
 import uk.co.zac_h.spacex.news.reddit.RedditFeedFragment
 import uk.co.zac_h.spacex.news.twitter.TwitterFeedFragment
-import uk.co.zac_h.spacex.utils.ViewPagerAdapter
 
 class NewsFragment : BaseFragment() {
 

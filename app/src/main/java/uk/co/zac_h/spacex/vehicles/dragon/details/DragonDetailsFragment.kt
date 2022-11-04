@@ -10,17 +10,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.core.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.image.setImageAndTint
 import uk.co.zac_h.spacex.core.utils.metricFormat
 import uk.co.zac_h.spacex.core.utils.setupCollapsingToolbar
+import uk.co.zac_h.spacex.core.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.databinding.CollapsingToolbarBinding
 import uk.co.zac_h.spacex.databinding.FragmentDragonDetailsBinding
 import uk.co.zac_h.spacex.network.dto.spacex.Dragon
-import uk.co.zac_h.spacex.utils.setImageAndTint
 import uk.co.zac_h.spacex.vehicles.adapters.DragonThrusterAdapter
 import uk.co.zac_h.spacex.vehicles.dragon.DragonViewModel
 
-class DragonDetailsFragment : BaseFragment() {
+class DragonDetailsFragment : BaseFragment(), ViewPagerFragment {
 
     override val title: String by lazy { navArgs.label ?: title }
 

@@ -10,14 +10,14 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
-import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.core.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
-import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.vehicles.cores.Core
 import uk.co.zac_h.spacex.vehicles.cores.CoreViewModel
 
-class CoreDetailsFragment : BaseFragment() {
+class CoreDetailsFragment : BaseFragment(), ViewPagerFragment {
 
     override val title: String by lazy { navArgs.label ?: title }
 
@@ -26,8 +26,6 @@ class CoreDetailsFragment : BaseFragment() {
     private val viewModel: CoreViewModel by viewModels()
 
     private lateinit var binding: FragmentCoreDetailsBinding
-
-    private lateinit var missionsAdapter: MissionsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,12 +52,9 @@ class CoreDetailsFragment : BaseFragment() {
 
         binding.coreDetailsScrollview.transitionName = navArgs.id
 
-        missionsAdapter = MissionsAdapter()
-
         binding.coreDetailsMissionRecycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
-            adapter = missionsAdapter
         }
 
         viewModel.cores.observe(viewLifecycleOwner) { result ->
@@ -88,8 +83,6 @@ class CoreDetailsFragment : BaseFragment() {
                 coreDetailsRtlsLandingsText.text = core.landingsRtls.toString()
                 coreDetailsAsdsAttemptsText.text = core.attemptsAsds.toString()
                 coreDetailsAsdsLandingsText.text = core.landingsAsds.toString()
-
-                missionsAdapter.submitList(core.launches)
             }
         }
     }

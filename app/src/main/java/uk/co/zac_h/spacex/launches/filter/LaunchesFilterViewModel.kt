@@ -5,21 +5,20 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import dagger.hilt.android.lifecycle.HiltViewModel
-import uk.co.zac_h.spacex.launches.LaunchItem
-import uk.co.zac_h.spacex.launches.LaunchesRepository
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
 import javax.inject.Inject
 
 @HiltViewModel
 class LaunchesFilterViewModel @Inject constructor(
-    private val repository: LaunchesRepository
+    private val repository: uk.co.zac_h.spacex.launch.LaunchesRepository
 ) : ViewModel() {
 
     val filter: LaunchesFilterBuilder = LaunchesFilterBuilder()
 
-    private val _launchesLiveData = MutableLiveData<ApiResult<List<LaunchItem>>>()
-    val launchesLiveData: LiveData<ApiResult<List<LaunchItem>>> =
+    private val _launchesLiveData =
+        MutableLiveData<ApiResult<List<uk.co.zac_h.spacex.launch.LaunchItem>>>()
+    val launchesLiveData: LiveData<ApiResult<List<uk.co.zac_h.spacex.launch.LaunchItem>>> =
         _launchesLiveData.map { result ->
             result
             /*filter.map { filter ->

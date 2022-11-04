@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
-import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.network.*
 import uk.co.zac_h.spacex.network.dto.spacex.CapsuleQueriedResponse
 import uk.co.zac_h.spacex.network.dto.spacex.CapsuleStatus
@@ -16,7 +15,6 @@ data class Capsule(
     val landLandings: Int?,
     val lastUpdate: String?,
     val launchIds: List<String>? = null,
-    val launches: List<Launch>? = null,
     val id: String
 ) {
 

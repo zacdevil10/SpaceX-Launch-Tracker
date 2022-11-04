@@ -20,7 +20,7 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.core.fragment.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentFairingRecoveryBinding
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
