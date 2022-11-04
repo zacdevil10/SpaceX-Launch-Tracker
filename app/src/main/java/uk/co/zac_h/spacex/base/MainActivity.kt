@@ -29,7 +29,7 @@ import uk.co.zac_h.spacex.about.history.filter.HistoryFilterFragment
 import uk.co.zac_h.spacex.core.common.bottomsheet.*
 import uk.co.zac_h.spacex.core.common.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.databinding.ActivityMainBinding
-import uk.co.zac_h.spacex.launch.LaunchesFragmentDirections
+import uk.co.zac_h.spacex.feature.launch.LaunchesFragmentDirections
 import uk.co.zac_h.spacex.statistics.graphs.launchhistory.filter.LaunchHistoryFilterFragment
 import uk.co.zac_h.spacex.statistics.graphs.launchmass.filter.LaunchMassFilterFragment
 import uk.co.zac_h.spacex.utils.BottomDrawerFragment
@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             addOnSlideAction(AlphaSlideAction(binding.scrim))
             addOnStateChangedAction(VisibilityStateAction(binding.scrim))
             addOnStateChangedAction(BackPressedStateAction(closeNavDrawerOnBackPressed))
-            addOnStateChangedAction(ShowHideFabStateAction(binding.fab) { viewModel.isFabVisible })
+            addOnStateChangedAction(ShowHideFabStateAction(binding.toolbarFab) { viewModel.isFabVisible })
             addOnStateChangedAction(ChangeSettingsMenuStateAction { showSettings ->
                 binding.bottomAppBar.replaceMenu(
                     if (showSettings) R.menu.menu_settings else getBottomAppBarMenuForDestination()
@@ -228,26 +228,26 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             supportFragmentManager.commit {
                 replace(R.id.bottom_drawer, fragment)
             }
-            binding.fab.setOnClickListener {
+            binding.toolbarFab.setOnClickListener {
                 fragment.toggle()
             }
             fragment.addOnStateChangedAction(
-                ShowHideFabStateAction(binding.fab) { viewModel.isFabVisible }
+                ShowHideFabStateAction(binding.toolbarFab) { viewModel.isFabVisible }
             )
         } ?: run {
-            binding.fab.setOnClickListener(null)
+            binding.toolbarFab.setOnClickListener(null)
         }
     }
 
     private fun setAppBarForLaunches() {
         binding.run {
-            fab.setOnClickListener {
+            toolbarFab.setOnClickListener {
                 findNavController(R.id.nav_host).navigate(LaunchesFragmentDirections.actionLaunchesToFilter())
             }
-            fab.setImageResource(R.drawable.ic_search_black_24dp)
+            toolbarFab.setImageResource(R.drawable.ic_search_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
@@ -256,7 +256,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
@@ -265,7 +265,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
@@ -274,23 +274,23 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
 
     private fun setAppBarForCrewDetails() {
         hideAppBar()
-        binding.fab.hide()
+        binding.toolbarFab.hide()
         viewModel.isFabVisible = false
     }
 
     private fun setAppBarForVehicles() {
         binding.run {
-            fab.setImageResource(R.drawable.ic_sort_black_24dp)
+            toolbarFab.setImageResource(R.drawable.ic_sort_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.show()
+            toolbarFab.show()
             viewModel.isFabVisible = true
         }
     }
@@ -299,7 +299,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
@@ -308,7 +308,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
@@ -317,7 +317,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
@@ -326,7 +326,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
@@ -335,21 +335,21 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
 
     private fun setAppBarForStatistics(hasFilter: Boolean) {
         binding.run {
-            fab.setImageResource(R.drawable.ic_filter_list_black_24dp)
+            toolbarFab.setImageResource(R.drawable.ic_filter_list_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             if (hasFilter) {
-                fab.show()
+                toolbarFab.show()
                 viewModel.isFabVisible = true
             } else {
-                fab.hide()
+                toolbarFab.hide()
                 viewModel.isFabVisible = false
             }
         }
@@ -357,10 +357,10 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     private fun setAppBarForHistory() {
         binding.run {
-            fab.setImageResource(R.drawable.ic_sort_black_24dp)
+            toolbarFab.setImageResource(R.drawable.ic_sort_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.show()
+            toolbarFab.show()
             viewModel.isFabVisible = true
         }
     }
@@ -369,7 +369,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
@@ -378,7 +378,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
@@ -396,7 +396,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                     if (isCanceled) return
 
                     bottomAppBar.visibility = View.GONE
-                    fab.visibility = View.INVISIBLE
+                    toolbarFab.visibility = View.INVISIBLE
                 }
 
                 override fun onAnimationCancel(animation: Animator) {

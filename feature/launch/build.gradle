@@ -7,6 +7,7 @@ plugins {
 }
 
 android {
+    namespace 'uk.co.zac_h.spacex.feature.launch'
     compileSdk 33
 
     defaultConfig {
@@ -33,7 +34,6 @@ android {
     buildFeatures {
         viewBinding true
     }
-    namespace 'uk.co.zac_h.spacex.launch'
 }
 
 dependencies {
