@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
-import uk.co.zac_h.spacex.core.types.Order
+import uk.co.zac_h.spacex.core.common.types.Order
 import uk.co.zac_h.spacex.network.Cache
 import uk.co.zac_h.spacex.network.Repository
 import uk.co.zac_h.spacex.network.datasource.remote.CapsuleDataSourceClient

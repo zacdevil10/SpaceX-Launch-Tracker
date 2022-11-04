@@ -24,11 +24,11 @@ import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.core.bottomsheet.*
-import uk.co.zac_h.spacex.core.types.Order
-import uk.co.zac_h.spacex.core.types.RocketType
-import uk.co.zac_h.spacex.core.utils.formatRange
-import uk.co.zac_h.spacex.core.utils.hideKeyboard
+import uk.co.zac_h.spacex.core.common.bottomsheet.*
+import uk.co.zac_h.spacex.core.common.types.Order
+import uk.co.zac_h.spacex.core.common.types.RocketType
+import uk.co.zac_h.spacex.core.common.utils.formatRange
+import uk.co.zac_h.spacex.core.common.utils.hideKeyboard
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesFilterBinding
 import uk.co.zac_h.spacex.databinding.LaunchesFilterBinding
 import uk.co.zac_h.spacex.network.ApiResult

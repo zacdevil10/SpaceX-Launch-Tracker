@@ -13,9 +13,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.adapter.HistoryAdapter
 import uk.co.zac_h.spacex.about.history.filter.HistoryFilterViewModel
-import uk.co.zac_h.spacex.core.fragment.BaseFragment
-import uk.co.zac_h.spacex.core.fragment.openWebLink
-import uk.co.zac_h.spacex.core.utils.orUnknown
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.fragment.openWebLink
+import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.databinding.FragmentHistoryBinding
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
@@ -45,7 +45,9 @@ class HistoryFragment : BaseFragment() {
         view.doOnPreDraw { startPostponedEnterTransition() }
         postponeEnterTransition()
 
-        historyAdapter = HistoryAdapter(::openWebLink)
+        historyAdapter = HistoryAdapter {
+            openWebLink(it)
+        }
 
         val isTabletLandscape = resources.getBoolean(R.bool.isTabletLand)
 

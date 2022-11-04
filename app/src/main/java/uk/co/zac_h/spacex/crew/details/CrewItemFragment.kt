@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.core.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.crew.Crew
 import uk.co.zac_h.spacex.crew.CrewViewModel
 import uk.co.zac_h.spacex.databinding.FragmentCrewItemBinding

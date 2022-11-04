@@ -3,8 +3,8 @@ package uk.co.zac_h.spacex.statistics.graphs.launchmass.filter
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import uk.co.zac_h.spacex.core.types.LaunchMassViewType
-import uk.co.zac_h.spacex.core.types.RocketType
+import uk.co.zac_h.spacex.core.common.types.LaunchMassViewType
+import uk.co.zac_h.spacex.core.common.types.RocketType
 
 class LaunchMassFilterViewModel : ViewModel() {
 

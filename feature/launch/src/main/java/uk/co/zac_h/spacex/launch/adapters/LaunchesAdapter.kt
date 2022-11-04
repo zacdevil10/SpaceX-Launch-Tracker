@@ -11,7 +11,6 @@ import uk.co.zac_h.spacex.launch.LaunchItem
 import uk.co.zac_h.spacex.launch.R
 import uk.co.zac_h.spacex.launch.databinding.ListItemLaunchesBinding
 import uk.co.zac_h.spacex.launch.databinding.ListItemLaunchesExpandedBinding
-import uk.co.zac_h.spacex.widget.LaunchView
 
 class LaunchesAdapter(val onClick: (LaunchItem, View) -> Unit) :
     ListAdapter<LaunchItem, RecyclerView.ViewHolder>(Comparator) {
@@ -68,7 +67,7 @@ class LaunchesAdapter(val onClick: (LaunchItem, View) -> Unit) :
         }
     }
 
-    private fun LaunchView.bind(launch: LaunchItem) {
+    private fun uk.co.zac_h.spacex.core.ui.LaunchView.bind(launch: LaunchItem) {
         patch = launch.missionPatch
         vehicle = launch.rocket
         missionName = launch.missionName

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import uk.co.zac_h.spacex.about.history.HistoryRepository
-import uk.co.zac_h.spacex.core.types.Order
+import uk.co.zac_h.spacex.core.common.types.Order
 import javax.inject.Inject
 
 @HiltViewModel

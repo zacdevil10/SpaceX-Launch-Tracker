@@ -10,9 +10,9 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.transition.Hold
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.core.fragment.BaseFragment
-import uk.co.zac_h.spacex.core.viewpager.ViewPagerAdapter
-import uk.co.zac_h.spacex.core.viewpager.ViewPagerFragment
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerAdapter
+import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.databinding.FragmentVehiclesBinding
 import uk.co.zac_h.spacex.vehicles.dragon.DragonFragment
 import uk.co.zac_h.spacex.vehicles.rockets.RocketFragment

@@ -1,7 +1,7 @@
 package uk.co.zac_h.spacex.network.dto.spacex
 
 import com.squareup.moshi.Json
-import uk.co.zac_h.spacex.core.utils.metricFormat
+import uk.co.zac_h.spacex.core.common.utils.metricFormat
 
 data class Dimens(
     @field:Json(name = "meters") val meters: Double?,

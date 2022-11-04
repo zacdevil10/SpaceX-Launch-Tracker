@@ -16,9 +16,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import uk.co.zac_h.spacex.core.fragment.BaseFragment
-import uk.co.zac_h.spacex.core.utils.orUnknown
-import uk.co.zac_h.spacex.core.viewpager.ViewPagerFragment
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.utils.orUnknown
+import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.launch.adapters.PaginatedLaunchesAdapter
 import uk.co.zac_h.spacex.launch.databinding.FragmentLaunchesListBinding
 

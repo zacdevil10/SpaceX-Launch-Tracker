@@ -9,7 +9,7 @@ import androidx.core.view.doOnPreDraw
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.core.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewBinding
 import uk.co.zac_h.spacex.network.ApiResult

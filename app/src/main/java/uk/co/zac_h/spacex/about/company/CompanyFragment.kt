@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.core.fragment.BaseFragment
-import uk.co.zac_h.spacex.core.fragment.openWebLink
-import uk.co.zac_h.spacex.core.utils.orUnknown
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.fragment.openWebLink
+import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.databinding.FragmentCompanyBinding
 import uk.co.zac_h.spacex.network.ApiResult
 

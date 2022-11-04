@@ -11,9 +11,9 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.navigation.navGraphViewModels
 import com.bumptech.glide.Glide
-import uk.co.zac_h.spacex.core.fragment.BaseFragment
-import uk.co.zac_h.spacex.core.fragment.openWebLink
-import uk.co.zac_h.spacex.core.viewpager.ViewPagerFragment
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.fragment.openWebLink
+import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.launch.LaunchItem
 import uk.co.zac_h.spacex.launch.LaunchesViewModel
 import uk.co.zac_h.spacex.launch.R

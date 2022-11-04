@@ -8,8 +8,8 @@ import androidx.core.view.doOnPreDraw
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
-import uk.co.zac_h.spacex.core.fragment.BaseFragment
-import uk.co.zac_h.spacex.core.viewpager.ViewPagerAdapter
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerAdapter
 import uk.co.zac_h.spacex.launch.LaunchesViewModel
 import uk.co.zac_h.spacex.launch.R
 import uk.co.zac_h.spacex.launch.databinding.FragmentLaunchDetailsContainerBinding

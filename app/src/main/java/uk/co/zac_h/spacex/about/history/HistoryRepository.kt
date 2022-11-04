@@ -1,7 +1,7 @@
 package uk.co.zac_h.spacex.about.history
 
-import uk.co.zac_h.spacex.core.types.Order
-import uk.co.zac_h.spacex.core.utils.Keys
+import uk.co.zac_h.spacex.core.common.types.Order
+import uk.co.zac_h.spacex.core.common.utils.Keys
 import uk.co.zac_h.spacex.network.Cache
 import uk.co.zac_h.spacex.network.Repository
 import uk.co.zac_h.spacex.network.datasource.remote.HistoryDataSourceClient

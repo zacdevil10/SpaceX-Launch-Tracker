@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.crew
 
-import uk.co.zac_h.spacex.core.utils.orUnknown
+import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.network.*
 import uk.co.zac_h.spacex.network.dto.spacex.CrewQueriedResponse
 import uk.co.zac_h.spacex.network.dto.spacex.CrewStatus

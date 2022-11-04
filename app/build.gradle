@@ -71,8 +71,8 @@ dependencies {
     implementation project(':feature:launch')
 
     //Core
-    implementation project(':core')
-    implementation project(':widget')
+    implementation project(':core:common')
+    implementation project(':core:ui')
     implementation project(":network")
 
     //Navigation
@@ -92,7 +92,6 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:31.0.2')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
-    implementation 'com.google.firebase:firebase-core'
     implementation 'com.google.firebase:firebase-messaging-ktx'
 
     //MVVM
