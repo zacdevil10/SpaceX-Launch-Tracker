@@ -24,15 +24,14 @@ import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.core.bottomsheet.*
 import uk.co.zac_h.spacex.core.types.Order
 import uk.co.zac_h.spacex.core.types.RocketType
 import uk.co.zac_h.spacex.core.utils.formatRange
 import uk.co.zac_h.spacex.core.utils.hideKeyboard
 import uk.co.zac_h.spacex.databinding.FragmentLaunchesFilterBinding
 import uk.co.zac_h.spacex.databinding.LaunchesFilterBinding
-import uk.co.zac_h.spacex.launches.adapters.PaginatedLaunchesAdapter
 import uk.co.zac_h.spacex.network.ApiResult
-import uk.co.zac_h.spacex.utils.*
 
 @AndroidEntryPoint
 class LaunchesFilterFragment : Fragment() {
@@ -42,7 +41,7 @@ class LaunchesFilterFragment : Fragment() {
     private lateinit var binding: FragmentLaunchesFilterBinding
     private lateinit var launchFilter: LaunchesFilterBinding
 
-    private lateinit var launchesAdapter: PaginatedLaunchesAdapter
+    private lateinit var launchesAdapter: uk.co.zac_h.spacex.launch.adapters.PaginatedLaunchesAdapter
 
     private lateinit var filterBehavior: BottomSheetBehavior<ConstraintLayout>
 

@@ -2,6 +2,7 @@ plugins {
     id 'com.android.library'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -29,10 +30,18 @@ android {
             testCoverageEnabled true
         }
     }
+    buildFeatures {
+        viewBinding true
+    }
     namespace 'uk.co.zac_h.spacex.core'
 }
 
 dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.android.material:material:1.7.0'
+
+    //Hilt
+    implementation 'com.google.dagger:hilt-android:2.44'
+    kapt 'com.google.dagger:hilt-compiler:2.44'
 }

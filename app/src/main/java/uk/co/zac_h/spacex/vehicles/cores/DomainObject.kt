@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.vehicles.cores
 
-import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.network.*
 import uk.co.zac_h.spacex.network.dto.spacex.CoreQueriedResponse
 import uk.co.zac_h.spacex.network.dto.spacex.CoreResponse
@@ -18,7 +17,6 @@ data class Core(
     val landingsAsds: Int?,
     val lastUpdate: String?,
     val launchIds: List<String>? = null,
-    val launches: List<Launch>? = null,
     val id: String
 ) {
 

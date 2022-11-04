@@ -7,6 +7,7 @@ import androidx.customview.widget.Openable
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
+import uk.co.zac_h.spacex.core.bottomsheet.*
 
 abstract class BottomDrawerFragment : Fragment(), Openable {
 

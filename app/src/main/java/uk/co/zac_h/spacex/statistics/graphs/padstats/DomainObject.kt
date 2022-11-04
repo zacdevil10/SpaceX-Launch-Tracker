@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
-import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.network.*
 import uk.co.zac_h.spacex.network.dto.spacex.LandingPadQueriedResponse
 import uk.co.zac_h.spacex.network.dto.spacex.LaunchpadQueriedResponse
@@ -21,7 +20,6 @@ data class LandingPad(
     val wikipedia: String?,
     val details: String?,
     val launchIds: List<String>? = null,
-    val launches: List<Launch>? = null,
     val id: String
 ) {
 
@@ -69,7 +67,6 @@ data class Launchpad(
     val rocketIds: List<String>? = null,
     val rockets: List<Rocket>? = null,
     val launchIds: List<String>? = null,
-    val launches: List<Launch>? = null,
     var id: String
 ) {
 

@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.vehicles.ships
 
-import uk.co.zac_h.spacex.launches.Launch
 import uk.co.zac_h.spacex.network.dto.spacex.MassFormatted
 import uk.co.zac_h.spacex.network.dto.spacex.ShipQueriedResponse
 
@@ -27,7 +26,6 @@ data class Ship(
     val link: String?,
     val image: String?,
     val launchIds: List<String>? = null,
-    val launches: List<Launch>? = null,
     val id: String
 ) {
 

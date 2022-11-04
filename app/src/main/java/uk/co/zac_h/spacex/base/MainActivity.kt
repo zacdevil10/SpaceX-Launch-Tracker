@@ -26,12 +26,13 @@ import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.history.filter.HistoryFilterFragment
+import uk.co.zac_h.spacex.core.bottomsheet.*
+import uk.co.zac_h.spacex.core.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.databinding.ActivityMainBinding
-import uk.co.zac_h.spacex.launches.LaunchesFragmentDirections
+import uk.co.zac_h.spacex.launch.LaunchesFragmentDirections
 import uk.co.zac_h.spacex.statistics.graphs.launchhistory.filter.LaunchHistoryFilterFragment
 import uk.co.zac_h.spacex.statistics.graphs.launchmass.filter.LaunchMassFilterFragment
-import uk.co.zac_h.spacex.utils.*
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
+import uk.co.zac_h.spacex.utils.BottomDrawerFragment
 import uk.co.zac_h.spacex.vehicles.VehiclesFilterFragment
 import javax.inject.Inject
 
