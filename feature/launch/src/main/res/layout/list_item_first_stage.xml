@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/medium_margin"
                 android:text="@string/reused"
-                android:textAlignment="center"
+                android:gravity="center"
                 app:layout_constraintEnd_toStartOf="@id/first_stage_landed_label"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/separator" />
@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/medium_margin"
                 android:text="@string/landed_label"
-                android:textAlignment="center"
+                android:gravity="center"
                 app:layout_constraintEnd_toStartOf="@id/first_stage_landing_text"
                 app:layout_constraintStart_toEndOf="@id/first_stage_reused_label"
                 app:layout_constraintTop_toBottomOf="@id/separator" />
@@ -97,7 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/medium_margin"
                 android:text="@string/landing_label"
-                android:textAlignment="center"
+                android:gravity="center"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/first_stage_landed_label"
                 app:layout_constraintTop_toBottomOf="@id/separator" />
@@ -106,12 +106,12 @@
                 android:id="@+id/first_stage_landing_image"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:contentDescription="@string/launch_pad_status_desc"
                 android:src="@drawable/ic_help_outline_black_24dp"
                 app:layout_constraintEnd_toEndOf="@+id/first_stage_landing_text"
                 app:layout_constraintStart_toStartOf="@+id/first_stage_landing_text"
                 app:layout_constraintTop_toTopOf="@+id/first_stage_landed_image"
-                app:tint="?colorControlNormal" />
+                app:tint="?colorControlNormal"
+                tools:ignore="ContentDescription" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

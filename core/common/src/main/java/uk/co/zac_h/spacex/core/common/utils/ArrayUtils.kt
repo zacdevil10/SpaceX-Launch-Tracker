@@ -2,18 +2,6 @@ package uk.co.zac_h.spacex.core.common.utils
 
 import uk.co.zac_h.spacex.core.common.types.Order
 
-fun <T> ArrayList<T>.addAllExcludingPosition(list: List<T>, position: Int) {
-    list.forEachIndexed { index, t ->
-        if (index != position) this.add(t)
-    }
-}
-
-fun <T> Iterable<T>.reverse(value: Boolean): List<T> {
-    val list = toMutableList()
-    if (value) list.reverse()
-    return list
-}
-
 fun <T> Iterable<T>.filterAll(vararg predicates: ((T) -> Boolean?)?): List<T> = filter { value ->
     predicates.filterNotNull().all { it(value) ?: true }
 }
