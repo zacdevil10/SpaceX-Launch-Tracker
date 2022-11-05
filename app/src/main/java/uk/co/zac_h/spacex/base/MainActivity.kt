@@ -195,7 +195,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             R.id.vehicles_page_fragment -> setAppBarForVehicles()
             R.id.rocket_details_fragment -> setAppBarForRocketDetails()
             R.id.dragon_details_fragment -> setAppBarForDragonDetails()
-            R.id.ship_details_fragment -> setAppBarForShipDetails()
             R.id.core_details_fragment -> setAppBarForCoreDetails()
             R.id.capsule_details_fragment -> setAppBarForCapsuleDetails()
             //About
@@ -305,15 +304,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     }
 
     private fun setAppBarForDragonDetails() {
-        binding.run {
-            bottomAppBar.visibility = View.VISIBLE
-            bottomAppBar.performShow()
-            toolbarFab.hide()
-            viewModel.isFabVisible = false
-        }
-    }
-
-    private fun setAppBarForShipDetails() {
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
