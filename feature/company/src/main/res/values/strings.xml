@@ -17,7 +17,7 @@
     <string name="founded">%1$s, %2$s</string>
 
     <string name="website_label">Website</string>
-    <string name="twitter_label">Twitter</string>
+    <string name="wikipedia_label">Wikipedia</string>
     <string name="album_label">Album</string>
 
 </resources>

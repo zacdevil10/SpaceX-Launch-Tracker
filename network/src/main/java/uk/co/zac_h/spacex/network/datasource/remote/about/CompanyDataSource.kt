@@ -1,17 +1,17 @@
 package uk.co.zac_h.spacex.network.datasource.remote.about
 
 import uk.co.zac_h.spacex.network.datasource.remote.RemoteDataSource
-import uk.co.zac_h.spacex.network.dto.spacex.CompanyResponse
+import uk.co.zac_h.spacex.network.dto.spacex.AgencyResponse
 import uk.co.zac_h.spacex.network.dto.spacex.QueryModel
-import uk.co.zac_h.spacex.network.retrofit.SpaceXHttpClientV4
-import uk.co.zac_h.spacex.network.retrofit.SpaceXService
+import uk.co.zac_h.spacex.network.retrofit.LaunchLibraryClient
+import uk.co.zac_h.spacex.network.retrofit.LaunchLibraryService
 import javax.inject.Inject
 
 class CompanyDataSource @Inject constructor(
-    @SpaceXHttpClientV4 private val httpService: SpaceXService
-) : RemoteDataSource<CompanyResponse> {
+    @LaunchLibraryClient private val httpService: LaunchLibraryService
+) : RemoteDataSource<AgencyResponse> {
 
-    private suspend fun getCompany() = httpService.getCompanyInfo()
+    private suspend fun getCompany() = httpService.getAgency()
 
     override suspend fun fetchAsync(query: QueryModel) = getCompany()
 }

@@ -42,31 +42,17 @@ class CompanyFragment : BaseFragment() {
     fun update(response: Company) {
         with(binding) {
             hideProgress()
-            response.headquarters?.let {
-                companyAddress.text = getString(R.string.address, it.address, it.city, it.state)
-            }
 
             response.website?.let { website ->
                 companyWebsite.setOnClickListener { openWebLink(website) }
             }
-            response.twitter?.let { twitter ->
-                companyTwitter.setOnClickListener { openWebLink(twitter) }
-            }
-            response.flickr?.let { flickr ->
-                companyAlbum.setOnClickListener { openWebLink(flickr) }
+            response.wiki?.let { twitter ->
+                companyWiki.setOnClickListener { openWebLink(twitter) }
             }
 
-            companySummary.text = response.summary
-            companyFounded.text = getString(R.string.founded, response.founder, response.founded)
-            companyCeo.text = response.ceo
-            companyCto.text = response.cto
-            companyCoo.text = response.coo
-            companyCtoPro.text = response.ctoPropulsion
-            companyValuation.text = response.valuation
-            companyEmployees.text = response.employees
-            companyVehicles.text = response.vehicles
-            companyLaunchSites.text = response.launchSites
-            companyTestSites.text = response.testSites
+            companySummary.text = response.description
+            companyFounded.text = response.foundingYear
+            companyCeo.text = response.administrator
         }
     }
 
