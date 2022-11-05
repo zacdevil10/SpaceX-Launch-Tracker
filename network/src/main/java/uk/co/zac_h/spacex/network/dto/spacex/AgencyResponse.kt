@@ -18,5 +18,52 @@ data class AgencyResponse(
     @field:Json(name = "attempted_landings") val attemptedLandings: Int?,
     @field:Json(name = "consecutive_successful_landings") val consecutiveSuccessfulLandings: Int?,
     @field:Json(name = "info_url") val infoUrl: String?,
-    @field:Json(name = "wiki_url") val wikiUrl: String?
-)
+    @field:Json(name = "wiki_url") val wikiUrl: String?,
+    @field:Json(name = "launcher_list") val launcherList: List<Launcher>?,
+    @field:Json(name = "spacecraft_list") val spacecraftList: List<Spacecraft>?
+) {
+
+    data class Launcher(
+        @field:Json(name = "id") val id: String,
+        @field:Json(name = "name") val name: String?,
+        @field:Json(name = "description") val description: String?,
+        @field:Json(name = "full_name") val full_name: String?,
+        @field:Json(name = "variant") val variant: String?,
+        @field:Json(name = "min_stage") val min_stage: Int?,
+        @field:Json(name = "max_stage") val max_stage: Int?,
+        @field:Json(name = "length") val length: Float?,
+        @field:Json(name = "diameter") val diameter: Float?,
+        @field:Json(name = "maiden_flight") val maiden_flight: String,
+        @field:Json(name = "launch_mass") val launch_mass: Int?,
+        @field:Json(name = "leo_capacity") val leo_capacity: Int?,
+        @field:Json(name = "gto_capacity") val gto_capacity: Int?,
+        @field:Json(name = "to_thrust") val to_thrust: Int?,
+        @field:Json(name = "apogee") val apogee: Int?,
+        @field:Json(name = "image_url") val image_url: String?,
+        @field:Json(name = "info_url") val info_url: String?,
+        @field:Json(name = "wiki_url") val wiki_url: String?,
+        @field:Json(name = "consecutive_successful_launches") val consecutive_successful_launches: Int?,
+        @field:Json(name = "successful_launches") val successful_launches: Int?,
+        @field:Json(name = "failed_launches") val failed_launches: Int?,
+        @field:Json(name = "pending_launches") val pending_launches: Int?
+    )
+
+    data class Spacecraft(
+        @field:Json(name = "id") val id: String,
+        @field:Json(name = "name") val name: String?,
+        @field:Json(name = "in_use") val inUse: Boolean?,
+        @field:Json(name = "capability") val capability: String?,
+        @field:Json(name = "history") val history: String?,
+        @field:Json(name = "details") val details: String?,
+        @field:Json(name = "maiden_flight") val maidenFlight: String?,
+        @field:Json(name = "height") val height: Float?,
+        @field:Json(name = "diameter") val diameter: Float?,
+        @field:Json(name = "human_rated") val humanRated: Boolean?,
+        @field:Json(name = "crew_capacity") val crewCapacity: Int?,
+        @field:Json(name = "payload_capacity") val payloadCapacity: Int?,
+        @field:Json(name = "flight_life") val flightLife: String?,
+        @field:Json(name = "image_url") val imageUrl: String?,
+        @field:Json(name = "wiki_link") val wikiLink: String?,
+        @field:Json(name = "info_link") val infoLink: String?
+    )
+}
