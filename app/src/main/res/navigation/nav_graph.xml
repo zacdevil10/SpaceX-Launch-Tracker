@@ -6,6 +6,7 @@
     app:startDestination="@id/launch_nav_graph">
 
     <include app:graph="@navigation/launch_nav_graph" />
+    <include app:graph="@navigation/vehicles_nav_graph" />
     <include app:graph="@navigation/company_nav_graph" />
     <include app:graph="@navigation/about_nav_graph" />
 
@@ -47,30 +48,6 @@
         <argument
             android:name="url"
             app:argType="string" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/vehicles_page_fragment"
-        android:name="uk.co.zac_h.spacex.vehicles.VehiclesFragment"
-        tools:layout="@layout/fragment_vehicles">
-
-        <action
-            android:id="@+id/action_vehicles_page_fragment_to_rocket_details_fragment"
-            app:destination="@id/rocket_details_fragment" />
-        <action
-            android:id="@+id/action_vehicles_page_fragment_to_dragon_details_fragment"
-            app:destination="@id/dragon_details_fragment" />
-        <action
-            android:id="@+id/action_vehicles_page_fragment_to_capsule_details_fragment"
-            app:destination="@id/capsule_details_fragment" />
-        <action
-            android:id="@+id/action_vehicles_page_fragment_to_core_details_fragment"
-            app:destination="@id/core_details_fragment" />
-
-        <deepLink
-            android:id="@+id/deepLink"
-            app:uri="spacex://vehicles" />
 
     </fragment>
 
@@ -197,30 +174,6 @@
         <argument
             android:name="id"
             app:argType="string" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/rocket_details_fragment"
-        android:name="uk.co.zac_h.spacex.vehicles.rockets.details.RocketDetailsFragment"
-        tools:layout="@layout/fragment_rocket_details">
-
-        <argument
-            android:name="label"
-            app:argType="string"
-            app:nullable="true" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/dragon_details_fragment"
-        android:name="uk.co.zac_h.spacex.vehicles.dragon.details.DragonDetailsFragment"
-        tools:layout="@layout/fragment_dragon_details">
-
-        <argument
-            android:name="label"
-            app:argType="string"
-            app:nullable="true" />
 
     </fragment>
 

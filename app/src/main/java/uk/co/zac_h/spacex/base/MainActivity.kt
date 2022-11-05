@@ -27,13 +27,13 @@ import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.about.history.filter.HistoryFilterFragment
 import uk.co.zac_h.spacex.core.common.bottomsheet.*
+import uk.co.zac_h.spacex.core.common.fragment.BottomDrawerFragment
 import uk.co.zac_h.spacex.core.common.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.databinding.ActivityMainBinding
 import uk.co.zac_h.spacex.feature.launch.LaunchesFragmentDirections
+import uk.co.zac_h.spacex.feature.vehicles.VehiclesFilterFragment
 import uk.co.zac_h.spacex.statistics.graphs.launchhistory.filter.LaunchHistoryFilterFragment
 import uk.co.zac_h.spacex.statistics.graphs.launchmass.filter.LaunchMassFilterFragment
-import uk.co.zac_h.spacex.utils.BottomDrawerFragment
-import uk.co.zac_h.spacex.vehicles.VehiclesFilterFragment
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -192,7 +192,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             R.id.fairing_recovery_fragment -> setAppBarForStatistics(false)
             R.id.pad_stats_fragment -> setAppBarForStatistics(false)
             //Vehicles
-            R.id.vehicles_page_fragment -> setAppBarForVehicles()
+            R.id.vehicles_fragment -> setAppBarForVehicles()
             R.id.rocket_details_fragment -> setAppBarForRocketDetails()
             R.id.dragon_details_fragment -> setAppBarForDragonDetails()
             R.id.core_details_fragment -> setAppBarForCoreDetails()
@@ -218,7 +218,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         bottomDrawerFragment = when (destination.id) {
             R.id.launch_history_fragment -> LaunchHistoryFilterFragment()
             R.id.launch_mass_fragment -> LaunchMassFilterFragment()
-            R.id.vehicles_page_fragment -> VehiclesFilterFragment()
+            R.id.vehicles_fragment -> VehiclesFilterFragment()
             R.id.history_page_fragment -> HistoryFilterFragment()
             else -> null
         }

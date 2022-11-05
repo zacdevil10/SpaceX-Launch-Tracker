@@ -13,4 +13,7 @@
     <string name="falcon_heavy">Falcon Heavy</string>
     <string name="starship">Starship</string>
 
+    <string name="percentage">%1$d%%</string>
+    <string name="mass">%1$s kg / %2$s lbs</string>
+
 </resources>

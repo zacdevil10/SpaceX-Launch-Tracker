@@ -1,10 +1,10 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
+import uk.co.zac_h.spacex.feature.vehicles.rockets.Rocket
 import uk.co.zac_h.spacex.network.*
 import uk.co.zac_h.spacex.network.dto.spacex.LandingPadQueriedResponse
 import uk.co.zac_h.spacex.network.dto.spacex.LaunchpadQueriedResponse
 import uk.co.zac_h.spacex.network.dto.spacex.PadStatus
-import uk.co.zac_h.spacex.vehicles.rockets.Rocket
 
 data class LandingPad(
     val name: String?,

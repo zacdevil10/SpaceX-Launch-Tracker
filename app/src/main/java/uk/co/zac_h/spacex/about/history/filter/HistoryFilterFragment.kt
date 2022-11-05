@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.core.common.fragment.BottomDrawerFragment
 import uk.co.zac_h.spacex.core.common.types.Order
 import uk.co.zac_h.spacex.databinding.FragmentHistoryFilterBinding
-import uk.co.zac_h.spacex.utils.BottomDrawerFragment
 
 class HistoryFilterFragment : BottomDrawerFragment() {
 

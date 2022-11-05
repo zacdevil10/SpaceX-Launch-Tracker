@@ -3,14 +3,11 @@ package uk.co.zac_h.spacex.vehicles.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemCoreBinding
-import uk.co.zac_h.spacex.vehicles.VehiclesFragmentDirections
 import uk.co.zac_h.spacex.vehicles.cores.Core
 
 class CoreAdapter : ListAdapter<Core, CoreAdapter.ViewHolder>(CoreComparator) {
@@ -84,13 +81,13 @@ class CoreAdapter : ListAdapter<Core, CoreAdapter.ViewHolder>(CoreComparator) {
 
     class ViewHolder(val binding: ListItemCoreBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(core: Core) {
-            binding.root.findNavController().navigate(
+            /*binding.root.findNavController().navigate(
                 VehiclesFragmentDirections.actionVehiclesPageFragmentToCoreDetailsFragment(
                     core.serial,
                     core.id
                 ),
                 FragmentNavigatorExtras(binding.listItemCoreCard to core.id)
-            )
+            )*/
         }
     }
 

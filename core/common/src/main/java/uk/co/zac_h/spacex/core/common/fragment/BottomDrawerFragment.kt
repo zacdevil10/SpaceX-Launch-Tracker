@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.utils
+package uk.co.zac_h.spacex.core.common.fragment
 
 import android.os.Bundle
 import android.view.View
