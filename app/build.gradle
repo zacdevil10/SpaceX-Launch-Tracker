@@ -69,6 +69,7 @@ dependencies {
 
     //Feature
     implementation project(':feature:launch')
+    implementation project(':feature:vehicles')
     implementation project(':feature:company')
     implementation project(':feature:about')
 
