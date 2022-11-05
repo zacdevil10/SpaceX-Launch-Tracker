@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.vehicles.dragon
+package uk.co.zac_h.spacex.feature.vehicles.dragon
 
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel

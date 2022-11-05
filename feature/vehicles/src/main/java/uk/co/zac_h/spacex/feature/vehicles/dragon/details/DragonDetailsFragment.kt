@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.vehicles.dragon.details
+package uk.co.zac_h.spacex.feature.vehicles.dragon.details
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,17 +9,17 @@ import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.image.setImageAndTint
 import uk.co.zac_h.spacex.core.common.utils.metricFormat
 import uk.co.zac_h.spacex.core.common.utils.setupCollapsingToolbar
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
-import uk.co.zac_h.spacex.databinding.CollapsingToolbarBinding
-import uk.co.zac_h.spacex.databinding.FragmentDragonDetailsBinding
+import uk.co.zac_h.spacex.core.ui.databinding.CollapsingToolbarBinding
+import uk.co.zac_h.spacex.feature.vehicles.R
+import uk.co.zac_h.spacex.feature.vehicles.adapters.DragonThrusterAdapter
+import uk.co.zac_h.spacex.feature.vehicles.databinding.FragmentDragonDetailsBinding
+import uk.co.zac_h.spacex.feature.vehicles.dragon.DragonViewModel
 import uk.co.zac_h.spacex.network.dto.spacex.Dragon
-import uk.co.zac_h.spacex.vehicles.adapters.DragonThrusterAdapter
-import uk.co.zac_h.spacex.vehicles.dragon.DragonViewModel
 
 class DragonDetailsFragment : BaseFragment(), ViewPagerFragment {
 
@@ -27,7 +27,7 @@ class DragonDetailsFragment : BaseFragment(), ViewPagerFragment {
 
     private val navArgs: DragonDetailsFragmentArgs by navArgs()
 
-    private val viewModel: DragonViewModel by navGraphViewModels(R.id.nav_graph) {
+    private val viewModel: DragonViewModel by navGraphViewModels(R.id.vehicles_nav_graph) {
         defaultViewModelProviderFactory
     }
 

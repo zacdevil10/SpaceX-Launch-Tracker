@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.vehicles
+package uk.co.zac_h.spacex.feature.vehicles
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,10 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.activityViewModels
-import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.core.common.fragment.BottomDrawerFragment
 import uk.co.zac_h.spacex.core.common.types.Order
-import uk.co.zac_h.spacex.databinding.FragmentVehiclesFilterBinding
-import uk.co.zac_h.spacex.utils.BottomDrawerFragment
+import uk.co.zac_h.spacex.feature.vehicles.databinding.FragmentVehiclesFilterBinding
 
 class VehiclesFilterFragment : BottomDrawerFragment() {
 

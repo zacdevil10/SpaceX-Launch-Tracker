@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.vehicles.adapters
+package uk.co.zac_h.spacex.feature.vehicles.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,9 +6,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.core.common.utils.metricFormat
-import uk.co.zac_h.spacex.databinding.ListItemDragonThrusterBinding
+import uk.co.zac_h.spacex.feature.vehicles.R
+import uk.co.zac_h.spacex.feature.vehicles.databinding.ListItemDragonThrusterBinding
 import uk.co.zac_h.spacex.network.dto.spacex.DragonThrusterConfiguration
 
 class DragonThrusterAdapter(private val context: Context) :

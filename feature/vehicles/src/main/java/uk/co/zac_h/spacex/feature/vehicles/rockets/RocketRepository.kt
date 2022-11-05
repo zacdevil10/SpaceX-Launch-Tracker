@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.vehicles.rockets
+package uk.co.zac_h.spacex.feature.vehicles.rockets
 
 import uk.co.zac_h.spacex.network.Cache
 import uk.co.zac_h.spacex.network.Repository

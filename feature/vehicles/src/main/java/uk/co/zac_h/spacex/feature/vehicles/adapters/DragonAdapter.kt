@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.vehicles.adapters
+package uk.co.zac_h.spacex.feature.vehicles.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,9 +7,9 @@ import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import uk.co.zac_h.spacex.databinding.ListItemVehicleBinding
+import uk.co.zac_h.spacex.feature.vehicles.VehiclesFragmentDirections
+import uk.co.zac_h.spacex.feature.vehicles.databinding.ListItemVehicleBinding
 import uk.co.zac_h.spacex.network.dto.spacex.Dragon
-import uk.co.zac_h.spacex.vehicles.VehiclesFragmentDirections
 
 class DragonAdapter(val setSelected: (String) -> Unit) :
     ListAdapter<Dragon, DragonAdapter.ViewHolder>(DragonComparator) {

@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.vehicles
+package uk.co.zac_h.spacex.feature.vehicles
 
 import androidx.lifecycle.*
 import uk.co.zac_h.spacex.core.common.types.Order

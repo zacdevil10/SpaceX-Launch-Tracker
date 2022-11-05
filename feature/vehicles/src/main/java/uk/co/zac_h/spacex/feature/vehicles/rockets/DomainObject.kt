@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.vehicles.rockets
+package uk.co.zac_h.spacex.feature.vehicles.rockets
 
 import uk.co.zac_h.spacex.core.common.types.RocketType
 import uk.co.zac_h.spacex.network.dto.spacex.*

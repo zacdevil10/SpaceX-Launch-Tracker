@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.vehicles
+package uk.co.zac_h.spacex.feature.vehicles
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,19 +9,18 @@ import androidx.fragment.app.activityViewModels
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.transition.Hold
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerAdapter
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
-import uk.co.zac_h.spacex.databinding.FragmentVehiclesBinding
-import uk.co.zac_h.spacex.vehicles.dragon.DragonFragment
-import uk.co.zac_h.spacex.vehicles.rockets.RocketFragment
+import uk.co.zac_h.spacex.core.ui.databinding.FragmentViewPagerBinding
+import uk.co.zac_h.spacex.feature.vehicles.dragon.DragonFragment
+import uk.co.zac_h.spacex.feature.vehicles.rockets.RocketFragment
 
 class VehiclesFragment : BaseFragment(), ViewPagerFragment {
 
     override val title by lazy { "Vehicles" }
 
-    private lateinit var binding: FragmentVehiclesBinding
+    private lateinit var binding: FragmentViewPagerBinding
 
     private val viewModel: VehiclesFilterViewModel by activityViewModels()
 
@@ -34,7 +33,7 @@ class VehiclesFragment : BaseFragment(), ViewPagerFragment {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentVehiclesBinding.inflate(inflater, container, false).apply {
+    ): View = FragmentViewPagerBinding.inflate(inflater, container, false).apply {
         binding = this
     }.root
 
@@ -53,7 +52,7 @@ class VehiclesFragment : BaseFragment(), ViewPagerFragment {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        binding.vehiclesViewPager.apply {
+        binding.viewPager.apply {
             adapter = ViewPagerAdapter(childFragmentManager, fragments)
             addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageScrolled(p: Int, p1: Float, p2: Int) {}
@@ -70,12 +69,12 @@ class VehiclesFragment : BaseFragment(), ViewPagerFragment {
         val tabIcons = listOf(
             R.drawable.ic_rocket,
             R.drawable.ic_dragon,
-            //R.drawable.ic_core,
-            //R.drawable.ic_dragon
+            R.drawable.ic_core,
+            R.drawable.ic_dragon
         )
 
         binding.tabLayout.apply {
-            setupWithViewPager(binding.vehiclesViewPager)
+            setupWithViewPager(binding.viewPager)
             for (position in 0..tabCount) {
                 getTabAt(position)?.setIcon(tabIcons[position])
             }

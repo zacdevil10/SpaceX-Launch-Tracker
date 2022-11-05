@@ -3,13 +3,10 @@ package uk.co.zac_h.spacex.vehicles.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.databinding.ListItemCapsuleBinding
-import uk.co.zac_h.spacex.vehicles.VehiclesFragmentDirections
 import uk.co.zac_h.spacex.vehicles.capsules.Capsule
 
 class CapsulesAdapter : ListAdapter<Capsule, CapsulesAdapter.ViewHolder>(CapsuleComparator) {
@@ -80,13 +77,13 @@ class CapsulesAdapter : ListAdapter<Capsule, CapsulesAdapter.ViewHolder>(Capsule
 
     class ViewHolder(val binding: ListItemCapsuleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(capsule: Capsule) {
-            itemView.findNavController().navigate(
+            /*itemView.findNavController().navigate(
                 VehiclesFragmentDirections.actionVehiclesPageFragmentToCapsuleDetailsFragment(
                     capsule.serial,
                     capsule.id
                 ),
                 FragmentNavigatorExtras(binding.listItemCapsuleCard to capsule.id)
-            )
+            )*/
         }
     }
 
