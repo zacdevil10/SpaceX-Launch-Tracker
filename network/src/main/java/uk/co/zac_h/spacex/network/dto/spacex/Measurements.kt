@@ -44,15 +44,3 @@ data class SpecificImpulse(
     @field:Json(name = "sea_level") val seaLevel: Int?,
     @field:Json(name = "vacuum") val vacuum: Int?
 )
-
-data class Velocity(
-    val kph: Int? = null,
-    val mph: Int? = null
-)
-
-data class Distance(
-    val meters: String? = null,
-    val feet: String? = null,
-    val mi: String? = null,
-    val km: String? = null
-)

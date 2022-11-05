@@ -30,33 +30,6 @@ data class Rocket(
 ) {
 
     constructor(
-        response: LaunchResponse.Rocket
-    ) : this(
-        name = response.configuration?.name,
-        type = response.configuration?.name.toRocketType(),
-        isActive = null,
-        stages = null,
-        boosters = null,
-        costPerLaunch = null,
-        successRate = null,
-        firstFlight = null,
-        country = null,
-        company = null,
-        height = null,
-        diameter = null,
-        mass = null,
-        payloadWeights = null,
-        firstStage = null,
-        secondStage = null,
-        engines = null,
-        landingLegs = null,
-        flickr = null,
-        wikipedia = null,
-        description = null,
-        id = response.id.toString()
-    )
-
-    constructor(
         response: RocketResponse
     ) : this(
         name = response.name,

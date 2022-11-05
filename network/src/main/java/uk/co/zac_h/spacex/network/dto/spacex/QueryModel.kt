@@ -1,7 +1,5 @@
 package uk.co.zac_h.spacex.network.dto.spacex
 
-import com.squareup.moshi.Json
-
 // v4
 
 data class QueryModel(
@@ -23,27 +21,6 @@ data class QueryPopulateModel(
     private var populate: Any
 )
 
-data class QueryUpcomingLaunchesModel(
-    private var upcoming: Boolean
-)
-
-data class QueryUpcomingSuccessLaunchesModel(
-    private var upcoming: Boolean,
-    private var success: Boolean
-)
-
-data class QueryLaunchesSortByDate(
-    private var date_unix: String
-)
-
 data class QueryHistorySort(
     private var event_date_unix: String
-)
-
-data class QueryLandingHistory(
-    @field:Json(name = "cores.landing_attempt") var landing_attempt: Boolean
-)
-
-data class QueryFairingRecovery(
-    @field:Json(name = "fairings.recovery_attempt") var recovery_attempt: Boolean
 )

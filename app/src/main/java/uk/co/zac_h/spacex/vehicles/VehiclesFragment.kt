@@ -19,7 +19,7 @@ import uk.co.zac_h.spacex.vehicles.rockets.RocketFragment
 
 class VehiclesFragment : BaseFragment(), ViewPagerFragment {
 
-    override val title by lazy { getString(R.string.vehicles_label) }
+    override val title by lazy { "Vehicles" }
 
     private lateinit var binding: FragmentVehiclesBinding
 
