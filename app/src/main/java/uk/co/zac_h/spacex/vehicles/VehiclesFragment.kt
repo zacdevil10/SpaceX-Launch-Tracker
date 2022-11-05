@@ -44,7 +44,6 @@ class VehiclesFragment : BaseFragment(), ViewPagerFragment {
         val fragments: List<ViewPagerFragment> = listOf(
             RocketFragment(),
             DragonFragment(),
-            //ShipsFragment(),
             //CoreFragment(),
             //CapsulesFragment()
         )
@@ -71,7 +70,6 @@ class VehiclesFragment : BaseFragment(), ViewPagerFragment {
         val tabIcons = listOf(
             R.drawable.ic_rocket,
             R.drawable.ic_dragon,
-            //R.drawable.ic_baseline_directions_boat_24,
             //R.drawable.ic_core,
             //R.drawable.ic_dragon
         )

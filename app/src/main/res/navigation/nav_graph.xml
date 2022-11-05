@@ -62,9 +62,6 @@
             android:id="@+id/action_vehicles_page_fragment_to_dragon_details_fragment"
             app:destination="@id/dragon_details_fragment" />
         <action
-            android:id="@+id/action_vehicles_page_fragment_to_ship_details_fragment"
-            app:destination="@id/ship_details_fragment" />
-        <action
             android:id="@+id/action_vehicles_page_fragment_to_capsule_details_fragment"
             app:destination="@id/capsule_details_fragment" />
         <action
@@ -224,22 +221,6 @@
             android:name="label"
             app:argType="string"
             app:nullable="true" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/ship_details_fragment"
-        android:name="uk.co.zac_h.spacex.vehicles.ships.details.ShipDetailsFragment"
-        tools:layout="@layout/fragment_ship_details">
-
-        <argument
-            android:name="label"
-            app:argType="string"
-            app:nullable="true" />
-
-        <argument
-            android:name="id"
-            app:argType="string" />
 
     </fragment>
 
