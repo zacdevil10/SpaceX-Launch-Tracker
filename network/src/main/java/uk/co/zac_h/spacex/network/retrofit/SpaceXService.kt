@@ -12,9 +12,6 @@ interface SpaceXService {
     @POST(SPACEX_CAPSULES_QUERY)
     suspend fun queryCapsules(@Body body: QueryModel): Response<NetworkDocsResponse<CapsuleQueriedResponse>>
 
-    @GET(SPACEX_COMPANY)
-    suspend fun getCompanyInfo(): Response<CompanyResponse>
-
     @POST(SPACEX_CORES_QUERY)
     suspend fun queryCores(@Body body: QueryModel): Response<NetworkDocsResponse<CoreQueriedResponse>>
 

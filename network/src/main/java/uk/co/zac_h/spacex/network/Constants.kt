@@ -16,6 +16,7 @@ const val SPACEX_BASE_URL_V5 = "https://api.spacexdata.com/v5/"
 //Endpoints
 const val SPACEX_PREVIOUS_LAUNCHES = "launch/previous"
 const val SPACEX_UPCOMING_LAUNCHES = "launch/upcoming"
+const val SPACEX_AGENCY = "agencies/121"
 
 //Legacy endpoints
 const val SPACEX_CAPSULES = "capsules"

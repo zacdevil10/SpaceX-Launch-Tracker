@@ -22,7 +22,7 @@ abstract class DataSourceModule {
 
     @Binds
     @CompanyDataSourceClient
-    abstract fun bindCompanyDataSource(companyDataSource: CompanyDataSource): RemoteDataSource<CompanyResponse>
+    abstract fun bindCompanyDataSource(companyDataSource: CompanyDataSource): RemoteDataSource<AgencyResponse>
 
     @Binds
     @LaunchesDataSourceClient
