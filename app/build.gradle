@@ -94,7 +94,7 @@ dependencies {
     //MVVM
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
-    implementation "androidx.fragment:fragment-ktx:1.5.3"
+    implementation "androidx.fragment:fragment-ktx:1.5.5"
 
     //Hilt
     implementation 'com.google.dagger:hilt-android:2.44'
