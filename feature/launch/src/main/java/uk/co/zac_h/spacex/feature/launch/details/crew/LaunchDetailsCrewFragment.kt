@@ -7,10 +7,13 @@ import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.*
+import com.google.android.material.bottomsheet.BottomSheetBehavior.from
+import uk.co.zac_h.spacex.core.common.bottomsheet.AlphaSlideAction
+import uk.co.zac_h.spacex.core.common.bottomsheet.BackPressedStateAction
 import uk.co.zac_h.spacex.core.common.bottomsheet.BottomDrawerCallback
-import uk.co.zac_h.spacex.core.common.bottomsheet.StandardBackPressedStateAction
-import uk.co.zac_h.spacex.core.common.bottomsheet.StandardBottomSheetBackPressed
+import uk.co.zac_h.spacex.core.common.bottomsheet.BottomSheetBackPressed
+import uk.co.zac_h.spacex.core.common.bottomsheet.BottomSheetOpenable
+import uk.co.zac_h.spacex.core.common.bottomsheet.VisibilityStateAction
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.feature.launch.CrewItem
@@ -33,6 +36,8 @@ class LaunchDetailsCrewFragment : BaseFragment(), ViewPagerFragment {
 
     private lateinit var bottomSheetBehaviour: BottomSheetBehavior<ConstraintLayout>
 
+    private lateinit var openable: BottomSheetOpenable<ConstraintLayout>
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -44,15 +49,28 @@ class LaunchDetailsCrewFragment : BaseFragment(), ViewPagerFragment {
         super.onViewCreated(view, savedInstanceState)
 
         bottomSheetBehaviour = from(binding.standardBottomSheet)
-        bottomSheetBehaviour.state = STATE_COLLAPSED
 
-        val back = StandardBottomSheetBackPressed(bottomSheetBehaviour)
+        openable = BottomSheetOpenable(bottomSheetBehaviour)
+        val closeOnBackPressed = BottomSheetBackPressed(bottomSheetBehaviour)
 
-        bottomSheetBehaviour.addBottomSheetCallback(BottomDrawerCallback().apply {
-            addOnStateChangedAction(StandardBackPressedStateAction(back))
-        })
+        bottomSheetBehaviour.apply {
+            openable.close()
 
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, back)
+            addBottomSheetCallback(BottomDrawerCallback().apply {
+                addOnSlideAction(AlphaSlideAction(binding.scrim))
+                addOnStateChangedAction(VisibilityStateAction(binding.scrim))
+                addOnStateChangedAction(BackPressedStateAction(closeOnBackPressed))
+            })
+
+            binding.scrim.setOnClickListener {
+                openable.close()
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            closeOnBackPressed
+        )
 
         crewAdapter = LaunchCrewAdapter { astronaut -> onClick(astronaut) }
 
@@ -79,6 +97,6 @@ class LaunchDetailsCrewFragment : BaseFragment(), ViewPagerFragment {
             bio.text = astronaut.bio
         }
 
-        bottomSheetBehaviour.state = STATE_EXPANDED
+        openable.open()
     }
 }
