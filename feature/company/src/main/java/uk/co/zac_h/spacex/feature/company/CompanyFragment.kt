@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.fragment.openWebLink
@@ -43,11 +44,14 @@ class CompanyFragment : BaseFragment() {
         with(binding) {
             hideProgress()
 
+            companyWebsite.isVisible = response.website != null
             response.website?.let { website ->
                 companyWebsite.setOnClickListener { openWebLink(website) }
             }
-            response.wiki?.let { twitter ->
-                companyWiki.setOnClickListener { openWebLink(twitter) }
+
+            companyWiki.isVisible = response.wiki != null
+            response.wiki?.let { wiki ->
+                companyWiki.setOnClickListener { openWebLink(wiki) }
             }
 
             companySummary.text = response.description
