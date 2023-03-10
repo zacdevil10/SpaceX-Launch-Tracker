@@ -151,17 +151,6 @@
     </fragment>
 
     <fragment
-        android:id="@+id/history_page_fragment"
-        android:name="uk.co.zac_h.spacex.about.history.HistoryFragment"
-        tools:layout="@layout/fragment_history">
-
-        <deepLink
-            android:id="@+id/historyLink"
-            app:uri="spacex://about/history" />
-
-    </fragment>
-
-    <fragment
         android:id="@+id/core_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.cores.details.CoreDetailsFragment"
         tools:layout="@layout/fragment_core_details">

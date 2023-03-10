@@ -25,8 +25,15 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.about.history.filter.HistoryFilterFragment
-import uk.co.zac_h.spacex.core.common.bottomsheet.*
+import uk.co.zac_h.spacex.core.common.bottomsheet.AlphaSlideAction
+import uk.co.zac_h.spacex.core.common.bottomsheet.BackPressedStateAction
+import uk.co.zac_h.spacex.core.common.bottomsheet.BottomDrawerCallback
+import uk.co.zac_h.spacex.core.common.bottomsheet.BottomSheetBackPressed
+import uk.co.zac_h.spacex.core.common.bottomsheet.BottomSheetOpenable
+import uk.co.zac_h.spacex.core.common.bottomsheet.ChangeSettingsMenuStateAction
+import uk.co.zac_h.spacex.core.common.bottomsheet.HideBottomSheet
+import uk.co.zac_h.spacex.core.common.bottomsheet.ShowHideFabStateAction
+import uk.co.zac_h.spacex.core.common.bottomsheet.VisibilityStateAction
 import uk.co.zac_h.spacex.core.common.fragment.BottomDrawerFragment
 import uk.co.zac_h.spacex.core.common.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.databinding.ActivityMainBinding
@@ -199,7 +206,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             R.id.capsule_details_fragment -> setAppBarForCapsuleDetails()
             //About
             R.id.company_fragment -> setAppBarForCompany()
-            R.id.history_page_fragment -> setAppBarForHistory()
             R.id.about_fragment -> setAppBarForAbout()
         }
     }
@@ -219,7 +225,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             R.id.launch_history_fragment -> LaunchHistoryFilterFragment()
             R.id.launch_mass_fragment -> LaunchMassFilterFragment()
             R.id.vehicles_fragment -> VehiclesFilterFragment()
-            R.id.history_page_fragment -> HistoryFilterFragment()
             else -> null
         }
 
@@ -342,16 +347,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                 toolbarFab.hide()
                 viewModel.isFabVisible = false
             }
-        }
-    }
-
-    private fun setAppBarForHistory() {
-        binding.run {
-            toolbarFab.setImageResource(R.drawable.ic_sort_black_24dp)
-            bottomAppBar.visibility = View.VISIBLE
-            bottomAppBar.performShow()
-            toolbarFab.show()
-            viewModel.isFabVisible = true
         }
     }
 
