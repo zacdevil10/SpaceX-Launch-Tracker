@@ -3,8 +3,18 @@ package uk.co.zac_h.spacex.feature.launch
 import android.content.res.Resources
 import uk.co.zac_h.spacex.core.common.recyclerview.RecyclerViewItem
 import uk.co.zac_h.spacex.core.common.types.CoreType
-import uk.co.zac_h.spacex.core.common.utils.*
-import uk.co.zac_h.spacex.network.*
+import uk.co.zac_h.spacex.core.common.utils.formatCrewDate
+import uk.co.zac_h.spacex.core.common.utils.formatDate
+import uk.co.zac_h.spacex.core.common.utils.toCountdownDays
+import uk.co.zac_h.spacex.core.common.utils.toCountdownHours
+import uk.co.zac_h.spacex.core.common.utils.toCountdownMinutes
+import uk.co.zac_h.spacex.core.common.utils.toCountdownSeconds
+import uk.co.zac_h.spacex.core.common.utils.toMillis
+import uk.co.zac_h.spacex.network.SPACEX_CREW_LOST_IN_TRAINING
+import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_ACTIVE
+import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_DECEASED
+import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_INACTIVE
+import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_RETIRED
 import uk.co.zac_h.spacex.network.dto.spacex.CrewStatus
 import uk.co.zac_h.spacex.network.dto.spacex.LaunchResponse
 
@@ -35,7 +45,7 @@ data class LaunchItem(
         response: LaunchResponse
     ) : this(
         id = response.id,
-        upcoming = response.status?.id != 3,
+        upcoming = response.status.isUpcoming(),
         missionPatch = response.missionPatches?.firstOrNull()?.imageUrl,
         missionName = response.mission?.name ?: response.name,
         rocket = response.rocket?.configuration?.name,
@@ -68,19 +78,25 @@ data class LaunchItem(
         val remaining = calculateCountdown()
 
         return when {
-            !upcoming -> null
-            remaining < 0 -> resources.getString(R.string.launches_webcast_live)
-            else -> String.format(
+            upcoming && !webcastLive && remaining > 0 -> String.format(
                 "T-%02d:%02d:%02d:%02d",
                 remaining.toCountdownDays(),
                 remaining.toCountdownHours(),
                 remaining.toCountdownMinutes(),
                 remaining.toCountdownSeconds()
             )
+
+            webcastLive -> resources.getString(R.string.launches_webcast_live)
+            else -> null
         }
     }
 
     private fun calculateCountdown() = launchDateUnix?.minus(System.currentTimeMillis()) ?: 0
+
+    companion object {
+
+        private fun LaunchResponse.Status?.isUpcoming() = this?.id in listOf(1, 2, 5, 6, 8)
+    }
 }
 
 data class FirstStageItem(

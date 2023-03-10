@@ -7,7 +7,7 @@ import uk.co.zac_h.spacex.network.retrofit.LaunchLibraryClient
 import uk.co.zac_h.spacex.network.retrofit.LaunchLibraryService
 import javax.inject.Inject
 
-class CompanyDataSource @Inject constructor(
+class AgencyDataSource @Inject constructor(
     @LaunchLibraryClient private val httpService: LaunchLibraryService
 ) : RemoteDataSource<AgencyResponse> {
 

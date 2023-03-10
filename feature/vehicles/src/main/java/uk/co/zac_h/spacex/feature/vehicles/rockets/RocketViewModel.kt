@@ -1,6 +1,10 @@
 package uk.co.zac_h.spacex.feature.vehicles.rockets
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.core.common.types.Order
@@ -16,12 +20,10 @@ class RocketViewModel @Inject constructor(
     private val repository: RocketRepository
 ) : ViewModel() {
 
-    private val _rockets = MutableLiveData<ApiResult<List<Rocket>>>()
-    val rockets: LiveData<ApiResult<List<Rocket>>> = _rockets.map { result ->
+    private val _rockets = MutableLiveData<ApiResult<List<LauncherItem>>>()
+    val rockets: LiveData<ApiResult<List<LauncherItem>>> = _rockets.map { result ->
         result.map {
-            it.sortedBy(order) { rocket ->
-                rocket.firstFlight
-            }
+            it.sortedBy(order) { rocket -> rocket.maidenFlightMillis }
         }
     }
 
@@ -35,10 +37,12 @@ class RocketViewModel @Inject constructor(
     fun getRockets(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
         viewModelScope.launch {
             val response = async(_rockets) {
-                repository.fetch(key = "rockets", cachePolicy = cachePolicy)
+                repository.fetch(key = "agency", cachePolicy = cachePolicy)
             }
 
-            _rockets.value = response.await().map { result -> result.map { Rocket(it) } }
+            _rockets.value = response.await().map { result ->
+                result.launcherList?.map { LauncherItem(it) } ?: emptyList()
+            }
         }
     }
 

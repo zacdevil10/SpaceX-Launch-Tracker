@@ -9,13 +9,17 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.feature.vehicles.VehiclesFragmentDirections
 import uk.co.zac_h.spacex.feature.vehicles.databinding.ListItemVehicleBinding
-import uk.co.zac_h.spacex.feature.vehicles.rockets.Rocket
+import uk.co.zac_h.spacex.feature.vehicles.rockets.LauncherItem
 
 class RocketsAdapter(val setSelected: (String) -> Unit) :
-    ListAdapter<Rocket, RocketsAdapter.ViewHolder>(RocketComparator) {
+    ListAdapter<LauncherItem, RocketsAdapter.ViewHolder>(RocketComparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
-        ListItemVehicleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        ListItemVehicleBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
     )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -24,8 +28,8 @@ class RocketsAdapter(val setSelected: (String) -> Unit) :
         with(holder.binding) {
             vehicleView.apply {
                 transitionName = rocket.id
-                image = rocket.flickr?.random()
-                title = rocket.name
+                image = rocket.imageUrl
+                title = rocket.fullName
                 vehicleSpecs.setOnClickListener {
                     setSelected(rocket.id)
                     holder.bind(rocket)
@@ -41,18 +45,24 @@ class RocketsAdapter(val setSelected: (String) -> Unit) :
     }
 
     class ViewHolder(val binding: ListItemVehicleBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(rocket: Rocket) {
+        fun bind(rocket: LauncherItem) {
             binding.root.findNavController().navigate(
-                VehiclesFragmentDirections.actionVehiclesPageFragmentToRocketDetailsFragment(rocket.name),
+                VehiclesFragmentDirections.actionVehiclesPageFragmentToRocketDetailsFragment(rocket.fullName),
                 FragmentNavigatorExtras(binding.vehicleView to rocket.id)
             )
         }
     }
 
-    object RocketComparator : DiffUtil.ItemCallback<Rocket>() {
+    object RocketComparator : DiffUtil.ItemCallback<LauncherItem>() {
 
-        override fun areItemsTheSame(oldItem: Rocket, newItem: Rocket) = oldItem == newItem
+        override fun areItemsTheSame(
+            oldItem: LauncherItem,
+            newItem: LauncherItem
+        ) = oldItem == newItem
 
-        override fun areContentsTheSame(oldItem: Rocket, newItem: Rocket) = oldItem.id == newItem.id
+        override fun areContentsTheSame(
+            oldItem: LauncherItem,
+            newItem: LauncherItem
+        ) = oldItem.id == newItem.id
     }
 }

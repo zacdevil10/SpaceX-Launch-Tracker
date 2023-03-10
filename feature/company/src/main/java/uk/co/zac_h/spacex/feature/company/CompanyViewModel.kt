@@ -22,7 +22,7 @@ class CompanyViewModel @Inject constructor(
     fun getCompany() {
         viewModelScope.launch {
             val response = async(_company) {
-                repository.fetch(key = "Company", cachePolicy = CachePolicy.ALWAYS)
+                repository.fetch(key = "agency", cachePolicy = CachePolicy.ALWAYS)
             }
 
             _company.value = response.await().map { Company(it) }
