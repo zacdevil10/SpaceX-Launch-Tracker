@@ -88,7 +88,11 @@ class LaunchDetailsFragment : BaseFragment(), ViewPagerFragment {
 
                 launchDetailsWatchButton.apply {
                     isVisible = launch.webcast != null
-                    setOnClickListener { openWebLink(launch.webcast) }
+                    setOnClickListener {
+                        launch.webcast?.let { webcast ->
+                            openWebLink(webcast)
+                        }
+                    }
                 }
 
                 launchDetailsCalendarButton.apply {
@@ -104,7 +108,11 @@ class LaunchDetailsFragment : BaseFragment(), ViewPagerFragment {
                 launchSiteCard.isVisible = launch.launchLocation != null
                 launchSiteText.text = launch.launchLocation
                 Glide.with(requireContext()).load(launch.launchLocationMap).into(launchSiteImage)
-                launchSiteImage.setOnClickListener { openWebLink(launch.launchLocationMapUrl) }
+                launchSiteImage.setOnClickListener {
+                    launch.launchLocationMapUrl?.let { launchLocationMapUrl ->
+                        openWebLink(launchLocationMapUrl)
+                    }
+                }
             }
         }
     }

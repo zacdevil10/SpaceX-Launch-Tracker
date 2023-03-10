@@ -28,7 +28,6 @@
             android:layout_height="0dp"
             app:constraint_referenced_ids="
             company_logo,
-            button_flow,
             company_summary,
             company_founded_label,
             company_founded,
@@ -51,9 +50,8 @@
             android:id="@+id/company_summary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginHorizontal="@dimen/medium_margin"
             android:layout_marginTop="@dimen/large_margin"
-            android:layout_marginEnd="@dimen/medium_margin"
             android:textAppearance="@style/Details"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -61,41 +59,35 @@
             tools:maxLines="15"
             tools:text="@tools:sample/lorem/random" />
 
-
-        <androidx.constraintlayout.helper.widget.Flow
-            android:id="@+id/button_flow"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/medium_margin"
-            android:layout_marginTop="@dimen/medium_margin"
-            android:layout_marginEnd="@dimen/medium_margin"
-            app:constraint_referenced_ids="company_website, company_wiki"
-            app:flow_maxElementsWrap="2"
-            app:flow_wrapMode="chain"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/company_summary" />
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/company_website"
-            style="?attr/materialButtonStyle"
-            android:layout_width="wrap_content"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/small_margin"
             android:text="@string/website_label"
             android:textAppearance="?textAppearanceBody2"
             android:visibility="gone"
             app:icon="@drawable/ic_baseline_web_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/company_summary"
             tools:visibility="visible" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/company_wiki"
-            style="?attr/materialButtonStyle"
-            android:layout_width="wrap_content"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/medium_margin"
             android:text="@string/wikipedia_label"
             android:textAppearance="?textAppearanceBody2"
             android:visibility="gone"
             app:icon="@drawable/ic_wikipedia"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/company_website"
             tools:ignore="MissingConstraints"
             tools:visibility="visible" />
 
@@ -104,10 +96,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/medium_margin"
-            android:layout_marginTop="@dimen/large_margin"
+            android:layout_marginTop="@dimen/medium_margin"
             android:text="@string/founded_label"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/button_flow" />
+            app:layout_constraintTop_toBottomOf="@id/company_wiki" />
 
         <TextView
             android:id="@+id/company_founded"
