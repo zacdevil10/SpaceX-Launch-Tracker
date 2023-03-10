@@ -55,7 +55,7 @@ class VisibilityStateAction(
 
     override fun onStateChanged(sheet: View, newState: Int) {
         view.visibility = when (newState) {
-            BottomSheetBehavior.STATE_HIDDEN -> View.GONE
+            BottomSheetBehavior.STATE_HIDDEN, BottomSheetBehavior.STATE_COLLAPSED -> View.GONE
             else -> View.VISIBLE
         }
     }

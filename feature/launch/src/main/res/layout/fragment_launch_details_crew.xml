@@ -17,6 +17,16 @@
         tools:ignore="RtlSymmetry"
         tools:listitem="@layout/list_item_crew" />
 
+    <View
+        android:id="@+id/scrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0"
+        android:background="?attr/scrimBackground"
+        android:visibility="gone"
+        tools:alpha="1"
+        tools:visibility="visible" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/standard_bottom_sheet"
         style="?attr/bottomSheetStyle"
@@ -27,7 +37,7 @@
         android:elevation="@dimen/card_elevation"
         android:focusable="true"
         android:paddingBottom="?attr/actionBarSize"
-        app:behavior_peekHeight="0dp"
+        app:behavior_hideable="true"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <TextView
@@ -142,12 +152,13 @@
             android:layout_marginTop="@dimen/medium_margin"
             android:layout_marginEnd="@dimen/large_margin"
             android:layout_marginBottom="@dimen/medium_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/first_flight_label"
+            app:layout_constraintVertical_bias="0"
             tools:maxLines="6"
             tools:text="@tools:sample/lorem/random" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
