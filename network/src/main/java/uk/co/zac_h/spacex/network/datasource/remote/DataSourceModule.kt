@@ -4,7 +4,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
-import uk.co.zac_h.spacex.network.datasource.remote.about.CompanyDataSource
+import uk.co.zac_h.spacex.network.datasource.remote.about.AgencyDataSource
 import uk.co.zac_h.spacex.network.datasource.remote.about.HistoryDataSource
 import uk.co.zac_h.spacex.network.datasource.remote.statistics.LandingPadDataSource
 import uk.co.zac_h.spacex.network.datasource.remote.statistics.LaunchpadDataSource
@@ -21,8 +21,8 @@ abstract class DataSourceModule {
     abstract fun bindHistoryDataSource(historyDataSource: HistoryDataSource): RemoteDataSource<NetworkDocsResponse<HistoryResponse>>
 
     @Binds
-    @CompanyDataSourceClient
-    abstract fun bindCompanyDataSource(companyDataSource: CompanyDataSource): RemoteDataSource<AgencyResponse>
+    @AgencyDataSourceClient
+    abstract fun bindAgencyDataSource(agencyDataSource: AgencyDataSource): RemoteDataSource<AgencyResponse>
 
     @Binds
     @LaunchesDataSourceClient
@@ -35,10 +35,6 @@ abstract class DataSourceModule {
     @Binds
     @LandingPadDataSourceClient
     abstract fun bindLandingPadDataSource(landingPadDataSource: LandingPadDataSource): RemoteDataSource<NetworkDocsResponse<LandingPadQueriedResponse>>
-
-    @Binds
-    @RocketDataSourceClient
-    abstract fun bindRocketDataSource(rocketDataSource: RocketDataSource): RemoteDataSource<MutableList<RocketResponse>>
 
     @Binds
     @DragonDataSourceClient
@@ -65,7 +61,7 @@ abstract class DataSourceModule {
 annotation class HistoryDataSourceClient
 
 @Qualifier
-annotation class CompanyDataSourceClient
+annotation class AgencyDataSourceClient
 
 @Qualifier
 annotation class LaunchesDataSourceClient
@@ -75,9 +71,6 @@ annotation class LaunchpadDataSourceClient
 
 @Qualifier
 annotation class LandingPadDataSourceClient
-
-@Qualifier
-annotation class RocketDataSourceClient
 
 @Qualifier
 annotation class DragonDataSourceClient

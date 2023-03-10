@@ -41,6 +41,8 @@ class LaunchDetailsFragment : BaseFragment(), ViewPagerFragment {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.launch?.let { launch ->
+            println("Is upcoming: ${launch.upcoming}")
+
             with(binding) {
                 launchView.apply {
                     with(launch.countdown(root.resources)) {

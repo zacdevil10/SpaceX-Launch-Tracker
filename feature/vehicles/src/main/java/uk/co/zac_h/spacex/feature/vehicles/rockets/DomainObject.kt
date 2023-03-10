@@ -1,83 +1,75 @@
 package uk.co.zac_h.spacex.feature.vehicles.rockets
 
-import uk.co.zac_h.spacex.core.common.types.RocketType
-import uk.co.zac_h.spacex.network.dto.spacex.*
-import java.text.DecimalFormat
+import uk.co.zac_h.spacex.network.dto.spacex.AgencyResponse
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.TimeZone
 
-data class Rocket(
-    val name: String?,
-    val type: RocketType?,
-    val isActive: Boolean?,
-    val stages: Int?,
-    val boosters: Int?,
-    val costPerLaunch: String?,
-    val successRate: Int?,
-    val firstFlight: String?,
-    val country: String?,
-    val company: String?,
-    val height: Dimens?,
-    val diameter: Dimens?,
-    val mass: MassFormatted?,
-    val payloadWeights: List<PayloadWeights>?,
-    val firstStage: FirstStageResponse?,
-    val secondStage: SecondStageResponse?,
-    val engines: EngineConfigModel?,
-    val landingLegs: LandingLegsModel?,
-    val flickr: List<String>?,
-    val wikipedia: String?,
+data class LauncherItem(
+    val id: String,
+    val fullName: String?,
     val description: String?,
-    val id: String
+    val stages: Int?,
+    val length: Float?,
+    val diameter: Float?,
+    val maidenFlight: String?,
+    val maidenFlightMillis: Long?,
+    val launchMass: Int?,
+    val leoCapacity: Int?,
+    val gtoCapacity: Int?,
+    val toThrust: Int?,
+    val imageUrl: String?,
+    val consecutiveSuccessfulLaunches: Int?,
+    val successfulLaunches: Int?,
+    val failedLaunches: Int?,
+    val pendingLaunches: Int?
 ) {
 
-    constructor(
-        response: RocketResponse
-    ) : this(
-        name = response.name,
-        type = response.name.toRocketType(),
-        isActive = response.isActive,
-        stages = response.stages,
-        boosters = response.boosters,
-        costPerLaunch = response.costPerLaunch?.let { DecimalFormat("$#,###.00").format(it) },
-        successRate = response.successRate,
-        firstFlight = response.firstFlight,
-        country = response.country,
-        company = response.company,
-        height = response.height,
-        diameter = response.diameter,
-        mass = MassFormatted.formatMass(response.mass?.kg, response.mass?.lb),
-        payloadWeights = response.payloadWeights?.map { PayloadWeights(it) },
-        firstStage = response.firstStage,
-        secondStage = response.secondStage,
-        engines = response.engines,
-        landingLegs = response.landingLegs,
-        flickr = response.flickr,
-        wikipedia = response.wikipedia,
+    constructor(response: AgencyResponse.Launcher) : this(
+        id = response.id,
+        fullName = response.fullName,
         description = response.description,
-        id = response.id
+        stages = response.maxStage,
+        length = response.length,
+        diameter = response.diameter,
+        maidenFlight = response.maidenFlight,
+        maidenFlightMillis = response.maidenFlight?.toMillis(),
+        launchMass = response.launchMass,
+        leoCapacity = response.leoCapacity,
+        gtoCapacity = response.gtoCapacity,
+        toThrust = response.toThrust,
+        imageUrl = response.imageUrl,
+        consecutiveSuccessfulLaunches = response.consecutiveSuccessfulLaunches,
+        successfulLaunches = response.successfulLaunches,
+        failedLaunches = response.failedLaunches,
+        pendingLaunches = response.pendingLaunches
     )
 
-    companion object {
-        private fun String?.toRocketType() = when (this) {
-            "Falcon 1" -> RocketType.FALCON_ONE
-            "Falcon 9" -> RocketType.FALCON_NINE
-            "Falcon Heavy" -> RocketType.FALCON_HEAVY
-            "Starship" -> RocketType.STARSHIP
-            else -> null
+    val successRate: Float?
+        get() = if (successfulLaunches != null && failedLaunches != null && successfulLaunches > 0) {
+            successfulLaunches.toFloat()
+                .div(successfulLaunches.toFloat().plus(failedLaunches.toFloat())) * 100
+        } else {
+            null
         }
+
+    companion object {
+
+        fun String.toMillis(): Long? = SimpleDateFormat(
+            "yyyy-MM-dd",
+            Locale.ENGLISH
+        ).apply {
+            timeZone = TimeZone.getTimeZone("UTC")
+        }.parse(this)?.time
     }
 }
 
-data class PayloadWeights(
-    val id: String?,
-    val name: String?,
-    val mass: MassFormatted?
-) {
+data class SpacecraftItem(
+    val id: String,
+)
 
-    constructor(
-        response: PayloadWeightsResponse
-    ) : this(
-        id = response.id,
-        name = response.name,
-        mass = MassFormatted.formatMass(response.kg, response.lb)
-    )
-}
+
+data class PayloadWeights(
+    val name: String?,
+    val mass: Int?
+)

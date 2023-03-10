@@ -6,11 +6,11 @@
     <string name="capsule_specs_label">Capsule Specs</string>
     <string name="vehicle_specs_label">Vehicle Specs</string>
     <string name="rocket_image_desc">Rocket Image</string>
-    <string name="measurements">%1$s m / %2$s ft</string>
-    <string name="mass_formatted">%1$s kg / %2$s lbs</string>
+    <string name="measurements">%1$s m</string>
+    <string name="mass_formatted">%1$d T</string>
     <string name="volume_formatted">%1$s m\u00B3 / %2$s ft\u00B3</string>
-    <string name="ton_format">%1$s t</string>
-    <string name="thrust">%1$s kN / %2$s lbf</string>
+    <string name="mass">%1$s kg</string>
+    <string name="thrust">%1$s kN</string>
     <string name="seconds_format">%1$d s</string>
     <string name="active_label">Active</string>
     <string name="status_image_desc">Status Image</string>

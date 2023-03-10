@@ -1,7 +1,10 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
-import uk.co.zac_h.spacex.feature.vehicles.rockets.Rocket
-import uk.co.zac_h.spacex.network.*
+import uk.co.zac_h.spacex.network.SPACEX_LANDING_PAD_STATUS_ACTIVE
+import uk.co.zac_h.spacex.network.SPACEX_LANDING_PAD_STATUS_INACTIVE
+import uk.co.zac_h.spacex.network.SPACEX_LANDING_PAD_STATUS_LOST
+import uk.co.zac_h.spacex.network.SPACEX_LANDING_PAD_STATUS_RETIRED
+import uk.co.zac_h.spacex.network.SPACEX_LANDING_PAD_STATUS_UNDER_CONSTRUCTION
 import uk.co.zac_h.spacex.network.dto.spacex.LandingPadQueriedResponse
 import uk.co.zac_h.spacex.network.dto.spacex.LaunchpadQueriedResponse
 import uk.co.zac_h.spacex.network.dto.spacex.PadStatus
@@ -65,7 +68,6 @@ data class Launchpad(
     val launchAttempts: Int?,
     val launchSuccesses: Int?,
     val rocketIds: List<String>? = null,
-    val rockets: List<Rocket>? = null,
     val launchIds: List<String>? = null,
     var id: String
 ) {
@@ -83,7 +85,6 @@ data class Launchpad(
         lng = response.lng,
         launchAttempts = response.launchAttempts,
         launchSuccesses = response.launchSuccesses,
-        rockets = response.rockets?.map { Rocket(it) },
         id = response.id
     )
 

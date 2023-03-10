@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import uk.co.zac_h.spacex.core.common.utils.metricFormat
 import uk.co.zac_h.spacex.feature.vehicles.R
 import uk.co.zac_h.spacex.feature.vehicles.databinding.ListItemRocketPayloadBinding
 import uk.co.zac_h.spacex.feature.vehicles.rockets.PayloadWeights
@@ -25,8 +26,7 @@ class RocketPayloadAdapter(private val context: Context) :
             listItemRocketPayloadOrbitTypeText.text = payload.name
             listItemRocketPayloadMassText.text = context.getString(
                 R.string.mass,
-                payload.mass?.kg,
-                payload.mass?.lb
+                payload.mass?.metricFormat(),
             )
         }
     }
@@ -40,6 +40,6 @@ class RocketPayloadAdapter(private val context: Context) :
             oldItem == newItem
 
         override fun areContentsTheSame(oldItem: PayloadWeights, newItem: PayloadWeights) =
-            oldItem.id == newItem.id
+            oldItem.name == newItem.name
     }
 }

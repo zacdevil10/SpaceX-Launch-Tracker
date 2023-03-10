@@ -7,11 +7,8 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialContainerTransform
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
-import uk.co.zac_h.spacex.core.common.image.setImageAndTint
-import uk.co.zac_h.spacex.core.common.utils.metricFormat
 import uk.co.zac_h.spacex.core.common.utils.setupCollapsingToolbar
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.core.ui.databinding.CollapsingToolbarBinding
@@ -74,7 +71,7 @@ class DragonDetailsFragment : BaseFragment(), ViewPagerFragment {
     private fun update(dragon: Dragon?) {
         with(binding) {
             dragon?.let {
-                dragonDetailsCoordinator.transitionName = it.id
+                /*dragonDetailsCoordinator.transitionName = it.id
 
                 Glide.with(requireContext())
                     .load(it.flickr?.random())
@@ -177,7 +174,7 @@ class DragonDetailsFragment : BaseFragment(), ViewPagerFragment {
                 ) else dragonDetailsUnpressurizedCargoImage.setImageAndTint(
                     R.drawable.ic_remove_circle_black_24dp,
                     R.color.failed
-                )
+                )*/
             }
         }
     }

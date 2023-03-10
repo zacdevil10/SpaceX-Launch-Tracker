@@ -10,6 +10,11 @@ inline fun <T, R : Comparable<R>> Iterable<T>.sortedBy(
     direction: Order,
     crossinline selector: (T) -> R?
 ): List<T> = when (direction) {
-    Order.ASCENDING -> sortedWith(compareBy(selector))
-    Order.DESCENDING -> sortedWith(compareByDescending(selector))
+    Order.ASCENDING -> sortedWith(compareBy(nullsLast(), selector))
+    Order.DESCENDING -> sortedWith(compareByDescending(selector)).sortedWith(
+        compareByDescending(
+            nullsLast(),
+            selector
+        )
+    )
 }
