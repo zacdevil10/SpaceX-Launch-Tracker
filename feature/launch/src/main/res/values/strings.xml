@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Launches -->
+    <string name="launches_webcast_live">Webcast Live</string>
+    <string name="launches_status_label">Status:</string>
+    <string name="launches_launch_location_label">Launch site:</string>
+    <string name="launches_watch_button_label">Watch</string>
+    <string name="launches_event_button_label">Create event</string>
+    <string name="launch_site_label">Launch site:</string>
+
+    <!--Launch Filter-->
+    <string name="filter_heading">Filter</string>
+    <string name="date_range_label">Date range:</string>
+    <string name="date_picker_button_label">Select</string>
+    <string name="order_label">Order:</string>
+    <string name="ascending_button_label">Asc</string>
+    <string name="descending_button_label">Desc</string>
+    <string name="rocket_type_label">Rocket:</string>
+    <string name="clear_label">Clear</string>
+    <string name="apply_label">Apply</string>
+    <string name="filter_launches_description">Open launches filter</string>
+    <string name="date_picker_label">Select date range</string>
+
+    <!--Launch Details-->
+    <string name="first_stage">First Stage</string>
+    <string name="payload_label">Payload</string>
+    <string name="reused_status_desc">Reused status</string>
+    <string name="landed_label">Landed</string>
+    <string name="landed_status_desc">Landed status</string>
+    <string name="landing_label">Landing</string>
+    <string name="flights_label">Flights</string>
+    <string name="missions_label">Missions</string>
+    <string name="rtls_attempts_label">RTLS Attempts</string>
+    <string name="rtls_landings_label">RTLS Landings</string>
+    <string name="asds_attempts_label">ASDS Attempts</string>
+    <string name="asds_landings_label">ASDS Landings</string>
+    <string name="core_serial_label">Core Serial</string>
+    <string name="block_label">Block</string>
+    <string name="customer_label">Customer</string>
+    <string name="orbit_label">Orbit</string>
+    <string name="lifespan_label">Lifespan</string>
+    <string name="mass_label">Mass</string>
+    <string name="payload_type_label">Payload type</string>
+    <string name="reference_system_label">Reference System</string>
+    <string name="regime_label">Regime</string>
+    <string name="longitude_label">Longitude</string>
+    <string name="semi_major_axis_label">Semi Major Axis</string>
+    <string name="eccentricity_label">Eccentricity</string>
+    <string name="periapsis_km_label">Periapsis (km)</string>
+    <string name="apoapsis_km_label">Apoapsis (km)</string>
+    <string name="inclination_label">Inclination</string>
+    <string name="period_label">Period</string>
+    <string name="static_fire_label">Static fire:</string>
+    <string name="watch_label">Watch</string>
+    <string name="press_kit_label">Press Kit</string>
+    <string name="campaign_label">Campaign</string>
+    <string name="launch_label">Launch</string>
+    <string name="media_label">Media</string>
+
+    <string name="details_label">Details</string>
+    <string name="cores_label">Cores</string>
+    <string name="payloads_label">Payloads</string>
+
+    <!-- Crew -->
+    <string name="crew_agency_label">Agency:</string>
+    <string name="crew_role_label">Role:</string>
+    <string name="crew_status_label">Status:</string>
+    <string name="crew_first_flight_label">First flight:</string>
+
+</resources>

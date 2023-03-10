@@ -8,10 +8,10 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.core.common.types.PadType
 import uk.co.zac_h.spacex.databinding.ListItemIllustrationsFooterBinding
 import uk.co.zac_h.spacex.databinding.ListItemStatisticsBinding
 import uk.co.zac_h.spacex.statistics.StatisticsFragmentDirections
-import uk.co.zac_h.spacex.types.PadType
 
 class StatisticsAdapter(private val context: Context, private val openWebLink: (String) -> Unit) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {

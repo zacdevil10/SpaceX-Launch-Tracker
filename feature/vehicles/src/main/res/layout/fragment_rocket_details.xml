@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rocket_details_coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_background"
+    android:fitsSystemWindows="true"
+    tools:context=".rockets.details.RocketDetailsFragment"
+    tools:ignore="Overdraw">
+
+    <include layout="@layout/collapsing_toolbar" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/xxxlarge_margin"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/medium_margin"
+            android:paddingTop="@dimen/medium_margin"
+            android:paddingEnd="@dimen/large_margin">
+
+            <TextView
+                android:id="@+id/rocket_details_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/Details"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:lines="4"
+                tools:text="@tools:sample/lorem/random" />
+
+            <TextView
+                android:id="@+id/rocket_details_success_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_margin"
+                android:text="Launch Success Rate"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_text" />
+
+            <TextView
+                android:id="@+id/rocket_details_success_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:gravity="end"
+                app:layout_constraintBottom_toBottomOf="@id/rocket_details_success_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/rocket_details_success_label"
+                app:layout_constraintTop_toTopOf="@id/rocket_details_success_label"
+                tools:text="40%" />
+
+            <TextView
+                android:id="@+id/rocket_details_first_flight_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_margin"
+                android:text="@string/first_flight_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_success_label" />
+
+            <TextView
+                android:id="@+id/rocket_details_first_flight_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:gravity="end"
+                app:layout_constraintBottom_toBottomOf="@id/rocket_details_first_flight_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/rocket_details_first_flight_label"
+                app:layout_constraintTop_toTopOf="@id/rocket_details_first_flight_label"
+                tools:text="21 Feb 18" />
+
+            <TextView
+                android:id="@+id/rocket_details_stages_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_margin"
+                android:text="@string/stages_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_first_flight_label" />
+
+            <TextView
+                android:id="@+id/rocket_details_stages_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:gravity="end"
+                app:layout_constraintBottom_toBottomOf="@id/rocket_details_stages_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/rocket_details_stages_label"
+                app:layout_constraintTop_toTopOf="@id/rocket_details_stages_label"
+                tools:text="2" />
+
+            <TextView
+                android:id="@+id/rocket_details_height_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_margin"
+                android:text="@string/height_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_stages_label" />
+
+            <TextView
+                android:id="@+id/rocket_details_height_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:gravity="end"
+                app:layout_constraintBottom_toBottomOf="@id/rocket_details_height_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/rocket_details_height_label"
+                app:layout_constraintTop_toTopOf="@id/rocket_details_height_label"
+                tools:text="70.25m" />
+
+            <TextView
+                android:id="@+id/rocket_details_diameter_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_margin"
+                android:text="@string/diameter_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_height_label" />
+
+            <TextView
+                android:id="@+id/rocket_details_diameter_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:gravity="end"
+                app:layout_constraintBottom_toBottomOf="@id/rocket_details_diameter_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/rocket_details_diameter_label"
+                app:layout_constraintTop_toTopOf="@id/rocket_details_diameter_label"
+                tools:text="9.32m" />
+
+            <TextView
+                android:id="@+id/rocket_details_mass_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_margin"
+                android:text="Mass"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_diameter_label" />
+
+            <TextView
+                android:id="@+id/rocket_details_mass_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:gravity="end"
+                app:layout_constraintBottom_toBottomOf="@id/rocket_details_mass_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/rocket_details_mass_label"
+                app:layout_constraintTop_toTopOf="@id/rocket_details_mass_label"
+                tools:text="220,225kg" />
+
+            <TextView
+                android:id="@+id/rocket_details_thrust_sea_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_margin"
+                android:text="Thrust at Liftoff"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_mass_label" />
+
+            <TextView
+                android:id="@+id/rocket_details_thrust_sea_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:gravity="end"
+                android:singleLine="true"
+                app:layout_constraintBottom_toBottomOf="@id/rocket_details_thrust_sea_label"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/rocket_details_thrust_sea_label"
+                app:layout_constraintTop_toTopOf="@id/rocket_details_thrust_sea_label"
+                tools:text="420,000 kN" />
+
+            <TextView
+                android:id="@+id/rocket_details_mass_orbit_label"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:text="Mass to Orbit"
+                android:textAppearance="?textAppearanceSubtitle1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_thrust_sea_label" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rocket_details_payload_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_margin"
+                android:overScrollMode="never"
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_mass_orbit_label"
+                tools:itemCount="2"
+                tools:listitem="@layout/list_item_rocket_payload" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

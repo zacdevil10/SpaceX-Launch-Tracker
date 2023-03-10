@@ -3,19 +3,12 @@ package uk.co.zac_h.spacex.statistics.graphs.launchmass
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import uk.co.zac_h.spacex.ApiResult
-import uk.co.zac_h.spacex.CachePolicy
-import uk.co.zac_h.spacex.Repository
-import uk.co.zac_h.spacex.async
-import uk.co.zac_h.spacex.launches.Launch
-import uk.co.zac_h.spacex.query.StatisticsQuery
+import uk.co.zac_h.spacex.core.common.types.LaunchMassViewType
+import uk.co.zac_h.spacex.core.common.types.RocketType
+import uk.co.zac_h.spacex.network.ApiResult
+import uk.co.zac_h.spacex.network.CachePolicy
 import uk.co.zac_h.spacex.statistics.StatisticsRepository
-import uk.co.zac_h.spacex.types.LaunchMassViewType
-import uk.co.zac_h.spacex.types.RocketType
-import uk.co.zac_h.spacex.utils.formatDateMillisYYYY
 import uk.co.zac_h.spacex.utils.models.LaunchMassStatsModel
 import uk.co.zac_h.spacex.utils.models.OrbitMassModel
 import javax.inject.Inject
@@ -28,8 +21,8 @@ class LaunchMassViewModel @Inject constructor(
     private val _launchMass = MutableLiveData<ApiResult<List<LaunchMassStatsModel>>>()
     val launchMass: LiveData<ApiResult<List<LaunchMassStatsModel>>> = _launchMass
 
-    val cacheLocation: Repository.RequestLocation
-        get() = repository.cacheLocation
+    /*val cacheLocation: Repository.RequestLocation
+        get() = repository.cacheLocation*/
 
     var filterRocket: RocketType? = null
         private set
@@ -38,7 +31,7 @@ class LaunchMassViewModel @Inject constructor(
         private set
 
     fun get(cachePolicy: CachePolicy = CachePolicy.EXPIRES) {
-        viewModelScope.launch {
+        /*viewModelScope.launch {
             val response = async(_launchMass) {
                 repository.fetch(
                     key = "launch_mass",
@@ -77,7 +70,7 @@ class LaunchMassViewModel @Inject constructor(
                     }
                 }
             }
-        }
+        }*/
     }
 
     private fun updateOrbitMass(model: OrbitMassModel, orbit: String?, mass: Float?) {

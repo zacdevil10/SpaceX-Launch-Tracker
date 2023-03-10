@@ -6,10 +6,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.core.common.image.setImageAndTint
 import uk.co.zac_h.spacex.databinding.ListItemPadStatsBinding
-import uk.co.zac_h.spacex.dto.spacex.PadStatus
-import uk.co.zac_h.spacex.dto.spacex.StatsPadModel
-import uk.co.zac_h.spacex.utils.setImageAndTint
+import uk.co.zac_h.spacex.network.dto.spacex.PadStatus
+import uk.co.zac_h.spacex.network.dto.spacex.StatsPadModel
 
 class PadStatsSitesAdapter :
     ListAdapter<StatsPadModel, PadStatsSitesAdapter.ViewHolder>(PadStatsComparator) {

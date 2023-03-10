@@ -25,14 +25,22 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.about.history.filter.HistoryFilterFragment
+import uk.co.zac_h.spacex.core.common.bottomsheet.AlphaSlideAction
+import uk.co.zac_h.spacex.core.common.bottomsheet.BackPressedStateAction
+import uk.co.zac_h.spacex.core.common.bottomsheet.BottomDrawerCallback
+import uk.co.zac_h.spacex.core.common.bottomsheet.BottomSheetBackPressed
+import uk.co.zac_h.spacex.core.common.bottomsheet.BottomSheetOpenable
+import uk.co.zac_h.spacex.core.common.bottomsheet.ChangeSettingsMenuStateAction
+import uk.co.zac_h.spacex.core.common.bottomsheet.HideBottomSheet
+import uk.co.zac_h.spacex.core.common.bottomsheet.ShowHideFabStateAction
+import uk.co.zac_h.spacex.core.common.bottomsheet.VisibilityStateAction
+import uk.co.zac_h.spacex.core.common.fragment.BottomDrawerFragment
+import uk.co.zac_h.spacex.core.common.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.databinding.ActivityMainBinding
-import uk.co.zac_h.spacex.launches.LaunchesFragmentDirections
+import uk.co.zac_h.spacex.feature.launch.LaunchesFragmentDirections
+import uk.co.zac_h.spacex.feature.vehicles.VehiclesFilterFragment
 import uk.co.zac_h.spacex.statistics.graphs.launchhistory.filter.LaunchHistoryFilterFragment
 import uk.co.zac_h.spacex.statistics.graphs.launchmass.filter.LaunchMassFilterFragment
-import uk.co.zac_h.spacex.utils.*
-import uk.co.zac_h.spacex.utils.network.OnNetworkStateChangeListener
-import uk.co.zac_h.spacex.vehicles.VehiclesFilterFragment
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -116,7 +124,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             addOnSlideAction(AlphaSlideAction(binding.scrim))
             addOnStateChangedAction(VisibilityStateAction(binding.scrim))
             addOnStateChangedAction(BackPressedStateAction(closeNavDrawerOnBackPressed))
-            addOnStateChangedAction(ShowHideFabStateAction(binding.fab) { viewModel.isFabVisible })
+            addOnStateChangedAction(ShowHideFabStateAction(binding.toolbarFab) { viewModel.isFabVisible })
             addOnStateChangedAction(ChangeSettingsMenuStateAction { showSettings ->
                 binding.bottomAppBar.replaceMenu(
                     if (showSettings) R.menu.menu_settings else getBottomAppBarMenuForDestination()
@@ -174,7 +182,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         //Setup toolbar for destination
         when (destination.id) {
             //Launches
-            R.id.dashboard_page_fragment -> setAppBarForDashboard()
             R.id.launches_page_fragment -> setAppBarForLaunches()
             R.id.launch_details_container_fragment -> setAppBarForLaunchDetails()
             R.id.launches_filter_fragment -> setAppBarForSearch()
@@ -192,24 +199,19 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             R.id.fairing_recovery_fragment -> setAppBarForStatistics(false)
             R.id.pad_stats_fragment -> setAppBarForStatistics(false)
             //Vehicles
-            R.id.vehicles_page_fragment -> setAppBarForVehicles()
+            R.id.vehicles_fragment -> setAppBarForVehicles()
             R.id.rocket_details_fragment -> setAppBarForRocketDetails()
             R.id.dragon_details_fragment -> setAppBarForDragonDetails()
-            R.id.ship_details_fragment -> setAppBarForShipDetails()
             R.id.core_details_fragment -> setAppBarForCoreDetails()
             R.id.capsule_details_fragment -> setAppBarForCapsuleDetails()
             //About
-            R.id.company_page_fragment -> setAppBarForCompany()
-            R.id.history_page_fragment -> setAppBarForHistory()
-            R.id.about_page_fragment -> setAppBarForAbout()
+            R.id.company_fragment -> setAppBarForCompany()
+            R.id.about_fragment -> setAppBarForAbout()
         }
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            R.id.edit -> {
-                navigateToEditDashboard()
-            }
             R.id.settings -> {
                 navigateToSettings()
                 openableNavView.close()
@@ -222,8 +224,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         bottomDrawerFragment = when (destination.id) {
             R.id.launch_history_fragment -> LaunchHistoryFilterFragment()
             R.id.launch_mass_fragment -> LaunchMassFilterFragment()
-            R.id.vehicles_page_fragment -> VehiclesFilterFragment()
-            R.id.history_page_fragment -> HistoryFilterFragment()
+            R.id.vehicles_fragment -> VehiclesFilterFragment()
             else -> null
         }
 
@@ -231,49 +232,44 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             supportFragmentManager.commit {
                 replace(R.id.bottom_drawer, fragment)
             }
-            binding.fab.setOnClickListener {
+            binding.toolbarFab.setOnClickListener {
                 fragment.toggle()
             }
             fragment.addOnStateChangedAction(
-                ShowHideFabStateAction(binding.fab) { viewModel.isFabVisible }
+                ShowHideFabStateAction(binding.toolbarFab) { viewModel.isFabVisible }
             )
         } ?: run {
-            binding.fab.setOnClickListener(null)
-        }
-    }
-
-    private fun setAppBarForDashboard() {
-        binding.run {
-            bottomAppBar.visibility = View.VISIBLE
-            bottomAppBar.performShow()
-            fab.hide()
-            viewModel.isFabVisible = false
+            binding.toolbarFab.setOnClickListener(null)
         }
     }
 
     private fun setAppBarForLaunches() {
         binding.run {
-            fab.setOnClickListener {
+            toolbarFab.setOnClickListener {
                 findNavController(R.id.nav_host).navigate(LaunchesFragmentDirections.actionLaunchesToFilter())
             }
-            fab.setImageResource(R.drawable.ic_search_black_24dp)
+            toolbarFab.setImageResource(R.drawable.ic_search_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.show()
-            viewModel.isFabVisible = true
+            toolbarFab.hide()
+            viewModel.isFabVisible = false
         }
     }
 
     private fun setAppBarForLaunchDetails() {
-        hideAppBar()
-        binding.fab.hide()
+        binding.run {
+            bottomAppBar.visibility = View.VISIBLE
+            bottomAppBar.performShow()
+            toolbarFab.hide()
+            viewModel.isFabVisible = false
+        }
     }
 
     private fun setAppBarForNews() {
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
@@ -282,23 +278,23 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
 
     private fun setAppBarForCrewDetails() {
         hideAppBar()
-        binding.fab.hide()
+        binding.toolbarFab.hide()
         viewModel.isFabVisible = false
     }
 
     private fun setAppBarForVehicles() {
         binding.run {
-            fab.setImageResource(R.drawable.ic_sort_black_24dp)
+            toolbarFab.setImageResource(R.drawable.ic_sort_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.show()
+            toolbarFab.show()
             viewModel.isFabVisible = true
         }
     }
@@ -307,7 +303,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
@@ -316,16 +312,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
-            viewModel.isFabVisible = false
-        }
-    }
-
-    private fun setAppBarForShipDetails() {
-        binding.run {
-            bottomAppBar.visibility = View.VISIBLE
-            bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
@@ -334,7 +321,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
@@ -343,33 +330,23 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
 
     private fun setAppBarForStatistics(hasFilter: Boolean) {
         binding.run {
-            fab.setImageResource(R.drawable.ic_filter_list_black_24dp)
+            toolbarFab.setImageResource(R.drawable.ic_filter_list_black_24dp)
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
             if (hasFilter) {
-                fab.show()
+                toolbarFab.show()
                 viewModel.isFabVisible = true
             } else {
-                fab.hide()
+                toolbarFab.hide()
                 viewModel.isFabVisible = false
             }
-        }
-    }
-
-    private fun setAppBarForHistory() {
-        binding.run {
-            fab.setImageResource(R.drawable.ic_sort_black_24dp)
-            bottomAppBar.visibility = View.VISIBLE
-            bottomAppBar.performShow()
-            fab.show()
-            viewModel.isFabVisible = true
         }
     }
 
@@ -377,7 +354,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
@@ -386,7 +363,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         binding.run {
             bottomAppBar.visibility = View.VISIBLE
             bottomAppBar.performShow()
-            fab.hide()
+            toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
@@ -404,7 +381,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                     if (isCanceled) return
 
                     bottomAppBar.visibility = View.GONE
-                    fab.visibility = View.INVISIBLE
+                    toolbarFab.visibility = View.INVISIBLE
                 }
 
                 override fun onAnimationCancel(animation: Animator) {
@@ -418,16 +395,11 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     private fun getBottomAppBarMenuForDestination(destination: NavDestination? = null): Int {
         val dest = destination ?: findNavController(R.id.nav_host).currentDestination
         return when (dest?.id) {
-            R.id.dashboard_page_fragment -> R.menu.menu_dashboard
             else -> R.menu.menu_empty
         }
     }
 
     private fun navigateToSettings() {
         findNavController(R.id.nav_host).navigate(NavGraphDirections.actionToThemeDialog())
-    }
-
-    private fun navigateToEditDashboard() {
-        findNavController(R.id.nav_host).navigate(NavGraphDirections.actionToDashboardEditDialog())
     }
 }

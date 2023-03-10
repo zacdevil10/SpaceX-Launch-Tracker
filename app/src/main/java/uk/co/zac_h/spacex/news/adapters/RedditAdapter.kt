@@ -13,8 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.card.MaterialCardView
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.dto.reddit.RedditPost
-import uk.co.zac_h.spacex.utils.convertDate
+import uk.co.zac_h.spacex.core.common.utils.convertDate
+import uk.co.zac_h.spacex.network.dto.reddit.RedditPost
 import uk.co.zac_h.spacex.utils.views.HtmlTextView
 
 class RedditAdapter(private val openLink: (String) -> Unit) :

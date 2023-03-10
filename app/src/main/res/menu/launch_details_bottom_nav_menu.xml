@@ -10,9 +10,4 @@
         android:enabled="true"
         android:icon="@drawable/ic_core"
         android:title="@string/cores_label" />
-    <item
-        android:id="@+id/launch_details_payloads"
-        android:enabled="true"
-        android:icon="@drawable/ic_weight"
-        android:title="@string/payloads_label" />
 </menu>

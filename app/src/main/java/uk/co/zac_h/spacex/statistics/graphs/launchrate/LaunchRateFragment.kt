@@ -19,11 +19,10 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
-import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.Repository
-import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchRateBinding
+import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
 import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.RateStatsModel
@@ -111,7 +110,7 @@ class LaunchRateFragment : BaseFragment() {
             when (response) {
                 is ApiResult.Pending -> {}
                 is ApiResult.Success -> response.data?.let {
-                    update(viewModel.cacheLocation != Repository.RequestLocation.CACHE, it)
+                    update(false/*viewModel.cacheLocation != Repository.RequestLocation.CACHE*/, it)
                 }
                 is ApiResult.Failure -> showError(response.exception.message)
             }

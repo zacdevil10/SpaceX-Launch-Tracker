@@ -15,8 +15,8 @@ android {
         applicationId "uk.co.zac_h.spacex"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 210010511
-        versionName "1.5.11"
+        versionCode 210010603
+        versionName "1.6.3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -60,23 +60,30 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlin_version}"
-    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.preference:preference-ktx:1.2.0'
 
-    implementation project(':core')
-    implementation project(':widget')
+    //Feature
+    implementation project(':feature:launch')
+    implementation project(':feature:vehicles')
+    implementation project(':feature:company')
+    implementation project(':feature:about')
+
+    //Core
+    implementation project(':core:common')
+    implementation project(':core:ui')
     implementation project(":network")
 
     //Navigation
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.2'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.5.2'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
 
     //Glide
-    implementation 'com.github.bumptech.glide:glide:4.14.1'
+    implementation 'com.github.bumptech.glide:glide:4.15.0'
 
     //MP Chart library
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
@@ -85,20 +92,19 @@ dependencies {
     implementation 'com.github.zacdevil10:MediaRecyclerView:v0.2.0-beta'
 
     //Firebase
-    implementation platform('com.google.firebase:firebase-bom:30.5.0')
+    implementation platform('com.google.firebase:firebase-bom:31.2.3')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
-    implementation 'com.google.firebase:firebase-core'
     implementation 'com.google.firebase:firebase-messaging-ktx'
 
     //MVVM
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.5.1"
-    implementation "androidx.fragment:fragment-ktx:1.5.3"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.0"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.0"
+    implementation "androidx.fragment:fragment-ktx:1.5.5"
 
     //Hilt
-    implementation 'com.google.dagger:hilt-android:2.44'
-    kapt 'com.google.dagger:hilt-compiler:2.44'
+    implementation 'com.google.dagger:hilt-android:2.45'
+    kapt 'com.google.dagger:hilt-compiler:2.45'
 
     //Paging
     implementation "androidx.paging:paging-runtime-ktx:3.1.1"

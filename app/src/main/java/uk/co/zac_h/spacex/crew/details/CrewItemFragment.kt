@@ -7,17 +7,15 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.transition.MaterialContainerTransform
-import uk.co.zac_h.spacex.*
-import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.crew.Crew
 import uk.co.zac_h.spacex.crew.CrewViewModel
-import uk.co.zac_h.spacex.crew.adapters.CrewMissionsAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewItemBinding
-import uk.co.zac_h.spacex.dto.spacex.CrewStatus
+import uk.co.zac_h.spacex.network.dto.spacex.CrewStatus
 
 class CrewItemFragment : BaseFragment() {
 
@@ -53,7 +51,7 @@ class CrewItemFragment : BaseFragment() {
                 id = navArgs.id,
                 image = navArgs.url,
                 name = null,
-                status = null,
+                status = CrewStatus.UNKNOWN,
                 agency = null,
                 wikipedia = null,
                 role = null
@@ -77,22 +75,9 @@ class CrewItemFragment : BaseFragment() {
         Glide.with(requireContext()).load(person.image).into(binding.crewImage)
 
         binding.crewName.text = person.name
-        person.status?.let { status ->
-            binding.crewStatus.text = when (status) {
-                CrewStatus.ACTIVE -> SPACEX_CREW_STATUS_ACTIVE
-                CrewStatus.INACTIVE -> SPACEX_CREW_STATUS_INACTIVE
-                CrewStatus.RETIRED -> SPACEX_CREW_STATUS_RETIRED
-                CrewStatus.UNKNOWN -> SPACEX_CREW_STATUS_UNKNOWN
-            }.replaceFirstChar { it.uppercase() }
+        person.status.let { status ->
+            binding.crewStatus.text = status.status
         }
         binding.crewAgency.text = person.agency
-
-        person.launches?.let { launches ->
-            binding.missionsRecycler.apply {
-                layoutManager = LinearLayoutManager(context)
-                adapter = CrewMissionsAdapter().also { it.submitList(launches) }
-            }
-            if (launches.isEmpty()) binding.crewMissionLabel.visibility = View.GONE
-        }
     }
 }

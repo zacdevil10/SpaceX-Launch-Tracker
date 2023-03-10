@@ -1,12 +1,12 @@
 package uk.co.zac_h.spacex.vehicles.capsules
 
-import uk.co.zac_h.spacex.Cache
-import uk.co.zac_h.spacex.Repository
-import uk.co.zac_h.spacex.datasource.remote.CapsuleDataSourceClient
-import uk.co.zac_h.spacex.datasource.remote.RemoteDataSource
-import uk.co.zac_h.spacex.dto.spacex.CapsuleQueriedResponse
-import uk.co.zac_h.spacex.dto.spacex.NetworkDocsResponse
-import uk.co.zac_h.spacex.types.Order
+import uk.co.zac_h.spacex.core.common.types.Order
+import uk.co.zac_h.spacex.network.Cache
+import uk.co.zac_h.spacex.network.Repository
+import uk.co.zac_h.spacex.network.datasource.remote.CapsuleDataSourceClient
+import uk.co.zac_h.spacex.network.datasource.remote.RemoteDataSource
+import uk.co.zac_h.spacex.network.dto.spacex.CapsuleQueriedResponse
+import uk.co.zac_h.spacex.network.dto.spacex.NetworkDocsResponse
 import uk.co.zac_h.spacex.utils.OrderSharedPreferences
 import javax.inject.Inject
 

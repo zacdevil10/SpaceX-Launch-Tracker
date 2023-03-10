@@ -18,11 +18,11 @@ import uk.co.zac_h.mediarecyclerview.models.MediaModel
 import uk.co.zac_h.mediarecyclerview.ui.MediaRecyclerView
 import uk.co.zac_h.mediarecyclerview.utils.MediaType
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.dto.twitter.TimelineEntityModel.Companion.formatWithUrls
-import uk.co.zac_h.spacex.dto.twitter.TimelineExtendedEntityModel
-import uk.co.zac_h.spacex.dto.twitter.TimelineTweetModel
-import uk.co.zac_h.spacex.utils.convertDate
-import uk.co.zac_h.spacex.utils.dateStringToMillis
+import uk.co.zac_h.spacex.core.common.utils.convertDate
+import uk.co.zac_h.spacex.core.common.utils.dateStringToMillis
+import uk.co.zac_h.spacex.network.dto.twitter.TimelineEntityModel.Companion.formatWithUrls
+import uk.co.zac_h.spacex.network.dto.twitter.TimelineExtendedEntityModel
+import uk.co.zac_h.spacex.network.dto.twitter.TimelineTweetModel
 import uk.co.zac_h.spacex.utils.views.HtmlTextView
 
 class TwitterFeedAdapter(

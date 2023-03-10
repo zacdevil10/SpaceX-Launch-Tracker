@@ -3,19 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/dashboard_page_fragment">
+    app:startDestination="@id/launch_nav_graph">
 
-    <fragment
-        android:id="@+id/dashboard_page_fragment"
-        android:name="uk.co.zac_h.spacex.dashboard.DashboardFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_dashboard">
-
-        <action
-            android:id="@+id/action_dashboard_page_fragment_to_dashboard_edit_dialog"
-            app:destination="@id/dashboard_edit_dialog" />
-
-    </fragment>
+    <include app:graph="@navigation/launch_nav_graph" />
+    <include app:graph="@navigation/vehicles_nav_graph" />
+    <include app:graph="@navigation/company_nav_graph" />
+    <include app:graph="@navigation/about_nav_graph" />
 
     <fragment
         android:id="@+id/news_page_fragment"
@@ -27,26 +20,6 @@
             app:uri="spacex://news" />
 
     </fragment>
-
-    <fragment
-        android:id="@+id/launches_page_fragment"
-        android:name="uk.co.zac_h.spacex.launches.LaunchesFragment"
-        tools:layout="@layout/fragment_launches">
-
-        <deepLink
-            android:id="@+id/deepLink"
-            app:uri="spacex://launches" />
-
-        <action
-            android:id="@+id/action_launches_to_filter"
-            app:destination="@id/launches_filter_fragment" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/launches_filter_fragment"
-        android:name="uk.co.zac_h.spacex.launches.filter.LaunchesFilterFragment"
-        tools:layout="@layout/fragment_launches_filter" />
 
     <fragment
         android:id="@+id/crew_page_fragment"
@@ -75,33 +48,6 @@
         <argument
             android:name="url"
             app:argType="string" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/vehicles_page_fragment"
-        android:name="uk.co.zac_h.spacex.vehicles.VehiclesFragment"
-        tools:layout="@layout/fragment_vehicles">
-
-        <action
-            android:id="@+id/action_vehicles_page_fragment_to_rocket_details_fragment"
-            app:destination="@id/rocket_details_fragment" />
-        <action
-            android:id="@+id/action_vehicles_page_fragment_to_dragon_details_fragment"
-            app:destination="@id/dragon_details_fragment" />
-        <action
-            android:id="@+id/action_vehicles_page_fragment_to_ship_details_fragment"
-            app:destination="@id/ship_details_fragment" />
-        <action
-            android:id="@+id/action_vehicles_page_fragment_to_capsule_details_fragment"
-            app:destination="@id/capsule_details_fragment" />
-        <action
-            android:id="@+id/action_vehicles_page_fragment_to_core_details_fragment"
-            app:destination="@id/core_details_fragment" />
-
-        <deepLink
-            android:id="@+id/deepLink"
-            app:uri="spacex://vehicles" />
 
     </fragment>
 
@@ -200,69 +146,7 @@
 
         <argument
             android:name="padType"
-            app:argType="uk.co.zac_h.spacex.types.PadType" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/company_page_fragment"
-        android:name="uk.co.zac_h.spacex.about.company.CompanyFragment"
-        tools:layout="@layout/fragment_company">
-
-        <deepLink
-            android:id="@+id/deepLink"
-            app:uri="spacex://about/company" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/history_page_fragment"
-        android:name="uk.co.zac_h.spacex.about.history.HistoryFragment"
-        tools:layout="@layout/fragment_history">
-
-        <deepLink
-            android:id="@+id/historyLink"
-            app:uri="spacex://about/history" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/about_page_fragment"
-        android:name="uk.co.zac_h.spacex.about.AboutFragment"
-        tools:layout="@layout/fragment_about">
-
-        <deepLink
-            android:id="@+id/deepLink"
-            app:uri="spacex://about/app" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/launch_details_container_fragment"
-        android:name="uk.co.zac_h.spacex.launches.details.LaunchDetailsContainerFragment"
-        tools:layout="@layout/fragment_launch_details_container">
-        <action
-            android:id="@+id/action_launch_details_container_fragment_to_core_details_fragment"
-            app:destination="@id/core_details_fragment" />
-        <action
-            android:id="@+id/action_launch_details_container_fragment_to_ship_details_fragment"
-            app:destination="@id/ship_details_fragment" />
-        <action
-            android:id="@+id/action_crew_fragment_to_crew_details_fragment"
-            app:destination="@id/crew_detail_page_fragment" />
-
-        <deepLink
-            android:id="@+id/launchDetailsLink"
-            app:uri="spacex://launch_details={launch_id}" />
-
-        <argument
-            android:name="label"
-            app:argType="string"
-            app:nullable="true" />
-
-        <argument
-            android:name="launch_id"
-            app:argType="string" />
+            app:argType="uk.co.zac_h.spacex.core.common.types.PadType" />
 
     </fragment>
 
@@ -270,46 +154,6 @@
         android:id="@+id/core_details_fragment"
         android:name="uk.co.zac_h.spacex.vehicles.cores.details.CoreDetailsFragment"
         tools:layout="@layout/fragment_core_details">
-
-        <argument
-            android:name="label"
-            app:argType="string"
-            app:nullable="true" />
-
-        <argument
-            android:name="id"
-            app:argType="string" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/rocket_details_fragment"
-        android:name="uk.co.zac_h.spacex.vehicles.rockets.details.RocketDetailsFragment"
-        tools:layout="@layout/fragment_rocket_details">
-
-        <argument
-            android:name="label"
-            app:argType="string"
-            app:nullable="true" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/dragon_details_fragment"
-        android:name="uk.co.zac_h.spacex.vehicles.dragon.details.DragonDetailsFragment"
-        tools:layout="@layout/fragment_dragon_details">
-
-        <argument
-            android:name="label"
-            app:argType="string"
-            app:nullable="true" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/ship_details_fragment"
-        android:name="uk.co.zac_h.spacex.vehicles.ships.details.ShipDetailsFragment"
-        tools:layout="@layout/fragment_ship_details">
 
         <argument
             android:name="label"
@@ -341,14 +185,6 @@
     <dialog
         android:id="@+id/theme_alert_dialog"
         android:name="uk.co.zac_h.spacex.utils.settings.ThemeAlertDialog" />
-
-    <dialog
-        android:id="@+id/dashboard_edit_dialog"
-        android:name="uk.co.zac_h.spacex.utils.settings.DashboardEditDialog" />
-
-    <action
-        android:id="@+id/action_to_dashboard_edit_dialog"
-        app:destination="@id/dashboard_edit_dialog" />
 
     <action
         android:id="@+id/action_to_theme_dialog"

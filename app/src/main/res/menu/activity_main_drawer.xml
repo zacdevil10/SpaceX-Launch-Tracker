@@ -5,48 +5,35 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@id/dashboard_page_fragment"
-            android:icon="@drawable/ic_dashboard_black_24dp"
-            android:title="@string/menu_home" />
-        <item
-            android:id="@id/launches_page_fragment"
+            android:id="@id/launch_nav_graph"
             android:icon="@drawable/ic_event_black_24dp"
             android:title="@string/menu_launches" />
         <item
             android:id="@id/news_page_fragment"
             android:icon="@drawable/ic_newspaper"
             android:title="@string/menu_news" />
-        <item
+        <!--<item
             android:id="@id/crew_page_fragment"
             android:icon="@drawable/ic_baseline_people_24"
-            android:title="@string/menu_crew" />
+            android:title="@string/menu_crew" />-->
         <item
-            android:id="@id/vehicles_page_fragment"
+            android:id="@id/vehicles_nav_graph"
             android:icon="@drawable/ic_rocket"
             android:title="@string/menu_vehicles" />
-        <item
+        <!--<item
             android:id="@id/statistics_page_fragment"
             android:icon="@drawable/ic_data_usage_black_24dp"
-            android:title="@string/menu_statistics" />
+            android:title="@string/menu_statistics" />-->
+        <item
+            android:id="@id/company_nav_graph"
+            android:icon="@drawable/domain"
+            android:title="@string/menu_company" />
     </group>
-
-    <item android:title="@string/menu_about_spacex">
-        <menu>
-            <item
-                android:id="@+id/history_page_fragment"
-                android:icon="@drawable/ic_history_black_24dp"
-                android:title="@string/menu_history" />
-            <item
-                android:id="@+id/company_page_fragment"
-                android:icon="@drawable/domain"
-                android:title="@string/menu_company" />
-        </menu>
-    </item>
 
     <item android:title="@string/menu_about">
         <menu>
             <item
-                android:id="@id/about_page_fragment"
+                android:id="@id/about_nav_graph"
                 android:icon="@drawable/ic_info_outline_black_24dp"
                 android:title="@string/menu_about" />
         </menu>

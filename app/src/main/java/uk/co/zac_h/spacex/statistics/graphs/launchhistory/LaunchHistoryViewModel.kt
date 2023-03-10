@@ -3,18 +3,11 @@ package uk.co.zac_h.spacex.statistics.graphs.launchhistory
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import uk.co.zac_h.spacex.ApiResult
-import uk.co.zac_h.spacex.CachePolicy
-import uk.co.zac_h.spacex.Repository
-import uk.co.zac_h.spacex.async
-import uk.co.zac_h.spacex.launches.Launch
-import uk.co.zac_h.spacex.query.StatisticsQuery
+import uk.co.zac_h.spacex.core.common.types.LaunchHistoryFilter
+import uk.co.zac_h.spacex.network.ApiResult
+import uk.co.zac_h.spacex.network.CachePolicy
 import uk.co.zac_h.spacex.statistics.StatisticsRepository
-import uk.co.zac_h.spacex.types.LaunchHistoryFilter
-import uk.co.zac_h.spacex.types.RocketType
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 import javax.inject.Inject
 
@@ -26,14 +19,14 @@ class LaunchHistoryViewModel @Inject constructor(
     private val _launchHistory = MutableLiveData<ApiResult<List<HistoryStatsModel>>>()
     val launchHistory: LiveData<ApiResult<List<HistoryStatsModel>>> = _launchHistory
 
-    val cacheLocation: Repository.RequestLocation
-        get() = repository.cacheLocation
+    /*val cacheLocation: Repository.RequestLocation
+        get() = repository.cacheLocation*/
 
     var filterValue: LaunchHistoryFilter? = null
         private set
 
     fun get(cachePolicy: CachePolicy = CachePolicy.EXPIRES) {
-        viewModelScope.launch {
+        /*viewModelScope.launch {
             val response = async(_launchHistory) {
                 repository.fetch(
                     key = "launch_history",
@@ -82,7 +75,7 @@ class LaunchHistoryViewModel @Inject constructor(
 
                 listOf(falconOne, falconNine, falconHeavy, starship)
             }
-        }
+        }*/
     }
 
     fun setFilter(filter: LaunchHistoryFilter?) {

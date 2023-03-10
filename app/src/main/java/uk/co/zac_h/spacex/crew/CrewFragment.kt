@@ -8,13 +8,13 @@ import android.widget.Toast
 import androidx.core.view.doOnPreDraw
 import androidx.navigation.navGraphViewModels
 import com.google.android.material.transition.MaterialElevationScale
-import uk.co.zac_h.spacex.ApiResult
-import uk.co.zac_h.spacex.CachePolicy
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.Repository
-import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewBinding
+import uk.co.zac_h.spacex.network.ApiResult
+import uk.co.zac_h.spacex.network.CachePolicy
+import uk.co.zac_h.spacex.network.Repository
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 
 class CrewFragment : BaseFragment() {

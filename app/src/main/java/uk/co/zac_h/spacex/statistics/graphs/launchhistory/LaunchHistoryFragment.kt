@@ -22,15 +22,14 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
-import uk.co.zac_h.spacex.ApiResult
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.Repository
-import uk.co.zac_h.spacex.base.BaseFragment
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.types.LaunchHistoryFilter
+import uk.co.zac_h.spacex.core.common.types.RocketType
+import uk.co.zac_h.spacex.core.common.utils.generateCenterSpannableText
 import uk.co.zac_h.spacex.databinding.FragmentLaunchHistoryBinding
+import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.statistics.graphs.launchhistory.filter.LaunchHistoryFilterViewModel
-import uk.co.zac_h.spacex.types.LaunchHistoryFilter
-import uk.co.zac_h.spacex.types.RocketType
-import uk.co.zac_h.spacex.utils.generateCenterSpannableText
 import uk.co.zac_h.spacex.utils.models.HistoryStatsModel
 
 class LaunchHistoryFragment : BaseFragment() {
@@ -100,7 +99,8 @@ class LaunchHistoryFragment : BaseFragment() {
             when (response) {
                 is ApiResult.Pending -> {}
                 is ApiResult.Success -> response.data?.let {
-                    val animate = viewModel.cacheLocation != Repository.RequestLocation.CACHE
+                    val animate =
+                        false/*viewModel.cacheLocation != Repository.RequestLocation.CACHE*/
                     update(animate, it)
                     setSuccessRate(it, animate)
                 }
