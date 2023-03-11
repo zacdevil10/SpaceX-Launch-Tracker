@@ -9,7 +9,6 @@ import android.view.inputmethod.EditorInfo
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.core.view.doOnPreDraw
 import androidx.core.widget.doOnTextChanged
@@ -23,7 +22,13 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
 import dagger.hilt.android.AndroidEntryPoint
-import uk.co.zac_h.spacex.core.common.bottomsheet.*
+import uk.co.zac_h.spacex.core.common.bottomsheet.AlphaSlideAction
+import uk.co.zac_h.spacex.core.common.bottomsheet.BackPressedStateAction
+import uk.co.zac_h.spacex.core.common.bottomsheet.BottomDrawerCallback
+import uk.co.zac_h.spacex.core.common.bottomsheet.BottomSheetBackPressed
+import uk.co.zac_h.spacex.core.common.bottomsheet.BottomSheetOpenable
+import uk.co.zac_h.spacex.core.common.bottomsheet.ShowHideFabStateAction
+import uk.co.zac_h.spacex.core.common.bottomsheet.VisibilityStateAction
 import uk.co.zac_h.spacex.core.common.types.Order
 import uk.co.zac_h.spacex.core.common.types.RocketType
 import uk.co.zac_h.spacex.core.common.utils.formatRange
@@ -75,9 +80,9 @@ class LaunchesFilterFragment : Fragment() {
             startView = requireActivity().findViewById(R.id.toolbar_fab)
             endView = binding.container
             scrimColor = Color.TRANSPARENT
-            containerColor = ContextCompat.getColor(requireContext(), R.color.color_background)
-            startContainerColor = ContextCompat.getColor(requireContext(), R.color.color_secondary)
-            endContainerColor = ContextCompat.getColor(requireContext(), R.color.color_background)
+            //containerColor = ContextCompat.getColor(requireContext(), R.color.color_background)
+            //startContainerColor = ContextCompat.getColor(requireContext(), R.color.color_secondary)
+            //endContainerColor = ContextCompat.getColor(requireContext(), R.color.color_background)
         }
         returnTransition = Slide().apply {
             addTarget(binding.container)

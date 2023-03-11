@@ -44,7 +44,6 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/date_range_clear_button"
-            style="@style/Widget.AppTheme.Button.OutlinedButton.IconOnly"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"

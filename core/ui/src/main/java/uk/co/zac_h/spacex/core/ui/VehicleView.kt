@@ -66,8 +66,6 @@ class VehicleView @JvmOverloads constructor(
         get() = binding.vehicleSpecs
 
     init {
-        cardElevation = resources.getDimension(R.dimen.card_elevation)
-
         context.obtainStyledAttributes(attrs, R.styleable.VehicleView).use {
             buttonText = it.getString(R.styleable.VehicleView_buttonText)
         }
@@ -83,8 +81,8 @@ class VehicleView @JvmOverloads constructor(
         if (params is MarginLayoutParams) {
             params.marginStart = resources.getDimensionPixelSize(R.dimen.xlarge_margin)
             params.marginEnd = resources.getDimensionPixelSize(R.dimen.xlarge_margin)
-            params.topMargin = resources.getDimensionPixelSize(R.dimen.small_margin)
-            params.bottomMargin = resources.getDimensionPixelSize(R.dimen.small_margin)
+            params.topMargin = resources.getDimensionPixelSize(R.dimen.medium_margin)
+            params.bottomMargin = resources.getDimensionPixelSize(R.dimen.medium_margin)
         }
         super.setLayoutParams(params)
     }

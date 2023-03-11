@@ -1,39 +1,21 @@
 package uk.co.zac_h.spacex.base
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.app.Activity
 import android.os.Bundle
-import android.view.MenuItem
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.activity.viewModels
-import androidx.annotation.MenuRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.customview.widget.Openable
 import androidx.fragment.app.commit
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import uk.co.zac_h.spacex.NavGraphDirections
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.core.common.bottomsheet.AlphaSlideAction
-import uk.co.zac_h.spacex.core.common.bottomsheet.BackPressedStateAction
-import uk.co.zac_h.spacex.core.common.bottomsheet.BottomDrawerCallback
-import uk.co.zac_h.spacex.core.common.bottomsheet.BottomSheetBackPressed
-import uk.co.zac_h.spacex.core.common.bottomsheet.BottomSheetOpenable
-import uk.co.zac_h.spacex.core.common.bottomsheet.ChangeSettingsMenuStateAction
-import uk.co.zac_h.spacex.core.common.bottomsheet.HideBottomSheet
 import uk.co.zac_h.spacex.core.common.bottomsheet.ShowHideFabStateAction
-import uk.co.zac_h.spacex.core.common.bottomsheet.VisibilityStateAction
 import uk.co.zac_h.spacex.core.common.fragment.BottomDrawerFragment
 import uk.co.zac_h.spacex.core.common.network.OnNetworkStateChangeListener
 import uk.co.zac_h.spacex.databinding.ActivityMainBinding
@@ -45,23 +27,13 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedListener,
-    Toolbar.OnMenuItemClickListener, OnNetworkStateChangeListener.NetworkStateReceiverListener {
+    OnNetworkStateChangeListener.NetworkStateReceiverListener {
 
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
 
     private val viewModel: MainViewModel by viewModels()
-
-    private val navBottomSheetBehavior: BottomSheetBehavior<NavigationView> by lazy {
-        BottomSheetBehavior.from(binding.navView)
-    }
-
-    private val closeNavDrawerOnBackPressed by lazy {
-        BottomSheetBackPressed(navBottomSheetBehavior)
-    }
-
-    private val openableNavView by lazy { BottomSheetOpenable(navBottomSheetBehavior) }
 
     private var bottomDrawerFragment: BottomDrawerFragment? = null
 
@@ -94,11 +66,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
         val navController = navHostFragment.navController
 
-        val appBarConfig = AppBarConfiguration
-            .Builder(viewModel.startDestinations)
-            .setOpenableLayout(openableNavView)
-            .build()
-
         networkStateChangeListener.apply {
             addListener(this@MainActivity)
             registerReceiver()
@@ -109,37 +76,13 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             R.string.network_connection,
             Snackbar.LENGTH_INDEFINITE
         ).apply {
-            anchorView = binding.bottomAppBar
+            anchorView = binding.bottomNavigationView
             setAction(R.string.dismiss_label) { dismiss() }
         }
 
-        binding.bottomAppBar.setupWithNavController(navController, appBarConfig)
-        binding.navView.setupWithNavController(navController)
+        binding.bottomNavigationView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener(this)
-
-        navBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-
-        navBottomSheetBehavior.addBottomSheetCallback(BottomDrawerCallback().apply {
-            addOnSlideAction(AlphaSlideAction(binding.scrim))
-            addOnStateChangedAction(VisibilityStateAction(binding.scrim))
-            addOnStateChangedAction(BackPressedStateAction(closeNavDrawerOnBackPressed))
-            addOnStateChangedAction(ShowHideFabStateAction(binding.toolbarFab) { viewModel.isFabVisible })
-            addOnStateChangedAction(ChangeSettingsMenuStateAction { showSettings ->
-                binding.bottomAppBar.replaceMenu(
-                    if (showSettings) R.menu.menu_settings else getBottomAppBarMenuForDestination()
-                )
-            })
-            addOnStateChangedAction(HideBottomSheet(openableBottomDrawer))
-        })
-
-        binding.bottomAppBar.setOnMenuItemClickListener(this)
-
-        binding.scrim.setOnClickListener {
-            navBottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        }
-
-        onBackPressedDispatcher.addCallback(this, closeNavDrawerOnBackPressed)
     }
 
     override fun onStart() {
@@ -174,8 +117,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         ime.hideSoftInputFromWindow(binding.root.windowToken, 0)
         //Close any open bottom sheets
         openableBottomDrawer.close()
-        //Set toolbar menu for destination
-        binding.bottomAppBar.replaceMenu(getBottomAppBarMenuForDestination(destination))
 
         setBottomDrawerForDestination(destination)
 
@@ -206,18 +147,8 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             R.id.capsule_details_fragment -> setAppBarForCapsuleDetails()
             //About
             R.id.company_fragment -> setAppBarForCompany()
-            R.id.about_fragment -> setAppBarForAbout()
+            R.id.settings_fragment -> setAppBarForSettings()
         }
-    }
-
-    override fun onMenuItemClick(item: MenuItem?): Boolean {
-        when (item?.itemId) {
-            R.id.settings -> {
-                navigateToSettings()
-                openableNavView.close()
-            }
-        }
-        return true
     }
 
     private fun setBottomDrawerForDestination(destination: NavDestination) {
@@ -248,9 +179,7 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
             toolbarFab.setOnClickListener {
                 findNavController(R.id.nav_host).navigate(LaunchesFragmentDirections.actionLaunchesToFilter())
             }
-            toolbarFab.setImageResource(R.drawable.ic_search_black_24dp)
-            bottomAppBar.visibility = View.VISIBLE
-            bottomAppBar.performShow()
+            //toolbarFab.setImageResource(R.drawable.ic_search_black_24dp)
             toolbarFab.hide()
             viewModel.isFabVisible = false
         }
@@ -258,8 +187,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     private fun setAppBarForLaunchDetails() {
         binding.run {
-            bottomAppBar.visibility = View.VISIBLE
-            bottomAppBar.performShow()
             toolbarFab.hide()
             viewModel.isFabVisible = false
         }
@@ -267,8 +194,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     private fun setAppBarForNews() {
         binding.run {
-            bottomAppBar.visibility = View.VISIBLE
-            bottomAppBar.performShow()
             toolbarFab.hide()
             viewModel.isFabVisible = false
         }
@@ -276,15 +201,12 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     private fun setAppBarForCrew() {
         binding.run {
-            bottomAppBar.visibility = View.VISIBLE
-            bottomAppBar.performShow()
             toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
 
     private fun setAppBarForCrewDetails() {
-        hideAppBar()
         binding.toolbarFab.hide()
         viewModel.isFabVisible = false
     }
@@ -292,8 +214,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     private fun setAppBarForVehicles() {
         binding.run {
             toolbarFab.setImageResource(R.drawable.ic_sort_black_24dp)
-            bottomAppBar.visibility = View.VISIBLE
-            bottomAppBar.performShow()
             toolbarFab.show()
             viewModel.isFabVisible = true
         }
@@ -301,8 +221,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     private fun setAppBarForRocketDetails() {
         binding.run {
-            bottomAppBar.visibility = View.VISIBLE
-            bottomAppBar.performShow()
             toolbarFab.hide()
             viewModel.isFabVisible = false
         }
@@ -310,8 +228,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     private fun setAppBarForDragonDetails() {
         binding.run {
-            bottomAppBar.visibility = View.VISIBLE
-            bottomAppBar.performShow()
             toolbarFab.hide()
             viewModel.isFabVisible = false
         }
@@ -319,8 +235,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     private fun setAppBarForCoreDetails() {
         binding.run {
-            bottomAppBar.visibility = View.VISIBLE
-            bottomAppBar.performShow()
             toolbarFab.hide()
             viewModel.isFabVisible = false
         }
@@ -328,8 +242,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     private fun setAppBarForCapsuleDetails() {
         binding.run {
-            bottomAppBar.visibility = View.VISIBLE
-            bottomAppBar.performShow()
             toolbarFab.hide()
             viewModel.isFabVisible = false
         }
@@ -338,8 +250,6 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
     private fun setAppBarForStatistics(hasFilter: Boolean) {
         binding.run {
             toolbarFab.setImageResource(R.drawable.ic_filter_list_black_24dp)
-            bottomAppBar.visibility = View.VISIBLE
-            bottomAppBar.performShow()
             if (hasFilter) {
                 toolbarFab.show()
                 viewModel.isFabVisible = true
@@ -352,54 +262,18 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
 
     private fun setAppBarForCompany() {
         binding.run {
-            bottomAppBar.visibility = View.VISIBLE
-            bottomAppBar.performShow()
             toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
 
-    private fun setAppBarForAbout() {
+    private fun setAppBarForSettings() {
         binding.run {
-            bottomAppBar.visibility = View.VISIBLE
-            bottomAppBar.performShow()
             toolbarFab.hide()
             viewModel.isFabVisible = false
         }
     }
 
     private fun setAppBarForSearch() {
-        hideAppBar()
-    }
-
-    private fun hideAppBar() {
-        binding.run {
-            bottomAppBar.performHide()
-            bottomAppBar.animate().setListener(object : AnimatorListenerAdapter() {
-                var isCanceled = false
-                override fun onAnimationEnd(animation: Animator) {
-                    if (isCanceled) return
-
-                    bottomAppBar.visibility = View.GONE
-                    toolbarFab.visibility = View.INVISIBLE
-                }
-
-                override fun onAnimationCancel(animation: Animator) {
-                    isCanceled = true
-                }
-            })
-        }
-    }
-
-    @MenuRes
-    private fun getBottomAppBarMenuForDestination(destination: NavDestination? = null): Int {
-        val dest = destination ?: findNavController(R.id.nav_host).currentDestination
-        return when (dest?.id) {
-            else -> R.menu.menu_empty
-        }
-    }
-
-    private fun navigateToSettings() {
-        findNavController(R.id.nav_host).navigate(NavGraphDirections.actionToThemeDialog())
     }
 }

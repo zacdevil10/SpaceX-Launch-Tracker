@@ -3,40 +3,29 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@id/launch_nav_graph"
-            android:icon="@drawable/ic_event_black_24dp"
-            android:title="@string/menu_launches" />
-        <item
-            android:id="@id/news_page_fragment"
-            android:icon="@drawable/ic_newspaper"
-            android:title="@string/menu_news" />
-        <!--<item
-            android:id="@id/crew_page_fragment"
-            android:icon="@drawable/ic_baseline_people_24"
-            android:title="@string/menu_crew" />-->
-        <item
-            android:id="@id/vehicles_nav_graph"
-            android:icon="@drawable/ic_rocket"
-            android:title="@string/menu_vehicles" />
-        <!--<item
-            android:id="@id/statistics_page_fragment"
-            android:icon="@drawable/ic_data_usage_black_24dp"
-            android:title="@string/menu_statistics" />-->
-        <item
-            android:id="@id/company_nav_graph"
-            android:icon="@drawable/domain"
-            android:title="@string/menu_company" />
-    </group>
-
-    <item android:title="@string/menu_about">
-        <menu>
-            <item
-                android:id="@id/about_nav_graph"
-                android:icon="@drawable/ic_info_outline_black_24dp"
-                android:title="@string/menu_about" />
-        </menu>
-    </item>
+    <item
+        android:id="@id/launch_nav_graph"
+        android:icon="@drawable/ic_event_black_24dp"
+        android:title="@string/menu_launches" />
+    <item
+        android:id="@id/news_page_fragment"
+        android:icon="@drawable/ic_newspaper"
+        android:title="@string/menu_news" />
+    <!--<item
+        android:id="@id/crew_page_fragment"
+        android:icon="@drawable/ic_baseline_people_24"
+        android:title="@string/menu_crew" />-->
+    <item
+        android:id="@id/vehicles_nav_graph"
+        android:icon="@drawable/ic_rocket"
+        android:title="@string/menu_vehicles" />
+    <!--<item
+        android:id="@id/statistics_page_fragment"
+        android:icon="@drawable/ic_data_usage_black_24dp"
+        android:title="@string/menu_statistics" />-->
+    <item
+        android:id="@id/settings_nav_graph"
+        android:icon="@drawable/ic_info_outline_black_24dp"
+        android:title="@string/menu_about" />
 
 </menu>

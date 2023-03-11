@@ -15,7 +15,6 @@
         android:layout_marginBottom="@dimen/small_margin"
         android:clickable="true"
         android:focusable="true"
-        app:cardElevation="@dimen/card_elevation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,7 +41,6 @@
                 android:layout_width="2dp"
                 android:layout_height="2dp"
                 android:layout_marginStart="@dimen/small_margin"
-                android:background="@color/color_on_background"
                 app:layout_constraintBottom_toBottomOf="@id/list_item_core_serial"
                 app:layout_constraintStart_toEndOf="@id/list_item_core_serial"
                 app:layout_constraintTop_toTopOf="@id/list_item_core_serial" />

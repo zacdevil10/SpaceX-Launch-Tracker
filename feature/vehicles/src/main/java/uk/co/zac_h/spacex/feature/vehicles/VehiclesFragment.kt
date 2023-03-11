@@ -8,7 +8,7 @@ import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import com.google.android.material.transition.Hold
+import com.google.android.material.transition.MaterialSharedAxis
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerAdapter
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
@@ -16,9 +16,7 @@ import uk.co.zac_h.spacex.core.ui.databinding.FragmentViewPagerBinding
 import uk.co.zac_h.spacex.feature.vehicles.dragon.DragonFragment
 import uk.co.zac_h.spacex.feature.vehicles.rockets.RocketFragment
 
-class VehiclesFragment : BaseFragment(), ViewPagerFragment {
-
-    override val title by lazy { "Vehicles" }
+class VehiclesFragment : BaseFragment() {
 
     private lateinit var binding: FragmentViewPagerBinding
 
@@ -27,7 +25,8 @@ class VehiclesFragment : BaseFragment(), ViewPagerFragment {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        exitTransition = Hold()
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
     }
 
     override fun onCreateView(

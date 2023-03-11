@@ -398,5 +398,4 @@ const val REDDIT_QUERY_AFTER = "after"
 
 //endregion
 
-const val DEFAULT_PREFERENCES = "default_preferences"
 const val DASHBOARD_PREFERENCES = "dashboard_preferences"

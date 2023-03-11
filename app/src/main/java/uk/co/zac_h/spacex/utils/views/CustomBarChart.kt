@@ -2,11 +2,9 @@ package uk.co.zac_h.spacex.utils.views
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.formatter.ValueFormatter
-import uk.co.zac_h.spacex.R
 
 class CustomBarChart : BarChart {
 
@@ -23,7 +21,7 @@ class CustomBarChart : BarChart {
     fun setup() {
         xAxis.apply {
             position = XAxis.XAxisPosition.BOTTOM
-            textColor = ContextCompat.getColor(context, R.color.color_on_background)
+            //textColor = ContextCompat.getColor(context, R.color.color_on_background)
             valueFormatter = object : ValueFormatter() {
                 override fun getFormattedValue(value: Float): String {
                     return "'" + value.toInt().toString().takeLast(2)
@@ -32,7 +30,7 @@ class CustomBarChart : BarChart {
             setDrawGridLines(false)
         }
         axisLeft.apply {
-            textColor = ContextCompat.getColor(context, R.color.color_on_background)
+            //textColor = ContextCompat.getColor(context, R.color.color_on_background)
             isGranularityEnabled = true
             granularity = 1f
             axisMinimum = 0f
@@ -44,7 +42,7 @@ class CustomBarChart : BarChart {
         setDrawBorders(false)
         isHighlightFullBarEnabled = true
         legend.apply {
-            textColor = ContextCompat.getColor(context, R.color.color_on_background)
+            //textColor = ContextCompat.getColor(context, R.color.color_on_background)
         }
     }
 }

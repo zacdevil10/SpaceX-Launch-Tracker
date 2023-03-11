@@ -5,23 +5,26 @@
     android:id="@+id/fragment_launch_details_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:colorBackground"
     tools:context=".details.LaunchDetailsContainerFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:elevation="@dimen/toolbar_elevation">
+        app:liftOnScrollColor="?colorSurface"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            android:layout_height="wrap_content"
+            app:navigationIcon="@drawable/ic_baseline_arrow_back_24" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
-            style="@style/Widget.MaterialComponents.TabLayout"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:elevation="@dimen/toolbar_elevation"
-            android:textColor="?colorOnSurface"
-            android:theme="@style/AppTheme.AppBarOverlay"
-            app:tabIndicatorColor="?colorSecondary"
+            android:layout_height="wrap_content"
             app:tabInlineLabel="true" />
 
     </com.google.android.material.appbar.AppBarLayout>

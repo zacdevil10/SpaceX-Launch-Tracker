@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,7 +21,7 @@ import uk.co.zac_h.spacex.network.CachePolicy
 @AndroidEntryPoint
 class UpcomingLaunchesListFragment : BaseFragment(), ViewPagerFragment {
 
-    override val title: String by lazy { "upcoming" }
+    override val title: String by lazy { "Upcoming" }
 
     private val viewModel: LaunchesViewModel by navGraphViewModels(R.id.launch_nav_graph) {
         defaultViewModelProviderFactory
@@ -84,8 +83,7 @@ class UpcomingLaunchesListFragment : BaseFragment(), ViewPagerFragment {
         viewModel.launch = launch
 
         findNavController().navigate(
-            LaunchesFragmentDirections.actionLaunchesToLaunchDetails(),
-            FragmentNavigatorExtras(root to launch.id)
+            LaunchesFragmentDirections.actionLaunchesToLaunchDetails()
         )
     }
 

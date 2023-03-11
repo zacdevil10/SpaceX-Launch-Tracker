@@ -15,7 +15,7 @@ import uk.co.zac_h.spacex.feature.launch.adapters.FirstStageAdapter
 
 class LaunchDetailsCoresFragment : BaseFragment(), ViewPagerFragment {
 
-    override var title: String = "Cores"
+    override var title: String = "First stage"
 
     private val viewModel: LaunchesViewModel by navGraphViewModels(R.id.launch_nav_graph) {
         defaultViewModelProviderFactory

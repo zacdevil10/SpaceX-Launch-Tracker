@@ -20,7 +20,6 @@
                 android:id="@+id/progress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="@dimen/card_elevation"
                 android:indeterminate="true"
                 app:hideAnimationBehavior="outward"
                 app:indicatorColor="?colorSecondary"

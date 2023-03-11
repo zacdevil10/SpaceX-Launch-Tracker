@@ -1,10 +1,5 @@
 <resources>
 
-    <!--Navigation Drawer-->
-    <style name="Widget.AppTheme.NavigationView" parent="Widget.MaterialComponents.NavigationView">
-        <item name="itemTextAppearance">?textAppearanceBody2</item>
-    </style>
-
     <style name="SpinnerItem">
         <item name="android:textColor">@android:color/white</item>
     </style>
@@ -12,17 +7,5 @@
     <style name="Details" parent="TextAppearance.MaterialComponents.Body1" />
 
     <style name="MissionTitle" parent="TextAppearance.MaterialComponents.Subtitle2" />
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.DayNight" />
-
-    <style name="Widget.AppTheme.Button.OutlinedButton.IconOnly" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="iconPadding">0dp</item>
-        <item name="android:paddingLeft">12dp</item>
-        <item name="android:paddingRight">12dp</item>
-        <item name="android:minWidth">48dp</item>
-        <item name="android:minHeight">48dp</item>
-    </style>
 
 </resources>

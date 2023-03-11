@@ -7,8 +7,7 @@
 
     <include app:graph="@navigation/launch_nav_graph" />
     <include app:graph="@navigation/vehicles_nav_graph" />
-    <include app:graph="@navigation/company_nav_graph" />
-    <include app:graph="@navigation/about_nav_graph" />
+    <include app:graph="@navigation/settings_nav_graph" />
 
     <fragment
         android:id="@+id/news_page_fragment"
@@ -181,14 +180,6 @@
             app:argType="string" />
 
     </fragment>
-
-    <dialog
-        android:id="@+id/theme_alert_dialog"
-        android:name="uk.co.zac_h.spacex.utils.settings.ThemeAlertDialog" />
-
-    <action
-        android:id="@+id/action_to_theme_dialog"
-        app:destination="@id/theme_alert_dialog" />
 
     <action
         android:id="@+id/action_launch_item_to_launch_details_container"

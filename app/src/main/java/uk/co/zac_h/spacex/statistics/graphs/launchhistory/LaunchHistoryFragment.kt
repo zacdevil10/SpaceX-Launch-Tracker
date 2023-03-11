@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -80,10 +79,10 @@ class LaunchHistoryFragment : BaseFragment() {
         //Pie chart appearance
         binding.launchHistoryPieChart.apply {
             isDrawHoleEnabled = true
-            setHoleColor(ContextCompat.getColor(context, R.color.color_background))
+            //setHoleColor(ContextCompat.getColor(context, R.color.color_background))
             setDrawEntryLabels(false)
             description.isEnabled = false
-            setCenterTextColor(ContextCompat.getColor(context, R.color.color_on_background))
+            //setCenterTextColor(ContextCompat.getColor(context, R.color.color_on_background))
             isRotationEnabled = false
             setTouchEnabled(false)
 
@@ -91,7 +90,7 @@ class LaunchHistoryFragment : BaseFragment() {
                 verticalAlignment = Legend.LegendVerticalAlignment.TOP
                 horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
                 orientation = Legend.LegendOrientation.VERTICAL
-                textColor = ContextCompat.getColor(context, R.color.color_on_background)
+                //textColor = ContextCompat.getColor(context, R.color.color_on_background)
             }
         }
 

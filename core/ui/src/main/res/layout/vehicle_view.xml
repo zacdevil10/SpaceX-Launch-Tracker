@@ -5,23 +5,24 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/vehicle_image"
         android:layout_width="0dp"
-        android:layout_height="192dp"
-        android:scaleType="center"
+        android:layout_height="256dp"
+        android:scaleType="centerCrop"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"
         tools:src="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/vehicle_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="bottom"
-        android:layout_marginTop="@dimen/medium_margin"
         android:layout_marginStart="@dimen/medium_margin"
+        android:layout_marginTop="@dimen/medium_margin"
+        android:gravity="bottom"
         android:textAppearance="?textAppearanceHeadline6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/vehicle_image"
@@ -32,7 +33,6 @@
         android:layout_width="2dp"
         android:layout_height="2dp"
         android:layout_marginStart="@dimen/small_margin"
-        android:background="@color/color_on_background"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@id/vehicle_name"
         app:layout_constraintStart_toEndOf="@id/vehicle_name"
@@ -73,7 +73,6 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/vehicle_specs"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/small_margin"

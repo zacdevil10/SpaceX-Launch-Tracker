@@ -30,7 +30,6 @@
                 android:layout_width="400dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/medium_margin"
-                app:cardElevation="@dimen/card_elevation"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/launch_history_pie_chart"
                 app:layout_constraintTop_toTopOf="parent">

@@ -5,7 +5,6 @@
     android:id="@+id/capsule_details_constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_background"
     tools:context=".vehicles.capsules.details.CapsuleDetailsFragment">
 
     <androidx.core.widget.NestedScrollView

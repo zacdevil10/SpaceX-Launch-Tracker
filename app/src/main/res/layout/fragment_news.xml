@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?android:colorBackground"
     tools:context=".news.NewsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -14,13 +15,8 @@
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
-            style="@style/Widget.MaterialComponents.TabLayout"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:elevation="@dimen/toolbar_elevation"
-            android:textColor="?colorOnSurface"
-            android:theme="@style/AppTheme.AppBarOverlay"
-            app:tabIndicatorColor="?colorSecondary"
+            android:layout_height="wrap_content"
             app:tabInlineLabel="true" />
 
     </com.google.android.material.appbar.AppBarLayout>

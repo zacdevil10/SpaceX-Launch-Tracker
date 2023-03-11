@@ -25,7 +25,7 @@ import uk.co.zac_h.spacex.feature.launch.databinding.FragmentLaunchesListBinding
 @AndroidEntryPoint
 class PreviousLaunchesListFragment : BaseFragment(), ViewPagerFragment {
 
-    override val title: String by lazy { "past" }
+    override val title: String by lazy { "Past" }
 
     private val viewModel: LaunchesViewModel by navGraphViewModels(R.id.launch_nav_graph) {
         defaultViewModelProviderFactory

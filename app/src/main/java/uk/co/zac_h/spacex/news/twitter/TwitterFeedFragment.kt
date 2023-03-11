@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.paging.LoadState
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
@@ -49,7 +48,6 @@ class TwitterFeedFragment : BaseFragment(), ViewPagerFragment {
             layoutManager = layout
             setHasFixedSize(true)
             adapter = twitterAdapter
-            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
 
             addOnScrollListener(object : PaginationScrollListener(layout) {
 

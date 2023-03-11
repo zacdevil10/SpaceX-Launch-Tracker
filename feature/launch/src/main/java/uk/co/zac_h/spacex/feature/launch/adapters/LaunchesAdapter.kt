@@ -24,6 +24,7 @@ class LaunchesAdapter(val onClick: (LaunchItem, View) -> Unit) :
                     false
                 )
             )
+
             else -> ViewHolder(
                 ListItemLaunchesBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -38,8 +39,6 @@ class LaunchesAdapter(val onClick: (LaunchItem, View) -> Unit) :
 
         when (holder) {
             is ExpandedViewHolder -> holder.binding.apply {
-                root.transitionName = launch.id
-
                 val remaining = launch.countdown(root.resources)
 
                 countdown.isVisible = remaining != null
@@ -55,6 +54,7 @@ class LaunchesAdapter(val onClick: (LaunchItem, View) -> Unit) :
                     onClick(launch, root)
                 }
             }
+
             is ViewHolder -> holder.binding.apply {
                 root.transitionName = launch.id
 

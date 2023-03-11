@@ -6,8 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.navigation.navGraphViewModels
-import com.google.android.material.transition.MaterialContainerTransform
-import com.google.android.material.transition.MaterialElevationScale
+import com.google.android.material.transition.MaterialSharedAxis
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerAdapter
 import uk.co.zac_h.spacex.feature.launch.LaunchesViewModel
@@ -28,12 +27,8 @@ class LaunchDetailsContainerFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition = MaterialContainerTransform().apply {
-            drawingViewId = R.id.nav_host
-        }
-
-        exitTransition = MaterialElevationScale(false)
-        reenterTransition = MaterialElevationScale(true)
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
     }
 
     override fun onCreateView(
@@ -49,7 +44,12 @@ class LaunchDetailsContainerFragment : BaseFragment() {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        binding.fragmentLaunchDetailsContainer.transitionName = viewModel.launch?.id
+        binding.toolbar.apply {
+            setNavigationOnClickListener {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+            title = viewModel.launch?.missionName
+        }
 
         binding.viewPager.adapter = ViewPagerAdapter(
             childFragmentManager,

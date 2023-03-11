@@ -10,13 +10,13 @@
         android:id="@+id/list_item_reddit_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="?materialCardViewFilledStyle"
         android:layout_marginStart="@dimen/medium_margin"
         android:layout_marginTop="@dimen/small_margin"
         android:layout_marginEnd="@dimen/medium_margin"
         android:layout_marginBottom="@dimen/small_margin"
         android:clickable="true"
         android:focusable="true"
-        app:cardElevation="@dimen/card_elevation"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +36,7 @@
                 android:textAppearance="?textAppearanceCaption"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="zacdevil10" />
+                tools:text="@tools:sample/last_names" />
 
             <View
                 android:id="@+id/separator"
@@ -137,7 +137,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/list_item_reddit_thumbnail_card"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="JSCAT 18/Kacific1 Recovery Discussion and Updates Thread" />
+                    tools:text="@tools:sample/lorem/random" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -161,7 +161,7 @@
                     android:maxLines="3"
                     android:textAppearance="?textAppearanceBody2"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Hello! It is I, u/RocketLover0119 back hosting the recovery thread for the JSCAT 18/Kacific1 mission. As of now, core." />
+                    tools:text="@tools:sample/lorem/random" />
 
                 <ImageView
                     android:id="@+id/list_item_reddit_preview"

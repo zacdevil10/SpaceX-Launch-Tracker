@@ -4,10 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dragon_details_coordinator"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_background"
-    tools:context=".vehicles.dragon.details.DragonDetailsFragment"
-    tools:ignore="Overdraw">
+    android:layout_height="match_parent">
 
     <include layout="@layout/collapsing_toolbar" />
 

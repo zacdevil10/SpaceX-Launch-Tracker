@@ -6,6 +6,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'com.google.firebase.crashlytics'
     id 'dagger.hilt.android.plugin'
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -70,8 +71,7 @@ dependencies {
     //Feature
     implementation project(':feature:launch')
     implementation project(':feature:vehicles')
-    implementation project(':feature:company')
-    implementation project(':feature:about')
+    implementation project(':feature:settings')
 
     //Core
     implementation project(':core:common')

@@ -16,9 +16,8 @@
             <option value="$PROJECT_DIR$/core/common" />
             <option value="$PROJECT_DIR$/core/ui" />
             <option value="$PROJECT_DIR$/feature" />
-            <option value="$PROJECT_DIR$/feature/about" />
-            <option value="$PROJECT_DIR$/feature/company" />
             <option value="$PROJECT_DIR$/feature/launch" />
+            <option value="$PROJECT_DIR$/feature/settings" />
             <option value="$PROJECT_DIR$/feature/vehicles" />
             <option value="$PROJECT_DIR$/network" />
           </set>

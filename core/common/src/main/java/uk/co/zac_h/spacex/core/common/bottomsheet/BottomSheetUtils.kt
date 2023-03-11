@@ -15,6 +15,12 @@ class BottomSheetOpenable<T : View>(private val behavior: BottomSheetBehavior<T>
         } else BottomSheetBehavior.STATE_HALF_EXPANDED
     }
 
+    fun openFully() {
+        behavior.state = if (isOpen) {
+            BottomSheetBehavior.STATE_HIDDEN
+        } else BottomSheetBehavior.STATE_EXPANDED
+    }
+
     override fun close() {
         behavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
