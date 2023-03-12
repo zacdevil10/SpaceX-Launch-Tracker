@@ -20,7 +20,7 @@ import uk.co.zac_h.spacex.network.CachePolicy
 
 class DragonFragment : BaseFragment(), ViewPagerFragment {
 
-    override var title: String = "Dragon"
+    override var title: String = "Second stage"
 
     private lateinit var binding: FragmentVerticalRecyclerviewBinding
 
@@ -61,9 +61,7 @@ class DragonFragment : BaseFragment(), ViewPagerFragment {
                     hideProgress()
                     binding.swipeRefresh.isRefreshing = false
                     result.data?.let { data ->
-                        dragonAdapter.submitList(data) {
-                            binding.recycler.scrollToPosition(0)
-                        }
+                        dragonAdapter.submitList(data)
                     }
                 }
                 is ApiResult.Failure -> {

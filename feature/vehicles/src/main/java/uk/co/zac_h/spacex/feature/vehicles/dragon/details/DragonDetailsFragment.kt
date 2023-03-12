@@ -6,15 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialSharedAxis
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.image.setImageAndTint
+import uk.co.zac_h.spacex.core.common.utils.metricFormat
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.feature.vehicles.R
-import uk.co.zac_h.spacex.feature.vehicles.adapters.DragonThrusterAdapter
 import uk.co.zac_h.spacex.feature.vehicles.databinding.FragmentDragonDetailsBinding
 import uk.co.zac_h.spacex.feature.vehicles.dragon.DragonViewModel
-import uk.co.zac_h.spacex.network.dto.spacex.Dragon
+import uk.co.zac_h.spacex.feature.vehicles.dragon.SpacecraftItem
 
 class DragonDetailsFragment : BaseFragment(), ViewPagerFragment {
 
@@ -27,8 +28,6 @@ class DragonDetailsFragment : BaseFragment(), ViewPagerFragment {
     }
 
     private lateinit var binding: FragmentDragonDetailsBinding
-
-    private lateinit var dragonThrusterAdapter: DragonThrusterAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,14 +47,6 @@ class DragonDetailsFragment : BaseFragment(), ViewPagerFragment {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        dragonThrusterAdapter = DragonThrusterAdapter(requireContext())
-
-        binding.dragonDetailsThrusterRecycler.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            setHasFixedSize(true)
-            adapter = dragonThrusterAdapter
-        }
-
         viewModel.dragons.observe(viewLifecycleOwner) { result ->
             result.data?.first { it.id == viewModel.selectedId }?.let { update(it) }
         }
@@ -65,113 +56,37 @@ class DragonDetailsFragment : BaseFragment(), ViewPagerFragment {
         }
     }
 
-    private fun update(dragon: Dragon?) {
+    private fun update(dragon: SpacecraftItem) {
+        println(dragon)
+
         with(binding) {
-            dragon?.let {
-                /*Glide.with(requireContext())
-                    .load(it.flickr?.random())
-                    .error(R.drawable.ic_baseline_error_outline_24)
-                    .into(toolbarBinding.header)
+            Glide.with(requireContext())
+                .load(dragon.imageUrl)
+                .error(R.drawable.ic_baseline_error_outline_24)
+                .into(dragonImage)
 
-                toolbar.title = rocket.fullName
+            toolbar.title = dragon.name
 
-                dragonDetailsText.text = it.description
+            dragonDetailsText.text = "${dragon.history}\n\n${dragon.details}"
 
-                if (it.active == true) dragonDetailsStatusImage.setImageAndTint(
-                    R.drawable.ic_check_circle_black_24dp,
-                    R.color.success
-                ) else dragonDetailsStatusImage.setImageAndTint(
-                    R.drawable.ic_remove_circle_black_24dp,
-                    R.color.failed
-                )
+            if (dragon.inUse == true) dragonDetailsStatusImage.setImageAndTint(
+                R.drawable.ic_check_circle_black_24dp,
+                R.color.success
+            ) else dragonDetailsStatusImage.setImageAndTint(
+                R.drawable.ic_remove_circle_black_24dp,
+                R.color.failed
+            )
 
-                dragonDetailsCrewCapacityText.text = it.crewCapacity.toString()
-                dragonDetailsFirstFlightText.text = it.firstFlight
-                dragonDetailsDryMassText.text = getString(
-                    R.string.mass_formatted,
-                    it.dryMass?.kg,
-                    it.dryMass?.lb
-                )
-                it.heightWithTrunk?.let { heightWithTrunk ->
-                    dragonDetailsHeightText.text = getString(
-                        R.string.measurements,
-                        heightWithTrunk.meters?.metricFormat(),
-                        heightWithTrunk.feet?.metricFormat()
-                    )
-                }
-                it.diameter?.let { diameter ->
-                    dragonDetailsDiameterText.text = getString(
-                        R.string.measurements,
-                        diameter.meters?.metricFormat(),
-                        diameter.feet?.metricFormat()
-                    )
-                }
-
-                dragonDetailsShieldMaterialText.text = it.heatShield?.material
-                dragonDetailsShieldSizeText.text =
-                    it.heatShield?.size.toString() //TODO: Format with units
-                dragonDetailsShieldTempText.text =
-                    it.heatShield?.temp.toString() //TODO: Format with units
-
-                dragonThrusterAdapter.submitList(it.thrusters)
-
-                it.launchPayloadMass?.let { launchPayloadMass ->
-                    dragonDetailsLaunchMassText.text = getString(
-                        R.string.mass_formatted,
-                        launchPayloadMass.kg,
-                        launchPayloadMass.lb
-                    )
-                }
-
-                it.returnPayloadMass?.let { returnPayloadMass ->
-                    dragonDetailsReturnMassText.text = getString(
-                        R.string.mass_formatted,
-                        returnPayloadMass.kg,
-                        returnPayloadMass.lb
-                    )
-                }
-
-                it.launchPayloadVolume?.let { launchPayloadVolume ->
-                    dragonDetailsLaunchVolText.text = getString(
-                        R.string.volume_formatted,
-                        launchPayloadVolume.cubicMeters?.metricFormat(),
-                        launchPayloadVolume.cubicFeet?.metricFormat()
-                    )
-                }
-
-                it.returnPayloadVol?.let { returnPayloadVol ->
-                    dragonDetailsReturnVolText.text = getString(
-                        R.string.volume_formatted,
-                        returnPayloadVol.cubicMeters?.metricFormat(),
-                        returnPayloadVol.cubicFeet?.metricFormat()
-                    )
-                }
-
-                it.pressurizedCapsule?.payloadVolume?.let { payloadVolume ->
-                    dragonDetailsPressurizedVolText.text = getString(
-                        R.string.volume_formatted,
-                        payloadVolume.cubicMeters?.metricFormat(),
-                        payloadVolume.cubicFeet?.metricFormat()
-                    )
-                }
-
-                it.trunk?.trunkVolume?.let { trunkVolume ->
-                    dragonDetailsTrunkVolText.text = getString(
-                        R.string.volume_formatted,
-                        trunkVolume.cubicMeters?.metricFormat(),
-                        trunkVolume.cubicFeet?.metricFormat()
-                    )
-                }
-
-                dragonDetailsSolarArrayText.text = (it.trunk?.cargo?.solarArray ?: 0).toString()
-
-                if (it.trunk?.cargo?.unpressurizedCargo == true) dragonDetailsUnpressurizedCargoImage.setImageAndTint(
-                    R.drawable.ic_check_circle_black_24dp,
-                    R.color.success
-                ) else dragonDetailsUnpressurizedCargoImage.setImageAndTint(
-                    R.drawable.ic_remove_circle_black_24dp,
-                    R.color.failed
-                )*/
+            dragonDetailsCrewCapacity.value = dragon.crewCapacity?.toString()
+            dragonDetailsFirstFlight.value = dragon.maidenFlight
+            dragonDetailsHeight.value = dragon.height?.let { heightWithTrunk ->
+                getString(R.string.measurements, heightWithTrunk.metricFormat())
+            }
+            dragonDetailsDiameter.value = dragon.diameter?.let { diameter ->
+                getString(R.string.measurements, diameter.metricFormat())
+            }
+            dragonDetailsPayloadCapacity.value = dragon.payloadCapacity?.let { launchPayloadMass ->
+                getString(R.string.mass, launchPayloadMass.metricFormat())
             }
         }
     }

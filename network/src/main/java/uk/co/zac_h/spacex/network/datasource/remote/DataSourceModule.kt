@@ -37,10 +37,6 @@ abstract class DataSourceModule {
     abstract fun bindLandingPadDataSource(landingPadDataSource: LandingPadDataSource): RemoteDataSource<NetworkDocsResponse<LandingPadQueriedResponse>>
 
     @Binds
-    @DragonDataSourceClient
-    abstract fun bindDragonDataSource(dragonDataSource: DragonDataSource): RemoteDataSource<MutableList<DragonResponse>>
-
-    @Binds
     @ShipDataSourceClient
     abstract fun bindShipDataSource(shipDataSource: ShipDataSource): RemoteDataSource<NetworkDocsResponse<ShipQueriedResponse>>
 
@@ -71,9 +67,6 @@ annotation class LaunchpadDataSourceClient
 
 @Qualifier
 annotation class LandingPadDataSourceClient
-
-@Qualifier
-annotation class DragonDataSourceClient
 
 @Qualifier
 annotation class ShipDataSourceClient

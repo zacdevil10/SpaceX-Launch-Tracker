@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.feature.vehicles.adapters
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -11,22 +10,25 @@ import uk.co.zac_h.spacex.feature.vehicles.R
 import uk.co.zac_h.spacex.feature.vehicles.databinding.ListItemRocketPayloadBinding
 import uk.co.zac_h.spacex.feature.vehicles.rockets.PayloadWeights
 
-class RocketPayloadAdapter(private val context: Context) :
+class RocketPayloadAdapter :
     ListAdapter<PayloadWeights, RocketPayloadAdapter.ViewHolder>(Comparator) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(
-            ListItemRocketPayloadBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
+        ListItemRocketPayloadBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
+    )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val payload = getItem(position)
 
         holder.binding.apply {
             listItemRocketPayloadOrbitTypeText.text = payload.name
-            listItemRocketPayloadMassText.text = context.getString(
+            listItemRocketPayloadMassText.text = root.resources.getString(
                 R.string.mass,
-                payload.mass?.metricFormat(),
+                payload.mass.metricFormat(),
             )
         }
     }

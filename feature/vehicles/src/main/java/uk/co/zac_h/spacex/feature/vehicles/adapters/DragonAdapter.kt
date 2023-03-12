@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.feature.vehicles.VehiclesFragmentDirections
 import uk.co.zac_h.spacex.feature.vehicles.databinding.ListItemVehicleBinding
-import uk.co.zac_h.spacex.network.dto.spacex.Dragon
+import uk.co.zac_h.spacex.feature.vehicles.dragon.SpacecraftItem
 
 class DragonAdapter(val setSelected: (String) -> Unit) :
-    ListAdapter<Dragon, DragonAdapter.ViewHolder>(DragonComparator) {
+    ListAdapter<SpacecraftItem, DragonAdapter.ViewHolder>(DragonComparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
         ListItemVehicleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -23,7 +23,7 @@ class DragonAdapter(val setSelected: (String) -> Unit) :
         with(holder.binding) {
             vehicleView.apply {
                 transitionName = dragon.id
-                image = dragon.flickr?.random()
+                image = dragon.imageUrl
                 title = dragon.name
                 vehicleSpecs.setOnClickListener {
                     setSelected(dragon.id)
@@ -35,22 +35,24 @@ class DragonAdapter(val setSelected: (String) -> Unit) :
                 }
             }
 
-            vehicleDetails.text = dragon.description
+            vehicleDetails.text = dragon.history
         }
     }
 
     class ViewHolder(val binding: ListItemVehicleBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(dragon: Dragon) {
+        fun bind(dragon: SpacecraftItem) {
             binding.root.findNavController().navigate(
                 VehiclesFragmentDirections.actionVehiclesPageFragmentToDragonDetailsFragment(dragon.name)
             )
         }
     }
 
-    object DragonComparator : DiffUtil.ItemCallback<Dragon>() {
+    object DragonComparator : DiffUtil.ItemCallback<SpacecraftItem>() {
 
-        override fun areItemsTheSame(oldItem: Dragon, newItem: Dragon) = oldItem == newItem
+        override fun areItemsTheSame(oldItem: SpacecraftItem, newItem: SpacecraftItem) =
+            oldItem == newItem
 
-        override fun areContentsTheSame(oldItem: Dragon, newItem: Dragon) = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: SpacecraftItem, newItem: SpacecraftItem) =
+            oldItem.id == newItem.id
     }
 }

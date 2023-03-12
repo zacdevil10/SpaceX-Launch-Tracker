@@ -64,11 +64,6 @@ data class LauncherItem(
     }
 }
 
-data class SpacecraftItem(
-    val id: String,
-)
-
-
 data class PayloadWeights(
     val name: String,
     val mass: Int

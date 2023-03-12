@@ -18,9 +18,6 @@ interface SpaceXService {
     @POST(SPACEX_CREW_QUERY)
     suspend fun queryCrewMembers(@Body body: QueryModel): Response<NetworkDocsResponse<CrewQueriedResponse>>
 
-    @GET(SPACEX_DRAGONS)
-    suspend fun getDragons(): Response<MutableList<DragonResponse>>
-
     @POST(SPACEX_LANDING_PADS_QUERY)
     suspend fun queryLandingPads(@Body body: QueryModel): Response<NetworkDocsResponse<LandingPadQueriedResponse>>
 

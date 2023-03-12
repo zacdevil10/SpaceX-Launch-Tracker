@@ -70,153 +70,75 @@
                 tools:lines="4"
                 tools:text="@tools:sample/lorem/random" />
 
-            <TextView
-                android:id="@+id/rocket_details_success_label"
-                android:layout_width="wrap_content"
+            <uk.co.zac_h.spacex.core.ui.LabelValueView
+                android:id="@+id/rocket_details_success_rate"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                app:label="Launch Success Rate"
                 android:layout_marginTop="@dimen/small_margin"
-                android:text="Launch Success Rate"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/rocket_details_text" />
 
-            <TextView
-                android:id="@+id/rocket_details_success_text"
+            <uk.co.zac_h.spacex.core.ui.LabelValueView
+                android:id="@+id/rocket_details_first_flight"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:gravity="end"
-                app:layout_constraintBottom_toBottomOf="@id/rocket_details_success_label"
-                app:layout_constraintEnd_toEndOf="@id/guideline_end"
-                app:layout_constraintStart_toEndOf="@id/rocket_details_success_label"
-                app:layout_constraintTop_toTopOf="@id/rocket_details_success_label"
-                tools:text="40%" />
-
-            <TextView
-                android:id="@+id/rocket_details_first_flight_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                app:label="@string/first_flight_label"
                 android:layout_marginTop="@dimen/small_margin"
-                android:text="@string/first_flight_label"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/rocket_details_success_label" />
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_success_rate" />
 
-            <TextView
-                android:id="@+id/rocket_details_first_flight_text"
+            <uk.co.zac_h.spacex.core.ui.LabelValueView
+                android:id="@+id/rocket_details_stages"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:gravity="end"
-                app:layout_constraintBottom_toBottomOf="@id/rocket_details_first_flight_label"
-                app:layout_constraintEnd_toEndOf="@id/guideline_end"
-                app:layout_constraintStart_toEndOf="@id/rocket_details_first_flight_label"
-                app:layout_constraintTop_toTopOf="@id/rocket_details_first_flight_label"
-                tools:text="21 Feb 18" />
-
-            <TextView
-                android:id="@+id/rocket_details_stages_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                app:label="@string/stages_label"
                 android:layout_marginTop="@dimen/small_margin"
-                android:text="@string/stages_label"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/rocket_details_first_flight_label" />
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_first_flight" />
 
-            <TextView
-                android:id="@+id/rocket_details_stages_text"
+            <uk.co.zac_h.spacex.core.ui.LabelValueView
+                android:id="@+id/rocket_details_height"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:gravity="end"
-                app:layout_constraintBottom_toBottomOf="@id/rocket_details_stages_label"
-                app:layout_constraintEnd_toEndOf="@id/guideline_end"
-                app:layout_constraintStart_toEndOf="@id/rocket_details_stages_label"
-                app:layout_constraintTop_toTopOf="@id/rocket_details_stages_label"
-                tools:text="2" />
-
-            <TextView
-                android:id="@+id/rocket_details_height_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                app:label="@string/height_label"
                 android:layout_marginTop="@dimen/small_margin"
-                android:text="@string/height_label"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/rocket_details_stages_label" />
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_stages" />
 
-            <TextView
-                android:id="@+id/rocket_details_height_text"
+            <uk.co.zac_h.spacex.core.ui.LabelValueView
+                android:id="@+id/rocket_details_diameter"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:gravity="end"
-                app:layout_constraintBottom_toBottomOf="@id/rocket_details_height_label"
-                app:layout_constraintEnd_toEndOf="@id/guideline_end"
-                app:layout_constraintStart_toEndOf="@id/rocket_details_height_label"
-                app:layout_constraintTop_toTopOf="@id/rocket_details_height_label"
-                tools:text="70.25m" />
-
-            <TextView
-                android:id="@+id/rocket_details_diameter_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                app:label="@string/diameter_label"
                 android:layout_marginTop="@dimen/small_margin"
-                android:text="@string/diameter_label"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/rocket_details_height_label" />
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_height" />
 
-            <TextView
-                android:id="@+id/rocket_details_diameter_text"
+            <uk.co.zac_h.spacex.core.ui.LabelValueView
+                android:id="@+id/rocket_details_mass"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:gravity="end"
-                app:layout_constraintBottom_toBottomOf="@id/rocket_details_diameter_label"
-                app:layout_constraintEnd_toEndOf="@id/guideline_end"
-                app:layout_constraintStart_toEndOf="@id/rocket_details_diameter_label"
-                app:layout_constraintTop_toTopOf="@id/rocket_details_diameter_label"
-                tools:text="9.32m" />
-
-            <TextView
-                android:id="@+id/rocket_details_mass_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                app:label="Mass"
                 android:layout_marginTop="@dimen/small_margin"
-                android:text="Mass"
+                app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/rocket_details_diameter_label" />
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_diameter" />
 
-            <TextView
-                android:id="@+id/rocket_details_mass_text"
+            <uk.co.zac_h.spacex.core.ui.LabelValueView
+                android:id="@+id/rocket_details_thrust_sea"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:gravity="end"
-                app:layout_constraintBottom_toBottomOf="@id/rocket_details_mass_label"
-                app:layout_constraintEnd_toEndOf="@id/guideline_end"
-                app:layout_constraintStart_toEndOf="@id/rocket_details_mass_label"
-                app:layout_constraintTop_toTopOf="@id/rocket_details_mass_label"
-                tools:text="220,225kg" />
-
-            <TextView
-                android:id="@+id/rocket_details_thrust_sea_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                app:label="Thrust at Liftoff"
                 android:layout_marginTop="@dimen/small_margin"
-                android:text="Thrust at Liftoff"
-                app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/rocket_details_mass_label" />
-
-            <TextView
-                android:id="@+id/rocket_details_thrust_sea_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:gravity="end"
-                android:singleLine="true"
-                app:layout_constraintBottom_toBottomOf="@id/rocket_details_thrust_sea_label"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
-                app:layout_constraintStart_toEndOf="@id/rocket_details_thrust_sea_label"
-                app:layout_constraintTop_toTopOf="@id/rocket_details_thrust_sea_label"
-                tools:text="420,000 kN" />
+                app:layout_constraintStart_toStartOf="@id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_mass" />
 
             <TextView
                 android:id="@+id/rocket_details_mass_orbit_label"
@@ -227,7 +149,7 @@
                 android:textAppearance="?textAppearanceSubtitle1"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/rocket_details_thrust_sea_label" />
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_thrust_sea" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rocket_details_payload_recycler"

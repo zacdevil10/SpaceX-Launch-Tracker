@@ -32,7 +32,7 @@ class RocketDetailsFragment : BaseFragment(), ViewPagerFragment {
 
     private lateinit var binding: FragmentRocketDetailsBinding
 
-    private lateinit var rocketPayloadAdapter: RocketPayloadAdapter
+    private val rocketPayloadAdapter: RocketPayloadAdapter = RocketPayloadAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,8 +51,6 @@ class RocketDetailsFragment : BaseFragment(), ViewPagerFragment {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        rocketPayloadAdapter = RocketPayloadAdapter(requireContext())
 
         binding.rocketDetailsPayloadRecycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -81,38 +79,28 @@ class RocketDetailsFragment : BaseFragment(), ViewPagerFragment {
 
                 rocketDetailsText.text = it.description
 
-                rocketDetailsSuccessText.text =
-                    getString(R.string.percentage, it.successRate?.metricFormat())
-                rocketDetailsFirstFlightText.text = it.maidenFlight
-                rocketDetailsStagesText.text = it.stages.toString()
+                rocketDetailsSuccessRate.value = it.successRate?.let { successRate ->
+                    getString(R.string.percentage, successRate.metricFormat())
+                }
 
-                it.length?.let { height ->
-                    rocketDetailsHeightText.text = getString(
-                        R.string.measurements,
-                        height.metricFormat(),
-                    )
+                rocketDetailsFirstFlight.value = it.maidenFlight
+                rocketDetailsStages.value = it.stages.toString()
+
+                rocketDetailsHeight.value = it.length?.let { height ->
+                    getString(R.string.measurements, height.metricFormat())
                 }
-                it.diameter?.let { diameter ->
-                    rocketDetailsDiameterText.text = getString(
-                        R.string.measurements,
-                        diameter.metricFormat(),
-                    )
+                rocketDetailsDiameter.value = it.diameter?.let { diameter ->
+                    getString(R.string.measurements, diameter.metricFormat())
                 }
-                it.launchMass?.let { mass ->
-                    rocketDetailsMassText.text = getString(
-                        R.string.mass_formatted,
-                        mass
-                    )
+                rocketDetailsMass.value = it.launchMass?.let { mass ->
+                    getString(R.string.mass_formatted, mass)
                 }
-                it.toThrust?.let { thrust ->
-                    rocketDetailsThrustSeaText.text = getString(
-                        R.string.thrust,
-                        thrust.metricFormat(),
-                    )
+                rocketDetailsThrustSea.value = it.toThrust?.let { thrust ->
+                    getString(R.string.thrust, thrust.metricFormat())
                 }
 
                 rocketDetailsMassOrbitLabel.isVisible =
-                    it.gtoCapacity != null && it.leoCapacity != null
+                    it.gtoCapacity != null || it.leoCapacity != null
 
                 rocketPayloadAdapter.submitList(
                     listOfNotNull(

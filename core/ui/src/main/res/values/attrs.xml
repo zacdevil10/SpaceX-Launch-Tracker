@@ -12,4 +12,9 @@
         <attr name="buttonText" format="string|reference" />
     </declare-styleable>
 
+    <declare-styleable name="LabelValueView">
+        <attr name="label" format="string|reference" />
+        <attr name="value" format="string|reference" />
+    </declare-styleable>
+
 </resources>
