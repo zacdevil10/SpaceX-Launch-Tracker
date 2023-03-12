@@ -3,7 +3,6 @@ package uk.co.zac_h.spacex.feature.vehicles.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -43,8 +42,7 @@ class DragonAdapter(val setSelected: (String) -> Unit) :
     class ViewHolder(val binding: ListItemVehicleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(dragon: Dragon) {
             binding.root.findNavController().navigate(
-                VehiclesFragmentDirections.actionVehiclesPageFragmentToDragonDetailsFragment(dragon.name),
-                FragmentNavigatorExtras(binding.vehicleView to dragon.id)
+                VehiclesFragmentDirections.actionVehiclesPageFragmentToDragonDetailsFragment(dragon.name)
             )
         }
     }

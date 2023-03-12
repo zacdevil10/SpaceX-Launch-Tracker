@@ -3,7 +3,6 @@ package uk.co.zac_h.spacex.feature.vehicles.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -27,7 +26,6 @@ class RocketsAdapter(val setSelected: (String) -> Unit) :
 
         with(holder.binding) {
             vehicleView.apply {
-                transitionName = rocket.id
                 image = rocket.imageUrl
                 title = rocket.fullName
                 vehicleSpecs.setOnClickListener {
@@ -47,8 +45,7 @@ class RocketsAdapter(val setSelected: (String) -> Unit) :
     class ViewHolder(val binding: ListItemVehicleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(rocket: LauncherItem) {
             binding.root.findNavController().navigate(
-                VehiclesFragmentDirections.actionVehiclesPageFragmentToRocketDetailsFragment(rocket.fullName),
-                FragmentNavigatorExtras(binding.vehicleView to rocket.id)
+                VehiclesFragmentDirections.actionVehiclesPageFragmentToRocketDetailsFragment(rocket.fullName)
             )
         }
     }

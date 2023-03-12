@@ -7,11 +7,9 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialSharedAxis
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
-import uk.co.zac_h.spacex.core.common.utils.setupCollapsingToolbar
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
-import uk.co.zac_h.spacex.core.ui.databinding.CollapsingToolbarBinding
 import uk.co.zac_h.spacex.feature.vehicles.R
 import uk.co.zac_h.spacex.feature.vehicles.adapters.DragonThrusterAdapter
 import uk.co.zac_h.spacex.feature.vehicles.databinding.FragmentDragonDetailsBinding
@@ -29,16 +27,14 @@ class DragonDetailsFragment : BaseFragment(), ViewPagerFragment {
     }
 
     private lateinit var binding: FragmentDragonDetailsBinding
-    private lateinit var toolbarBinding: CollapsingToolbarBinding
 
     private lateinit var dragonThrusterAdapter: DragonThrusterAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition = MaterialContainerTransform().apply {
-            drawingViewId = R.id.nav_host
-        }
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
     }
 
     override fun onCreateView(
@@ -47,13 +43,10 @@ class DragonDetailsFragment : BaseFragment(), ViewPagerFragment {
         savedInstanceState: Bundle?
     ): View = FragmentDragonDetailsBinding.inflate(inflater, container, false).apply {
         binding = this
-        toolbarBinding = CollapsingToolbarBinding.bind(this.root)
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        toolbarBinding.toolbar.setupCollapsingToolbar(title)
 
         dragonThrusterAdapter = DragonThrusterAdapter(requireContext())
 
@@ -66,17 +59,21 @@ class DragonDetailsFragment : BaseFragment(), ViewPagerFragment {
         viewModel.dragons.observe(viewLifecycleOwner) { result ->
             result.data?.first { it.id == viewModel.selectedId }?.let { update(it) }
         }
+
+        binding.toolbar.setNavigationOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
     }
 
     private fun update(dragon: Dragon?) {
         with(binding) {
             dragon?.let {
-                /*dragonDetailsCoordinator.transitionName = it.id
-
-                Glide.with(requireContext())
+                /*Glide.with(requireContext())
                     .load(it.flickr?.random())
                     .error(R.drawable.ic_baseline_error_outline_24)
                     .into(toolbarBinding.header)
+
+                toolbar.title = rocket.fullName
 
                 dragonDetailsText.text = it.description
 

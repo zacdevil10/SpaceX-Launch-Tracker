@@ -70,6 +70,6 @@ data class SpacecraftItem(
 
 
 data class PayloadWeights(
-    val name: String?,
-    val mass: Int?
+    val name: String,
+    val mass: Int
 )
