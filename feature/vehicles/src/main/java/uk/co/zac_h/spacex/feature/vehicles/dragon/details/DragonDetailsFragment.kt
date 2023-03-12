@@ -57,8 +57,6 @@ class DragonDetailsFragment : BaseFragment(), ViewPagerFragment {
     }
 
     private fun update(dragon: SpacecraftItem) {
-        println(dragon)
-
         with(binding) {
             Glide.with(requireContext())
                 .load(dragon.imageUrl)
