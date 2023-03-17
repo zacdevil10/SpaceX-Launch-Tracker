@@ -30,6 +30,11 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            buildConfigField("String", "API", "\"https://ll.thespacedevs.com/2.2.0/\"")
+        }
+        debug {
+            buildConfigField("String", "API", "\"https://lldev.thespacedevs.com/2.2.0/\"")
         }
     }
     compileOptions {
