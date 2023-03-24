@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.transition.MaterialSharedAxis
 import uk.co.zac_h.spacex.feature.settings.databinding.FragmentSettingsBinding
 
 class SettingsFragment : Fragment() {
@@ -14,6 +15,13 @@ class SettingsFragment : Fragment() {
     private val binding get() = checkNotNull(_binding) { "Binding is null" }
 
     private lateinit var settingsAdapter: SettingsAdapter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        enterTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
+        exitTransition = MaterialSharedAxis(MaterialSharedAxis.X, true)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

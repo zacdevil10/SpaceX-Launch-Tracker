@@ -1,5 +1,8 @@
 <resources>
 
+    <string name="menu_company">Company</string>
+    <string name="menu_about">About</string>
+
     <!--About SpaceX-->
     <string name="founded_label">Founded</string>
     <string name="ceo_label">CEO</string>

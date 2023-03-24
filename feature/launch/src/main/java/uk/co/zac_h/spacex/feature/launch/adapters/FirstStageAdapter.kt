@@ -56,12 +56,11 @@ class FirstStageAdapter :
                     if (core.landingAttempt) core.landingLocationFull else null
                 firstStageLandingType.value = if (core.landingAttempt) {
                     when (core.landingType) {
-                        "ASDS" -> "Ocean"
-                        "RTLS" -> "Land"
+                        "ASDS", "RTLS" -> core.landingType
                         else -> null
                     }
                 } else null
-                firstStagePreviousFlight.value = core.previousFlight
+                firstStagePreviousFlight.value = core.previousFlight?.replace(" | ", "\n")
                 firstStageTurnAroundTime.value = core.turnAroundTimeDays?.let {
                     "${core.turnAroundTimeDays} days"
                 }

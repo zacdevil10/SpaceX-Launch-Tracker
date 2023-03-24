@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".rockets.details.RocketDetailsFragment"
-    tools:ignore="Overdraw">
+    tools:context=".rockets.details.RocketDetailsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
@@ -17,7 +16,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
             app:navigationIcon="@drawable/ic_baseline_arrow_back_24" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -74,8 +73,8 @@
                 android:id="@+id/rocket_details_success_rate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:label="Launch Success Rate"
                 android:layout_marginTop="@dimen/small_margin"
+                app:label="Launch Success Rate"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/rocket_details_text" />
@@ -84,8 +83,8 @@
                 android:id="@+id/rocket_details_first_flight"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:label="@string/first_flight_label"
                 android:layout_marginTop="@dimen/small_margin"
+                app:label="@string/first_flight_label"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/rocket_details_success_rate" />
@@ -94,8 +93,8 @@
                 android:id="@+id/rocket_details_stages"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:label="@string/stages_label"
                 android:layout_marginTop="@dimen/small_margin"
+                app:label="@string/stages_label"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/rocket_details_first_flight" />
@@ -104,8 +103,8 @@
                 android:id="@+id/rocket_details_height"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:label="@string/height_label"
                 android:layout_marginTop="@dimen/small_margin"
+                app:label="@string/height_label"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/rocket_details_stages" />
@@ -114,8 +113,8 @@
                 android:id="@+id/rocket_details_diameter"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:label="@string/diameter_label"
                 android:layout_marginTop="@dimen/small_margin"
+                app:label="@string/diameter_label"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/rocket_details_height" />
@@ -124,8 +123,8 @@
                 android:id="@+id/rocket_details_mass"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:label="Mass"
                 android:layout_marginTop="@dimen/small_margin"
+                app:label="Mass"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/rocket_details_diameter" />
@@ -134,8 +133,8 @@
                 android:id="@+id/rocket_details_thrust_sea"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:label="Thrust at Liftoff"
                 android:layout_marginTop="@dimen/small_margin"
+                app:label="Thrust at Liftoff"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/rocket_details_mass" />

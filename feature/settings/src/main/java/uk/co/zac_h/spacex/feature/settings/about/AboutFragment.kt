@@ -29,6 +29,10 @@ class AboutFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.toolbar.setNavigationOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+
         //binding.aboutVersion.text = getString(R.string.version_name, BuildConfig.VERSION_NAME)
     }
 }

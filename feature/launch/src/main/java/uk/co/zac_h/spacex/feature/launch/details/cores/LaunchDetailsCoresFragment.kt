@@ -23,7 +23,7 @@ class LaunchDetailsCoresFragment : BaseFragment(), ViewPagerFragment {
 
     private lateinit var binding: FragmentVerticalRecyclerviewBinding
 
-    private lateinit var coresAdapter: FirstStageAdapter
+    private val coresAdapter: FirstStageAdapter = FirstStageAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,13 +35,14 @@ class LaunchDetailsCoresFragment : BaseFragment(), ViewPagerFragment {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.progress.hide()
+        with(binding) {
+            swipeRefresh.isEnabled = false
+            progress.hide()
 
-        coresAdapter = FirstStageAdapter()
-
-        binding.recycler.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = coresAdapter
+            recycler.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = coresAdapter
+            }
         }
 
         coresAdapter.submitList(viewModel.cores)
