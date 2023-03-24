@@ -1,7 +1,64 @@
 package uk.co.zac_h.spacex.network.dto.spacex
 
 import com.squareup.moshi.Json
-import uk.co.zac_h.spacex.network.*
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_ID
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_ARTICLE
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_AUTO_UPDATE
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_CAPSULES
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_CORES
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_CORES_CORE
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_CORES_FLIGHT
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_CORES_GRIDFINS
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_CORES_LANDING_ATTEMPT
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_CORES_LANDING_PAD
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_CORES_LANDING_SUCCESS
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_CORES_LANDING_TYPE
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_CORES_LEGS
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_CORES_REUSED
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_CREW
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_CREW_ROLE
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_DATE_LOCAL
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_DATE_PRECISION
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_DATE_UNIX
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_DATE_UTC
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_DETAILS
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_FAILURES
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_FAILURES_ALTITUDE
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_FAILURES_REASON
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_FAILURES_TIME
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_FAIRINGS
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_FAIRINGS_RECOVERED
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_FAIRINGS_RECOVERY_ATTEMPT
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_FAIRINGS_REUSED
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_FAIRINGS_SHIPS
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_FLICKR
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_FLICKR_ORIGINAL
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_FLICKR_SMALL
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_FLIGHT_NUMBER
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_LAUNCHPAD
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_LINKS
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_NAME
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_NET
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_PATCH
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_PATCH_LARGE
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_PATCH_SMALL
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_PAYLOADS
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_REDDIT
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_REDDIT_CAMPAIGN
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_REDDIT_LAUNCH
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_REDDIT_MEDIA
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_REDDIT_RECOVERY
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_ROCKET
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_SHIPS
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_STATIC_FIRE_DATE_UNIX
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_STATIC_FIRE_DATE_UTC
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_SUCCESS
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_TBD
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_UPCOMING
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_WEBCAST
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_WIKI
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_WINDOW
+import uk.co.zac_h.spacex.network.SPACEX_FIELD_LAUNCH_YOUTUBE_ID
 
 data class LaunchResponse(
     @field:Json(name = "id") val id: String,
@@ -71,9 +128,10 @@ data class LaunchResponse(
             @field:Json(name = "id") val id: Int,
             @field:Json(name = "type") val type: String?,
             @field:Json(name = "reused") val reused: Boolean?,
-            @field:Json(name = "launcher_flight_number") val launcherFlightNumber: Int?,
             @field:Json(name = "launcher") val launcher: Launcher?,
             @field:Json(name = "landing") val landing: Landing?,
+            @field:Json(name = "turn_around_time_days") val turnAroundTimeDays: Int?,
+            @field:Json(name = "previous_flight") val previousFlight: PreviousFlight?
         ) {
 
             data class Launcher(
@@ -107,6 +165,11 @@ data class LaunchResponse(
                     @field:Json(name = "description") val description: String?
                 )
             }
+
+            data class PreviousFlight(
+                @field:Json(name = "id") val id: String,
+                @field:Json(name = "name") val name: String?
+            )
         }
 
         data class SpacecraftStage(

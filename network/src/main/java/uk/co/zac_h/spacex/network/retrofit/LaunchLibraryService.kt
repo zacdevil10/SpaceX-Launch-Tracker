@@ -16,7 +16,8 @@ interface LaunchLibraryService {
     suspend fun getUpcomingLaunches(
         @Query("limit") limit: Int = 10,
         @Query("search") search: String = "SpaceX",
-        @Query("mode") mode: String = "detailed"
+        @Query("mode") mode: String = "detailed",
+        @Query("hide_recent_previous") hideRecentPrevious: Boolean = true
     ): Response<LaunchLibraryPaginatedResponse<LaunchResponse>>
 
     @GET(SPACEX_PREVIOUS_LAUNCHES)

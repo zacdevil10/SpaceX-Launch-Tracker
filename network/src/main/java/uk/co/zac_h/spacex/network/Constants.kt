@@ -1,6 +1,8 @@
 package uk.co.zac_h.spacex.network
 
 //Hosts
+const val MOCK_LAUNCH_LIBRARY_BASE_URL = "https://lldev.thespacedevs.com/2.2.0/"
+const val LAUNCH_LIBRARY_BASE_URL = "https://ll.thespacedevs.com/2.2.0/"
 const val TWITTER_BASE_URL = "https://api.twitter.com/1.1/"
 const val REDDIT_BASE_URL = "https://reddit.com/"
 

@@ -5,6 +5,7 @@ import uk.co.zac_h.spacex.core.common.recyclerview.RecyclerViewItem
 import uk.co.zac_h.spacex.core.common.types.CoreType
 import uk.co.zac_h.spacex.core.common.utils.formatCrewDate
 import uk.co.zac_h.spacex.core.common.utils.formatDate
+import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.core.common.utils.toCountdownDays
 import uk.co.zac_h.spacex.core.common.utils.toCountdownHours
 import uk.co.zac_h.spacex.core.common.utils.toCountdownMinutes
@@ -101,31 +102,45 @@ data class LaunchItem(
 
 data class FirstStageItem(
     val id: String,
-    val serial: String?,
+    val serial: String,
     val type: CoreType,
-    val reused: Boolean?,
-    val landingAttempt: Boolean?,
-    val landingSuccess: Boolean?,
+    val reused: Boolean,
+    val totalFlights: Int?,
+    val landingAttempt: Boolean,
+    val landingDescription: String?,
     val landingType: String?,
-    val landingLocation: String?
+    val landingLocation: String?,
+    val landingLocationFull: String?,
+    val previousFlight: String?,
+    val turnAroundTimeDays: Int?
 ) : RecyclerViewItem {
 
     constructor(
         response: LaunchResponse.Rocket.LauncherStage
     ) : this(
         id = response.id.toString(),
-        serial = response.launcher?.serialNumber,
+        serial = response.launcher?.serialNumber.orUnknown(),
         type = response.type.toCoreType(),
-        reused = response.reused,
-        landingAttempt = response.landing?.attempt,
-        landingSuccess = response.landing?.success,
+        reused = response.reused ?: false,
+        totalFlights = response.launcher?.flights,
+        landingAttempt = response.landing?.attempt ?: false,
+        landingDescription = response.landing?.description,
         landingType = response.landing?.type?.abbrev,
-        landingLocation = response.landing?.location?.abbrev
+        landingLocation = response.landing?.location?.abbrev,
+        landingLocationFull = response.landing?.location?.name,
+        previousFlight = response.previousFlight?.name,
+        turnAroundTimeDays = if (response.turnAroundTimeDays == 0
+            && (response.launcher?.flights ?: 0) < 2
+        ) {
+            null
+        } else {
+            response.turnAroundTimeDays
+        }
     )
 
     companion object {
 
-        fun String?.toCoreType() = when (this) {
+        private fun String?.toCoreType() = when (this) {
             "Core" -> CoreType.CORE
             "Strap-On Booster" -> CoreType.BOOSTER
             else -> CoreType.OTHER
@@ -158,7 +173,7 @@ data class CrewItem(
     )
 
     companion object {
-        fun String?.toCrewStatus() = when (this) {
+        private fun String?.toCrewStatus() = when (this) {
             SPACEX_CREW_STATUS_ACTIVE -> CrewStatus.ACTIVE
             SPACEX_CREW_STATUS_INACTIVE -> CrewStatus.INACTIVE
             SPACEX_CREW_STATUS_RETIRED -> CrewStatus.RETIRED

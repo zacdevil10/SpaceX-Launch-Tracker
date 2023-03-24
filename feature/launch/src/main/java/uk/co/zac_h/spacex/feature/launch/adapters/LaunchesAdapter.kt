@@ -7,6 +7,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import uk.co.zac_h.spacex.core.ui.LaunchView
 import uk.co.zac_h.spacex.feature.launch.LaunchItem
 import uk.co.zac_h.spacex.feature.launch.R
 import uk.co.zac_h.spacex.feature.launch.databinding.ListItemLaunchesBinding
@@ -67,7 +68,7 @@ class LaunchesAdapter(val onClick: (LaunchItem, View) -> Unit) :
         }
     }
 
-    private fun uk.co.zac_h.spacex.core.ui.LaunchView.bind(launch: LaunchItem) {
+    private fun LaunchView.bind(launch: LaunchItem) {
         patch = launch.missionPatch
         vehicle = launch.rocket
         missionName = launch.missionName
@@ -75,7 +76,9 @@ class LaunchesAdapter(val onClick: (LaunchItem, View) -> Unit) :
 
         if (launch.rocket == "Falcon 9") {
             isReused = launch.firstStage?.firstOrNull()?.reused ?: false
-            landingPad = launch.firstStage?.firstOrNull()?.landingLocation
+            landingPad = launch.firstStage?.firstOrNull()?.landingLocation?.let {
+                if (it == "N/A") null else it
+            }
         } else {
             isReused = false
             landingPad = null

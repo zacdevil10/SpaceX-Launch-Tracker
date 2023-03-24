@@ -19,7 +19,7 @@ object NetworkModule {
     @Provides
     @LaunchLibraryClient
     fun providesLaunchLibraryHttpClient(): LaunchLibraryService =
-        createClient(BuildConfig.API)
+        createClient(LAUNCH_LIBRARY_BASE_URL)
 
     @Provides
     @SpaceXHttpClientV4
@@ -54,7 +54,7 @@ object NetworkModule {
         baseUrl(baseUrl)
         addConverterFactory(MoshiConverterFactory.create())
         client(okHttpClient())
-        //client(loggingClient())
+        client(loggingClient())
     }.build().create(T::class.java)
 
     private fun loggingClient() = OkHttpClient.Builder()

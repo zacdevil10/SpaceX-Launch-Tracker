@@ -56,7 +56,9 @@ class LaunchDetailsFragment : BaseFragment(), ViewPagerFragment {
 
                     if (launch.rocket == "Falcon 9") {
                         isReused = launch.firstStage?.firstOrNull()?.reused ?: false
-                        landingPad = launch.firstStage?.firstOrNull()?.landingLocation
+                        landingPad = launch.firstStage?.firstOrNull()?.landingLocation?.let {
+                            if (it == "N/A") null else it
+                        }
                     } else {
                         isReused = false
                         landingPad = null

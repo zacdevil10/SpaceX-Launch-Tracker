@@ -27,7 +27,7 @@
             android:padding="@dimen/medium_margin">
 
             <TextView
-                android:id="@+id/first_stage_core_serial"
+                android:id="@+id/first_stage_serial"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?textAppearanceHeadline5"
@@ -35,83 +35,75 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="B1047" />
 
-            <View
-                android:id="@+id/separator"
+            <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/divider"
                 android:layout_width="0dp"
-                android:layout_height="1dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/small_margin"
-                android:background="@color/divider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/first_stage_core_serial" />
+                app:layout_constraintTop_toBottomOf="@id/first_stage_serial" />
 
             <TextView
-                android:id="@+id/first_stage_reused_label"
+                android:id="@+id/first_stage_landing_description"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:gravity="center"
-                android:text="@string/reused"
-                app:layout_constraintEnd_toStartOf="@id/first_stage_landed_label"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/separator" />
-
-            <ImageView
-                android:id="@+id/first_stage_reused_image"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/small_margin"
-                android:contentDescription="@string/reused_status_desc"
-                android:src="@drawable/ic_help_outline_black_24dp"
-                app:layout_constraintEnd_toEndOf="@+id/first_stage_reused_label"
-                app:layout_constraintStart_toStartOf="@+id/first_stage_reused_label"
-                app:layout_constraintTop_toBottomOf="@+id/first_stage_reused_label"
-                app:tint="?colorControlNormal" />
-
-            <TextView
-                android:id="@+id/first_stage_landed_label"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:gravity="center"
-                android:text="@string/landed_label"
-                app:layout_constraintEnd_toStartOf="@id/first_stage_landing_text"
-                app:layout_constraintStart_toEndOf="@id/first_stage_reused_label"
-                app:layout_constraintTop_toBottomOf="@id/separator" />
-
-            <ImageView
-                android:id="@+id/first_stage_landed_image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_margin"
-                android:contentDescription="@string/landed_status_desc"
-                android:src="@drawable/ic_help_outline_black_24dp"
-                app:layout_constraintEnd_toEndOf="@+id/first_stage_landed_label"
-                app:layout_constraintStart_toStartOf="@+id/first_stage_landed_label"
-                app:layout_constraintTop_toBottomOf="@+id/first_stage_landed_label"
-                app:tint="?colorControlNormal" />
-
-            <TextView
-                android:id="@+id/first_stage_landing_text"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:gravity="center"
-                android:text="@string/landing_label"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/first_stage_landed_label"
-                app:layout_constraintTop_toBottomOf="@id/separator" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider"
+                tools:maxLines="3"
+                tools:text="@tools:sample/lorem/random" />
 
-            <ImageView
-                android:id="@+id/first_stage_landing_image"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:src="@drawable/ic_help_outline_black_24dp"
-                app:layout_constraintEnd_toEndOf="@+id/first_stage_landing_text"
-                app:layout_constraintStart_toStartOf="@+id/first_stage_landing_text"
-                app:layout_constraintTop_toTopOf="@+id/first_stage_landed_image"
-                app:tint="?colorControlNormal"
-                tools:ignore="ContentDescription" />
+            <uk.co.zac_h.spacex.core.ui.LabelValueView
+                android:id="@+id/first_stage_landing_location"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_margin"
+                app:label="Landing Location"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/first_stage_landing_description" />
+
+            <uk.co.zac_h.spacex.core.ui.LabelValueView
+                android:id="@+id/first_stage_landing_type"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_margin"
+                app:label="Landing Type"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/first_stage_landing_location" />
+
+            <uk.co.zac_h.spacex.core.ui.LabelValueView
+                android:id="@+id/first_stage_previous_flight"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/small_margin"
+                app:label="Previous Flight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/first_stage_landing_type" />
+
+            <uk.co.zac_h.spacex.core.ui.LabelValueView
+                android:id="@+id/first_stage_turn_around_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:label="Turn Around Time"
+                android:layout_marginTop="@dimen/small_margin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/first_stage_previous_flight" />
+
+            <uk.co.zac_h.spacex.core.ui.LabelValueView
+                android:id="@+id/first_stage_total_flights"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:label="Total Flights"
+                android:layout_marginTop="@dimen/small_margin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/first_stage_turn_around_time" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

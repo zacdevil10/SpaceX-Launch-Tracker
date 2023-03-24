@@ -2,11 +2,9 @@ package uk.co.zac_h.spacex.feature.launch.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import uk.co.zac_h.spacex.core.common.image.setImageAndTint
 import uk.co.zac_h.spacex.core.common.recyclerview.RecyclerViewItem
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.feature.launch.FirstStageItem
@@ -26,6 +24,7 @@ class FirstStageAdapter :
                     false
                 )
             )
+
             R.layout.list_item_first_stage -> ViewHolder(
                 ListItemFirstStageBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -33,6 +32,7 @@ class FirstStageAdapter :
                     false
                 )
             )
+
             else -> throw IllegalArgumentException("Invalid viewType for FirstStageAdapter")
         }
 
@@ -44,25 +44,28 @@ class FirstStageAdapter :
                 core as Header
                 header.text = core.title
             }
+
             is ViewHolder -> holder.binding.apply {
                 core as FirstStageItem
 
                 firstStageCard.transitionName = core.id
 
-                firstStageCoreSerial.text = core.serial.orUnknown()
-
-                core.reused?.let { firstStageReusedImage.successFailureImage(it) }
-
-                core.landingSuccess?.let { firstStageLandedImage.successFailureImage(it) }
-
-                firstStageLandingImage.apply {
-                    core.landingAttempt?.let { landingIntent ->
-                        if (landingIntent) when (core.landingType) {
-                            "ASDS" -> setImageAndTint(R.drawable.ic_waves, R.color.ocean)
-                            "RTLS" -> setImageAndTint(R.drawable.ic_landscape, R.color.landscape)
-                        } else successFailureImage(false)
+                firstStageSerial.text = core.serial.orUnknown()
+                firstStageLandingDescription.text = core.landingDescription
+                firstStageLandingLocation.value =
+                    if (core.landingAttempt) core.landingLocationFull else null
+                firstStageLandingType.value = if (core.landingAttempt) {
+                    when (core.landingType) {
+                        "ASDS" -> "Ocean"
+                        "RTLS" -> "Land"
+                        else -> null
                     }
+                } else null
+                firstStagePreviousFlight.value = core.previousFlight
+                firstStageTurnAroundTime.value = core.turnAroundTimeDays?.let {
+                    "${core.turnAroundTimeDays} days"
                 }
+                firstStageTotalFlights.value = core.totalFlights?.toString()
             }
         }
     }
@@ -71,14 +74,6 @@ class FirstStageAdapter :
         is Header -> R.layout.list_item_header
         is FirstStageItem -> R.layout.list_item_first_stage
         else -> throw IllegalArgumentException("Invalid item type for FirstStageAdapter")
-    }
-
-    private fun ImageView.successFailureImage(success: Boolean) {
-        if (success) {
-            setImageAndTint(R.drawable.ic_check_circle_black_24dp, R.color.success)
-        } else {
-            setImageAndTint(R.drawable.ic_remove_circle_black_24dp, R.color.failed)
-        }
     }
 
     class HeaderViewHolder(val binding: ListItemHeaderBinding) :
@@ -101,14 +96,9 @@ class FirstStageAdapter :
             oldItem: RecyclerViewItem,
             newItem: RecyclerViewItem
         ) = if (oldItem is FirstStageItem && newItem is FirstStageItem) {
-            oldItem.serial == newItem.serial
-                    && oldItem.type == newItem.type
-                    && oldItem.reused == newItem.reused
-                    && oldItem.landingAttempt == newItem.landingAttempt
-                    && oldItem.landingSuccess == newItem.landingSuccess
-                    && oldItem.landingType == newItem.landingType
+            oldItem == newItem
         } else if (oldItem is Header && newItem is Header) {
-            oldItem.title == newItem.title
+            oldItem == newItem
         } else {
             oldItem == newItem
         }
