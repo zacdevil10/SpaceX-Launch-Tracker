@@ -122,49 +122,27 @@
                     tools:lines="6"
                     tools:text="@tools:sample/lorem/random" />
 
-                <TextView
-                    android:id="@+id/type_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/small_margin"
-                    android:layout_marginEnd="@dimen/small_margin"
-                    android:text="Type:"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toStartOf="@id/type_text"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/mission_description" />
-
-                <TextView
-                    android:id="@+id/type_text"
+                <uk.co.zac_h.spacex.core.ui.LabelValueView
+                    android:id="@+id/type"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@id/type_label"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/type_label"
-                    app:layout_constraintTop_toTopOf="@id/type_label"
-                    tools:text="Communications" />
-
-                <TextView
-                    android:id="@+id/orbit_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/small_margin"
-                    android:layout_marginEnd="@dimen/small_margin"
-                    android:text="Orbit:"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toStartOf="@id/orbit_text"
+                    app:label="Type:"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/type_label" />
+                    app:layout_constraintTop_toBottomOf="@id/mission_description"
+                    tools:text="@tools:sample/lorem" />
 
-                <TextView
-                    android:id="@+id/orbit_text"
+                <uk.co.zac_h.spacex.core.ui.LabelValueView
+                    android:id="@+id/orbit"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@id/orbit_label"
+                    android:layout_marginTop="@dimen/small_margin"
+                    app:label="Orbit:"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/orbit_label"
-                    app:layout_constraintTop_toTopOf="@id/orbit_label"
-                    tools:text="Low Earth Orbit" />
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/type"
+                    tools:text="@tools:sample/lorem" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -225,25 +203,15 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/medium_margin">
 
-                <TextView
-                    android:id="@+id/status_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/small_margin"
-                    android:text="@string/launches_status_label"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toStartOf="@id/status_text"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/status_text"
+                <uk.co.zac_h.spacex.core.ui.LabelValueView
+                    android:id="@+id/status"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    app:label="@string/launches_status_label"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/status_label"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Go for Launch" />
+                    tools:text="@tools:sample/lorem" />
 
                 <TextView
                     android:id="@+id/status_description"
@@ -252,7 +220,7 @@
                     android:layout_marginTop="@dimen/small_margin"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/status_label"
+                    app:layout_constraintTop_toBottomOf="@id/status"
                     tools:text="Go for Launch" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -284,32 +252,17 @@
                     tools:ignore="ContentDescription"
                     tools:src="@tools:sample/avatars" />
 
-                <TextView
-                    android:id="@+id/launch_site_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/medium_margin"
-                    android:layout_marginTop="@dimen/medium_margin"
-                    android:layout_marginEnd="@dimen/small_margin"
-                    android:layout_marginBottom="@dimen/medium_margin"
-                    android:text="@string/launches_launch_location_label"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/launch_site_text"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/launch_site_image" />
-
-                <TextView
-                    android:id="@+id/launch_site_text"
+                <uk.co.zac_h.spacex.core.ui.LabelValueView
+                    android:id="@+id/launch_site"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/medium_margin"
-                    android:layout_marginBottom="@dimen/medium_margin"
+                    android:layout_margin="@dimen/medium_margin"
+                    app:label="@string/launches_launch_location_label"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/launch_site_label"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/launch_site_image"
-                    tools:text="Space Launch Comlex 4E" />
+                    tools:text="@tools:sample/lorem" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

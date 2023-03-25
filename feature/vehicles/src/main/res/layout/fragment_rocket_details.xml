@@ -77,7 +77,8 @@
                 app:label="Launch Success Rate"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/rocket_details_text" />
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_text"
+                tools:text="@tools:sample/lorem" />
 
             <uk.co.zac_h.spacex.core.ui.LabelValueView
                 android:id="@+id/rocket_details_first_flight"
@@ -87,7 +88,8 @@
                 app:label="@string/first_flight_label"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/rocket_details_success_rate" />
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_success_rate"
+                tools:text="@tools:sample/lorem" />
 
             <uk.co.zac_h.spacex.core.ui.LabelValueView
                 android:id="@+id/rocket_details_stages"
@@ -97,7 +99,8 @@
                 app:label="@string/stages_label"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/rocket_details_first_flight" />
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_first_flight"
+                tools:text="@tools:sample/lorem" />
 
             <uk.co.zac_h.spacex.core.ui.LabelValueView
                 android:id="@+id/rocket_details_height"
@@ -107,7 +110,8 @@
                 app:label="@string/height_label"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/rocket_details_stages" />
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_stages"
+                tools:text="@tools:sample/lorem" />
 
             <uk.co.zac_h.spacex.core.ui.LabelValueView
                 android:id="@+id/rocket_details_diameter"
@@ -117,7 +121,8 @@
                 app:label="@string/diameter_label"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/rocket_details_height" />
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_height"
+                tools:text="@tools:sample/lorem" />
 
             <uk.co.zac_h.spacex.core.ui.LabelValueView
                 android:id="@+id/rocket_details_mass"
@@ -127,7 +132,8 @@
                 app:label="Mass"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/rocket_details_diameter" />
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_diameter"
+                tools:text="@tools:sample/lorem" />
 
             <uk.co.zac_h.spacex.core.ui.LabelValueView
                 android:id="@+id/rocket_details_thrust_sea"
@@ -137,7 +143,8 @@
                 app:label="Thrust at Liftoff"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/rocket_details_mass" />
+                app:layout_constraintTop_toBottomOf="@id/rocket_details_mass"
+                tools:text="@tools:sample/lorem" />
 
             <TextView
                 android:id="@+id/rocket_details_mass_orbit_label"

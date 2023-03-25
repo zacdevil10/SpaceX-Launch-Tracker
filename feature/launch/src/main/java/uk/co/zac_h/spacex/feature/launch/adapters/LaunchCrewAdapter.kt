@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.feature.launch.CrewItem
+import uk.co.zac_h.spacex.feature.launch.R
 import uk.co.zac_h.spacex.feature.launch.databinding.ListItemCrewBinding
 
 class LaunchCrewAdapter :
@@ -37,6 +38,10 @@ class LaunchCrewAdapter :
             title.text = astronaut.name
             agency.text = astronaut.agency
             content.isVisible = isExpanded
+
+            listItemCrewCard.strokeWidth = if (isExpanded) {
+                root.resources.getDimensionPixelSize(R.dimen.launch_crew_stoke_width)
+            } else 0
 
             status.text = astronaut.status.status
             firstFlight.text = astronaut.firstFlight

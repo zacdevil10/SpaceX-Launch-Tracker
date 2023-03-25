@@ -8,9 +8,9 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/list_item_reddit_card"
+        style="?materialCardViewFilledStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="?materialCardViewFilledStyle"
         android:layout_marginStart="@dimen/medium_margin"
         android:layout_marginTop="@dimen/small_margin"
         android:layout_marginEnd="@dimen/medium_margin"
@@ -80,48 +80,45 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_reddit_author">
 
-                <com.google.android.material.card.MaterialCardView
+
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/list_item_reddit_thumbnail_card"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/small_margin"
                     android:layout_marginEnd="@dimen/small_margin"
                     android:visibility="gone"
-                    app:cardElevation="0dp"
                     app:layout_constraintEnd_toStartOf="@id/list_item_reddit_title"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="visible">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/list_item_reddit_thumbnail"
+                        android:layout_width="72dp"
+                        android:layout_height="56dp"
+                        android:scaleType="centerCrop"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"
+                        tools:ignore="ContentDescription"
+                        tools:src="@tools:sample/avatars" />
 
-                        <ImageView
-                            android:id="@+id/list_item_reddit_thumbnail"
-                            android:layout_width="72dp"
-                            android:layout_height="56dp"
-                            android:scaleType="centerCrop"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:ignore="ContentDescription" />
+                    <TextView
+                        android:id="@+id/list_item_reddit_thumbnail_link"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="#9C000000"
+                        android:maxLines="1"
+                        android:padding="2dp"
+                        android:textColor="@android:color/white"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="@id/list_item_reddit_thumbnail"
+                        app:layout_constraintEnd_toEndOf="@id/list_item_reddit_thumbnail"
+                        app:layout_constraintStart_toStartOf="@id/list_item_reddit_thumbnail"
+                        tools:text="twitter.com" />
 
-                        <TextView
-                            android:id="@+id/list_item_reddit_thumbnail_link"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:background="#9C000000"
-                            android:maxLines="1"
-                            android:padding="2dp"
-                            android:textColor="@android:color/white"
-                            android:textSize="12sp"
-                            app:layout_constraintBottom_toBottomOf="@id/list_item_reddit_thumbnail"
-                            app:layout_constraintEnd_toEndOf="@id/list_item_reddit_thumbnail"
-                            app:layout_constraintStart_toStartOf="@id/list_item_reddit_thumbnail"
-                            tools:text="twitter.com" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </com.google.android.material.card.MaterialCardView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <TextView
                     android:id="@+id/list_item_reddit_title"
@@ -145,7 +142,6 @@
                 android:id="@+id/list_item_reddit_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/list_item_reddit_header">
@@ -163,16 +159,18 @@
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="@tools:sample/lorem/random" />
 
-                <ImageView
+                <com.google.android.material.imageview.ShapeableImageView
                     android:id="@+id/list_item_reddit_preview"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_height="256dp"
                     android:layout_marginTop="@dimen/small_margin"
                     android:scaleType="centerCrop"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/list_item_reddit_text"
-                    tools:ignore="ContentDescription" />
+                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"
+                    tools:ignore="ContentDescription"
+                    tools:src="@tools:sample/avatars" />
 
                 <LinearLayout
                     android:id="@+id/list_item_info"

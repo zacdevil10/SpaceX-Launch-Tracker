@@ -75,15 +75,15 @@ class DragonDetailsFragment : BaseFragment(), ViewPagerFragment {
                 R.color.failed
             )
 
-            dragonDetailsCrewCapacity.value = dragon.crewCapacity?.toString()
-            dragonDetailsFirstFlight.value = dragon.maidenFlight
-            dragonDetailsHeight.value = dragon.height?.let { heightWithTrunk ->
+            dragonDetailsCrewCapacity.text = dragon.crewCapacity?.toString()
+            dragonDetailsFirstFlight.text = dragon.maidenFlight
+            dragonDetailsHeight.text = dragon.height?.let { heightWithTrunk ->
                 getString(R.string.measurements, heightWithTrunk.metricFormat())
             }
-            dragonDetailsDiameter.value = dragon.diameter?.let { diameter ->
+            dragonDetailsDiameter.text = dragon.diameter?.let { diameter ->
                 getString(R.string.measurements, diameter.metricFormat())
             }
-            dragonDetailsPayloadCapacity.value = dragon.payloadCapacity?.let { launchPayloadMass ->
+            dragonDetailsPayloadCapacity.text = dragon.payloadCapacity?.let { launchPayloadMass ->
                 getString(R.string.mass, launchPayloadMass.metricFormat())
             }
         }

@@ -7,12 +7,11 @@
 
     <ImageView
         android:id="@+id/mission_patch"
-        android:layout_width="72dp"
-        android:layout_height="0dp"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         android:importantForAccessibility="no"
-        android:paddingEnd="@dimen/medium_margin"
         android:src="@drawable/ic_mission_patch"
-        app:layout_constraintBottom_toBottomOf="@id/date"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="RtlSymmetry" />
@@ -21,6 +20,7 @@
         android:id="@+id/mission_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/small_margin"
         android:layout_marginEnd="@dimen/small_margin"
         android:ellipsize="marquee"
         android:focusable="true"
@@ -29,7 +29,8 @@
         android:scrollHorizontally="true"
         android:singleLine="true"
         android:textAppearance="?textAppearanceHeadline6"
-        app:layout_constraintEnd_toStartOf="@id/vehicle"
+        app:layout_constraintBottom_toTopOf="@id/date"
+        app:layout_constraintEnd_toStartOf="@id/barrier"
         app:layout_constraintStart_toEndOf="@id/mission_patch"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Nusantara Satu (PSN-6) / GTO-1 / Beresheet" />
@@ -38,20 +39,30 @@
         android:id="@+id/date"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/small_margin"
         android:layout_marginTop="@dimen/xsmall_margin"
         android:layout_marginEnd="@dimen/small_margin"
         android:singleLine="true"
         android:textAppearance="?textAppearanceListItemSecondary"
-        app:layout_constraintEnd_toStartOf="@+id/landing_pad"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/barrier"
         app:layout_constraintStart_toEndOf="@id/mission_patch"
         app:layout_constraintTop_toBottomOf="@id/mission_name"
         tools:text="14 Oct 2019 - 12:35" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="vehicle, reused, landing_pad" />
 
     <TextView
         android:id="@+id/vehicle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?textAppearanceCaption"
+        app:layout_constraintBottom_toTopOf="@id/reused"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Falcon 9" />
@@ -62,9 +73,9 @@
         android:layout_height="wrap_content"
         android:text="@string/reused"
         android:textAppearance="?textAppearanceOverline"
-        android:textColor="@color/md_theme_light_secondary"
-        android:layout_marginTop="@dimen/xsmall_margin"
+        android:textColor="?colorPrimaryInverse"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/landing_pad"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/vehicle"
         tools:visibility="visible" />
@@ -74,11 +85,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?textAppearanceOverline"
-        android:textColor="@color/md_theme_light_secondary"
-        android:layout_marginTop="@dimen/xsmall_margin"
+        android:textColor="?colorPrimaryInverse"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/reused"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/reused"
         tools:text="JRTI"
         tools:visibility="visible" />
 

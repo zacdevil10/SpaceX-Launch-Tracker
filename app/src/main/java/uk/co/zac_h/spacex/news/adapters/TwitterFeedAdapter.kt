@@ -4,9 +4,6 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.paging.PagingDataAdapter
@@ -20,6 +17,7 @@ import uk.co.zac_h.mediarecyclerview.utils.MediaType
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.core.common.utils.convertDate
 import uk.co.zac_h.spacex.core.common.utils.dateStringToMillis
+import uk.co.zac_h.spacex.databinding.ListItemTweetBinding
 import uk.co.zac_h.spacex.network.dto.twitter.TimelineEntityModel.Companion.formatWithUrls
 import uk.co.zac_h.spacex.network.dto.twitter.TimelineExtendedEntityModel
 import uk.co.zac_h.spacex.network.dto.twitter.TimelineTweetModel
@@ -32,8 +30,8 @@ class TwitterFeedAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
-            LayoutInflater.from(parent.context).inflate(
-                R.layout.list_item_tweet,
+            ListItemTweetBinding.inflate(
+                LayoutInflater.from(parent.context),
                 parent,
                 false
             )
@@ -42,21 +40,21 @@ class TwitterFeedAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val tweet = getItem(position)
 
-        holder.apply {
+        with(holder.binding) {
             tweet?.let {
-                container.setOnClickListener {
+                tweetContainer.setOnClickListener {
                     openLink("https://twitter.com/SpaceX/status/${tweet.id}")
                 }
 
-                Glide.with(itemView).load(tweet.user.profileUrl)
+                Glide.with(root).load(tweet.user.profileUrl)
                     .apply(RequestOptions.circleCropTransform())
-                    .into(profileImage)
-                date.text = tweet.created.dateStringToMillis()?.convertDate()
-                name.text = tweet.user.name
-                screenName.text =
+                    .into(tweetProfileImage)
+                tweetDate.text = tweet.created.dateStringToMillis()?.convertDate()
+                tweetName.text = tweet.user.name
+                tweetScreenName.text =
                     context.getString(R.string.screen_name, tweet.user.screenName)
 
-                desc.apply {
+                tweetFullText.apply {
                     tweet.text?.formatWithUrls(
                         tweet.entities.urls,
                         tweet.entities.mentions,
@@ -67,46 +65,52 @@ class TwitterFeedAdapter(
                     movementMethod = HtmlTextView.LocalLinkMovementMethod
                 }
 
-                media.visibility = tweet.extendedEntities?.let { View.VISIBLE } ?: View.GONE
-                mediaCard.visibility = tweet.extendedEntities?.let { View.VISIBLE } ?: View.GONE
+                tweetMediaRecycler.visibility =
+                    tweet.extendedEntities?.let { View.VISIBLE } ?: View.GONE
+                tweetMediaCard.visibility =
+                    tweet.extendedEntities?.let { View.VISIBLE } ?: View.GONE
 
                 tweet.extendedEntities?.let {
-                    setMediaRecycler(it, mediaConstraint, media)
+                    setMediaRecycler(it, tweetMediaConstraint, tweetMediaRecycler)
                 }
 
                 if (position < itemCount - 1) {
-                    indicatorBottom.visibility = tweet.replyStatusId?.let {
+                    tweetReplyIndicatorBottom.visibility = tweet.replyStatusId?.let {
                         if (getItem(position + 1)?.id == it) View.VISIBLE else View.GONE
                     } ?: View.GONE
                 }
 
                 if (position != 0) {
-                    indicatorTop.visibility = getItem(position - 1)?.replyStatusId?.let {
+                    tweetReplyIndicatorTop.visibility = getItem(position - 1)?.replyStatusId?.let {
                         if (tweet.id == it) View.VISIBLE else View.GONE
                     } ?: View.GONE
                 }
 
-                quoteCardView.visibility = if (tweet.isQuote) View.VISIBLE else View.GONE
+                tweetQuotedLayout.visibility = if (tweet.isQuote) View.VISIBLE else View.GONE
 
                 tweet.quotedStatusLink?.let { quoted ->
-                    quoteContainer.setOnClickListener {
+                    tweetQuotedConstraint.setOnClickListener {
                         quoted.expandedUrl?.let { url -> openLink(url) }
                     }
                 }
 
                 tweet.quotedStatus?.let { quoted ->
-                    quoteDate.text = quoted.created?.dateStringToMillis()?.convertDate()
-                    quoteName.text = quoted.user?.name
-                    quoteScreenName.text =
+                    tweetQuotedDate.text = quoted.created?.dateStringToMillis()?.convertDate()
+                    tweetQuotedName.text = quoted.user?.name
+                    tweetQuotedScreenName.text =
                         context.getString(R.string.screen_name, quoted.user?.screenName)
-                    quoteDesc.apply {
+                    tweetQuotedFullText.apply {
                         quoted.text?.formatWithUrls(null, null, null)?.let {
                             setHtmlText(it)
                         }
                     }
 
                     quoted.extendedEntities?.let { quotedMedia ->
-                        setMediaRecycler(quotedMedia, quoteContainer, quoteMediaRecycler)
+                        setMediaRecycler(
+                            quotedMedia,
+                            tweetQuotedConstraint,
+                            tweetQuotedMediaRecycler
+                        )
                     }
                 }
             }
@@ -131,6 +135,7 @@ class TwitterFeedAdapter(
                     }
                 }
             }
+
             else -> {
                 ConstraintSet().apply {
                     clone(constraintLayout)
@@ -162,6 +167,7 @@ class TwitterFeedAdapter(
                             MediaModel(url = url, type = MediaType.IMAGE_URL)
                         } ?: return@forEach
                     }
+
                     "video", "animated_gif" -> {
                         tweetMedia.info?.variants?.get(bitratePosition)?.url?.let { static ->
                             tweetMedia.url?.let { url ->
@@ -173,6 +179,7 @@ class TwitterFeedAdapter(
                             }
                         } ?: return@forEach
                     }
+
                     else -> return@forEach
                 }
             )
@@ -183,34 +190,9 @@ class TwitterFeedAdapter(
         }
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val container: ConstraintLayout = itemView.findViewById(R.id.tweet_container)
-        val profileImage: ImageView = itemView.findViewById(R.id.tweet_profile_image)
-        val date: TextView = itemView.findViewById(R.id.tweet_date)
-        val name: TextView = itemView.findViewById(R.id.tweet_name)
-        val screenName: TextView = itemView.findViewById(R.id.tweet_screen_name)
+    class ViewHolder(val binding: ListItemTweetBinding) : RecyclerView.ViewHolder(binding.root)
 
-        val mediaConstraint: ConstraintLayout = itemView.findViewById(R.id.tweet_media_constraint)
-        val mediaCard: CardView = itemView.findViewById(R.id.tweet_media_card)
-        val media: MediaRecyclerView = itemView.findViewById(R.id.tweet_media_recycler)
-
-        val desc: HtmlTextView = itemView.findViewById(R.id.tweet_full_text)
-
-        val indicatorTop: View = itemView.findViewById(R.id.tweet_reply_indicator_top)
-        val indicatorBottom: View = itemView.findViewById(R.id.tweet_reply_indicator_bottom)
-
-        //Quoted layout
-        val quoteCardView: CardView = itemView.findViewById(R.id.tweet_quoted_layout)
-        val quoteContainer: ConstraintLayout = itemView.findViewById(R.id.tweet_quoted_constraint)
-        val quoteName: TextView = itemView.findViewById(R.id.tweet_quoted_name)
-        val quoteScreenName: TextView = itemView.findViewById(R.id.tweet_quoted_screen_name)
-        val quoteDate: TextView = itemView.findViewById(R.id.tweet_quoted_date)
-        val quoteDesc: HtmlTextView = itemView.findViewById(R.id.tweet_quoted_full_text)
-        val quoteMediaRecycler: MediaRecyclerView =
-            itemView.findViewById(R.id.tweet_quoted_media_recycler)
-    }
-
-    object TwitterComparator: DiffUtil.ItemCallback<TimelineTweetModel>() {
+    object TwitterComparator : DiffUtil.ItemCallback<TimelineTweetModel>() {
         override fun areItemsTheSame(
             oldItem: TimelineTweetModel,
             newItem: TimelineTweetModel

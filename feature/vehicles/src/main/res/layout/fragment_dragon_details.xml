@@ -73,6 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/small_margin"
                 android:text="@string/active_label"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/dragon_details_text" />
 
@@ -91,51 +92,56 @@
                 android:id="@+id/dragon_details_crew_capacity"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:label="@string/crew_capacity_label"
                 android:layout_marginTop="@dimen/small_margin"
+                app:label="@string/crew_capacity_label"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/dragon_details_status_label" />
+                app:layout_constraintTop_toBottomOf="@id/dragon_details_status_label"
+                tools:text="@tools:sample/lorem" />
 
             <uk.co.zac_h.spacex.core.ui.LabelValueView
                 android:id="@+id/dragon_details_first_flight"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:label="@string/first_flight_label"
                 android:layout_marginTop="@dimen/small_margin"
+                app:label="@string/first_flight_label"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/dragon_details_crew_capacity" />
+                app:layout_constraintTop_toBottomOf="@id/dragon_details_crew_capacity"
+                tools:text="@tools:sample/lorem" />
 
             <uk.co.zac_h.spacex.core.ui.LabelValueView
                 android:id="@+id/dragon_details_height"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:label="@string/height_label"
                 android:layout_marginTop="@dimen/small_margin"
+                app:label="@string/height_label"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/dragon_details_first_flight" />
+                app:layout_constraintTop_toBottomOf="@id/dragon_details_first_flight"
+                tools:text="@tools:sample/lorem" />
 
             <uk.co.zac_h.spacex.core.ui.LabelValueView
                 android:id="@+id/dragon_details_diameter"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:label="@string/diameter_label"
                 android:layout_marginTop="@dimen/small_margin"
+                app:label="@string/diameter_label"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/dragon_details_height" />
+                app:layout_constraintTop_toBottomOf="@id/dragon_details_height"
+                tools:text="@tools:sample/lorem" />
 
             <uk.co.zac_h.spacex.core.ui.LabelValueView
                 android:id="@+id/dragon_details_payload_capacity"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:label="Payload Capacity"
                 android:layout_marginTop="@dimen/small_margin"
+                app:label="Payload Capacity"
                 app:layout_constraintEnd_toEndOf="@id/guideline_end"
                 app:layout_constraintStart_toStartOf="@id/guideline_start"
-                app:layout_constraintTop_toBottomOf="@id/dragon_details_diameter" />
+                app:layout_constraintTop_toBottomOf="@id/dragon_details_diameter"
+                tools:text="@tools:sample/lorem" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

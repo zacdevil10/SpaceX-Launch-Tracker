@@ -14,8 +14,6 @@
         android:layout_marginTop="@dimen/small_margin"
         android:layout_marginEnd="@dimen/medium_margin"
         android:layout_marginBottom="@dimen/small_margin"
-        android:clickable="true"
-        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -63,7 +61,8 @@
                 app:label="Landing Location"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/first_stage_landing_description" />
+                app:layout_constraintTop_toBottomOf="@id/first_stage_landing_description"
+                tools:text="@tools:sample/lorem" />
 
             <uk.co.zac_h.spacex.core.ui.LabelValueView
                 android:id="@+id/first_stage_landing_type"
@@ -73,7 +72,8 @@
                 app:label="Landing Type"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/first_stage_landing_location" />
+                app:layout_constraintTop_toBottomOf="@id/first_stage_landing_location"
+                tools:text="@tools:sample/lorem" />
 
             <uk.co.zac_h.spacex.core.ui.LabelValueView
                 android:id="@+id/first_stage_previous_flight"
@@ -83,27 +83,30 @@
                 app:label="Previous Flight"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/first_stage_landing_type" />
+                app:layout_constraintTop_toBottomOf="@id/first_stage_landing_type"
+                tools:text="@tools:sample/lorem" />
 
             <uk.co.zac_h.spacex.core.ui.LabelValueView
                 android:id="@+id/first_stage_turn_around_time"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:label="Turn Around Time"
                 android:layout_marginTop="@dimen/small_margin"
+                app:label="Turn Around Time"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/first_stage_previous_flight" />
+                app:layout_constraintTop_toBottomOf="@id/first_stage_previous_flight"
+                tools:text="@tools:sample/lorem" />
 
             <uk.co.zac_h.spacex.core.ui.LabelValueView
                 android:id="@+id/first_stage_total_flights"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:label="Total Flights"
                 android:layout_marginTop="@dimen/small_margin"
+                app:label="Total Flights"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/first_stage_turn_around_time" />
+                app:layout_constraintTop_toBottomOf="@id/first_stage_turn_around_time"
+                tools:text="@tools:sample/lorem" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

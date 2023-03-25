@@ -79,23 +79,23 @@ class RocketDetailsFragment : BaseFragment(), ViewPagerFragment {
 
                 rocketDetailsText.text = it.description
 
-                rocketDetailsSuccessRate.value = it.successRate?.let { successRate ->
+                rocketDetailsSuccessRate.text = it.successRate?.let { successRate ->
                     getString(R.string.percentage, successRate.metricFormat())
                 }
 
-                rocketDetailsFirstFlight.value = it.maidenFlight
-                rocketDetailsStages.value = it.stages.toString()
+                rocketDetailsFirstFlight.text = it.maidenFlight
+                rocketDetailsStages.text = it.stages.toString()
 
-                rocketDetailsHeight.value = it.length?.let { height ->
+                rocketDetailsHeight.text = it.length?.let { height ->
                     getString(R.string.measurements, height.metricFormat())
                 }
-                rocketDetailsDiameter.value = it.diameter?.let { diameter ->
+                rocketDetailsDiameter.text = it.diameter?.let { diameter ->
                     getString(R.string.measurements, diameter.metricFormat())
                 }
-                rocketDetailsMass.value = it.launchMass?.let { mass ->
+                rocketDetailsMass.text = it.launchMass?.let { mass ->
                     getString(R.string.mass_formatted, mass)
                 }
-                rocketDetailsThrustSea.value = it.toThrust?.let { thrust ->
+                rocketDetailsThrustSea.text = it.toThrust?.let { thrust ->
                     getString(R.string.thrust, thrust.metricFormat())
                 }
 

@@ -52,19 +52,19 @@ class FirstStageAdapter :
 
                 firstStageSerial.text = core.serial.orUnknown()
                 firstStageLandingDescription.text = core.landingDescription
-                firstStageLandingLocation.value =
+                firstStageLandingLocation.text =
                     if (core.landingAttempt) core.landingLocationFull else null
-                firstStageLandingType.value = if (core.landingAttempt) {
+                firstStageLandingType.text = if (core.landingAttempt) {
                     when (core.landingType) {
                         "ASDS", "RTLS" -> core.landingType
                         else -> null
                     }
                 } else null
-                firstStagePreviousFlight.value = core.previousFlight?.replace(" | ", "\n")
-                firstStageTurnAroundTime.value = core.turnAroundTimeDays?.let {
+                firstStagePreviousFlight.text = core.previousFlight?.replace(" | ", "\n")
+                firstStageTurnAroundTime.text = core.turnAroundTimeDays?.let {
                     "${core.turnAroundTimeDays} days"
                 }
-                firstStageTotalFlights.value = core.totalFlights?.toString()
+                firstStageTotalFlights.text = core.totalFlights?.toString()
             }
         }
     }

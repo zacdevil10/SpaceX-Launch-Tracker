@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.core.ui
 
 import android.content.Context
+import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -25,11 +26,11 @@ class LabelValueView @JvmOverloads constructor(
             labelTextView.text = value
         }
 
-    var value: String? = null
+    var text: String? = null
         set(value) {
             field = value
 
-            isVisible = value != null
+            isVisible = !value.isNullOrEmpty()
             valueTextView.text = value
         }
 
@@ -38,6 +39,7 @@ class LabelValueView @JvmOverloads constructor(
 
         labelTextView.apply {
             layoutParams = LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+            setTypeface(typeface, Typeface.BOLD)
         }
 
         valueTextView.apply {
@@ -52,7 +54,7 @@ class LabelValueView @JvmOverloads constructor(
 
         context.obtainStyledAttributes(attrs, R.styleable.LabelValueView).use {
             label = it.getString(R.styleable.LabelValueView_label)
-            value = it.getString(R.styleable.LabelValueView_value)
+            text = it.getString(R.styleable.LabelValueView_android_text)
         }
     }
 }

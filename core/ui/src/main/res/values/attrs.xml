@@ -14,7 +14,7 @@
 
     <declare-styleable name="LabelValueView">
         <attr name="label" format="string|reference" />
-        <attr name="value" format="string|reference" />
+        <attr name="android:text" />
     </declare-styleable>
 
 </resources>

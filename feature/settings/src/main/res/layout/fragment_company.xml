@@ -49,9 +49,7 @@
                 app:constraint_referenced_ids="
             company_logo,
             company_summary,
-            company_founded_label,
             company_founded,
-            company_ceo_label,
             company_ceo" />
 
             <ImageView
@@ -109,52 +107,30 @@
                 tools:ignore="MissingConstraints"
                 tools:visibility="visible" />
 
-            <TextView
-                android:id="@+id/company_founded_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:text="@string/founded_label"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/company_wiki" />
-
-            <TextView
+            <uk.co.zac_h.spacex.core.ui.LabelValueView
                 android:id="@+id/company_founded"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginEnd="@dimen/medium_margin"
-                android:gravity="end"
-                app:layout_constraintBottom_toBottomOf="@id/company_founded_label"
+                android:layout_marginHorizontal="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
+                app:label="@string/founded_label"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/company_founded_label"
-                app:layout_constraintTop_toTopOf="@id/company_founded_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/company_wiki"
                 tools:text="2002" />
 
-            <TextView
-                android:id="@+id/company_ceo_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:layout_marginBottom="@dimen/medium_margin"
-                android:text="@string/ceo_label"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/company_founded_label" />
-
-            <TextView
+            <uk.co.zac_h.spacex.core.ui.LabelValueView
                 android:id="@+id/company_ceo"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginEnd="@dimen/medium_margin"
-                android:gravity="end"
-                app:layout_constraintBottom_toBottomOf="@id/company_ceo_label"
+                android:layout_marginHorizontal="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:layout_marginBottom="@dimen/medium_margin"
+                app:label="@string/ceo_label"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/company_ceo_label"
-                app:layout_constraintTop_toTopOf="@id/company_ceo_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/company_founded"
                 tools:text="Elon Musk" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

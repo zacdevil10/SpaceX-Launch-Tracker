@@ -25,11 +25,13 @@ class RocketPayloadAdapter :
         val payload = getItem(position)
 
         holder.binding.apply {
-            listItemRocketPayloadOrbitTypeText.text = payload.name
-            listItemRocketPayloadMassText.text = root.resources.getString(
-                R.string.mass,
-                payload.mass.metricFormat(),
-            )
+            listItemRocketPayloadMass.apply {
+                label = payload.name
+                text = resources.getString(
+                    R.string.mass,
+                    payload.mass.metricFormat(),
+                )
+            }
         }
     }
 

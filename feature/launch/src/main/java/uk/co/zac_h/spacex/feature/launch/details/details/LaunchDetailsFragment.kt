@@ -75,16 +75,8 @@ class LaunchDetailsFragment : BaseFragment(), ViewPagerFragment {
                     isVisible = !launch.description.isNullOrEmpty()
                     text = launch.description
                 }
-                typeLabel.isVisible = !launch.type.isNullOrEmpty()
-                typeText.apply {
-                    isVisible = !launch.type.isNullOrEmpty()
-                    text = launch.type
-                }
-                orbitLabel.isVisible = !launch.orbit.isNullOrEmpty()
-                orbitText.apply {
-                    isVisible = !launch.orbit.isNullOrEmpty()
-                    text = launch.orbit
-                }
+                type.text = launch.type
+                orbit.text = launch.orbit
 
                 launchDetailsWatchButton.apply {
                     isVisible = launch.webcast != null
@@ -101,12 +93,12 @@ class LaunchDetailsFragment : BaseFragment(), ViewPagerFragment {
                 }
 
                 statusCard.isVisible = launch.status.type != null
-                statusText.text = launch.status.name
+                status.text = launch.status.name
                 statusDescription.text =
                     if (launch.status.type == 4) launch.failReason else launch.status.description
 
                 launchSiteCard.isVisible = launch.launchLocation != null
-                launchSiteText.text = launch.launchLocation
+                launchSite.text = launch.launchLocation
                 Glide.with(requireContext()).load(launch.launchLocationMap).into(launchSiteImage)
                 launchSiteImage.setOnClickListener {
                     launch.launchLocationMapUrl?.let { launchLocationMapUrl ->
