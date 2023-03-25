@@ -5,8 +5,9 @@
     <style name="AppTheme.DayNight" parent="Base.AppTheme" />
 
     <!--Base custom theme which will be shared between both light and dark theme variants-->
-    <style name="Base.AppTheme" parent="Theme.Material3.Light.NoActionBar">
-        <!--Material color attributes -->
+    <style name="Base.AppTheme" parent="Theme.Material3.DynamicColors.Light">
+        <item name="windowNoTitle">true</item>
+
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
