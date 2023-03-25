@@ -83,5 +83,7 @@
     <string name="more_icon_desc">More Icon</string>
     <string name="pin_launch_to_dashboard_desc">Pin launch to dashboard</string>
     <string name="settings">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

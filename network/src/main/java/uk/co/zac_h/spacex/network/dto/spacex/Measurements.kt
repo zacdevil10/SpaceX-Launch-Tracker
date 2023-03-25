@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.network.dto.spacex
 
 import com.squareup.moshi.Json
-import uk.co.zac_h.spacex.core.common.utils.metricFormat
 
 data class Dimens(
     @field:Json(name = "meters") val meters: Double?,
@@ -11,28 +10,6 @@ data class Dimens(
 data class Mass(
     @field:Json(name = "kg") var kg: Float?,
     @field:Json(name = "lb") var lb: Float?
-)
-
-data class MassFormatted(
-    val kg: String,
-    val lb: String
-) {
-
-    constructor(massKg: Float, massLbs: Float) : this(
-        massKg.metricFormat(),
-        massLbs.metricFormat()
-    )
-
-    companion object {
-        fun formatMass(massKg: Float?, massLbs: Float?): MassFormatted? =
-            if (massKg != null && massLbs != null) MassFormatted(massKg, massLbs) else null
-    }
-
-}
-
-data class Volume(
-    @field:Json(name = "cubic_meters") val cubicMeters: Int?,
-    @field:Json(name = "cubic_feet") val cubicFeet: Int?
 )
 
 data class Thrust(

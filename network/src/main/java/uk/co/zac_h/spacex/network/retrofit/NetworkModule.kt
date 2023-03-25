@@ -22,12 +22,13 @@ object NetworkModule {
         createClient(LAUNCH_LIBRARY_BASE_URL)
 
     @Provides
-    @SpaceXHttpClientV4
-    fun providesSpaceXHttpClientV4(): SpaceXService = createClient(SPACEX_BASE_URL_V4)
+    @SpaceflightNewsClient
+    fun providesSpaceflightNewsHttpClient(): SpaceflightNewsService =
+        createClient(SPACEFLIGHT_NEWS_BASE_URL)
 
     @Provides
-    @SpaceXHttpClientV5
-    fun providesSpaceXHttpClientV5(): SpaceXService = createClient(SPACEX_BASE_URL_V5)
+    @SpaceXHttpClientV4
+    fun providesSpaceXHttpClientV4(): SpaceXService = createClient(SPACEX_BASE_URL_V4)
 
     @Provides
     @RedditHttpClient
@@ -54,7 +55,7 @@ object NetworkModule {
         baseUrl(baseUrl)
         addConverterFactory(MoshiConverterFactory.create())
         client(okHttpClient())
-        client(loggingClient())
+        //client(loggingClient())
     }.build().create(T::class.java)
 
     private fun loggingClient() = OkHttpClient.Builder()
@@ -74,11 +75,11 @@ annotation class LaunchLibraryClient
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class SpaceXHttpClientV4
+annotation class SpaceflightNewsClient
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class SpaceXHttpClientV5
+annotation class SpaceXHttpClientV4
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)

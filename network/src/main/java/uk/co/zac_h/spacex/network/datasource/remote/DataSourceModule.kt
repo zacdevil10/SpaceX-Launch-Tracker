@@ -5,7 +5,6 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import uk.co.zac_h.spacex.network.datasource.remote.about.AgencyDataSource
-import uk.co.zac_h.spacex.network.datasource.remote.about.HistoryDataSource
 import uk.co.zac_h.spacex.network.datasource.remote.statistics.LandingPadDataSource
 import uk.co.zac_h.spacex.network.datasource.remote.statistics.LaunchpadDataSource
 import uk.co.zac_h.spacex.network.datasource.remote.vehicles.*
@@ -15,10 +14,6 @@ import javax.inject.Qualifier
 @Module
 @InstallIn(ViewModelComponent::class)
 abstract class DataSourceModule {
-
-    @Binds
-    @HistoryDataSourceClient
-    abstract fun bindHistoryDataSource(historyDataSource: HistoryDataSource): RemoteDataSource<NetworkDocsResponse<HistoryResponse>>
 
     @Binds
     @AgencyDataSourceClient
@@ -37,10 +32,6 @@ abstract class DataSourceModule {
     abstract fun bindLandingPadDataSource(landingPadDataSource: LandingPadDataSource): RemoteDataSource<NetworkDocsResponse<LandingPadQueriedResponse>>
 
     @Binds
-    @ShipDataSourceClient
-    abstract fun bindShipDataSource(shipDataSource: ShipDataSource): RemoteDataSource<NetworkDocsResponse<ShipQueriedResponse>>
-
-    @Binds
     @CoreDataSourceClient
     abstract fun bindCoreDataSource(coreDataSource: CoreDataSource): RemoteDataSource<NetworkDocsResponse<CoreQueriedResponse>>
 
@@ -54,9 +45,6 @@ abstract class DataSourceModule {
 }
 
 @Qualifier
-annotation class HistoryDataSourceClient
-
-@Qualifier
 annotation class AgencyDataSourceClient
 
 @Qualifier
@@ -67,9 +55,6 @@ annotation class LaunchpadDataSourceClient
 
 @Qualifier
 annotation class LandingPadDataSourceClient
-
-@Qualifier
-annotation class ShipDataSourceClient
 
 @Qualifier
 annotation class CoreDataSourceClient
