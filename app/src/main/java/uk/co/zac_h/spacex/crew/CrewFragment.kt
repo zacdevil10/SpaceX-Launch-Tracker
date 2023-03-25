@@ -4,38 +4,34 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.SharedElementCallback
+import android.widget.Toast
 import androidx.core.view.doOnPreDraw
-import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.transition.MaterialContainerTransform
+import androidx.navigation.navGraphViewModels
+import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
-import uk.co.zac_h.spacex.base.NetworkInterface
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 import uk.co.zac_h.spacex.databinding.FragmentCrewBinding
-import uk.co.zac_h.spacex.model.spacex.Crew
+import uk.co.zac_h.spacex.network.ApiResult
+import uk.co.zac_h.spacex.network.CachePolicy
+import uk.co.zac_h.spacex.network.Repository
+import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 
-class CrewFragment : BaseFragment(), CrewView {
+class CrewFragment : BaseFragment() {
 
-    companion object {
-        const val CREW_KEY = "crew"
+    private val viewModel: CrewViewModel by navGraphViewModels(R.id.nav_graph) {
+        defaultViewModelProviderFactory
     }
 
-    override var title: String = "Crew"
-
-    private var binding: FragmentCrewBinding? = null
-
-    private var presenter: NetworkInterface.Presenter<List<Crew>?>? = null
+    private lateinit var binding: FragmentCrewBinding
 
     private lateinit var crewAdapter: CrewAdapter
-    private lateinit var crewArray: ArrayList<Crew>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        crewArray = savedInstanceState?.getParcelableArrayList(CREW_KEY) ?: ArrayList()
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
     }
 
     override fun onCreateView(
@@ -48,96 +44,54 @@ class CrewFragment : BaseFragment(), CrewView {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
+        postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
+
+        viewModel.get()
 
         if (savedInstanceState == null) {
-            startTransition()
+            binding.root.doOnPreDraw { startPostponedEnterTransition() }
         }
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+        crewAdapter = CrewAdapter()
 
-        presenter = CrewPresenterImpl(this, CrewInteractorImpl())
-
-        crewAdapter = CrewAdapter(this, crewArray)
-
-        binding?.crewRecycler?.apply {
+        binding.crewRecycler.apply {
             setHasFixedSize(true)
             adapter = crewAdapter
         }
 
-        prepareTransitions()
-        postponeEnterTransition()
-
-        binding?.swipeRefresh?.setOnRefreshListener {
-            presenter?.get()
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.get(CachePolicy.ALWAYS)
         }
 
-        if (crewArray.isEmpty()) presenter?.get()
-    }
-
-    private fun prepareTransitions() {
-        sharedElementReturnTransition = MaterialContainerTransform()
-
-        setExitSharedElementCallback(object : SharedElementCallback() {
-            override fun onMapSharedElements(
-                names: MutableList<String>?,
-                sharedElements: MutableMap<String, View>?
-            ) {
-                val selectedViewHolder: RecyclerView.ViewHolder =
-                    binding?.crewRecycler?.findViewHolderForAdapterPosition(MainActivity.currentPosition)
-                        ?: return
-
-                names?.get(0)?.let { name ->
-                    selectedViewHolder.itemView.let { itemView ->
-                        sharedElements?.put(
-                            name,
-                            itemView.findViewById(R.id.grid_item_crew_constraint)
-                        )
-                    }
+        viewModel.crew.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is ApiResult.Pending -> {}
+                is ApiResult.Success -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    update(result.data)
+                }
+                is ApiResult.Failure -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    showError(result.exception.message)
                 }
             }
-        })
+        }
     }
 
-    override fun startTransition() {
-        binding?.root?.doOnPreDraw { startPostponedEnterTransition() }
+    private fun update(response: List<Crew>?) {
+        crewAdapter.submitList(response)
+        if (viewModel.cacheLocation == Repository.RequestLocation.REMOTE) {
+            binding.crewRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
+            binding.crewRecycler.scheduleLayoutAnimation()
+        }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(CREW_KEY, crewArray)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.cancelRequest()
-        binding = null
-    }
-
-    override fun update(response: List<Crew>) {
-        crewArray.clear()
-        crewArray.addAll(response)
-
-        crewAdapter.notifyDataSetChanged()
-    }
-
-    override fun showProgress() {
-        binding?.progress?.show()
-    }
-
-    override fun hideProgress() {
-        binding?.progress?.hide()
-    }
-
-    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding?.swipeRefresh?.isRefreshing = isRefreshing
+    private fun showError(error: String?) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (crewArray.isEmpty() || it.progress.isShown) presenter?.get()
-            }
-        }
+        viewModel.get()
     }
 }

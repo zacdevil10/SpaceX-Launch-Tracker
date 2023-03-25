@@ -1,38 +1,22 @@
 package uk.co.zac_h.spacex.vehicles.adapters
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
-import androidx.core.os.bundleOf
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.databinding.ListItemCapsuleBinding
-import uk.co.zac_h.spacex.model.spacex.Capsule
-import java.util.*
-import kotlin.collections.ArrayList
+import uk.co.zac_h.spacex.vehicles.capsules.Capsule
 
-class CapsulesAdapter(private val capsules: ArrayList<Capsule>) :
-    RecyclerView.Adapter<CapsulesAdapter.ViewHolder>(), Filterable {
+class CapsulesAdapter : ListAdapter<Capsule, CapsulesAdapter.ViewHolder>(CapsuleComparator) {
 
-    private var filteredCapsules: ArrayList<Capsule>
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
+        ListItemCapsuleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+    )
 
-    init {
-        filteredCapsules = capsules
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(
-            ListItemCapsuleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        )
-
-    @SuppressLint("DefaultLocale")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val capsule = filteredCapsules[position]
+        val capsule = getItem(position)
 
         holder.binding.apply {
             listItemCapsuleCard.transitionName = capsule.id
@@ -58,9 +42,7 @@ class CapsulesAdapter(private val capsules: ArrayList<Capsule>) :
         }
     }
 
-    override fun getItemCount(): Int = filteredCapsules.size
-
-    override fun getFilter(): Filter {
+    /*override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(search: CharSequence?): FilterResults {
                 val filterResults = FilterResults()
@@ -71,9 +53,8 @@ class CapsulesAdapter(private val capsules: ArrayList<Capsule>) :
                             val filteredList = ArrayList<Capsule>()
                             capsules.forEach { capsule ->
                                 capsule.serial?.let { serial ->
-                                    if (serial.toLowerCase(Locale.getDefault()).contains(
-                                            search.toString().toLowerCase(Locale.getDefault())
-                                        )
+                                    if (serial.lowercase()
+                                            .contains(search.toString().lowercase())
                                     ) {
                                         filteredList.add(capsule)
                                     }
@@ -92,16 +73,26 @@ class CapsulesAdapter(private val capsules: ArrayList<Capsule>) :
                 notifyDataSetChanged()
             }
         }
-    }
+    }*/
 
     class ViewHolder(val binding: ListItemCapsuleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(capsule: Capsule) {
-            itemView.findNavController().navigate(
-                R.id.action_vehicles_page_fragment_to_capsule_details_fragment,
-                bundleOf("capsule" to capsule),
-                null,
+            /*itemView.findNavController().navigate(
+                VehiclesFragmentDirections.actionVehiclesPageFragmentToCapsuleDetailsFragment(
+                    capsule.serial,
+                    capsule.id
+                ),
                 FragmentNavigatorExtras(binding.listItemCapsuleCard to capsule.id)
-            )
+            )*/
         }
+    }
+
+    object CapsuleComparator : DiffUtil.ItemCallback<Capsule>() {
+
+        override fun areItemsTheSame(oldItem: Capsule, newItem: Capsule) = oldItem == newItem
+
+        override fun areContentsTheSame(oldItem: Capsule, newItem: Capsule) =
+            oldItem.id == newItem.id
+
     }
 }

@@ -1,12 +1,13 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchrate
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.doOnPreDraw
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.BarData
@@ -14,43 +15,37 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
-import uk.co.zac_h.spacex.base.NetworkInterface
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLaunchRateBinding
+import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
 import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.RateStatsModel
 
-class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsModel>> {
+class LaunchRateFragment : BaseFragment() {
 
-    override var title: String = "Launch Rate"
+    private lateinit var binding: FragmentLaunchRateBinding
 
-    private var binding: FragmentLaunchRateBinding? = null
+    private val viewModel: LaunchRateViewModel by viewModels()
 
-    private var heading: String? = null
+    private val navArgs: LaunchRateFragmentArgs by navArgs()
 
-    private var presenter: NetworkInterface.Presenter<List<RateStatsModel>?>? = null
-
-    private lateinit var statsList: ArrayList<RateStatsModel>
-
-    private lateinit var keyAdapter: StatisticsKeyAdapter
-    private var keys: ArrayList<KeysModel> = ArrayList()
+    private var statsList: List<RateStatsModel> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
 
-        sharedElementEnterTransition = MaterialContainerTransform()
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.nav_host
+        }
 
-        heading = arguments?.getString("heading")
-        statsList = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
     }
 
     override fun onCreateView(
@@ -67,143 +62,91 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
+        viewModel.get()
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+        binding.launchRateConstraint.transitionName = getString(navArgs.type.title)
 
-        binding?.launchRateConstraint?.transitionName = heading
+        val keyAdapter = StatisticsKeyAdapter(requireContext(), false)
 
-        hideProgress()
-
-        presenter = LaunchRatePresenterImpl(this, LaunchRateInteractorImpl())
-
-        keyAdapter = StatisticsKeyAdapter(context, keys, false)
-
-        binding?.statisticsBarChart?.recycler?.apply {
-            layoutManager = LinearLayoutManager(this@LaunchRateFragment.context)
+        binding.statisticsBarChart.recycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = keyAdapter
         }
 
-        binding?.statisticsBarChart?.barChart?.apply {
+        binding.statisticsBarChart.barChart.apply {
             setup()
 
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     e?.let {
-                        val stats = statsList.filter { it.year == e.x.toInt() }[0]
+                        val stats = statsList.first { it.year == e.x.toInt() }
 
-                        keys.clear()
-
-                        binding?.apply {
-                            statisticsBarChart.key.visibility = View.VISIBLE
-
-                            statisticsBarChart.year.text = stats.year.toString()
-
-                            keys.apply {
-                                if (stats.falconOne > 0) {
-                                    add(KeysModel("Falcon 1", stats.falconOne))
-                                }
-                                if (stats.falconNine > 0) {
-                                    add(KeysModel("Falcon 9", stats.falconNine))
-                                }
-                                if (stats.falconHeavy > 0) {
-                                    add(KeysModel("Falcon Heavy", stats.falconHeavy))
-                                }
-                                if (stats.failure > 0) {
-                                    add(KeysModel("Failures", stats.failure))
-                                }
-                                if (stats.planned > 0) {
-                                    add(KeysModel("Planned", stats.planned))
-                                }
-                                add(KeysModel("Total", e.y))
-                            }
+                        binding.statisticsBarChart.apply {
+                            key.visibility = View.VISIBLE
+                            year.text = stats.year.toString()
                         }
 
-                        keyAdapter.notifyDataSetChanged()
+                        val keys = listOfNotNull(
+                            KeysModel("Falcon 1", stats.falconOne),
+                            KeysModel("Falcon 9", stats.falconNine),
+                            KeysModel("Falcon Heavy", stats.falconHeavy),
+                            KeysModel("Failures", stats.failure),
+                            KeysModel("Planned", stats.planned),
+                            KeysModel("Total", e.y)
+                        )
+
+                        keyAdapter.submitList(keys)
                     }
                 }
 
                 override fun onNothingSelected() {
-                    binding?.statisticsBarChart?.key?.visibility = View.GONE
-
-                    keys.clear()
-                    keyAdapter.notifyDataSetChanged()
+                    binding.statisticsBarChart.key.visibility = View.GONE
+                    keyAdapter.submitList(emptyList())
                 }
             })
         }
 
-        presenter?.getOrUpdate(statsList)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("launches", statsList)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.cancelRequest()
-        binding = null
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_statistics_reload, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.reload -> {
-            statsList.clear()
-            presenter?.getOrUpdate(null)
-            true
+        viewModel.launchRate.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is ApiResult.Pending -> {}
+                is ApiResult.Success -> response.data?.let {
+                    update(false/*viewModel.cacheLocation != Repository.RequestLocation.CACHE*/, it)
+                }
+                is ApiResult.Failure -> showError(response.exception.message)
+            }
         }
-        else -> super.onOptionsItemSelected(item)
     }
 
-    override fun update(data: Any, response: List<RateStatsModel>) {
-        if (statsList.isEmpty()) statsList.addAll(response)
-
-        val colors = ArrayList<Int>()
-
-        colors.add(ColorTemplate.rgb("29b6f6")) //F1
-        colors.add(ColorTemplate.rgb("9ccc65")) //F9
-        colors.add(ColorTemplate.rgb("ff7043")) //FH
-        colors.add(ColorTemplate.rgb("b00020")) //Failures
-        colors.add(ColorTemplate.rgb("66bb6a")) //Future
-
-        val entries = ArrayList<BarEntry>()
+    fun update(animate: Boolean, response: List<RateStatsModel>) {
+        statsList = response
 
         var max = 0f
 
-        response.forEach {
+        val entries = response.map {
             val newMax = it.falconOne + it.falconNine + it.falconHeavy + it.failure + it.planned
             if (newMax > max) max = newMax
-            entries.add(
-                BarEntry(
-                    it.year.toFloat(),
-                    floatArrayOf(
-                        it.falconOne,
-                        it.falconNine,
-                        it.falconHeavy,
-                        it.failure,
-                        it.planned
-                    )
-                )
+
+            BarEntry(
+                it.year.toFloat(),
+                floatArrayOf(it.falconOne, it.falconNine, it.falconHeavy, it.failure, it.planned)
             )
         }
 
         val set = BarDataSet(entries, "").apply {
-            setColors(colors)
+            colors = listOf(
+                ColorTemplate.rgb("29b6f6"), //F1
+                ColorTemplate.rgb("9ccc65"), //F9
+                ColorTemplate.rgb("ff7043"), //FH
+                ColorTemplate.rgb("b00020"), //Failures
+                ColorTemplate.rgb("66bb6a"), //Future
+            )
             setDrawValues(false)
 
             stackLabels = arrayOf("Falcon 1", "Falcon 9", "Falcon Heavy", "Failures", "Future")
         }
 
-        val dataSets = ArrayList<IBarDataSet>()
-        dataSets.add(set)
-
-        binding?.statisticsBarChart?.barChart?.apply {
-            if (data == true) animateY(400, Easing.Linear)
+        binding.statisticsBarChart.barChart.apply {
+            if (animate) animateY(400, Easing.Linear)
             xAxis.labelCount = response.size
             axisLeft.apply {
                 axisMinimum = 0f
@@ -211,24 +154,16 @@ class LaunchRateFragment : BaseFragment(), NetworkInterface.View<List<RateStatsM
                 labelCount =
                     if ((max.toInt() % 2) == 0) max.toInt() / 2 else max.toInt().plus(1) / 2
             }
-            this.data = BarData(dataSets)
+            data = BarData(listOf(set))
             invalidate()
         }
     }
 
-    override fun showProgress() {
-        binding?.progress?.show()
-    }
-
-    override fun hideProgress() {
-        binding?.progress?.hide()
+    fun showError(error: String?) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (statsList.isEmpty() || it.progress.isShown) presenter?.getOrUpdate(null)
-            }
-        }
+        viewModel.get()
     }
 }

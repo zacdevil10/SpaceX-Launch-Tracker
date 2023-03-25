@@ -1,12 +1,14 @@
 package uk.co.zac_h.spacex.statistics.graphs.launchmass
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.doOnPreDraw
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.BarData
@@ -18,43 +20,40 @@ import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.types.LaunchMassViewType
+import uk.co.zac_h.spacex.core.common.types.RocketType
+import uk.co.zac_h.spacex.core.common.utils.sum
 import uk.co.zac_h.spacex.databinding.FragmentLaunchMassBinding
+import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
-import uk.co.zac_h.spacex.utils.*
+import uk.co.zac_h.spacex.statistics.graphs.launchmass.filter.LaunchMassFilterViewModel
 import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.LaunchMassStatsModel
 import uk.co.zac_h.spacex.utils.models.OrbitMassModel
 
-class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
+class LaunchMassFragment : BaseFragment() {
 
-    override var title: String = "Launch Mass"
+    private lateinit var binding: FragmentLaunchMassBinding
 
-    private var binding: FragmentLaunchMassBinding? = null
+    private val viewModel: LaunchMassViewModel by viewModels()
+    private val filterViewModel: LaunchMassFilterViewModel by activityViewModels()
 
-    private var presenter: LaunchMassContract.Presenter? = null
+    private val navArgs: LaunchMassFragmentArgs by navArgs()
 
-    private var filterVisible = false
-    private var filterRocket: RocketType? = null
-    private var filterType: LaunchMassViewType? = LaunchMassViewType.ROCKETS
-
-    private var heading: String? = null
-    private lateinit var statsList: ArrayList<LaunchMassStatsModel>
-
-    private lateinit var keyAdapter: StatisticsKeyAdapter
-    private var keys: ArrayList<KeysModel> = ArrayList()
+    private var statsList: List<LaunchMassStatsModel> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
 
-        sharedElementEnterTransition = MaterialContainerTransform()
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.nav_host
+        }
 
-        heading = arguments?.getString("heading")
-        statsList = savedInstanceState?.getParcelableArrayList("launches") ?: ArrayList()
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
     }
 
     override fun onCreateView(
@@ -70,67 +69,46 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
+        viewModel.get()
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+        binding.launchMassConstraint.transitionName = getString(navArgs.type.title)
 
-        binding?.launchMassConstraint?.transitionName = heading
-
-        hideProgress()
-
-        binding?.launchMassFilterTint?.setOnClickListener {
-            showFilter(false)
+        filterViewModel.filterRocket.observe(viewLifecycleOwner) {
+            viewModel.setRocketFilter(it)
+            viewModel.get()
         }
 
-        presenter = LaunchMassPresenter(this, LaunchMassInteractor())
-
-        binding?.launchMassRocketChipGroup?.setOnCheckedChangeListener { _, checkedId ->
-            filterRocket = when (checkedId) {
-                binding?.launchMassFalconOneToggle?.id -> RocketType.FALCON_ONE
-                binding?.launchMassFalconNineToggle?.id -> RocketType.FALCON_NINE
-                binding?.launchMassFalconHeavyToggle?.id -> RocketType.FALCON_HEAVY
-                else -> null
-            }
-            presenter?.updateFilter(statsList)
+        filterViewModel.filterType.observe(viewLifecycleOwner) {
+            viewModel.setTypeFilter(it)
+            viewModel.get()
         }
 
-        binding?.launchMassTypeChipGroup?.setOnCheckedChangeListener { _, checkedId ->
-            filterType = when (checkedId) {
-                binding?.launchMassRocketToggle?.id -> LaunchMassViewType.ROCKETS
-                binding?.launchMassOrbitToggle?.id -> LaunchMassViewType.ORBIT
-                else -> null
-            }
-            presenter?.updateFilter(statsList)
-        }
+        val keyAdapter = StatisticsKeyAdapter(requireContext(), true)
 
-        keyAdapter = StatisticsKeyAdapter(context, keys, true)
-
-        binding?.statisticsBarChart?.recycler?.apply {
-            layoutManager = LinearLayoutManager(this@LaunchMassFragment.context)
+        binding.statisticsBarChart.recycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = keyAdapter
         }
 
-        binding?.statisticsBarChart?.barChart?.apply {
+        binding.statisticsBarChart.barChart.apply {
             setup()
 
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     e?.let {
-                        val stats = statsList.filter { it.year == e.x.toInt() }[0]
+                        val stats = statsList.first { it.year == e.x.toInt() }
 
-                        keys.clear()
+                        binding.statisticsBarChart.key.visibility = View.VISIBLE
 
-                        binding?.statisticsBarChart?.key?.visibility = View.VISIBLE
+                        binding.statisticsBarChart.year.text = stats.year.toString()
 
-                        binding?.statisticsBarChart?.year?.text = stats.year.toString()
-
-                        when (filterType) {
+                        val keys: List<KeysModel> = when (viewModel.filterType) {
                             LaunchMassViewType.ROCKETS -> {
-                                when (filterRocket) {
-                                    RocketType.FALCON_ONE -> presenter?.populateRocketKey(f1 = stats.falconOne)
-                                    RocketType.FALCON_NINE -> presenter?.populateRocketKey(f9 = stats.falconNine)
-                                    RocketType.FALCON_HEAVY -> presenter?.populateRocketKey(fh = stats.falconHeavy)
-                                    else -> presenter?.populateRocketKey(
+                                when (viewModel.filterRocket) {
+                                    RocketType.FALCON_ONE -> populateRocketKey(f1 = stats.falconOne)
+                                    RocketType.FALCON_NINE -> populateRocketKey(f9 = stats.falconNine)
+                                    RocketType.FALCON_HEAVY -> populateRocketKey(fh = stats.falconHeavy)
+                                    else -> populateRocketKey(
                                         stats.falconOne,
                                         stats.falconNine,
                                         stats.falconHeavy
@@ -138,77 +116,56 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
                                 }
                             }
                             LaunchMassViewType.ORBIT -> {
-                                when (filterRocket) {
-                                    RocketType.FALCON_ONE -> presenter?.populateOrbitKey(f1 = stats.falconOne)
-                                    RocketType.FALCON_NINE -> presenter?.populateOrbitKey(f9 = stats.falconNine)
-                                    RocketType.FALCON_HEAVY -> presenter?.populateOrbitKey(fh = stats.falconHeavy)
-                                    else -> presenter?.populateOrbitKey(
+                                when (viewModel.filterRocket) {
+                                    RocketType.FALCON_ONE -> populateOrbitKey(f1 = stats.falconOne)
+                                    RocketType.FALCON_NINE -> populateOrbitKey(f9 = stats.falconNine)
+                                    RocketType.FALCON_HEAVY -> populateOrbitKey(fh = stats.falconHeavy)
+                                    else -> populateOrbitKey(
                                         stats.falconOne,
                                         stats.falconNine,
                                         stats.falconHeavy
                                     )
                                 }
                             }
+                            else -> emptyList()
                         }
 
-                        keyAdapter.notifyDataSetChanged()
+                        keyAdapter.submitList(keys)
                     }
                 }
 
                 override fun onNothingSelected() {
-                    binding?.statisticsBarChart?.key?.visibility = View.GONE
-
-                    keys.clear()
-                    keyAdapter.notifyDataSetChanged()
+                    binding.statisticsBarChart.key.visibility = View.GONE
+                    keyAdapter.submitList(emptyList())
                 }
             })
         }
 
-        presenter?.getOrUpdate(statsList)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("launches", statsList)
-        super.onSaveInstanceState(outState)
+        viewModel.launchMass.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is ApiResult.Pending -> {}
+                is ApiResult.Success -> response.data?.let {
+                    update(false/*viewModel.cacheLocation != Repository.RequestLocation.CACHE*/, it)
+                }
+                is ApiResult.Failure -> showError(response.exception.message)
+            }
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        presenter?.cancelRequest()
-        binding = null
+
+        filterViewModel.clear()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_statistics_filter, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
+    fun update(data: Any, response: List<LaunchMassStatsModel>) {
+        statsList = response
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.filter -> {
-            binding?.statisticsBarChart?.key?.visibility = View.GONE
-            binding?.statisticsBarChart?.barChart?.apply {
-                onTouchListener.setLastHighlighted(null)
-                highlightValues(null)
-            }
-            presenter?.showFilter(!filterVisible)
-            true
-        }
-        R.id.reload -> {
-            statsList.clear()
-            presenter?.getOrUpdate(null)
-            true
-        }
-        else -> super.onOptionsItemSelected(item)
-    }
-
-    override fun update(data: Any, response: List<LaunchMassStatsModel>) {
-        if (statsList.isEmpty()) statsList.addAll(response)
-
-        binding?.statisticsBarChart?.key?.visibility = View.GONE
+        binding.statisticsBarChart.key.visibility = View.GONE
 
         val colors = ArrayList<Int>()
 
-        if (filterType == LaunchMassViewType.ORBIT) {
+        if (viewModel.filterType == LaunchMassViewType.ORBIT) {
             colors.add(ColorTemplate.rgb("29b6f6"))
             colors.add(ColorTemplate.rgb("9ccc65"))
             colors.add(ColorTemplate.rgb("ff7043"))
@@ -219,7 +176,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
             colors.add(ColorTemplate.rgb("fdd835"))
             colors.add(ColorTemplate.rgb("6d4c41"))
         } else {
-            when (filterRocket) {
+            when (viewModel.filterRocket) {
                 RocketType.FALCON_ONE -> colors.add(ColorTemplate.rgb("29b6f6"))
                 RocketType.FALCON_NINE -> colors.add(ColorTemplate.rgb("9ccc65"))
                 RocketType.FALCON_HEAVY -> colors.add(ColorTemplate.rgb("ff7043"))
@@ -237,7 +194,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
         var c = 0
 
         response.forEach {
-            val newMax = when (filterRocket) {
+            val newMax = when (viewModel.filterRocket) {
                 RocketType.FALCON_ONE -> it.falconOne.total
                 RocketType.FALCON_NINE -> it.falconNine.total
                 RocketType.FALCON_HEAVY -> it.falconHeavy.total
@@ -253,8 +210,8 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
             entries.add(
                 BarEntry(
                     it.year.toFloat(),
-                    when (filterType) {
-                        LaunchMassViewType.ROCKETS -> when (filterRocket) {
+                    when (viewModel.filterType) {
+                        LaunchMassViewType.ROCKETS -> when (viewModel.filterRocket) {
                             RocketType.FALCON_ONE -> floatArrayOf(it.falconOne.total)
                             RocketType.FALCON_NINE -> floatArrayOf(it.falconNine.total)
                             RocketType.FALCON_HEAVY -> floatArrayOf(it.falconHeavy.total)
@@ -264,7 +221,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
                                 it.falconHeavy.total
                             )
                         }
-                        LaunchMassViewType.ORBIT -> when (filterRocket) {
+                        LaunchMassViewType.ORBIT -> when (viewModel.filterRocket) {
                             RocketType.FALCON_ONE -> orbitsToArray(it.falconOne)
                             RocketType.FALCON_NINE -> orbitsToArray(it.falconNine)
                             RocketType.FALCON_HEAVY -> orbitsToArray(it.falconHeavy)
@@ -294,8 +251,8 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
             setColors(colors)
             setDrawValues(false)
 
-            stackLabels = when (filterType) {
-                LaunchMassViewType.ROCKETS -> when (filterRocket) {
+            stackLabels = when (viewModel.filterType) {
+                LaunchMassViewType.ROCKETS -> when (viewModel.filterRocket) {
                     RocketType.FALCON_ONE -> arrayOf("Falcon 1")
                     RocketType.FALCON_NINE -> arrayOf("Falcon 9")
                     RocketType.FALCON_HEAVY -> arrayOf("Falcon Heavy")
@@ -319,7 +276,7 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
         val dataSets = ArrayList<IBarDataSet>()
         dataSets.add(set)
 
-        binding?.statisticsBarChart?.barChart?.apply {
+        binding.statisticsBarChart.barChart.apply {
             onTouchListener.setLastHighlighted(null)
             highlightValues(null)
             if (data == true) animateY(400, Easing.Linear)
@@ -335,9 +292,53 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
         }
     }
 
-    override fun updateKey(keys: ArrayList<KeysModel>) {
-        this.keys.addAll(keys)
-    }
+    fun populateOrbitKey(
+        f1: OrbitMassModel? = null,
+        f9: OrbitMassModel? = null,
+        fh: OrbitMassModel? = null
+    ): List<KeysModel> =
+        listOfNotNull(
+            sum(f1?.LEO, f9?.LEO, fh?.LEO).let {
+                if (it > 0) KeysModel("LEO", it) else null
+            },
+            sum(f1?.GTO, f9?.GTO, fh?.GTO).let {
+                if (it > 0) KeysModel("GTO", it) else null
+            },
+            sum(f1?.SSO, f9?.SSO, fh?.SSO).let {
+                if (it > 0) KeysModel("SSO", it) else null
+            },
+            sum(f1?.ISS, f9?.ISS, fh?.ISS).let {
+                if (it > 0) KeysModel("ISS", it) else null
+            },
+            sum(f1?.HCO, f9?.HCO, fh?.HCO).let {
+                if (it > 0) KeysModel("HCO", it) else null
+            },
+            sum(f1?.MEO, f9?.MEO, fh?.MEO).let {
+                if (it > 0) KeysModel("MEO", it) else null
+            },
+            sum(f1?.SO, f9?.SO, fh?.SO).let {
+                if (it > 0) KeysModel("SO", it) else null
+            },
+            sum(f1?.ED_L1, f9?.ED_L1, fh?.ED_L1).let {
+                if (it > 0) KeysModel("ED-L1", it) else null
+            },
+            sum(f1?.other, f9?.other, fh?.other).let {
+                if (it > 0) KeysModel("Other", it) else null
+            },
+            KeysModel("Total", sum(f1?.total, f9?.total, fh?.total))
+        )
+
+    fun populateRocketKey(
+        f1: OrbitMassModel? = null,
+        f9: OrbitMassModel? = null,
+        fh: OrbitMassModel? = null
+    ): List<KeysModel> =
+        listOfNotNull(
+            f1?.let { if (it.total > 0) KeysModel("Falcon 1", it.total) else null },
+            f9?.let { if (it.total > 0) KeysModel("Falcon 9", it.total) else null },
+            fh?.let { if (it.total > 0) KeysModel("Falcon Heavy", it.total) else null },
+            KeysModel("Total", sum(f1?.total, f9?.total, fh?.total))
+        )
 
     private fun orbitsToArray(orbitMassModel: OrbitMassModel): FloatArray = floatArrayOf(
         orbitMassModel.LEO,
@@ -351,49 +352,11 @@ class LaunchMassFragment : BaseFragment(), LaunchMassContract.View {
         orbitMassModel.other
     )
 
-    override fun showFilter(filterVisible: Boolean) {
-        binding?.launchMassFilterConstraint?.apply {
-            when (filterVisible) {
-                true -> {
-                    visibility = View.VISIBLE
-                    startAnimation(animateEnterFromTop(context))
-                }
-                false -> {
-                    visibility = View.GONE
-                    startAnimation(animateExitToTop(context))
-                }
-            }
-        }
-
-        binding?.launchMassFilterTint?.apply {
-            when (filterVisible) {
-                true -> {
-                    visibility = View.VISIBLE
-                    startAnimation(animateFadeIn(context))
-                }
-                false -> {
-                    visibility = View.GONE
-                    startAnimation(animateFadeOut(context))
-                }
-            }
-        }
-
-        this.filterVisible = filterVisible
-    }
-
-    override fun showProgress() {
-        binding?.progress?.show()
-    }
-
-    override fun hideProgress() {
-        binding?.progress?.hide()
+    fun showError(error: String?) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (statsList.isEmpty() || it.progress.isShown) presenter?.getOrUpdate(null)
-            }
-        }
+        viewModel.get()
     }
 }

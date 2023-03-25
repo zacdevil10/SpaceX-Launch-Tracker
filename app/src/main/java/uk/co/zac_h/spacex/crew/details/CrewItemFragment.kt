@@ -1,47 +1,36 @@
 package uk.co.zac_h.spacex.crew.details
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.marginTop
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.navigation.navGraphViewModels
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import kotlinx.android.synthetic.main.grid_item_crew.*
-import uk.co.zac_h.spacex.crew.adapters.CrewMissionsAdapter
+import com.google.android.material.transition.MaterialContainerTransform
+import uk.co.zac_h.spacex.R
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.crew.Crew
+import uk.co.zac_h.spacex.crew.CrewViewModel
 import uk.co.zac_h.spacex.databinding.FragmentCrewItemBinding
-import uk.co.zac_h.spacex.model.spacex.Crew
-import uk.co.zac_h.spacex.model.spacex.CrewStatus
-import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_ACTIVE
-import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_INACTIVE
-import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_RETIRED
-import uk.co.zac_h.spacex.utils.SPACEX_CREW_STATUS_UNKNOWN
-import java.util.*
-import kotlin.math.roundToInt
+import uk.co.zac_h.spacex.network.dto.spacex.CrewStatus
 
-class CrewItemFragment : Fragment() {
+class CrewItemFragment : BaseFragment() {
 
-    private var binding: FragmentCrewItemBinding? = null
+    private lateinit var binding: FragmentCrewItemBinding
 
-    companion object {
-        const val CREW_KEY = "crew"
+    private val viewModel: CrewViewModel by navGraphViewModels(R.id.nav_graph) {
+        defaultViewModelProviderFactory
+    }
 
-        fun newInstance(crew: Crew): Fragment {
-            return CrewItemFragment().apply {
-                arguments = Bundle().apply {
-                    putParcelable(CREW_KEY, crew)
-                }
-            }
-        }
+    private val navArgs: CrewItemFragmentArgs by navArgs()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        sharedElementEnterTransition = MaterialContainerTransform()
     }
 
     override fun onCreateView(
@@ -54,91 +43,41 @@ class CrewItemFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val person = arguments?.getParcelable<Crew>(CREW_KEY)
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.crewBottomSheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
 
-        binding?.apply {
-            itemCrewConstraint.transitionName = person?.id
+        update(
+            Crew(
+                id = navArgs.id,
+                image = navArgs.url,
+                name = null,
+                status = CrewStatus.UNKNOWN,
+                agency = null,
+                wikipedia = null,
+                role = null
+            )
+        )
 
-            val typedVal = TypedValue()
-            val initialMargin = indicator.marginTop
-            val bottomSheetBehavior = BottomSheetBehavior.from(crewBottomSheet)
+        viewModel.crew.observe(viewLifecycleOwner) { result ->
+            result.data?.find { it.id == navArgs.id }?.let { update(it) }
+        }
 
-            bottomSheetBehavior.apply {
-                state = BottomSheetBehavior.STATE_COLLAPSED
+        viewModel.get()
 
-                addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                        context?.theme?.resolveAttribute(
-                            android.R.attr.actionBarSize,
-                            typedVal,
-                            true
-                        )?.let {
-                            val actionBarHeight = TypedValue.complexToDimensionPixelSize(
-                                typedVal.data,
-                                requireContext().resources.displayMetrics
-                            )
-
-                            indicator.layoutParams =
-                                (indicator.layoutParams as ConstraintLayout.LayoutParams).apply {
-                                    topMargin =
-                                        (initialMargin + (actionBarHeight * slideOffset)).roundToInt()
-                                }
-
-                        }
-                    }
-
-                    override fun onStateChanged(bottomSheet: View, newState: Int) {
-
-                    }
-                })
-            }
-
-            Glide.with(view).load(person?.image).listener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    parentFragment?.startPostponedEnterTransition()
-                    return false
-                }
-
-                override fun onResourceReady(
-                    resource: Drawable?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    parentFragment?.startPostponedEnterTransition()
-                    return false
-                }
-            }).into(crewImage)
-
-            crewName.text = person?.name
-            person?.status?.let { status ->
-                crewStatus.text = when (status) {
-                    CrewStatus.ACTIVE -> SPACEX_CREW_STATUS_ACTIVE
-                    CrewStatus.INACTIVE -> SPACEX_CREW_STATUS_INACTIVE
-                    CrewStatus.RETIRED -> SPACEX_CREW_STATUS_RETIRED
-                    CrewStatus.UNKNOWN -> SPACEX_CREW_STATUS_UNKNOWN
-                }.capitalize(Locale.getDefault())
-            }
-            crewAgency.text = person?.agency
-
-            person?.launches?.let {
-                missionsRecycler.apply {
-                    layoutManager = LinearLayoutManager(context)
-                    adapter = CrewMissionsAdapter(context, it)
-                }
-                if (it.isEmpty()) crewMissionLabel.visibility = View.GONE
-            }
+        binding.close.setOnClickListener {
+            findNavController().navigateUp()
         }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
+    private fun update(person: Crew) {
+        binding.itemCrewConstraint.transitionName = person.id
+
+        Glide.with(requireContext()).load(person.image).into(binding.crewImage)
+
+        binding.crewName.text = person.name
+        person.status.let { status ->
+            binding.crewStatus.text = status.status
+        }
+        binding.crewAgency.text = person.agency
     }
 }

@@ -1,12 +1,13 @@
 package uk.co.zac_h.spacex.statistics.graphs.fairingrecovery
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.doOnPreDraw
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.BarData
@@ -14,42 +15,37 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
-import uk.co.zac_h.spacex.base.NetworkInterface
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentFairingRecoveryBinding
+import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
 import uk.co.zac_h.spacex.utils.models.FairingRecoveryModel
 import uk.co.zac_h.spacex.utils.models.KeysModel
 
-class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<FairingRecoveryModel>> {
+class FairingRecoveryFragment : BaseFragment() {
 
-    override var title: String = "Fairing Recovery"
+    private lateinit var binding: FragmentFairingRecoveryBinding
 
-    private var binding: FragmentFairingRecoveryBinding? = null
+    private val viewModel: FairingRecoveryViewModel by viewModels()
 
-    private var presenter: NetworkInterface.Presenter<List<FairingRecoveryModel>?>? = null
+    private val navArgs: FairingRecoveryFragmentArgs by navArgs()
 
-    private lateinit var statsList: ArrayList<FairingRecoveryModel>
-    private lateinit var keyAdapter: StatisticsKeyAdapter
-    private var keys: ArrayList<KeysModel> = ArrayList()
-
-    private var heading: String? = null
+    private var statsList: List<FairingRecoveryModel> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
 
-        sharedElementEnterTransition = MaterialContainerTransform()
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.nav_host
+        }
 
-        heading = arguments?.getString("heading")
-        statsList = savedInstanceState?.getParcelableArrayList("stats") ?: ArrayList()
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
     }
 
     override fun onCreateView(
@@ -65,152 +61,99 @@ class FairingRecoveryFragment : BaseFragment(), NetworkInterface.View<List<Fairi
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
+        viewModel.get()
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+        binding.fairingRecoveryConstraint.transitionName = getString(navArgs.type.title)
 
-        binding?.fairingRecoveryConstraint?.transitionName = heading
+        val keyAdapter = StatisticsKeyAdapter(requireContext(), false)
 
-        hideProgress()
-
-        presenter = FairingRecoveryPresenter(this, FairingRecoveryInteractor())
-
-        keyAdapter = StatisticsKeyAdapter(context, keys, false)
-
-        binding?.statisticsBarChart?.recycler?.apply {
-            layoutManager = LinearLayoutManager(this@FairingRecoveryFragment.context)
+        binding.statisticsBarChart.recycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = keyAdapter
         }
 
-        binding?.statisticsBarChart?.barChart?.apply {
+        binding.statisticsBarChart.barChart.apply {
             setup()
 
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     e?.let {
-                        val stats = statsList.filter { it.year == e.x.toInt() }[0]
+                        val stats = statsList.first { it.year == e.x.toInt() }
 
-                        keys.clear()
-
-                        binding?.apply {
-                            statisticsBarChart.key.visibility = View.VISIBLE
-
-                            statisticsBarChart.year.text = stats.year.toString()
-
-                            keys.apply {
-                                if (stats.successes > 0) add(
-                                    KeysModel(
-                                        "Successes",
-                                        stats.successes
-                                    )
-                                )
-                                if (stats.failures > 0) add(KeysModel("Failures", stats.failures))
-                                add(KeysModel("Total", e.y))
-                            }
+                        binding.statisticsBarChart.apply {
+                            key.visibility = View.VISIBLE
+                            year.text = stats.year.toString()
                         }
 
-                        keyAdapter.notifyDataSetChanged()
+                        val keys = listOf(
+                            KeysModel("Successes", stats.successes),
+                            KeysModel("Failures", stats.failures),
+                            KeysModel("Total", e.y)
+                        )
+
+                        keyAdapter.submitList(keys)
                     }
                 }
 
                 override fun onNothingSelected() {
-                    binding?.statisticsBarChart?.key?.visibility = View.GONE
-                    keys.clear()
-                    keyAdapter.notifyDataSetChanged()
+                    binding.statisticsBarChart.key.visibility = View.GONE
+                    keyAdapter.submitList(emptyList())
                 }
             })
         }
 
-        presenter?.getOrUpdate(statsList)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("stats", statsList)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_statistics_reload, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.reload -> {
-            statsList.clear()
-            presenter?.getOrUpdate(null)
-            true
+        viewModel.fairingRecovery.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is ApiResult.Pending -> {}
+                is ApiResult.Success -> response.data?.let {
+                    update(false/*viewModel.cacheLocation != Repository.RequestLocation.CACHE*/, it)
+                }
+                is ApiResult.Failure -> showError(response.exception.message)
+            }
         }
-        else -> super.onOptionsItemSelected(item)
     }
 
-    override fun update(data: Any, response: List<FairingRecoveryModel>) {
-        if (statsList.isEmpty()) statsList.addAll(response)
-
-        val colors = ArrayList<Int>()
-
-        colors.add(ColorTemplate.rgb("29b6f6")) //Success
-        colors.add(ColorTemplate.rgb("b00020")) //Failure
-
-        val entries = ArrayList<BarEntry>()
+    fun update(data: Boolean, response: List<FairingRecoveryModel>) {
+        statsList = response
 
         var max = 0f
 
-        response.forEach {
+        val entries = response.map {
             val newMax = it.successes + it.failures
             if (newMax > max) max = newMax
-            entries.add(
-                BarEntry(
-                    it.year.toFloat(),
-                    floatArrayOf(
-                        it.successes,
-                        it.failures
-                    )
-                )
-            )
+            BarEntry(it.year.toFloat(), floatArrayOf(it.successes, it.failures))
         }
 
         val set = BarDataSet(entries, "").apply {
-            setColors(colors)
+            colors = listOf(
+                ColorTemplate.rgb("29b6f6"), //Success
+                ColorTemplate.rgb("b00020")  //Failure
+            )
             setDrawValues(false)
 
             stackLabels = arrayOf("Success", "Failure")
         }
 
-        val dataSets = ArrayList<IBarDataSet>()
-        dataSets.add(set)
-
-        binding?.statisticsBarChart?.barChart?.apply {
-            if (data == true) animateY(400, Easing.Linear)
+        binding.statisticsBarChart.barChart.apply {
+            if (data) animateY(400, Easing.Linear)
             xAxis.labelCount = response.size
             axisLeft.apply {
                 axisMinimum = 0f
                 axisMaximum = if ((max.toInt() % 2) == 0) max else max.plus(1)
-                labelCount =
-                    if ((max.toInt() % 2) == 0) max.toInt() / 2 else max.toInt().plus(1) / 2
+                labelCount = if ((max.toInt() % 2) == 0) {
+                    max.toInt() / 2
+                } else max.toInt().plus(1) / 2
             }
-            this.data = BarData(dataSets)
+            this.data = BarData(listOf(set))
             invalidate()
         }
     }
 
-    override fun showProgress() {
-        binding?.progress?.show()
-    }
-
-    override fun hideProgress() {
-        binding?.progress?.hide()
+    fun showError(error: String?) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (statsList.isEmpty() || it.progress.isShown) presenter?.getOrUpdate(null)
-            }
-        }
+        viewModel.get()
     }
 }

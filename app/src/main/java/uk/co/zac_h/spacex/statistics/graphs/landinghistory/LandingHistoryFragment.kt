@@ -1,12 +1,13 @@
 package uk.co.zac_h.spacex.statistics.graphs.landinghistory
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.doOnPreDraw
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.BarData
@@ -14,42 +15,37 @@ import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
-import uk.co.zac_h.spacex.base.NetworkInterface
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentLandingHistoryBinding
+import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.statistics.adapters.StatisticsKeyAdapter
 import uk.co.zac_h.spacex.utils.models.KeysModel
 import uk.co.zac_h.spacex.utils.models.LandingHistoryModel
 
-class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<LandingHistoryModel>> {
+class LandingHistoryFragment : BaseFragment() {
 
-    override var title: String = "Landing History"
+    private lateinit var binding: FragmentLandingHistoryBinding
 
-    private var binding: FragmentLandingHistoryBinding? = null
+    private val viewModel: LandingHistoryViewModel by viewModels()
 
-    private var presenter: NetworkInterface.Presenter<List<LandingHistoryModel>?>? = null
+    private val navArgs: LandingHistoryFragmentArgs by navArgs()
 
-    private lateinit var statsList: ArrayList<LandingHistoryModel>
-    private lateinit var keyAdapter: StatisticsKeyAdapter
-    private var keys: ArrayList<KeysModel> = ArrayList()
-
-    private var heading: String? = null
+    private var statsList: List<LandingHistoryModel> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
 
-        sharedElementEnterTransition = MaterialContainerTransform()
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.nav_host
+        }
 
-        heading = arguments?.getString("heading")
-        statsList = savedInstanceState?.getParcelableArrayList("stats") ?: ArrayList()
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
     }
 
     override fun onCreateView(
@@ -65,127 +61,84 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
+        viewModel.get()
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+        binding.landingHistoryConstraint.transitionName = getString(navArgs.type.title)
 
-        binding?.landingHistoryConstraint?.transitionName = heading
+        val keyAdapter = StatisticsKeyAdapter(requireContext(), false)
 
-        hideProgress()
-
-        presenter = LandingHistoryPresenter(this, LandingHistoryInteractor())
-
-        keyAdapter = StatisticsKeyAdapter(context, keys, false)
-
-        binding?.statisticsBarChart?.recycler?.apply {
-            layoutManager = LinearLayoutManager(this@LandingHistoryFragment.context)
+        binding.statisticsBarChart.recycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
             adapter = keyAdapter
         }
 
-        binding?.statisticsBarChart?.barChart?.apply {
+        binding.statisticsBarChart.barChart.apply {
             setup()
 
             setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
                 override fun onValueSelected(e: Entry?, h: Highlight?) {
                     e?.let {
-                        val stats = statsList.filter { it.year == e.x.toInt() }[0]
+                        val stats = statsList.first { it.year == e.x.toInt() }
 
-                        keys.clear()
-
-                        binding?.apply {
-                            statisticsBarChart.key.visibility = View.VISIBLE
-
-                            statisticsBarChart.year.text = stats.year.toString()
-
-                            keys.apply {
-                                if (stats.ocean > 0) add(KeysModel("Ocean", stats.ocean))
-                                if (stats.rtls > 0) add(KeysModel("RTLS", stats.rtls))
-                                if (stats.asds > 0) add(KeysModel("ASDS", stats.asds))
-                                if (stats.failures > 0) add(KeysModel("Failures", stats.failures))
-                                add(KeysModel("Total", e.y))
-                            }
+                        binding.statisticsBarChart.apply {
+                            key.visibility = View.VISIBLE
+                            year.text = stats.year.toString()
                         }
 
-                        keyAdapter.notifyDataSetChanged()
+                        val keys = listOfNotNull(
+                            if (stats.ocean > 0) KeysModel("Ocean", stats.ocean) else null,
+                            if (stats.rtls > 0) KeysModel("RTLS", stats.rtls) else null,
+                            if (stats.asds > 0) KeysModel("ASDS", stats.asds) else null,
+                            if (stats.failures > 0) KeysModel("Failures", stats.failures) else null,
+                            KeysModel("Total", e.y)
+                        )
+
+                        keyAdapter.submitList(keys)
                     }
                 }
 
                 override fun onNothingSelected() {
-                    binding?.statisticsBarChart?.key?.visibility = View.GONE
-                    keys.clear()
-                    keyAdapter.notifyDataSetChanged()
+                    binding.statisticsBarChart.key.visibility = View.GONE
+                    keyAdapter.submitList(emptyList())
                 }
             })
         }
 
-        presenter?.getOrUpdate(statsList)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("stats", statsList)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_statistics_reload, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.reload -> {
-            statsList.clear()
-            presenter?.getOrUpdate(null)
-            true
+        viewModel.landingHistory.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is ApiResult.Pending -> {}
+                is ApiResult.Success -> response.data?.let {
+                    update(false/*viewModel.cacheLocation != Repository.RequestLocation.CACHE*/, it)
+                }
+                is ApiResult.Failure -> showError(response.exception.message)
+            }
         }
-        else -> super.onOptionsItemSelected(item)
     }
 
-    override fun update(data: Any, response: List<LandingHistoryModel>) {
-        if (statsList.isEmpty()) statsList.addAll(response)
-
-        val colors = ArrayList<Int>()
-
-        colors.add(ColorTemplate.rgb("29b6f6")) //Ocean
-        colors.add(ColorTemplate.rgb("9ccc65")) //RTLS
-        colors.add(ColorTemplate.rgb("ff7043")) //ASDS
-        colors.add(ColorTemplate.rgb("b00020")) //Failures
-
-        val entries = ArrayList<BarEntry>()
+    fun update(data: Any, response: List<LandingHistoryModel>) {
+        statsList = response
 
         var max = 0f
 
-        response.forEach {
+        val entries = response.map {
             val newMax = it.ocean + it.asds + it.rtls + it.failures
             if (newMax > max) max = newMax
-            entries.add(
-                BarEntry(
-                    it.year.toFloat(),
-                    floatArrayOf(
-                        it.ocean,
-                        it.rtls,
-                        it.asds,
-                        it.failures
-                    )
-                )
-            )
+            BarEntry(it.year.toFloat(), floatArrayOf(it.ocean, it.rtls, it.asds, it.failures))
         }
 
         val set = BarDataSet(entries, "").apply {
-            setColors(colors)
+            colors = listOf(
+                ColorTemplate.rgb("29b6f6"), //Ocean
+                ColorTemplate.rgb("9ccc65"), //RTLS
+                ColorTemplate.rgb("ff7043"), //ASDS
+                ColorTemplate.rgb("b00020"), //Failures
+            )
             setDrawValues(false)
 
             stackLabels = arrayOf("Ocean", "RTLS", "ASDS", "Failures")
         }
 
-        val dataSets = ArrayList<IBarDataSet>()
-        dataSets.add(set)
-
-        binding?.statisticsBarChart?.barChart?.apply {
+        binding.statisticsBarChart.barChart.apply {
             if (data == true) animateY(400, Easing.Linear)
             xAxis.labelCount = response.size
             axisLeft.apply {
@@ -194,24 +147,16 @@ class LandingHistoryFragment : BaseFragment(), NetworkInterface.View<List<Landin
                 labelCount =
                     if ((max.toInt() % 2) == 0) max.toInt() / 2 else max.toInt().plus(1) / 2
             }
-            this.data = BarData(dataSets)
+            this.data = BarData(listOf(set))
             invalidate()
         }
     }
 
-    override fun showProgress() {
-        binding?.progress?.show()
-    }
-
-    override fun hideProgress() {
-        binding?.progress?.hide()
+    fun showError(error: String?) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (statsList.isEmpty() || it.progress.isShown) presenter?.getOrUpdate(null)
-            }
-        }
+        viewModel.get()
     }
 }

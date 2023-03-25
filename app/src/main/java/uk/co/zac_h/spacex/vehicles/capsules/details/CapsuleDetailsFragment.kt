@@ -5,36 +5,33 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.MaterialContainerTransform
-import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.base.BaseFragment
+import com.google.android.material.transition.MaterialElevationScale
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.databinding.FragmentCapsuleDetailsBinding
-import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
-import uk.co.zac_h.spacex.model.spacex.Capsule
-import uk.co.zac_h.spacex.utils.*
-import java.util.*
+import uk.co.zac_h.spacex.vehicles.capsules.Capsule
+import uk.co.zac_h.spacex.vehicles.capsules.CapsulesViewModel
 
-class CapsuleDetailsFragment : BaseFragment() {
+class CapsuleDetailsFragment : BaseFragment(), ViewPagerFragment {
 
-    override var title: String = ""
+    override val title: String by lazy { navArgs.label ?: title }
 
-    private var binding: FragmentCapsuleDetailsBinding? = null
+    private val navArgs: CapsuleDetailsFragmentArgs by navArgs()
 
-    private var capsule: Capsule? = null
+    private val viewModel: CapsulesViewModel by viewModels()
+
+    private lateinit var binding: FragmentCapsuleDetailsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        capsule = arguments?.getParcelable("capsule") as Capsule?
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
     }
 
     override fun onCreateView(
@@ -47,15 +44,19 @@ class CapsuleDetailsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.get()
+
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+        viewModel.capsules.observe(viewLifecycleOwner) { result ->
+            update(result.data?.first { it.id == navArgs.id })
+        }
+    }
 
-        binding?.apply {
+    private fun update(capsule: Capsule?) {
+        with(binding) {
             capsuleDetailsConstraint.transitionName = capsule?.id
-
-            toolbar.title = capsule?.serial
 
             capsule?.type?.let {
                 capsuleDetailsTypeText.text = it.type
@@ -71,21 +72,17 @@ class CapsuleDetailsFragment : BaseFragment() {
                 capsuleDetailsStatusText.text = it.status
             }
             capsuleDetailsReuseText.text = capsule?.reuseCount.toString()
-            capsuleDetailsLandingText.text =
-                ((capsule?.landLandings ?: 0) + (capsule?.waterLandings ?: 0)).toString()
 
-            capsule?.launches?.let { launches ->
+            val totalLandings = capsule?.landLandings?.plus(capsule.waterLandings ?: 0) ?: 0
+            capsuleDetailsLandingText.text = totalLandings.toString()
+
+            /*capsule?.launches?.let { launches ->
                 capsuleDetailsMissionsRecycler.apply {
                     layoutManager = LinearLayoutManager(this@CapsuleDetailsFragment.context)
                     setHasFixedSize(true)
-                    adapter = MissionsAdapter(context, launches)
+                    adapter = uk.co.zac_h.spacex.launch.adapters.MissionsAdapter().also { it.submitList(launches) }
                 }
-            } ?: run { capsuleDetailsMissionLabel.visibility = View.GONE }
+            } ?: run { capsuleDetailsMissionLabel.visibility = View.GONE }*/
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
     }
 }

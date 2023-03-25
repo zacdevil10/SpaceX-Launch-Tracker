@@ -1,222 +1,86 @@
 package uk.co.zac_h.spacex.news.reddit
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.view.*
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.viewModels
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
-import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.base.BaseFragment
+import dagger.hilt.android.AndroidEntryPoint
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.fragment.openWebLink
+import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.databinding.FragmentRedditFeedBinding
-import uk.co.zac_h.spacex.model.reddit.SubredditModel
-import uk.co.zac_h.spacex.model.reddit.SubredditPostModel
 import uk.co.zac_h.spacex.news.adapters.RedditAdapter
-import uk.co.zac_h.spacex.utils.PaginationScrollListener
-import uk.co.zac_h.spacex.utils.REDDIT_PARAM_ORDER_HOT
-import uk.co.zac_h.spacex.utils.REDDIT_PARAM_ORDER_NEW
 
-class RedditFeedFragment : BaseFragment(), RedditFeedContract.RedditFeedView {
+@AndroidEntryPoint
+class RedditFeedFragment : BaseFragment(), ViewPagerFragment {
 
     override var title: String = "Reddit"
 
-    private var binding: FragmentRedditFeedBinding? = null
+    private val viewModel: RedditFeedViewModel by viewModels()
 
-    private var presenter: RedditFeedContract.RedditFeedPresenter? = null
+    private lateinit var binding: FragmentRedditFeedBinding
+
     private lateinit var redditAdapter: RedditAdapter
-
-    private lateinit var posts: ArrayList<SubredditPostModel>
-
-    private var isLastPage = false
-    private var isLoading = false
-
-    private var order: String = REDDIT_PARAM_ORDER_HOT
-    private var orderPos: Int = 0
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-
-        order = savedInstanceState?.getString("order") ?: REDDIT_PARAM_ORDER_HOT
-        orderPos = savedInstanceState?.getInt("orderPos") ?: 0
-
-        posts = savedInstanceState?.let {
-            it.getParcelableArrayList<SubredditPostModel>("posts") as ArrayList<SubredditPostModel>
-        } ?: ArrayList()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentRedditFeedBinding.inflate(inflater, container, false)
-        return binding?.root
-    }
+    ): View = FragmentRedditFeedBinding.inflate(inflater, container, false).apply {
+        binding = this
+    }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
-        hidePagingProgress()
+        redditAdapter = RedditAdapter {
+            openWebLink(it)
+        }
 
-        presenter = RedditFeedPresenterImpl(this, RedditFeedInteractorImpl())
-
-        redditAdapter = RedditAdapter(this, posts)
-
-        val layout = LinearLayoutManager(this@RedditFeedFragment.context)
-
-        binding?.redditRecycler?.apply {
-            layoutManager = layout
-            setHasFixedSize(true)
+        binding.redditRecycler.apply {
+            layoutManager = LinearLayoutManager(context)
             adapter = redditAdapter
-
-            addOnScrollListener(object : PaginationScrollListener(layout) {
-                override fun isLastPage(): Boolean = isLastPage
-
-                override fun isLoading(): Boolean = isLoading
-
-                override fun isScrollUpVisible(): Boolean = false
-
-                override fun loadItems() {
-                    isLoading = true
-                    presenter?.getNextPage(posts[posts.size - 1].data.name, order)
-                }
-
-                override fun onScrollTop() {
-
-                }
-
-                override fun onScrolledDown() {
-
-                }
-            })
         }
 
-        binding?.swipeRefresh?.setOnRefreshListener {
-            presenter?.getSub(order)
+        binding.swipeRefresh.setOnRefreshListener {
+            redditAdapter.refresh()
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        if (posts.isEmpty()) presenter?.getSub(order)
-        (context?.applicationContext as App).networkStateChangeListener.addListener(this)
-    }
+        viewModel.redditFeed.observe(viewLifecycleOwner) {
+            redditAdapter.submitData(lifecycle, it)
+        }
 
-    override fun onPause() {
-        super.onPause()
-        (context?.applicationContext as App).networkStateChangeListener.removeListener(this)
-    }
+        redditAdapter.addLoadStateListener {
+            if (it.refresh is LoadState.Loading) {
+                binding.progress.show()
+            } else {
+                binding.swipeRefresh.isRefreshing = false
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("posts", posts)
-        outState.putString("order", order)
-        outState.putInt("orderPos", orderPos)
-        super.onSaveInstanceState(outState)
-    }
+                if (it.refresh is LoadState.NotLoading) binding.progress.hide()
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.cancelRequest()
-        binding = null
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_reddit, menu)
-
-        val item = menu.findItem(R.id.reddit_order).actionView as Spinner
-        item.apply {
-            adapter = ArrayAdapter.createFromResource(
-                context,
-                R.array.order,
-                android.R.layout.simple_spinner_item
-            ).apply {
-                setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            }
-            setSelection(orderPos)
-            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    p0: AdapterView<*>?,
-                    p1: View?,
-                    position: Int,
-                    p3: Long
-                ) {
-                    if (orderPos != position) when (position) {
-                        0 -> {
-                            order = REDDIT_PARAM_ORDER_HOT
-                            presenter?.getSub(order)
-                        }
-                        1 -> {
-                            order = REDDIT_PARAM_ORDER_NEW
-                            presenter?.getSub(order)
-                        }
-                    }
-                    orderPos = position
+                val error = when {
+                    it.prepend is LoadState.Error -> it.prepend as LoadState.Error
+                    it.append is LoadState.Error -> it.append as LoadState.Error
+                    it.refresh is LoadState.Error -> it.refresh as LoadState.Error
+                    else -> null
                 }
 
-                override fun onNothingSelected(p0: AdapterView<*>?) {
-
+                error?.let {
+                    showError(error.error.message)
                 }
             }
         }
-
-        super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun updateRecycler(subredditData: SubredditModel) {
-        posts.clear()
-        posts.addAll(subredditData.data.children)
-
-        redditAdapter.notifyDataSetChanged()
-        binding?.redditRecycler?.scrollToPosition(0)
-    }
-
-    override fun addPagedData(subredditData: SubredditModel) {
-        isLoading = false
-
-        posts.addAll(subredditData.data.children)
-        redditAdapter.notifyDataSetChanged()
-    }
-
-    override fun openWebLink(link: String) {
-        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
-    }
-
-    override fun showProgress() {
-        binding?.progress?.show()
-    }
-
-    override fun hideProgress() {
-        binding?.progress?.hide()
-    }
-
-    override fun toggleSwipeRefresh(refreshing: Boolean) {
-        binding?.swipeRefresh?.isRefreshing = refreshing
-    }
-
-    override fun showPagingProgress() {
-        binding?.pagingProgressIndicator?.show()
-    }
-
-    override fun hidePagingProgress() {
-        binding?.pagingProgressIndicator?.hide()
-    }
-
-    override fun showError(error: String) {
-
+    fun showError(error: String?) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (posts.isEmpty() || it.progress.isShown)
-                    presenter?.getSub(order)
-            }
-
-            if (isLoading) presenter?.getNextPage(posts[posts.size - 1].data.name, order)
-        }
+        redditAdapter.retry()
     }
 }
+

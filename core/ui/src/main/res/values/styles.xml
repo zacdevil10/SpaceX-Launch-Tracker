@@ -1,0 +1,11 @@
+<resources>
+
+    <style name="SpinnerItem">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Details" parent="TextAppearance.MaterialComponents.Body1" />
+
+    <style name="MissionTitle" parent="TextAppearance.MaterialComponents.Subtitle2" />
+
+</resources>

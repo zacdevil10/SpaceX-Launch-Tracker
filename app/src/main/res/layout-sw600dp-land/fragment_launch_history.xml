@@ -5,43 +5,11 @@
     android:id="@+id/launch_history_constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_background"
-    android:orientation="vertical"
     tools:context=".statistics.graphs.launchhistory.LaunchHistoryFragment">
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/app_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            style="@style/Widget.MaterialComponents.Toolbar.Primary"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:elevation="@dimen/toolbar_elevation"
-            android:textColor="?colorOnSurface"
-            android:theme="@style/AppTheme.AppBarOverlay"
-            app:title="Launch History" />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <com.google.android.material.progressindicator.ProgressIndicator
-        android:id="@+id/progress"
-        style="@style/Widget.MaterialComponents.ProgressIndicator.Linear.Indeterminate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="@dimen/toolbar_elevation"
-        app:indicatorColor="?colorSecondary"
-        app:layout_constraintTop_toBottomOf="@id/app_bar" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -65,7 +33,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginEnd="@dimen/medium_margin"
-                app:cardElevation="@dimen/card_elevation"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/launch_history_pie_chart"
                 app:layout_constraintTop_toTopOf="@id/launch_history_pie_chart">
@@ -81,7 +48,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/success_rate_heading"
-                        android:textColor="@color/color_secondary"
+                        android:textAppearance="?textAppearanceHeadline6"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -189,11 +156,9 @@
     <View
         android:id="@+id/tint"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:background="#68000000"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/app_bar" />
+        android:visibility="gone" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/launch_history_filter_constraint"
@@ -205,7 +170,7 @@
         android:focusable="true"
         android:padding="@dimen/medium_margin"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/app_bar">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/launch_history_filters_text"

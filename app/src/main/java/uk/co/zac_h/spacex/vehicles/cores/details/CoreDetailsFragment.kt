@@ -5,39 +5,35 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
-import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.base.BaseFragment
+import com.google.android.material.transition.MaterialElevationScale
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.databinding.FragmentCoreDetailsBinding
-import uk.co.zac_h.spacex.launches.adapters.MissionsAdapter
-import uk.co.zac_h.spacex.model.spacex.Core
-import uk.co.zac_h.spacex.utils.*
-import java.util.*
+import uk.co.zac_h.spacex.network.ApiResult
+import uk.co.zac_h.spacex.vehicles.cores.Core
+import uk.co.zac_h.spacex.vehicles.cores.CoreViewModel
 
-class CoreDetailsFragment : BaseFragment() {
+class CoreDetailsFragment : BaseFragment(), ViewPagerFragment {
 
-    override var title: String = "Core Details"
+    override val title: String by lazy { navArgs.label ?: title }
 
-    private var binding: FragmentCoreDetailsBinding? = null
+    private val navArgs: CoreDetailsFragmentArgs by navArgs()
 
-    private var core: Core? = null
+    private val viewModel: CoreViewModel by viewModels()
+
+    private lateinit var binding: FragmentCoreDetailsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         sharedElementEnterTransition = MaterialContainerTransform()
 
-        core = if (savedInstanceState != null) {
-            savedInstanceState.getParcelable("core")
-        } else {
-            arguments?.getParcelable("core")
-        }
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
     }
 
     override fun onCreateView(
@@ -52,56 +48,41 @@ class CoreDetailsFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         postponeEnterTransition()
+        view.doOnPreDraw { startPostponedEnterTransition() }
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+        binding.coreDetailsScrollview.transitionName = navArgs.id
 
-        core?.let {
-            updateCoreDetails(it)
+        binding.coreDetailsMissionRecycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            setHasFixedSize(true)
         }
 
-        view.doOnPreDraw { startPostponedEnterTransition() }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelable("core", core)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        binding = null
-    }
-
-    private fun updateCoreDetails(core: Core) {
-        core.apply {
-            this@CoreDetailsFragment.core = core
-
-            binding?.apply {
-                coreDetailsScrollview.transitionName = id
-
-                toolbar.title = serial
-
-                coreDetailsSerialText.text = serial
-                coreDetailsBlockText.text = block ?: "TBD"
-                coreDetailsDetailsText.text = lastUpdate
-                status?.let {
-                    coreDetailsStatusText.text = it.status
+        viewModel.cores.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is  ApiResult.Pending -> binding.progress.show()
+                is ApiResult.Success -> result.data?.first { it.id == navArgs.id }?.let {
+                    update(it)
+                    binding.progress.hide()
                 }
-                coreDetailsReuseText.text = reuseCount.toString()
-                coreDetailsRtlsAttemptsText.text = attemptsRtls.toString()
-                coreDetailsRtlsLandingsText.text = landingsRtls.toString()
-                coreDetailsAsdsAttemptsText.text = attemptsAsds.toString()
-                coreDetailsAsdsLandingsText.text = landingsAsds.toString()
+                is  ApiResult.Failure -> {}
+            }
+        }
 
-                launches?.let {
-                    coreDetailsMissionRecycler.apply {
-                        layoutManager = LinearLayoutManager(this@CoreDetailsFragment.context)
-                        setHasFixedSize(true)
-                        adapter = MissionsAdapter(context, it)
-                    }
-                }
+        viewModel.getCores()
+    }
 
-                progress.hide()
+    private fun update(core: Core?) {
+        with(binding) {
+            core?.let { core ->
+                coreDetailsSerialText.text = core.serial
+                coreDetailsBlockText.text = core.block ?: "TBD"
+                coreDetailsDetailsText.text = core.lastUpdate
+                coreDetailsStatusText.text = core.status?.status
+                coreDetailsReuseText.text = core.reuseCount.toString()
+                coreDetailsRtlsAttemptsText.text = core.attemptsRtls.toString()
+                coreDetailsRtlsLandingsText.text = core.landingsRtls.toString()
+                coreDetailsAsdsAttemptsText.text = core.attemptsAsds.toString()
+                coreDetailsAsdsLandingsText.text = core.landingsAsds.toString()
             }
         }
     }

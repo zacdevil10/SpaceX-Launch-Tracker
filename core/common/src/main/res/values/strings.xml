@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="nav_header_title">SpaceX - Launch Tracker</string>
+    <string name="nav_header_subtitle">By Zac Hadjineophytou</string>
+
+    <!--Menu-->
+    <string name="search">Search</string>
+
+    <!--Rocket names-->
+    <string name="falcon_1">Falcon 1</string>
+    <string name="falcon_9">Falcon 9</string>
+    <string name="falcon_heavy">Falcon Heavy</string>
+    <string name="starship">Starship</string>
+
+    <string name="percentage">%1$s%%</string>
+
+</resources>

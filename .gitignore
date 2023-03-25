@@ -16,3 +16,5 @@
 /captures
 .externalNativeBuild
 secrets.properties
+
+.idea/deploymentTargetDropDown.xml

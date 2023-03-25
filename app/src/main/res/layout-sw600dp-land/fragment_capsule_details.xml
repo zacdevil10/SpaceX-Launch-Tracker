@@ -5,24 +5,12 @@
     android:id="@+id/capsule_details_constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_background"
-    tools:context=".vehicles.capsules.details.CapsuleDetailsFragment"
-    tools:ignore="Overdraw">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        style="@style/Widget.MaterialComponents.Toolbar.Primary"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:textColor="?colorOnSurface"
-        app:layout_constraintTop_toTopOf="parent" />
+    tools:context=".vehicles.capsules.details.CapsuleDetailsFragment">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/capsule_details_scrollview"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbar">
+        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="600dp"

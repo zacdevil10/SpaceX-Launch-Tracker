@@ -1,50 +1,44 @@
 package uk.co.zac_h.spacex.statistics.graphs.padstats
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.doOnPreDraw
-import androidx.drawerlayout.widget.DrawerLayout
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
+import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.App
-import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.MainActivity
-import uk.co.zac_h.spacex.base.NetworkInterface
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.types.PadType
 import uk.co.zac_h.spacex.databinding.FragmentPadStatsBinding
-import uk.co.zac_h.spacex.model.spacex.StatsPadModel
+import uk.co.zac_h.spacex.network.ApiResult
+import uk.co.zac_h.spacex.network.dto.spacex.StatsPadModel
 import uk.co.zac_h.spacex.statistics.adapters.PadStatsSitesAdapter
-import uk.co.zac_h.spacex.utils.PadType
 import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 
-class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadModel>> {
+class PadStatsFragment : BaseFragment() {
 
-    override var title: String = "Pad Stats"
+    private lateinit var binding: FragmentPadStatsBinding
 
-    private var binding: FragmentPadStatsBinding? = null
+    private val viewModel: PadStatsViewModel by viewModels()
 
-    private var heading: String? = null
-
-    private var presenter: PadStatsContract.PadStatsPresenter? = null
-
-    private var type: PadType? = null
+    private val navArgs: PadStatsFragmentArgs by navArgs()
 
     private lateinit var padsAdapter: PadStatsSitesAdapter
 
-    private lateinit var pads: ArrayList<StatsPadModel>
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
 
-        sharedElementEnterTransition = MaterialContainerTransform()
+        sharedElementEnterTransition = MaterialContainerTransform().apply {
+            drawingViewId = R.id.nav_host
+        }
 
-        heading = arguments?.getString("heading")
-        type = arguments?.get("type") as PadType?
-        pads = savedInstanceState?.getParcelableArrayList("pads") ?: ArrayList()
+        exitTransition = MaterialElevationScale(false)
+        reenterTransition = MaterialElevationScale(true)
     }
 
     override fun onCreateView(
@@ -61,90 +55,47 @@ class PadStatsFragment : BaseFragment(), NetworkInterface.View<List<StatsPadMode
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        (activity as MainActivity).setSupportActionBar(binding?.toolbar)
+        binding.padStatsLaunchSitesRecycler.transitionName = getString(navArgs.type.title)
 
-        binding?.toolbar?.setupWithNavController(navController, appBarConfig)
+        padsAdapter = PadStatsSitesAdapter()
 
-        binding?.toolbar?.title = heading
-
-        binding?.padStatsConstraint?.transitionName = heading
-
-        hideProgress()
-
-        presenter = PadStatsPresenterImpl(this, PadStatsInteractorImpl())
-
-        padsAdapter = PadStatsSitesAdapter(pads)
-
-        binding?.padStatsLaunchSitesRecycler?.apply {
+        binding.padStatsLaunchSitesRecycler.apply {
             layoutManager = LinearLayoutManager(this@PadStatsFragment.context)
             setHasFixedSize(true)
             adapter = padsAdapter
         }
 
-        type?.let {
-            when (it) {
-                PadType.LANDING_PAD -> presenter?.getLandingPads()
-                PadType.LAUNCHPAD -> presenter?.getLaunchpads()
-            }
+        when (navArgs.padType) {
+            PadType.LANDING_PAD -> viewModel.getLandingPads()
+            PadType.LAUNCHPAD -> viewModel.getLaunchpads()
         }
-    }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("pads", pads)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.cancelRequest()
-        binding = null
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_statistics_reload, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.reload -> {
-            type?.let {
-                when (it) {
-                    PadType.LANDING_PAD -> presenter?.getLandingPads()
-                    PadType.LAUNCHPAD -> presenter?.getLaunchpads()
+        viewModel.stats.observe(viewLifecycleOwner) { response ->
+            when (response) {
+                is ApiResult.Pending -> {}
+                is ApiResult.Success -> response.data?.let {
+                    update(it)
                 }
+                is ApiResult.Failure -> showError(response.exception.message)
             }
-            true
         }
-        else -> super.onOptionsItemSelected(item)
     }
 
-    override fun update(response: List<StatsPadModel>) {
-        pads.clear()
-        pads.addAll(response)
-
-        binding?.padStatsLaunchSitesRecycler?.layoutAnimation = animateLayoutFromBottom(context)
-        padsAdapter.notifyDataSetChanged()
-        binding?.padStatsLaunchSitesRecycler?.scheduleLayoutAnimation()
+    fun update(response: List<StatsPadModel>) {
+        binding.padStatsLaunchSitesRecycler.layoutAnimation =
+            animateLayoutFromBottom(requireContext())
+        padsAdapter.submitList(response)
+        binding.padStatsLaunchSitesRecycler.scheduleLayoutAnimation()
     }
 
-    override fun showProgress() {
-        binding?.progress?.show()
-    }
-
-    override fun hideProgress() {
-        binding?.progress?.hide()
+    fun showError(error: String?) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (pads.isEmpty() || it.progress.isShown) type?.let { padType ->
-                    when (padType) {
-                        PadType.LANDING_PAD -> presenter?.getLandingPads()
-                        PadType.LAUNCHPAD -> presenter?.getLaunchpads()
-                    }
-                }
-            }
+        when (navArgs.padType) {
+            PadType.LANDING_PAD -> viewModel.getLandingPads()
+            PadType.LAUNCHPAD -> viewModel.getLaunchpads()
         }
     }
 }

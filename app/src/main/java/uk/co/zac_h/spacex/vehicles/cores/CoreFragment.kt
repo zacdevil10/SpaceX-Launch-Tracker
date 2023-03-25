@@ -1,155 +1,100 @@
 package uk.co.zac_h.spacex.vehicles.cores
 
 import android.os.Bundle
-import android.view.*
-import androidx.appcompat.widget.SearchView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
+import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.R
-import uk.co.zac_h.spacex.base.BaseFragment
-import uk.co.zac_h.spacex.base.NetworkInterface
-import uk.co.zac_h.spacex.databinding.FragmentCoreBinding
-import uk.co.zac_h.spacex.model.spacex.Core
-import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelper
-import uk.co.zac_h.spacex.utils.OrderSharedPreferencesHelperImpl
-import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
+import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.types.Order
+import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
+import uk.co.zac_h.spacex.core.ui.databinding.FragmentVerticalRecyclerviewBinding
+import uk.co.zac_h.spacex.feature.vehicles.VehiclesFilterViewModel
+import uk.co.zac_h.spacex.feature.vehicles.VehiclesPage
+import uk.co.zac_h.spacex.network.ApiResult
+import uk.co.zac_h.spacex.network.CachePolicy
 import uk.co.zac_h.spacex.vehicles.adapters.CoreAdapter
 
-class CoreFragment : BaseFragment(), NetworkInterface.View<List<Core>>,
-    SearchView.OnQueryTextListener {
+class CoreFragment : BaseFragment(), ViewPagerFragment {
 
     override var title: String = "Cores"
 
-    private var binding: FragmentCoreBinding? = null
+    private lateinit var binding: FragmentVerticalRecyclerviewBinding
 
-    private var presenter: NetworkInterface.Presenter<Nothing>? = null
-    private lateinit var coreAdapter: CoreAdapter
-
-    private lateinit var coresArray: ArrayList<Core>
-
-    private lateinit var orderSharedPreferences: OrderSharedPreferencesHelper
-    private var sortNew = false
-    private lateinit var searchView: SearchView
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-
-        coresArray = savedInstanceState?.getParcelableArrayList("cores") ?: ArrayList()
-        sortNew = savedInstanceState?.getBoolean("sort") ?: false
+    private val viewModel: CoreViewModel by navGraphViewModels(R.id.nav_graph) {
+        defaultViewModelProviderFactory
     }
+
+    private val filterViewModel: VehiclesFilterViewModel by activityViewModels()
+
+    private lateinit var coreAdapter: CoreAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentCoreBinding.inflate(inflater, container, false).apply {
+    ): View = FragmentVerticalRecyclerviewBinding.inflate(inflater, container, false).apply {
         binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        hideProgress()
+        coreAdapter = CoreAdapter()
 
-        orderSharedPreferences = OrderSharedPreferencesHelperImpl.build(context)
-        presenter = CorePresenterImpl(this, CoreInteractorImpl())
-
-        sortNew = orderSharedPreferences.isSortedNew("cores")
-
-        coreAdapter = CoreAdapter(context, coresArray)
-
-        binding?.coreRecycler?.apply {
-            layoutManager = LinearLayoutManager(this@CoreFragment.context)
+        binding.recycler.apply {
+            layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
             adapter = coreAdapter
         }
 
-        binding?.swipeRefresh?.setOnRefreshListener {
-            presenter?.get()
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.getCores(CachePolicy.REFRESH)
         }
 
-        if (coresArray.isEmpty()) presenter?.get()
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList("cores", coresArray)
-        outState.putBoolean("sort", sortNew)
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        presenter?.cancelRequest()
-        binding = null
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_vehicles_cores, menu)
-
-        searchView = menu.findItem(R.id.app_bar_search).actionView as SearchView
-        searchView.setOnQueryTextListener(this)
-
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean =
-        when (item.itemId) {
-            R.id.sort_new -> {
-                if (!sortNew) {
-                    sortNew = true
-                    orderSharedPreferences.setSortOrder("cores", sortNew)
-                    coresArray.reverse()
-                    coreAdapter.notifyDataSetChanged()
+        viewModel.cores.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is ApiResult.Pending -> showProgress()
+                is ApiResult.Success -> {
+                    hideProgress()
+                    binding.swipeRefresh.isRefreshing = false
+                    result.data?.let { data ->
+                        coreAdapter.submitList(data) {
+                            binding.recycler.scrollToPosition(0)
+                        }
+                    }
                 }
-                true
-            }
-            R.id.sort_old -> {
-                if (sortNew) {
-                    sortNew = false
-                    orderSharedPreferences.setSortOrder("cores", sortNew)
-                    coresArray.reverse()
-                    coreAdapter.notifyDataSetChanged()
+                is ApiResult.Failure -> {
+                    binding.swipeRefresh.isRefreshing = false
+                    showError(result.exception.message)
                 }
-                true
             }
-            else -> super.onOptionsItemSelected(item)
         }
 
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        coreAdapter.filter.filter(query)
-        return false
+        filterViewModel.order.observe(viewLifecycleOwner) {
+            viewModel.order = it[VehiclesPage.CORES] ?: Order.ASCENDING
+            viewModel.getCores()
+        }
+
+        viewModel.getCores()
     }
 
-    override fun onQueryTextChange(newText: String?): Boolean {
-        coreAdapter.filter.filter(newText)
-        return false
+    private fun showProgress() {
+        binding.progress.show()
     }
 
-    override fun update(response: List<Core>) {
-        coresArray.clear()
-        coresArray.addAll(if (sortNew) response.reversed() else response)
-
-        binding?.coreRecycler?.layoutAnimation = animateLayoutFromBottom(context)
-        coreAdapter.notifyDataSetChanged()
-        binding?.coreRecycler?.scheduleLayoutAnimation()
+    private fun hideProgress() {
+        binding.progress.hide()
     }
 
-    override fun showProgress() {
-        binding?.progress?.show()
-    }
-
-    override fun hideProgress() {
-        binding?.progress?.hide()
-    }
-
-    override fun toggleSwipeRefresh(isRefreshing: Boolean) {
-        binding?.swipeRefresh?.isRefreshing = isRefreshing
+    private fun showError(error: String?) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        activity?.runOnUiThread {
-            binding?.let {
-                if (coresArray.isEmpty() || it.progress.isShown) presenter?.get()
-            }
-        }
+        viewModel.getCores()
     }
 }
