@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import com.bumptech.glide.Glide
+import uk.co.zac_h.spacex.core.ui.databinding.ListItemAstronautBinding
 import uk.co.zac_h.spacex.feature.launch.CrewItem
 import uk.co.zac_h.spacex.feature.launch.R
-import uk.co.zac_h.spacex.feature.launch.databinding.ListItemCrewBinding
 
 class LaunchCrewAdapter :
     ListAdapter<CrewItem, LaunchCrewAdapter.ViewHolder>(LaunchCrewComparator) {
@@ -18,7 +18,7 @@ class LaunchCrewAdapter :
     private var expandedPosition: Int = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
-        ListItemCrewBinding.inflate(
+        ListItemAstronautBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -40,7 +40,7 @@ class LaunchCrewAdapter :
             content.isVisible = isExpanded
 
             listItemCrewCard.strokeWidth = if (isExpanded) {
-                root.resources.getDimensionPixelSize(R.dimen.launch_crew_stoke_width)
+                root.resources.getDimensionPixelSize(R.dimen.list_item_astronauts_stroke_width)
             } else 0
 
             status.text = astronaut.status.status
@@ -59,7 +59,7 @@ class LaunchCrewAdapter :
         return getItem(position).id.toLong()
     }
 
-    class ViewHolder(val binding: ListItemCrewBinding) : RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(val binding: ListItemAstronautBinding) : RecyclerView.ViewHolder(binding.root)
 
     object LaunchCrewComparator : DiffUtil.ItemCallback<CrewItem>() {
 

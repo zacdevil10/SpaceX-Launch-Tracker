@@ -14,5 +14,5 @@
         android:id="@+id/launch_details_crew"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_people_24"
-        android:title="@string/menu_crew" />
+        android:title="@string/menu_astronauts" />
 </menu>

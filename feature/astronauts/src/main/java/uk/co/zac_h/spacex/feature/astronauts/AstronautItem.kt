@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.crew
+package uk.co.zac_h.spacex.feature.astronauts
 
 import uk.co.zac_h.spacex.core.common.recyclerview.RecyclerViewItem
 import uk.co.zac_h.spacex.core.common.utils.formatCrewDate

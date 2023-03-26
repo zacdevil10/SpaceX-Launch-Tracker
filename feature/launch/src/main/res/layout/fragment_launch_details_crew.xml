@@ -9,4 +9,4 @@
     android:paddingVertical="@dimen/small_margin"
     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
     app:spanCount="2"
-    tools:listitem="@layout/list_item_crew" />
+    tools:listitem="@layout/list_item_astronaut" />

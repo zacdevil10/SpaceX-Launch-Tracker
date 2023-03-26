@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.crew.adapters
+package uk.co.zac_h.spacex.feature.astronauts
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,16 +8,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import com.bumptech.glide.Glide
-import uk.co.zac_h.spacex.crew.AstronautItem
-import uk.co.zac_h.spacex.feature.launch.R
-import uk.co.zac_h.spacex.feature.launch.databinding.ListItemCrewBinding
+import uk.co.zac_h.spacex.core.ui.databinding.ListItemAstronautBinding
 
-class CrewAdapter : PagingDataAdapter<AstronautItem, CrewAdapter.ViewHolder>(CrewComparator) {
+class AstronautsAdapter :
+    PagingDataAdapter<AstronautItem, AstronautsAdapter.ViewHolder>(Comparator) {
 
     private var expandedPosition: Int = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
-        ListItemCrewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        ListItemAstronautBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -35,7 +34,7 @@ class CrewAdapter : PagingDataAdapter<AstronautItem, CrewAdapter.ViewHolder>(Cre
                 content.isVisible = isExpanded
 
                 listItemCrewCard.strokeWidth = if (isExpanded) {
-                    root.resources.getDimensionPixelSize(R.dimen.launch_crew_stoke_width)
+                    root.resources.getDimensionPixelSize(R.dimen.list_item_astronauts_stroke_width)
                 } else 0
 
                 status.text = astronaut.status.status
@@ -51,9 +50,9 @@ class CrewAdapter : PagingDataAdapter<AstronautItem, CrewAdapter.ViewHolder>(Cre
         }
     }
 
-    class ViewHolder(val binding: ListItemCrewBinding) : RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(val binding: ListItemAstronautBinding) : RecyclerView.ViewHolder(binding.root)
 
-    object CrewComparator : DiffUtil.ItemCallback<AstronautItem>() {
+    object Comparator : DiffUtil.ItemCallback<AstronautItem>() {
 
         override fun areItemsTheSame(oldItem: AstronautItem, newItem: AstronautItem) =
             oldItem == newItem

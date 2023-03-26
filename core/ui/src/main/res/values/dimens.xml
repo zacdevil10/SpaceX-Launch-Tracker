@@ -11,4 +11,6 @@
     <dimen name="xxlarge_margin">48dp</dimen>
     <dimen name="xxxlarge_margin">64dp</dimen>
 
+    <dimen name="list_item_astronauts_stroke_width">1dp</dimen>
+
 </resources>

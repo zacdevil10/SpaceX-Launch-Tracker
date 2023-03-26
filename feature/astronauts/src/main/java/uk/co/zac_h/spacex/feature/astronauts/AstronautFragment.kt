@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.crew
+package uk.co.zac_h.spacex.feature.astronauts
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,20 +12,18 @@ import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.ui.databinding.FragmentVerticalRecyclerviewBinding
-import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
 
-class CrewFragment : BaseFragment() {
+class AstronautFragment : BaseFragment() {
 
-    private val viewModel: CrewViewModel by navGraphViewModels(R.id.nav_graph) {
+    private val viewModel: AstronautViewModel by navGraphViewModels(R.id.astronauts_nav_graph) {
         defaultViewModelProviderFactory
     }
 
     private lateinit var binding: FragmentVerticalRecyclerviewBinding
 
-    private lateinit var crewAdapter: CrewAdapter
+    private lateinit var astronautsAdapter: AstronautsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,24 +35,24 @@ class CrewFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        crewAdapter = CrewAdapter()
+        astronautsAdapter = AstronautsAdapter()
 
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
-            adapter = crewAdapter
+            adapter = astronautsAdapter
         }
 
         viewModel.astronautLiveData.observe(viewLifecycleOwner) { pagingData ->
-            crewAdapter.submitData(lifecycle, pagingData.map { AstronautItem(it) })
+            astronautsAdapter.submitData(lifecycle, pagingData.map { AstronautItem(it) })
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            crewAdapter.refresh()
+            astronautsAdapter.refresh()
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            crewAdapter.loadStateFlow.collectLatest {
+            astronautsAdapter.loadStateFlow.collectLatest {
                 if (it.refresh is LoadState.Loading) {
                     binding.progress.show()
                 } else {
@@ -80,6 +78,6 @@ class CrewFragment : BaseFragment() {
     }
 
     override fun networkAvailable() {
-        crewAdapter.retry()
+        astronautsAdapter.retry()
     }
 }

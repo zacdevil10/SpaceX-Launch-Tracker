@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.crew
+package uk.co.zac_h.spacex.feature.astronauts
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -13,8 +13,8 @@ import uk.co.zac_h.spacex.network.dto.spacex.AstronautResponse
 import javax.inject.Inject
 
 @HiltViewModel
-class CrewViewModel @Inject constructor(
-    private val repository: CrewRepository
+class AstronautViewModel @Inject constructor(
+    private val repository: AstronautRepository
 ) : ViewModel() {
 
     val astronautLiveData: LiveData<PagingData<AstronautResponse>> = Pager(

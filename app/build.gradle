@@ -70,6 +70,7 @@ dependencies {
 
     //Feature
     implementation project(':feature:launch')
+    implementation project(':feature:astronauts')
     implementation project(':feature:vehicles')
     implementation project(':feature:settings')
 
