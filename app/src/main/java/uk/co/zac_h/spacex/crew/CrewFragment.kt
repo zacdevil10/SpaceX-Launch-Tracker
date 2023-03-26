@@ -5,17 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.view.doOnPreDraw
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.navGraphViewModels
-import com.google.android.material.transition.MaterialElevationScale
+import androidx.paging.LoadState
+import androidx.paging.map
+import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.ui.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.crew.adapters.CrewAdapter
-import uk.co.zac_h.spacex.databinding.FragmentCrewBinding
-import uk.co.zac_h.spacex.network.ApiResult
-import uk.co.zac_h.spacex.network.CachePolicy
-import uk.co.zac_h.spacex.network.Repository
-import uk.co.zac_h.spacex.utils.animateLayoutFromBottom
 
 class CrewFragment : BaseFragment() {
 
@@ -23,67 +23,55 @@ class CrewFragment : BaseFragment() {
         defaultViewModelProviderFactory
     }
 
-    private lateinit var binding: FragmentCrewBinding
+    private lateinit var binding: FragmentVerticalRecyclerviewBinding
 
     private lateinit var crewAdapter: CrewAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        exitTransition = MaterialElevationScale(false)
-        reenterTransition = MaterialElevationScale(true)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentCrewBinding.inflate(inflater, container, false).apply {
+    ): View = FragmentVerticalRecyclerviewBinding.inflate(inflater, container, false).apply {
         binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        postponeEnterTransition()
-        view.doOnPreDraw { startPostponedEnterTransition() }
-
-        viewModel.get()
-
-        if (savedInstanceState == null) {
-            binding.root.doOnPreDraw { startPostponedEnterTransition() }
-        }
-
         crewAdapter = CrewAdapter()
 
-        binding.crewRecycler.apply {
+        binding.recycler.apply {
+            layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
             adapter = crewAdapter
         }
 
-        binding.swipeRefresh.setOnRefreshListener {
-            viewModel.get(CachePolicy.ALWAYS)
+        viewModel.astronautLiveData.observe(viewLifecycleOwner) { pagingData ->
+            crewAdapter.submitData(lifecycle, pagingData.map { AstronautItem(it) })
         }
 
-        viewModel.crew.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is ApiResult.Pending -> {}
-                is ApiResult.Success -> {
+        binding.swipeRefresh.setOnRefreshListener {
+            crewAdapter.refresh()
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            crewAdapter.loadStateFlow.collectLatest {
+                if (it.refresh is LoadState.Loading) {
+                    binding.progress.show()
+                } else {
                     binding.swipeRefresh.isRefreshing = false
-                    update(result.data)
-                }
-                is ApiResult.Failure -> {
-                    binding.swipeRefresh.isRefreshing = false
-                    showError(result.exception.message)
+
+                    if (it.refresh is LoadState.NotLoading) binding.progress.hide()
+
+                    val error = when {
+                        it.prepend is LoadState.Error -> it.prepend as LoadState.Error
+                        it.append is LoadState.Error -> it.append as LoadState.Error
+                        it.refresh is LoadState.Error -> it.refresh as LoadState.Error
+                        else -> null
+                    }
+
+                    error?.error?.message?.let { message -> showError(message) }
                 }
             }
-        }
-    }
-
-    private fun update(response: List<Crew>?) {
-        crewAdapter.submitList(response)
-        if (viewModel.cacheLocation == Repository.RequestLocation.REMOTE) {
-            binding.crewRecycler.layoutAnimation = animateLayoutFromBottom(requireContext())
-            binding.crewRecycler.scheduleLayoutAnimation()
         }
     }
 
@@ -92,6 +80,6 @@ class CrewFragment : BaseFragment() {
     }
 
     override fun networkAvailable() {
-        viewModel.get()
+        crewAdapter.retry()
     }
 }

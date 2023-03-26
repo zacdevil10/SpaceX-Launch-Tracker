@@ -1,16 +1,15 @@
 package uk.co.zac_h.spacex.crew
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.liveData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import uk.co.zac_h.spacex.network.ApiResult
-import uk.co.zac_h.spacex.network.CachePolicy
-import uk.co.zac_h.spacex.network.Repository
-import uk.co.zac_h.spacex.network.async
-import uk.co.zac_h.spacex.network.query.CrewQuery
+import uk.co.zac_h.spacex.network.dto.spacex.AstronautResponse
 import javax.inject.Inject
 
 @HiltViewModel
@@ -18,19 +17,9 @@ class CrewViewModel @Inject constructor(
     private val repository: CrewRepository
 ) : ViewModel() {
 
-    private val _crew = MutableLiveData<ApiResult<List<Crew>>>()
-    val crew: LiveData<ApiResult<List<Crew>>> = _crew
-
-    val cacheLocation: Repository.RequestLocation
-        get() = repository.cacheLocation
-
-    fun get(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
-        viewModelScope.launch {
-            val response = async(_crew) {
-                repository.fetch("crew", query = CrewQuery.query, cachePolicy = cachePolicy)
-            }
-
-            _crew.value = response.await().map { result -> result.docs.map { Crew(it) } }
-        }
-    }
+    val astronautLiveData: LiveData<PagingData<AstronautResponse>> = Pager(
+        PagingConfig(pageSize = 10)
+    ) {
+        repository.astronautPagingSource
+    }.liveData.cachedIn(viewModelScope)
 }

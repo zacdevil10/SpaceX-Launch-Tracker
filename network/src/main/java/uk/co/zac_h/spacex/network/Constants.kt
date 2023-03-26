@@ -15,6 +15,7 @@ const val SPACEX_BASE_URL_V4 = "https://api.spacexdata.com/v4/"
 //Endpoints
 const val SPACEX_PREVIOUS_LAUNCHES = "launch/previous"
 const val SPACEX_UPCOMING_LAUNCHES = "launch/upcoming"
+const val SPACEX_ASTRONAUTS = "astronaut"
 const val SPACEX_AGENCY = "agencies/121"
 
 //Legacy endpoints
@@ -82,6 +83,7 @@ const val SPACEX_FIELD_CREW_IMAGE = "image"
 const val SPACEX_FIELD_CREW_WIKI = "wikipedia"
 const val SPACEX_FIELD_CREW_LAUNCHES = "launches"
 
+const val SPACEX_CREW_STATUS_IN_TRAINING = "In-Training"
 const val SPACEX_CREW_STATUS_ACTIVE = "Active"
 const val SPACEX_CREW_STATUS_INACTIVE = "Inactive"
 const val SPACEX_CREW_STATUS_RETIRED = "Retired"
@@ -238,6 +240,7 @@ const val SPACEX_FIELD_ROCKET_WIKIPEDIA = "wikipedia"
 const val SPACEX_FIELD_ROCKET_DESCRIPTION = "description"
 
 //Status
+const val SPACEX_IN_TRAINING = "In-Training"
 const val SPACEX_ACTIVE = "Active"
 const val SPACEX_INACTIVE = "Inactive"
 const val SPACEX_UNKNOWN = "Unknown"

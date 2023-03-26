@@ -59,7 +59,7 @@ class LaunchCrewAdapter :
         return getItem(position).id.toLong()
     }
 
-    inner class ViewHolder(val binding: ListItemCrewBinding) : RecyclerView.ViewHolder(binding.root)
+    class ViewHolder(val binding: ListItemCrewBinding) : RecyclerView.ViewHolder(binding.root)
 
     object LaunchCrewComparator : DiffUtil.ItemCallback<CrewItem>() {
 

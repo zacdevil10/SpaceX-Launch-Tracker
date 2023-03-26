@@ -38,10 +38,6 @@ abstract class DataSourceModule {
     @Binds
     @CapsuleDataSourceClient
     abstract fun bindCapsuleDataSource(capsuleDataSource: CapsuleDataSource): RemoteDataSource<NetworkDocsResponse<CapsuleQueriedResponse>>
-
-    @Binds
-    @CrewDataSourceClient
-    abstract fun bindCrewDataSource(crewDataSource: CrewDataSource): RemoteDataSource<NetworkDocsResponse<CrewQueriedResponse>>
 }
 
 @Qualifier
@@ -61,6 +57,3 @@ annotation class CoreDataSourceClient
 
 @Qualifier
 annotation class CapsuleDataSourceClient
-
-@Qualifier
-annotation class CrewDataSourceClient

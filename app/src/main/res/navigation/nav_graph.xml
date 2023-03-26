@@ -25,28 +25,9 @@
         android:name="uk.co.zac_h.spacex.crew.CrewFragment"
         tools:layout="@layout/fragment_crew">
 
-        <action
-            android:id="@+id/action_crew_fragment_to_crew_details_fragment"
-            app:destination="@id/crew_detail_page_fragment" />
-
         <deepLink
             android:id="@+id/deepLink"
             app:uri="spacex://crew" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/crew_detail_page_fragment"
-        android:name="uk.co.zac_h.spacex.crew.details.CrewItemFragment"
-        tools:layout="@layout/fragment_crew_item">
-
-        <argument
-            android:name="id"
-            app:argType="string" />
-
-        <argument
-            android:name="url"
-            app:argType="string" />
 
     </fragment>
 

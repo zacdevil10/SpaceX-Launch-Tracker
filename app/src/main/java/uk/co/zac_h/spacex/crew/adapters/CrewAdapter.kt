@@ -2,57 +2,64 @@ package uk.co.zac_h.spacex.crew.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.core.view.isVisible
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.transition.TransitionManager
 import com.bumptech.glide.Glide
-import uk.co.zac_h.spacex.crew.Crew
-import uk.co.zac_h.spacex.crew.CrewFragmentDirections
-import uk.co.zac_h.spacex.databinding.GridItemCrewBinding
+import uk.co.zac_h.spacex.crew.AstronautItem
+import uk.co.zac_h.spacex.feature.launch.R
+import uk.co.zac_h.spacex.feature.launch.databinding.ListItemCrewBinding
 
-class CrewAdapter : ListAdapter<Crew, CrewAdapter.ViewHolder>(CrewComparator) {
+class CrewAdapter : PagingDataAdapter<AstronautItem, CrewAdapter.ViewHolder>(CrewComparator) {
+
+    private var expandedPosition: Int = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
-        GridItemCrewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        ListItemCrewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val person = getItem(position)
+        val astronaut = getItem(position)
 
-        holder.binding.apply {
-            root.transitionName = person.id
+        val isExpanded = position == expandedPosition
 
-            Glide.with(root).load(person.image).into(image)
+        with(holder.binding) {
+            astronaut?.let {
+                Glide.with(root).load(astronaut.image).into(image)
 
-            title.text = person.name
+                role.text = astronaut.nationality
+                title.text = astronaut.name
+                agency.text = astronaut.agency
+                content.isVisible = isExpanded
 
-            /*gridItemCrewConstraint.setOnClickListener {
-                holder.bind(person)
-            }*/
+                listItemCrewCard.strokeWidth = if (isExpanded) {
+                    root.resources.getDimensionPixelSize(R.dimen.launch_crew_stoke_width)
+                } else 0
+
+                status.text = astronaut.status.status
+                firstFlight.text = astronaut.firstFlight
+                bio.text = astronaut.bio
+
+                headerCard.setOnClickListener {
+                    expandedPosition = if (isExpanded) -1 else position
+                    TransitionManager.beginDelayedTransition(listItemCrewCard)
+                    notifyItemChanged(position, astronaut)
+                }
+            }
         }
     }
 
-    inner class ViewHolder(val binding: GridItemCrewBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(val binding: ListItemCrewBinding) : RecyclerView.ViewHolder(binding.root)
 
-        fun bind(person: Crew) {
-            binding.root.findNavController().navigate(
-                CrewFragmentDirections.actionCrewFragmentToCrewDetailsFragment(
-                    person.id,
-                    person.image.orEmpty()
-                ),
-                FragmentNavigatorExtras(binding.root to person.id)
-            )
-        }
-    }
+    object CrewComparator : DiffUtil.ItemCallback<AstronautItem>() {
 
-    object CrewComparator : DiffUtil.ItemCallback<Crew>() {
+        override fun areItemsTheSame(oldItem: AstronautItem, newItem: AstronautItem) =
+            oldItem == newItem
 
-        override fun areItemsTheSame(oldItem: Crew, newItem: Crew) = oldItem == newItem
-
-        override fun areContentsTheSame(oldItem: Crew, newItem: Crew) = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: AstronautItem, newItem: AstronautItem) =
+            oldItem.id == newItem.id
 
     }
 }
