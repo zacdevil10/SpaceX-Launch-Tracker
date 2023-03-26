@@ -4,21 +4,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.fragment.app.activityViewModels
-import uk.co.zac_h.spacex.core.common.fragment.BottomDrawerFragment
+import androidx.navigation.navGraphViewModels
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.core.common.types.Order
 import uk.co.zac_h.spacex.feature.vehicles.databinding.FragmentVehiclesFilterBinding
 
-class VehiclesFilterFragment : BottomDrawerFragment() {
+@AndroidEntryPoint
+class VehiclesFilterFragment : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentVehiclesFilterBinding
 
-    private val viewModel: VehiclesFilterViewModel by activityViewModels()
-
-    override val container: ConstraintLayout by lazy { binding.container }
-
-    override val scrim: View by lazy { binding.scrim }
+    private val viewModel: VehiclesFilterViewModel by navGraphViewModels(R.id.vehicles_nav_graph) {
+        defaultViewModelProviderFactory
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

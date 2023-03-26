@@ -13,9 +13,14 @@
         <action
             android:id="@+id/action_vehicles_page_fragment_to_rocket_details_fragment"
             app:destination="@id/rocket_details_fragment" />
+
         <action
             android:id="@+id/action_vehicles_page_fragment_to_dragon_details_fragment"
             app:destination="@id/dragon_details_fragment" />
+
+        <action
+            android:id="@+id/action_vehicles_page_to_vehicles_filter"
+            app:destination="@id/vehicles_filter_dialog" />
 
         <deepLink
             android:id="@+id/deepLink"
@@ -46,5 +51,9 @@
             app:nullable="true" />
 
     </fragment>
+
+    <dialog
+        android:id="@+id/vehicles_filter_dialog"
+        android:name="uk.co.zac_h.spacex.feature.vehicles.VehiclesFilterFragment" />
 
 </navigation>

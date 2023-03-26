@@ -55,18 +55,13 @@ object NetworkModule {
         baseUrl(baseUrl)
         addConverterFactory(MoshiConverterFactory.create())
         client(okHttpClient())
-        //client(loggingClient())
     }.build().create(T::class.java)
 
-    private fun loggingClient() = OkHttpClient.Builder()
-        .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-        .build()
-
-    private fun okHttpClient() = OkHttpClient.Builder()
-        .readTimeout(1, TimeUnit.MINUTES)
-        .connectTimeout(1, TimeUnit.MINUTES)
-        .build()
-
+    private fun okHttpClient(hasLogging: Boolean = false) = OkHttpClient.Builder().apply {
+        readTimeout(1, TimeUnit.MINUTES)
+        connectTimeout(1, TimeUnit.MINUTES)
+        if (hasLogging) addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+    }.build()
 }
 
 @Qualifier

@@ -60,4 +60,9 @@
     <string name="home_port_label">Home Port</string>
     <string name="year_built_label">Year Built</string>
 
+    <!-- Filter -->
+    <string name="vehicles_filter_order_label">Order:</string>
+    <string name="vehicles_filter_ascending_button_label">Asc</string>
+    <string name="vehicles_filter_descending_button_label">Desc</string>
+    <string name="vehicles_filter_reset">Reset</string>
 </resources>

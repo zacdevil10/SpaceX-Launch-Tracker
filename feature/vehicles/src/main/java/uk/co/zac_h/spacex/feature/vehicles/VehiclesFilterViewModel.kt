@@ -1,6 +1,10 @@
 package uk.co.zac_h.spacex.feature.vehicles
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import uk.co.zac_h.spacex.core.common.types.Order
 
 class VehiclesFilterViewModel : ViewModel() {
@@ -26,8 +30,7 @@ class VehiclesFilterViewModel : ViewModel() {
     }
 
     fun reset() {
-        _order.value?.put(vehiclesPage, Order.ASCENDING)
-        _order.value = _order.value
+        setOrder(Order.ASCENDING)
     }
 }
 
