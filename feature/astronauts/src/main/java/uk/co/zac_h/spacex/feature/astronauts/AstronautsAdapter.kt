@@ -30,7 +30,6 @@ class AstronautsAdapter :
 
                 role.text = astronaut.nationality
                 title.text = astronaut.name
-                agency.text = astronaut.agency
                 content.isVisible = isExpanded
 
                 listItemCrewCard.strokeWidth = if (isExpanded) {

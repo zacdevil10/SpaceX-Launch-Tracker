@@ -4,7 +4,6 @@ package uk.co.zac_h.spacex.network
 const val MOCK_LAUNCH_LIBRARY_BASE_URL = "https://lldev.thespacedevs.com/2.2.0/"
 const val LAUNCH_LIBRARY_BASE_URL = "https://ll.thespacedevs.com/2.2.0/"
 const val SPACEFLIGHT_NEWS_BASE_URL = "https://api.spaceflightnewsapi.net/v4/"
-const val TWITTER_BASE_URL = "https://api.twitter.com/1.1/"
 const val REDDIT_BASE_URL = "https://reddit.com/"
 
 //Legacy API
@@ -257,19 +256,6 @@ const val SPACEX_UNDER_CONSTRUCTION = "Under construction"
 //region Spaceflight News
 
 const val SPACEFLIGHT_NEWS_ARTICLES = "articles"
-
-//endregion
-
-//region Twitter
-
-const val TWITTER_TIMELINE = "statuses/user_timeline.json"
-
-const val TWITTER_QUERY_SCREEN_NAME = "screen_name"
-const val TWITTER_QUERY_INCLUDE_RTS = "include_rts"
-const val TWITTER_QUERY_TRIM_USER = "trim_user"
-const val TWITTER_QUERY_TWEET_MODE = "tweet_mode"
-const val TWITTER_QUERY_COUNT = "count"
-const val TWITTER_QUERY_MAX_ID = "max_id"
 
 //endregion
 

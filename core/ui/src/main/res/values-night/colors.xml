@@ -5,8 +5,6 @@
     <!--low-luminance UIs. These colors will be used by night/themes.xml.-->
 
     <!-- LaunchView -->
-    <color name="patch">#1FFFFFFF</color>
-
     <color name="divider">#1FFFFFFF</color>
 
 </resources>

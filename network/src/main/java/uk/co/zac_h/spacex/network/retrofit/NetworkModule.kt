@@ -34,23 +34,6 @@ object NetworkModule {
     @RedditHttpClient
     fun providesRedditClient(): RedditService = createClient(REDDIT_BASE_URL)
 
-    @Provides
-    @TwitterHttpClient
-    fun providesTwitterClient(): TwitterService = Retrofit.Builder().apply {
-        baseUrl(TWITTER_BASE_URL)
-        addConverterFactory(MoshiConverterFactory.create())
-        client(
-            OAuthSigningInterceptor.addKeys(
-                OAuthKeys(
-                    BuildConfig.CONSUMER_KEY,
-                    BuildConfig.CONSUMER_SECRET,
-                    BuildConfig.ACCESS_TOKEN,
-                    BuildConfig.TOKEN_SECRET
-                )
-            ).build()
-        )
-    }.build().create(TwitterService::class.java)
-
     private inline fun <reified T> createClient(baseUrl: String): T = Retrofit.Builder().apply {
         baseUrl(baseUrl)
         addConverterFactory(MoshiConverterFactory.create())
@@ -79,7 +62,3 @@ annotation class SpaceXHttpClientV4
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class RedditHttpClient
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class TwitterHttpClient
