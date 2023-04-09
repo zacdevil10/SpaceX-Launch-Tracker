@@ -16,8 +16,8 @@ android {
         applicationId "uk.co.zac_h.spacex"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 210010700
-        versionName "1.7.0"
+        versionCode 210010701
+        versionName "1.7.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -70,6 +70,7 @@ dependencies {
 
     //Feature
     implementation project(':feature:launch')
+    implementation project(':feature:astronauts')
     implementation project(':feature:vehicles')
     implementation project(':feature:settings')
 

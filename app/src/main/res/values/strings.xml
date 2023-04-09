@@ -1,25 +1,15 @@
 <resources>
     <string name="app_name">SpaceX</string>
 
-    <string name="menu_home">Home</string>
     <string name="menu_news">News</string>
     <string name="menu_launches">Launches</string>
     <string name="menu_statistics">Statistics</string>
-    <string name="menu_history">History</string>
-    <string name="menu_ships">Ships</string>
-
-    <string name="detail_capsule">Capsule</string>
 
     <!--Filter labels-->
     <string name="filter_successes">Successes</string>
     <string name="filter_failures">Failures</string>
     <string name="filter">Filter:</string>
     <string name="reset">Reset</string>
-
-    <!--News-->
-    <string name="screen_name">\@%1$s</string>
-    <string name="twitter_profile_image_desc">Twitter profile image</string>
-    <string name="scroll_to_top_label">Scroll To Top</string>
 
     <!--Statistics-->
     <string name="statistics_launch_history">Launch History</string>
@@ -73,7 +63,7 @@
     <string name="edit_label">Edit</string>
     <string name="launch_site_label">Launch site:</string>
     <string name="mass_to_orbit_label">Mass to Orbit</string>
-    <string name="menu_crew">Crew</string>
+    <string name="menu_astronauts">Astronauts</string>
 
     <string-array name="order">
         <item>Hot</item>

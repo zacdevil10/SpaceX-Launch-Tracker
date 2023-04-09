@@ -20,7 +20,3 @@ data class QueryPopulateModel(
     private var select: Any,
     private var populate: Any
 )
-
-data class QueryHistorySort(
-    private var event_date_unix: String
-)

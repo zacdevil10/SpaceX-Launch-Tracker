@@ -11,10 +11,10 @@
         android:id="@id/news_page_fragment"
         android:icon="@drawable/ic_newspaper"
         android:title="@string/menu_news" />
-    <!--<item
-        android:id="@id/crew_page_fragment"
+    <item
+        android:id="@id/astronauts_nav_graph"
         android:icon="@drawable/ic_baseline_people_24"
-        android:title="@string/menu_crew" />-->
+        android:title="@string/menu_astronauts" />
     <item
         android:id="@id/vehicles_nav_graph"
         android:icon="@drawable/ic_rocket"

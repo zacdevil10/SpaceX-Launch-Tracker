@@ -73,6 +73,12 @@ class SettingsAdapter : ListAdapter<RecyclerViewItem, RecyclerView.ViewHolder>(C
             oldItem == newItem
 
         override fun areContentsTheSame(oldItem: RecyclerViewItem, newItem: RecyclerViewItem) =
-            oldItem == newItem
+            if (oldItem is SettingsItem && newItem is SettingsItem) {
+                oldItem == newItem
+            } else if (oldItem is SettingsHeader && newItem is SettingsHeader) {
+                oldItem == newItem
+            } else {
+                oldItem == newItem
+            }
     }
 }

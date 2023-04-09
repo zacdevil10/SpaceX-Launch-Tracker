@@ -1,7 +1,10 @@
 package uk.co.zac_h.spacex.core.common.utils
 
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 private const val SECOND_MILLIS = 1000
 private const val MINUTE_MILLIS = 60 * SECOND_MILLIS
@@ -9,14 +12,14 @@ private const val HOUR_MILLIS = 60 * MINUTE_MILLIS
 
 fun String.formatDate(): String {
     val date = SimpleDateFormat(
-        "yyyy-MM-dd'T'HH:mm:ss",
+        "yyyy-MM-dd'T'HH:mm:ss'Z'",
         Locale.ENGLISH
     ).apply {
         timeZone = TimeZone.getTimeZone("UTC")
     }.parse(this)
 
     return SimpleDateFormat(
-        "dd MMM yy - HH:mm zzz",
+        "dd MMM yy - HH:mm",
         Locale.ENGLISH
     ).apply {
         timeZone = TimeZone.getDefault()

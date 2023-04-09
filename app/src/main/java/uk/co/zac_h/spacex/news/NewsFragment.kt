@@ -9,8 +9,8 @@ import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerAdapter
 import uk.co.zac_h.spacex.databinding.FragmentNewsBinding
+import uk.co.zac_h.spacex.news.articles.ArticlesFragment
 import uk.co.zac_h.spacex.news.reddit.RedditFeedFragment
-import uk.co.zac_h.spacex.news.twitter.TwitterFeedFragment
 
 class NewsFragment : BaseFragment() {
 
@@ -35,10 +35,10 @@ class NewsFragment : BaseFragment() {
 
         binding.newsViewPager.adapter = ViewPagerAdapter(
             childFragmentManager,
-            listOf(TwitterFeedFragment(), RedditFeedFragment())
+            listOf(ArticlesFragment(), RedditFeedFragment())
         )
 
-        val tabIcons = listOf(R.drawable.ic_twitter, R.drawable.reddit)
+        val tabIcons = listOf(R.drawable.ic_newspaper, R.drawable.reddit)
 
         binding.tabLayout.apply {
             setupWithViewPager(binding.newsViewPager)

@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  <img src="app/src/main/ic_launcher-web.png" width="300px">
+  <img src="core/ui/src/main/ic_launcher-playstore.png" width="300px">
 </p>
 
 # SpaceX-Launch-Tracker
@@ -34,16 +34,10 @@ An unofficial SpaceX app powered by the r/SpaceX API offering a comprehensive vi
 
 ## Features:
 
-- **Dashboard** - Countdown to the next launch. View the latest launches and pin your favourite.
-
-- **Past and planned launches** - Offers extensive launch details.
+- **Past and planned launches** - Countdown to the next launch. Offers extensive launch details.
 
 - **Calendar events** - Create calendar events from within the app.
 
 - **News** - SpaceX twitter and r/SpaceX feed.
 
 - **Vehicles** - Catalog of all rockets and capsules built by SpaceX.
-
-- **Statistics** - Graphs and things. Graphs are fun.
-
-- **History and Milestones** - Get up to date with SpaceX history.

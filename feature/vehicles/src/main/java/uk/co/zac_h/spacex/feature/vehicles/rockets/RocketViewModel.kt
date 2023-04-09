@@ -29,6 +29,8 @@ class RocketViewModel @Inject constructor(
 
     private var order: Order = Order.ASCENDING
 
+    var hasOrderChanged = false
+
     var selectedId = ""
 
     val cacheLocation: Repository.RequestLocation
@@ -47,6 +49,7 @@ class RocketViewModel @Inject constructor(
     }
 
     fun setOrder(order: Order?) {
+        hasOrderChanged = true
         this.order = order ?: Order.ASCENDING
     }
 }

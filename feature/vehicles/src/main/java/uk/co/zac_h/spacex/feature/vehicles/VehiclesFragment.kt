@@ -5,7 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
-import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.navGraphViewModels
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.transition.MaterialSharedAxis
@@ -20,7 +21,9 @@ class VehiclesFragment : BaseFragment() {
 
     private lateinit var binding: FragmentViewPagerBinding
 
-    private val viewModel: VehiclesFilterViewModel by activityViewModels()
+    private val viewModel: VehiclesFilterViewModel by navGraphViewModels(R.id.vehicles_nav_graph) {
+        defaultViewModelProviderFactory
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,6 +80,10 @@ class VehiclesFragment : BaseFragment() {
             for (position in 0..tabCount) {
                 getTabAt(position)?.setIcon(tabIcons[position])
             }
+        }
+
+        binding.fab.setOnClickListener {
+            findNavController().navigate(VehiclesFragmentDirections.actionVehiclesPageToVehiclesFilter())
         }
     }
 }
