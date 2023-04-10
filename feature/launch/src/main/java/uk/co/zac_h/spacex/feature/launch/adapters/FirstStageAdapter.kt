@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import uk.co.zac_h.spacex.core.common.databinding.ListItemFirstStageBinding
+import uk.co.zac_h.spacex.core.common.databinding.ListItemHeaderBinding
 import uk.co.zac_h.spacex.core.common.recyclerview.RecyclerViewItem
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.feature.launch.FirstStageItem
 import uk.co.zac_h.spacex.feature.launch.R
-import uk.co.zac_h.spacex.feature.launch.databinding.ListItemFirstStageBinding
-import uk.co.zac_h.spacex.feature.launch.databinding.ListItemHeaderBinding
 
 class FirstStageAdapter :
     ListAdapter<RecyclerViewItem, RecyclerView.ViewHolder>(LaunchCoreComparator) {

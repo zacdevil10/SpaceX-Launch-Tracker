@@ -27,11 +27,11 @@ class DragonAdapter(val setSelected: (String) -> Unit) :
                 title = dragon.name
                 vehicleSpecs.setOnClickListener {
                     setSelected(dragon.id)
-                    holder.bind(dragon)
+                    holder.bind()
                 }
                 setOnClickListener {
                     setSelected(dragon.id)
-                    holder.bind(dragon)
+                    holder.bind()
                 }
             }
 
@@ -40,9 +40,9 @@ class DragonAdapter(val setSelected: (String) -> Unit) :
     }
 
     class ViewHolder(val binding: ListItemVehicleBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(dragon: SpacecraftItem) {
+        fun bind() {
             binding.root.findNavController().navigate(
-                VehiclesFragmentDirections.actionVehiclesPageFragmentToDragonDetailsFragment(dragon.name)
+                VehiclesFragmentDirections.actionVehiclesPageFragmentToDragonDetailsFragment()
             )
         }
     }

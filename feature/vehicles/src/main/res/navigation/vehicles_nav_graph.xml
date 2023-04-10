@@ -19,6 +19,10 @@
             app:destination="@id/dragon_details_fragment" />
 
         <action
+            android:id="@+id/action_vehicles_to_launcher_details"
+            app:destination="@id/launcher_details_fragment" />
+
+        <action
             android:id="@+id/action_vehicles_page_to_vehicles_filter"
             app:destination="@id/vehicles_filter_dialog" />
 
@@ -31,26 +35,17 @@
     <fragment
         android:id="@+id/rocket_details_fragment"
         android:name="uk.co.zac_h.spacex.feature.vehicles.rockets.details.RocketDetailsFragment"
-        tools:layout="@layout/fragment_rocket_details">
-
-        <argument
-            android:name="label"
-            app:argType="string"
-            app:nullable="true" />
-
-    </fragment>
+        tools:layout="@layout/fragment_rocket_details" />
 
     <fragment
         android:id="@+id/dragon_details_fragment"
         android:name="uk.co.zac_h.spacex.feature.vehicles.dragon.details.DragonDetailsFragment"
-        tools:layout="@layout/fragment_dragon_details">
+        tools:layout="@layout/fragment_dragon_details" />
 
-        <argument
-            android:name="label"
-            app:argType="string"
-            app:nullable="true" />
-
-    </fragment>
+    <fragment
+        android:id="@+id/launcher_details_fragment"
+        android:name="uk.co.zac_h.spacex.feature.vehicles.launcher.details.LauncherDetailsFragment"
+        tools:layout="@layout/fragment_launcher_details" />
 
     <dialog
         android:id="@+id/vehicles_filter_dialog"

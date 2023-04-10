@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.navArgs
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
@@ -17,9 +16,7 @@ import uk.co.zac_h.spacex.vehicles.capsules.CapsulesViewModel
 
 class CapsuleDetailsFragment : BaseFragment(), ViewPagerFragment {
 
-    override val title: String by lazy { navArgs.label ?: title }
-
-    private val navArgs: CapsuleDetailsFragmentArgs by navArgs()
+    override val title: String by lazy { title }
 
     private val viewModel: CapsulesViewModel by viewModels()
 
@@ -50,7 +47,7 @@ class CapsuleDetailsFragment : BaseFragment(), ViewPagerFragment {
         view.doOnPreDraw { startPostponedEnterTransition() }
 
         viewModel.capsules.observe(viewLifecycleOwner) { result ->
-            update(result.data?.first { it.id == navArgs.id })
+
         }
     }
 

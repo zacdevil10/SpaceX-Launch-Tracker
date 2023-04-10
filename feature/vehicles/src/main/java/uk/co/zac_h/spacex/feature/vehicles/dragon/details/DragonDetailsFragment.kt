@@ -4,24 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialSharedAxis
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.image.setImageAndTint
 import uk.co.zac_h.spacex.core.common.utils.metricFormat
-import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.feature.vehicles.R
 import uk.co.zac_h.spacex.feature.vehicles.databinding.FragmentDragonDetailsBinding
 import uk.co.zac_h.spacex.feature.vehicles.dragon.DragonViewModel
 import uk.co.zac_h.spacex.feature.vehicles.dragon.SpacecraftItem
 
-class DragonDetailsFragment : BaseFragment(), ViewPagerFragment {
-
-    override val title: String by lazy { navArgs.label ?: title }
-
-    private val navArgs: DragonDetailsFragmentArgs by navArgs()
+class DragonDetailsFragment : BaseFragment() {
 
     private val viewModel: DragonViewModel by navGraphViewModels(R.id.vehicles_nav_graph) {
         defaultViewModelProviderFactory
