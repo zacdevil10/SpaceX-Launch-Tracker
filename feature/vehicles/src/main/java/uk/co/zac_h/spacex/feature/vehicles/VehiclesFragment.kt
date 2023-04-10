@@ -15,6 +15,7 @@ import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerAdapter
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.core.ui.databinding.FragmentViewPagerBinding
 import uk.co.zac_h.spacex.feature.vehicles.dragon.DragonFragment
+import uk.co.zac_h.spacex.feature.vehicles.launcher.LauncherFragment
 import uk.co.zac_h.spacex.feature.vehicles.rockets.RocketFragment
 
 class VehiclesFragment : BaseFragment() {
@@ -45,7 +46,7 @@ class VehiclesFragment : BaseFragment() {
         val fragments: List<ViewPagerFragment> = listOf(
             RocketFragment(),
             DragonFragment(),
-            //CoreFragment(),
+            LauncherFragment(),
             //CapsulesFragment()
         )
 
@@ -61,6 +62,12 @@ class VehiclesFragment : BaseFragment() {
 
                 override fun onPageSelected(position: Int) {
                     viewModel.setVehiclesPage(position)
+
+                    if (position == 2) {
+                        binding.fab.hide()
+                    } else {
+                        binding.fab.show()
+                    }
                 }
 
                 override fun onPageScrollStateChanged(state: Int) {}

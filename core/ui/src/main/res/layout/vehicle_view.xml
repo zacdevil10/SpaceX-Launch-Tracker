@@ -28,28 +28,6 @@
         app:layout_constraintTop_toBottomOf="@id/vehicle_image"
         tools:text="@tools:sample/lorem" />
 
-    <View
-        android:id="@+id/separator"
-        android:layout_width="2dp"
-        android:layout_height="2dp"
-        android:layout_marginStart="@dimen/small_margin"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/vehicle_name"
-        app:layout_constraintStart_toEndOf="@id/vehicle_name"
-        app:layout_constraintTop_toTopOf="@id/vehicle_name" />
-
-    <TextView
-        android:id="@+id/block"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/small_margin"
-        android:layout_marginEnd="@dimen/large_margin"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/vehicle_name"
-        app:layout_constraintStart_toEndOf="@id/separator"
-        app:layout_constraintTop_toTopOf="@id/vehicle_name"
-        tools:text="Block 5" />
-
     <TextView
         android:id="@+id/status"
         android:layout_width="0dp"
@@ -57,10 +35,10 @@
         android:layout_marginStart="@dimen/small_margin"
         android:layout_marginEnd="@dimen/medium_margin"
         android:gravity="end"
-        app:layout_constraintBottom_toBottomOf="@id/block"
+        app:layout_constraintBottom_toBottomOf="@id/vehicle_name"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/block"
-        app:layout_constraintTop_toTopOf="@id/block"
+        app:layout_constraintStart_toEndOf="@id/vehicle_name"
+        app:layout_constraintTop_toTopOf="@id/vehicle_name"
         tools:text="Status" />
 
     <FrameLayout
@@ -75,12 +53,12 @@
         android:id="@+id/vehicle_specs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/medium_margin"
         android:layout_marginTop="@dimen/small_margin"
+        android:layout_marginEnd="@dimen/medium_margin"
         android:layout_marginBottom="@dimen/small_margin"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/body"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/body"
         tools:text="@tools:sample/lorem" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,63 +3,62 @@ package uk.co.zac_h.spacex.feature.vehicles.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.navigation.findNavController
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.feature.vehicles.VehiclesFragmentDirections
 import uk.co.zac_h.spacex.feature.vehicles.databinding.ListItemVehicleBinding
-import uk.co.zac_h.spacex.feature.vehicles.rockets.LauncherItem
+import uk.co.zac_h.spacex.feature.vehicles.launcher.LauncherItem
 
-class RocketsAdapter(val setSelected: (String) -> Unit) :
-    ListAdapter<LauncherItem, RocketsAdapter.ViewHolder>(RocketComparator) {
+class LauncherAdapter(private val onClick: (LauncherItem) -> Unit) :
+    PagingDataAdapter<LauncherItem, LauncherAdapter.ViewHolder>(Comparator) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
-        ListItemVehicleBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+        ViewHolder(
+            ListItemVehicleBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
         )
-    )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val rocket = getItem(position)
+        val launcher = getItem(position)
 
         with(holder.binding) {
             vehicleView.apply {
-                image = rocket.imageUrl
-                title = rocket.fullName
+                launcher?.let { image = it.imageUrl }
+                title = launcher?.serial
                 vehicleSpecs.setOnClickListener {
-                    setSelected(rocket.id)
+                    launcher?.let { onClick(it) }
                     holder.bind()
                 }
                 setOnClickListener {
-                    setSelected(rocket.id)
+                    launcher?.let { onClick(it) }
                     holder.bind()
                 }
             }
-
-            vehicleDetails.text = rocket.description
+            vehicleDetails.text = launcher?.details
         }
     }
 
     class ViewHolder(val binding: ListItemVehicleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind() {
             binding.root.findNavController().navigate(
-                VehiclesFragmentDirections.actionVehiclesPageFragmentToRocketDetailsFragment()
+                VehiclesFragmentDirections.actionVehiclesToLauncherDetails()
             )
         }
     }
 
-    object RocketComparator : DiffUtil.ItemCallback<LauncherItem>() {
-
+    object Comparator : DiffUtil.ItemCallback<LauncherItem>() {
         override fun areItemsTheSame(
             oldItem: LauncherItem,
             newItem: LauncherItem
-        ) = oldItem == newItem
+        ): Boolean = oldItem.id == newItem.id
 
         override fun areContentsTheSame(
             oldItem: LauncherItem,
             newItem: LauncherItem
-        ) = oldItem.id == newItem.id
+        ): Boolean = oldItem == newItem
     }
 }

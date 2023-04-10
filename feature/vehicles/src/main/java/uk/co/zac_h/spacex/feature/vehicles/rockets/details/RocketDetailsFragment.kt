@@ -5,14 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.navigation.fragment.navArgs
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialSharedAxis
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.utils.metricFormat
-import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.feature.vehicles.R
 import uk.co.zac_h.spacex.feature.vehicles.adapters.RocketPayloadAdapter
 import uk.co.zac_h.spacex.feature.vehicles.databinding.FragmentRocketDetailsBinding
@@ -20,11 +18,7 @@ import uk.co.zac_h.spacex.feature.vehicles.rockets.LauncherItem
 import uk.co.zac_h.spacex.feature.vehicles.rockets.PayloadWeights
 import uk.co.zac_h.spacex.feature.vehicles.rockets.RocketViewModel
 
-class RocketDetailsFragment : BaseFragment(), ViewPagerFragment {
-
-    override val title: String by lazy { navArgs.label ?: title }
-
-    private val navArgs: RocketDetailsFragmentArgs by navArgs()
+class RocketDetailsFragment : BaseFragment() {
 
     private val viewModel: RocketViewModel by navGraphViewModels(R.id.vehicles_nav_graph) {
         defaultViewModelProviderFactory

@@ -12,7 +12,7 @@
         style="?attr/materialCardViewElevatedStyle"
         android:clickable="true"
         android:focusable="true"
-        app:buttonText="@string/vehicle_specs_label"
+        app:buttonText="@string/specs_label"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

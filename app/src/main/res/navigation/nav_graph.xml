@@ -120,38 +120,6 @@
 
     </fragment>
 
-    <fragment
-        android:id="@+id/core_details_fragment"
-        android:name="uk.co.zac_h.spacex.vehicles.cores.details.CoreDetailsFragment"
-        tools:layout="@layout/fragment_core_details">
-
-        <argument
-            android:name="label"
-            app:argType="string"
-            app:nullable="true" />
-
-        <argument
-            android:name="id"
-            app:argType="string" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/capsule_details_fragment"
-        android:name="uk.co.zac_h.spacex.vehicles.capsules.details.CapsuleDetailsFragment"
-        tools:layout="@layout/fragment_capsule_details">
-
-        <argument
-            android:name="label"
-            app:argType="string"
-            app:nullable="true" />
-
-        <argument
-            android:name="id"
-            app:argType="string" />
-
-    </fragment>
-
     <action
         android:id="@+id/action_launch_item_to_launch_details_container"
         app:destination="@id/launch_details_container_fragment" />

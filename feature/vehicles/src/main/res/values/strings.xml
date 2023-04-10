@@ -3,8 +3,8 @@
 
     <string name="menu_vehicles">Vehicles</string>
     <string name="first_flight_label">First Flight</string>
+    <string name="specs_label">Specs</string>
     <string name="capsule_specs_label">Capsule Specs</string>
-    <string name="vehicle_specs_label">Vehicle Specs</string>
     <string name="rocket_image_desc">Rocket Image</string>
     <string name="measurements">%1$s m</string>
     <string name="mass_formatted">%1$d T</string>
@@ -65,4 +65,6 @@
     <string name="vehicles_filter_ascending_button_label">Asc</string>
     <string name="vehicles_filter_descending_button_label">Desc</string>
     <string name="vehicles_filter_reset">Reset</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

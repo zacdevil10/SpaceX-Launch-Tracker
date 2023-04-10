@@ -47,6 +47,9 @@ dependencies {
     implementation project(':core:ui')
     implementation project(":network")
 
+    //Paging
+    implementation "androidx.paging:paging-runtime-ktx:3.1.1"
+
     //MVVM
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"

@@ -24,6 +24,8 @@ class VehicleView @JvmOverloads constructor(
         set(value) {
             field = value
 
+            binding.vehicleImage.isVisible = value != null
+
             Glide.with(this)
                 .load(value)
                 .error(R.drawable.ic_baseline_error_outline_24)
@@ -35,17 +37,6 @@ class VehicleView @JvmOverloads constructor(
             field = value
 
             binding.vehicleName.text = value
-        }
-
-    var block: String? = null
-        set(value) {
-            field = value
-
-            binding.separator.isVisible = value != null
-            binding.block.apply {
-                isVisible = value != null
-                text = value
-            }
         }
 
     var status: String? = null
@@ -74,7 +65,7 @@ class VehicleView @JvmOverloads constructor(
     override fun addView(child: View?, params: ViewGroup.LayoutParams?) {
         child?.let {
             binding.body.addView(child, params)
-        } ?: super.addView(child, params)
+        } ?: super.addView(null, params)
     }
 
     override fun setLayoutParams(params: ViewGroup.LayoutParams?) {
