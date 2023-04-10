@@ -11,12 +11,6 @@ interface SpaceXService {
     @POST(SPACEX_CAPSULES_QUERY)
     suspend fun queryCapsules(@Body body: QueryModel): Response<NetworkDocsResponse<CapsuleQueriedResponse>>
 
-    @POST(SPACEX_CORES_QUERY)
-    suspend fun queryCores(@Body body: QueryModel): Response<NetworkDocsResponse<CoreQueriedResponse>>
-
-    @POST(SPACEX_CREW_QUERY)
-    suspend fun queryCrewMembers(@Body body: QueryModel): Response<NetworkDocsResponse<CrewQueriedResponse>>
-
     @POST(SPACEX_LANDING_PADS_QUERY)
     suspend fun queryLandingPads(@Body body: QueryModel): Response<NetworkDocsResponse<LandingPadQueriedResponse>>
 
