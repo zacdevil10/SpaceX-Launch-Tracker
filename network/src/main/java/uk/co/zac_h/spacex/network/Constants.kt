@@ -20,8 +20,6 @@ const val SPACEX_AGENCY = "agencies/121"
 
 //Legacy endpoints
 const val SPACEX_CAPSULES = "capsules"
-const val SPACEX_CORES = "cores"
-const val SPACEX_CREW = "crew"
 const val SPACEX_LANDING_PADS = "landpads"
 
 const val SPACEX_LAUNCHPADS = "launchpads"
@@ -30,8 +28,6 @@ const val SPACEX_QUERY = "/query"
 
 //Query
 const val SPACEX_CAPSULES_QUERY = "$SPACEX_CAPSULES$SPACEX_QUERY"
-const val SPACEX_CORES_QUERY = "$SPACEX_CORES$SPACEX_QUERY"
-const val SPACEX_CREW_QUERY = "$SPACEX_CREW$SPACEX_QUERY"
 const val SPACEX_LANDING_PADS_QUERY = "$SPACEX_LANDING_PADS$SPACEX_QUERY"
 const val SPACEX_LAUNCHPADS_QUERY = "$SPACEX_LAUNCHPADS$SPACEX_QUERY"
 
@@ -57,32 +53,7 @@ const val SPACEX_CAPSULE_TYPE_DRAGON_1 = "Dragon 1.0"
 const val SPACEX_CAPSULE_TYPE_DRAGON_1_1 = "Dragon 1.1"
 const val SPACEX_CAPSULE_TYPE_DRAGON_2 = "Dragon 2.0"
 
-//CORE
-const val SPACEX_FIELD_CORE_SERIAL = "serial"
-const val SPACEX_FIELD_CORE_BLOCK = "block"
-const val SPACEX_FIELD_CORE_STATUS = "status"
-const val SPACEX_FIELD_CORE_REUSE_COUNT = "reuse_count"
-const val SPACEX_FIELD_CORE_RTLS_ATTEMPTS = "rtls_attempts"
-const val SPACEX_FIELD_CORE_RTLS_LANDING = "rtls_landings"
-const val SPACEX_FIELD_CORE_ASDS_ATTEMPTS = "asds_attempts"
-const val SPACEX_FIELD_CORE_ASDS_LANDINGS = "asds_landings"
-const val SPACEX_FIELD_CORE_LAST_UPDATE = "last_update"
-const val SPACEX_FIELD_CORE_LAUNCHES = "launches"
-
-const val SPACEX_CORE_STATUS_ACTIVE = "active"
-const val SPACEX_CORE_STATUS_INACTIVE = "inactive"
-const val SPACEX_CORE_STATUS_EXPENDED = "expended"
-const val SPACEX_CORE_STATUS_LOST = "lost"
-const val SPACEX_CORE_STATUS_RETIRED = "retired"
-
 //CREW
-const val SPACEX_FIELD_CREW_NAME = "name"
-const val SPACEX_FIELD_CREW_STATUS = "status"
-const val SPACEX_FIELD_CREW_AGENCY = "agency"
-const val SPACEX_FIELD_CREW_IMAGE = "image"
-const val SPACEX_FIELD_CREW_WIKI = "wikipedia"
-const val SPACEX_FIELD_CREW_LAUNCHES = "launches"
-
 const val SPACEX_CREW_STATUS_IN_TRAINING = "In-Training"
 const val SPACEX_CREW_STATUS_ACTIVE = "Active"
 const val SPACEX_CREW_STATUS_INACTIVE = "Inactive"
@@ -244,7 +215,6 @@ const val SPACEX_IN_TRAINING = "In-Training"
 const val SPACEX_ACTIVE = "Active"
 const val SPACEX_INACTIVE = "Inactive"
 const val SPACEX_UNKNOWN = "Unknown"
-const val SPACEX_EXPENDED = "Expended"
 const val SPACEX_LOST = "Lost"
 const val SPACEX_RETIRED = "Retired"
 const val SPACEX_DECEASED = "Deceased"

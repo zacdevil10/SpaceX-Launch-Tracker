@@ -32,10 +32,6 @@ abstract class DataSourceModule {
     abstract fun bindLandingPadDataSource(landingPadDataSource: LandingPadDataSource): RemoteDataSource<NetworkDocsResponse<LandingPadQueriedResponse>>
 
     @Binds
-    @CoreDataSourceClient
-    abstract fun bindCoreDataSource(coreDataSource: CoreDataSource): RemoteDataSource<NetworkDocsResponse<CoreQueriedResponse>>
-
-    @Binds
     @CapsuleDataSourceClient
     abstract fun bindCapsuleDataSource(capsuleDataSource: CapsuleDataSource): RemoteDataSource<NetworkDocsResponse<CapsuleQueriedResponse>>
 }
@@ -51,9 +47,6 @@ annotation class LaunchpadDataSourceClient
 
 @Qualifier
 annotation class LandingPadDataSourceClient
-
-@Qualifier
-annotation class CoreDataSourceClient
 
 @Qualifier
 annotation class CapsuleDataSourceClient

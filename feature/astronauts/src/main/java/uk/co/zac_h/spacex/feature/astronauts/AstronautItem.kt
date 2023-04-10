@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.feature.astronauts
 
 import uk.co.zac_h.spacex.core.common.recyclerview.RecyclerViewItem
+import uk.co.zac_h.spacex.core.common.types.CrewStatus
 import uk.co.zac_h.spacex.core.common.utils.formatCrewDate
 import uk.co.zac_h.spacex.network.SPACEX_CREW_LOST_IN_TRAINING
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_ACTIVE
@@ -9,7 +10,6 @@ import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_INACTIVE
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_IN_TRAINING
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_RETIRED
 import uk.co.zac_h.spacex.network.dto.spacex.AstronautResponse
-import uk.co.zac_h.spacex.network.dto.spacex.CrewStatus
 
 data class AstronautItem(
     val id: Int,

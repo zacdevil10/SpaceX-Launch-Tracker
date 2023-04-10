@@ -4,6 +4,7 @@ import android.content.res.Resources
 import androidx.core.net.toUri
 import uk.co.zac_h.spacex.core.common.recyclerview.RecyclerViewItem
 import uk.co.zac_h.spacex.core.common.types.CoreType
+import uk.co.zac_h.spacex.core.common.types.CrewStatus
 import uk.co.zac_h.spacex.core.common.utils.formatCrewDate
 import uk.co.zac_h.spacex.core.common.utils.formatDate
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
@@ -17,7 +18,6 @@ import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_ACTIVE
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_DECEASED
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_INACTIVE
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_RETIRED
-import uk.co.zac_h.spacex.network.dto.spacex.CrewStatus
 import uk.co.zac_h.spacex.network.dto.spacex.LaunchResponse
 import java.util.Locale
 
