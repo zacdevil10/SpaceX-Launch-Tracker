@@ -93,7 +93,7 @@ dependencies {
     implementation 'com.github.zacdevil10:MediaRecyclerView:v0.2.0-beta'
 
     //Firebase
-    implementation platform('com.google.firebase:firebase-bom:31.4.0')
+    implementation platform('com.google.firebase:firebase-bom:32.0.0')
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
     implementation 'com.google.firebase:firebase-messaging-ktx'
