@@ -3,22 +3,15 @@ package uk.co.zac_h.spacex.network.datasource.remote.vehicles
 import android.net.Uri
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import uk.co.zac_h.spacex.network.dto.spacex.LauncherResponse
+import uk.co.zac_h.spacex.network.dto.spacex.SpacecraftResponse
 import uk.co.zac_h.spacex.network.retrofit.LaunchLibraryService
 
-class LauncherPagingSource(
-    private val httpService: LaunchLibraryService,
-    private val launcherConfigId: Int? = null
-) : PagingSource<Int, LauncherResponse>() {
+class SpacecraftPagingSource(
+    private val httpService: LaunchLibraryService
+) : PagingSource<Int, SpacecraftResponse>() {
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, LauncherResponse> = try {
-        val response = launcherConfigId?.let {
-            httpService.getLaunchersForConfig(
-                launcherConfigId = it,
-                limit = params.loadSize,
-                offset = params.key ?: 0
-            )
-        } ?: httpService.getLaunchers(
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, SpacecraftResponse> = try {
+        val response = httpService.getSpacecrafts(
             limit = params.loadSize,
             offset = params.key ?: 0
         )
@@ -51,5 +44,5 @@ class LauncherPagingSource(
         LoadResult.Error(e)
     }
 
-    override fun getRefreshKey(state: PagingState<Int, LauncherResponse>): Int? = null
+    override fun getRefreshKey(state: PagingState<Int, SpacecraftResponse>): Int? = null
 }

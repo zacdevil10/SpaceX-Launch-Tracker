@@ -15,11 +15,11 @@ const val SPACEX_BASE_URL_V4 = "https://api.spacexdata.com/v4/"
 const val SPACEX_PREVIOUS_LAUNCHES = "launch/previous"
 const val SPACEX_UPCOMING_LAUNCHES = "launch/upcoming"
 const val SPACEX_LAUNCHER = "launcher"
+const val SPACEX_SPACECRAFT = "spacecraft"
 const val SPACEX_ASTRONAUTS = "astronaut"
 const val SPACEX_AGENCY = "agencies/121"
 
 //Legacy endpoints
-const val SPACEX_CAPSULES = "capsules"
 const val SPACEX_LANDING_PADS = "landpads"
 
 const val SPACEX_LAUNCHPADS = "launchpads"
@@ -27,31 +27,11 @@ const val SPACEX_LAUNCHPADS = "launchpads"
 const val SPACEX_QUERY = "/query"
 
 //Query
-const val SPACEX_CAPSULES_QUERY = "$SPACEX_CAPSULES$SPACEX_QUERY"
 const val SPACEX_LANDING_PADS_QUERY = "$SPACEX_LANDING_PADS$SPACEX_QUERY"
 const val SPACEX_LAUNCHPADS_QUERY = "$SPACEX_LAUNCHPADS$SPACEX_QUERY"
 
 //Fields
 const val SPACEX_FIELD_ID = "id"
-
-//CAPSULE
-const val SPACEX_FIELD_CAPSULE_SERIAL = "serial"
-const val SPACEX_FIELD_CAPSULE_STATUS = "status"
-const val SPACEX_FIELD_CAPSULE_TYPE = "type"
-const val SPACEX_FIELD_CAPSULE_DRAGON = "dragon"
-const val SPACEX_FIELD_CAPSULE_REUSE_COUNT = "reuse_count"
-const val SPACEX_FIELD_CAPSULE_WATER_LANDINGS = "water_landings"
-const val SPACEX_FIELD_CAPSULE_LAND_LANDINGS = "land_landings"
-const val SPACEX_FIELD_CAPSULE_LAST_UPDATE = "last_update"
-const val SPACEX_FIELD_CAPSULE_LAUNCHES = "launches"
-
-const val SPACEX_CAPSULE_STATUS_ACTIVE = "active"
-const val SPACEX_CAPSULE_STATUS_RETIRED = "retired"
-const val SPACEX_CAPSULE_STATUS_DESTROYED = "destroyed"
-
-const val SPACEX_CAPSULE_TYPE_DRAGON_1 = "Dragon 1.0"
-const val SPACEX_CAPSULE_TYPE_DRAGON_1_1 = "Dragon 1.1"
-const val SPACEX_CAPSULE_TYPE_DRAGON_2 = "Dragon 2.0"
 
 //CREW
 const val SPACEX_CREW_STATUS_IN_TRAINING = "In-Training"
@@ -219,7 +199,6 @@ const val SPACEX_LOST = "Lost"
 const val SPACEX_RETIRED = "Retired"
 const val SPACEX_DECEASED = "Deceased"
 const val SPACEX_LOST_IN_TRAINING = "Lost In Training"
-const val SPACEX_DESTROYED = "Destroyed"
 const val SPACEX_UNDER_CONSTRUCTION = "Under construction"
 
 //endregion

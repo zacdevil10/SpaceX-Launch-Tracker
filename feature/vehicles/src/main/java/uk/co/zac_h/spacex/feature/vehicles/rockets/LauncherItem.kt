@@ -6,7 +6,7 @@ import java.util.Locale
 import java.util.TimeZone
 
 data class LauncherItem(
-    val id: String,
+    val id: Int,
     val fullName: String?,
     val description: String?,
     val stages: Int?,
@@ -63,8 +63,3 @@ data class LauncherItem(
         }.parse(this)?.time
     }
 }
-
-data class PayloadWeights(
-    val name: String,
-    val mass: Int
-)

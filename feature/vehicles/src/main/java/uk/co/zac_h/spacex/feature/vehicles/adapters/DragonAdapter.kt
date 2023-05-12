@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.feature.vehicles.VehiclesFragmentDirections
 import uk.co.zac_h.spacex.feature.vehicles.databinding.ListItemVehicleBinding
-import uk.co.zac_h.spacex.feature.vehicles.dragon.SpacecraftItem
+import uk.co.zac_h.spacex.feature.vehicles.dragon.SecondStageItem
 
 class DragonAdapter(val setSelected: (String) -> Unit) :
-    ListAdapter<SpacecraftItem, DragonAdapter.ViewHolder>(DragonComparator) {
+    ListAdapter<SecondStageItem, DragonAdapter.ViewHolder>(DragonComparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
         ListItemVehicleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -47,12 +47,12 @@ class DragonAdapter(val setSelected: (String) -> Unit) :
         }
     }
 
-    object DragonComparator : DiffUtil.ItemCallback<SpacecraftItem>() {
+    object DragonComparator : DiffUtil.ItemCallback<SecondStageItem>() {
 
-        override fun areItemsTheSame(oldItem: SpacecraftItem, newItem: SpacecraftItem) =
+        override fun areItemsTheSame(oldItem: SecondStageItem, newItem: SecondStageItem) =
             oldItem == newItem
 
-        override fun areContentsTheSame(oldItem: SpacecraftItem, newItem: SpacecraftItem) =
+        override fun areContentsTheSame(oldItem: SecondStageItem, newItem: SecondStageItem) =
             oldItem.id == newItem.id
     }
 }

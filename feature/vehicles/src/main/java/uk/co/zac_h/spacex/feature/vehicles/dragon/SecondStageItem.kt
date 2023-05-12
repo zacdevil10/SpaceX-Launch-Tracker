@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 
-data class SpacecraftItem(
+data class SecondStageItem(
     val id: String,
     val name: String?,
     val inUse: Boolean?,

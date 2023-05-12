@@ -8,9 +8,6 @@ import uk.co.zac_h.spacex.network.dto.spacex.*
 
 interface SpaceXService {
 
-    @POST(SPACEX_CAPSULES_QUERY)
-    suspend fun queryCapsules(@Body body: QueryModel): Response<NetworkDocsResponse<CapsuleQueriedResponse>>
-
     @POST(SPACEX_LANDING_PADS_QUERY)
     suspend fun queryLandingPads(@Body body: QueryModel): Response<NetworkDocsResponse<LandingPadQueriedResponse>>
 

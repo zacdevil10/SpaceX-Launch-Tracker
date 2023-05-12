@@ -17,6 +17,7 @@ import uk.co.zac_h.spacex.core.ui.databinding.FragmentViewPagerBinding
 import uk.co.zac_h.spacex.feature.vehicles.dragon.DragonFragment
 import uk.co.zac_h.spacex.feature.vehicles.launcher.LauncherFragment
 import uk.co.zac_h.spacex.feature.vehicles.rockets.RocketFragment
+import uk.co.zac_h.spacex.feature.vehicles.spacecraft.SpacecraftFragment
 
 class VehiclesFragment : BaseFragment() {
 
@@ -47,10 +48,10 @@ class VehiclesFragment : BaseFragment() {
             RocketFragment(),
             DragonFragment(),
             LauncherFragment(),
-            //CapsulesFragment()
+            SpacecraftFragment()
         )
 
-        binding.tabLayout.tabMode = TabLayout.MODE_FIXED
+        binding.tabLayout.tabMode = TabLayout.MODE_AUTO
 
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
@@ -63,10 +64,9 @@ class VehiclesFragment : BaseFragment() {
                 override fun onPageSelected(position: Int) {
                     viewModel.setVehiclesPage(position)
 
-                    if (position == 2) {
-                        binding.fab.hide()
-                    } else {
-                        binding.fab.show()
+                    when (position) {
+                        0, 1 -> binding.fab.show()
+                        2, 3 -> binding.fab.hide()
                     }
                 }
 

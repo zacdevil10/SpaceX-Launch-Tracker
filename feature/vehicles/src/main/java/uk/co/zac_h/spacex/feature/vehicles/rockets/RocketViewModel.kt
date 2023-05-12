@@ -5,6 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.liveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.core.common.types.Order
@@ -13,6 +18,7 @@ import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
 import uk.co.zac_h.spacex.network.Repository
 import uk.co.zac_h.spacex.network.async
+import uk.co.zac_h.spacex.network.dto.spacex.LauncherResponse
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,7 +37,18 @@ class RocketViewModel @Inject constructor(
 
     var hasOrderChanged = false
 
-    var selectedId = ""
+    val launcherLiveData: LiveData<PagingData<LauncherResponse>>
+        get() = Pager(
+            PagingConfig(pageSize = 10)
+        ) {
+            repository.launcherPagingSource
+        }.liveData.cachedIn(viewModelScope)
+
+    var selectedLauncher: LauncherItem? = null
+        set(value) {
+            field = value
+            repository.launcherConfigId = value?.id
+        }
 
     val cacheLocation: Repository.RequestLocation
         get() = repository.cacheLocation

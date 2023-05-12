@@ -44,7 +44,7 @@ class RocketFragment : BaseFragment(), ViewPagerFragment {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        rocketsAdapter = RocketsAdapter { viewModel.selectedId = it }
+        rocketsAdapter = RocketsAdapter { viewModel.selectedLauncher = it }
 
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())

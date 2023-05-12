@@ -13,14 +13,13 @@ import uk.co.zac_h.spacex.feature.vehicles.launcher.LauncherItem
 class LauncherAdapter(private val onClick: (LauncherItem) -> Unit) :
     PagingDataAdapter<LauncherItem, LauncherAdapter.ViewHolder>(Comparator) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(
-            ListItemVehicleBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
+        ListItemVehicleBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
+    )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val launcher = getItem(position)

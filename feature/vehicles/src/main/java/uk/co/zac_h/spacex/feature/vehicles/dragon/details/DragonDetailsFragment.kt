@@ -13,7 +13,7 @@ import uk.co.zac_h.spacex.core.common.utils.metricFormat
 import uk.co.zac_h.spacex.feature.vehicles.R
 import uk.co.zac_h.spacex.feature.vehicles.databinding.FragmentDragonDetailsBinding
 import uk.co.zac_h.spacex.feature.vehicles.dragon.DragonViewModel
-import uk.co.zac_h.spacex.feature.vehicles.dragon.SpacecraftItem
+import uk.co.zac_h.spacex.feature.vehicles.dragon.SecondStageItem
 
 class DragonDetailsFragment : BaseFragment() {
 
@@ -50,7 +50,7 @@ class DragonDetailsFragment : BaseFragment() {
         }
     }
 
-    private fun update(dragon: SpacecraftItem) {
+    private fun update(dragon: SecondStageItem) {
         with(binding) {
             Glide.with(requireContext())
                 .load(dragon.imageUrl)

@@ -20,8 +20,8 @@ class DragonViewModel @Inject constructor(
     private val repository: DragonRepository
 ) : ViewModel() {
 
-    private val _dragons = MutableLiveData<ApiResult<List<SpacecraftItem>>>()
-    val dragons: LiveData<ApiResult<List<SpacecraftItem>>> = _dragons.map { result ->
+    private val _dragons = MutableLiveData<ApiResult<List<SecondStageItem>>>()
+    val dragons: LiveData<ApiResult<List<SecondStageItem>>> = _dragons.map { result ->
         result.map {
             it.sortedBy(order) { spacecraftItem ->
                 spacecraftItem.maidenFlightMillis
@@ -45,7 +45,7 @@ class DragonViewModel @Inject constructor(
             }
 
             _dragons.value = response.await().map { result ->
-                result.spacecraftList?.map { SpacecraftItem(it) } ?: emptyList()
+                result.spacecraftList?.map { SecondStageItem(it) } ?: emptyList()
             }
         }
     }
