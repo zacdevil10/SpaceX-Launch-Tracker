@@ -10,7 +10,7 @@ import uk.co.zac_h.spacex.feature.vehicles.VehiclesFragmentDirections
 import uk.co.zac_h.spacex.feature.vehicles.databinding.ListItemVehicleBinding
 import uk.co.zac_h.spacex.feature.vehicles.rockets.LauncherItem
 
-class RocketsAdapter(val setSelected: (String) -> Unit) :
+class RocketsAdapter(val setSelected: (LauncherItem) -> Unit) :
     ListAdapter<LauncherItem, RocketsAdapter.ViewHolder>(RocketComparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
@@ -29,11 +29,11 @@ class RocketsAdapter(val setSelected: (String) -> Unit) :
                 image = rocket.imageUrl
                 title = rocket.fullName
                 vehicleSpecs.setOnClickListener {
-                    setSelected(rocket.id)
+                    setSelected(rocket)
                     holder.bind()
                 }
                 setOnClickListener {
-                    setSelected(rocket.id)
+                    setSelected(rocket)
                     holder.bind()
                 }
             }

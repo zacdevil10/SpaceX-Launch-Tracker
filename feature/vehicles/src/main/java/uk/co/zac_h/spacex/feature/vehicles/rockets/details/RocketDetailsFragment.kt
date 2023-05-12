@@ -4,18 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.isVisible
 import androidx.navigation.navGraphViewModels
+import androidx.paging.map
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.google.android.material.transition.MaterialSharedAxis
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.utils.metricFormat
 import uk.co.zac_h.spacex.feature.vehicles.R
-import uk.co.zac_h.spacex.feature.vehicles.adapters.RocketPayloadAdapter
+import uk.co.zac_h.spacex.feature.vehicles.adapters.HeaderAdapter
+import uk.co.zac_h.spacex.feature.vehicles.adapters.HeaderItem
+import uk.co.zac_h.spacex.feature.vehicles.adapters.LauncherAdapter
+import uk.co.zac_h.spacex.feature.vehicles.adapters.SpecsAdapter
+import uk.co.zac_h.spacex.feature.vehicles.adapters.SpecsItem
 import uk.co.zac_h.spacex.feature.vehicles.databinding.FragmentRocketDetailsBinding
 import uk.co.zac_h.spacex.feature.vehicles.rockets.LauncherItem
-import uk.co.zac_h.spacex.feature.vehicles.rockets.PayloadWeights
 import uk.co.zac_h.spacex.feature.vehicles.rockets.RocketViewModel
 
 class RocketDetailsFragment : BaseFragment() {
@@ -26,7 +29,9 @@ class RocketDetailsFragment : BaseFragment() {
 
     private lateinit var binding: FragmentRocketDetailsBinding
 
-    private val rocketPayloadAdapter: RocketPayloadAdapter = RocketPayloadAdapter()
+    private val headerAdapter = HeaderAdapter()
+    private val specsAdapter = SpecsAdapter()
+    private val launcherAdapter = LauncherAdapter {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,14 +51,19 @@ class RocketDetailsFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.rocketDetailsPayloadRecycler.apply {
+        val concatAdapter = ConcatAdapter(headerAdapter, specsAdapter, launcherAdapter)
+
+        binding.recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            setHasFixedSize(true)
-            adapter = rocketPayloadAdapter
+            adapter = concatAdapter
         }
 
-        viewModel.rockets.observe(viewLifecycleOwner) { result ->
-            result.data?.first { it.id == viewModel.selectedId }?.let { update(it) }
+        viewModel.selectedLauncher?.let { update(it) }
+
+        viewModel.launcherLiveData.observe(viewLifecycleOwner) { pagingData ->
+            launcherAdapter.submitData(
+                lifecycle,
+                pagingData.map { uk.co.zac_h.spacex.feature.vehicles.launcher.LauncherItem(it) })
         }
 
         binding.toolbar.setNavigationOnClickListener {
@@ -61,52 +71,75 @@ class RocketDetailsFragment : BaseFragment() {
         }
     }
 
-    private fun update(rocket: LauncherItem?) {
-        with(binding) {
-            rocket?.let {
-                Glide.with(requireContext())
-                    .load(it.imageUrl)
-                    .error(R.drawable.ic_baseline_error_outline_24)
-                    .into(rocketImage)
+    private fun update(rocket: LauncherItem) {
+        binding.toolbar.title = rocket.fullName
 
-                toolbar.title = rocket.fullName
-
-                rocketDetailsText.text = it.description
-
-                rocketDetailsSuccessRate.text = it.successRate?.let { successRate ->
-                    getString(R.string.percentage, successRate.metricFormat())
-                }
-
-                rocketDetailsFirstFlight.text = it.maidenFlight
-                rocketDetailsStages.text = it.stages.toString()
-
-                rocketDetailsHeight.text = it.length?.let { height ->
-                    getString(R.string.measurements, height.metricFormat())
-                }
-                rocketDetailsDiameter.text = it.diameter?.let { diameter ->
-                    getString(R.string.measurements, diameter.metricFormat())
-                }
-                rocketDetailsMass.text = it.launchMass?.let { mass ->
-                    getString(R.string.mass_formatted, mass)
-                }
-                rocketDetailsThrustSea.text = it.toThrust?.let { thrust ->
-                    getString(R.string.thrust, thrust.metricFormat())
-                }
-
-                rocketDetailsMassOrbitLabel.isVisible =
-                    it.gtoCapacity != null || it.leoCapacity != null
-
-                rocketPayloadAdapter.submitList(
-                    listOfNotNull(
-                        it.gtoCapacity?.let { gtoCapacity ->
-                            PayloadWeights("GTO", gtoCapacity)
-                        },
-                        it.leoCapacity?.let { leoCapacity ->
-                            PayloadWeights("LEO", leoCapacity)
-                        }
-                    )
+        headerAdapter.submitList(
+            listOf(
+                HeaderItem(
+                    rocket.imageUrl,
+                    rocket.description
                 )
-            }
-        }
+            )
+        )
+
+        specsAdapter.submitList(
+            listOfNotNull(
+                rocket.successRate?.let {
+                    SpecsItem(
+                        "Launch Success Rate",
+                        getString(R.string.percentage, it.metricFormat())
+                    )
+                },
+                rocket.maidenFlight?.let {
+                    SpecsItem(
+                        getString(R.string.first_flight_label),
+                        it
+                    )
+                },
+                rocket.stages?.let {
+                    SpecsItem(
+                        getString(R.string.stages_label),
+                        it.toString()
+                    )
+                },
+                rocket.length?.let {
+                    SpecsItem(
+                        getString(R.string.height_label),
+                        getString(R.string.measurements, it.metricFormat())
+                    )
+                },
+                rocket.diameter?.let {
+                    SpecsItem(
+                        getString(R.string.diameter_label),
+                        getString(R.string.measurements, it.metricFormat())
+                    )
+                },
+                rocket.launchMass?.let {
+                    SpecsItem(
+                        "Mass",
+                        getString(R.string.mass_formatted, it)
+                    )
+                },
+                rocket.toThrust?.let {
+                    SpecsItem(
+                        "Thrust at Liftoff",
+                        getString(R.string.thrust, it.metricFormat())
+                    )
+                },
+                rocket.leoCapacity?.let {
+                    SpecsItem(
+                        "Mass to LEO",
+                        getString(R.string.mass, it.metricFormat())
+                    )
+                },
+                rocket.gtoCapacity?.let {
+                    SpecsItem(
+                        "Mass to GTO",
+                        getString(R.string.mass, it.metricFormat())
+                    )
+                },
+            )
+        )
     }
 }
