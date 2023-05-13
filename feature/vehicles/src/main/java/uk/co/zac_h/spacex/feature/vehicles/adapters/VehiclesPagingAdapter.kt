@@ -6,12 +6,12 @@ import androidx.navigation.findNavController
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import uk.co.zac_h.spacex.feature.vehicles.VehicleItem
 import uk.co.zac_h.spacex.feature.vehicles.VehiclesFragmentDirections
 import uk.co.zac_h.spacex.feature.vehicles.databinding.ListItemVehicleBinding
-import uk.co.zac_h.spacex.feature.vehicles.launcher.LauncherItem
 
-class LauncherAdapter(private val onClick: (LauncherItem) -> Unit) :
-    PagingDataAdapter<LauncherItem, LauncherAdapter.ViewHolder>(Comparator) {
+class VehiclesPagingAdapter(private val setSelected: (VehicleItem) -> Unit) :
+    PagingDataAdapter<VehicleItem, VehiclesPagingAdapter.ViewHolder>(Comparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
         ListItemVehicleBinding.inflate(
@@ -22,42 +22,43 @@ class LauncherAdapter(private val onClick: (LauncherItem) -> Unit) :
     )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val launcher = getItem(position)
+        val vehicle = getItem(position)
 
         with(holder.binding) {
             vehicleView.apply {
-                launcher?.let { image = it.imageUrl }
-                title = launcher?.serial
+                image = vehicle?.imageUrl
+                title = vehicle?.title
                 vehicleSpecs.setOnClickListener {
-                    launcher?.let { onClick(it) }
+                    vehicle?.let { setSelected(it) }
                     holder.bind()
                 }
                 setOnClickListener {
-                    launcher?.let { onClick(it) }
+                    vehicle?.let { setSelected(it) }
                     holder.bind()
                 }
             }
-            vehicleDetails.text = launcher?.details
+
+            vehicleDetails.text = vehicle?.description
         }
     }
 
     class ViewHolder(val binding: ListItemVehicleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind() {
             binding.root.findNavController().navigate(
-                VehiclesFragmentDirections.actionVehiclesToLauncherDetails()
+                VehiclesFragmentDirections.actionVehiclesPageToVehicleDetails()
             )
         }
     }
 
-    object Comparator : DiffUtil.ItemCallback<LauncherItem>() {
-        override fun areItemsTheSame(
-            oldItem: LauncherItem,
-            newItem: LauncherItem
-        ): Boolean = oldItem.id == newItem.id
+    object Comparator : DiffUtil.ItemCallback<VehicleItem>() {
 
-        override fun areContentsTheSame(
-            oldItem: LauncherItem,
-            newItem: LauncherItem
-        ): Boolean = oldItem == newItem
+        override fun areItemsTheSame(oldItem: VehicleItem, newItem: VehicleItem) =
+            oldItem.id == newItem.id
+
+        override fun areContentsTheSame(oldItem: VehicleItem, newItem: VehicleItem) =
+            oldItem.title == newItem.title
+                    && oldItem.imageUrl == newItem.imageUrl
+                    && oldItem.description == newItem.description
+                    && oldItem.longDescription == newItem.longDescription
     }
 }

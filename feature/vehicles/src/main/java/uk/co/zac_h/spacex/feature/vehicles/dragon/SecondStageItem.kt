@@ -1,13 +1,17 @@
 package uk.co.zac_h.spacex.feature.vehicles.dragon
 
+import uk.co.zac_h.spacex.feature.vehicles.VehicleItem
 import uk.co.zac_h.spacex.network.dto.spacex.AgencyResponse
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 
 data class SecondStageItem(
-    val id: String,
+    override val id: String,
+    override val title: String?,
     val name: String?,
+    override val description: String?,
+    override val longDescription: String?,
     val inUse: Boolean?,
     val capability: String?,
     val history: String?,
@@ -20,14 +24,17 @@ data class SecondStageItem(
     val crewCapacity: Int?,
     val payloadCapacity: Int?,
     val flightLife: String?,
-    val imageUrl: String?,
+    override val imageUrl: String?,
     val wiki: String?,
     val info: String?
-) {
+) : VehicleItem {
 
     constructor(response: AgencyResponse.Spacecraft) : this(
         id = response.id,
+        title = response.name,
         name = response.name,
+        description = response.history,
+        longDescription = "${response.history}\n\n${response.details}",
         inUse = response.inUse,
         capability = response.capability,
         history = response.history,

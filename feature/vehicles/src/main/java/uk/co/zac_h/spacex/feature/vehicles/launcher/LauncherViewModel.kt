@@ -22,6 +22,4 @@ class LauncherViewModel @Inject constructor(
     ) {
         repository.launcherPagingSource
     }.liveData.cachedIn(viewModelScope)
-
-    var selectedLauncher: LauncherItem? = null
 }

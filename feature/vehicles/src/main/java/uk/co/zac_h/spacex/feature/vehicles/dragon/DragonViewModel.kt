@@ -33,8 +33,6 @@ class DragonViewModel @Inject constructor(
 
     var hasOrderChanged = false
 
-    var selectedId = ""
-
     val cacheLocation: Repository.RequestLocation
         get() = repository.cacheLocation
 

@@ -1,14 +1,17 @@
 package uk.co.zac_h.spacex.feature.vehicles.rockets
 
+import uk.co.zac_h.spacex.feature.vehicles.VehicleItem
 import uk.co.zac_h.spacex.network.dto.spacex.AgencyResponse
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 
-data class LauncherItem(
-    val id: Int,
+data class RocketItem(
+    override val id: Int,
+    override val title: String?,
     val fullName: String?,
-    val description: String?,
+    override val description: String?,
+    override val longDescription: String?,
     val stages: Int?,
     val length: Float?,
     val diameter: Float?,
@@ -18,17 +21,19 @@ data class LauncherItem(
     val leoCapacity: Int?,
     val gtoCapacity: Int?,
     val toThrust: Int?,
-    val imageUrl: String?,
+    override val imageUrl: String?,
     val consecutiveSuccessfulLaunches: Int?,
     val successfulLaunches: Int?,
     val failedLaunches: Int?,
     val pendingLaunches: Int?
-) {
+) : VehicleItem {
 
     constructor(response: AgencyResponse.Launcher) : this(
         id = response.id,
+        title = response.fullName,
         fullName = response.fullName,
         description = response.description,
+        longDescription = response.description,
         stages = response.maxStage,
         length = response.length,
         diameter = response.diameter,

@@ -44,6 +44,9 @@ class VehiclesFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        view.doOnPreDraw { startPostponedEnterTransition() }
+        postponeEnterTransition()
+
         val fragments: List<ViewPagerFragment> = listOf(
             RocketFragment(),
             DragonFragment(),
@@ -52,9 +55,6 @@ class VehiclesFragment : BaseFragment() {
         )
 
         binding.tabLayout.tabMode = TabLayout.MODE_AUTO
-
-        postponeEnterTransition()
-        view.doOnPreDraw { startPostponedEnterTransition() }
 
         binding.viewPager.apply {
             adapter = ViewPagerAdapter(childFragmentManager, fragments)

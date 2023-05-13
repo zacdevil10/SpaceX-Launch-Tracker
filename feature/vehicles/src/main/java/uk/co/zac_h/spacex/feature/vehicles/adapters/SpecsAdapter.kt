@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import uk.co.zac_h.spacex.core.common.utils.TextResource
 import uk.co.zac_h.spacex.feature.vehicles.databinding.ListItemVehicleSpecsBinding
 
 class SpecsAdapter : ListAdapter<SpecsItem, SpecsAdapter.ViewHolder>(Comparator) {
@@ -21,8 +22,8 @@ class SpecsAdapter : ListAdapter<SpecsItem, SpecsAdapter.ViewHolder>(Comparator)
         val specs = getItem(position)
 
         holder.binding.listItemVehicleSpecs.apply {
-            label = specs.label
-            text = specs.value
+            label = specs.label.asString(resources)
+            text = specs.value.asString(resources)
         }
     }
 
@@ -38,4 +39,4 @@ class SpecsAdapter : ListAdapter<SpecsItem, SpecsAdapter.ViewHolder>(Comparator)
     }
 }
 
-data class SpecsItem(val label: String, val value: String)
+data class SpecsItem(val label: TextResource, val value: TextResource)

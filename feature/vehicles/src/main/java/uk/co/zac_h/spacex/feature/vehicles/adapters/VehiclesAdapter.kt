@@ -6,53 +6,59 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import uk.co.zac_h.spacex.feature.vehicles.VehicleItem
 import uk.co.zac_h.spacex.feature.vehicles.VehiclesFragmentDirections
 import uk.co.zac_h.spacex.feature.vehicles.databinding.ListItemVehicleBinding
-import uk.co.zac_h.spacex.feature.vehicles.dragon.SecondStageItem
 
-class DragonAdapter(val setSelected: (String) -> Unit) :
-    ListAdapter<SecondStageItem, DragonAdapter.ViewHolder>(DragonComparator) {
+class VehiclesAdapter(val setSelected: (VehicleItem) -> Unit) :
+    ListAdapter<VehicleItem, VehiclesAdapter.ViewHolder>(Comparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
-        ListItemVehicleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        ListItemVehicleBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
     )
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val dragon = getItem(position)
+        val vehicle = getItem(position)
 
         with(holder.binding) {
             vehicleView.apply {
-                transitionName = dragon.id
-                image = dragon.imageUrl
-                title = dragon.name
+                image = vehicle.imageUrl
+                title = vehicle.title
                 vehicleSpecs.setOnClickListener {
-                    setSelected(dragon.id)
+                    setSelected(vehicle)
                     holder.bind()
                 }
                 setOnClickListener {
-                    setSelected(dragon.id)
+                    setSelected(vehicle)
                     holder.bind()
                 }
             }
 
-            vehicleDetails.text = dragon.history
+            vehicleDetails.text = vehicle.description
         }
     }
 
     class ViewHolder(val binding: ListItemVehicleBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind() {
             binding.root.findNavController().navigate(
-                VehiclesFragmentDirections.actionVehiclesPageFragmentToDragonDetailsFragment()
+                VehiclesFragmentDirections.actionVehiclesPageToVehicleDetails()
             )
         }
     }
 
-    object DragonComparator : DiffUtil.ItemCallback<SecondStageItem>() {
+    companion object Comparator : DiffUtil.ItemCallback<VehicleItem>() {
 
-        override fun areItemsTheSame(oldItem: SecondStageItem, newItem: SecondStageItem) =
-            oldItem == newItem
-
-        override fun areContentsTheSame(oldItem: SecondStageItem, newItem: SecondStageItem) =
+        override fun areItemsTheSame(oldItem: VehicleItem, newItem: VehicleItem) =
             oldItem.id == newItem.id
+
+        override fun areContentsTheSame(oldItem: VehicleItem, newItem: VehicleItem) =
+            oldItem.title == newItem.title
+                    && oldItem.imageUrl == newItem.imageUrl
+                    && oldItem.description == newItem.description
+                    && oldItem.longDescription == newItem.longDescription
     }
 }
