@@ -16,7 +16,8 @@ import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.core.ui.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.feature.vehicles.R
-import uk.co.zac_h.spacex.feature.vehicles.adapters.LauncherAdapter
+import uk.co.zac_h.spacex.feature.vehicles.VehicleDetailsViewModel
+import uk.co.zac_h.spacex.feature.vehicles.adapters.VehiclesPagingAdapter
 
 class LauncherFragment : BaseFragment(), ViewPagerFragment {
 
@@ -28,7 +29,11 @@ class LauncherFragment : BaseFragment(), ViewPagerFragment {
         defaultViewModelProviderFactory
     }
 
-    private lateinit var launcherAdapter: LauncherAdapter
+    private val vehicleDetailsViewModel: VehicleDetailsViewModel by navGraphViewModels(R.id.vehicles_nav_graph) {
+        defaultViewModelProviderFactory
+    }
+
+    private lateinit var launcherAdapter: VehiclesPagingAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,7 +45,7 @@ class LauncherFragment : BaseFragment(), ViewPagerFragment {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        launcherAdapter = LauncherAdapter { onClick(it) }
+        launcherAdapter = VehiclesPagingAdapter { vehicleDetailsViewModel.vehicle = it }
 
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -49,7 +54,7 @@ class LauncherFragment : BaseFragment(), ViewPagerFragment {
         }
 
         viewModel.launcherLiveData.observe(viewLifecycleOwner) { pagingData ->
-            launcherAdapter.submitData(lifecycle, pagingData.map { LauncherItem(it) })
+            launcherAdapter.submitData(lifecycle, pagingData.map { CoreItem(it) })
         }
 
         binding.swipeRefresh.setOnRefreshListener {
@@ -75,10 +80,6 @@ class LauncherFragment : BaseFragment(), ViewPagerFragment {
                 }
             }
         }
-    }
-
-    private fun onClick(launcherItem: LauncherItem) {
-        viewModel.selectedLauncher = launcherItem
     }
 
     private fun showError(error: String?) {

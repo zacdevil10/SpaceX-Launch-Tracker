@@ -16,7 +16,8 @@ import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.core.ui.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.feature.vehicles.R
-import uk.co.zac_h.spacex.feature.vehicles.adapters.SpacecraftAdapter
+import uk.co.zac_h.spacex.feature.vehicles.VehicleDetailsViewModel
+import uk.co.zac_h.spacex.feature.vehicles.adapters.VehiclesPagingAdapter
 
 class SpacecraftFragment : BaseFragment(), ViewPagerFragment {
 
@@ -28,7 +29,11 @@ class SpacecraftFragment : BaseFragment(), ViewPagerFragment {
         defaultViewModelProviderFactory
     }
 
-    private lateinit var spacecraftAdapter: SpacecraftAdapter
+    private val vehicleDetailsViewModel: VehicleDetailsViewModel by navGraphViewModels(R.id.vehicles_nav_graph) {
+        defaultViewModelProviderFactory
+    }
+
+    private lateinit var spacecraftAdapter: VehiclesPagingAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,7 +46,7 @@ class SpacecraftFragment : BaseFragment(), ViewPagerFragment {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        spacecraftAdapter = SpacecraftAdapter()
+        val spacecraftAdapter = VehiclesPagingAdapter { vehicleDetailsViewModel.vehicle = it }
 
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
