@@ -10,6 +10,7 @@ data class SpacecraftItem(
     val serialNumber: String?,
     val status: String?,
     override val description: String?,
+    override val longDescription: String?,
     override val imageUrl: String?
 ) : VehicleItem {
 
@@ -20,6 +21,7 @@ data class SpacecraftItem(
         serialNumber = response.serialNumber,
         status = response.status?.name,
         description = response.description,
+        longDescription = response.description,
         imageUrl = response.spacecraftConfig?.imageUrl
     )
 }
