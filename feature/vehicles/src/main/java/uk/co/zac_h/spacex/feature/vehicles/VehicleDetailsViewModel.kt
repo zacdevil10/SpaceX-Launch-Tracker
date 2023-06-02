@@ -1,13 +1,6 @@
 package uk.co.zac_h.spacex.feature.vehicles
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import androidx.paging.liveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import uk.co.zac_h.spacex.core.common.utils.TextResource.Companion.string
 import uk.co.zac_h.spacex.core.common.utils.metricFormat
@@ -19,7 +12,6 @@ import uk.co.zac_h.spacex.feature.vehicles.launcher.CoreItem
 import uk.co.zac_h.spacex.feature.vehicles.rockets.RocketItem
 import uk.co.zac_h.spacex.feature.vehicles.rockets.RocketRepository
 import uk.co.zac_h.spacex.feature.vehicles.spacecraft.SpacecraftItem
-import uk.co.zac_h.spacex.network.dto.spacex.LauncherResponse
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,15 +24,6 @@ class VehicleDetailsViewModel @Inject constructor(
             field = value
             repository.launcherConfigId = (value as? RocketItem)?.id
         }
-
-    val launcherLiveData: LiveData<PagingData<LauncherResponse>>?
-        get() = if (repository.launcherConfigId != null) {
-            Pager(
-                PagingConfig(pageSize = 10)
-            ) {
-                repository.launcherPagingSource
-            }.liveData.cachedIn(viewModelScope)
-        } else null
 
     val header: HeaderItem
         get() = HeaderItem(

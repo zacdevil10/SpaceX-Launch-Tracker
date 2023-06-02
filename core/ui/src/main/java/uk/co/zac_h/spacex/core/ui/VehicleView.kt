@@ -70,8 +70,8 @@ class VehicleView @JvmOverloads constructor(
 
     override fun setLayoutParams(params: ViewGroup.LayoutParams?) {
         if (params is MarginLayoutParams) {
-            params.marginStart = resources.getDimensionPixelSize(R.dimen.xlarge_margin)
-            params.marginEnd = resources.getDimensionPixelSize(R.dimen.xlarge_margin)
+            params.marginStart = resources.getDimensionPixelSize(R.dimen.medium_margin)
+            params.marginEnd = resources.getDimensionPixelSize(R.dimen.medium_margin)
             params.topMargin = resources.getDimensionPixelSize(R.dimen.medium_margin)
             params.bottomMargin = resources.getDimensionPixelSize(R.dimen.medium_margin)
         }
