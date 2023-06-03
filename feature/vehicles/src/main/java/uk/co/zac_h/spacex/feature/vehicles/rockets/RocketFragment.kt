@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.viewModels
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
@@ -13,8 +12,6 @@ import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.core.ui.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.feature.vehicles.R
 import uk.co.zac_h.spacex.feature.vehicles.VehicleDetailsViewModel
-import uk.co.zac_h.spacex.feature.vehicles.VehiclesFilterViewModel
-import uk.co.zac_h.spacex.feature.vehicles.VehiclesPage
 import uk.co.zac_h.spacex.feature.vehicles.adapters.VehiclesAdapter
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
@@ -25,15 +22,15 @@ class RocketFragment : BaseFragment(), ViewPagerFragment {
 
     private lateinit var binding: FragmentVerticalRecyclerviewBinding
 
-    private val viewModel: RocketViewModel by viewModels()
+    private val viewModel: RocketViewModel by navGraphViewModels(R.id.vehicles_nav_graph) {
+        defaultViewModelProviderFactory
+    }
 
     private val vehicleDetailsViewModel: VehicleDetailsViewModel by navGraphViewModels(R.id.vehicles_nav_graph) {
         defaultViewModelProviderFactory
     }
 
-    private val filterViewModel: VehiclesFilterViewModel by navGraphViewModels(R.id.vehicles_nav_graph) {
-        defaultViewModelProviderFactory
-    }
+    private var shouldScroll: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,6 +42,8 @@ class RocketFragment : BaseFragment(), ViewPagerFragment {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        shouldScroll = false
 
         val rocketsAdapter = VehiclesAdapter { vehicleDetailsViewModel.vehicle = it }
 
@@ -66,10 +65,7 @@ class RocketFragment : BaseFragment(), ViewPagerFragment {
                     binding.swipeRefresh.isRefreshing = false
                     result.data?.let { data ->
                         rocketsAdapter.submitList(data) {
-                            with(viewModel) {
-                                if (hasOrderChanged) binding.recycler.smoothScrollToPosition(0)
-                                hasOrderChanged = false
-                            }
+                            if (shouldScroll) binding.recycler.smoothScrollToPosition(0)
                         }
                     }
                 }
@@ -81,12 +77,17 @@ class RocketFragment : BaseFragment(), ViewPagerFragment {
             }
         }
 
-        filterViewModel.order.observe(viewLifecycleOwner) {
-            viewModel.setOrder(it[VehiclesPage.ROCKETS])
-            viewModel.getRockets()
-        }
-
         viewModel.getRockets()
+
+        viewModel.filter.observe(viewLifecycleOwner) {
+            shouldScroll = true
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        shouldScroll = false
     }
 
     private fun showProgress() {

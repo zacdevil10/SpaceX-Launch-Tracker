@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".rockets.filter.RocketFilterDialogFragment">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/filter_label_guideline"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.2" />
+
+    <TextView
+        android:id="@+id/rocket_filter_family_label"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="@dimen/medium_margin"
+        android:gravity="center_vertical"
+        android:text="@string/rocket_filter_family_label"
+        app:layout_constraintEnd_toStartOf="@id/filter_label_guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rocket_filter_family_chip_group" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/rocket_filter_family_chip_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/medium_margin"
+        android:layout_marginTop="@dimen/medium_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/filter_label_guideline"
+        app:layout_constraintTop_toTopOf="parent"
+        app:singleSelection="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/falcon"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rocket_filter_falcon_chip_label" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/starship"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rocket_filter_starship_chip_label" />
+
+    </com.google.android.material.chip.ChipGroup>
+
+    <TextView
+        android:id="@+id/rocket_filter_type_label"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="@dimen/medium_margin"
+        android:gravity="center_vertical"
+        android:text="@string/rocket_filter_type_label"
+        app:layout_constraintEnd_toStartOf="@id/filter_label_guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rocket_filter_type_chip_group" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/rocket_filter_type_chip_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/medium_margin"
+        android:layout_marginTop="@dimen/medium_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/filter_label_guideline"
+        app:layout_constraintTop_toBottomOf="@+id/rocket_filter_family_chip_group">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/falcon_nine"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="@string/rocket_filter_falcon_9_chip_label" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/falcon_heavy"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="@string/rocket_filter_falcon_heavy_chip_label" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/falcon_one"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="@string/rocket_filter_falcon_1_chip_label" />
+
+    </com.google.android.material.chip.ChipGroup>
+
+    <TextView
+        android:id="@+id/rocket_filter_order_label"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="@dimen/medium_margin"
+        android:gravity="center_vertical"
+        android:text="@string/rocket_filter_order_label"
+        app:layout_constraintEnd_toStartOf="@id/filter_label_guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rocket_filter_order_chip_group" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/rocket_filter_order_chip_group"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/medium_margin"
+        android:layout_marginTop="@dimen/medium_margin"
+        app:checkedButton="@id/ascending"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/filter_label_guideline"
+        app:layout_constraintTop_toBottomOf="@id/rocket_filter_type_chip_group"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/ascending"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rocket_filter_ascending_chip_label" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/descending"
+            style="@style/Widget.Material3.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/rocket_filter_descending_chip_label" />
+
+    </com.google.android.material.chip.ChipGroup>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/reset"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/medium_margin"
+        android:layout_marginTop="@dimen/small_margin"
+        android:layout_marginEnd="@dimen/medium_margin"
+        android:layout_marginBottom="@dimen/medium_margin"
+        android:text="@string/rocket_filter_reset_button_label"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rocket_filter_order_chip_group" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,17 +11,24 @@ data class SpacecraftItem(
     val status: String?,
     override val description: String?,
     override val longDescription: String?,
-    override val imageUrl: String?
+    override val imageUrl: String? = null,
+    val type: String?
 ) : VehicleItem {
 
     constructor(response: SpacecraftResponse) : this(
         id = response.id,
         name = response.name,
-        title = response.serialNumber,
+        title = response.serialNumber?.let {
+            if (response.name?.contains(it) == false) {
+                "${response.name} - ${response.serialNumber}"
+            } else {
+                response.name
+            }
+        } ?: response.name,
         serialNumber = response.serialNumber,
         status = response.status?.name,
         description = response.description,
         longDescription = response.description,
-        imageUrl = response.spacecraftConfig?.imageUrl
+        type = response.spacecraftConfig?.name
     )
 }

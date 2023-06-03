@@ -13,8 +13,6 @@ import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.core.ui.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.feature.vehicles.R
 import uk.co.zac_h.spacex.feature.vehicles.VehicleDetailsViewModel
-import uk.co.zac_h.spacex.feature.vehicles.VehiclesFilterViewModel
-import uk.co.zac_h.spacex.feature.vehicles.VehiclesPage
 import uk.co.zac_h.spacex.feature.vehicles.adapters.VehiclesAdapter
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
@@ -28,10 +26,6 @@ class DragonFragment : BaseFragment(), ViewPagerFragment {
     private val viewModel: DragonViewModel by viewModels()
 
     private val vehicleDetailsViewModel: VehicleDetailsViewModel by navGraphViewModels(R.id.vehicles_nav_graph) {
-        defaultViewModelProviderFactory
-    }
-
-    private val filterViewModel: VehiclesFilterViewModel by navGraphViewModels(R.id.vehicles_nav_graph) {
         defaultViewModelProviderFactory
     }
 
@@ -78,11 +72,6 @@ class DragonFragment : BaseFragment(), ViewPagerFragment {
                     showError(result.exception.message)
                 }
             }
-        }
-
-        filterViewModel.order.observe(viewLifecycleOwner) {
-            viewModel.setOrder(it[VehiclesPage.DRAGON])
-            viewModel.getDragons()
         }
 
         viewModel.getDragons()
