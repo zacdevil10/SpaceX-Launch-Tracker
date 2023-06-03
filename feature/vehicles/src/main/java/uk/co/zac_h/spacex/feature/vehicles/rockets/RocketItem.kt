@@ -1,5 +1,7 @@
 package uk.co.zac_h.spacex.feature.vehicles.rockets
 
+import uk.co.zac_h.spacex.core.common.types.RocketFamily
+import uk.co.zac_h.spacex.core.common.types.RocketType
 import uk.co.zac_h.spacex.feature.vehicles.VehicleItem
 import uk.co.zac_h.spacex.network.dto.spacex.AgencyResponse
 import java.text.SimpleDateFormat
@@ -10,6 +12,8 @@ data class RocketItem(
     override val id: Int,
     override val title: String?,
     val fullName: String?,
+    val type: RocketType?,
+    val family: RocketFamily,
     override val description: String?,
     override val longDescription: String?,
     val stages: Int?,
@@ -32,6 +36,8 @@ data class RocketItem(
         id = response.id,
         title = response.fullName,
         fullName = response.fullName,
+        type = response.name?.toType(),
+        family = response.family.toFamily(),
         description = response.description,
         longDescription = response.description,
         stages = response.maxStage,
@@ -66,5 +72,19 @@ data class RocketItem(
         ).apply {
             timeZone = TimeZone.getTimeZone("UTC")
         }.parse(this)?.time
+
+        fun String?.toFamily(): RocketFamily = when (this) {
+            "Falcon" -> RocketFamily.FALCON
+            "Starship" -> RocketFamily.STARSHIP
+            else -> RocketFamily.NONE
+        }
+
+        fun String.toType(): RocketType? = when (this) {
+            "Falcon 1" -> RocketType.FALCON_ONE
+            "Falcon 9" -> RocketType.FALCON_NINE
+            "Falcon Heavy" -> RocketType.FALCON_HEAVY
+            "Starship" -> RocketType.STARSHIP
+            else -> null
+        }
     }
 }
