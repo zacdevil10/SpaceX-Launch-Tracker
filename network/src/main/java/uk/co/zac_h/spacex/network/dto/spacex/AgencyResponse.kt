@@ -24,9 +24,10 @@ data class AgencyResponse(
 ) {
 
     data class Launcher(
-        @field:Json(name = "id") val id: String,
+        @field:Json(name = "id") val id: Int,
         @field:Json(name = "name") val name: String?,
         @field:Json(name = "description") val description: String?,
+        @field:Json(name = "family") val family: String?,
         @field:Json(name = "full_name") val fullName: String?,
         @field:Json(name = "variant") val variant: String?,
         @field:Json(name = "min_stage") val minStage: Int?,

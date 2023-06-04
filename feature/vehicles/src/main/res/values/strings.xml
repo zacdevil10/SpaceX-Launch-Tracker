@@ -2,69 +2,58 @@
 <resources>
 
     <string name="menu_vehicles">Vehicles</string>
-    <string name="first_flight_label">First Flight</string>
-    <string name="specs_label">Specs</string>
-    <string name="capsule_specs_label">Capsule Specs</string>
-    <string name="rocket_image_desc">Rocket Image</string>
-    <string name="measurements">%1$s m</string>
-    <string name="mass_formatted">%1$d T</string>
-    <string name="volume_formatted">%1$s m\u00B3 / %2$s ft\u00B3</string>
-    <string name="mass">%1$s kg</string>
-    <string name="thrust">%1$s kN</string>
-    <string name="seconds_format">%1$d s</string>
-    <string name="active_label">Active</string>
-    <string name="status_image_desc">Status Image</string>
-    <string name="cost_per_launch_label">Cost Per Launch</string>
-    <string name="stages_label">Stages</string>
-    <string name="height_label">Height</string>
-    <string name="diameter_label">Diameter</string>
-    <string name="reusable_label">Reusable</string>
-    <string name="engines_label">Engines</string>
-    <string name="fuel_amount_label">Fuel Amount</string>
-    <string name="burn_time_label">Burn Time</string>
-    <string name="thrust_at_sea_level_label">Thrust At Sea Level</string>
-    <string name="thrust_in_vacuum_label">Thrust In Vacuum</string>
-    <string name="second_stage_label">Second Stage</string>
-    <string name="thrust_label">Thrust</string>
-    <string name="type_label">Type</string>
-    <string name="reuse_count_label">Reuse Count</string>
-    <string name="landings_label">Landings</string>
-    <string name="no_missions_found">No missions found.</string>
-    <string name="block">Block %1$s</string>
-    <string name="sort_label">Sort</string>
-    <string name="newest_first_label">Newest first</string>
-    <string name="oldest_first_label">Oldest first</string>
-    <string name="filter_label">Filter</string>
-    <string name="reload_label">Reload</string>
-    <string name="amount_label">Amount</string>
-    <string name="pods_label">Pods</string>
-    <string name="fuel_1_label">Fuel 1</string>
-    <string name="fuel_2_label">Fuel 2</string>
-    <string name="core_specs_label">Core Specs</string>
-    <string name="crew_capacity_label">Crew Capacity</string>
-    <string name="dry_mass_label">Dry Mass</string>
-    <string name="heat_shield_label">Heat Shield</string>
-    <string name="material_label">Material</string>
-    <string name="size_label">Size</string>
-    <string name="temperature_label">Temperature</string>
-    <string name="thrusters_label">Thrusters</string>
-    <string name="launch_mass_label">Launch Mass</string>
-    <string name="return_mass_label">Return Mass</string>
-    <string name="launch_volume_label">Launch Volume</string>
-    <string name="return_volume_label">Return Volume</string>
-    <string name="pressurized_volume_label">Pressurized Volume</string>
-    <string name="trunk_volume_label">Trunk Volume</string>
-    <string name="solar_array_label">Solar Array</string>
-    <string name="unpressurized_cargo_label">Unpressurized Cargo</string>
-    <string name="roles_label">Roles</string>
-    <string name="home_port_label">Home Port</string>
-    <string name="year_built_label">Year Built</string>
 
-    <!-- Filter -->
-    <string name="vehicles_filter_order_label">Order:</string>
-    <string name="vehicles_filter_ascending_button_label">Asc</string>
-    <string name="vehicles_filter_descending_button_label">Desc</string>
-    <string name="vehicles_filter_reset">Reset</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Vehicle List Item -->
+    <string name="vehicle_list_item_specs_button_label">Specs</string>
+
+    <!-- Rocket Details -->
+    <string name="rocket_details_success_rate_label">Launch Success Rate</string>
+    <string name="rocket_details_first_flight_label">First Flight</string>
+    <string name="rocket_details_stages_label">Stages</string>
+    <string name="rocket_details_height_label">Height</string>
+    <string name="rocket_details_diameter_label">Diameter</string>
+    <string name="rocket_details_mass_label">Mass</string>
+    <string name="rocket_details_thrust_at_liftoff_label">Thrust at Liftoff</string>
+    <string name="rocket_details_mass_to_leo_label">Mass to LEO</string>
+    <string name="rocket_details_mass_to_gto_label">Mass to GTO</string>
+
+    <!-- Rocket Filter -->
+    <string name="rocket_filter_family_label">Family:</string>
+    <string name="rocket_filter_falcon_chip_label">Falcon</string>
+    <string name="rocket_filter_starship_chip_label">Starship</string>
+    <string name="rocket_filter_type_label">Type:</string>
+    <string name="rocket_filter_falcon_1_chip_label">Falcon 1</string>
+    <string name="rocket_filter_falcon_9_chip_label">Falcon 9</string>
+    <string name="rocket_filter_falcon_heavy_chip_label">Falcon Heavy</string>
+    <string name="rocket_filter_order_label">Order:</string>
+    <string name="rocket_filter_ascending_chip_label">Ascending</string>
+    <string name="rocket_filter_descending_chip_label">Descending</string>
+    <string name="rocket_filter_reset_button_label">Reset</string>
+
+    <!-- Second Stage Details -->
+    <string name="second_stage_details_active_label">Active</string>
+    <string name="second_stage_details_active">Yes</string>
+    <string name="second_stage_details_inactive">No</string>
+    <string name="second_stage_details_crew_capacity_label">Crew Capacity</string>
+    <string name="second_stage_details_first_flight_label">First Flight</string>
+    <string name="second_stage_details_height_label">Height</string>
+    <string name="second_stage_details_diameter_label">Diameter</string>
+    <string name="second_stage_details_payload_capacity_label">Payload Capacity</string>
+
+    <!-- Core Details -->
+    <string name="core_details_status_label">Status</string>
+    <string name="core_details_flights_label">Flights</string>
+    <string name="core_details_last_launch_label">Last Launch</string>
+    <string name="core_details_first_launch_label">First Launch</string>
+
+    <!-- Capsules -->
+    <string name="capsule_details_status_label">Status</string>
+    <string name="capsule_details_type_label">Type</string>
+
+    <string name="measurement_meters">%1$s m</string>
+    <string name="mass_tonne">%1$d T</string>
+    <string name="mass_kg">%1$s kg</string>
+    <string name="thrust_kn">%1$s kN</string>
+    <string name="seconds_format">%1$d s</string>
+
 </resources>

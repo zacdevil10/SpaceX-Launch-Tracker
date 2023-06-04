@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.doOnPreDraw
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.navGraphViewModels
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.transition.MaterialSharedAxis
@@ -17,14 +16,11 @@ import uk.co.zac_h.spacex.core.ui.databinding.FragmentViewPagerBinding
 import uk.co.zac_h.spacex.feature.vehicles.dragon.DragonFragment
 import uk.co.zac_h.spacex.feature.vehicles.launcher.LauncherFragment
 import uk.co.zac_h.spacex.feature.vehicles.rockets.RocketFragment
+import uk.co.zac_h.spacex.feature.vehicles.spacecraft.SpacecraftFragment
 
 class VehiclesFragment : BaseFragment() {
 
     private lateinit var binding: FragmentViewPagerBinding
-
-    private val viewModel: VehiclesFilterViewModel by navGraphViewModels(R.id.vehicles_nav_graph) {
-        defaultViewModelProviderFactory
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,17 +39,15 @@ class VehiclesFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        view.doOnPreDraw { startPostponedEnterTransition() }
+        postponeEnterTransition()
+
         val fragments: List<ViewPagerFragment> = listOf(
             RocketFragment(),
             DragonFragment(),
             LauncherFragment(),
-            //CapsulesFragment()
+            SpacecraftFragment()
         )
-
-        binding.tabLayout.tabMode = TabLayout.MODE_FIXED
-
-        postponeEnterTransition()
-        view.doOnPreDraw { startPostponedEnterTransition() }
 
         binding.viewPager.apply {
             adapter = ViewPagerAdapter(childFragmentManager, fragments)
@@ -61,12 +55,9 @@ class VehiclesFragment : BaseFragment() {
                 override fun onPageScrolled(p: Int, p1: Float, p2: Int) {}
 
                 override fun onPageSelected(position: Int) {
-                    viewModel.setVehiclesPage(position)
-
-                    if (position == 2) {
-                        binding.fab.hide()
-                    } else {
-                        binding.fab.show()
+                    when (position) {
+                        0 -> binding.fab.show()
+                        1, 2, 3 -> binding.fab.hide()
                     }
                 }
 
@@ -75,22 +66,15 @@ class VehiclesFragment : BaseFragment() {
             })
         }
 
-        val tabIcons = listOf(
-            R.drawable.ic_rocket,
-            R.drawable.ic_dragon,
-            R.drawable.ic_core,
-            R.drawable.ic_dragon
-        )
-
         binding.tabLayout.apply {
+            tabMode = TabLayout.MODE_AUTO
             setupWithViewPager(binding.viewPager)
-            for (position in 0..tabCount) {
-                getTabAt(position)?.setIcon(tabIcons[position])
-            }
         }
 
         binding.fab.setOnClickListener {
-            findNavController().navigate(VehiclesFragmentDirections.actionVehiclesPageToVehiclesFilter())
+            when (binding.viewPager.currentItem) {
+                0 -> findNavController().navigate(VehiclesFragmentDirections.actionVehiclesToRocketFilter())
+            }
         }
     }
 }

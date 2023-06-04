@@ -3,12 +3,15 @@ package uk.co.zac_h.spacex.feature.vehicles.rockets
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import uk.co.zac_h.spacex.core.common.types.Order
+import uk.co.zac_h.spacex.core.common.utils.filterAll
 import uk.co.zac_h.spacex.core.common.utils.sortedBy
+import uk.co.zac_h.spacex.feature.vehicles.rockets.filter.RocketsFilterBuilder
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
 import uk.co.zac_h.spacex.network.Repository
@@ -20,18 +23,23 @@ class RocketViewModel @Inject constructor(
     private val repository: RocketRepository
 ) : ViewModel() {
 
-    private val _rockets = MutableLiveData<ApiResult<List<LauncherItem>>>()
-    val rockets: LiveData<ApiResult<List<LauncherItem>>> = _rockets.map { result ->
-        result.map {
-            it.sortedBy(order) { rocket -> rocket.maidenFlightMillis }
-        }
+    val filter: RocketsFilterBuilder = RocketsFilterBuilder()
+
+    private val _rockets = MutableLiveData<ApiResult<List<RocketItem>>>()
+    val rockets: LiveData<ApiResult<List<RocketItem>>> = _rockets.switchMap { result ->
+        filter.map { filter ->
+            result.map {
+                it.filterAll(
+                    if (filter.family.isFiltered) { rocket ->
+                        rocket.family == filter.family.family
+                    } else null,
+                    if (filter.type.isFiltered) { rocket ->
+                        rocket.type in filter.type.rockets.orEmpty()
+                    } else null
+                ).sortedBy(filter.order.order) { rocket -> rocket.maidenFlightMillis }
+            }
+        }.distinctUntilChanged()
     }
-
-    private var order: Order = Order.ASCENDING
-
-    var hasOrderChanged = false
-
-    var selectedId = ""
 
     val cacheLocation: Repository.RequestLocation
         get() = repository.cacheLocation
@@ -43,13 +51,8 @@ class RocketViewModel @Inject constructor(
             }
 
             _rockets.value = response.await().map { result ->
-                result.launcherList?.map { LauncherItem(it) } ?: emptyList()
+                result.launcherList?.map { RocketItem(it) } ?: emptyList()
             }
         }
-    }
-
-    fun setOrder(order: Order?) {
-        hasOrderChanged = true
-        this.order = order ?: Order.ASCENDING
     }
 }

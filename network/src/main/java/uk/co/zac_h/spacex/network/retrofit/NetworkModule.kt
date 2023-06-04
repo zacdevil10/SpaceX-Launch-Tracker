@@ -37,7 +37,7 @@ object NetworkModule {
     private inline fun <reified T> createClient(baseUrl: String): T = Retrofit.Builder().apply {
         baseUrl(baseUrl)
         addConverterFactory(MoshiConverterFactory.create())
-        client(okHttpClient())
+        client(okHttpClient(true))
     }.build().create(T::class.java)
 
     private fun okHttpClient(hasLogging: Boolean = false) = OkHttpClient.Builder().apply {

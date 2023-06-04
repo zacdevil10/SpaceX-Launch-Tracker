@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.feature.vehicles.launcher
+package uk.co.zac_h.spacex.feature.vehicles.spacecraft
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -9,17 +9,19 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.liveData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import uk.co.zac_h.spacex.network.dto.spacex.LauncherResponse
+import uk.co.zac_h.spacex.network.dto.spacex.SpacecraftResponse
 import javax.inject.Inject
 
 @HiltViewModel
-class LauncherViewModel @Inject constructor(
-    private val repository: LauncherRepository
+class SpacecraftViewModel @Inject constructor(
+    private val repository: SpacecraftRepository
 ) : ViewModel() {
 
-    val launcherLiveData: LiveData<PagingData<LauncherResponse>> = Pager(
+    val spacecraftLiveData: LiveData<PagingData<SpacecraftResponse>> = Pager(
         PagingConfig(pageSize = 10)
     ) {
-        repository.launcherPagingSource
+        repository.spacecraftPagingSource
     }.liveData.cachedIn(viewModelScope)
+
+    var selectedSpacecraft: SpacecraftItem? = null
 }

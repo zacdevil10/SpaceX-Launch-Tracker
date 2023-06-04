@@ -14,4 +14,6 @@ class RocketRepository @Inject constructor(
 
     val cacheLocation: RequestLocation
         get() = location
+
+    var launcherConfigId: Int? = null
 }

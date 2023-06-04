@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.feature.vehicles.launcher
+package uk.co.zac_h.spacex.feature.vehicles.spacecraft
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -19,13 +19,13 @@ import uk.co.zac_h.spacex.feature.vehicles.R
 import uk.co.zac_h.spacex.feature.vehicles.VehicleDetailsViewModel
 import uk.co.zac_h.spacex.feature.vehicles.adapters.VehiclesPagingAdapter
 
-class LauncherFragment : BaseFragment(), ViewPagerFragment {
+class SpacecraftFragment : BaseFragment(), ViewPagerFragment {
 
-    override var title: String = "Cores"
+    override val title: String = "Capsules"
 
     private lateinit var binding: FragmentVerticalRecyclerviewBinding
 
-    private val viewModel: LauncherViewModel by navGraphViewModels(R.id.vehicles_nav_graph) {
+    private val viewModel: SpacecraftViewModel by navGraphViewModels(R.id.vehicles_nav_graph) {
         defaultViewModelProviderFactory
     }
 
@@ -33,10 +33,11 @@ class LauncherFragment : BaseFragment(), ViewPagerFragment {
         defaultViewModelProviderFactory
     }
 
-    private lateinit var launcherAdapter: VehiclesPagingAdapter
+    private lateinit var spacecraftAdapter: VehiclesPagingAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View = FragmentVerticalRecyclerviewBinding.inflate(inflater, container, false).apply {
         binding = this
@@ -45,24 +46,24 @@ class LauncherFragment : BaseFragment(), ViewPagerFragment {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        launcherAdapter = VehiclesPagingAdapter { vehicleDetailsViewModel.vehicle = it }
+        val spacecraftAdapter = VehiclesPagingAdapter { vehicleDetailsViewModel.vehicle = it }
 
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
-            adapter = launcherAdapter
+            adapter = spacecraftAdapter
         }
 
-        viewModel.launcherLiveData.observe(viewLifecycleOwner) { pagingData ->
-            launcherAdapter.submitData(lifecycle, pagingData.map { CoreItem(it) })
+        viewModel.spacecraftLiveData.observe(viewLifecycleOwner) { spacecraft ->
+            spacecraftAdapter.submitData(lifecycle, spacecraft.map { SpacecraftItem(it) })
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            launcherAdapter.refresh()
+            spacecraftAdapter.refresh()
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            launcherAdapter.loadStateFlow.collectLatest {
+            spacecraftAdapter.loadStateFlow.collectLatest {
                 if (it.refresh is LoadState.Loading) {
                     binding.progress.show()
                 } else {
@@ -70,9 +71,9 @@ class LauncherFragment : BaseFragment(), ViewPagerFragment {
                     if (it.refresh is LoadState.NotLoading) binding.progress.hide()
 
                     val error = when {
-                        it.prepend is LoadState.Error -> it.prepend as LoadState.Error
-                        it.append is LoadState.Error -> it.append as LoadState.Error
                         it.refresh is LoadState.Error -> it.refresh as LoadState.Error
+                        it.append is LoadState.Error -> it.append as LoadState.Error
+                        it.prepend is LoadState.Error -> it.prepend as LoadState.Error
                         else -> null
                     }
 
@@ -82,11 +83,11 @@ class LauncherFragment : BaseFragment(), ViewPagerFragment {
         }
     }
 
-    private fun showError(error: String?) {
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    private fun showError(message: String?) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
     override fun networkAvailable() {
-        launcherAdapter.retry()
+        spacecraftAdapter.retry()
     }
 }
