@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import uk.co.zac_h.spacex.core.common.asUpgradeBanner
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
@@ -17,6 +18,7 @@ import uk.co.zac_h.spacex.feature.launch.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.feature.launch.databinding.FragmentLaunchesListBinding
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
+import uk.co.zac_h.spacex.network.TooManyRequestsException
 
 @AndroidEntryPoint
 class UpcomingLaunchesListFragment : BaseFragment(), ViewPagerFragment {
@@ -52,6 +54,9 @@ class UpcomingLaunchesListFragment : BaseFragment(), ViewPagerFragment {
         }
 
         viewModel.upcomingLaunchesLiveData.observe(viewLifecycleOwner) {
+            binding.banner.asUpgradeBanner((it as? ApiResult.Failure)?.exception as? TooManyRequestsException) {
+
+            }
             when (it) {
                 is ApiResult.Pending -> binding.progress.show()
                 is ApiResult.Success -> {
@@ -60,7 +65,9 @@ class UpcomingLaunchesListFragment : BaseFragment(), ViewPagerFragment {
 
                     launchesAdapter.submitList(it.data)
                 }
+
                 is ApiResult.Failure -> {
+                    binding.progress.hide()
                     binding.swipeRefresh.isRefreshing = false
                     showError(it.exception.message.orUnknown())
                 }

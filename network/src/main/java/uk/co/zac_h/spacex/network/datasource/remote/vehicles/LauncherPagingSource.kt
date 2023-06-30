@@ -3,6 +3,7 @@ package uk.co.zac_h.spacex.network.datasource.remote.vehicles
 import android.net.Uri
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
+import uk.co.zac_h.spacex.network.TooManyRequestsException
 import uk.co.zac_h.spacex.network.dto.spacex.LauncherResponse
 import uk.co.zac_h.spacex.network.retrofit.LaunchLibraryService
 
@@ -39,12 +40,10 @@ class LauncherPagingSource(
         } else {
             response.code()
             LoadResult.Error(
-                Exception(
-                    when (response.code()) {
-                        429 -> "Too many request have been made. There is a limit of 15 requests per hour."
-                        else -> response.errorBody()?.string()
-                    }
-                )
+                when (response.code()) {
+                    429 -> TooManyRequestsException(0)
+                    else -> Exception(response.errorBody()?.string())
+                }
             )
         }
     } catch (e: Exception) {

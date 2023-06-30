@@ -15,4 +15,13 @@
 
     <string name="percentage">%1$s%%</string>
 
+    <!-- API Throttling -->
+    <string name="primary_upgrade_label">Dismiss</string>
+    <string name="secondary_upgrade_label">Learn more</string>
+    <plurals name="api_throttled">
+        <item quantity="one">API requests are limited to 15 every hour. Expect availability again in %1$d minutes. Upgrade to increase this limit.</item>
+        <item quantity="other">API requests are limited to 15 every hour. Expect availability again in %1$d minutes. Upgrade to increase this limit.</item>
+    </plurals>
+    <string name="api_throttled_no_time">API requests are limited to 15 every hour. Upgrade to increase this limit.</string>
+
 </resources>
