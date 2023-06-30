@@ -20,8 +20,8 @@ import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.recyclerview.PagingLoadStateAdapter
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
+import uk.co.zac_h.spacex.core.ui.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.feature.launch.adapters.PaginatedLaunchesAdapter
-import uk.co.zac_h.spacex.feature.launch.databinding.FragmentLaunchesListBinding
 import uk.co.zac_h.spacex.network.TooManyRequestsException
 
 @AndroidEntryPoint
@@ -33,7 +33,7 @@ class PreviousLaunchesListFragment : BaseFragment(), ViewPagerFragment {
         defaultViewModelProviderFactory
     }
 
-    private var _binding: FragmentLaunchesListBinding? = null
+    private var _binding: FragmentVerticalRecyclerviewBinding? = null
     private val binding get() = checkNotNull(_binding) { "Binding is null" }
 
     private lateinit var launchesAdapter: PaginatedLaunchesAdapter
@@ -42,7 +42,7 @@ class PreviousLaunchesListFragment : BaseFragment(), ViewPagerFragment {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentLaunchesListBinding.inflate(inflater, container, false).apply {
+    ): View = FragmentVerticalRecyclerviewBinding.inflate(inflater, container, false).apply {
         _binding = this
     }.root
 
@@ -51,8 +51,8 @@ class PreviousLaunchesListFragment : BaseFragment(), ViewPagerFragment {
 
         launchesAdapter = PaginatedLaunchesAdapter { launch, root -> onItemClick(launch, root) }
 
-        binding.launchesRecycler.apply {
-            layoutManager = LinearLayoutManager(this@PreviousLaunchesListFragment.context)
+        binding.recycler.apply {
+            layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
             adapter = launchesAdapter.withLoadStateFooter(
                 footer = PagingLoadStateAdapter(launchesAdapter::retry)
@@ -73,8 +73,7 @@ class PreviousLaunchesListFragment : BaseFragment(), ViewPagerFragment {
                     binding.progress.show()
                 } else {
                     binding.swipeRefresh.isRefreshing = false
-
-                    if (it.refresh is LoadState.NotLoading) binding.progress.hide()
+                    binding.progress.hide()
 
                     val error = when {
                         it.prepend is LoadState.Error -> it.prepend as LoadState.Error
@@ -112,7 +111,7 @@ class PreviousLaunchesListFragment : BaseFragment(), ViewPagerFragment {
         if (error !is TooManyRequestsException) {
             Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
         }
-        Log.e("Launches Network Error", error.message.orUnknown())
+        Log.e("PreviousLaunchesList", error.message.orUnknown())
     }
 
     override fun networkAvailable() {

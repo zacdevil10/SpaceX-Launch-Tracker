@@ -14,8 +14,8 @@ import uk.co.zac_h.spacex.core.common.asUpgradeBanner
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
+import uk.co.zac_h.spacex.core.ui.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.feature.launch.adapters.LaunchesAdapter
-import uk.co.zac_h.spacex.feature.launch.databinding.FragmentLaunchesListBinding
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
 import uk.co.zac_h.spacex.network.TooManyRequestsException
@@ -29,7 +29,7 @@ class UpcomingLaunchesListFragment : BaseFragment(), ViewPagerFragment {
         defaultViewModelProviderFactory
     }
 
-    private var _binding: FragmentLaunchesListBinding? = null
+    private var _binding: FragmentVerticalRecyclerviewBinding? = null
     private val binding get() = checkNotNull(_binding) { "Binding is null" }
 
     private lateinit var launchesAdapter: LaunchesAdapter
@@ -38,7 +38,7 @@ class UpcomingLaunchesListFragment : BaseFragment(), ViewPagerFragment {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentLaunchesListBinding.inflate(inflater, container, false).apply {
+    ): View = FragmentVerticalRecyclerviewBinding.inflate(inflater, container, false).apply {
         _binding = this
     }.root
 
@@ -47,7 +47,7 @@ class UpcomingLaunchesListFragment : BaseFragment(), ViewPagerFragment {
 
         launchesAdapter = LaunchesAdapter { launch, root -> onItemClick(launch, root) }
 
-        binding.launchesRecycler.apply {
+        binding.recycler.apply {
             layoutManager = LinearLayoutManager(this@UpcomingLaunchesListFragment.context)
             setHasFixedSize(true)
             adapter = launchesAdapter
@@ -69,7 +69,7 @@ class UpcomingLaunchesListFragment : BaseFragment(), ViewPagerFragment {
                 is ApiResult.Failure -> {
                     binding.progress.hide()
                     binding.swipeRefresh.isRefreshing = false
-                    showError(it.exception.message.orUnknown())
+                    showError(it.exception)
                 }
             }
         }
@@ -96,9 +96,11 @@ class UpcomingLaunchesListFragment : BaseFragment(), ViewPagerFragment {
         )
     }
 
-    private fun showError(error: String) {
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
-        Log.e("Launches Network Error", error.orUnknown())
+    private fun showError(error: Throwable) {
+        if (error !is TooManyRequestsException) {
+            Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+        }
+        Log.e("PreviousLaunchesList", error.message.orUnknown())
     }
 
     override fun networkAvailable() {

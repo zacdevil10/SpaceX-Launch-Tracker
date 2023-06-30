@@ -1,13 +1,16 @@
 package uk.co.zac_h.spacex.feature.vehicles.rockets
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import uk.co.zac_h.spacex.core.common.asUpgradeBanner
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.core.ui.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.feature.vehicles.R
@@ -15,6 +18,7 @@ import uk.co.zac_h.spacex.feature.vehicles.VehicleDetailsViewModel
 import uk.co.zac_h.spacex.feature.vehicles.adapters.VehiclesAdapter
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
+import uk.co.zac_h.spacex.network.TooManyRequestsException
 
 class RocketFragment : BaseFragment(), ViewPagerFragment {
 
@@ -57,22 +61,24 @@ class RocketFragment : BaseFragment(), ViewPagerFragment {
             viewModel.getRockets(CachePolicy.REFRESH)
         }
 
-        viewModel.rockets.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is ApiResult.Pending -> showProgress()
+        viewModel.rockets.observe(viewLifecycleOwner) {
+            binding.banner.asUpgradeBanner((it as? ApiResult.Failure)?.exception as? TooManyRequestsException) {
+
+            }
+            when (it) {
+                is ApiResult.Pending -> binding.progress.hide()
                 is ApiResult.Success -> {
-                    hideProgress()
+                    binding.progress.hide()
                     binding.swipeRefresh.isRefreshing = false
-                    result.data?.let { data ->
-                        rocketsAdapter.submitList(data) {
-                            if (shouldScroll) binding.recycler.smoothScrollToPosition(0)
-                        }
+                    rocketsAdapter.submitList(it.data) {
+                        if (shouldScroll) binding.recycler.smoothScrollToPosition(0)
                     }
                 }
 
                 is ApiResult.Failure -> {
+                    binding.progress.hide()
                     binding.swipeRefresh.isRefreshing = false
-                    showError(result.exception.message)
+                    showError(it.exception)
                 }
             }
         }
@@ -90,16 +96,11 @@ class RocketFragment : BaseFragment(), ViewPagerFragment {
         shouldScroll = false
     }
 
-    private fun showProgress() {
-        binding.progress.show()
-    }
-
-    private fun hideProgress() {
-        binding.progress.hide()
-    }
-
-    private fun showError(error: String?) {
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    private fun showError(error: Throwable) {
+        if (error !is TooManyRequestsException) {
+            Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+        }
+        Log.e("RocketFragment", error.message.orUnknown())
     }
 
     override fun networkAvailable() {
