@@ -259,7 +259,7 @@ data class LaunchResponse(
     }
 
     data class Video(
-        @field:Json(name = "priority") val priority: Int?,
+        @field:Json(name = "priority") val priority: Int,
         @field:Json(name = "title") val title: String?,
         @field:Json(name = "description") val description: String?,
         @field:Json(name = "feature_image") val featureImage: String?,

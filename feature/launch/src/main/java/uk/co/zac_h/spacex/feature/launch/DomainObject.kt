@@ -36,7 +36,7 @@ data class LaunchItem(
     val description: String?,
     val type: String?,
     val orbit: String?,
-    val webcast: String?,
+    val webcast: List<VideoItem>?,
     val webcastLive: Boolean,
     val firstStage: List<FirstStageItem>?,
     val crew: List<CrewItem>?
@@ -61,7 +61,10 @@ data class LaunchItem(
         description = response.mission?.description,
         type = response.mission?.type,
         orbit = response.mission?.orbit?.name,
-        webcast = response.video?.firstOrNull()?.url,
+        webcast = response.video?.groupBy { it.title }?.values?.map { it.minBy { it.priority } }
+            ?.mapNotNull {
+                if (it.title != null && it.url != null) VideoItem(it) else null
+            },
         webcastLive = response.webcastLive ?: false,
         firstStage = response.rocket?.launcherStage?.mapNotNull { launcherStage ->
             launcherStage?.let { FirstStageItem(it) }
@@ -182,4 +185,21 @@ data class CrewItem(
             else -> CrewStatus.UNKNOWN
         }
     }
+}
+
+data class VideoItem(
+    val title: String?,
+    val description: String?,
+    val imageUrl: String?,
+    val url: String?,
+) : RecyclerViewItem {
+
+    constructor(
+        response: LaunchResponse.Video
+    ) : this(
+        title = response.title,
+        description = response.description,
+        imageUrl = response.featureImage,
+        url = response.url
+    )
 }

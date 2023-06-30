@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.navigation.navGraphViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.fragment.openWebLink
@@ -17,6 +18,7 @@ import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.feature.launch.LaunchItem
 import uk.co.zac_h.spacex.feature.launch.LaunchesViewModel
 import uk.co.zac_h.spacex.feature.launch.R
+import uk.co.zac_h.spacex.feature.launch.adapters.VideoAdapter
 import uk.co.zac_h.spacex.feature.launch.databinding.FragmentLaunchDetailsBinding
 
 class LaunchDetailsFragment : BaseFragment(), ViewPagerFragment {
@@ -29,6 +31,8 @@ class LaunchDetailsFragment : BaseFragment(), ViewPagerFragment {
 
     private lateinit var binding: FragmentLaunchDetailsBinding
 
+    private lateinit var videoAdapter: VideoAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,6 +43,8 @@ class LaunchDetailsFragment : BaseFragment(), ViewPagerFragment {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        videoAdapter = VideoAdapter { openWebLink(it) }
 
         viewModel.launch?.let { launch ->
             with(binding) {
@@ -78,14 +84,14 @@ class LaunchDetailsFragment : BaseFragment(), ViewPagerFragment {
                 type.text = launch.type
                 orbit.text = launch.orbit
 
-                launchDetailsWatchButton.apply {
+                launchDetailsVideoList.apply {
+                    layoutManager = LinearLayoutManager(context)
+                    setHasFixedSize(true)
+                    adapter = videoAdapter
                     isVisible = launch.webcast != null
-                    setOnClickListener {
-                        launch.webcast?.let { webcast ->
-                            openWebLink(webcast)
-                        }
-                    }
                 }
+
+                videoAdapter.submitList(launch.webcast)
 
                 launchDetailsCalendarButton.apply {
                     isVisible = launch.upcoming && !launch.webcastLive
