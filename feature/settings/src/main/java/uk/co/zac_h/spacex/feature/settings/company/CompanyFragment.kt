@@ -12,6 +12,7 @@ import com.google.android.material.transition.MaterialSharedAxis
 import uk.co.zac_h.spacex.core.common.asUpgradeBanner
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.fragment.openWebLink
+import uk.co.zac_h.spacex.core.common.navigateToLearnMore
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.feature.settings.databinding.FragmentCompanyBinding
 import uk.co.zac_h.spacex.network.ApiResult
@@ -42,7 +43,7 @@ class CompanyFragment : BaseFragment() {
 
         viewModel.company.observe(viewLifecycleOwner) {
             binding.banner.asUpgradeBanner((it as? ApiResult.Failure)?.exception as? TooManyRequestsException) {
-
+                navigateToLearnMore()
             }
             when (it) {
                 is ApiResult.Pending -> showProgress()

@@ -11,6 +11,7 @@ import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.core.common.asUpgradeBanner
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.navigateToLearnMore
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.core.ui.databinding.FragmentVerticalRecyclerviewBinding
@@ -57,7 +58,7 @@ class DragonFragment : BaseFragment(), ViewPagerFragment {
 
         viewModel.dragons.observe(viewLifecycleOwner) {
             binding.banner.asUpgradeBanner((it as? ApiResult.Failure)?.exception as? TooManyRequestsException) {
-
+                navigateToLearnMore()
             }
             when (it) {
                 is ApiResult.Pending -> binding.progress.show()

@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.core.common.asUpgradeBanner
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.navigateToLearnMore
 import uk.co.zac_h.spacex.core.common.recyclerview.PagingLoadStateAdapter
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
@@ -85,7 +86,7 @@ class SpacecraftFragment : BaseFragment(), ViewPagerFragment {
                     }
 
                     binding.banner.asUpgradeBanner(error?.error as? TooManyRequestsException) {
-
+                        navigateToLearnMore()
                     }
 
                     error?.error?.let { message -> showError(message) }
