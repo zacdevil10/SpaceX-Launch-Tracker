@@ -8,6 +8,7 @@
     <fragment
         android:id="@+id/astronauts_fragment"
         android:name="uk.co.zac_h.spacex.feature.astronauts.AstronautFragment"
+        android:label="@string/menu_astronauts"
         tools:layout="@layout/fragment_vertical_recyclerview">
 
         <deepLink

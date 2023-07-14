@@ -37,10 +37,6 @@ class CompanyFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbar.setNavigationOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
-        }
-
         viewModel.company.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is ApiResult.Pending -> showProgress()

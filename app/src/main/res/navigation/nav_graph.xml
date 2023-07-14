@@ -8,11 +8,11 @@
     <include app:graph="@navigation/launch_nav_graph" />
     <include app:graph="@navigation/astronauts_nav_graph" />
     <include app:graph="@navigation/vehicles_nav_graph" />
-    <include app:graph="@navigation/settings_nav_graph" />
 
     <fragment
         android:id="@+id/news_page_fragment"
         android:name="uk.co.zac_h.spacex.news.NewsFragment"
+        android:label="@string/menu_news"
         tools:layout="@layout/fragment_news">
 
         <deepLink
@@ -20,6 +20,22 @@
             app:uri="spacex://news" />
 
     </fragment>
+
+    <fragment
+        android:id="@+id/company_fragment"
+        android:name="uk.co.zac_h.spacex.feature.settings.company.CompanyFragment"
+        android:label="@string/menu_company"
+        tools:layout="@layout/fragment_company" />
+
+    <fragment
+        android:id="@+id/about_fragment"
+        android:name="uk.co.zac_h.spacex.feature.settings.about.AboutFragment"
+        android:label="@string/menu_about"
+        tools:layout="@layout/fragment_about" />
+
+    <dialog
+        android:id="@+id/theme_dialog"
+        android:name="uk.co.zac_h.spacex.feature.settings.theme.ThemeDialog" />
 
     <fragment
         android:id="@+id/statistics_page_fragment"

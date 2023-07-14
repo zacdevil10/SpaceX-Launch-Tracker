@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.paging.LoadState
@@ -94,8 +93,9 @@ class PreviousLaunchesListFragment : BaseFragment(), ViewPagerFragment {
         viewModel.launch = launch
 
         findNavController().navigate(
-            LaunchesFragmentDirections.actionLaunchesToLaunchDetails(),
-            FragmentNavigatorExtras(root to launch.id)
+            LaunchesFragmentDirections.actionLaunchesToLaunchDetails(
+                title = launch.missionName
+            )
         )
     }
 

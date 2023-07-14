@@ -2,7 +2,6 @@
     <string name="app_name">SpaceX</string>
 
     <string name="menu_news">News</string>
-    <string name="menu_launches">Launches</string>
     <string name="menu_statistics">Statistics</string>
 
     <!--Filter labels-->
@@ -63,7 +62,6 @@
     <string name="edit_label">Edit</string>
     <string name="launch_site_label">Launch site:</string>
     <string name="mass_to_orbit_label">Mass to Orbit</string>
-    <string name="menu_astronauts">Astronauts</string>
 
     <string-array name="order">
         <item>Hot</item>
