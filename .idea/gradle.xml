@@ -17,6 +17,7 @@
             <option value="$PROJECT_DIR$/feature/astronauts" />
             <option value="$PROJECT_DIR$/feature/launch" />
             <option value="$PROJECT_DIR$/feature/settings" />
+            <option value="$PROJECT_DIR$/feature/subscription" />
             <option value="$PROJECT_DIR$/feature/vehicles" />
             <option value="$PROJECT_DIR$/network" />
           </set>

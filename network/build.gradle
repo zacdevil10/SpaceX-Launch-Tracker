@@ -13,6 +13,12 @@ android {
         minSdk 21
         targetSdkVersion 33
 
+        def secretsFile = rootProject.file('secrets.properties')
+        def secrets = new Properties()
+        secrets.load(new FileInputStream(secretsFile))
+
+        buildConfigField("String", "LAUNCH_LIBRARY_TOKEN", secrets['LAUNCH_LIBRARY_TOKEN'])
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
     }
@@ -53,4 +59,6 @@ dependencies {
 
     //Paging
     implementation "androidx.paging:paging-runtime-ktx:3.1.1"
+
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
 }

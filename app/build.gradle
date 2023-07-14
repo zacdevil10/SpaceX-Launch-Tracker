@@ -73,6 +73,7 @@ dependencies {
     implementation project(':feature:astronauts')
     implementation project(':feature:vehicles')
     implementation project(':feature:settings')
+    implementation project(':feature:subscription')
 
     //Core
     implementation project(':core:common')

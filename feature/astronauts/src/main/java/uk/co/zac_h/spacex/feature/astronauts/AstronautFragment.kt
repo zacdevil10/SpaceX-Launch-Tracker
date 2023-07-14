@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.feature.astronauts
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +13,13 @@ import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import uk.co.zac_h.spacex.core.common.asUpgradeBanner
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.navigateToLearnMore
+import uk.co.zac_h.spacex.core.common.recyclerview.PagingLoadStateAdapter
+import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.core.ui.databinding.FragmentVerticalRecyclerviewBinding
+import uk.co.zac_h.spacex.network.TooManyRequestsException
 
 class AstronautFragment : BaseFragment() {
 
@@ -40,7 +46,9 @@ class AstronautFragment : BaseFragment() {
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
-            adapter = astronautsAdapter
+            adapter = astronautsAdapter.withLoadStateFooter(
+                footer = PagingLoadStateAdapter(astronautsAdapter::retry)
+            )
         }
 
         viewModel.astronautLiveData.observe(viewLifecycleOwner) { pagingData ->
@@ -57,8 +65,7 @@ class AstronautFragment : BaseFragment() {
                     binding.progress.show()
                 } else {
                     binding.swipeRefresh.isRefreshing = false
-
-                    if (it.refresh is LoadState.NotLoading) binding.progress.hide()
+                    binding.progress.hide()
 
                     val error = when {
                         it.prepend is LoadState.Error -> it.prepend as LoadState.Error
@@ -67,14 +74,21 @@ class AstronautFragment : BaseFragment() {
                         else -> null
                     }
 
-                    error?.error?.message?.let { message -> showError(message) }
+                    binding.banner.asUpgradeBanner(error?.error as? TooManyRequestsException) {
+                        navigateToLearnMore()
+                    }
+
+                    error?.error?.let { message -> showError(message) }
                 }
             }
         }
     }
 
-    private fun showError(error: String?) {
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    private fun showError(error: Throwable) {
+        if (error !is TooManyRequestsException) {
+            Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+        }
+        Log.e("AstronautFragment", error.message.orUnknown())
     }
 
     override fun networkAvailable() {
