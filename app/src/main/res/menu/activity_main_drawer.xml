@@ -31,8 +31,8 @@
 
             <item
                 android:id="@id/subscription_nav_graph"
-                android:icon="@drawable/event_circle"
-                android:title="Subscription" />
+                android:icon="@drawable/ic_baseline_payment_24"
+                android:title="@string/menu_subscription" />
 
             <item
                 android:id="@id/theme_dialog"

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="?materialCardViewFilledStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/medium_margin"
+    android:layout_marginVertical="@dimen/small_margin">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/medium_margin">
+
+        <TextView
+            android:id="@+id/plan_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAppearance="?textAppearanceHeadline6"
+            app:layout_constraintBottom_toTopOf="@id/plan_cost"
+            app:layout_constraintEnd_toStartOf="@id/plan_manage_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1"
+            tools:text="@tools:sample/lorem" />
+
+        <TextView
+            android:id="@+id/plan_cost"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/plan_manage_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/plan_name"
+            app:layout_constraintVertical_bias="0"
+            tools:text="@tools:sample/lorem" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/plan_manage_button"
+            style="?materialButtonOutlinedStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Details"
+            app:layout_constraintBottom_toBottomOf="@id/plan_cost"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/plan_name" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

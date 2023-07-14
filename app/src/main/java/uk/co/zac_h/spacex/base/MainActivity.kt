@@ -38,7 +38,8 @@ class MainActivity : AppCompatActivity(),
 
     private val fullscreenDestinations = setOf(
         R.id.company_fragment,
-        R.id.about_fragment
+        R.id.about_fragment,
+        R.id.subscription_fragment
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -8,6 +8,7 @@
     <fragment
         android:id="@+id/subscription_fragment"
         android:name="uk.co.zac_h.spacex.feature.subscription.SubscriptionFragment"
+        android:label="@string/menu_subscription"
         tools:layout="@layout/fragment_subscription" />
 
     <deepLink

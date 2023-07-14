@@ -6,36 +6,60 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
-import uk.co.zac_h.spacex.feature.subscription.databinding.FragmentSubscriptionBinding
+import uk.co.zac_h.spacex.core.ui.databinding.FragmentVerticalRecyclerviewBinding
 
 @AndroidEntryPoint
-class SubscriptionFragment : Fragment() {
+class SubscriptionFragment : Fragment(), SubscriptionsCallback {
 
-    private lateinit var binding: FragmentSubscriptionBinding
+    private lateinit var binding: FragmentVerticalRecyclerviewBinding
 
     private val viewModel: SubscriptionViewModel by viewModels()
+
+    private val subscriptionsAdapter = SubscriptionsAdapter(this)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentSubscriptionBinding.inflate(inflater, container, false).apply {
+    ): View = FragmentVerticalRecyclerviewBinding.inflate(inflater, container, false).apply {
         binding = this
     }.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.subscribeButton.text = if (viewModel.hasSubscribed) "Unsubscribe" else "Subscribe"
+        binding.progress.hide()
 
-        binding.subscribeButton.setOnClickListener {
-            if (viewModel.hasSubscribed) {
-                viewModel.unsubscribe()
-                binding.subscribeButton.text = "Subscribe"
-            } else {
-                viewModel.subscribe()
-                binding.subscribeButton.text = "Unsubscribe"
-            }
+        binding.recycler.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = subscriptionsAdapter
+        }
+
+        subscriptionsAdapter.submitList(viewModel.plans)
+
+        binding.swipeRefresh.setOnRefreshListener {
+            subscriptionsAdapter.submitList(viewModel.plans)
+            binding.swipeRefresh.isRefreshing = false
         }
     }
+
+    override fun subscribe() {
+        viewModel.subscribe()
+
+        subscriptionsAdapter.submitList(viewModel.plans)
+    }
+
+    override fun unsubscribe() {
+        viewModel.unsubscribe()
+
+        subscriptionsAdapter.submitList(viewModel.plans)
+    }
+}
+
+interface SubscriptionsCallback {
+
+    fun subscribe()
+
+    fun unsubscribe()
 }
