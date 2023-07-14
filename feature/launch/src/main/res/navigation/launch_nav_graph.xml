@@ -8,6 +8,7 @@
     <fragment
         android:id="@+id/launches_page_fragment"
         android:name="uk.co.zac_h.spacex.feature.launch.LaunchesFragment"
+        android:label="@string/menu_launches"
         tools:layout="@layout/fragment_launches">
 
         <deepLink
@@ -32,6 +33,13 @@
     <fragment
         android:id="@+id/launch_details_container_fragment"
         android:name="uk.co.zac_h.spacex.feature.launch.details.LaunchDetailsContainerFragment"
-        tools:layout="@layout/fragment_launch_details_container" />
+        android:label="{title}"
+        tools:layout="@layout/fragment_launch_details_container">
+
+        <argument
+            android:name="title"
+            app:argType="string" />
+
+    </fragment>
 
 </navigation>

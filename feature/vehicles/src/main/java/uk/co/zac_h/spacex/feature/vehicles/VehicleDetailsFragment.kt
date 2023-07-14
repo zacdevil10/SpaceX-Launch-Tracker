@@ -5,9 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
-import androidx.navigation.ui.setupWithNavController
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.feature.vehicles.adapters.HeaderAdapter
@@ -38,8 +36,6 @@ class VehicleDetailsFragment : Fragment() {
 
         val concatAdapter = ConcatAdapter(headerAdapter, specsAdapter)
 
-        binding.toolbar.title = viewModel.vehicle?.title
-
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
@@ -49,7 +45,5 @@ class VehicleDetailsFragment : Fragment() {
         headerAdapter.submitList(listOf(viewModel.header))
 
         specsAdapter.submitList(viewModel.generateSpecsList(viewModel.vehicle))
-
-        binding.toolbar.setupWithNavController(findNavController())
     }
 }
