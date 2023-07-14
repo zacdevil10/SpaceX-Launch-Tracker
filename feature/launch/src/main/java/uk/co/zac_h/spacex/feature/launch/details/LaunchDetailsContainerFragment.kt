@@ -44,13 +44,6 @@ class LaunchDetailsContainerFragment : BaseFragment() {
         postponeEnterTransition()
         view.doOnPreDraw { startPostponedEnterTransition() }
 
-        binding.toolbar.apply {
-            setNavigationOnClickListener {
-                requireActivity().onBackPressedDispatcher.onBackPressed()
-            }
-            title = viewModel.launch?.missionName
-        }
-
         binding.viewPager.adapter = ViewPagerAdapter(
             childFragmentManager,
             listOfNotNull(

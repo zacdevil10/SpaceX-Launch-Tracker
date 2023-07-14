@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="menu_launches">Launches</string>
+
     <!-- Launches -->
     <string name="launches_webcast_live">Webcast Live</string>
     <string name="launches_status_label">Status:</string>

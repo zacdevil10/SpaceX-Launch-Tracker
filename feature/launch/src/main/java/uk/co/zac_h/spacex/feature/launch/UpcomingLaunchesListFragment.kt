@@ -83,7 +83,9 @@ class UpcomingLaunchesListFragment : BaseFragment(), ViewPagerFragment {
         viewModel.launch = launch
 
         findNavController().navigate(
-            LaunchesFragmentDirections.actionLaunchesToLaunchDetails()
+            LaunchesFragmentDirections.actionLaunchesToLaunchDetails(
+                title = launch.missionName
+            )
         )
     }
 
