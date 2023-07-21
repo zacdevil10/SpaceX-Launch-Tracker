@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.feature.vehicles.spacecraft
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.recyclerview.PagingLoadStateAdapter
+import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.core.ui.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.feature.vehicles.R
@@ -51,7 +54,9 @@ class SpacecraftFragment : BaseFragment(), ViewPagerFragment {
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(true)
-            adapter = spacecraftAdapter
+            adapter = spacecraftAdapter.withLoadStateFooter(
+                footer = PagingLoadStateAdapter(spacecraftAdapter::retry)
+            )
         }
 
         viewModel.spacecraftLiveData.observe(viewLifecycleOwner) { spacecraft ->
@@ -68,7 +73,7 @@ class SpacecraftFragment : BaseFragment(), ViewPagerFragment {
                     binding.progress.show()
                 } else {
                     binding.swipeRefresh.isRefreshing = false
-                    if (it.refresh is LoadState.NotLoading) binding.progress.hide()
+                    binding.progress.hide()
 
                     val error = when {
                         it.refresh is LoadState.Error -> it.refresh as LoadState.Error
@@ -77,14 +82,15 @@ class SpacecraftFragment : BaseFragment(), ViewPagerFragment {
                         else -> null
                     }
 
-                    error?.error?.message?.let { message -> showError(message) }
+                    error?.error?.let { message -> showError(message) }
                 }
             }
         }
     }
 
-    private fun showError(message: String?) {
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    private fun showError(error: Throwable) {
+        Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+        Log.e("SpacecraftFragment", error.message.orUnknown())
     }
 
     override fun networkAvailable() {

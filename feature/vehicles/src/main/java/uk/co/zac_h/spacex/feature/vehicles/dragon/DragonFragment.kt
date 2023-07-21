@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.feature.vehicles.dragon
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
+import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.core.ui.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.feature.vehicles.R
@@ -51,25 +53,24 @@ class DragonFragment : BaseFragment(), ViewPagerFragment {
             viewModel.getDragons(CachePolicy.REFRESH)
         }
 
-        viewModel.dragons.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is ApiResult.Pending -> showProgress()
+        viewModel.dragons.observe(viewLifecycleOwner) {
+            when (it) {
+                is ApiResult.Pending -> binding.progress.show()
                 is ApiResult.Success -> {
-                    hideProgress()
+                    binding.progress.hide()
                     binding.swipeRefresh.isRefreshing = false
-                    result.data?.let { data ->
-                        dragonAdapter.submitList(data) {
-                            with(viewModel) {
-                                if (hasOrderChanged) binding.recycler.smoothScrollToPosition(0)
-                                hasOrderChanged = false
-                            }
+                    dragonAdapter.submitList(it.data) {
+                        with(viewModel) {
+                            if (hasOrderChanged) binding.recycler.smoothScrollToPosition(0)
+                            hasOrderChanged = false
                         }
                     }
                 }
 
                 is ApiResult.Failure -> {
+                    binding.progress.hide()
                     binding.swipeRefresh.isRefreshing = false
-                    showError(result.exception.message)
+                    showError(it.exception)
                 }
             }
         }
@@ -77,16 +78,9 @@ class DragonFragment : BaseFragment(), ViewPagerFragment {
         viewModel.getDragons()
     }
 
-    private fun showProgress() {
-        binding.progress.show()
-    }
-
-    private fun hideProgress() {
-        binding.progress.hide()
-    }
-
-    private fun showError(error: String?) {
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    private fun showError(error: Throwable) {
+        Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+        Log.e("DragonFragment", error.message.orUnknown())
     }
 
     override fun networkAvailable() {

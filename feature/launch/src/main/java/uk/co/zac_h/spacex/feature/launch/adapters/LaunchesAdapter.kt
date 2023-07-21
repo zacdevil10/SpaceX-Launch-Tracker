@@ -101,11 +101,11 @@ class LaunchesAdapter(val onClick: (LaunchItem, View) -> Unit) :
         override fun areItemsTheSame(
             oldItem: LaunchItem,
             newItem: LaunchItem
-        ) = oldItem == newItem
+        ) = oldItem.id == newItem.id
 
         override fun areContentsTheSame(
             oldItem: LaunchItem,
             newItem: LaunchItem
-        ) = oldItem.id == newItem.id
+        ) = oldItem == newItem
     }
 }

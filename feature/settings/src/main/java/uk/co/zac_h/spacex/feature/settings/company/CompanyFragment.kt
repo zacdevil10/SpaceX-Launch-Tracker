@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.feature.settings.company
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,18 +38,21 @@ class CompanyFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.company.observe(viewLifecycleOwner) { result ->
-            when (result) {
+        viewModel.company.observe(viewLifecycleOwner) {
+            when (it) {
                 is ApiResult.Pending -> showProgress()
-                is ApiResult.Success -> result.data?.let { update(it) }
-                is ApiResult.Failure -> showError(result.exception.message.orUnknown())
+                is ApiResult.Success -> it.data?.let { update(it) }
+                is ApiResult.Failure -> {
+                    binding.progress.hide()
+                    showError(it.exception)
+                }
             }
         }
 
         viewModel.getCompany()
     }
 
-    fun update(response: Company) {
+    private fun update(response: Company) {
         with(binding) {
             hideProgress()
 
@@ -78,8 +82,9 @@ class CompanyFragment : BaseFragment() {
         binding.progress.hide()
     }
 
-    fun showError(error: String) {
-        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+    private fun showError(error: Throwable) {
+        Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+        Log.e("CompanyFragment", error.message.orUnknown())
     }
 
     override fun networkAvailable() {
