@@ -7,7 +7,6 @@ plugins {
 }
 
 android {
-    namespace 'uk.co.zac_h.spacex.network'
     compileSdk 33
 
     defaultConfig {
@@ -31,6 +30,7 @@ android {
     kotlinOptions {
         jvmTarget = '17'
     }
+    namespace 'uk.co.zac_h.spacex.network'
 }
 
 dependencies {
