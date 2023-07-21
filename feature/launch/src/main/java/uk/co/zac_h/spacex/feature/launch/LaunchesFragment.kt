@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.doOnPreDraw
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
@@ -40,9 +39,6 @@ class LaunchesFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        view.doOnPreDraw { startPostponedEnterTransition() }
-        postponeEnterTransition()
 
         binding.launchesViewPager.adapter = ViewPagerAdapter(childFragmentManager, fragments)
 
