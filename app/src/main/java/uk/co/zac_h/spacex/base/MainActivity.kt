@@ -1,8 +1,14 @@
 package uk.co.zac_h.spacex.base
 
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -10,6 +16,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.transition.Slide
 import androidx.transition.TransitionManager
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.core.common.network.OnNetworkStateChangeListener
@@ -40,6 +47,16 @@ class MainActivity : AppCompatActivity(),
         R.id.company_fragment,
         R.id.about_fragment
     )
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as App).preferencesRepo.themeModeLive.observe(this) { mode ->
@@ -78,6 +95,18 @@ class MainActivity : AppCompatActivity(),
         navHostFragment.navController.addOnDestinationChangedListener { _, destination, _ ->
             toggleBottomNavigationView(destination.id !in fullscreenDestinations)
         }
+
+        requestNotificationPermission()
+
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            if (!it.isSuccessful) {
+                return@addOnCompleteListener
+            }
+
+            val token = it.result
+
+            Log.d("MainActivity", "Firebase token: $token")
+        }
     }
 
     private fun toggleBottomNavigationView(isVisible: Boolean) {
@@ -102,6 +131,20 @@ class MainActivity : AppCompatActivity(),
         networkStateChangeListener.apply {
             removeListener(this@MainActivity)
             unregisterReceiver()
+        }
+    }
+
+    private fun requestNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                Toast.makeText(this, "Permission granted", Toast.LENGTH_SHORT).show()
+            } else {
+                requestPermissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+            }
         }
     }
 
