@@ -19,7 +19,7 @@ object NetworkModule {
     @Provides
     @LaunchLibraryClient
     fun providesLaunchLibraryHttpClient(): LaunchLibraryService =
-        createClient(MOCK_LAUNCH_LIBRARY_BASE_URL)
+        createClient(LAUNCH_LIBRARY_BASE_URL)
 
     @Provides
     @SpaceflightNewsClient
