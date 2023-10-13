@@ -148,25 +148,19 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/launch_details_watch_button"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="0dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/launch_details_video_list"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/medium_margin"
             android:layout_marginTop="@dimen/medium_margin"
-            android:layout_marginEnd="@dimen/medium_margin"
-            android:insetTop="0dp"
-            android:insetBottom="0dp"
-            android:text="@string/launches_watch_button_label"
-            android:textAppearance="?textAppearanceBody2"
+            android:clipToPadding="false"
+            android:paddingHorizontal="@dimen/medium_margin"
             android:visibility="gone"
-            app:icon="@drawable/ic_play_arrow_black_24dp"
-            app:iconGravity="textStart"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/mission_card"
-            tools:visibility="visible" />
+            tools:itemCount="3"
+            tools:listitem="@layout/list_item_video" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/launch_details_calendar_button"
@@ -185,7 +179,7 @@
             app:iconGravity="textStart"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/launch_details_watch_button"
+            app:layout_constraintTop_toBottomOf="@id/launch_details_video_list"
             tools:visibility="visible" />
 
         <com.google.android.material.card.MaterialCardView

@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.feature.launch
 
 import android.content.res.Resources
+import androidx.core.net.toUri
 import uk.co.zac_h.spacex.core.common.recyclerview.RecyclerViewItem
 import uk.co.zac_h.spacex.core.common.types.CoreType
 import uk.co.zac_h.spacex.core.common.utils.formatCrewDate
@@ -18,6 +19,7 @@ import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_INACTIVE
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_RETIRED
 import uk.co.zac_h.spacex.network.dto.spacex.CrewStatus
 import uk.co.zac_h.spacex.network.dto.spacex.LaunchResponse
+import java.util.Locale
 
 data class LaunchItem(
     val id: String,
@@ -36,7 +38,7 @@ data class LaunchItem(
     val description: String?,
     val type: String?,
     val orbit: String?,
-    val webcast: String?,
+    val webcast: List<VideoItem>?,
     val webcastLive: Boolean,
     val firstStage: List<FirstStageItem>?,
     val crew: List<CrewItem>?
@@ -61,7 +63,9 @@ data class LaunchItem(
         description = response.mission?.description,
         type = response.mission?.type,
         orbit = response.mission?.orbit?.name,
-        webcast = response.video?.firstOrNull()?.url,
+        webcast = response.video?.groupBy { it.title }?.values
+            ?.map { videos -> videos.minBy { it.priority } }
+            ?.map { VideoItem(response.mission?.name ?: response.name, response.image, it) },
         webcastLive = response.webcastLive ?: false,
         firstStage = response.rocket?.launcherStage?.mapNotNull { launcherStage ->
             launcherStage?.let { FirstStageItem(it) }
@@ -182,4 +186,32 @@ data class CrewItem(
             else -> CrewStatus.UNKNOWN
         }
     }
+}
+
+data class VideoItem(
+    val title: String?,
+    val description: String?,
+    val imageUrl: String?,
+    val url: String,
+    val source: String?,
+) : RecyclerViewItem {
+
+    constructor(
+        missionName: String,
+        image: String?,
+        response: LaunchResponse.Video
+    ) : this(
+        title = if (response.type != null) {
+            "${if (response.title.isNullOrEmpty()) missionName else response.title} - ${response.type?.name}"
+        } else {
+            if (response.title.isNullOrEmpty()) missionName else response.title
+        },
+        description = response.description,
+        imageUrl = response.featureImage ?: image,
+        url = response.url,
+        source = (response.source ?: response.url.toUri().host)
+            ?.replace("www.", "")
+            ?.replace(".com", "")
+            ?.replaceFirstChar { it.titlecase(Locale.getDefault()) }
+    )
 }
