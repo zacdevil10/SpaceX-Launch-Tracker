@@ -259,12 +259,20 @@ data class LaunchResponse(
     }
 
     data class Video(
-        @field:Json(name = "priority") val priority: Int?,
+        @field:Json(name = "priority") val priority: Int,
+        @field:Json(name = "source") val source: String?,
         @field:Json(name = "title") val title: String?,
         @field:Json(name = "description") val description: String?,
         @field:Json(name = "feature_image") val featureImage: String?,
-        @field:Json(name = "url") val url: String?,
-    )
+        @field:Json(name = "url") val url: String,
+        @field:Json(name = "type") val type: Type?,
+    ) {
+
+        data class Type(
+            @field:Json(name = "id") val id: Int,
+            @field:Json(name = "name") val name: String,
+        )
+    }
 
     data class Program(
         @field:Json(name = "id") val id: Int,
