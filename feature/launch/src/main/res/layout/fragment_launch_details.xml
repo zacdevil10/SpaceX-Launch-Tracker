@@ -152,7 +152,10 @@
             android:id="@+id/launch_details_video_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:clipToPadding="false"
+            android:paddingHorizontal="@dimen/medium_margin"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/mission_card"
@@ -165,6 +168,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/medium_margin"
             android:layout_marginEnd="@dimen/medium_margin"
             android:insetTop="0dp"
             android:insetBottom="0dp"
@@ -184,10 +188,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/medium_margin"
-            app:layout_goneMarginTop="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/launch_details_calendar_button">
+            app:layout_constraintTop_toBottomOf="@id/launch_details_calendar_button"
+            app:layout_goneMarginTop="0dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"

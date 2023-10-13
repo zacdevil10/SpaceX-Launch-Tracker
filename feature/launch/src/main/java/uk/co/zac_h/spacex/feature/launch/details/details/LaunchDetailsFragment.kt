@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.fragment.openWebLink
+import uk.co.zac_h.spacex.core.common.recyclerview.HorizontalMarginItemDecoration
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.feature.launch.LaunchItem
 import uk.co.zac_h.spacex.feature.launch.LaunchesViewModel
@@ -85,10 +86,19 @@ class LaunchDetailsFragment : BaseFragment(), ViewPagerFragment {
                 orbit.text = launch.orbit
 
                 launchDetailsVideoList.apply {
-                    layoutManager = LinearLayoutManager(context)
-                    setHasFixedSize(true)
+                    layoutManager = LinearLayoutManager(
+                        context,
+                        LinearLayoutManager.HORIZONTAL,
+                        false
+                    )
+                    setHasFixedSize(false)
                     adapter = videoAdapter
-                    isVisible = launch.webcast != null
+                    addItemDecoration(
+                        HorizontalMarginItemDecoration(
+                            resources.getDimensionPixelSize(R.dimen.small_margin)
+                        )
+                    )
+                    isVisible = !launch.webcast.isNullOrEmpty()
                 }
 
                 videoAdapter.submitList(launch.webcast)
