@@ -66,11 +66,7 @@
 
 
     <!-- LaunchView -->
-
     <color name="divider">#1F000000</color>
-
-    <color name="success">#4caf50</color>
-    <color name="failed">#d32f2f</color>
 
     <color name="ocean">#29b6f6</color>
     <color name="landscape">#9ccc65</color>

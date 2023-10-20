@@ -109,15 +109,15 @@ class LaunchRateFragment : BaseFragment() {
         viewModel.launchRate.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is ApiResult.Pending -> {}
-                is ApiResult.Success -> response.data?.let {
-                    update(false/*viewModel.cacheLocation != Repository.RequestLocation.CACHE*/, it)
-                }
+                is ApiResult.Success -> update(false/*viewModel.cacheLocation != Repository.RequestLocation.CACHE*/,
+                    response.result
+                )
                 is ApiResult.Failure -> showError(response.exception.message)
             }
         }
     }
 
-    fun update(animate: Boolean, response: List<RateStatsModel>) {
+    private fun update(animate: Boolean, response: List<RateStatsModel>) {
         statsList = response
 
         var max = 0f
@@ -159,7 +159,7 @@ class LaunchRateFragment : BaseFragment() {
         }
     }
 
-    fun showError(error: String?) {
+    private fun showError(error: String?) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 

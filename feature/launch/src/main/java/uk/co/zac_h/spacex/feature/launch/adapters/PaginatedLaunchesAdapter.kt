@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.feature.launch.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -9,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.feature.launch.LaunchItem
 import uk.co.zac_h.spacex.feature.launch.databinding.ListItemLaunchesBinding
 
-class PaginatedLaunchesAdapter(val onClick: (LaunchItem, View) -> Unit) :
+class PaginatedLaunchesAdapter(val onClick: (LaunchItem) -> Unit) :
     PagingDataAdapter<LaunchItem, PaginatedLaunchesAdapter.ViewHolder>(
         Comparator
     ) {
@@ -45,7 +44,7 @@ class PaginatedLaunchesAdapter(val onClick: (LaunchItem, View) -> Unit) :
                 }
 
                 root.setOnClickListener {
-                    onClick(launch, root)
+                    onClick(launch)
                 }
             }
         }

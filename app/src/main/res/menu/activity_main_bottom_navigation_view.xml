@@ -12,13 +12,17 @@
         android:icon="@drawable/ic_newspaper"
         android:title="@string/menu_news" />
     <item
-        android:id="@id/astronauts_nav_graph"
-        android:icon="@drawable/ic_baseline_people_24"
-        android:title="@string/menu_astronauts" />
-    <item
-        android:id="@id/vehicles_nav_graph"
+        android:id="@id/assets_nav_graph"
         android:icon="@drawable/ic_rocket"
-        android:title="@string/menu_vehicles" />
+        android:title="@string/menu_assets" />
+    <item
+        android:id="@id/company_fragment"
+        android:icon="@drawable/ic_baseline_domain_24"
+        android:title="@string/menu_company" />
+    <item
+        android:id="@id/theme_dialog"
+        android:icon="@drawable/ic_baseline_brightness_medium_24"
+        android:title="@string/menu_settings" />
     <!--<item
         android:id="@id/statistics_page_fragment"
         android:icon="@drawable/ic_data_usage_black_24dp"

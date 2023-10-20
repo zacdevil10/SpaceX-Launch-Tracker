@@ -69,12 +69,12 @@ data class EngineConfigModel(
     @field:Json(name = SPACEX_FIELD_ROCKET_ENGINES_VERSION) val version: String?,
     @field:Json(name = SPACEX_FIELD_ROCKET_ENGINES_LAYOUT) val layout: String?,
     @field:Json(name = SPACEX_FIELD_ROCKET_ENGINES_ISP) val specificImpulse: SpecificImpulse?,
-    @field:Json(name = SPACEX_FIELD_ROCKET_ENGINES_ENGINE_LOSS_MAX) val engine_loss_max: Int?,
-    @field:Json(name = SPACEX_FIELD_ROCKET_ENGINES_PROPELLANT_1) val propellant_1: String?,
-    @field:Json(name = SPACEX_FIELD_ROCKET_ENGINES_PROPELLANT_2) val propellant_2: String?,
-    @field:Json(name = SPACEX_FIELD_ROCKET_ENGINES_THRUST_SEA_LEVEL) val thrust_sea_level: Thrust?,
-    @field:Json(name = SPACEX_FIELD_ROCKET_ENGINES_THRUST_VACUUM) val thrust_vacuum: Thrust?,
-    @field:Json(name = SPACEX_FIELD_ROCKET_ENGINES_THRUST_TO_WEIGHT) val thrust_to_weight: Double?
+    @field:Json(name = SPACEX_FIELD_ROCKET_ENGINES_ENGINE_LOSS_MAX) val engineLossMax: Int?,
+    @field:Json(name = SPACEX_FIELD_ROCKET_ENGINES_PROPELLANT_1) val propellant1: String?,
+    @field:Json(name = SPACEX_FIELD_ROCKET_ENGINES_PROPELLANT_2) val propellant2: String?,
+    @field:Json(name = SPACEX_FIELD_ROCKET_ENGINES_THRUST_SEA_LEVEL) val thrustSeaLevel: Thrust?,
+    @field:Json(name = SPACEX_FIELD_ROCKET_ENGINES_THRUST_VACUUM) val thrustVacuum: Thrust?,
+    @field:Json(name = SPACEX_FIELD_ROCKET_ENGINES_THRUST_TO_WEIGHT) val thrustToWeight: Double?
 )
 
 data class LandingLegsModel(

@@ -73,22 +73,20 @@ class PadStatsFragment : BaseFragment() {
         viewModel.stats.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is ApiResult.Pending -> {}
-                is ApiResult.Success -> response.data?.let {
-                    update(it)
-                }
+                is ApiResult.Success -> update(response.result)
                 is ApiResult.Failure -> showError(response.exception.message)
             }
         }
     }
 
-    fun update(response: List<StatsPadModel>) {
+    private fun update(response: List<StatsPadModel>) {
         binding.padStatsLaunchSitesRecycler.layoutAnimation =
             animateLayoutFromBottom(requireContext())
         padsAdapter.submitList(response)
         binding.padStatsLaunchSitesRecycler.scheduleLayoutAnimation()
     }
 
-    fun showError(error: String?) {
+    private fun showError(error: String?) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 

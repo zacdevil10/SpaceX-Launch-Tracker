@@ -6,8 +6,7 @@
     app:startDestination="@id/launch_nav_graph">
 
     <include app:graph="@navigation/launch_nav_graph" />
-    <include app:graph="@navigation/astronauts_nav_graph" />
-    <include app:graph="@navigation/vehicles_nav_graph" />
+    <include app:graph="@navigation/assets_nav_graph" />
 
     <fragment
         android:id="@+id/news_page_fragment"
@@ -26,12 +25,6 @@
         android:name="uk.co.zac_h.spacex.feature.settings.company.CompanyFragment"
         android:label="@string/menu_company"
         tools:layout="@layout/fragment_company" />
-
-    <fragment
-        android:id="@+id/about_fragment"
-        android:name="uk.co.zac_h.spacex.feature.settings.about.AboutFragment"
-        android:label="@string/menu_about"
-        tools:layout="@layout/fragment_about" />
 
     <dialog
         android:id="@+id/theme_dialog"
@@ -135,13 +128,5 @@
             app:argType="uk.co.zac_h.spacex.core.common.types.PadType" />
 
     </fragment>
-
-    <action
-        android:id="@+id/action_launch_item_to_launch_details_container"
-        app:destination="@id/launch_details_container_fragment" />
-
-    <action
-        android:id="@+id/missions_to_launch_details_container_fragment"
-        app:destination="@id/launch_details_container_fragment" />
 
 </navigation>

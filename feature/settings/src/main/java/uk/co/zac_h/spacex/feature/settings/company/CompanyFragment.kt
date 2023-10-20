@@ -41,7 +41,7 @@ class CompanyFragment : BaseFragment() {
         viewModel.company.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResult.Pending -> showProgress()
-                is ApiResult.Success -> it.data?.let { update(it) }
+                is ApiResult.Success -> update(it.result)
                 is ApiResult.Failure -> {
                     binding.progress.hide()
                     showError(it.exception)

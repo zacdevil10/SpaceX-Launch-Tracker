@@ -4,8 +4,8 @@ import retrofit2.Response
 
 sealed class ApiResult<out R> {
 
-    object Pending : ApiResult<Nothing>()
-    data class Success<out T>(internal val result: T) : ApiResult<T>()
+    data object Pending : ApiResult<Nothing>()
+    data class Success<out T>(val result: T) : ApiResult<T>()
     data class Failure(val exception: Throwable) : ApiResult<Nothing>()
 
     fun <T> map(transform: (value: R) -> T): ApiResult<T> = when (this) {
@@ -13,9 +13,6 @@ sealed class ApiResult<out R> {
         is Success -> Success(this.result.let(transform))
         is Failure -> this
     }
-
-    val data: R?
-        get() = if (this is Success) this.result else null
 }
 
 fun <R, T> Response<T>.map(transform: (value: T) -> R): ApiResult<R> = try {

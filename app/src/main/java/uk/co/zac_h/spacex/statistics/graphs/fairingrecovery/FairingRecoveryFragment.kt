@@ -105,15 +105,15 @@ class FairingRecoveryFragment : BaseFragment() {
         viewModel.fairingRecovery.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is ApiResult.Pending -> {}
-                is ApiResult.Success -> response.data?.let {
-                    update(false/*viewModel.cacheLocation != Repository.RequestLocation.CACHE*/, it)
-                }
+                is ApiResult.Success -> update(false/*viewModel.cacheLocation != Repository.RequestLocation.CACHE*/,
+                    response.result
+                )
                 is ApiResult.Failure -> showError(response.exception.message)
             }
         }
     }
 
-    fun update(data: Boolean, response: List<FairingRecoveryModel>) {
+    private fun update(data: Boolean, response: List<FairingRecoveryModel>) {
         statsList = response
 
         var max = 0f
@@ -149,7 +149,7 @@ class FairingRecoveryFragment : BaseFragment() {
         }
     }
 
-    fun showError(error: String?) {
+    private fun showError(error: String?) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 

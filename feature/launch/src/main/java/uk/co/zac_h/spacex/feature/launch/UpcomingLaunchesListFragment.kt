@@ -43,7 +43,7 @@ class UpcomingLaunchesListFragment : BaseFragment(), ViewPagerFragment {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        launchesAdapter = LaunchesAdapter { launch, root -> onItemClick(launch, root) }
+        launchesAdapter = LaunchesAdapter { launch -> onItemClick(launch) }
 
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(this@UpcomingLaunchesListFragment.context)
@@ -58,7 +58,7 @@ class UpcomingLaunchesListFragment : BaseFragment(), ViewPagerFragment {
                     binding.progress.hide()
                     binding.swipeRefresh.isRefreshing = false
 
-                    launchesAdapter.submitList(it.data)
+                    launchesAdapter.submitList(it.result)
                 }
 
                 is ApiResult.Failure -> {
@@ -81,14 +81,10 @@ class UpcomingLaunchesListFragment : BaseFragment(), ViewPagerFragment {
         _binding = null
     }
 
-    private fun onItemClick(launch: LaunchItem, root: View) {
+    private fun onItemClick(launch: LaunchItem) {
         viewModel.launch = launch
 
-        findNavController().navigate(
-            LaunchesFragmentDirections.actionLaunchesToLaunchDetails(
-                title = launch.missionName
-            )
-        )
+        findNavController().navigate(LaunchesFragmentDirections.actionLaunchesToLaunchDetails())
     }
 
     private fun showError(error: Throwable) {

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="nav_header_title">SpaceX - Launch Tracker</string>
-    <string name="nav_header_subtitle">By Zac Hadjineophytou</string>
-
     <!--Menu-->
     <string name="search">Search</string>
 
@@ -14,5 +11,7 @@
     <string name="starship">Starship</string>
 
     <string name="percentage">%1$s%%</string>
+
+    <string name="retry_button_label">Retry</string>
 
 </resources>
