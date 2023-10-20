@@ -40,6 +40,13 @@ class LaunchDetailsContainerFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.toolbar.apply {
+            setNavigationOnClickListener {
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
+            title = viewModel.launch?.missionName
+        }
+
         binding.viewPager.adapter = ViewPagerAdapter(
             childFragmentManager,
             listOfNotNull(

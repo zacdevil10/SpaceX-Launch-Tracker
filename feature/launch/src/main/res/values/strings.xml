@@ -61,14 +61,7 @@
     <string name="launch_label">Launch</string>
     <string name="media_label">Media</string>
 
-    <string name="details_label">Details</string>
     <string name="cores_label">Cores</string>
     <string name="payloads_label">Payloads</string>
-
-    <!-- Crew -->
-    <string name="crew_agency_label">Agency:</string>
-    <string name="crew_role_label">Role:</string>
-    <string name="crew_status_label">Status:</string>
-    <string name="crew_first_flight_label">First flight:</string>
 
 </resources>

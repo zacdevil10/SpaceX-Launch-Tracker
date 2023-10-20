@@ -1,14 +1,9 @@
 package uk.co.zac_h.spacex.base
 
 import android.os.Bundle
-import android.view.Gravity
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
-import androidx.transition.Slide
-import androidx.transition.TransitionManager
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.R
@@ -29,18 +24,6 @@ class MainActivity : AppCompatActivity(),
     @Inject
     lateinit var networkStateChangeListener: OnNetworkStateChangeListener
 
-    private val startDestinations = mutableSetOf(
-        R.id.launches_page_fragment,
-        R.id.news_page_fragment,
-        R.id.astronauts_fragment,
-        R.id.vehicles_fragment
-    )
-
-    private val fullscreenDestinations = setOf(
-        R.id.company_fragment,
-        R.id.about_fragment
-    )
-
     override fun onCreate(savedInstanceState: Bundle?) {
         (application as App).preferencesRepo.themeModeLive.observe(this) { mode ->
             mode?.let { delegate.localNightMode = it }
@@ -51,7 +34,6 @@ class MainActivity : AppCompatActivity(),
 
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host) as NavHostFragment
-        val navController = navHostFragment.navController
 
         networkStateChangeListener.apply {
             addListener(this@MainActivity)
@@ -59,7 +41,7 @@ class MainActivity : AppCompatActivity(),
         }
 
         snackbar = Snackbar.make(
-            binding.coordinator,
+            binding.constraint,
             R.string.network_connection,
             Snackbar.LENGTH_INDEFINITE
         ).apply {
@@ -67,28 +49,7 @@ class MainActivity : AppCompatActivity(),
             setAction(R.string.dismiss_label) { dismiss() }
         }
 
-        val appBarConfig = AppBarConfiguration.Builder(startDestinations)
-            .setOpenableLayout(binding.drawerLayout)
-            .build()
-
-        binding.toolbar.setupWithNavController(navController, appBarConfig)
-        binding.navView.setupWithNavController(navController)
-        binding.bottomNavigationView.setupWithNavController(navController)
-
-        navHostFragment.navController.addOnDestinationChangedListener { _, destination, _ ->
-            toggleBottomNavigationView(destination.id !in fullscreenDestinations)
-        }
-    }
-
-    private fun toggleBottomNavigationView(isVisible: Boolean) {
-        if (binding.bottomNavigationView.isVisible != isVisible) {
-            TransitionManager.beginDelayedTransition(
-                binding.root,
-                Slide(Gravity.BOTTOM).excludeTarget(R.id.nav_host, true)
-            )
-
-            binding.bottomNavigationView.isVisible = isVisible
-        }
+        binding.bottomNavigationView.setupWithNavController(navHostFragment.navController)
     }
 
     override fun onStart() {

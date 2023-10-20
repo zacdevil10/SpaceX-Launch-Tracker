@@ -6,8 +6,7 @@
     app:startDestination="@id/launch_nav_graph">
 
     <include app:graph="@navigation/launch_nav_graph" />
-    <include app:graph="@navigation/astronauts_nav_graph" />
-    <include app:graph="@navigation/vehicles_nav_graph" />
+    <include app:graph="@navigation/assets_nav_graph" />
 
     <fragment
         android:id="@+id/news_page_fragment"
@@ -135,13 +134,5 @@
             app:argType="uk.co.zac_h.spacex.core.common.types.PadType" />
 
     </fragment>
-
-    <action
-        android:id="@+id/action_launch_item_to_launch_details_container"
-        app:destination="@id/launch_details_container_fragment" />
-
-    <action
-        android:id="@+id/missions_to_launch_details_container_fragment"
-        app:destination="@id/launch_details_container_fragment" />
 
 </navigation>
