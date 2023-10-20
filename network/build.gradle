@@ -49,7 +49,7 @@ dependencies {
     kapt 'com.google.dagger:hilt-compiler:2.48.1'
 
     //Coroutines
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
 
     //Paging
     implementation "androidx.paging:paging-runtime-ktx:3.2.1"
