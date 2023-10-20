@@ -59,7 +59,7 @@ class DragonFragment : BaseFragment(), ViewPagerFragment {
                 is ApiResult.Success -> {
                     binding.progress.hide()
                     binding.swipeRefresh.isRefreshing = false
-                    dragonAdapter.submitList(it.data) {
+                    dragonAdapter.submitList(it.result) {
                         with(viewModel) {
                             if (hasOrderChanged) binding.recycler.smoothScrollToPosition(0)
                             hasOrderChanged = false

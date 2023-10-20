@@ -46,7 +46,7 @@ class LaunchDetailsCrewFragment : BaseFragment(), ViewPagerFragment {
         viewModel.launch?.crew?.let { update(it) }
     }
 
-    fun update(response: List<CrewItem>) {
+    private fun update(response: List<CrewItem>) {
         crewAdapter.submitList(response)
         binding.launchDetailsCrewRecycler.scheduleLayoutAnimation()
     }

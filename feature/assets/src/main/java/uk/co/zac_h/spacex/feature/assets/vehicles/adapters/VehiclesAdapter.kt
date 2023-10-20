@@ -30,11 +30,11 @@ class VehiclesAdapter(val setSelected: (VehicleItem) -> Unit) :
                 title = vehicle.title
                 vehicleSpecs.setOnClickListener {
                     setSelected(vehicle)
-                    holder.bind(vehicle.title.orEmpty())
+                    holder.bind()
                 }
                 setOnClickListener {
                     setSelected(vehicle)
-                    holder.bind(vehicle.title.orEmpty())
+                    holder.bind()
                 }
             }
 
@@ -43,9 +43,9 @@ class VehiclesAdapter(val setSelected: (VehicleItem) -> Unit) :
     }
 
     class ViewHolder(val binding: ListItemVehicleBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(title: String) {
+        fun bind() {
             binding.root.findNavController().navigate(
-                VehiclesFragmentDirections.actionVehiclesPageToVehicleDetails(title = title)
+                VehiclesFragmentDirections.actionVehiclesPageToVehicleDetails()
             )
         }
     }

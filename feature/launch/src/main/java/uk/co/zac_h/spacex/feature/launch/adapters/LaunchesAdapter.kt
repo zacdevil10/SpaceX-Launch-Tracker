@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.feature.launch.adapters
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
@@ -13,7 +12,7 @@ import uk.co.zac_h.spacex.feature.launch.R
 import uk.co.zac_h.spacex.feature.launch.databinding.ListItemLaunchesBinding
 import uk.co.zac_h.spacex.feature.launch.databinding.ListItemLaunchesExpandedBinding
 
-class LaunchesAdapter(val onClick: (LaunchItem, View) -> Unit) :
+class LaunchesAdapter(val onClick: (LaunchItem) -> Unit) :
     ListAdapter<LaunchItem, RecyclerView.ViewHolder>(Comparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
@@ -52,7 +51,7 @@ class LaunchesAdapter(val onClick: (LaunchItem, View) -> Unit) :
                 descriptionText.text = launch.description
 
                 root.setOnClickListener {
-                    onClick(launch, root)
+                    onClick(launch)
                 }
             }
 
@@ -62,7 +61,7 @@ class LaunchesAdapter(val onClick: (LaunchItem, View) -> Unit) :
                 launchView.bind(launch)
 
                 root.setOnClickListener {
-                    onClick(launch, root)
+                    onClick(launch)
                 }
             }
         }

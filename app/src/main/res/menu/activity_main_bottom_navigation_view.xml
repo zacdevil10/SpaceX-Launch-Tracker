@@ -17,7 +17,7 @@
         android:title="@string/menu_assets" />
     <item
         android:id="@id/company_fragment"
-        android:icon="@drawable/domain"
+        android:icon="@drawable/ic_baseline_domain_24"
         android:title="@string/menu_company" />
     <item
         android:id="@id/theme_dialog"

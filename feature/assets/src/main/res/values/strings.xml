@@ -56,6 +56,5 @@
     <string name="mass_tonne">%1$d T</string>
     <string name="mass_kg">%1$s kg</string>
     <string name="thrust_kn">%1$s kN</string>
-    <string name="seconds_format">%1$d s</string>
 
 </resources>

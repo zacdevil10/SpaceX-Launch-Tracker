@@ -107,15 +107,15 @@ class LandingHistoryFragment : BaseFragment() {
         viewModel.landingHistory.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is ApiResult.Pending -> {}
-                is ApiResult.Success -> response.data?.let {
-                    update(false/*viewModel.cacheLocation != Repository.RequestLocation.CACHE*/, it)
-                }
+                is ApiResult.Success -> update(false/*viewModel.cacheLocation != Repository.RequestLocation.CACHE*/,
+                    response.result
+                )
                 is ApiResult.Failure -> showError(response.exception.message)
             }
         }
     }
 
-    fun update(data: Any, response: List<LandingHistoryModel>) {
+    private fun update(data: Any, response: List<LandingHistoryModel>) {
         statsList = response
 
         var max = 0f
@@ -152,7 +152,7 @@ class LandingHistoryFragment : BaseFragment() {
         }
     }
 
-    fun showError(error: String?) {
+    private fun showError(error: String?) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 

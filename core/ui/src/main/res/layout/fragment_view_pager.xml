@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/medium_margin"
-        android:contentDescription="Open filter"
+        android:contentDescription="@string/filter_desc"
         android:src="@drawable/ic_sort_black_24dp"
         android:visibility="gone"
         tools:visibility="visible" />

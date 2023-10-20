@@ -144,9 +144,9 @@ class LaunchMassFragment : BaseFragment() {
         viewModel.launchMass.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is ApiResult.Pending -> {}
-                is ApiResult.Success -> response.data?.let {
-                    update(false/*viewModel.cacheLocation != Repository.RequestLocation.CACHE*/, it)
-                }
+                is ApiResult.Success -> update(false/*viewModel.cacheLocation != Repository.RequestLocation.CACHE*/,
+                    response.result
+                )
                 is ApiResult.Failure -> showError(response.exception.message)
             }
         }
@@ -158,7 +158,7 @@ class LaunchMassFragment : BaseFragment() {
         filterViewModel.clear()
     }
 
-    fun update(data: Any, response: List<LaunchMassStatsModel>) {
+    private fun update(data: Any, response: List<LaunchMassStatsModel>) {
         statsList = response
 
         binding.statisticsBarChart.key.visibility = View.GONE
@@ -226,14 +226,14 @@ class LaunchMassFragment : BaseFragment() {
                             RocketType.FALCON_NINE -> orbitsToArray(it.falconNine)
                             RocketType.FALCON_HEAVY -> orbitsToArray(it.falconHeavy)
                             else -> floatArrayOf(
-                                it.falconOne.LEO + it.falconNine.LEO + it.falconHeavy.LEO,
-                                it.falconOne.GTO + it.falconNine.GTO + it.falconHeavy.GTO,
-                                it.falconOne.SSO + it.falconNine.SSO + it.falconHeavy.SSO,
-                                it.falconOne.ISS + it.falconNine.ISS + it.falconHeavy.ISS,
-                                it.falconOne.HCO + it.falconNine.HCO + it.falconHeavy.HCO,
-                                it.falconOne.MEO + it.falconNine.MEO + it.falconHeavy.MEO,
-                                it.falconOne.SO + it.falconNine.SO + it.falconHeavy.SO,
-                                it.falconOne.ED_L1 + it.falconNine.ED_L1 + it.falconHeavy.ED_L1,
+                                it.falconOne.leo + it.falconNine.leo + it.falconHeavy.leo,
+                                it.falconOne.gto + it.falconNine.gto + it.falconHeavy.gto,
+                                it.falconOne.sso + it.falconNine.sso + it.falconHeavy.sso,
+                                it.falconOne.iss + it.falconNine.iss + it.falconHeavy.iss,
+                                it.falconOne.hco + it.falconNine.hco + it.falconHeavy.hco,
+                                it.falconOne.meo + it.falconNine.meo + it.falconHeavy.meo,
+                                it.falconOne.so + it.falconNine.so + it.falconHeavy.so,
+                                it.falconOne.edL1 + it.falconNine.edL1 + it.falconHeavy.edL1,
                                 it.falconOne.other + it.falconNine.other + it.falconHeavy.other
                             )
                         }
@@ -298,28 +298,28 @@ class LaunchMassFragment : BaseFragment() {
         fh: OrbitMassModel? = null
     ): List<KeysModel> =
         listOfNotNull(
-            sum(f1?.LEO, f9?.LEO, fh?.LEO).let {
+            sum(f1?.leo, f9?.leo, fh?.leo).let {
                 if (it > 0) KeysModel("LEO", it) else null
             },
-            sum(f1?.GTO, f9?.GTO, fh?.GTO).let {
+            sum(f1?.gto, f9?.gto, fh?.gto).let {
                 if (it > 0) KeysModel("GTO", it) else null
             },
-            sum(f1?.SSO, f9?.SSO, fh?.SSO).let {
+            sum(f1?.sso, f9?.sso, fh?.sso).let {
                 if (it > 0) KeysModel("SSO", it) else null
             },
-            sum(f1?.ISS, f9?.ISS, fh?.ISS).let {
+            sum(f1?.iss, f9?.iss, fh?.iss).let {
                 if (it > 0) KeysModel("ISS", it) else null
             },
-            sum(f1?.HCO, f9?.HCO, fh?.HCO).let {
+            sum(f1?.hco, f9?.hco, fh?.hco).let {
                 if (it > 0) KeysModel("HCO", it) else null
             },
-            sum(f1?.MEO, f9?.MEO, fh?.MEO).let {
+            sum(f1?.meo, f9?.meo, fh?.meo).let {
                 if (it > 0) KeysModel("MEO", it) else null
             },
-            sum(f1?.SO, f9?.SO, fh?.SO).let {
+            sum(f1?.so, f9?.so, fh?.so).let {
                 if (it > 0) KeysModel("SO", it) else null
             },
-            sum(f1?.ED_L1, f9?.ED_L1, fh?.ED_L1).let {
+            sum(f1?.edL1, f9?.edL1, fh?.edL1).let {
                 if (it > 0) KeysModel("ED-L1", it) else null
             },
             sum(f1?.other, f9?.other, fh?.other).let {
@@ -341,18 +341,18 @@ class LaunchMassFragment : BaseFragment() {
         )
 
     private fun orbitsToArray(orbitMassModel: OrbitMassModel): FloatArray = floatArrayOf(
-        orbitMassModel.LEO,
-        orbitMassModel.GTO,
-        orbitMassModel.SSO,
-        orbitMassModel.ISS,
-        orbitMassModel.HCO,
-        orbitMassModel.MEO,
-        orbitMassModel.SO,
-        orbitMassModel.ED_L1,
+        orbitMassModel.leo,
+        orbitMassModel.gto,
+        orbitMassModel.sso,
+        orbitMassModel.iss,
+        orbitMassModel.hco,
+        orbitMassModel.meo,
+        orbitMassModel.so,
+        orbitMassModel.edL1,
         orbitMassModel.other
     )
 
-    fun showError(error: String?) {
+    private fun showError(error: String?) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 

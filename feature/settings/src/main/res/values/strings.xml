@@ -1,7 +1,6 @@
 <resources>
 
     <string name="menu_company">Company</string>
-    <string name="menu_about">About</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_theme">Theme</string>
 
@@ -13,8 +12,7 @@
     <string name="website_label">Website</string>
     <string name="wikipedia_label">Wikipedia</string>
 
-    <!--About-->
-    <string name="powered_by">Powered by Launch Library, Twitter and Reddit</string>
-    <string name="spacex_launch_tracker_icon_desc">SpaceX Launch Tracker Icon</string>
-    <string name="version_name">v%1$s</string>
+    <!-- Theme -->
+    <string name="theme_label">Theme</string>
+
 </resources>

@@ -77,17 +77,17 @@ class LaunchMassViewModel @Inject constructor(
         mass?.let {
             model.total += mass
             when (orbit) {
-                "LEO" -> model.LEO += mass
-                "GTO" -> model.GTO += mass
-                "GEO" -> model.GTO += mass
-                "PO" -> model.LEO += mass
-                "SSO" -> model.SSO += mass
-                "ISS" -> model.ISS += mass
-                "HCO" -> model.HCO += mass
-                "MEO" -> model.MEO += mass
-                "VLEO" -> model.LEO += mass
-                "SO" -> model.SO += mass
-                "ES-L1" -> model.ED_L1 += mass
+                "LEO" -> model.leo += mass
+                "GTO" -> model.gto += mass
+                "GEO" -> model.gto += mass
+                "PO" -> model.leo += mass
+                "SSO" -> model.sso += mass
+                "ISS" -> model.iss += mass
+                "HCO" -> model.hco += mass
+                "MEO" -> model.meo += mass
+                "VLEO" -> model.leo += mass
+                "SO" -> model.so += mass
+                "ES-L1" -> model.edL1 += mass
                 else -> model.other += mass
             }
         }

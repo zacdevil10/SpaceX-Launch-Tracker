@@ -65,7 +65,7 @@ class RocketFragment : BaseFragment(), ViewPagerFragment {
                 is ApiResult.Success -> {
                     binding.progress.hide()
                     binding.swipeRefresh.isRefreshing = false
-                    rocketsAdapter.submitList(it.data) {
+                    rocketsAdapter.submitList(it.result) {
                         if (shouldScroll) binding.recycler.smoothScrollToPosition(0)
                     }
                 }

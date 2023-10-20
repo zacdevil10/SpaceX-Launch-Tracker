@@ -28,14 +28,7 @@
     <fragment
         android:id="@+id/vehicle_details_fragment"
         android:name="uk.co.zac_h.spacex.feature.assets.vehicles.VehicleDetailsFragment"
-        android:label="{title}"
-        tools:layout="@layout/fragment_vehicle_details">
-
-        <argument
-            android:name="title"
-            app:argType="string" />
-
-    </fragment>
+        tools:layout="@layout/fragment_vehicle_details" />
 
     <dialog
         android:id="@+id/rocket_filter_dialog"

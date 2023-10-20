@@ -26,12 +26,6 @@
         android:label="@string/menu_company"
         tools:layout="@layout/fragment_company" />
 
-    <fragment
-        android:id="@+id/about_fragment"
-        android:name="uk.co.zac_h.spacex.feature.settings.about.AboutFragment"
-        android:label="@string/menu_about"
-        tools:layout="@layout/fragment_about" />
-
     <dialog
         android:id="@+id/theme_dialog"
         android:name="uk.co.zac_h.spacex.feature.settings.theme.ThemeDialog" />

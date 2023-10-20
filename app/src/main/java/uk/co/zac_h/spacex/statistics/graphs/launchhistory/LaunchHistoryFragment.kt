@@ -26,6 +26,7 @@ import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.types.LaunchHistoryFilter
 import uk.co.zac_h.spacex.core.common.types.RocketType
 import uk.co.zac_h.spacex.core.common.utils.generateCenterSpannableText
+import uk.co.zac_h.spacex.core.common.utils.metricFormat
 import uk.co.zac_h.spacex.databinding.FragmentLaunchHistoryBinding
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.statistics.graphs.launchhistory.filter.LaunchHistoryFilterViewModel
@@ -97,7 +98,7 @@ class LaunchHistoryFragment : BaseFragment() {
         viewModel.launchHistory.observe(viewLifecycleOwner) { response ->
             when (response) {
                 is ApiResult.Pending -> {}
-                is ApiResult.Success -> response.data?.let {
+                is ApiResult.Success -> response.result.let {
                     val animate =
                         false/*viewModel.cacheLocation != Repository.RequestLocation.CACHE*/
                     update(animate, it)
@@ -114,7 +115,7 @@ class LaunchHistoryFragment : BaseFragment() {
         filterViewModel.clear()
     }
 
-    fun update(animate: Boolean, response: List<HistoryStatsModel>) {
+    private fun update(animate: Boolean, response: List<HistoryStatsModel>) {
         launchStats = response
 
         var falconOne = 0
@@ -187,19 +188,19 @@ class LaunchHistoryFragment : BaseFragment() {
                     animateProgress(animate, it.successRate, binding.falconOneRateProgress)
 
                     binding.falconOnePercentText.text =
-                        getString(R.string.percentage, it.successRate)
+                        getString(R.string.percentage, it.successRate.metricFormat())
                 }
                 RocketType.FALCON_NINE -> {
                     animateProgress(animate, it.successRate, binding.falconNineRateProgress)
 
                     binding.falconNinePercentText.text =
-                        getString(R.string.percentage, it.successRate)
+                        getString(R.string.percentage, it.successRate.metricFormat())
                 }
                 RocketType.FALCON_HEAVY -> {
                     animateProgress(animate, it.successRate, binding.falconHeavyRateProgress)
 
                     binding.falconHeavyPercentText.text =
-                        getString(R.string.percentage, it.successRate)
+                        getString(R.string.percentage, it.successRate.metricFormat())
                 }
                 RocketType.STARSHIP -> {
                     //TODO: Add success rate for starship once launches are recorded in API
@@ -217,7 +218,7 @@ class LaunchHistoryFragment : BaseFragment() {
         }.start() else progressBar?.progress = successRate
     }
 
-    fun showError(error: String?) {
+    private fun showError(error: String?) {
         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
     }
 

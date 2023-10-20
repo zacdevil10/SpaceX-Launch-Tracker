@@ -47,7 +47,7 @@ class PreviousLaunchesListFragment : BaseFragment(), ViewPagerFragment {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        launchesAdapter = PaginatedLaunchesAdapter { launch, root -> onItemClick(launch, root) }
+        launchesAdapter = PaginatedLaunchesAdapter { launch -> onItemClick(launch) }
 
         binding.recycler.apply {
             layoutManager = LinearLayoutManager(context)
@@ -91,14 +91,10 @@ class PreviousLaunchesListFragment : BaseFragment(), ViewPagerFragment {
         _binding = null
     }
 
-    private fun onItemClick(launch: LaunchItem, root: View) {
+    private fun onItemClick(launch: LaunchItem) {
         viewModel.launch = launch
 
-        findNavController().navigate(
-            LaunchesFragmentDirections.actionLaunchesToLaunchDetails(
-                title = launch.missionName
-            )
-        )
+        findNavController().navigate(LaunchesFragmentDirections.actionLaunchesToLaunchDetails())
     }
 
     private fun showError(error: Throwable) {
