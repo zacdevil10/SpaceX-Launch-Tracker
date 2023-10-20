@@ -83,7 +83,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.7.4'
 
     //Glide
-    implementation 'com.github.bumptech.glide:glide:4.15.1'
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
 
     //MP Chart library
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
