@@ -17,4 +17,10 @@
         <attr name="android:text" />
     </declare-styleable>
 
+    <declare-styleable name="BannerView">
+        <attr name="message" format="string|reference" />
+        <attr name="primaryActionLabel" format="string|reference" />
+        <attr name="secondaryActionLabel" format="string|reference" />
+    </declare-styleable>
+
 </resources>

@@ -15,12 +15,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import uk.co.zac_h.spacex.core.common.apiLimitReached
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.recyclerview.PagingLoadStateAdapter
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
 import uk.co.zac_h.spacex.core.ui.databinding.FragmentVerticalRecyclerviewBinding
 import uk.co.zac_h.spacex.feature.launch.adapters.PaginatedLaunchesAdapter
+import uk.co.zac_h.spacex.network.TooManyRequestsException
 
 @AndroidEntryPoint
 class PreviousLaunchesListFragment : BaseFragment(), ViewPagerFragment {
@@ -80,6 +82,8 @@ class PreviousLaunchesListFragment : BaseFragment(), ViewPagerFragment {
                         else -> null
                     }
 
+                    binding.banner.apiLimitReached(error?.error as? TooManyRequestsException)
+
                     error?.error?.let { message -> showError(message) }
                 }
             }
@@ -98,7 +102,9 @@ class PreviousLaunchesListFragment : BaseFragment(), ViewPagerFragment {
     }
 
     private fun showError(error: Throwable) {
-        Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+        if (error !is TooManyRequestsException) {
+            Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+        }
         Log.e("PreviousLaunchesList", error.message.orUnknown())
     }
 
