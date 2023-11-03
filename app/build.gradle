@@ -70,6 +70,7 @@ dependencies {
 
     //Feature
     implementation project(':feature:launch')
+    implementation project(':feature:news')
     implementation project(':feature:assets')
     implementation project(':feature:settings')
 

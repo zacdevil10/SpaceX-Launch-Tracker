@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list_item_reddit_constraint"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/list_item_reddit_card"
+        style="?materialCardViewFilledStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/medium_margin"
+        android:layout_marginTop="@dimen/small_margin"
+        android:layout_marginEnd="@dimen/medium_margin"
+        android:layout_marginBottom="@dimen/small_margin"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/medium_margin"
+            android:paddingBottom="@dimen/small_margin">
+
+            <TextView
+                android:id="@+id/list_item_reddit_author"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:textAppearance="?textAppearanceCaption"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@tools:sample/last_names" />
+
+            <View
+                android:id="@+id/separator"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="@dimen/xsmall_margin"
+                android:background="?colorOnBackground"
+                app:layout_constraintBottom_toBottomOf="@id/list_item_reddit_author"
+                app:layout_constraintStart_toEndOf="@id/list_item_reddit_author"
+                app:layout_constraintTop_toTopOf="@id/list_item_reddit_author" />
+
+            <TextView
+                android:id="@+id/list_item_reddit_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/xsmall_margin"
+                android:textAppearance="?textAppearanceCaption"
+                app:layout_constraintStart_toEndOf="@id/separator"
+                app:layout_constraintTop_toTopOf="@id/list_item_reddit_author"
+                tools:text="4d" />
+
+            <ImageView
+                android:id="@+id/list_item_reddit_pinned"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginEnd="@dimen/medium_margin"
+                android:src="@drawable/ic_pin"
+                app:layout_constraintBottom_toBottomOf="@id/list_item_reddit_date"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/list_item_reddit_date"
+                app:tint="?colorSecondary"
+                tools:ignore="ContentDescription" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/list_item_reddit_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/medium_margin"
+                android:paddingEnd="@dimen/large_margin"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_reddit_author">
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/list_item_reddit_thumbnail_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:layout_marginEnd="@dimen/small_margin"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toStartOf="@id/list_item_reddit_title"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="visible">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/list_item_reddit_thumbnail"
+                        android:layout_width="72dp"
+                        android:layout_height="56dp"
+                        android:scaleType="centerCrop"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"
+                        tools:ignore="ContentDescription"
+                        tools:src="@tools:sample/avatars" />
+
+                    <TextView
+                        android:id="@+id/list_item_reddit_thumbnail_link"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:background="#9C000000"
+                        android:maxLines="1"
+                        android:padding="2dp"
+                        android:textColor="@android:color/white"
+                        android:textSize="12sp"
+                        app:layout_constraintBottom_toBottomOf="@id/list_item_reddit_thumbnail"
+                        app:layout_constraintEnd_toEndOf="@id/list_item_reddit_thumbnail"
+                        app:layout_constraintStart_toStartOf="@id/list_item_reddit_thumbnail"
+                        tools:text="twitter.com" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/list_item_reddit_title"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:minLines="1"
+                    android:textAppearance="?textAppearanceHeadline6"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/list_item_reddit_thumbnail_card"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@tools:sample/lorem/random" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/list_item_reddit_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/list_item_reddit_header">
+
+                <uk.co.zac_h.spacex.core.ui.HtmlTextView
+                    android:id="@+id/list_item_reddit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:layout_marginEnd="@dimen/large_margin"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:textAppearance="?textAppearanceBody2"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@tools:sample/lorem/random" />
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/list_item_reddit_preview"
+                    android:layout_width="0dp"
+                    android:layout_height="256dp"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/list_item_reddit_text"
+                    app:shapeAppearance="@style/ShapeAppearance.Material3.Corner.Medium"
+                    tools:ignore="ContentDescription"
+                    tools:src="@tools:sample/avatars" />
+
+                <LinearLayout
+                    android:id="@+id/list_item_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_margin"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="24dp"
+                    app:layout_constraintTop_toBottomOf="@id/list_item_reddit_preview">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_arrow_up_bold"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:id="@+id/list_item_reddit_score"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/xsmall_margin"
+                        tools:text="231" />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/medium_margin"
+                        android:src="@drawable/ic_comment_black_24dp"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:id="@+id/list_item_reddit_comments"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/xsmall_margin"
+                        tools:text="231" />
+
+                </LinearLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
