@@ -1,0 +1,68 @@
+[versions]
+appcompat = "1.6.1"
+constraintlayout = "2.1.4"
+core = "1.12.0"
+firebase-crashlytics-gradle = "2.9.9"
+firebase = "32.4.1"
+google-services = "4.4.0"
+gradle = "8.1.2"
+hilt = "2.48.1"
+fragment = "1.6.1"
+glide = "4.16.0"
+kotlin = "1.9.10"
+legacy-support-v4 = "1.0.0"
+paging = "3.2.1"
+lifecycle = "2.6.2"
+charts = "v3.1.0"
+navigation = "2.7.4"
+preference = "1.2.1"
+material = "1.10.0"
+recyclerview = "1.3.2"
+
+[libraries]
+
+# AndroidX
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
+androidx-core = { module = "androidx.core:core-ktx", version.ref = "core" }
+androidx-legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacy-support-v4" }
+androidx-navigation-safe-args = { module = "androidx.navigation:navigation-safe-args-gradle-plugin", version.ref = "navigation" }
+androidx-paging = { module = "androidx.paging:paging-runtime-ktx", version.ref = "paging" }
+androidx-livedata = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle" }
+androidx-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+androidx-navigation-ui = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation" }
+androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
+androidx-preference = { module = "androidx.preference:preference-ktx", version.ref = "preference" }
+androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment" }
+androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
+
+# Hilt
+hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+
+# Kotlin
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+
+# Firebase
+firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebase-crashlytics-gradle" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics-ktx" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
+
+charts = { module = "com.github.PhilJay:MPAndroidChart", version.ref = "charts" }
+
+material = { module = "com.google.android.material:material", version.ref = "material" }
+
+google-services = { module = "com.google.gms:google-services", version.ref = "google-services" }
+
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+
+[plugins]
+
+[bundles]
+
