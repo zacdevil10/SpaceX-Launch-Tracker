@@ -9,11 +9,13 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.google.android.material.transition.MaterialSharedAxis
+import uk.co.zac_h.spacex.core.common.apiLimitReached
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.fragment.openWebLink
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.feature.settings.databinding.FragmentCompanyBinding
 import uk.co.zac_h.spacex.network.ApiResult
+import uk.co.zac_h.spacex.network.TooManyRequestsException
 
 class CompanyFragment : BaseFragment() {
 
@@ -39,8 +41,9 @@ class CompanyFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.company.observe(viewLifecycleOwner) {
+            binding.banner.apiLimitReached((it as? ApiResult.Failure)?.exception as? TooManyRequestsException)
             when (it) {
-                is ApiResult.Pending -> showProgress()
+                is ApiResult.Pending -> binding.progress.show()
                 is ApiResult.Success -> update(it.result)
                 is ApiResult.Failure -> {
                     binding.progress.hide()
@@ -54,16 +57,17 @@ class CompanyFragment : BaseFragment() {
 
     private fun update(response: Company) {
         with(binding) {
-            hideProgress()
+            progress.hide()
+            content.visibility = View.VISIBLE
 
-            companyWebsite.isVisible = response.website != null
-            response.website?.let { website ->
-                companyWebsite.setOnClickListener { openWebLink(website) }
+            companyWebsite.apply {
+                isVisible = response.website != null
+                setOnClickListener { openWebLink(response.website) }
             }
 
-            companyWiki.isVisible = response.wiki != null
-            response.wiki?.let { wiki ->
-                companyWiki.setOnClickListener { openWebLink(wiki) }
+            companyWiki.apply {
+                isVisible = response.wiki != null
+                setOnClickListener { openWebLink(response.wiki) }
             }
 
             companySummary.text = response.description
@@ -72,18 +76,10 @@ class CompanyFragment : BaseFragment() {
         }
     }
 
-    private fun showProgress() {
-        binding.content.visibility = View.INVISIBLE
-        binding.progress.show()
-    }
-
-    private fun hideProgress() {
-        binding.content.visibility = View.VISIBLE
-        binding.progress.hide()
-    }
-
     private fun showError(error: Throwable) {
-        Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+        if (error !is TooManyRequestsException) {
+            Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+        }
         Log.e("CompanyFragment", error.message.orUnknown())
     }
 

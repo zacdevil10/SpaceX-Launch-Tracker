@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import uk.co.zac_h.spacex.core.common.apiLimitReached
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
@@ -17,6 +18,7 @@ import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleDetailsViewModel
 import uk.co.zac_h.spacex.feature.assets.vehicles.adapters.VehiclesAdapter
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
+import uk.co.zac_h.spacex.network.TooManyRequestsException
 
 class RocketFragment : BaseFragment(), ViewPagerFragment {
 
@@ -60,6 +62,7 @@ class RocketFragment : BaseFragment(), ViewPagerFragment {
         }
 
         viewModel.rockets.observe(viewLifecycleOwner) {
+            binding.banner.apiLimitReached((it as? ApiResult.Failure)?.exception as? TooManyRequestsException)
             when (it) {
                 is ApiResult.Pending -> binding.progress.hide()
                 is ApiResult.Success -> {
@@ -92,7 +95,9 @@ class RocketFragment : BaseFragment(), ViewPagerFragment {
     }
 
     private fun showError(error: Throwable) {
-        Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+        if (error !is TooManyRequestsException) {
+            Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+        }
         Log.e("RocketFragment", error.message.orUnknown())
     }
 

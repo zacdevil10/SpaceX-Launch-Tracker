@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
+import uk.co.zac_h.spacex.core.common.apiLimitReached
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
@@ -17,6 +18,7 @@ import uk.co.zac_h.spacex.core.ui.databinding.FragmentVerticalRecyclerviewBindin
 import uk.co.zac_h.spacex.feature.launch.adapters.LaunchesAdapter
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
+import uk.co.zac_h.spacex.network.TooManyRequestsException
 
 @AndroidEntryPoint
 class UpcomingLaunchesListFragment : BaseFragment(), ViewPagerFragment {
@@ -52,6 +54,11 @@ class UpcomingLaunchesListFragment : BaseFragment(), ViewPagerFragment {
         }
 
         viewModel.upcomingLaunchesLiveData.observe(viewLifecycleOwner) {
+            if (it is ApiResult.Success || it is ApiResult.Failure) {
+                binding.banner.apiLimitReached(
+                    (it as? ApiResult.Failure)?.exception as? TooManyRequestsException
+                )
+            }
             when (it) {
                 is ApiResult.Pending -> binding.progress.show()
                 is ApiResult.Success -> {
@@ -88,7 +95,9 @@ class UpcomingLaunchesListFragment : BaseFragment(), ViewPagerFragment {
     }
 
     private fun showError(error: Throwable) {
-        Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+        if (error !is TooManyRequestsException) {
+            Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+        }
         Log.e("PreviousLaunchesList", error.message.orUnknown())
     }
 

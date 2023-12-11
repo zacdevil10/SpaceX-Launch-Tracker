@@ -21,7 +21,15 @@ fun <R, T> Response<T>.map(transform: (value: T) -> R): ApiResult<R> = try {
             ApiResult.Success(it.let(transform))
         } ?: ApiResult.Failure(IllegalArgumentException("No body found"))
     } else {
-        ApiResult.Failure(Exception(errorBody()?.string()))
+        ApiResult.Failure(
+            when (code()) {
+                429 -> TooManyRequestsException(
+                    errorBody()?.string()?.filter { it.isDigit() }?.toInt()
+                )
+
+                else -> Exception(errorBody()?.string())
+            }
+        )
     }
 } catch (e: Throwable) {
     ApiResult.Failure(e)

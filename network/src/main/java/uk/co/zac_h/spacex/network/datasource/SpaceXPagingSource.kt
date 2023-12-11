@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import retrofit2.Response
+import uk.co.zac_h.spacex.network.TooManyRequestsException
 import uk.co.zac_h.spacex.network.dto.spacex.LaunchLibraryPaginatedResponse
 
 abstract class SpaceXPagingSource<T : Any> : PagingSource<Int, T>() {
@@ -29,7 +30,15 @@ abstract class SpaceXPagingSource<T : Any> : PagingSource<Int, T>() {
             )
         } else {
             response.code()
-            LoadResult.Error(Exception(response.errorBody()?.string()))
+            LoadResult.Error(
+                when (response.code()) {
+                    429 -> TooManyRequestsException(
+                        response.errorBody()?.string()?.filter { it.isDigit() }?.toInt()
+                    )
+
+                    else -> Exception(response.errorBody()?.string())
+                }
+            )
         }
     } catch (e: Exception) {
         LoadResult.Error(e)

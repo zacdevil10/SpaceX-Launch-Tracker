@@ -13,6 +13,7 @@ import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import uk.co.zac_h.spacex.core.common.apiLimitReached
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.recyclerview.PagingLoadStateAdapter
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
@@ -21,6 +22,7 @@ import uk.co.zac_h.spacex.core.ui.databinding.FragmentVerticalRecyclerviewBindin
 import uk.co.zac_h.spacex.feature.assets.R
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleDetailsViewModel
 import uk.co.zac_h.spacex.feature.assets.vehicles.adapters.VehiclesPagingAdapter
+import uk.co.zac_h.spacex.network.TooManyRequestsException
 
 class SpacecraftFragment : BaseFragment(), ViewPagerFragment {
 
@@ -82,6 +84,8 @@ class SpacecraftFragment : BaseFragment(), ViewPagerFragment {
                         else -> null
                     }
 
+                    binding.banner.apiLimitReached(error?.error as? TooManyRequestsException)
+
                     error?.error?.let { message -> showError(message) }
                 }
             }
@@ -89,7 +93,9 @@ class SpacecraftFragment : BaseFragment(), ViewPagerFragment {
     }
 
     private fun showError(error: Throwable) {
-        Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+        if (error !is TooManyRequestsException) {
+            Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+        }
         Log.e("SpacecraftFragment", error.message.orUnknown())
     }
 

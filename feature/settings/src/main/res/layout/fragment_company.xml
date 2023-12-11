@@ -12,6 +12,14 @@
         android:layout_height="wrap_content"
         android:paddingBottom="@dimen/medium_margin">
 
+        <uk.co.zac_h.spacex.core.ui.BannerView
+            android:id="@+id/banner"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/progress"
             style="?attr/circularProgressIndicatorStyle"
@@ -21,17 +29,19 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/banner" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/content"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:visibility="gone"
             app:constraint_referenced_ids="
             company_logo,
             company_summary,
             company_founded,
-            company_ceo" />
+            company_ceo"
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/company_logo"
@@ -42,7 +52,7 @@
             android:layout_marginEnd="@dimen/medium_margin"
             android:contentDescription="@string/spacex_logo_desc"
             android:src="@drawable/ic_spacex_logo"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/banner"
             app:tint="?colorOnBackground" />
 
         <TextView
