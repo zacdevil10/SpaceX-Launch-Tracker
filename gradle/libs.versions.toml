@@ -1,5 +1,6 @@
 [versions]
 appcompat = "1.6.1"
+compose = "2023.10.01"
 constraintlayout = "2.1.4"
 converter-moshi = "2.9.0"
 core = "1.12.0"
@@ -40,6 +41,12 @@ androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragme
 androidx-preference = { module = "androidx.preference:preference-ktx", version.ref = "preference" }
 androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerview" }
+
+# Compose
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-ui-toolingpreview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 
 # Hilt
 hilt-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
