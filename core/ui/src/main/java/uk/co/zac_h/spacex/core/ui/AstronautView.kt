@@ -49,78 +49,66 @@ fun AstronautView(
     expanded: Boolean,
     onClick: () -> Unit
 ) {
-    val border by animateDpAsState(targetValue = if (expanded) 1.dp else 0.dp, label = "border")
     val rotationState by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f,
         label = "rotation"
     )
 
-    OutlinedCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .animateContentSize(),
-        shape = CardDefaults.outlinedShape,
-        border = CardDefaults.outlinedCardBorder(expanded).copy(width = border),
+    ElevatedCard(
+        modifier = modifier,
+        shape = CardDefaults.elevatedShape,
         onClick = onClick
     ) {
         Column {
-            ElevatedCard(
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(IntrinsicSize.Max),
-                shape = CardDefaults.elevatedShape,
+                    .height(IntrinsicSize.Max)
             ) {
-                Row(
+                AsyncImage(
+                    model = image,
+                    contentDescription = "",
+                    error = painterResource(id = R.drawable.ic_baseline_error_outline_24),
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                ) {
-                    AsyncImage(
-                        model = image,
-                        contentDescription = "",
-                        error = painterResource(id = R.drawable.ic_baseline_error_outline_24),
-                        modifier = Modifier
-                            .fillMaxWidth(0.3f)
-                            .fillMaxHeight()
-                            .clip(CardDefaults.elevatedShape),
-                        contentScale = ContentScale.Crop
-                    )
+                        .fillMaxWidth(0.3f)
+                        .clip(CardDefaults.elevatedShape),
+                    contentScale = ContentScale.Crop
+                )
 
-                    Column(
-                        modifier = Modifier
-                            .padding(start = 16.dp)
-                            .fillMaxWidth()
-                    ) {
-                        role?.let {
-                            Text(
-                                modifier = Modifier.padding(top = 16.dp, end = 16.dp),
-                                text = it,
-                                style = MaterialTheme.typography.labelSmall
-                            )
-                        }
-                        title?.let {
-                            Text(
-                                modifier = Modifier.padding(top = 8.dp, end = 16.dp),
-                                text = it,
-                                style = MaterialTheme.typography.headlineSmall
-                            )
-                        }
-                        agency?.let {
-                            Text(
-                                modifier = Modifier.padding(top = 8.dp, end = 16.dp),
-                                text = it,
-                                style = MaterialTheme.typography.labelSmall
-                            )
-                        }
-                        Image(
-                            modifier = Modifier
-                                .align(Alignment.End)
-                                .padding(top = 8.dp, end = 16.dp, bottom = 8.dp)
-                                .rotate(rotationState),
-                            imageVector = Icons.Filled.KeyboardArrowDown,
-                            contentDescription = ""
+                Column(
+                    modifier = Modifier
+                        .padding(start = 16.dp)
+                        .fillMaxWidth()
+                ) {
+                    role?.let {
+                        Text(
+                            modifier = Modifier.padding(top = 16.dp, end = 16.dp),
+                            text = it,
+                            style = MaterialTheme.typography.labelSmall
                         )
                     }
+                    title?.let {
+                        Text(
+                            modifier = Modifier.padding(top = 8.dp, end = 16.dp),
+                            text = it,
+                            style = MaterialTheme.typography.headlineSmall
+                        )
+                    }
+                    agency?.let {
+                        Text(
+                            modifier = Modifier.padding(top = 8.dp, end = 16.dp),
+                            text = it,
+                            style = MaterialTheme.typography.labelSmall
+                        )
+                    }
+                    Image(
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .padding(top = 8.dp, end = 16.dp, bottom = 8.dp)
+                            .rotate(rotationState),
+                        imageVector = Icons.Filled.KeyboardArrowDown,
+                        contentDescription = ""
+                    )
                 }
             }
 
