@@ -8,6 +8,18 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.core.content.res.use
 import androidx.core.view.isVisible
 
@@ -57,4 +69,29 @@ class LabelValueView @JvmOverloads constructor(
             text = it.getString(R.styleable.LabelValueView_android_text)
         }
     }
+}
+
+@Composable
+fun LabelValueView(
+    modifier: Modifier = Modifier,
+    label: String,
+    value: String
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(text = label, fontWeight = FontWeight.Bold)
+        Text(text = value, modifier = Modifier.padding(start = 16.dp))
+    }
+}
+
+@Composable
+@Preview
+fun LabelValueViewPreview() {
+    LabelValueView(
+        modifier = Modifier.background(Color.White),
+        label = "Label",
+        value = "Value"
+    )
 }

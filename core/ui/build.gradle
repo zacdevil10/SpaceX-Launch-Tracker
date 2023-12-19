@@ -48,7 +48,7 @@ dependencies {
     implementation libs.androidx.compose.ui.toolingpreview
     debugImplementation libs.androidx.compose.ui.tooling
 
-    implementation "io.coil-kt:coil-compose:2.5.0"
+    implementation libs.coil.compose
 
     //Glide
     implementation libs.glide

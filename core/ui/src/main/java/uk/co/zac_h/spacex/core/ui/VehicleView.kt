@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.core.ui
 
+import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,6 +26,7 @@ import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun VehicleView(
     modifier: Modifier = Modifier,
@@ -35,18 +38,15 @@ fun VehicleView(
     content: @Composable() (() -> Unit)? = null
 ) {
     ElevatedCard(
-        modifier = modifier
-            .clickable {
-                navigate()
-            },
-        shape = CardDefaults.elevatedShape
+        modifier = modifier,
+        shape = CardDefaults.elevatedShape,
+        onClick = { navigate() }
     ) {
         Column {
             image?.let {
                 AsyncImage(
                     model = it,
                     contentDescription = "",
-                    placeholder = painterResource(id = R.drawable.ic_baseline_error_outline_24),
                     error = painterResource(id = R.drawable.ic_baseline_error_outline_24),
                     modifier = Modifier
                         .height(256.dp)
@@ -79,7 +79,8 @@ fun VehicleView(
     }
 }
 
-@Preview
+@Preview(name = "Light Mode")
+@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 fun VehicleViewPreview(
     @PreviewParameter(LoremIpsum::class) text: String

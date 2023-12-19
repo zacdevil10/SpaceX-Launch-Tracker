@@ -2,19 +2,22 @@ package uk.co.zac_h.spacex.feature.assets.astronauts
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.isVisible
+import androidx.compose.foundation.layout.padding
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import androidx.transition.TransitionManager
-import com.bumptech.glide.Glide
+import uk.co.zac_h.spacex.core.ui.AstronautView
+import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 import uk.co.zac_h.spacex.core.ui.databinding.ListItemAstronautBinding
-import uk.co.zac_h.spacex.feature.assets.R
 
 class AstronautsAdapter :
     PagingDataAdapter<AstronautItem, AstronautsAdapter.ViewHolder>(Comparator) {
-
-    private var expandedPosition: Int = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(
         ListItemAstronautBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -23,28 +26,22 @@ class AstronautsAdapter :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val astronaut = getItem(position)
 
-        val isExpanded = position == expandedPosition
+        holder.binding.listItemCrewCard.setContent {
+            SpaceXTheme {
+                var expanded by remember { mutableStateOf(false) }
 
-        with(holder.binding) {
-            astronaut?.let {
-                Glide.with(root).load(astronaut.image).into(image)
-
-                role.text = astronaut.nationality
-                title.text = astronaut.name
-                content.isVisible = isExpanded
-
-                listItemCrewCard.strokeWidth = if (isExpanded) {
-                    root.resources.getDimensionPixelSize(R.dimen.list_item_astronauts_stroke_width)
-                } else 0
-
-                status.text = astronaut.status.status
-                firstFlight.text = astronaut.firstFlight
-                bio.text = astronaut.bio
-
-                headerCard.setOnClickListener {
-                    expandedPosition = if (isExpanded) -1 else position
-                    TransitionManager.beginDelayedTransition(listItemCrewCard)
-                    notifyItemChanged(position, astronaut)
+                AstronautView(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                    image = astronaut?.image,
+                    role = astronaut?.nationality,
+                    title = astronaut?.name,
+                    agency = astronaut?.agency,
+                    status = astronaut?.status?.status,
+                    firstFlight = astronaut?.firstFlight,
+                    description = astronaut?.bio,
+                    expanded = expanded
+                ) {
+                    expanded = !expanded
                 }
             }
         }
