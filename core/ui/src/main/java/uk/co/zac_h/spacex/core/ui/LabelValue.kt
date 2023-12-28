@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.res.use
 import androidx.core.view.isVisible
 
-class LabelValueView @JvmOverloads constructor(
+class LabelValue @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ) : LinearLayout(context, attrs) {
@@ -64,15 +64,15 @@ class LabelValueView @JvmOverloads constructor(
         addView(labelTextView)
         addView(valueTextView)
 
-        context.obtainStyledAttributes(attrs, R.styleable.LabelValueView).use {
-            label = it.getString(R.styleable.LabelValueView_label)
-            text = it.getString(R.styleable.LabelValueView_android_text)
+        context.obtainStyledAttributes(attrs, R.styleable.LabelValue).use {
+            label = it.getString(R.styleable.LabelValue_label)
+            text = it.getString(R.styleable.LabelValue_android_text)
         }
     }
 }
 
 @Composable
-fun LabelValueView(
+fun LabelValue(
     modifier: Modifier = Modifier,
     label: String,
     value: String
@@ -88,8 +88,8 @@ fun LabelValueView(
 
 @Composable
 @Preview
-fun LabelValueViewPreview() {
-    LabelValueView(
+fun LabelValuePreview() {
+    LabelValue(
         modifier = Modifier.background(Color.White),
         label = "Label",
         value = "Value"

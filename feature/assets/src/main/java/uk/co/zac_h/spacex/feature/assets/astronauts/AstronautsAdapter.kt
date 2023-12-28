@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import uk.co.zac_h.spacex.core.ui.AstronautView
+import uk.co.zac_h.spacex.core.ui.Astronaut
 import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 import uk.co.zac_h.spacex.core.ui.databinding.ListItemAstronautBinding
 
@@ -30,7 +30,7 @@ class AstronautsAdapter :
             SpaceXTheme {
                 var expanded by remember { mutableStateOf(false) }
 
-                AstronautView(
+                Astronaut(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     image = astronaut?.image,
                     role = astronaut?.nationality,

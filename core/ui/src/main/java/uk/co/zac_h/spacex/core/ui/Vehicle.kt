@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex.core.ui
 
 import android.content.res.Configuration
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,14 +27,14 @@ import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun VehicleView(
+fun Vehicle(
     modifier: Modifier = Modifier,
     image: String? = null,
     title: String? = null,
     status: String? = null,
     buttonText: String? = null,
     navigate: () -> Unit,
-    content: @Composable() (() -> Unit)? = null
+    content: @Composable (() -> Unit)? = null
 ) {
     ElevatedCard(
         modifier = modifier,
@@ -82,11 +81,11 @@ fun VehicleView(
 @Preview(name = "Light Mode")
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun VehicleViewPreview(
+fun VehiclePreview(
     @PreviewParameter(LoremIpsum::class) text: String
 ) {
     SpaceXTheme {
-        VehicleView(
+        Vehicle(
             image = "",
             title = "Falcon 1",
             status = "Status",

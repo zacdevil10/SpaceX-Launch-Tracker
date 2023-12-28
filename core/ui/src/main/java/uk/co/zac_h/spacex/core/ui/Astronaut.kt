@@ -2,14 +2,11 @@ package uk.co.zac_h.spacex.core.ui
 
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,7 +16,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,7 +33,7 @@ import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AstronautView(
+fun Astronaut(
     modifier: Modifier = Modifier,
     image: Any? = null,
     role: String? = null,
@@ -115,7 +111,7 @@ fun AstronautView(
             AnimatedVisibility(visible = expanded) {
                 Column {
                     status?.let {
-                        LabelValueView(
+                        LabelValue(
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
                                 .padding(top = 8.dp),
@@ -124,7 +120,7 @@ fun AstronautView(
                         )
                     }
                     firstFlight?.let {
-                        LabelValueView(
+                        LabelValue(
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
                                 .padding(top = 8.dp),
@@ -147,15 +143,15 @@ fun AstronautView(
 @Preview(name = "Light Mode - Collapsed")
 @Preview(name = "Dark Mode - Collapsed", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun AstronautViewCollapsedPreview(
+fun AstronautCollapsedPreview(
     @PreviewParameter(LoremIpsum::class) text: String
 ) {
     SpaceXTheme {
-        AstronautView(
+        Astronaut(
             modifier = Modifier.padding(16.dp),
             role = "Earthling",
             title = "Little Earth",
-            agency = "NASA",
+            agency = "National Aeronautics and Space Administration",
             status = "Active",
             firstFlight = "02 Mar 19",
             description = text,
@@ -167,15 +163,15 @@ fun AstronautViewCollapsedPreview(
 @Preview(name = "Light Mode - Expanded")
 @Preview(name = "Dark Mode - Expanded", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-fun AstronautViewExpandedPreview(
+fun AstronautExpandedPreview(
     @PreviewParameter(LoremIpsum::class) text: String
 ) {
     SpaceXTheme {
-        AstronautView(
+        Astronaut(
             modifier = Modifier.padding(16.dp),
             role = "Earthling",
             title = "Little Earth",
-            agency = "NASA",
+            agency = "National Aeronautics and Space Administration",
             status = "Active",
             firstFlight = "02 Mar 19",
             description = text,

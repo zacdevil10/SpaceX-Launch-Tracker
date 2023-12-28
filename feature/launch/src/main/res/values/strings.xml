@@ -8,7 +8,6 @@
     <string name="launches_status_label">Status:</string>
     <string name="launches_launch_location_label">Launch site:</string>
     <string name="launches_event_button_label">Create event</string>
-    <string name="launch_site_label">Launch site:</string>
 
     <!--Launch Filter-->
     <string name="date_range_label">Date range:</string>

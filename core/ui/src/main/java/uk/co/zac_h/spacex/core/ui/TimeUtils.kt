@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.core.common.utils
+package uk.co.zac_h.spacex.core.ui
 
 import java.util.concurrent.TimeUnit
 

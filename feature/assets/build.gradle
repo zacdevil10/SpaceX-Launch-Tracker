@@ -67,14 +67,6 @@ dependencies {
     implementation libs.hilt.android
     kapt libs.hilt.compiler
 
-    //Compose
-    implementation platform(libs.androidx.compose.bom)
-    implementation libs.androidx.compose.material3
-    implementation libs.androidx.compose.ui.toolingpreview
-    implementation libs.androidx.compose.ui.tooling
-
-    implementation libs.coil.compose
-
     //Glide
     implementation libs.glide
 }

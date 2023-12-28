@@ -2,23 +2,26 @@ package uk.co.zac_h.spacex.feature.launch.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.view.isVisible
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import uk.co.zac_h.spacex.core.ui.LaunchView
+import uk.co.zac_h.spacex.core.ui.ExpandedLaunch
+import uk.co.zac_h.spacex.core.ui.Launch
+import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 import uk.co.zac_h.spacex.feature.launch.LaunchItem
-import uk.co.zac_h.spacex.feature.launch.R
 import uk.co.zac_h.spacex.feature.launch.databinding.ListItemLaunchesBinding
-import uk.co.zac_h.spacex.feature.launch.databinding.ListItemLaunchesExpandedBinding
 
 class LaunchesAdapter(val onClick: (LaunchItem) -> Unit) :
     ListAdapter<LaunchItem, RecyclerView.ViewHolder>(Comparator) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
         when (viewType) {
-            R.layout.list_item_launches_expanded -> ExpandedViewHolder(
-                ListItemLaunchesExpandedBinding.inflate(
+            0 -> ExpandedViewHolder(
+                ListItemLaunchesBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false
@@ -39,58 +42,58 @@ class LaunchesAdapter(val onClick: (LaunchItem) -> Unit) :
 
         when (holder) {
             is ExpandedViewHolder -> holder.binding.apply {
-                val remaining = launch.countdown(root.resources)
-
-                countdown.isVisible = remaining != null
-                countdown.countdown = { launch.countdown(root.resources) }
-                if (remaining != null) countdown.startTimer()
-
-                launchView.bind(launch)
-
-                siteNameText.text = launch.launchLocation
-                descriptionText.text = launch.description
-
-                root.setOnClickListener {
-                    onClick(launch)
+                launchView.setContent {
+                    SpaceXTheme {
+                        ExpandedLaunch(
+                            modifier = Modifier
+                                .padding(16.dp),
+                            patch = launch.missionPatch,
+                            missionName = launch.missionName,
+                            date = launch.launchDate,
+                            vehicle = launch.rocket,
+                            reused = launch.rocket == "Falcon 9" && launch.firstStage?.firstOrNull()?.reused ?: false,
+                            landingPad = launch.firstStage?.firstOrNull()?.landingLocation?.let {
+                                if (launch.rocket != "Falcon 9" && it == "N/A") null else it
+                            },
+                            launchSite = launch.launchLocation,
+                            description = launch.description,
+                            dateUnix = launch.launchDateUnix
+                        ) {
+                            onClick(launch)
+                        }
+                    }
                 }
             }
 
             is ViewHolder -> holder.binding.apply {
-                root.transitionName = launch.id
-
-                launchView.bind(launch)
-
-                root.setOnClickListener {
-                    onClick(launch)
+                launchView.setContent {
+                    SpaceXTheme {
+                        Launch(
+                            modifier = Modifier
+                                .clickable { onClick(launch) }
+                                .padding(16.dp),
+                            patch = launch.missionPatch,
+                            missionName = launch.missionName,
+                            date = launch.launchDate,
+                            vehicle = launch.rocket,
+                            reused = launch.rocket == "Falcon 9" && launch.firstStage?.firstOrNull()?.reused ?: false,
+                            landingPad = launch.firstStage?.firstOrNull()?.landingLocation?.let {
+                                if (launch.rocket != "Falcon 9" && it == "N/A") null else it
+                            }
+                        )
+                    }
                 }
             }
         }
     }
 
-    private fun LaunchView.bind(launch: LaunchItem) {
-        patch = launch.missionPatch
-        vehicle = launch.rocket
-        missionName = launch.missionName
-        date = launch.launchDate
-
-        if (launch.rocket == "Falcon 9") {
-            isReused = launch.firstStage?.firstOrNull()?.reused ?: false
-            landingPad = launch.firstStage?.firstOrNull()?.landingLocation?.let {
-                if (it == "N/A") null else it
-            }
-        } else {
-            isReused = false
-            landingPad = null
-        }
-    }
-
     override fun getItemViewType(position: Int): Int = if (position == 0) {
-        R.layout.list_item_launches_expanded
+        0
     } else {
-        R.layout.list_item_launches
+        1
     }
 
-    class ExpandedViewHolder(val binding: ListItemLaunchesExpandedBinding) :
+    class ExpandedViewHolder(val binding: ListItemLaunchesBinding) :
         RecyclerView.ViewHolder(binding.root)
 
     class ViewHolder(val binding: ListItemLaunchesBinding) : RecyclerView.ViewHolder(binding.root)

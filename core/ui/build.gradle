@@ -43,12 +43,12 @@ dependencies {
     implementation libs.androidx.legacy.support.v4
     implementation libs.material
 
-    implementation platform(libs.androidx.compose.bom)
-    implementation libs.androidx.compose.material3
-    implementation libs.androidx.compose.ui.toolingpreview
-    debugImplementation libs.androidx.compose.ui.tooling
+    api platform(libs.androidx.compose.bom)
+    api libs.androidx.compose.material3
+    api libs.androidx.compose.ui.toolingpreview
+    debugApi libs.androidx.compose.ui.tooling
 
-    implementation libs.coil.compose
+    api libs.coil.compose
 
     //Glide
     implementation libs.glide

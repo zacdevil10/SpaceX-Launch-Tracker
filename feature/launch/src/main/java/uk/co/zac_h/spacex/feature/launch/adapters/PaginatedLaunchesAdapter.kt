@@ -2,9 +2,15 @@ package uk.co.zac_h.spacex.feature.launch.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import uk.co.zac_h.spacex.core.ui.Launch
+import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 import uk.co.zac_h.spacex.feature.launch.LaunchItem
 import uk.co.zac_h.spacex.feature.launch.databinding.ListItemLaunchesBinding
 
@@ -26,25 +32,22 @@ class PaginatedLaunchesAdapter(val onClick: (LaunchItem) -> Unit) :
 
         launch?.let {
             with(holder.binding) {
-                root.transitionName = launch.id
-
-                launchView.apply {
-                    patch = launch.missionPatch
-                    vehicle = launch.rocket
-                    missionName = launch.missionName
-                    date = launch.launchDate
-
-                    if (launch.rocket == "Falcon 9") {
-                        isReused = launch.firstStage?.firstOrNull()?.reused ?: false
-                        landingPad = launch.firstStage?.firstOrNull()?.landingLocation
-                    } else {
-                        isReused = false
-                        landingPad = null
+                launchView.setContent {
+                    SpaceXTheme {
+                        Launch(
+                            modifier = Modifier
+                                .clickable { onClick(it) }
+                                .padding(16.dp),
+                            patch = launch.missionPatch,
+                            missionName = launch.missionName,
+                            date = launch.launchDate,
+                            vehicle = launch.rocket,
+                            reused = launch.rocket == "Falcon 9" && launch.firstStage?.firstOrNull()?.reused ?: false,
+                            landingPad = launch.firstStage?.firstOrNull()?.landingLocation?.let {
+                                if (launch.rocket != "Falcon 9" && it == "N/A") null else it
+                            }
+                        )
                     }
-                }
-
-                root.setOnClickListener {
-                    onClick(launch)
                 }
             }
         }

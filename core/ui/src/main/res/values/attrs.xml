@@ -12,7 +12,7 @@
         <attr name="buttonText" format="string|reference" />
     </declare-styleable>
 
-    <declare-styleable name="LabelValueView">
+    <declare-styleable name="LabelValue">
         <attr name="label" format="string|reference" />
         <attr name="android:text" />
     </declare-styleable>

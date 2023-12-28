@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import uk.co.zac_h.spacex.core.ui.SpaceXTheme
-import uk.co.zac_h.spacex.core.ui.VehicleView
+import uk.co.zac_h.spacex.core.ui.Vehicle
 import uk.co.zac_h.spacex.feature.assets.R
 import uk.co.zac_h.spacex.feature.assets.databinding.ListItemVehicleBinding
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
@@ -34,7 +34,7 @@ class VehiclesAdapter(val setSelected: (VehicleItem) -> Unit) :
 
         holder.binding.vehicleView.setContent {
             SpaceXTheme {
-                VehicleView(
+                Vehicle(
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                     image = vehicle.imageUrl,
                     title = vehicle.title,
