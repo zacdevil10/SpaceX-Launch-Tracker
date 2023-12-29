@@ -63,6 +63,7 @@ dependencies {
 
     //Hilt
     implementation libs.hilt.android
+    implementation libs.androidx.lifecycle.viewmodel.compose
     kapt libs.hilt.compiler
 
     //Paging

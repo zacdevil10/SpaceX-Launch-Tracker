@@ -32,7 +32,6 @@
 
     <fragment
         android:id="@+id/launch_details_container_fragment"
-        android:name="uk.co.zac_h.spacex.feature.launch.details.LaunchDetailsContainerFragment"
-        tools:layout="@layout/fragment_launch_details_container" />
+        android:name="uk.co.zac_h.spacex.feature.launch.details.LaunchDetailsContainerFragment" />
 
 </navigation>

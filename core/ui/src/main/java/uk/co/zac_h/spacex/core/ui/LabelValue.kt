@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.res.use
@@ -78,11 +79,20 @@ fun LabelValue(
     value: String
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = label, fontWeight = FontWeight.Bold)
-        Text(text = value, modifier = Modifier.padding(start = 16.dp))
+        Text(
+            text = label,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            modifier = Modifier
+                .padding(start = 16.dp),
+            text = value,
+            textAlign = TextAlign.End
+        )
     }
 }
 
@@ -90,8 +100,20 @@ fun LabelValue(
 @Preview
 fun LabelValuePreview() {
     LabelValue(
-        modifier = Modifier.background(Color.White),
+        modifier = Modifier
+            .background(Color.White),
         label = "Label",
         value = "Value"
+    )
+}
+
+@Composable
+@Preview
+fun LabelValueMultilinePreview() {
+    LabelValue(
+        modifier = Modifier
+            .background(Color.White),
+        label = "Label",
+        value = "Value\nValue 2"
     )
 }

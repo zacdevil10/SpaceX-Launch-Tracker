@@ -11,8 +11,8 @@ import androidx.paging.cachedIn
 import androidx.paging.liveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import uk.co.zac_h.spacex.core.common.Header
 import uk.co.zac_h.spacex.core.common.recyclerview.RecyclerViewItem
-import uk.co.zac_h.spacex.feature.launch.adapters.Header
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
 import uk.co.zac_h.spacex.network.async
@@ -33,10 +33,10 @@ class LaunchesViewModel @Inject constructor(
         repository.previousLaunchesPagingSource
     }.liveData.cachedIn(viewModelScope)
 
-    var launch: LaunchItem? = null
+    lateinit var launch: LaunchItem
 
     val cores: List<RecyclerViewItem>
-        get() = launch?.firstStage?.let { firstStageList ->
+        get() = launch.firstStage?.let { firstStageList ->
             if (firstStageList.size > 1) {
                 firstStageList.groupBy { firstStageItem ->
                     firstStageItem.type
