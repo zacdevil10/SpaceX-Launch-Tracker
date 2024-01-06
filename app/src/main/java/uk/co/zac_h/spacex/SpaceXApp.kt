@@ -18,6 +18,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.NavigationActions
@@ -26,6 +27,7 @@ import uk.co.zac_h.spacex.core.common.PermanentNavigationDrawerContent
 import uk.co.zac_h.spacex.core.common.SpaceXBottomNavigationBar
 import uk.co.zac_h.spacex.core.common.TopLevelNavigation
 import uk.co.zac_h.spacex.feature.launch.LaunchListScreen
+import uk.co.zac_h.spacex.feature.settings.SettingsDialog
 
 @Composable
 fun SpaceXApp(
@@ -165,10 +167,8 @@ fun SpaceXNavHost(
                 Text(text = "Company", modifier = Modifier.align(Alignment.Center))
             }
         }
-        composable(TopLevelNavigation.Settings.route) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                Text(text = "Settings", modifier = Modifier.align(Alignment.Center))
-            }
+        dialog(TopLevelNavigation.Settings.route) {
+            SettingsDialog(onDismiss = { navController.popBackStack() })
         }
     }
 }
