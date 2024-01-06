@@ -4,23 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
 import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
-import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerAdapter
-import uk.co.zac_h.spacex.core.common.viewpager.ViewPagerFragment
-import uk.co.zac_h.spacex.feature.launch.databinding.FragmentLaunchesBinding
+import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 
 @AndroidEntryPoint
 class LaunchesFragment : BaseFragment() {
-
-    private var _binding: FragmentLaunchesBinding? = null
-    private val binding get() = checkNotNull(_binding) { "Binding is null" }
-
-    private val fragments: List<ViewPagerFragment> = listOf(
-        UpcomingLaunchesListFragment(),
-        PreviousLaunchesListFragment()
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,30 +24,11 @@ class LaunchesFragment : BaseFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View = FragmentLaunchesBinding.inflate(inflater, container, false).apply {
-        _binding = this
-    }.root
+    ): View = ComposeView(requireContext()).apply {
+        setContent {
+            SpaceXTheme {
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.launchesViewPager.adapter = ViewPagerAdapter(childFragmentManager, fragments)
-
-        val tabIcons = listOf(
-            R.drawable.ic_baseline_schedule_24,
-            R.drawable.ic_history_black_24dp
-        )
-
-        binding.tabLayout.apply {
-            setupWithViewPager(binding.launchesViewPager)
-            for (position in 0..tabCount) {
-                getTabAt(position)?.setIcon(tabIcons[position])
             }
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }

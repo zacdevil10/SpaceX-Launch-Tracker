@@ -184,13 +184,6 @@ class LaunchPreviewParameterProvider : PreviewParameterProvider<LaunchItem> {
                 orbit = "Elliptical Orbit",
                 webcast = listOf(
                     VideoItem(
-                        title = "Watch live: SpaceX Falcon Heavy launches secretive X-37B military spaceplane",
-                        description = "Watch live coverage as SpaceX launches a Falcon Heavy rocket carrying the U.S. military's secretive X-37B spaceplane. Liftoff from historic launch pad 39A at...",
-                        imageUrl = null,
-                        url = "https://www.youtube.com/watch?v=wnfddhDuWDE",
-                        source = "Youtube"
-                    ),
-                    VideoItem(
                         title = "Livestream on X",
                         description = "This browser is no longer supported.\\n\\nPlease switch to a supported browser to continue using twitter.com. You can see a list of supported browsers in our Help Center.",
                         imageUrl = null,

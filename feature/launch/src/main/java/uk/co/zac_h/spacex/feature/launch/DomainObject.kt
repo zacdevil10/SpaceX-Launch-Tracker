@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.feature.launch
 
 import androidx.core.net.toUri
+import uk.co.zac_h.spacex.core.common.Header
 import uk.co.zac_h.spacex.core.common.recyclerview.RecyclerViewItem
 import uk.co.zac_h.spacex.core.common.types.CoreType
 import uk.co.zac_h.spacex.core.common.types.CrewStatus
@@ -73,6 +74,19 @@ data class LaunchItem(
         val name: String?,
         val description: String?
     )
+
+    val cores: List<RecyclerViewItem>
+        get() = firstStage?.let { firstStageList ->
+            if (firstStageList.size > 1) {
+                firstStageList.groupBy { firstStageItem ->
+                    firstStageItem.type
+                }.flatMap { firstStageItem ->
+                    listOf(Header(firstStageItem.key.type)) + firstStageItem.value
+                }
+            } else {
+                firstStageList
+            }
+        } ?: emptyList()
 
     companion object {
 

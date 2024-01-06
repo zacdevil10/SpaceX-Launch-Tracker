@@ -46,6 +46,8 @@ dependencies {
     implementation libs.material
     implementation libs.androidx.constraintlayout
 
+    implementation 'androidx.navigation:navigation-compose:2.7.6'
+
     implementation libs.androidx.livedata
 
     //Paging

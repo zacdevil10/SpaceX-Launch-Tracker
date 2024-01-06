@@ -1,13 +1,14 @@
 package uk.co.zac_h.spacex.core.ui
 
-import android.content.res.Configuration
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -25,15 +27,73 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
+@Composable
+fun LaunchContainer(
+    modifier: Modifier = Modifier,
+    patch: Any? = null,
+    missionName: String? = null,
+    date: String? = null,
+    vehicle: String? = null,
+    reused: Boolean = false,
+    landingPad: String? = null,
+    launchSite: String? = null,
+    description: String? = null,
+    dateUnix: Long? = null,
+    state: LaunchState = LaunchState.COMPACT,
+    isOpened: Boolean = false,
+    onClick: (() -> Unit)? = null
+) {
+    when (state) {
+        LaunchState.COMPACT -> Launch(
+            modifier = modifier
+                .clickable(enabled = onClick != null) { onClick?.invoke() }
+                .background(
+                    color = if (isOpened) {
+                        MaterialTheme.colorScheme.secondaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.background
+                    }
+                )
+                .padding(16.dp),
+            patch = patch,
+            missionName = missionName,
+            date = date,
+            vehicle = vehicle,
+            reused = reused,
+            landingPad = landingPad
+        )
+
+        else -> ExpandedLaunch(
+            modifier = modifier
+                .padding(16.dp),
+            patch = patch,
+            missionName = missionName,
+            date = date,
+            vehicle = vehicle,
+            reused = reused,
+            landingPad = landingPad,
+            launchSite = launchSite,
+            description = description,
+            dateUnix = dateUnix,
+            state = state,
+            isOpened = isOpened,
+            onClick = onClick
+        )
+    }
+}
+
+enum class LaunchState {
+    COMPACT, EXPANDED, FULL
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Launch(
+internal fun Launch(
     modifier: Modifier = Modifier,
     patch: Any? = null,
     missionName: String? = null,
@@ -45,7 +105,7 @@ fun Launch(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(IntrinsicSize.Min)
+            .height(IntrinsicSize.Min),
     ) {
         AsyncImage(
             modifier = Modifier
@@ -81,7 +141,7 @@ fun Launch(
                     text = it,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.labelSmall,
+                    style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
@@ -107,7 +167,7 @@ fun Launch(
                 maxLines = 1,
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.secondary
-            )
+            ) else Spacer(modifier = Modifier)
             landingPad?.let {
                 Text(
                     text = it,
@@ -122,7 +182,7 @@ fun Launch(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExpandedLaunch(
+internal fun ExpandedLaunch(
     modifier: Modifier = Modifier,
     patch: Any? = null,
     missionName: String? = null,
@@ -133,19 +193,32 @@ fun ExpandedLaunch(
     launchSite: String? = null,
     description: String? = null,
     dateUnix: Long?,
-    onClick: () -> Unit
+    state: LaunchState,
+    isOpened: Boolean,
+    onClick: (() -> Unit)?
 ) {
-    OutlinedCard(modifier = modifier, onClick = { onClick() }) {
+    OutlinedCard(
+        modifier = modifier,
+        colors = CardDefaults.outlinedCardColors(
+            containerColor = if (isOpened) {
+                MaterialTheme.colorScheme.secondaryContainer
+            } else {
+                MaterialTheme.colorScheme.background
+            }
+        ),
+        onClick = { onClick?.invoke() }
+    ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier
+                .padding(16.dp)
         ) {
             Countdown(
-                modifier = Modifier.padding(bottom = 8.dp),
-                dateUnix,
-                "Watch Live"
+                future = dateUnix,
+                onFinishLabel = "Watch Live"
             )
             Launch(
-                modifier = Modifier.padding(bottom = 8.dp),
+                modifier = Modifier
+                    .padding(top = 8.dp),
                 missionName = missionName,
                 patch = patch,
                 date = date,
@@ -153,44 +226,47 @@ fun ExpandedLaunch(
                 reused = reused,
                 landingPad = landingPad
             )
-            launchSite?.let {
+            if (state == LaunchState.FULL) launchSite?.let {
                 LabelValue(
-                    modifier = Modifier.padding(bottom = 8.dp),
+                    modifier = Modifier
+                        .padding(top = 8.dp),
                     label = stringResource(id = R.string.launch_site_label),
                     value = it
                 )
             }
-            if (description != null) {
-                Text(text = description)
+            if (description != null && state == LaunchState.FULL) {
+                Text(
+                    modifier = Modifier
+                        .padding(top = 8.dp),
+                    text = description
+                )
             }
         }
     }
 }
 
-@Preview(name = "Light Mode")
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@ComponentPreviews
 @Composable
 fun LaunchPreview() {
     SpaceXTheme {
-        Launch(
+        LaunchContainer(
             modifier = Modifier.background(MaterialTheme.colorScheme.background),
             missionName = "Nusantara Satu (PSN-6) / GTO-1 / Beresheet",
             date = "14 Oct 2019 - 12:35",
             vehicle = "Falcon 9",
             reused = true,
             landingPad = "JRTI"
-        )
+        ) {}
     }
 }
 
-@Preview(name = "Light Mode")
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@ComponentPreviews
 @Composable
 fun ExpandedLaunchPreview(
     @PreviewParameter(LoremIpsum::class) text: String
 ) {
     SpaceXTheme {
-        ExpandedLaunch(
+        LaunchContainer(
             modifier = Modifier.background(MaterialTheme.colorScheme.background),
             missionName = "Nusantara Satu (PSN-6) / GTO-1 / Beresheet",
             date = "14 Oct 2019 - 12:35",
@@ -199,19 +275,19 @@ fun ExpandedLaunchPreview(
             landingPad = "JRTI",
             launchSite = "CCAFS SLC 40",
             description = text.split("\n\n").first(),
-            dateUnix = 0
+            dateUnix = 0,
+            state = LaunchState.EXPANDED
         ) {}
     }
 }
 
-@Preview(name = "Light Mode")
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@ComponentPreviews
 @Composable
-fun ExpandedLaunchCountdownPreview(
+fun FullLaunchPreview(
     @PreviewParameter(LoremIpsum::class) text: String
 ) {
     SpaceXTheme {
-        ExpandedLaunch(
+        LaunchContainer(
             modifier = Modifier.background(MaterialTheme.colorScheme.background),
             missionName = "Nusantara Satu (PSN-6) / GTO-1 / Beresheet",
             date = "14 Oct 2019 - 12:35",
@@ -220,7 +296,8 @@ fun ExpandedLaunchCountdownPreview(
             landingPad = "JRTI",
             launchSite = "CCAFS SLC 40",
             description = text.split("\n\n").first(),
-            dateUnix = 0
+            dateUnix = 0,
+            state = LaunchState.FULL
         ) {}
     }
 }

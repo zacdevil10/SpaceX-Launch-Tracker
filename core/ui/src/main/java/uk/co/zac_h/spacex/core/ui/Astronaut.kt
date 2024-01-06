@@ -3,7 +3,9 @@ package uk.co.zac_h.spacex.core.ui
 import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -31,7 +33,7 @@ import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun Astronaut(
     modifier: Modifier = Modifier,
@@ -85,14 +87,16 @@ fun Astronaut(
                     }
                     title?.let {
                         Text(
-                            modifier = Modifier.padding(top = 8.dp, end = 16.dp),
+                            modifier = Modifier.padding(top = 8.dp, end = 16.dp).basicMarquee(),
                             text = it,
                             style = MaterialTheme.typography.headlineSmall
                         )
                     }
                     agency?.let {
                         Text(
-                            modifier = Modifier.padding(top = 8.dp, end = 16.dp),
+                            modifier = Modifier
+                                .padding(top = 8.dp, end = 16.dp)
+                                .basicMarquee(),
                             text = it,
                             style = MaterialTheme.typography.labelSmall
                         )

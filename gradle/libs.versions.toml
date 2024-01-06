@@ -1,4 +1,7 @@
 [versions]
+androidx-activity-compose = "1.8.2"
+androidx-window = "1.3.0-alpha01"
+androidx-lifecycle-runtime-compose = "2.6.2"
 appcompat = "1.6.1"
 compose = "2023.10.01"
 coil-compose = "2.5.0"
@@ -46,6 +49,9 @@ androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version
 
 # Compose
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
+androidx-compose-materialWindow = { module = "androidx.compose.material3:material3-window-size-class" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle-runtime-compose" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-ui-toolingpreview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }

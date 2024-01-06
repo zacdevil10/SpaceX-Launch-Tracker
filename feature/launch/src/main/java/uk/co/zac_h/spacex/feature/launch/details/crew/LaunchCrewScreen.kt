@@ -7,7 +7,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -25,7 +25,7 @@ fun LaunchCrewScreen(
     modifier: Modifier = Modifier,
     crew: List<CrewItem>
 ) {
-    var expanded by remember {
+    var expanded by rememberSaveable {
         mutableIntStateOf(-1)
     }
 
@@ -33,7 +33,10 @@ fun LaunchCrewScreen(
         modifier = modifier,
         contentPadding = PaddingValues(top = 8.dp)
     ) {
-        itemsIndexed(crew) { index, it ->
+        itemsIndexed(
+            crew,
+            key = { _, crew -> crew.id }
+        ) { index, it ->
             Astronaut(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
                 image = it.image,

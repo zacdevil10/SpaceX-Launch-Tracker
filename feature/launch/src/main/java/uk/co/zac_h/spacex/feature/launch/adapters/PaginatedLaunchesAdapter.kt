@@ -2,14 +2,10 @@ package uk.co.zac_h.spacex.feature.launch.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.padding
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import uk.co.zac_h.spacex.core.ui.Launch
+import uk.co.zac_h.spacex.core.ui.LaunchContainer
 import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 import uk.co.zac_h.spacex.feature.launch.LaunchItem
 import uk.co.zac_h.spacex.feature.launch.databinding.ListItemLaunchesBinding
@@ -34,10 +30,7 @@ class PaginatedLaunchesAdapter(val onClick: (LaunchItem) -> Unit) :
             with(holder.binding) {
                 launchView.setContent {
                     SpaceXTheme {
-                        Launch(
-                            modifier = Modifier
-                                .clickable { onClick(it) }
-                                .padding(16.dp),
+                        LaunchContainer(
                             patch = launch.missionPatch,
                             missionName = launch.missionName,
                             date = launch.launchDate,
@@ -46,7 +39,9 @@ class PaginatedLaunchesAdapter(val onClick: (LaunchItem) -> Unit) :
                             landingPad = launch.firstStage?.firstOrNull()?.landingLocation?.let {
                                 if (launch.rocket != "Falcon 9" && it == "N/A") null else it
                             }
-                        )
+                        ) {
+                            onClick(launch)
+                        }
                     }
                 }
             }

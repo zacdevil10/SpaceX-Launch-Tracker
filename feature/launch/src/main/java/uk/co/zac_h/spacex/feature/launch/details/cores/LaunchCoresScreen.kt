@@ -33,7 +33,16 @@ fun LaunchCoresScreen(
         modifier = modifier,
         contentPadding = PaddingValues(vertical = 8.dp)
     ) {
-        items(cores) {
+        items(
+            cores,
+            key = {
+                when (it) {
+                    is Header -> it.title
+                    is FirstStageItem -> it.id
+                    else -> error("Invalid type: $it")
+                }
+            }
+        ) {
             when (it) {
                 is Header -> {
                     Text(

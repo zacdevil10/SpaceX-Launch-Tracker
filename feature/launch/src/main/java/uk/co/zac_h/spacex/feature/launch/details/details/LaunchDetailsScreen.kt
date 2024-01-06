@@ -36,7 +36,7 @@ import coil.compose.AsyncImage
 import uk.co.zac_h.spacex.core.ui.Countdown
 import uk.co.zac_h.spacex.core.ui.DevicePreviews
 import uk.co.zac_h.spacex.core.ui.LabelValue
-import uk.co.zac_h.spacex.core.ui.Launch
+import uk.co.zac_h.spacex.core.ui.LaunchContainer
 import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 import uk.co.zac_h.spacex.feature.launch.LaunchItem
 import uk.co.zac_h.spacex.feature.launch.LaunchPreviewParameterProvider
@@ -46,7 +46,8 @@ import uk.co.zac_h.spacex.feature.launch.R
 @Composable
 fun LaunchDetailsScreen(
     modifier: Modifier = Modifier,
-    launch: LaunchItem
+    launch: LaunchItem,
+    isFullscreen: Boolean = true,
 ) {
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
@@ -54,18 +55,21 @@ fun LaunchDetailsScreen(
     Column(
         modifier = modifier
             .verticalScroll(rememberScrollState())
+            .padding(bottom = 16.dp)
     ) {
-        Countdown(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .padding(top = 16.dp, bottom = 8.dp),
-            future = launch.launchDateUnix,
-            onFinishLabel = "Watch Live"
-        )
-        Launch(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 16.dp),
+        if (isFullscreen && (launch.webcastLive
+                    || (launch.launchDateUnix?.minus(System.currentTimeMillis()) ?: 0) > 0)
+        ) {
+            Countdown(
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 16.dp),
+                future = launch.launchDateUnix,
+                onFinishLabel = "Watch Live"
+            )
+        }
+        if (isFullscreen) LaunchContainer(
+            modifier = Modifier,
             patch = launch.missionPatch,
             missionName = launch.missionName,
             date = launch.launchDate,
@@ -79,7 +83,7 @@ fun LaunchDetailsScreen(
             LaunchDetailsHold(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
-                    .padding(bottom = 16.dp),
+                    .padding(top = 16.dp),
                 description = launch.holdReason
             )
         }
@@ -90,7 +94,7 @@ fun LaunchDetailsScreen(
             LaunchDetailsMission(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
-                    .padding(bottom = 16.dp),
+                    .padding(top = 16.dp),
                 description = launch.description,
                 type = launch.type,
                 orbit = launch.orbit
@@ -98,20 +102,35 @@ fun LaunchDetailsScreen(
         }
 
         if (!launch.webcast.isNullOrEmpty()) {
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
-                contentPadding = PaddingValues(end = 16.dp),
-            ) {
-                items(launch.webcast) {
-                    LaunchDetailsVideo(
-                        modifier = Modifier
-                            .fillParentMaxWidth(0.9f)
-                            .padding(start = 16.dp),
-                        videoItem = it
-                    )
+            if (launch.webcast.size > 1) {
+                LazyRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp),
+                    contentPadding = PaddingValues(end = 16.dp),
+                ) {
+                    items(
+                        launch.webcast,
+                        key = { it.url }
+                    ) {
+                        LaunchDetailsVideo(
+                            modifier = Modifier
+                                .fillParentMaxWidth(
+                                    0.9f
+                                )
+                                .padding(start = 16.dp),
+                            videoItem = it
+                        )
+                    }
                 }
+            } else {
+                LaunchDetailsVideo(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 16.dp),
+                    videoItem = launch.webcast.first()
+                )
             }
         }
 
@@ -119,7 +138,7 @@ fun LaunchDetailsScreen(
             OutlinedButton(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
-                    .padding(bottom = 16.dp)
+                    .padding(top = 16.dp)
                     .fillMaxWidth(),
                 onClick = {
                     createEvent(context, launch)
@@ -140,7 +159,7 @@ fun LaunchDetailsScreen(
             OutlinedCard(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
-                    .padding(bottom = 16.dp)
+                    .padding(top = 16.dp)
                     .fillMaxWidth()
             ) {
                 Column(
@@ -167,7 +186,7 @@ fun LaunchDetailsScreen(
             OutlinedCard(
                 modifier = Modifier
                     .padding(horizontal = 16.dp)
-                    .padding(bottom = 16.dp)
+                    .padding(top = 16.dp)
                     .fillMaxWidth(),
                 onClick = {
                     launch.launchLocationMapUrl?.let { it1 -> uriHandler.openUri(it1) }
