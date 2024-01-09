@@ -1,14 +1,20 @@
 package uk.co.zac_h.spacex.feature.launch
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import uk.co.zac_h.spacex.core.common.NetworkContent
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import uk.co.zac_h.spacex.core.common.ContentType
+import uk.co.zac_h.spacex.core.common.NetworkContent
+import uk.co.zac_h.spacex.core.ui.DevicePreviews
 import uk.co.zac_h.spacex.core.ui.LaunchContainer
 import uk.co.zac_h.spacex.core.ui.LaunchState
+import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 import uk.co.zac_h.spacex.network.ApiResult
 
 @Composable
@@ -30,7 +36,7 @@ fun UpcomingLaunchesScreen(
             modifier = Modifier,
             state = listState
         ) {
-            itemsIndexed(it.result) { position, launch ->
+            itemsIndexed(it) { position, launch ->
                 LaunchContainer(
                     patch = launch.missionPatch,
                     missionName = launch.missionName,
@@ -58,5 +64,24 @@ fun UpcomingLaunchesScreen(
                 }
             }
         }
+    }
+}
+
+@DevicePreviews
+@Composable
+fun UpcomingLaunchesScreenPreview(
+    @PreviewParameter(LaunchListPreviewParameterProvider::class) launchList: List<LaunchItem>
+) {
+    SpaceXTheme {
+        UpcomingLaunchesScreen(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background),
+            upcoming = ApiResult.Success(launchList),
+            contentType = ContentType.SINGLE_PANE,
+            listState = rememberLazyListState(),
+            openedLaunch = null,
+            retry = {},
+            onItemClick = {}
+        )
     }
 }

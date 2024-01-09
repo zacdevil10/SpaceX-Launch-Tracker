@@ -1,7 +1,9 @@
 package uk.co.zac_h.spacex.feature.launch
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -35,6 +37,9 @@ fun PreviousLaunchesScreen(
             modifier = modifier,
             state = listState
         ) {
+            item {
+                Spacer(modifier = Modifier.height(16.dp))
+            }
             items(
                 count = previous.itemCount,
                 key = previous.itemKey { it.id }

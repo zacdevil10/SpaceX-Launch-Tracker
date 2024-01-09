@@ -47,6 +47,7 @@ dependencies {
     implementation libs.androidx.constraintlayout
 
     implementation 'androidx.hilt:hilt-navigation-compose:1.1.0'
+    implementation 'androidx.compose.runtime:runtime-livedata'
 
     //Core
     implementation project(':core:common')

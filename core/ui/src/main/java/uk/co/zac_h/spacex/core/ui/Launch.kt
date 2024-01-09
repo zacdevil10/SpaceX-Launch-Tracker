@@ -57,7 +57,8 @@ fun LaunchContainer(
                         MaterialTheme.colorScheme.secondaryContainer
                     } else {
                         MaterialTheme.colorScheme.background
-                    }
+                    },
+                    shape = MaterialTheme.shapes.medium
                 )
                 .padding(16.dp),
             patch = patch,

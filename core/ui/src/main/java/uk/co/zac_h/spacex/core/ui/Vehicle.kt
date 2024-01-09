@@ -78,8 +78,7 @@ fun Vehicle(
     }
 }
 
-@Preview(name = "Light Mode")
-@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@ComponentPreviews
 @Composable
 fun VehiclePreview(
     @PreviewParameter(LoremIpsum::class) text: String

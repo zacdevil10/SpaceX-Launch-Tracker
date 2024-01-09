@@ -9,12 +9,6 @@
     <include app:graph="@navigation/assets_nav_graph" />
     <include app:graph="@navigation/news_nav_graph" />
 
-    <fragment
-        android:id="@+id/company_fragment"
-        android:name="uk.co.zac_h.spacex.feature.settings.company.CompanyFragment"
-        android:label="@string/menu_company"
-        tools:layout="@layout/fragment_company" />
-
     <dialog
         android:id="@+id/theme_dialog"
         android:name="uk.co.zac_h.spacex.feature.settings.theme.ThemeDialog" />

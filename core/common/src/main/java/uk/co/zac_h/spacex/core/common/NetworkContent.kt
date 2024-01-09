@@ -20,7 +20,7 @@ fun <T> NetworkContent(
     modifier: Modifier = Modifier,
     result: ApiResult<T>,
     retry: () -> Unit,
-    content: @Composable (ApiResult.Success<T>) -> Unit
+    content: @Composable (T) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -35,7 +35,7 @@ fun <T> NetworkContent(
                     .fillMaxWidth()
             )
 
-            is ApiResult.Success -> content(result)
+            is ApiResult.Success -> content(result.result)
 
             is ApiResult.Failure -> {
                 if (result.exception !is TooManyRequestsException) {

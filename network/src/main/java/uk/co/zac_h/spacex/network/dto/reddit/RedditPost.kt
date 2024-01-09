@@ -15,6 +15,7 @@ data class SubredditPostModel(
 )
 
 data class RedditPostData(
+    @field:Json(name = "id") var id: String,
     @field:Json(name = "selftext_html") var textHtml: String?,
     @field:Json(name = "title") var title: String,
     @field:Json(name = "name") var name: String,
@@ -47,6 +48,7 @@ data class RedditMediaModel(
 )
 
 data class RedditPost(
+    var id: String,
     var name: String,
     var title: String,
     var description: String?,
@@ -64,6 +66,7 @@ data class RedditPost(
 ) {
 
     constructor(data: RedditPostData) : this(
+        id = data.id,
         name = data.name,
         title = data.title,
         description = data.textHtml,

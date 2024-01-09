@@ -35,7 +35,8 @@ fun LaunchDetailsVideo(
         ) {
             AsyncImage(
                 modifier = Modifier.aspectRatio(16f / 9f),
-                model = videoItem.imageUrl, contentDescription = "",
+                model = videoItem.imageUrl,
+                contentDescription = "",
                 contentScale = ContentScale.Crop
             )
             videoItem.title?.let { title ->
