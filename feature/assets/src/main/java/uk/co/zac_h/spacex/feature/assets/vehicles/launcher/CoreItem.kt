@@ -1,6 +1,9 @@
 package uk.co.zac_h.spacex.feature.assets.vehicles.launcher
 
+import uk.co.zac_h.spacex.core.common.utils.TextResource
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
+import uk.co.zac_h.spacex.feature.assets.R
+import uk.co.zac_h.spacex.feature.assets.vehicles.SpecsItem
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
 import uk.co.zac_h.spacex.network.dto.spacex.LauncherResponse
 import java.text.SimpleDateFormat
@@ -42,6 +45,34 @@ data class CoreItem(
         lastLaunchDate = response.lastLaunchDate?.formatDate(),
         firstLaunchDate = response.firstLaunchDate?.formatDate()
     )
+
+    override val specs: List<SpecsItem>
+        get() = listOfNotNull(
+            status?.let {
+                SpecsItem(
+                    TextResource.string(R.string.core_details_status_label),
+                    TextResource.Companion.string(it.replaceFirstChar(Char::uppercase))
+                )
+            },
+            flights?.let {
+                SpecsItem(
+                    TextResource.string(R.string.core_details_flights_label),
+                    TextResource.Companion.string(it.toString())
+                )
+            },
+            lastLaunchDate?.let {
+                SpecsItem(
+                    TextResource.string(R.string.core_details_last_launch_label),
+                    TextResource.Companion.string(it)
+                )
+            },
+            firstLaunchDate?.let {
+                SpecsItem(
+                    TextResource.string(R.string.core_details_first_launch_label),
+                    TextResource.Companion.string(it)
+                )
+            }
+        )
 
     companion object {
 

@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -87,7 +88,9 @@ fun Astronaut(
                     }
                     title?.let {
                         Text(
-                            modifier = Modifier.padding(top = 8.dp, end = 16.dp).basicMarquee(),
+                            modifier = Modifier
+                                .padding(top = 8.dp, end = 16.dp)
+                                .basicMarquee(),
                             text = it,
                             style = MaterialTheme.typography.headlineSmall
                         )
@@ -107,7 +110,8 @@ fun Astronaut(
                             .padding(top = 8.dp, end = 16.dp, bottom = 8.dp)
                             .rotate(rotationState),
                         imageVector = Icons.Filled.KeyboardArrowDown,
-                        contentDescription = ""
+                        contentDescription = "",
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
                     )
                 }
             }

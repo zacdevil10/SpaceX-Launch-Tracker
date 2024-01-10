@@ -15,6 +15,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LeadingIconTab
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
@@ -67,23 +68,12 @@ fun SpaceXAppBar(
 fun SpaceXTabLayout(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    screens: List<PagerItem>
+    screens: List<PagerItem>,
+    scrollable: Boolean = false
 ) {
     val coroutineScope = rememberCoroutineScope()
 
-    TabRow(
-        selectedTabIndex = pagerState.currentPage,
-        modifier = modifier,
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.onSurface,
-        indicator = { tabPositions ->
-            TabRowDefaults.Indicator(
-                modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
-                height = 2.dp
-            )
-        },
-        divider = {}
-    ) {
+    val tabs: @Composable () -> Unit = {
         for (i in 0..<pagerState.pageCount) {
             LeadingIconTab(
                 selected = pagerState.currentPage == i,
@@ -118,6 +108,67 @@ fun SpaceXTabLayout(
             )
         }
     }
+
+    if (scrollable) {
+        SpaceXScrollableTabLayout(
+            modifier = modifier,
+            pagerState = pagerState,
+            tabs = tabs
+        )
+    } else {
+        SpaceXTabLayout(
+            modifier = modifier,
+            pagerState = pagerState,
+            tabs = tabs
+        )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun SpaceXScrollableTabLayout(
+    modifier: Modifier = Modifier,
+    pagerState: PagerState,
+    tabs: @Composable () -> Unit
+) {
+    ScrollableTabRow(
+        selectedTabIndex = pagerState.currentPage,
+        modifier = modifier,
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        edgePadding = 0.dp,
+        indicator = { tabPositions ->
+            TabRowDefaults.Indicator(
+                modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
+                height = 2.dp
+            )
+        },
+        divider = {},
+        tabs = tabs
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun SpaceXTabLayout(
+    modifier: Modifier = Modifier,
+    pagerState: PagerState,
+    tabs: @Composable () -> Unit
+) {
+    TabRow(
+        selectedTabIndex = pagerState.currentPage,
+        modifier = modifier,
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        indicator = { tabPositions ->
+            TabRowDefaults.Indicator(
+                modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
+                height = 2.dp
+            )
+        },
+        divider = {},
+        tabs = tabs
+    )
 }
 
 data class PagerItem(

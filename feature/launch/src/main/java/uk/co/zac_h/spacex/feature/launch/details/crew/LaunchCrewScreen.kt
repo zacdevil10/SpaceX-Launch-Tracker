@@ -25,9 +25,7 @@ fun LaunchCrewScreen(
     modifier: Modifier = Modifier,
     crew: List<CrewItem>
 ) {
-    var expanded by rememberSaveable {
-        mutableIntStateOf(-1)
-    }
+    var expanded by rememberSaveable { mutableIntStateOf(-1) }
 
     LazyColumn(
         modifier = modifier,

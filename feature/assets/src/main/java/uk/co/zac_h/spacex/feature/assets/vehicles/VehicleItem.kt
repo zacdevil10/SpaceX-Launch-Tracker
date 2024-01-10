@@ -13,4 +13,6 @@ interface VehicleItem {
 
     val longDescription: String?
         get() = null
+
+    val specs: List<SpecsItem>
 }

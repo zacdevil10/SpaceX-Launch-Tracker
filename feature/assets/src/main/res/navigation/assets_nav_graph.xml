@@ -2,37 +2,6 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/assets_nav_graph"
-    app:startDestination="@id/assets_fragment">
-
-    <fragment
-        android:id="@+id/assets_fragment"
-        android:name="uk.co.zac_h.spacex.feature.assets.vehicles.VehiclesFragment"
-        android:label="@string/menu_vehicles"
-        tools:layout="@layout/fragment_view_pager">
-
-        <action
-            android:id="@+id/action_vehicles_page_to_vehicle_details"
-            app:destination="@id/vehicle_details_fragment" />
-
-        <action
-            android:id="@+id/action_vehicles_to_rocket_filter"
-            app:destination="@id/rocket_filter_dialog" />
-
-        <deepLink
-            android:id="@+id/deepLink"
-            app:uri="spacex://assets" />
-
-    </fragment>
-
-    <fragment
-        android:id="@+id/vehicle_details_fragment"
-        android:name="uk.co.zac_h.spacex.feature.assets.vehicles.VehicleDetailsFragment"
-        tools:layout="@layout/fragment_vehicle_details" />
-
-    <dialog
-        android:id="@+id/rocket_filter_dialog"
-        android:name="uk.co.zac_h.spacex.feature.assets.vehicles.rockets.filter.RocketFilterDialogFragment"
-        tools:layout="@layout/fragment_rocket_filter_dialog" />
+    android:id="@+id/assets_nav_graph">
 
 </navigation>
