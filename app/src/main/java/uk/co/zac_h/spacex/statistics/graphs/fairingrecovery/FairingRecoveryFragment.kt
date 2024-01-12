@@ -19,7 +19,6 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.databinding.FragmentFairingRecoveryBinding
 import uk.co.zac_h.spacex.network.ApiResult
@@ -40,9 +39,7 @@ class FairingRecoveryFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition = MaterialContainerTransform().apply {
-            drawingViewId = R.id.nav_host
-        }
+        sharedElementEnterTransition = MaterialContainerTransform()
 
         exitTransition = MaterialElevationScale(false)
         reenterTransition = MaterialElevationScale(true)

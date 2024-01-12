@@ -6,8 +6,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.customview.widget.Openable
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.*
-import uk.co.zac_h.spacex.core.common.bottomsheet.*
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HALF_EXPANDED
+import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
+import com.google.android.material.bottomsheet.BottomSheetBehavior.from
 
 abstract class BottomDrawerFragment : Fragment(), Openable {
 
@@ -19,31 +20,12 @@ abstract class BottomDrawerFragment : Fragment(), Openable {
         from(container)
     }
 
-    private val bottomSheetCallback = BottomDrawerCallback()
-
-    private val closeDrawerOnBackPressed by lazy {
-        BottomSheetBackPressed(behaviour)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         scrim.setOnClickListener { close() }
 
-        bottomSheetCallback.apply {
-            addOnSlideAction(AlphaSlideAction(scrim))
-
-            addOnStateChangedAction(VisibilityStateAction(scrim))
-            addOnStateChangedAction(BackPressedStateAction(closeDrawerOnBackPressed))
-        }
-
-        behaviour.addBottomSheetCallback(bottomSheetCallback)
         behaviour.state = STATE_HIDDEN
-
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            closeDrawerOnBackPressed
-        )
     }
 
     fun toggle() {
@@ -58,9 +40,5 @@ abstract class BottomDrawerFragment : Fragment(), Openable {
 
     override fun close() {
         behaviour.state = STATE_HIDDEN
-    }
-
-    fun addOnStateChangedAction(action: OnStateChangedAction) {
-        bottomSheetCallback.addOnStateChangedAction(action)
     }
 }

@@ -22,13 +22,6 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
 import dagger.hilt.android.AndroidEntryPoint
-import uk.co.zac_h.spacex.core.common.bottomsheet.AlphaSlideAction
-import uk.co.zac_h.spacex.core.common.bottomsheet.BackPressedStateAction
-import uk.co.zac_h.spacex.core.common.bottomsheet.BottomDrawerCallback
-import uk.co.zac_h.spacex.core.common.bottomsheet.BottomSheetBackPressed
-import uk.co.zac_h.spacex.core.common.bottomsheet.BottomSheetOpenable
-import uk.co.zac_h.spacex.core.common.bottomsheet.ShowHideFabStateAction
-import uk.co.zac_h.spacex.core.common.bottomsheet.VisibilityStateAction
 import uk.co.zac_h.spacex.core.common.types.Order
 import uk.co.zac_h.spacex.core.common.types.RocketType
 import uk.co.zac_h.spacex.core.common.utils.formatRange
@@ -77,7 +70,6 @@ class LaunchesFilterFragment : Fragment() {
         postponeEnterTransition()
 
         enterTransition = MaterialContainerTransform().apply {
-            startView = requireActivity().findViewById(R.id.toolbar_fab)
             endView = binding.container
             scrimColor = Color.TRANSPARENT
             //containerColor = ContextCompat.getColor(requireContext(), R.color.color_background)
@@ -90,19 +82,8 @@ class LaunchesFilterFragment : Fragment() {
 
         filterBehavior = BottomSheetBehavior.from(binding.filterBottomSheet)
 
-        val openableFilter = BottomSheetOpenable(filterBehavior)
-
-        val closeFilterOnBackPressed = BottomSheetBackPressed(filterBehavior)
-
         filterBehavior.apply {
             state = BottomSheetBehavior.STATE_HIDDEN
-
-            addBottomSheetCallback(BottomDrawerCallback().apply {
-                addOnSlideAction(AlphaSlideAction(binding.scrim))
-                addOnStateChangedAction(VisibilityStateAction(binding.scrim))
-                addOnStateChangedAction(BackPressedStateAction(closeFilterOnBackPressed))
-                addOnStateChangedAction(ShowHideFabStateAction(binding.filterFab))
-            })
 
             binding.scrim.setOnClickListener {
                 state = BottomSheetBehavior.STATE_HIDDEN
@@ -199,10 +180,6 @@ class LaunchesFilterFragment : Fragment() {
             } else false
         }
 
-        binding.filterFab.setOnClickListener {
-            openableFilter.open()
-        }
-
         with(launchFilter) {
             dateRangeClearButton.setOnClickListener {
                 viewModel.filter.clearDateFilter()
@@ -241,7 +218,6 @@ class LaunchesFilterFragment : Fragment() {
 
             apply.setOnClickListener {
                 apply.isChecked = !apply.isChecked
-                openableFilter.close()
             }
         }
 
@@ -249,11 +225,6 @@ class LaunchesFilterFragment : Fragment() {
         binding.backButton.setOnClickListener {
             findNavController().navigateUp()
         }
-
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            closeFilterOnBackPressed
-        )
     }
 
     override fun onResume() {

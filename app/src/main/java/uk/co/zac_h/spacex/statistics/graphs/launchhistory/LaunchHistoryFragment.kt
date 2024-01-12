@@ -46,9 +46,7 @@ class LaunchHistoryFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition = MaterialContainerTransform().apply {
-            drawingViewId = R.id.nav_host
-        }
+        sharedElementEnterTransition = MaterialContainerTransform()
 
         exitTransition = MaterialElevationScale(false)
         reenterTransition = MaterialElevationScale(true)

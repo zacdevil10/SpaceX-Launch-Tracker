@@ -11,7 +11,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.transition.MaterialContainerTransform
 import com.google.android.material.transition.MaterialElevationScale
-import uk.co.zac_h.spacex.R
 import uk.co.zac_h.spacex.core.common.fragment.BaseFragment
 import uk.co.zac_h.spacex.core.common.types.PadType
 import uk.co.zac_h.spacex.databinding.FragmentPadStatsBinding
@@ -33,9 +32,7 @@ class PadStatsFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition = MaterialContainerTransform().apply {
-            drawingViewId = R.id.nav_host
-        }
+        sharedElementEnterTransition = MaterialContainerTransform()
 
         exitTransition = MaterialElevationScale(false)
         reenterTransition = MaterialElevationScale(true)
