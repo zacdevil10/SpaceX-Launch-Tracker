@@ -27,6 +27,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navDeepLink
 import kotlinx.coroutines.launch
 import uk.co.zac_h.feature.news.NewsScreen
 import uk.co.zac_h.spacex.core.common.ContentType

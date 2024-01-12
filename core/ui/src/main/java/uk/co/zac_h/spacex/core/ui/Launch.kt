@@ -1,5 +1,8 @@
 package uk.co.zac_h.spacex.core.ui
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
@@ -22,8 +25,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,19 +50,25 @@ fun LaunchContainer(
     description: String? = null,
     dateUnix: Long? = null,
     state: LaunchState = LaunchState.COMPACT,
-    isOpened: Boolean = false,
+    isSelected: Boolean = false,
     onClick: (() -> Unit)? = null
 ) {
+    val animatedCardBackgroundColor = animateColorAsState(
+        targetValue = if (isSelected) {
+            MaterialTheme.colorScheme.secondaryContainer
+        } else {
+            MaterialTheme.colorScheme.background
+        },
+        animationSpec = tween(200, 0, LinearEasing),
+        label = ""
+    )
+
     when (state) {
         LaunchState.COMPACT -> Launch(
             modifier = modifier
                 .clickable(enabled = onClick != null) { onClick?.invoke() }
                 .background(
-                    color = if (isOpened) {
-                        MaterialTheme.colorScheme.secondaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.background
-                    },
+                    color = animatedCardBackgroundColor.value,
                     shape = MaterialTheme.shapes.medium
                 )
                 .padding(16.dp),
@@ -82,7 +93,7 @@ fun LaunchContainer(
             description = description,
             dateUnix = dateUnix,
             state = state,
-            isOpened = isOpened,
+            backgroundColor = animatedCardBackgroundColor,
             onClick = onClick
         )
     }
@@ -195,17 +206,13 @@ internal fun ExpandedLaunch(
     description: String? = null,
     dateUnix: Long?,
     state: LaunchState,
-    isOpened: Boolean,
+    backgroundColor: State<Color>,
     onClick: (() -> Unit)?
 ) {
     OutlinedCard(
         modifier = modifier,
         colors = CardDefaults.outlinedCardColors(
-            containerColor = if (isOpened) {
-                MaterialTheme.colorScheme.secondaryContainer
-            } else {
-                MaterialTheme.colorScheme.background
-            }
+            containerColor = backgroundColor.value
         ),
         onClick = { onClick?.invoke() }
     ) {

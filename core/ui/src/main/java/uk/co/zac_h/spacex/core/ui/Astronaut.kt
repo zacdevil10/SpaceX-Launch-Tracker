@@ -1,19 +1,23 @@
 package uk.co.zac_h.spacex.core.ui
 
-import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,7 +32,6 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
@@ -46,6 +49,7 @@ fun Astronaut(
     firstFlight: String? = null,
     description: String? = null,
     expanded: Boolean,
+    isFullscreen: Boolean = true,
     onClick: () -> Unit
 ) {
     val rotationState by animateFloatAsState(
@@ -104,7 +108,7 @@ fun Astronaut(
                             style = MaterialTheme.typography.labelSmall
                         )
                     }
-                    Image(
+                    if (isFullscreen) Image(
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(top = 8.dp, end = 16.dp, bottom = 8.dp)
@@ -112,7 +116,7 @@ fun Astronaut(
                         imageVector = Icons.Filled.KeyboardArrowDown,
                         contentDescription = "",
                         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
-                    )
+                    ) else Spacer(modifier = Modifier.height(32.dp))
                 }
             }
 
@@ -148,8 +152,7 @@ fun Astronaut(
     }
 }
 
-@Preview(name = "Light Mode - Collapsed")
-@Preview(name = "Dark Mode - Collapsed", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@ComponentPreviews
 @Composable
 fun AstronautCollapsedPreview(
     @PreviewParameter(LoremIpsum::class) text: String
@@ -163,13 +166,33 @@ fun AstronautCollapsedPreview(
             status = "Active",
             firstFlight = "02 Mar 19",
             description = text,
-            expanded = false
+            expanded = false,
+            isFullscreen = true
         ) {}
     }
 }
 
-@Preview(name = "Light Mode - Expanded")
-@Preview(name = "Dark Mode - Expanded", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@ComponentPreviews
+@Composable
+fun AstronautDualPanePreview(
+    @PreviewParameter(LoremIpsum::class) text: String
+) {
+    SpaceXTheme {
+        Astronaut(
+            modifier = Modifier.padding(16.dp),
+            role = "Earthling",
+            title = "Little Earth",
+            agency = "National Aeronautics and Space Administration",
+            status = "Active",
+            firstFlight = "02 Mar 19",
+            description = text,
+            expanded = false,
+            isFullscreen = false
+        ) {}
+    }
+}
+
+@ComponentPreviews
 @Composable
 fun AstronautExpandedPreview(
     @PreviewParameter(LoremIpsum::class) text: String
@@ -183,7 +206,8 @@ fun AstronautExpandedPreview(
             status = "Active",
             firstFlight = "02 Mar 19",
             description = text,
-            expanded = true
+            expanded = true,
+            isFullscreen = true
         ) {}
     }
 }

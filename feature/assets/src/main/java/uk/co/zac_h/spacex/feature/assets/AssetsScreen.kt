@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -22,13 +24,19 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.distinctUntilChanged
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.ui.PagerItem
 import uk.co.zac_h.spacex.core.ui.SpaceXTabLayout
@@ -51,6 +59,16 @@ fun AssetsScreen(
 
     val pagerState = rememberPagerState(pageCount = { 5 })
 
+    LaunchedEffect(key1 = pagerState) {
+        snapshotFlow { pagerState.currentPage }.distinctUntilChanged().collect { page ->
+            viewModel.closeDetailScreen()
+        }
+    }
+
+    val astronautsLazyListState = rememberLazyListState()
+
+    var expanded by rememberSaveable { mutableIntStateOf(-1) }
+
     when (contentType) {
         ContentType.DUAL_PANE -> AssetsTwoPaneContent(
             modifier = modifier,
@@ -60,6 +78,11 @@ fun AssetsScreen(
             openedAsset = uiState.openedAsset,
             navigateToDetail = { asset, pane ->
                 viewModel.setOpenedAsset(asset, pane)
+            },
+            expanded = expanded,
+            state = astronautsLazyListState,
+            setExpanded = {
+                expanded = it
             }
         )
 
@@ -74,6 +97,11 @@ fun AssetsScreen(
             },
             navigateToDetail = { asset, pane ->
                 viewModel.setOpenedAsset(asset, pane)
+            },
+            expanded = expanded,
+            state = astronautsLazyListState,
+            setExpanded = {
+                expanded = it
             }
         )
     }
@@ -87,7 +115,10 @@ fun AssetsTwoPaneContent(
     uiState: AssetsUIState,
     pagerState: PagerState,
     openedAsset: VehicleItem?,
-    navigateToDetail: (VehicleItem, ContentType) -> Unit
+    navigateToDetail: (VehicleItem, ContentType) -> Unit,
+    state: LazyListState,
+    expanded: Int,
+    setExpanded: (Int) -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -104,7 +135,10 @@ fun AssetsTwoPaneContent(
                 pagerState = pagerState,
                 contentType = contentType,
                 openedAsset = openedAsset,
-                navigateToDetail = navigateToDetail
+                navigateToDetail = navigateToDetail,
+                expanded = expanded,
+                state = state,
+                setExpanded = setExpanded
             )
         }
         Card(
@@ -143,7 +177,10 @@ fun AssetsSinglePaneContent(
     pagerState: PagerState,
     openedAsset: VehicleItem?,
     closeDetailScreen: () -> Unit,
-    navigateToDetail: (VehicleItem, ContentType) -> Unit
+    navigateToDetail: (VehicleItem, ContentType) -> Unit,
+    state: LazyListState,
+    expanded: Int,
+    setExpanded: (Int) -> Unit,
 ) {
     AnimatedContent(
         targetState = uiState.openedAsset != null && uiState.isDetailOnlyOpen,
@@ -174,7 +211,10 @@ fun AssetsSinglePaneContent(
                 pagerState = pagerState,
                 contentType = contentType,
                 openedAsset = openedAsset,
-                navigateToDetail = navigateToDetail
+                navigateToDetail = navigateToDetail,
+                expanded = expanded,
+                state = state,
+                setExpanded = setExpanded
             )
         }
     }
@@ -187,13 +227,19 @@ fun AssetsList(
     pagerState: PagerState,
     contentType: ContentType,
     openedAsset: VehicleItem?,
-    navigateToDetail: (VehicleItem, ContentType) -> Unit
+    navigateToDetail: (VehicleItem, ContentType) -> Unit,
+    state: LazyListState,
+    expanded: Int,
+    setExpanded: (Int) -> Unit,
 ) {
     val screens = listOf(
         PagerItem(label = "Astronauts") {
             AstronautsScreen(
                 contentType = contentType,
-                openedAsset = openedAsset
+                openedAsset = openedAsset,
+                expanded = expanded,
+                state = state,
+                setExpanded = setExpanded
             ) {
                 navigateToDetail(it, ContentType.SINGLE_PANE)
             }

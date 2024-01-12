@@ -60,7 +60,7 @@ class LaunchesViewModel @Inject constructor(
     }
 
     fun closeDetailScreen() {
-        _uiState.value = LaunchesUIState()
+        _uiState.value = _uiState.value.copy(isDetailOnlyOpen = false)
     }
 }
 

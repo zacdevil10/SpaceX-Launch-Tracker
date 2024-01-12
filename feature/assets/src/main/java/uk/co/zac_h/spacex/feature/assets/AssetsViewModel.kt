@@ -23,7 +23,7 @@ class AssetsViewModel @Inject constructor() : ViewModel() {
     }
 
     fun closeDetailScreen() {
-        _uiState.value = AssetsUIState()
+        _uiState.value = _uiState.value.copy(isDetailOnlyOpen = false)
     }
 }
 

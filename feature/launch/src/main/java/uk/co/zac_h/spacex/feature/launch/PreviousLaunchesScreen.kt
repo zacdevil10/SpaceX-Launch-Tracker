@@ -17,12 +17,14 @@ import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
+import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.ui.LaunchContainer
 
 @Composable
 fun PreviousLaunchesScreen(
     modifier: Modifier = Modifier,
     previous: LazyPagingItems<LaunchItem>,
+    contentType: ContentType,
     listState: LazyListState,
     openedLaunch: LaunchItem?,
     onItemClick: (LaunchItem) -> Unit
@@ -56,7 +58,7 @@ fun PreviousLaunchesScreen(
                         landingPad = launch.firstStage?.firstOrNull()?.landingLocation?.let {
                             if (launch.rocket != "Falcon 9" && it == "N/A") null else it
                         },
-                        isOpened = openedLaunch?.id == launch.id
+                        isSelected = openedLaunch?.id == launch.id && contentType == ContentType.DUAL_PANE
                     ) {
                         onItemClick(launch)
                     }

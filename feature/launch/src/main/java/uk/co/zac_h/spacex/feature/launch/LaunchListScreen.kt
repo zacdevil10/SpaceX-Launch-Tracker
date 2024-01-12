@@ -2,7 +2,6 @@ package uk.co.zac_h.spacex.feature.launch
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.SizeTransform
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -59,8 +58,8 @@ fun LaunchListScreen(
     val upcomingLazyListState = rememberLazyListState()
     val previousLazyListState = rememberLazyListState()
 
-    if (contentType == ContentType.DUAL_PANE) {
-        LaunchesTwoPaneContent(
+    when (contentType) {
+        ContentType.DUAL_PANE -> LaunchesTwoPaneContent(
             modifier = modifier,
             uiState = uiState,
             upcoming = upcoming,
@@ -71,8 +70,8 @@ fun LaunchListScreen(
             retry = { viewModel.getUpcomingLaunches(CachePolicy.REFRESH) },
             navigateToDetail = { launch, pane -> viewModel.setOpenedLaunch(launch, pane) }
         )
-    } else {
-        LaunchesSinglePaneContent(
+
+        ContentType.SINGLE_PANE -> LaunchesSinglePaneContent(
             modifier = modifier,
             uiState = uiState,
             upcoming = upcoming,
@@ -153,7 +152,7 @@ fun LaunchesTwoPaneContent(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalAnimationApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LaunchesSinglePaneContent(
     modifier: Modifier = Modifier,
@@ -170,16 +169,18 @@ fun LaunchesSinglePaneContent(
     val pagerState = rememberPagerState(pageCount = { 2 })
 
     AnimatedContent(
-        targetState = uiState.openedLaunch != null && uiState.isDetailOnlyOpen,
+        targetState = uiState.isDetailOnlyOpen,
         label = "",
         transitionSpec = {
-            if (targetState > initialState) {
+            if (targetState) {
                 (slideInHorizontally { width -> width / 2 } + fadeIn())
                     .togetherWith(slideOutHorizontally { width -> -(width / 2) } + fadeOut())
             } else {
                 (slideInHorizontally { width -> -(width / 2) } + fadeIn())
                     .togetherWith(slideOutHorizontally { width -> width / 2 } + fadeOut())
-            }.using(SizeTransform(clip = false))
+            }.using(SizeTransform(clip = false)).apply {
+                targetContentZIndex = if (targetState) 1f else 0f
+            }
         }
     ) {
         if (it && uiState.openedLaunch != null) {
@@ -238,6 +239,7 @@ fun LaunchList(
         PagerItem(label = "Past", icon = R.drawable.ic_history_black_24dp) {
             PreviousLaunchesScreen(
                 previous = previous,
+                contentType = contentType,
                 listState = previousLazyListState,
                 openedLaunch = openedLaunch
             ) {

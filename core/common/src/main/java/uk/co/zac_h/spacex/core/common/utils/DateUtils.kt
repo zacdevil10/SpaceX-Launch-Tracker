@@ -134,9 +134,3 @@ fun getString(
         }
     }
 }
-
-data class EventDate(
-    val dateUtc: String? = null,
-    val dateUnix: Long? = null,
-    val dateLocal: String? = null
-)

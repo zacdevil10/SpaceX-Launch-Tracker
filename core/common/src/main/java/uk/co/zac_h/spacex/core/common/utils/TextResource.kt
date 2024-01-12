@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.core.common.utils
 
-import android.content.res.Resources
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
@@ -13,17 +12,11 @@ sealed class TextResource {
 
     data class IdTextWithArgsResource(@StringRes val id: Int, val args: List<Any>) : TextResource()
 
-    fun asString(res: Resources): String = when (this) {
-        is SimpleTextResource -> string
-        is IdTextResource -> res.getString(id)
-        is IdTextWithArgsResource -> res.getString(id, *args.toTypedArray())
-    }
-
     @Composable
     fun asString(): String = when (this) {
         is SimpleTextResource -> string
         is IdTextResource -> stringResource(id)
-        is IdTextWithArgsResource -> stringResource(id,  *args.toTypedArray())
+        is IdTextWithArgsResource -> stringResource(id, *args.toTypedArray())
     }
 
     companion object {

@@ -40,11 +40,6 @@
 
     <string name="launch_site_label">Launch site:</string>
 
-    <string-array name="order">
-        <item>Hot</item>
-        <item>New</item>
-    </string-array>
-
     <string name="settings">Settings</string>
 
 </resources>

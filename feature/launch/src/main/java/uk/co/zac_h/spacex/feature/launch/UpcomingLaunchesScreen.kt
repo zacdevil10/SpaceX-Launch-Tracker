@@ -58,7 +58,7 @@ fun UpcomingLaunchesScreen(
                             if (position == 0) LaunchState.EXPANDED else LaunchState.COMPACT
                         }
                     },
-                    isOpened = openedLaunch?.id == launch.id
+                    isSelected = openedLaunch?.id == launch.id && contentType == ContentType.DUAL_PANE
                 ) {
                     onItemClick(launch)
                 }

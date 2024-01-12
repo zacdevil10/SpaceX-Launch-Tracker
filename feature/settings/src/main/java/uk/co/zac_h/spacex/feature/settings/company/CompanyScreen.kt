@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -46,7 +47,13 @@ fun CompanyScreen(
 
     NetworkContent(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(
+                when (contentType) {
+                    ContentType.SINGLE_PANE -> MaterialTheme.colorScheme.background
+                    ContentType.DUAL_PANE -> MaterialTheme.colorScheme.inverseOnSurface
+                }
+            ),
         result = company,
         retry = { viewModel.getCompany() }
     ) {
@@ -99,20 +106,27 @@ fun CompanyDualPane(
     modifier: Modifier = Modifier,
     company: Company
 ) {
-    Column(
-        modifier = modifier
+    Card(
+        modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(8.dp)
     ) {
         Column(
-            Modifier
-                .width(400.dp)
+            modifier = modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CompanyDetails(
-                company = company
-            )
+            Column(
+                Modifier
+                    .width(400.dp)
+            ) {
+                CompanyDetails(
+                    company = company
+                )
+            }
         }
     }
 }

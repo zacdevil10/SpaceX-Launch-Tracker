@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.LinearProgressIndicator
@@ -20,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import uk.co.zac_h.spacex.core.common.ContentType
@@ -30,17 +32,36 @@ import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
 fun AstronautsScreen(
     contentType: ContentType,
     viewModel: AstronautViewModel = hiltViewModel(),
+    state: LazyListState,
+    expanded: Int,
+    setExpanded: (Int) -> Unit,
     openedAsset: VehicleItem?,
     onItemClick: (VehicleItem) -> Unit
 ) {
     val astronauts = viewModel.astronautLiveData.collectAsLazyPagingItems()
 
-    val astronautsLazyListState = rememberLazyListState()
+    AstronautsContent(
+        astronauts = astronauts,
+        contentType = contentType,
+        state = state,
+        expanded = expanded,
+        setExpanded = setExpanded,
+        onItemClick = onItemClick
+    )
+}
 
-    var expanded by rememberSaveable { mutableIntStateOf(-1) }
-
+@Composable
+fun AstronautsContent(
+    modifier: Modifier = Modifier,
+    astronauts: LazyPagingItems<AstronautItem>,
+    contentType: ContentType,
+    state: LazyListState,
+    expanded: Int,
+    setExpanded: (Int) -> Unit,
+    onItemClick: (VehicleItem) -> Unit
+) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
     ) {
         if (astronauts.loadState.refresh is LoadState.Loading) {
@@ -50,7 +71,7 @@ fun AstronautsScreen(
             )
         } else {
             LazyColumn(
-                state = astronautsLazyListState,
+                state = state,
                 contentPadding = PaddingValues(top = 8.dp)
             ) {
                 items(
@@ -69,15 +90,11 @@ fun AstronautsScreen(
                             status = astronaut.status.status,
                             firstFlight = astronaut.firstFlight,
                             description = astronaut.description,
-                            expanded = contentType == ContentType.SINGLE_PANE && expanded == index
+                            expanded = contentType == ContentType.SINGLE_PANE && expanded == index,
+                            isFullscreen = contentType == ContentType.SINGLE_PANE
                         ) {
-                            when (contentType) {
-                                ContentType.SINGLE_PANE -> {
-                                    expanded = if (expanded != index) index else -1
-                                }
-
-                                ContentType.DUAL_PANE -> onItemClick(it)
-                            }
+                            setExpanded(if (expanded != index) index else -1)
+                            onItemClick(it)
                         }
                     }
                 }
