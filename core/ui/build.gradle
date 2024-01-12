@@ -5,11 +5,11 @@ plugins {
 
 android {
     namespace 'uk.co.zac_h.spacex.core.ui'
-    compileSdk rootProject.compile_sdk
+    compileSdk libs.versions.compileSdk.get().toInteger()
 
     defaultConfig {
-        minSdk rootProject.min_sdk
-        targetSdk rootProject.target_sdk
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -29,18 +29,15 @@ android {
         jvmTarget = '17'
     }
     buildFeatures {
-        viewBinding true
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.6"
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 }
 
 dependencies {
-    implementation libs.androidx.core
     implementation libs.androidx.appcompat
-    implementation libs.androidx.legacy.support.v4
     implementation libs.material
 
     api platform(libs.androidx.compose.bom)
@@ -49,7 +46,4 @@ dependencies {
     debugApi libs.androidx.compose.ui.tooling
 
     api libs.coil.compose
-
-    //Glide
-    implementation libs.glide
 }

@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -39,7 +40,7 @@ dependencies {
     implementation libs.squareup.converter.moshi
 
     //Moshi
-    kapt libs.squareup.moshi
+    ksp libs.squareup.moshi
 
     //Retrofit logging
     implementation libs.logging.interceptor
@@ -47,9 +48,6 @@ dependencies {
     //Hilt
     implementation libs.hilt.android
     kapt libs.hilt.compiler
-
-    //Coroutines
-    implementation libs.kotlinx.coroutines
 
     //Paging
     implementation libs.androidx.paging

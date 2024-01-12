@@ -8,11 +8,11 @@ plugins {
 
 android {
     namespace 'uk.co.zac_h.spacex.feature.launch'
-    compileSdk rootProject.compile_sdk
+    compileSdk libs.versions.compileSdk.get().toInteger()
 
     defaultConfig {
-        minSdk rootProject.min_sdk
-        targetSdk rootProject.target_sdk
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -36,14 +36,13 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.6"
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 }
 
 dependencies {
     implementation libs.androidx.core
     implementation libs.androidx.appcompat
-    implementation libs.androidx.legacy.support.v4
     implementation libs.material
     implementation libs.androidx.constraintlayout
     implementation libs.androidx.recyclerview
@@ -52,28 +51,20 @@ dependencies {
     implementation project(':core:ui')
     implementation project(":network")
 
-    //MVVM
     implementation libs.androidx.viewmodel
-    implementation libs.androidx.livedata
     implementation libs.androidx.fragment
+    implementation libs.androidx.compose.lifecycle.viewmodel
 
-    //Navigation
     implementation libs.androidx.navigation.fragment
     implementation libs.androidx.navigation.ui
 
-    //Hilt
+    implementation libs.androidx.compose.hilt.navigation
     implementation libs.hilt.android
-    implementation libs.androidx.lifecycle.viewmodel.compose
     kapt libs.hilt.compiler
 
-    //Paging
     implementation libs.androidx.paging
-    implementation "androidx.paging:paging-compose:3.2.1"
+    implementation libs.androidx.compose.paging
 
-    implementation 'androidx.hilt:hilt-navigation-compose:1.1.0'
-    implementation libs.androidx.lifecycle.runtime.compose
-    implementation 'androidx.compose.runtime:runtime-livedata'
-
-    //Glide
-    implementation libs.glide
+    implementation libs.androidx.compose.lifecycle.runtime
+    implementation libs.androidx.compose.runtime.livedata
 }
