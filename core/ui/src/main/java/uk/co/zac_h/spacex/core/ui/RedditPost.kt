@@ -24,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.text.HtmlCompat
 import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -107,7 +108,7 @@ fun RedditPost(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp, start = 16.dp, end = 16.dp),
-                    text = it,
+                    text = HtmlCompat.fromHtml(it, HtmlCompat.FROM_HTML_MODE_COMPACT).toString(),
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis
                 )
