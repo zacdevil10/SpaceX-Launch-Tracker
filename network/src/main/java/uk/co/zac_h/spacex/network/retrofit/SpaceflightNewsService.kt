@@ -13,6 +13,7 @@ interface SpaceflightNewsService {
     suspend fun getArticles(
         @Query("limit") limit: Int,
         @Query("offset") offset: Int,
-        @Query("search") search: String = "SpaceX",
+        @Query("search") search: String? = "SpaceX",
+        @Query("launch") launch: String? = null
     ): Response<SpaceflightNewsPaginatedResponse<ArticleResponse>>
 }

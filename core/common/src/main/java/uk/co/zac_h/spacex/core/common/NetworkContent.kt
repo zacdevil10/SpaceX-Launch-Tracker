@@ -1,6 +1,5 @@
 package uk.co.zac_h.spacex.core.common
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -29,8 +27,6 @@ fun <T> NetworkContent(
     retry: () -> Unit,
     content: @Composable (T) -> Unit
 ) {
-    val context = LocalContext.current
-
     Column(
         modifier = modifier
     ) {
@@ -45,9 +41,6 @@ fun <T> NetworkContent(
             is ApiResult.Success -> content(result.result)
 
             is ApiResult.Failure -> {
-                if (result.exception !is TooManyRequestsException) {
-                    Toast.makeText(context, result.exception.message, Toast.LENGTH_SHORT).show()
-                }
                 Box(
                     modifier = Modifier
                         .fillMaxSize()

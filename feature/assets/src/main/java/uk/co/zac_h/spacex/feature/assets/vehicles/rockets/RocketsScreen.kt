@@ -29,7 +29,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -38,7 +37,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import uk.co.zac_h.spacex.core.common.NetworkContent
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.retry
+import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.filter.FilterOrder
 import uk.co.zac_h.spacex.core.common.filter.RocketFamilyFilter
 import uk.co.zac_h.spacex.core.common.filter.RocketTypeFilter
@@ -51,27 +52,18 @@ import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 import uk.co.zac_h.spacex.feature.assets.R
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehiclesList
-import uk.co.zac_h.spacex.feature.assets.vehicles.rockets.filter.RocketsFilter
 import uk.co.zac_h.spacex.network.ApiResult
-import uk.co.zac_h.spacex.network.CachePolicy
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RocketsScreen(
+    contentType: ContentType,
     viewModel: RocketViewModel = hiltViewModel(),
     openedAsset: VehicleItem?,
     onItemClick: (VehicleItem) -> Unit
 ) {
-    viewModel.getRockets()
-
-    val rockets by viewModel.rockets.observeAsState(ApiResult.Pending)
-    val filter by viewModel.filter.observeAsState(
-        RocketsFilter(
-            RocketFamilyFilter(),
-            RocketTypeFilter(),
-            FilterOrder()
-        )
-    )
+    val rockets by viewModel.rockets.collectAsStateWithLifecycle(ApiResult.Pending)
+    val filter by viewModel.filter.collectAsStateWithLifecycle(RocketsFilterState())
 
     val rocketsLazyListState = rememberLazyListState()
 
@@ -80,34 +72,30 @@ fun RocketsScreen(
 
     RocketsContent(
         rockets = rockets,
+        contentType = contentType,
         listState = rocketsLazyListState,
         retry = {
-            viewModel.getRockets(CachePolicy.REFRESH)
+            viewModel.rockets.retry()
         },
         showBottomSheet = showBottomSheet,
-        setSheetState = {
-            showBottomSheet = it
-        },
+        setSheetState = { showBottomSheet = it },
         sheetState = sheetState,
         filter = filter,
         setFamily = {
-            viewModel.filter.filterByFamily(if (filter.family.family == it) RocketFamily.NONE else it)
-
-            if (it != RocketFamily.FALCON) viewModel.filter.filterByRocketType(null)
+            viewModel.updateFilter(
+                family = if (filter.family.family == it) RocketFamily.NONE else it,
+                type = if (it != RocketFamily.FALCON) emptyList() else null
+            )
         },
         setRocketType = {
-            val list = filter.type.rockets.orEmpty().toMutableList()
+            val list = filter.type.rockets.toMutableList()
 
             if (it in list) list.remove(it) else list.add(it)
 
-            viewModel.filter.filterByRocketType(list)
+            viewModel.updateFilter(type = list)
         },
-        setOrder = {
-            viewModel.filter.setOrder(it)
-        },
-        reset = {
-            viewModel.filter.clear()
-        },
+        setOrder = { viewModel.updateFilter(order = it) },
+        reset = viewModel::clearFilter,
         openedAsset = openedAsset,
         onItemClick = onItemClick
     )
@@ -118,12 +106,13 @@ fun RocketsScreen(
 fun RocketsContent(
     modifier: Modifier = Modifier,
     rockets: ApiResult<List<VehicleItem>>,
+    contentType: ContentType,
     listState: LazyListState,
     retry: () -> Unit,
     showBottomSheet: Boolean,
     setSheetState: (Boolean) -> Unit,
     sheetState: SheetState,
-    filter: RocketsFilter,
+    filter: RocketsFilterState,
     setFamily: (RocketFamily) -> Unit,
     setRocketType: (RocketType) -> Unit,
     setOrder: (Order) -> Unit,
@@ -152,32 +141,32 @@ fun RocketsContent(
             }
         }
     ) { contentPadding ->
-        NetworkContent(
+        VehiclesList(
             modifier = modifier
                 .padding(contentPadding),
-            result = rockets,
-            retry = { retry() }
-        ) {
-            VehiclesList(
-                vehicles = it,
-                state = listState,
-                navigate = {
-                    onItemClick(it)
+            vehicles = rockets,
+            contentType = contentType,
+            state = listState,
+            openedAsset = openedAsset,
+            retry = { retry() },
+            navigate = {
+                onItemClick(it)
+            },
+            filter = {
+                if (showBottomSheet) {
+                    RocketsFilterModalBottomSheet(
+                        setSheetState = setSheetState,
+                        sheetState = sheetState,
+                        filter = filter,
+                        setFamily = setFamily,
+                        setRocketType = setRocketType,
+                        setOrder = setOrder,
+                        reset = reset
+                    )
                 }
-            )
-
-            if (showBottomSheet) {
-                RocketsFilterModalBottomSheet(
-                    setSheetState = setSheetState,
-                    sheetState = sheetState,
-                    filter = filter,
-                    setFamily = setFamily,
-                    setRocketType = setRocketType,
-                    setOrder = setOrder,
-                    reset = reset
-                )
             }
-        }
+        )
+
     }
 }
 
@@ -186,7 +175,7 @@ fun RocketsContent(
 fun RocketsFilterModalBottomSheet(
     setSheetState: (Boolean) -> Unit,
     sheetState: SheetState,
-    filter: RocketsFilter,
+    filter: RocketsFilterState,
     setFamily: (RocketFamily) -> Unit,
     setRocketType: (RocketType) -> Unit,
     setOrder: (Order) -> Unit,
@@ -250,7 +239,7 @@ fun RocketsFilterModalBottomSheet(
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     FilterChip(
-                        selected = RocketType.FALCON_ONE in filter.type.rockets.orEmpty(),
+                        selected = RocketType.FALCON_ONE in filter.type.rockets,
                         enabled = filter.family.family == RocketFamily.FALCON,
                         onClick = { setRocketType(RocketType.FALCON_ONE) },
                         label = {
@@ -258,7 +247,7 @@ fun RocketsFilterModalBottomSheet(
                         }
                     )
                     FilterChip(
-                        selected = RocketType.FALCON_NINE in filter.type.rockets.orEmpty(),
+                        selected = RocketType.FALCON_NINE in filter.type.rockets,
                         enabled = filter.family.family == RocketFamily.FALCON,
                         onClick = { setRocketType(RocketType.FALCON_NINE) },
                         label = {
@@ -266,7 +255,7 @@ fun RocketsFilterModalBottomSheet(
                         }
                     )
                     FilterChip(
-                        selected = RocketType.FALCON_HEAVY in filter.type.rockets.orEmpty(),
+                        selected = RocketType.FALCON_HEAVY in filter.type.rockets,
                         enabled = filter.family.family == RocketFamily.FALCON,
                         onClick = { setRocketType(RocketType.FALCON_HEAVY) },
                         label = {
@@ -331,7 +320,7 @@ fun RocketsFilterModalBottomSheetPreview() {
                 skipPartiallyExpanded = true,
                 initialValue = SheetValue.Expanded
             ),
-            filter = RocketsFilter(
+            filter = RocketsFilterState(
                 RocketFamilyFilter(),
                 RocketTypeFilter(),
                 FilterOrder()

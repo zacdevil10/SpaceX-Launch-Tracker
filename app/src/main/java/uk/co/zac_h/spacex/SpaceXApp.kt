@@ -12,14 +12,14 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberDrawerState
-import androidx.compose.material3.windowsizeclass.WindowHeightSizeClass
-import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -27,7 +27,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.dialog
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navDeepLink
 import kotlinx.coroutines.launch
 import uk.co.zac_h.feature.news.NewsScreen
 import uk.co.zac_h.spacex.core.common.ContentType
@@ -38,6 +37,8 @@ import uk.co.zac_h.spacex.core.common.PermanentNavigationDrawerContent
 import uk.co.zac_h.spacex.core.common.SpaceXBottomNavigationBar
 import uk.co.zac_h.spacex.core.common.SpaceXNavigationRail
 import uk.co.zac_h.spacex.core.common.TopLevelNavigation
+import uk.co.zac_h.spacex.core.ui.DevicePreviews
+import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 import uk.co.zac_h.spacex.feature.assets.AssetsScreen
 import uk.co.zac_h.spacex.feature.launch.LaunchListScreen
 import uk.co.zac_h.spacex.feature.settings.SettingsDialog
@@ -45,14 +46,12 @@ import uk.co.zac_h.spacex.feature.settings.company.CompanyScreen
 
 @Composable
 fun SpaceXApp(
-    windowSize: WindowSizeClass
+    widthSize: WindowWidthSizeClass
 ) {
     val contentType: ContentType
     val navigationType: NavigationType
 
-    WindowHeightSizeClass.Expanded
-
-    when (windowSize.widthSizeClass) {
+    when (widthSize) {
         WindowWidthSizeClass.Compact -> {
             contentType = ContentType.SINGLE_PANE
             navigationType = NavigationType.BOTTOM_NAVIGATION
@@ -227,4 +226,30 @@ fun SpaceXNavHost(
             SettingsDialog(onDismiss = { navController.popBackStack() })
         }
     }
+}
+
+@DevicePreviews
+@Composable
+fun SpaceXAppPreview(
+    @PreviewParameter(WindowWidthSizePreviewParameterProvider::class) windowWidth: WindowWidthSizeClassPreview
+) {
+    SpaceXTheme {
+        SpaceXApp(windowWidth.value)
+    }
+}
+
+sealed class WindowWidthSizeClassPreview(val value: WindowWidthSizeClass) {
+    object Compact : WindowWidthSizeClassPreview(WindowWidthSizeClass.Compact)
+    object Medium : WindowWidthSizeClassPreview(WindowWidthSizeClass.Medium)
+    object Expanded : WindowWidthSizeClassPreview(WindowWidthSizeClass.Expanded)
+}
+
+class WindowWidthSizePreviewParameterProvider :
+    PreviewParameterProvider<WindowWidthSizeClassPreview> {
+    override val values: Sequence<WindowWidthSizeClassPreview> =
+        sequenceOf(
+            WindowWidthSizeClassPreview.Compact,
+            WindowWidthSizeClassPreview.Medium,
+            WindowWidthSizeClassPreview.Expanded,
+        )
 }

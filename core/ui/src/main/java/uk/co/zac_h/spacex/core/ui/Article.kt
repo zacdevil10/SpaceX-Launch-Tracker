@@ -69,6 +69,7 @@ fun Article(
     }
 }
 
+@DynamicThemePreviews
 @ComponentPreviews
 @Composable
 fun ArticlePreview() {

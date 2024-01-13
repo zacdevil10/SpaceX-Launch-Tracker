@@ -13,7 +13,6 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import kotlinx.coroutines.delay
@@ -49,12 +48,13 @@ fun Countdown(
     }
 }
 
+@DynamicThemePreviews
 @ComponentPreviews
 @Composable
 fun CountdownPreview() {
     SpaceXTheme {
         Countdown(
-            modifier = Modifier.background(Color.White),
+            modifier = Modifier.background(MaterialTheme.colorScheme.background),
             0,
             "Countdown"
         )

@@ -150,6 +150,7 @@ fun RedditPost(
     }
 }
 
+@DynamicThemePreviews
 @ComponentPreviews
 @Composable
 fun RedditPostPreview() {

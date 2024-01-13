@@ -84,6 +84,7 @@ fun Banner(
     }
 }
 
+@DynamicThemePreviews
 @ComponentPreviews
 @Composable
 fun BannerPreview() {

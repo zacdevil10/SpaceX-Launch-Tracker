@@ -10,8 +10,4 @@ import javax.inject.Inject
 class DragonRepository @Inject constructor(
     @AgencyDataSourceClient agencyDataSource: RemoteDataSource<AgencyResponse>,
     cache: Cache<AgencyResponse>
-) : Repository<AgencyResponse>(agencyDataSource, cache) {
-
-    val cacheLocation: RequestLocation
-        get() = location
-}
+) : Repository<AgencyResponse>(agencyDataSource, cache)

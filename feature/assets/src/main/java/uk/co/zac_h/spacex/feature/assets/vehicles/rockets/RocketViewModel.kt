@@ -1,21 +1,23 @@
 package uk.co.zac_h.spacex.feature.assets.vehicles.rockets
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.distinctUntilChanged
-import androidx.lifecycle.map
-import androidx.lifecycle.switchMap
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import uk.co.zac_h.spacex.core.common.filter.FilterOrder
+import uk.co.zac_h.spacex.core.common.filter.RocketFamilyFilter
+import uk.co.zac_h.spacex.core.common.filter.RocketTypeFilter
+import uk.co.zac_h.spacex.core.common.types.Order
+import uk.co.zac_h.spacex.core.common.types.RocketFamily
+import uk.co.zac_h.spacex.core.common.types.RocketType
 import uk.co.zac_h.spacex.core.common.utils.filterAll
 import uk.co.zac_h.spacex.core.common.utils.sortedBy
-import uk.co.zac_h.spacex.feature.assets.vehicles.rockets.filter.RocketsFilterBuilder
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
-import uk.co.zac_h.spacex.network.Repository
-import uk.co.zac_h.spacex.network.async
+import uk.co.zac_h.spacex.network.apiFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,36 +25,48 @@ class RocketViewModel @Inject constructor(
     private val repository: RocketRepository
 ) : ViewModel() {
 
-    val filter: RocketsFilterBuilder = RocketsFilterBuilder()
+    private val _filter = MutableStateFlow(RocketsFilterState())
+    val filter: StateFlow<RocketsFilterState> = _filter
 
-    private val _rockets = MutableLiveData<ApiResult<List<RocketItem>>>()
-    val rockets: LiveData<ApiResult<List<RocketItem>>> = _rockets.switchMap { result ->
-        filter.map { filter ->
-            result.map {
-                it.filterAll(
-                    if (filter.family.isFiltered) { rocket ->
-                        rocket.family == filter.family.family
-                    } else null,
-                    if (filter.type.isFiltered) { rocket ->
-                        rocket.type in filter.type.rockets.orEmpty()
-                    } else null
-                ).sortedBy(filter.order.order) { rocket -> rocket.maidenFlightMillis }
-            }
-        }.distinctUntilChanged()
-    }
-
-    val cacheLocation: Repository.RequestLocation
-        get() = repository.cacheLocation
-
-    fun getRockets(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
-        viewModelScope.launch {
-            val response = async(_rockets) {
-                repository.fetch(key = "agency", cachePolicy = cachePolicy)
-            }
-
-            _rockets.value = response.await().map { result ->
-                result.launcherList?.map { RocketItem(it) } ?: emptyList()
-            }
+    private val _rockets = apiFlow {
+        repository.fetch(key = "agency", cachePolicy = CachePolicy.EXPIRES)
+    }.map { result ->
+        result.map { response ->
+            response.launcherList?.map { RocketItem(it) } ?: emptyList()
         }
     }
+    val rockets: Flow<ApiResult<List<RocketItem>>> = combine(_rockets, _filter) { result, filter ->
+        result.map { rocketList ->
+            rocketList.filterAll(
+                if (filter.family.isFiltered) { rocket ->
+                    rocket.family == filter.family.family
+                } else null,
+                if (filter.type.isFiltered) { rocket ->
+                    rocket.type in filter.type.rockets
+                } else null
+            ).sortedBy(filter.order.order) { rocket -> rocket.maidenFlightMillis }
+        }
+    }
+
+    fun updateFilter(
+        family: RocketFamily? = null,
+        type: List<RocketType>? = null,
+        order: Order? = null
+    ) {
+        _filter.value = _filter.value.copy(
+            family = family?.let { RocketFamilyFilter(it) } ?: _filter.value.family,
+            type = type?.let { RocketTypeFilter(it) } ?: _filter.value.type,
+            order = order?.let { FilterOrder(it) } ?: _filter.value.order
+        )
+    }
+
+    fun clearFilter() {
+        _filter.value = RocketsFilterState()
+    }
 }
+
+data class RocketsFilterState(
+    val family: RocketFamilyFilter = RocketFamilyFilter(),
+    val type: RocketTypeFilter = RocketTypeFilter(),
+    val order: FilterOrder = FilterOrder()
+)

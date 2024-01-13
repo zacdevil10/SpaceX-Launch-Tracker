@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -50,8 +49,19 @@ fun Astronaut(
     description: String? = null,
     expanded: Boolean,
     isFullscreen: Boolean = true,
+    isSelected: Boolean = false,
     onClick: () -> Unit
 ) {
+    val animatedCardBackgroundColor = animateColorAsState(
+        targetValue = if (isSelected) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant
+        },
+        animationSpec = tween(200, 0, LinearEasing),
+        label = ""
+    )
+
     val rotationState by animateFloatAsState(
         targetValue = if (expanded) 180f else 0f,
         label = "rotation"
@@ -60,6 +70,9 @@ fun Astronaut(
     ElevatedCard(
         modifier = modifier,
         shape = CardDefaults.elevatedShape,
+        colors = CardDefaults.cardColors(
+            containerColor = animatedCardBackgroundColor.value
+        ),
         onClick = onClick
     ) {
         Column {
@@ -152,6 +165,7 @@ fun Astronaut(
     }
 }
 
+@DynamicThemePreviews
 @ComponentPreviews
 @Composable
 fun AstronautCollapsedPreview(
@@ -172,6 +186,7 @@ fun AstronautCollapsedPreview(
     }
 }
 
+@DynamicThemePreviews
 @ComponentPreviews
 @Composable
 fun AstronautDualPanePreview(
@@ -192,6 +207,7 @@ fun AstronautDualPanePreview(
     }
 }
 
+@DynamicThemePreviews
 @ComponentPreviews
 @Composable
 fun AstronautExpandedPreview(

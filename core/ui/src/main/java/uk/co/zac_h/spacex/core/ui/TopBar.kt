@@ -178,6 +178,7 @@ data class PagerItem(
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
+@DynamicThemePreviews
 @ComponentPreviews
 @Composable
 fun SpaceXAppBarPreview() {
@@ -191,6 +192,7 @@ fun SpaceXAppBarPreview() {
 }
 
 @OptIn(ExperimentalFoundationApi::class)
+@DynamicThemePreviews
 @ComponentPreviews
 @Composable
 fun SpaceXTabLayoutPreview() {
@@ -201,12 +203,14 @@ fun SpaceXTabLayoutPreview() {
             screens = listOf(
                 PagerItem(label = "Page 1") {},
                 PagerItem(label = "Page 2") {}
-            )
+            ),
+            scrollable = false
         )
     }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
+@DynamicThemePreviews
 @ComponentPreviews
 @Composable
 fun SpaceXTabLayoutWithIconPreview() {
@@ -217,7 +221,26 @@ fun SpaceXTabLayoutWithIconPreview() {
             screens = listOf(
                 PagerItem(label = "Page 1", icon = R.drawable.ic_history_black_24dp) {},
                 PagerItem(label = "Page 2", icon = R.drawable.ic_history_black_24dp) {}
-            )
+            ),
+            scrollable = false
+        )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@DynamicThemePreviews
+@ComponentPreviews
+@Composable
+fun SpaceXScrollableTabLayoutPreview() {
+    SpaceXTheme {
+        SpaceXTabLayout(
+            modifier = Modifier.background(MaterialTheme.colorScheme.background),
+            pagerState = rememberPagerState(pageCount = { 2 }),
+            screens = listOf(
+                PagerItem(label = "Page 1") {},
+                PagerItem(label = "Page 2") {}
+            ),
+            scrollable = true
         )
     }
 }

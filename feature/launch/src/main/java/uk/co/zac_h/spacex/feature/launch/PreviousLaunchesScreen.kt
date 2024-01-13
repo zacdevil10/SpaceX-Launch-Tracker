@@ -1,24 +1,29 @@
 package uk.co.zac_h.spacex.feature.launch
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.material3.Button
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Text
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
+import androidx.paging.LoadStates
+import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
+import kotlinx.coroutines.flow.MutableStateFlow
 import uk.co.zac_h.spacex.core.common.ContentType
+import uk.co.zac_h.spacex.core.common.NetworkContent
+import uk.co.zac_h.spacex.core.ui.DevicePreviews
 import uk.co.zac_h.spacex.core.ui.LaunchContainer
+import uk.co.zac_h.spacex.core.ui.SpaceXTheme
+import uk.co.zac_h.spacex.feature.launch.preview.LaunchesPreviewParameterProvider
 
 @Composable
 fun PreviousLaunchesScreen(
@@ -29,66 +34,109 @@ fun PreviousLaunchesScreen(
     openedLaunch: LaunchItem?,
     onItemClick: (LaunchItem) -> Unit
 ) {
-    if (previous.loadState.refresh is LoadState.Loading) {
-        LinearProgressIndicator(
+    NetworkContent(
+        modifier = modifier,
+        result = previous,
+        state = listState
+    ) {
+        item {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+        items(
+            count = previous.itemCount,
+            key = previous.itemKey { it.id }
+        ) { index ->
+            val launch = previous[index]
+
+            launch?.let {
+                LaunchContainer(
+                    patch = launch.missionPatch,
+                    missionName = launch.missionName,
+                    date = launch.launchDate,
+                    vehicle = launch.rocket,
+                    reused = launch.rocket == "Falcon 9" && launch.firstStage?.firstOrNull()?.reused ?: false,
+                    landingPad = launch.firstStage?.firstOrNull()?.landingLocation?.let {
+                        if (launch.rocket != "Falcon 9" && it == "N/A") null else it
+                    },
+                    isSelected = openedLaunch?.id == launch.id && contentType == ContentType.DUAL_PANE
+                ) {
+                    onItemClick(launch)
+                }
+            }
+        }
+    }
+}
+
+@DevicePreviews
+@Composable
+fun PreviousLaunchesScreenPreview(
+    @PreviewParameter(LaunchesPreviewParameterProvider::class) launchList: List<LaunchItem>
+) {
+    SpaceXTheme {
+        PreviousLaunchesScreen(
             modifier = Modifier
-                .fillMaxWidth()
-        )
-    } else {
-        LazyColumn(
-            modifier = modifier,
-            state = listState
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxSize(),
+            previous = MutableStateFlow(PagingData.from(launchList)).collectAsLazyPagingItems(),
+            contentType = ContentType.SINGLE_PANE,
+            listState = rememberLazyListState(),
+            openedLaunch = null
         ) {
-            item {
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-            items(
-                count = previous.itemCount,
-                key = previous.itemKey { it.id }
-            ) { index ->
-                val launch = previous[index]
 
-                launch?.let {
-                    LaunchContainer(
-                        patch = launch.missionPatch,
-                        missionName = launch.missionName,
-                        date = launch.launchDate,
-                        vehicle = launch.rocket,
-                        reused = launch.rocket == "Falcon 9" && launch.firstStage?.firstOrNull()?.reused ?: false,
-                        landingPad = launch.firstStage?.firstOrNull()?.landingLocation?.let {
-                            if (launch.rocket != "Falcon 9" && it == "N/A") null else it
-                        },
-                        isSelected = openedLaunch?.id == launch.id && contentType == ContentType.DUAL_PANE
-                    ) {
-                        onItemClick(launch)
-                    }
-                }
-            }
+        }
+    }
+}
 
-            item {
-                when (previous.loadState.append) {
-                    is LoadState.Loading -> LinearProgressIndicator(
-                        modifier = Modifier
-                            .fillMaxWidth()
+@DevicePreviews
+@Composable
+fun PreviousLaunchesPendingScreenPreview(
+    @PreviewParameter(LaunchesPreviewParameterProvider::class) launchList: List<LaunchItem>
+) {
+    SpaceXTheme {
+        PreviousLaunchesScreen(
+            modifier = Modifier
+                .fillMaxSize(),
+            previous = MutableStateFlow<PagingData<LaunchItem>>(
+                PagingData.empty(
+                    sourceLoadStates = LoadStates(
+                        refresh = LoadState.Loading,
+                        prepend = LoadState.Loading,
+                        append = LoadState.Loading
                     )
+                )
+            ).collectAsLazyPagingItems(),
+            contentType = ContentType.SINGLE_PANE,
+            listState = rememberLazyListState(),
+            openedLaunch = null
+        ) {
 
-                    is LoadState.Error -> Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Button(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .padding(16.dp),
-                            onClick = { previous.retry() }
-                        ) {
-                            Text(text = "Retry")
-                        }
-                    }
+        }
+    }
+}
 
-                    else -> {}
-                }
-            }
+@DevicePreviews
+@Composable
+fun PreviousLaunchesErrorScreenPreview(
+    @PreviewParameter(LaunchesPreviewParameterProvider::class) launchList: List<LaunchItem>
+) {
+    SpaceXTheme {
+        PreviousLaunchesScreen(
+            modifier = Modifier
+                .fillMaxSize(),
+            previous = MutableStateFlow<PagingData<LaunchItem>>(
+                PagingData.empty(
+                    sourceLoadStates = LoadStates(
+                        refresh = LoadState.Error(Exception()),
+                        prepend = LoadState.Loading,
+                        append = LoadState.Loading
+                    )
+                )
+            ).collectAsLazyPagingItems(),
+            contentType = ContentType.SINGLE_PANE,
+            listState = rememberLazyListState(),
+            openedLaunch = null
+        ) {
+
         }
     }
 }

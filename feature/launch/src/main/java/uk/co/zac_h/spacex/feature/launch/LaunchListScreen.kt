@@ -27,7 +27,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -35,12 +34,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
+import kotlinx.coroutines.flow.retry
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.ui.PagerItem
 import uk.co.zac_h.spacex.core.ui.SpaceXTabLayout
 import uk.co.zac_h.spacex.feature.launch.details.LaunchContainerScreen
 import uk.co.zac_h.spacex.network.ApiResult
-import uk.co.zac_h.spacex.network.CachePolicy
+import uk.co.zac_h.spacex.network.dto.news.ArticleResponse
 
 @Composable
 fun LaunchListScreen(
@@ -48,10 +48,9 @@ fun LaunchListScreen(
     contentType: ContentType,
     viewModel: LaunchesViewModel = hiltViewModel()
 ) {
-    viewModel.getUpcomingLaunches()
-
-    val upcoming by viewModel.upcomingLaunchesLiveData.observeAsState(ApiResult.Pending)
+    val upcoming by viewModel.upcomingLaunches.collectAsStateWithLifecycle(ApiResult.Pending)
     val previous = viewModel.previousLaunchesLiveData.collectAsLazyPagingItems()
+    val articles = viewModel.articlesFlow.collectAsLazyPagingItems()
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -64,10 +63,11 @@ fun LaunchListScreen(
             uiState = uiState,
             upcoming = upcoming,
             previous = previous,
+            articles = articles,
             upcomingLazyListState = upcomingLazyListState,
             previousLazyListState = previousLazyListState,
             openedLaunch = uiState.openedLaunch,
-            retry = { viewModel.getUpcomingLaunches(CachePolicy.REFRESH) },
+            retry = { viewModel.upcomingLaunches.retry() },
             navigateToDetail = { launch, pane -> viewModel.setOpenedLaunch(launch, pane) }
         )
 
@@ -76,10 +76,11 @@ fun LaunchListScreen(
             uiState = uiState,
             upcoming = upcoming,
             previous = previous,
+            articles = articles,
             upcomingLazyListState = upcomingLazyListState,
             previousLazyListState = previousLazyListState,
             openedLaunch = uiState.openedLaunch,
-            retry = { viewModel.getUpcomingLaunches(CachePolicy.REFRESH) },
+            retry = { viewModel.upcomingLaunches.retry() },
             closeDetailScreen = { viewModel.closeDetailScreen() },
             navigateToDetail = { launch, pane -> viewModel.setOpenedLaunch(launch, pane) }
         )
@@ -93,6 +94,7 @@ fun LaunchesTwoPaneContent(
     uiState: LaunchesUIState,
     upcoming: ApiResult<List<LaunchItem>>,
     previous: LazyPagingItems<LaunchItem>,
+    articles: LazyPagingItems<ArticleResponse>,
     upcomingLazyListState: LazyListState,
     previousLazyListState: LazyListState,
     openedLaunch: LaunchItem?,
@@ -137,6 +139,7 @@ fun LaunchesTwoPaneContent(
                         modifier = Modifier
                             .fillMaxSize(),
                         launch = it,
+                        articles = articles,
                         isFullscreen = false
                     )
                 }
@@ -159,6 +162,7 @@ fun LaunchesSinglePaneContent(
     uiState: LaunchesUIState,
     upcoming: ApiResult<List<LaunchItem>>,
     previous: LazyPagingItems<LaunchItem>,
+    articles: LazyPagingItems<ArticleResponse>,
     upcomingLazyListState: LazyListState,
     previousLazyListState: LazyListState,
     openedLaunch: LaunchItem?,
@@ -189,7 +193,8 @@ fun LaunchesSinglePaneContent(
             }
             LaunchContainerScreen(
                 modifier = modifier,
-                launch = uiState.openedLaunch
+                launch = uiState.openedLaunch,
+                articles = articles
             ) {
                 closeDetailScreen()
             }

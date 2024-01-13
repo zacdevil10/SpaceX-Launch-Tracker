@@ -253,6 +253,7 @@ internal fun ExpandedLaunch(
     }
 }
 
+@DynamicThemePreviews
 @ComponentPreviews
 @Composable
 fun LaunchPreview() {
@@ -268,6 +269,7 @@ fun LaunchPreview() {
     }
 }
 
+@DynamicThemePreviews
 @ComponentPreviews
 @Composable
 fun ExpandedLaunchPreview(
@@ -289,6 +291,7 @@ fun ExpandedLaunchPreview(
     }
 }
 
+@DynamicThemePreviews
 @ComponentPreviews
 @Composable
 fun FullLaunchPreview(

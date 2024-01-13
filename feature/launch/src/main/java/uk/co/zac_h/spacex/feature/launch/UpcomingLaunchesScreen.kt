@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex.feature.launch
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -15,6 +16,7 @@ import uk.co.zac_h.spacex.core.ui.DevicePreviews
 import uk.co.zac_h.spacex.core.ui.LaunchContainer
 import uk.co.zac_h.spacex.core.ui.LaunchState
 import uk.co.zac_h.spacex.core.ui.SpaceXTheme
+import uk.co.zac_h.spacex.feature.launch.preview.LaunchesPreviewParameterProvider
 import uk.co.zac_h.spacex.network.ApiResult
 
 @Composable
@@ -70,13 +72,49 @@ fun UpcomingLaunchesScreen(
 @DevicePreviews
 @Composable
 fun UpcomingLaunchesScreenPreview(
-    @PreviewParameter(LaunchListPreviewParameterProvider::class) launchList: List<LaunchItem>
+    @PreviewParameter(LaunchesPreviewParameterProvider::class) launchList: List<LaunchItem>
 ) {
     SpaceXTheme {
         UpcomingLaunchesScreen(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background),
             upcoming = ApiResult.Success(launchList),
+            contentType = ContentType.SINGLE_PANE,
+            listState = rememberLazyListState(),
+            openedLaunch = null,
+            retry = {},
+            onItemClick = {}
+        )
+    }
+}
+
+@DevicePreviews
+@Composable
+fun UpcomingLaunchesPendingScreenPreview() {
+    SpaceXTheme {
+        UpcomingLaunchesScreen(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxSize(),
+            upcoming = ApiResult.Pending,
+            contentType = ContentType.SINGLE_PANE,
+            listState = rememberLazyListState(),
+            openedLaunch = null,
+            retry = {},
+            onItemClick = {}
+        )
+    }
+}
+
+@DevicePreviews
+@Composable
+fun UpcomingLaunchesFailureScreenPreview() {
+    SpaceXTheme {
+        UpcomingLaunchesScreen(
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.background)
+                .fillMaxSize(),
+            upcoming = ApiResult.Failure(Exception()),
             contentType = ContentType.SINGLE_PANE,
             listState = rememberLazyListState(),
             openedLaunch = null,

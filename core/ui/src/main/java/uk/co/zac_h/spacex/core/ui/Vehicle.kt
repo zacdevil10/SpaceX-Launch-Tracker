@@ -1,5 +1,8 @@
 package uk.co.zac_h.spacex.core.ui
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,12 +34,26 @@ fun Vehicle(
     title: String? = null,
     status: String? = null,
     buttonText: String? = null,
+    isSelected: Boolean = false,
     navigate: () -> Unit,
     content: @Composable (() -> Unit)? = null
 ) {
+    val animatedCardBackgroundColor = animateColorAsState(
+        targetValue = if (isSelected) {
+            MaterialTheme.colorScheme.primaryContainer
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant
+        },
+        animationSpec = tween(200, 0, LinearEasing),
+        label = ""
+    )
+
     ElevatedCard(
         modifier = modifier,
         shape = CardDefaults.elevatedShape,
+        colors = CardDefaults.cardColors(
+            containerColor = animatedCardBackgroundColor.value
+        ),
         onClick = { navigate() }
     ) {
         Column {
@@ -76,6 +93,7 @@ fun Vehicle(
     }
 }
 
+@DynamicThemePreviews
 @ComponentPreviews
 @Composable
 fun VehiclePreview(
@@ -83,6 +101,7 @@ fun VehiclePreview(
 ) {
     SpaceXTheme {
         Vehicle(
+            modifier = Modifier.padding(16.dp),
             image = "",
             title = "Falcon 1",
             status = "Status",

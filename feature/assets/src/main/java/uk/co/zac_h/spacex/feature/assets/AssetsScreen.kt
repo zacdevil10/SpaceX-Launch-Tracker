@@ -246,6 +246,7 @@ fun AssetsList(
         },
         PagerItem(label = "Rockets") {
             RocketsScreen(
+                contentType = contentType,
                 openedAsset = openedAsset
             ) {
                 navigateToDetail(it, ContentType.SINGLE_PANE)
@@ -253,6 +254,7 @@ fun AssetsList(
         },
         PagerItem(label = "Second stage") {
             DragonScreen(
+                contentType = contentType,
                 openedAsset = openedAsset
             ) {
                 navigateToDetail(it, ContentType.SINGLE_PANE)
@@ -260,6 +262,7 @@ fun AssetsList(
         },
         PagerItem(label = "Core") {
             LauncherScreen(
+                contentType = contentType,
                 openedAsset = openedAsset
             ) {
                 navigateToDetail(it, ContentType.SINGLE_PANE)
@@ -267,6 +270,7 @@ fun AssetsList(
         },
         PagerItem(label = "Capsules") {
             SpacecraftScreen(
+                contentType = contentType,
                 openedAsset = openedAsset
             ) {
                 navigateToDetail(it, ContentType.SINGLE_PANE)

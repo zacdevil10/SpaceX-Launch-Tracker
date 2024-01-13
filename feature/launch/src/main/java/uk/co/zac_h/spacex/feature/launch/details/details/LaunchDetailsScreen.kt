@@ -39,8 +39,8 @@ import uk.co.zac_h.spacex.core.ui.LabelValue
 import uk.co.zac_h.spacex.core.ui.LaunchContainer
 import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 import uk.co.zac_h.spacex.feature.launch.LaunchItem
-import uk.co.zac_h.spacex.feature.launch.LaunchPreviewParameterProvider
 import uk.co.zac_h.spacex.feature.launch.R
+import uk.co.zac_h.spacex.feature.launch.preview.LaunchPreviewParameterProvider
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

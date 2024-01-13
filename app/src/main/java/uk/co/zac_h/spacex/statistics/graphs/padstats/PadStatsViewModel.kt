@@ -10,7 +10,6 @@ import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
 import uk.co.zac_h.spacex.network.async
 import uk.co.zac_h.spacex.network.dto.spacex.StatsPadModel
-import uk.co.zac_h.spacex.network.query.StatisticsQuery
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,7 +26,6 @@ class PadStatsViewModel @Inject constructor(
             val response = async(_stats) {
                 launchpadRepository.fetch(
                     key = "launchpads",
-                    query = StatisticsQuery.launchPadQuery,
                     cachePolicy = cachePolicy
                 )
             }
@@ -52,7 +50,6 @@ class PadStatsViewModel @Inject constructor(
             val response = async(_stats) {
                 landingPadRepository.fetch(
                     key = "landing_pads",
-                    query = StatisticsQuery.landingPadQuery,
                     cachePolicy = cachePolicy
                 )
             }

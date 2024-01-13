@@ -22,7 +22,7 @@ import uk.co.zac_h.spacex.core.ui.LabelValue
 import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 import uk.co.zac_h.spacex.feature.launch.FirstStageItem
 import uk.co.zac_h.spacex.feature.launch.LaunchItem
-import uk.co.zac_h.spacex.feature.launch.LaunchPreviewParameterProvider
+import uk.co.zac_h.spacex.feature.launch.preview.LaunchPreviewParameterProvider
 
 @Composable
 fun LaunchCoresScreen(

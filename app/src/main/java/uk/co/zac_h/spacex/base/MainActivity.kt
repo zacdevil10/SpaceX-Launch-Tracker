@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
                 val windowSize = calculateWindowSizeClass(this)
 
                 SpaceXApp(
-                    windowSize = windowSize
+                    widthSize = windowSize.widthSizeClass
                 )
             }
         }
