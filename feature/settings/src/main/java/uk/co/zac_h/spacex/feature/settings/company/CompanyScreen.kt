@@ -18,7 +18,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -27,6 +26,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.retry
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.NetworkContent
 import uk.co.zac_h.spacex.core.ui.DevicePreviews
@@ -41,9 +42,7 @@ fun CompanyScreen(
     contentType: ContentType,
     viewModel: CompanyViewModel = hiltViewModel()
 ) {
-    viewModel.getCompany()
-
-    val company by viewModel.company.observeAsState(ApiResult.Pending)
+    val company by viewModel.company.collectAsStateWithLifecycle(ApiResult.Pending)
 
     NetworkContent(
         modifier = modifier
@@ -55,7 +54,7 @@ fun CompanyScreen(
                 }
             ),
         result = company,
-        retry = { viewModel.getCompany() }
+        retry = { viewModel.company.retry() }
     ) {
         CompanyContent(
             contentType = contentType,

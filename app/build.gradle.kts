@@ -61,7 +61,6 @@ android {
 
 dependencies {
     implementation(libs.kotlin.stdlib.jdk8)
-    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.core)
 
     implementation(libs.androidx.compose.activity)

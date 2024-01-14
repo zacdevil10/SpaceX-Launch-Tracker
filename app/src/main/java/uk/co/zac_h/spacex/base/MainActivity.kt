@@ -4,13 +4,12 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -21,6 +20,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.SpaceXApp
 import uk.co.zac_h.spacex.core.ui.SpaceXTheme
+import uk.co.zac_h.spacex.feature.settings.DarkThemeConfig
+import uk.co.zac_h.spacex.feature.settings.SettingsUiState
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -31,20 +32,21 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var theme: Int by mutableIntStateOf(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        var settings: SettingsUiState by mutableStateOf(SettingsUiState())
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.theme
-                    .onEach { theme = it }
+                viewModel.settings
+                    .onEach { settings = it }
                     .collect()
             }
         }
 
         setContent {
-            val darkTheme = shouldUseDarkTheme(theme)
-
-            SpaceXTheme(darkTheme = darkTheme) {
+            SpaceXTheme(
+                darkTheme = shouldUseDarkTheme(settings.darkThemeConfig),
+                dynamicColor = settings.useDynamicColor
+            ) {
                 val windowSize = calculateWindowSizeClass(this)
 
                 SpaceXApp(
@@ -56,9 +58,8 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun shouldUseDarkTheme(theme: Int): Boolean = when (theme) {
-    AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM -> isSystemInDarkTheme()
-    AppCompatDelegate.MODE_NIGHT_NO -> false
-    AppCompatDelegate.MODE_NIGHT_YES -> true
-    else -> isSystemInDarkTheme()
+fun shouldUseDarkTheme(theme: DarkThemeConfig): Boolean = when (theme) {
+    DarkThemeConfig.FOLLOW_SYSTEM -> isSystemInDarkTheme()
+    DarkThemeConfig.LIGHT -> false
+    DarkThemeConfig.DARK -> true
 }

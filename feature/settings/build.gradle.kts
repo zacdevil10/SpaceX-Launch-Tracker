@@ -44,10 +44,8 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.appcompat)
-
     implementation(libs.androidx.compose.hilt.navigation)
-    implementation(libs.androidx.compose.runtime.livedata)
+    implementation(libs.androidx.compose.lifecycle.runtime)
 
     implementation(project(":core:common"))
     implementation(project(":core:ui"))
@@ -55,4 +53,6 @@ dependencies {
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+
+    implementation(libs.androidx.datastore.preferences)
 }
