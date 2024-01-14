@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.feature.launch.details.details
+package uk.co.zac_h.spacex.feature.launch.container.details
 
 import android.content.ActivityNotFoundException
 import android.content.Context

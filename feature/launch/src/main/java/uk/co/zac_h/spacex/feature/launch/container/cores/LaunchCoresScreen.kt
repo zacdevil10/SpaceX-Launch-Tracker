@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.feature.launch.details.cores
+package uk.co.zac_h.spacex.feature.launch.container.cores
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

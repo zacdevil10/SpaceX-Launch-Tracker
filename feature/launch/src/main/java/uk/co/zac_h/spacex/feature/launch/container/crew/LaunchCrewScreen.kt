@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.feature.launch.details.crew
+package uk.co.zac_h.spacex.feature.launch.container.crew
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding

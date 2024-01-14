@@ -38,7 +38,7 @@ import kotlinx.coroutines.flow.retry
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.ui.PagerItem
 import uk.co.zac_h.spacex.core.ui.SpaceXTabLayout
-import uk.co.zac_h.spacex.feature.launch.details.LaunchContainerScreen
+import uk.co.zac_h.spacex.feature.launch.container.LaunchContainerScreen
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.dto.news.ArticleResponse
 
