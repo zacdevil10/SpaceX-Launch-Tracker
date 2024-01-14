@@ -1,13 +1,8 @@
 package uk.co.zac_h.spacex.network
 
 //Hosts
-const val MOCK_LAUNCH_LIBRARY_BASE_URL = "https://lldev.thespacedevs.com/2.2.0/"
-const val LAUNCH_LIBRARY_BASE_URL = "https://ll.thespacedevs.com/2.2.0/"
 const val SPACEFLIGHT_NEWS_BASE_URL = "https://api.spaceflightnewsapi.net/v4/"
 const val REDDIT_BASE_URL = "https://reddit.com/"
-
-//Legacy API
-const val SPACEX_BASE_URL_V4 = "https://api.spacexdata.com/v4/"
 
 //region SpaceX
 

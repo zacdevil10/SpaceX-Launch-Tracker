@@ -18,7 +18,7 @@ android {
     }
 
     buildTypes {
-        named("release") {
+        release {
             isMinifyEnabled = false
             setProguardFiles(
                 listOf(
@@ -28,7 +28,7 @@ android {
             )
             buildConfigField("String", "URL", "\"https://ll.thespacedevs.com/2.2.0/\"")
         }
-        named("debug") {
+        debug {
             buildConfigField("String", "URL", "\"https://lldev.thespacedevs.com/2.2.0/\"")
         }
     }

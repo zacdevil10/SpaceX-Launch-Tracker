@@ -17,7 +17,7 @@ android {
     }
 
     buildTypes {
-        named("release") {
+        release {
             isMinifyEnabled = false
             setProguardFiles(
                 listOf(

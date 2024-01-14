@@ -11,7 +11,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import uk.co.zac_h.spacex.network.BuildConfig
 import uk.co.zac_h.spacex.network.REDDIT_BASE_URL
 import uk.co.zac_h.spacex.network.SPACEFLIGHT_NEWS_BASE_URL
-import uk.co.zac_h.spacex.network.SPACEX_BASE_URL_V4
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 
@@ -28,10 +27,6 @@ object NetworkModule {
     @SpaceflightNewsClient
     fun providesSpaceflightNewsHttpClient(): SpaceflightNewsService =
         createClient(SPACEFLIGHT_NEWS_BASE_URL)
-
-    @Provides
-    @SpaceXHttpClientV4
-    fun providesSpaceXHttpClientV4(): SpaceXService = createClient(SPACEX_BASE_URL_V4)
 
     @Provides
     @RedditHttpClient
@@ -57,10 +52,6 @@ annotation class LaunchLibraryClient
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class SpaceflightNewsClient
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class SpaceXHttpClientV4
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)

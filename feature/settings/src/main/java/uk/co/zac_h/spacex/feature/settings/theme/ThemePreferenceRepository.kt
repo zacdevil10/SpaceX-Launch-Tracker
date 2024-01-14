@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import uk.co.zac_h.spacex.core.common.DEFAULT_PREFERENCES
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -24,8 +24,9 @@ class ThemePreferenceRepository @Inject constructor(
             PREFERENCES_NIGHT_MODE_DEF_VAL
         )
 
-    private val themeModeLiveData: MutableLiveData<Int> = MutableLiveData()
-    val themeModeLive: LiveData<Int> get() = themeModeLiveData
+    private val themeModeLiveData: MutableStateFlow<Int> =
+        MutableStateFlow(PREFERENCES_NIGHT_MODE_DEF_VAL)
+    val themeModeLive: Flow<Int> get() = themeModeLiveData
 
     var isTheme: Int = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
         get() = themeMode
