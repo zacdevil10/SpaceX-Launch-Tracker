@@ -4,10 +4,8 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.rememberScrollState
@@ -162,7 +160,8 @@ fun SpaceXNavigationRail(
     contentType: ContentType
 ) {
     NavigationRail(
-        modifier = Modifier.fillMaxHeight(),
+        modifier = Modifier
+            .fillMaxHeight(),
         containerColor = when (contentType) {
             ContentType.SINGLE_PANE -> NavigationRailDefaults.ContainerColor
             ContentType.DUAL_PANE -> MaterialTheme.colorScheme.inverseOnSurface
@@ -182,10 +181,10 @@ fun SpaceXNavigationRail(
                     )
                 }
             )
-            Spacer(Modifier.height(16.dp))
         }
         Column(
-            modifier = Modifier,
+            modifier = Modifier
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
@@ -265,7 +264,7 @@ sealed class TopLevelNavigation(val route: String, @DrawableRes val icon: Int, v
 
     data object Settings : TopLevelNavigation(
         route = "settings",
-        icon = R.drawable.ic_baseline_brightness_medium_24,
+        icon = R.drawable.ic_baseline_settings_24,
         label = "Settings"
     )
 }
