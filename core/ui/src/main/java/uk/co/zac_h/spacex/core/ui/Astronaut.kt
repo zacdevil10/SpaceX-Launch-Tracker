@@ -6,7 +6,6 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -17,9 +16,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,13 +29,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -81,16 +79,15 @@ fun Astronaut(
                     .fillMaxWidth()
                     .height(IntrinsicSize.Max)
             ) {
-                AsyncImage(
-                    model = image,
-                    contentDescription = "",
-                    error = painterResource(id = R.drawable.ic_baseline_error_outline_24),
+                DynamicAsyncImage(
                     modifier = Modifier
                         .fillMaxWidth(0.3f)
                         .clip(CardDefaults.elevatedShape),
+                    model = image,
+                    contentDescription = "",
+                    placeholder = Icons.Outlined.Person,
                     contentScale = ContentScale.Crop
                 )
-
                 Column(
                     modifier = Modifier
                         .padding(start = 16.dp)
@@ -121,14 +118,14 @@ fun Astronaut(
                             style = MaterialTheme.typography.labelSmall
                         )
                     }
-                    if (isFullscreen) Image(
+                    if (isFullscreen) Icon(
                         modifier = Modifier
                             .align(Alignment.End)
                             .padding(top = 8.dp, end = 16.dp, bottom = 8.dp)
                             .rotate(rotationState),
                         imageVector = Icons.Filled.KeyboardArrowDown,
                         contentDescription = "",
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                     ) else Spacer(modifier = Modifier.height(32.dp))
                 }
             }

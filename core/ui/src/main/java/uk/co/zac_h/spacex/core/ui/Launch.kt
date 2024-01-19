@@ -35,7 +35,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 
 @Composable
 fun LaunchContainer(
@@ -119,7 +118,7 @@ internal fun Launch(
             .fillMaxWidth()
             .height(IntrinsicSize.Min),
     ) {
-        AsyncImage(
+        DynamicAsyncImage(
             modifier = Modifier
                 .defaultMinSize(64.dp, 64.dp)
                 .fillMaxHeight()
@@ -127,9 +126,7 @@ internal fun Launch(
             model = patch,
             contentDescription = "",
             placeholder = painterResource(id = R.drawable.ic_mission_patch),
-            error = painterResource(id = R.drawable.ic_mission_patch),
-            fallback = painterResource(id = R.drawable.ic_mission_patch),
-            alignment = Alignment.Center
+            tint = MaterialTheme.colorScheme.primary
         )
 
         Column(

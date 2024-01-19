@@ -24,7 +24,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -58,15 +57,16 @@ fun Vehicle(
     ) {
         Column {
             image?.let {
-                AsyncImage(
-                    model = it,
-                    contentDescription = "",
-                    error = painterResource(id = R.drawable.ic_baseline_error_outline_24),
+                DynamicAsyncImage(
                     modifier = Modifier
                         .height(256.dp)
                         .fillMaxWidth()
                         .clip(CardDefaults.elevatedShape),
-                    contentScale = ContentScale.Crop
+                    model = it,
+                    contentDescription = "",
+                    placeholder = painterResource(id = R.drawable.ic_rocket),
+                    contentScale = ContentScale.Crop,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             Row(

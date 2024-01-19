@@ -15,7 +15,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 
 @Composable
 fun Article(
@@ -33,15 +32,16 @@ fun Article(
             .clickable { uriHandler.openUri(url) }
             .padding(bottom = 8.dp)
     ) {
-        AsyncImage(
+        DynamicAsyncImage(
             modifier = Modifier
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp)
                 .aspectRatio(16f / 9f)
                 .clip(CardDefaults.elevatedShape),
             model = image,
             contentDescription = "",
-            error = painterResource(id = R.drawable.ic_baseline_error_outline_24),
-            contentScale = ContentScale.Crop
+            placeholder = painterResource(id = R.drawable.ic_newspaper),
+            contentScale = ContentScale.Crop,
+            tint = MaterialTheme.colorScheme.onBackground
         )
         Text(
             modifier = Modifier
