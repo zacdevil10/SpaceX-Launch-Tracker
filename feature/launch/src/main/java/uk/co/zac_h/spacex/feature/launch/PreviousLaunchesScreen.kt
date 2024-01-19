@@ -19,7 +19,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import uk.co.zac_h.spacex.core.common.ContentType
-import uk.co.zac_h.spacex.core.common.NetworkContent
+import uk.co.zac_h.spacex.core.common.NetworkVerticalListContent
 import uk.co.zac_h.spacex.core.ui.DevicePreviews
 import uk.co.zac_h.spacex.core.ui.LaunchContainer
 import uk.co.zac_h.spacex.core.ui.SpaceXTheme
@@ -34,7 +34,7 @@ fun PreviousLaunchesScreen(
     openedLaunch: LaunchItem?,
     onItemClick: (LaunchItem) -> Unit
 ) {
-    NetworkContent(
+    NetworkVerticalListContent(
         modifier = modifier,
         result = previous,
         state = listState

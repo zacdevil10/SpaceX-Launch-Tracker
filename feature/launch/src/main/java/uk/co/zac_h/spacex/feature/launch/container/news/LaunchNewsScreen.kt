@@ -10,7 +10,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
-import uk.co.zac_h.spacex.core.common.NetworkContent
+import uk.co.zac_h.spacex.core.common.NetworkVerticalListContent
 import uk.co.zac_h.spacex.core.common.utils.convertDate
 import uk.co.zac_h.spacex.core.common.utils.toMillis
 import uk.co.zac_h.spacex.core.ui.Article
@@ -21,7 +21,7 @@ fun LaunchNewsScreen(
     modifier: Modifier = Modifier,
     articles: LazyPagingItems<ArticleResponse>
 ) {
-    NetworkContent(
+    NetworkVerticalListContent(
         modifier = modifier,
         result = articles,
         state = rememberLazyListState()

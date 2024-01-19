@@ -27,7 +27,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.flow.retry
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.NetworkContent
 import uk.co.zac_h.spacex.core.ui.DevicePreviews
@@ -54,7 +53,7 @@ fun CompanyScreen(
                 }
             ),
         result = company,
-        retry = { viewModel.company.retry() }
+        retry = { viewModel.getCompany() }
     ) {
         CompanyContent(
             contentType = contentType,

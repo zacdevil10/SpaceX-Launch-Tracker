@@ -34,7 +34,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import kotlinx.coroutines.flow.retry
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.ui.PagerItem
 import uk.co.zac_h.spacex.core.ui.SpaceXTabLayout
@@ -67,7 +66,7 @@ fun LaunchListScreen(
             upcomingLazyListState = upcomingLazyListState,
             previousLazyListState = previousLazyListState,
             openedLaunch = uiState.openedLaunch,
-            retry = { viewModel.upcomingLaunches.retry() },
+            retry = { viewModel.getUpcoming() },
             navigateToDetail = { launch, pane -> viewModel.setOpenedLaunch(launch, pane) }
         )
 
@@ -80,7 +79,7 @@ fun LaunchListScreen(
             upcomingLazyListState = upcomingLazyListState,
             previousLazyListState = previousLazyListState,
             openedLaunch = uiState.openedLaunch,
-            retry = { viewModel.upcomingLaunches.retry() },
+            retry = { viewModel.getUpcoming() },
             closeDetailScreen = { viewModel.closeDetailScreen() },
             navigateToDetail = { launch, pane -> viewModel.setOpenedLaunch(launch, pane) }
         )

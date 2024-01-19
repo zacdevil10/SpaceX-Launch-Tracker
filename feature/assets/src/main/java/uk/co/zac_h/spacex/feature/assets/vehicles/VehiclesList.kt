@@ -14,6 +14,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.NetworkContent
+import uk.co.zac_h.spacex.core.common.NetworkVerticalListContent
 import uk.co.zac_h.spacex.core.ui.Vehicle
 import uk.co.zac_h.spacex.feature.assets.R
 import uk.co.zac_h.spacex.network.ApiResult
@@ -77,7 +78,7 @@ fun <T : VehicleItem> VehiclePaginatedList(
     openedAsset: VehicleItem?,
     navigate: (VehicleItem) -> Unit
 ) {
-    NetworkContent(
+    NetworkVerticalListContent(
         modifier = modifier,
         result = vehicles,
         state = state

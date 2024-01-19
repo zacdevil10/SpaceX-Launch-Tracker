@@ -7,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.flow.retry
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehiclesList
@@ -29,7 +28,7 @@ fun DragonScreen(
         dragons = dragons,
         contentType = contentType,
         listState = dragonLazyListState,
-        retry = { viewModel.dragons.retry() },
+        retry = { viewModel.getDragons() },
         openedAsset = openedAsset,
         onItemClick = onItemClick
     )

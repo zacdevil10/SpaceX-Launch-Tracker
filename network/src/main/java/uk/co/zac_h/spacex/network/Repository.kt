@@ -34,5 +34,5 @@ abstract class Repository<T>(
         cache.store(data = it, key = key)
     }
 
-    private suspend fun fetch(): ApiResult<T> = remoteDataSource.fetchAsync().map { it }
+    private suspend fun fetch(): ApiResult<T> = remoteDataSource.fetchAsync().toApiResource { it }
 }

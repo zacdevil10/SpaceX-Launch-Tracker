@@ -38,7 +38,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.flow.retry
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.filter.FilterOrder
 import uk.co.zac_h.spacex.core.common.filter.RocketFamilyFilter
@@ -74,9 +73,7 @@ fun RocketsScreen(
         rockets = rockets,
         contentType = contentType,
         listState = rocketsLazyListState,
-        retry = {
-            viewModel.rockets.retry()
-        },
+        retry = { viewModel.getRockets() },
         showBottomSheet = showBottomSheet,
         setSheetState = { showBottomSheet = it },
         sheetState = sheetState,
@@ -123,7 +120,7 @@ fun RocketsContent(
     Scaffold(
         floatingActionButton = {
             AnimatedVisibility(
-                visible = listState.isScrollingUp(),
+                visible = listState.isScrollingUp() && rockets is ApiResult.Success,
                 enter = scaleIn(),
                 exit = scaleOut(),
             ) {

@@ -17,7 +17,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import kotlinx.coroutines.flow.MutableStateFlow
 import uk.co.zac_h.spacex.core.common.ContentType
-import uk.co.zac_h.spacex.core.common.NetworkContent
+import uk.co.zac_h.spacex.core.common.NetworkVerticalListContent
 import uk.co.zac_h.spacex.core.ui.Astronaut
 import uk.co.zac_h.spacex.core.ui.DevicePreviews
 import uk.co.zac_h.spacex.core.ui.SpaceXTheme
@@ -58,7 +58,7 @@ fun AstronautsContent(
     openedAsset: VehicleItem?,
     onItemClick: (VehicleItem) -> Unit
 ) {
-    NetworkContent(
+    NetworkVerticalListContent(
         modifier = modifier
             .fillMaxSize(),
         result = astronauts,

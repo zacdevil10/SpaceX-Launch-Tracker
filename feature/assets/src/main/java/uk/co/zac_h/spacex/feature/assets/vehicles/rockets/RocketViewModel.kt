@@ -1,12 +1,12 @@
 package uk.co.zac_h.spacex.feature.assets.vehicles.rockets
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import uk.co.zac_h.spacex.core.common.filter.FilterOrder
 import uk.co.zac_h.spacex.core.common.filter.RocketFamilyFilter
 import uk.co.zac_h.spacex.core.common.filter.RocketTypeFilter
@@ -17,7 +17,7 @@ import uk.co.zac_h.spacex.core.common.utils.filterAll
 import uk.co.zac_h.spacex.core.common.utils.sortedBy
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
-import uk.co.zac_h.spacex.network.apiFlow
+import uk.co.zac_h.spacex.network.get
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,13 +28,8 @@ class RocketViewModel @Inject constructor(
     private val _filter = MutableStateFlow(RocketsFilterState())
     val filter: StateFlow<RocketsFilterState> = _filter
 
-    private val _rockets = apiFlow {
-        repository.fetch(key = "agency", cachePolicy = CachePolicy.EXPIRES)
-    }.map { result ->
-        result.map { response ->
-            response.launcherList?.map { RocketItem(it) } ?: emptyList()
-        }
-    }
+    private val _rockets: MutableStateFlow<ApiResult<List<RocketItem>>> =
+        MutableStateFlow(ApiResult.Pending)
     val rockets: Flow<ApiResult<List<RocketItem>>> = combine(_rockets, _filter) { result, filter ->
         result.map { rocketList ->
             rocketList.filterAll(
@@ -45,6 +40,18 @@ class RocketViewModel @Inject constructor(
                     rocket.type in filter.type.rockets
                 } else null
             ).sortedBy(filter.order.order) { rocket -> rocket.maidenFlightMillis }
+        }
+    }
+
+    init {
+        getRockets()
+    }
+
+    fun getRockets() {
+        _rockets.get(viewModelScope) {
+            repository.fetch(key = "agency", cachePolicy = CachePolicy.EXPIRES).map {
+                it.launcherList?.map(::RocketItem) ?: emptyList()
+            }
         }
     }
 

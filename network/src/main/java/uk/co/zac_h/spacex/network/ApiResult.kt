@@ -15,7 +15,7 @@ sealed class ApiResult<out R> {
     }
 }
 
-fun <R, T> T.map(transform: (value: T) -> R): ApiResult<R> = try {
+fun <R, T> T.toApiResource(transform: (value: T) -> R): ApiResult<R> = try {
     ApiResult.Success(let(transform))
 } catch (e: HttpException) {
     ApiResult.Failure(
