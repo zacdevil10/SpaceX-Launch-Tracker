@@ -1,41 +1,44 @@
 package uk.co.zac_h.spacex.network.dto.spacex
 
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class LaunchResponse(
     val id: String,
     val url: String?,
     val slug: String?,
     val name: String,
     val status: Status?,
-    @field:Json(name = "last_updated") val lastUpdated: String?,
+    @SerialName("last_updated") val lastUpdated: String?,
     val net: String?,
-    @field:Json(name = "window_end") val windowEnd: String?,
-    @field:Json(name = "window_start") val windowStart: String?,
+    @SerialName("window_end") val windowEnd: String?,
+    @SerialName("window_start") val windowStart: String?,
     val probability: Int?,
     val holdReason: String?,
     val failReason: String?,
     val hashtag: String?,
-    @field:Json(name = "launch_service_provider") val launchServiceProvider: LaunchServiceProvider?,
+    @SerialName("launch_service_provider") val launchServiceProvider: LaunchServiceProvider?,
     val rocket: Rocket?,
     val mission: Mission?,
     val pad: Pad?,
-    @field:Json(name = "vidURLs") val video: List<Video>?,
-    @field:Json(name = "webcast_live") val webcastLive: Boolean?,
+    @SerialName("vidURLs") val video: List<Video>?,
+    @SerialName("webcast_live") val webcastLive: Boolean?,
     val image: String?,
     val infographic: String?,
     val program: List<Program>?,
-    @field:Json(name = "orbital_launch_attempt_count") val orbitalLaunchAttemptCount: Int?,
-    @field:Json(name = "location_launch_attempt_count") val locationLaunchAttemptCount: Int?,
-    @field:Json(name = "pad_launch_attempt_count") val padLaunchAttemptCount: Int?,
-    @field:Json(name = "agency_launch_attempt_count") val agencyLaunchAttemptCount: Int?,
-    @field:Json(name = "orbital_launch_attempt_count_year") val orbitalLaunchAttemptCountYear: Int?,
-    @field:Json(name = "location_launch_attempt_count_year") val locationLaunchAttemptCountYear: Int?,
-    @field:Json(name = "pad_launch_attempt_count_year") val padLaunchAttemptCountYear: Int?,
-    @field:Json(name = "agency_launch_attempt_count_year") val agencyLaunchAttemptCountYear: Int?,
-    @field:Json(name = "mission_patches") val missionPatches: List<MissionPatch>?,
+    @SerialName("orbital_launch_attempt_count") val orbitalLaunchAttemptCount: Int?,
+    @SerialName("location_launch_attempt_count") val locationLaunchAttemptCount: Int?,
+    @SerialName("pad_launch_attempt_count") val padLaunchAttemptCount: Int?,
+    @SerialName("agency_launch_attempt_count") val agencyLaunchAttemptCount: Int?,
+    @SerialName("orbital_launch_attempt_count_year") val orbitalLaunchAttemptCountYear: Int?,
+    @SerialName("location_launch_attempt_count_year") val locationLaunchAttemptCountYear: Int?,
+    @SerialName("pad_launch_attempt_count_year") val padLaunchAttemptCountYear: Int?,
+    @SerialName("agency_launch_attempt_count_year") val agencyLaunchAttemptCountYear: Int?,
+    @SerialName("mission_patches") val missionPatches: List<MissionPatch>?,
 ) {
 
+    @Serializable
     data class Status(
         val id: Int,
         val name: String?,
@@ -43,6 +46,7 @@ data class LaunchResponse(
         val description: String?
     )
 
+    @Serializable
     data class LaunchServiceProvider(
         val id: Int,
         val url: String?,
@@ -50,39 +54,44 @@ data class LaunchResponse(
         val type: String?
     )
 
+    @Serializable
     data class Rocket(
         val id: Int,
         val configuration: Configuration?,
-        @field:Json(name = "launcher_stage") val launcherStage: List<LauncherStage?>?,
-        @field:Json(name = "spacecraft_stage") val spacecraftStage: SpacecraftStage?
+        @SerialName("launcher_stage") val launcherStage: List<LauncherStage?>?,
+        @SerialName("spacecraft_stage") val spacecraftStage: SpacecraftStage?
     ) {
 
+        @Serializable
         data class Configuration(
             val id: Int,
             val url: String?,
             val name: String?,
             val family: String?,
-            @field:Json(name = "full_name") val fullName: String?,
+            @SerialName("full_name") val fullName: String?,
             val variant: String?
         )
 
+        @Serializable
         data class LauncherStage(
             val id: Int,
             val type: String?,
             val reused: Boolean?,
             val launcher: Launcher?,
             val landing: Landing?,
-            @field:Json(name = "turn_around_time_days") val turnAroundTimeDays: Int?,
-            @field:Json(name = "previous_flight") val previousFlight: PreviousFlight?
+            @SerialName("turn_around_time_days") val turnAroundTimeDays: Int?,
+            @SerialName("previous_flight") val previousFlight: PreviousFlight?
         ) {
 
+            @Serializable
             data class Launcher(
                 val id: Int,
-                @field:Json(name = "serial_number") val serialNumber: String?,
+                @SerialName("serial_number") val serialNumber: String?,
                 val status: String?,
                 val flights: Int?,
             )
 
+            @Serializable
             data class Landing(
                 val id: Int,
                 val attempt: Boolean?,
@@ -92,14 +101,16 @@ data class LaunchResponse(
                 val type: Type?,
             ) {
 
+                @Serializable
                 data class Location(
                     val id: Int,
                     val name: String?,
                     val abbrev: String?,
                     val description: String?,
-                    @field:Json(name = "successful_landings") val successfulLandings: Int?,
+                    @SerialName("successful_landings") val successfulLandings: Int?,
                 )
 
+                @Serializable
                 data class Type(
                     val id: Int,
                     val name: String?,
@@ -108,46 +119,53 @@ data class LaunchResponse(
                 )
             }
 
+            @Serializable
             data class PreviousFlight(
                 val id: String,
                 val name: String?
             )
         }
 
+        @Serializable
         data class SpacecraftStage(
             val id: Int,
             val destination: String?,
-            @field:Json(name = "launch_crew") val launchCrew: List<LaunchCrew?>?
+            @SerialName("launch_crew") val launchCrew: List<LaunchCrew?>?
         ) {
 
+            @Serializable
             data class LaunchCrew(
                 val id: Int,
                 val role: Role?,
                 val astronaut: Astronaut?,
             ) {
 
+                @Serializable
                 data class Role(
                     val id: Int,
                     val role: String?,
                     val priority: Int?
                 )
 
+                @Serializable
                 data class Astronaut(
                     val id: Int,
                     val name: String?,
                     val status: Status?,
                     val agency: Agency?,
                     val bio: String?,
-                    @field:Json(name = "profile_image") val profileImage: String?,
-                    @field:Json(name = "last_flight") val lastFlight: String?,
-                    @field:Json(name = "first_flight") val firstFlight: String?
+                    @SerialName("profile_image") val profileImage: String?,
+                    @SerialName("last_flight") val lastFlight: String?,
+                    @SerialName("first_flight") val firstFlight: String?
                 ) {
 
+                    @Serializable
                     data class Status(
                         val id: Int,
                         val name: String?,
                     )
 
+                    @Serializable
                     data class Agency(
                         val id: Int,
                         val name: String?
@@ -157,15 +175,17 @@ data class LaunchResponse(
         }
     }
 
+    @Serializable
     data class Mission(
         val id: Int,
         val name: String?,
         val description: String?,
-        @field:Json(name = "launch_designator") val launchDesignator: String?,
+        @SerialName("launch_designator") val launchDesignator: String?,
         val type: String?,
         val orbit: Orbit?
     ) {
 
+        @Serializable
         data class Orbit(
             val id: Int,
             val name: String?,
@@ -173,63 +193,69 @@ data class LaunchResponse(
         )
     }
 
+    @Serializable
     data class Pad(
         val id: Int,
         val url: String?,
-        @field:Json(name = "agency_id") val agencyId: String?,
+        @SerialName("agency_id") val agencyId: Int?,
         val name: String?,
-        @field:Json(name = "info_url") val infoUrl: String?,
-        @field:Json(name = "wiki_url") val wikiUrl: String?,
-        @field:Json(name = "map_url") val mapUrl: String?,
+        @SerialName("info_url") val infoUrl: String?,
+        @SerialName("wiki_url") val wikiUrl: String?,
+        @SerialName("map_url") val mapUrl: String?,
         val latitude: String?,
         val longitude: String?,
         val location: Location,
-        @field:Json(name = "map_image") val mapImage: String?,
-        @field:Json(name = "total_launch_count") val totalLaunchCount: Int?,
-        @field:Json(name = "orbital_launch_attempt_count") val orbitalLaunchAttemptCount: Int?,
+        @SerialName("map_image") val mapImage: String?,
+        @SerialName("total_launch_count") val totalLaunchCount: Int?,
+        @SerialName("orbital_launch_attempt_count") val orbitalLaunchAttemptCount: Int?,
     ) {
 
+        @Serializable
         data class Location(
             val id: Int,
             val url: String?,
             val name: String?,
-            @field:Json(name = "country_code") val countryCode: String?,
-            @field:Json(name = "map_image") val mapImage: String?,
-            @field:Json(name = "total_launch_count") val totalLaunchCount: Int?,
-            @field:Json(name = "total_landing_count") val totalLandingCount: Int?
+            @SerialName("country_code") val countryCode: String?,
+            @SerialName("map_image") val mapImage: String?,
+            @SerialName("total_launch_count") val totalLaunchCount: Int?,
+            @SerialName("total_landing_count") val totalLandingCount: Int?
         )
     }
 
+    @Serializable
     data class Video(
         val priority: Int,
         val source: String?,
         val title: String?,
         val description: String?,
-        @field:Json(name = "feature_image") val featureImage: String?,
+        @SerialName("feature_image") val featureImage: String?,
         val url: String,
         val type: Type?,
     ) {
 
+        @Serializable
         data class Type(
             val id: Int,
             val name: String,
         )
     }
 
+    @Serializable
     data class Program(
         val id: Int,
         val url: String?,
         val name: String?,
         val description: String?,
         val agencies: List<Agency>?,
-        @field:Json(name = "image_url") val imageUrl: String?,
-        @field:Json(name = "start_date") val startDate: String?,
-        @field:Json(name = "end_date") val endDate: String?,
-        @field:Json(name = "info_url") val infoUrl: String?,
-        @field:Json(name = "wiki_url") val wikiUrl: String?,
-        @field:Json(name = "mission_patches") val missionPatches: List<MissionPatch>?
+        @SerialName("image_url") val imageUrl: String?,
+        @SerialName("start_date") val startDate: String?,
+        @SerialName("end_date") val endDate: String?,
+        @SerialName("info_url") val infoUrl: String?,
+        @SerialName("wiki_url") val wikiUrl: String?,
+        @SerialName("mission_patches") val missionPatches: List<MissionPatch>?
     ) {
 
+        @Serializable
         data class Agency(
             val id: Int,
             val url: String?,
@@ -238,11 +264,12 @@ data class LaunchResponse(
         )
     }
 
+    @Serializable
     data class MissionPatch(
         val id: Int,
         val name: String?,
         val priority: Int?,
-        @field:Json(name = "image_url") val imageUrl: String?,
+        @SerialName("image_url") val imageUrl: String?,
         val agency: Program.Agency?,
     )
 }

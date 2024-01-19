@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.network
 
-import retrofit2.Response
+import retrofit2.HttpException
 
 sealed class ApiResult<out R> {
 
@@ -15,22 +15,17 @@ sealed class ApiResult<out R> {
     }
 }
 
-fun <R, T> Response<T>.map(transform: (value: T) -> R): ApiResult<R> = try {
-    if (isSuccessful) {
-        body()?.let {
-            ApiResult.Success(it.let(transform))
-        } ?: ApiResult.Failure(IllegalArgumentException("No body found"))
-    } else {
-        ApiResult.Failure(
-            when (code()) {
-                429 -> TooManyRequestsException(
-                    errorBody()?.string()?.filter { it.isDigit() }?.toInt()
-                )
-
-                else -> Exception(errorBody()?.string())
-            }
-        )
-    }
+fun <R, T> T.map(transform: (value: T) -> R): ApiResult<R> = try {
+    ApiResult.Success(let(transform))
+} catch (e: HttpException) {
+    ApiResult.Failure(
+        when (e.code()) {
+            429 -> TooManyRequestsException(
+                e.message().filter { it.isDigit() }.toInt()
+            )
+            else -> Exception(e.message())
+        }
+    )
 } catch (e: Throwable) {
     ApiResult.Failure(e)
 }

@@ -202,7 +202,7 @@ fun CompanyContentPreview() {
             modifier = Modifier.background(MaterialTheme.colorScheme.background),
             contentType = ContentType.SINGLE_PANE,
             company = Company(
-                id = "",
+                id = 0,
                 name = "SpaceX",
                 description = "Description",
                 administrator = "Admin",

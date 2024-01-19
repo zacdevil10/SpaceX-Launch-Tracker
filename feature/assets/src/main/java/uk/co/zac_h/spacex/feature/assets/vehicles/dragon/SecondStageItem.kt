@@ -11,7 +11,7 @@ import java.util.Locale
 import java.util.TimeZone
 
 data class SecondStageItem(
-    override val id: String,
+    override val id: Int,
     override val title: String?,
     val name: String?,
     override val description: String?,

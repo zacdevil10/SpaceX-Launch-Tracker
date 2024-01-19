@@ -4,7 +4,7 @@ plugins {
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
     id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp")
+    kotlin("plugin.serialization") version libs.versions.kotlin
 }
 
 android {
@@ -48,10 +48,8 @@ android {
 dependencies {
     //Retrofit
     implementation(libs.squareup.retrofit)
-    implementation(libs.squareup.converter.moshi)
-
-    //Moshi
-    ksp(libs.squareup.moshi)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.serialization.converter)
 
     //Retrofit logging
     implementation(libs.logging.interceptor)

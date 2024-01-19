@@ -1,7 +1,9 @@
 package uk.co.zac_h.spacex.network.dto.spacex
 
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class AstronautResponse(
     val id: Int,
     val name: String,
@@ -9,15 +11,17 @@ data class AstronautResponse(
     val agency: Agency?,
     val nationality: String?,
     val bio: String?,
-    @field:Json(name = "profile_image") val image: String?,
-    @field:Json(name = "first_flight") val firstFlight: String?
+    @SerialName("profile_image") val image: String?,
+    @SerialName("first_flight") val firstFlight: String?
 ) {
 
+    @Serializable
     data class Status(
         val id: Int,
         val name: String?,
     )
 
+    @Serializable
     data class Agency(
         val id: Int,
         val name: String?

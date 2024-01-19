@@ -1,46 +1,54 @@
 package uk.co.zac_h.spacex.network.dto.reddit
 
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class SubredditModel(
     var data: SubredditDataModel
 )
 
+@Serializable
 data class SubredditDataModel(
     var children: List<SubredditPostModel>
 )
 
+@Serializable
 data class SubredditPostModel(
     var data: RedditPostData
 )
 
+@Serializable
 data class RedditPostData(
     var id: String,
-    @field:Json(name = "selftext_html") var textHtml: String?,
+    @SerialName("selftext_html") var textHtml: String?,
     var title: String,
     var name: String,
     var author: String,
-    @field:Json(name = "created_utc") var created: Float,
+    @SerialName("created_utc") var created: Float,
     var thumbnail: String,
     var score: Int,
-    @field:Json(name = "num_comments") var commentsCount: Int,
+    @SerialName("num_comments") var commentsCount: Int,
     var preview: RedditPreviewListModel?,
     var domain: String,
     var stickied: Boolean,
-    @field:Json(name = "is_self") var isSelf: Boolean,
-    @field:Json(name = "is_reddit_media_domain") var redditDomain: Boolean,
+    @SerialName("is_self") var isSelf: Boolean,
+    @SerialName("is_reddit_media_domain") var redditDomain: Boolean,
     var permalink: String
 )
 
+@Serializable
 data class RedditPreviewListModel(
     var images: List<RedditMediaAlternatesModel>
 )
 
+@Serializable
 data class RedditMediaAlternatesModel(
     var source: RedditMediaModel,
     var resolutions: List<RedditMediaModel>
 )
 
+@Serializable
 data class RedditMediaModel(
     var url: String,
     var width: Int,

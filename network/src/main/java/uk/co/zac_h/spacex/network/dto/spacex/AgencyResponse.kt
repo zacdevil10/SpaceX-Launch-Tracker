@@ -1,70 +1,74 @@
 package uk.co.zac_h.spacex.network.dto.spacex
 
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class AgencyResponse(
-    val id: String,
+    val id: Int,
     val name: String?,
     val description: String?,
     val administrator: String?,
-    @field:Json(name = "founding_year") val foundingYear: String?,
-    @field:Json(name = "total_launch_count") val totalLaunchCount: Int?,
-    @field:Json(name = "successful_launches") val successfulLaunches: Int?,
-    @field:Json(name = "consecutive_successful_launches") val consecutiveSuccessfulLaunches: Int?,
-    @field:Json(name = "failed_launches") val failedLaunches: Int?,
-    @field:Json(name = "pending_launches") val pendingLaunches: Int?,
-    @field:Json(name = "successful_landings") val successfulLandings: Int?,
-    @field:Json(name = "failed_landings") val failedLandings: Int?,
-    @field:Json(name = "attempted_landings") val attemptedLandings: Int?,
-    @field:Json(name = "consecutive_successful_landings") val consecutiveSuccessfulLandings: Int?,
-    @field:Json(name = "info_url") val infoUrl: String?,
-    @field:Json(name = "wiki_url") val wikiUrl: String?,
-    @field:Json(name = "launcher_list") val launcherList: List<Launcher>?,
-    @field:Json(name = "spacecraft_list") val spacecraftList: List<Spacecraft>?
+    @SerialName("founding_year") val foundingYear: String?,
+    @SerialName("total_launch_count") val totalLaunchCount: Int?,
+    @SerialName("successful_launches") val successfulLaunches: Int?,
+    @SerialName("consecutive_successful_launches") val consecutiveSuccessfulLaunches: Int?,
+    @SerialName("failed_launches") val failedLaunches: Int?,
+    @SerialName("pending_launches") val pendingLaunches: Int?,
+    @SerialName("successful_landings") val successfulLandings: Int?,
+    @SerialName("failed_landings") val failedLandings: Int?,
+    @SerialName("attempted_landings") val attemptedLandings: Int?,
+    @SerialName("consecutive_successful_landings") val consecutiveSuccessfulLandings: Int?,
+    @SerialName("info_url") val infoUrl: String?,
+    @SerialName("wiki_url") val wikiUrl: String?,
+    @SerialName("launcher_list") val launcherList: List<Launcher>?,
+    @SerialName("spacecraft_list") val spacecraftList: List<Spacecraft>?
 ) {
 
+    @Serializable
     data class Launcher(
         val id: Int,
         val name: String?,
         val description: String?,
         val family: String?,
-        @field:Json(name = "full_name") val fullName: String?,
+        @SerialName("full_name") val fullName: String?,
         val variant: String?,
-        @field:Json(name = "min_stage") val minStage: Int?,
-        @field:Json(name = "max_stage") val maxStage: Int?,
+        @SerialName("min_stage") val minStage: Int?,
+        @SerialName("max_stage") val maxStage: Int?,
         val length: Float?,
         val diameter: Float?,
-        @field:Json(name = "maiden_flight") val maidenFlight: String?,
-        @field:Json(name = "launch_mass") val launchMass: Int?,
-        @field:Json(name = "leo_capacity") val leoCapacity: Int?,
-        @field:Json(name = "gto_capacity") val gtoCapacity: Int?,
-        @field:Json(name = "to_thrust") val toThrust: Int?,
+        @SerialName("maiden_flight") val maidenFlight: String?,
+        @SerialName("launch_mass") val launchMass: Int?,
+        @SerialName("leo_capacity") val leoCapacity: Int?,
+        @SerialName("gto_capacity") val gtoCapacity: Int?,
+        @SerialName("to_thrust") val toThrust: Int?,
         val apogee: Int?,
-        @field:Json(name = "image_url") val imageUrl: String?,
-        @field:Json(name = "info_url") val infoUrl: String?,
-        @field:Json(name = "wiki_url") val wikiUrl: String?,
-        @field:Json(name = "consecutive_successful_launches") val consecutiveSuccessfulLaunches: Int?,
-        @field:Json(name = "successful_launches") val successfulLaunches: Int?,
-        @field:Json(name = "failed_launches") val failedLaunches: Int?,
-        @field:Json(name = "pending_launches") val pendingLaunches: Int?
+        @SerialName("image_url") val imageUrl: String?,
+        @SerialName("info_url") val infoUrl: String?,
+        @SerialName("wiki_url") val wikiUrl: String?,
+        @SerialName("consecutive_successful_launches") val consecutiveSuccessfulLaunches: Int?,
+        @SerialName("successful_launches") val successfulLaunches: Int?,
+        @SerialName("failed_launches") val failedLaunches: Int?,
+        @SerialName("pending_launches") val pendingLaunches: Int?
     )
 
+    @Serializable
     data class Spacecraft(
-        val id: String,
+        val id: Int,
         val name: String?,
-        @field:Json(name = "in_use") val inUse: Boolean?,
+        @SerialName("in_use") val inUse: Boolean?,
         val capability: String?,
         val history: String?,
         val details: String?,
-        @field:Json(name = "maiden_flight") val maidenFlight: String?,
+        @SerialName("maiden_flight") val maidenFlight: String?,
         val height: Float?,
         val diameter: Float?,
-        @field:Json(name = "human_rated") val humanRated: Boolean?,
-        @field:Json(name = "crew_capacity") val crewCapacity: Int?,
-        @field:Json(name = "payload_capacity") val payloadCapacity: Int?,
-        @field:Json(name = "flight_life") val flightLife: String?,
-        @field:Json(name = "image_url") val imageUrl: String?,
-        @field:Json(name = "wiki_link") val wikiLink: String?,
-        @field:Json(name = "info_link") val infoLink: String?
+        @SerialName("human_rated") val humanRated: Boolean?,
+        @SerialName("crew_capacity") val crewCapacity: Int?,
+        @SerialName("payload_capacity") val payloadCapacity: Int?,
+        @SerialName("flight_life") val flightLife: String?,
+        @SerialName("image_url") val imageUrl: String?,
+        @SerialName("wiki_link") val wikiLink: String?,
+        @SerialName("info_link") val infoLink: String?
     )
 }
