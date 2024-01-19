@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.base
+package uk.co.zac_h.spacex
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -18,7 +18,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import uk.co.zac_h.spacex.SpaceXApp
 import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 import uk.co.zac_h.spacex.feature.settings.DarkThemeConfig
 import uk.co.zac_h.spacex.feature.settings.SettingsUiState

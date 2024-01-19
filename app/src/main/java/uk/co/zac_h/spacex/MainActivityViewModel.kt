@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.base
+package uk.co.zac_h.spacex
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

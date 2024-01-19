@@ -223,7 +223,9 @@ fun SpaceXNavHost(
             )
         }
         dialog(TopLevelNavigation.Settings.route) {
-            SettingsDialog(onDismiss = { navController.popBackStack() })
+            SettingsDialog(
+                onDismiss = { navController.popBackStack() }
+            )
         }
     }
 }
@@ -231,25 +233,32 @@ fun SpaceXNavHost(
 @DevicePreviews
 @Composable
 fun SpaceXAppPreview(
-    @PreviewParameter(WindowWidthSizePreviewParameterProvider::class) windowWidth: WindowWidthSizeClassPreview
+    @PreviewParameter(NavigationPreviewParameterProvider::class) navigation: NavigationPreview
 ) {
     SpaceXTheme {
-        SpaceXApp(windowWidth.value)
+        SpaceXNavigationWrapper(
+            navigationType = navigation.value.first,
+            contentType = navigation.value.second
+        )
     }
 }
 
-sealed class WindowWidthSizeClassPreview(val value: WindowWidthSizeClass) {
-    object Compact : WindowWidthSizeClassPreview(WindowWidthSizeClass.Compact)
-    object Medium : WindowWidthSizeClassPreview(WindowWidthSizeClass.Medium)
-    object Expanded : WindowWidthSizeClassPreview(WindowWidthSizeClass.Expanded)
+sealed class NavigationPreview(val value: Pair<NavigationType, ContentType>) {
+    data object SinglePane :
+        NavigationPreview(NavigationType.BOTTOM_NAVIGATION to ContentType.SINGLE_PANE)
+
+    data object DualPane :
+        NavigationPreview(NavigationType.NAVIGATION_RAIL to ContentType.DUAL_PANE)
+
+    data object DualPanePermanent :
+        NavigationPreview(NavigationType.PERMANENT_NAVIGATION_DRAWER to ContentType.DUAL_PANE)
 }
 
-class WindowWidthSizePreviewParameterProvider :
-    PreviewParameterProvider<WindowWidthSizeClassPreview> {
-    override val values: Sequence<WindowWidthSizeClassPreview> =
+class NavigationPreviewParameterProvider : PreviewParameterProvider<NavigationPreview> {
+    override val values: Sequence<NavigationPreview> =
         sequenceOf(
-            WindowWidthSizeClassPreview.Compact,
-            WindowWidthSizeClassPreview.Medium,
-            WindowWidthSizeClassPreview.Expanded,
+            NavigationPreview.SinglePane,
+            NavigationPreview.DualPane,
+            NavigationPreview.DualPanePermanent
         )
 }

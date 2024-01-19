@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.base
+package uk.co.zac_h.spacex
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
