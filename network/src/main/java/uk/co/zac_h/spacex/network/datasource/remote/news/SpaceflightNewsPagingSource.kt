@@ -7,13 +7,16 @@ import uk.co.zac_h.spacex.network.dto.news.ArticleResponse
 import uk.co.zac_h.spacex.network.retrofit.SpaceflightNewsService
 
 class SpaceflightNewsPagingSource(
-    private val httpService: SpaceflightNewsService
+    private val httpService: SpaceflightNewsService,
+    private val launch: String? = null
 ) : PagingSource<Int, ArticleResponse>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ArticleResponse> = try {
         val response = httpService.getArticles(
             limit = params.loadSize,
-            offset = params.key ?: 0
+            offset = params.key ?: 0,
+            search = if (launch != null) null else "SpaceX",
+            launch = launch
         )
 
         val nextOffset: Int? = response.body()?.next?.let {

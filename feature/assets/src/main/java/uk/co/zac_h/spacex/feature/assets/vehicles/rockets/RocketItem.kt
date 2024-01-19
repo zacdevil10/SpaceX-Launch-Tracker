@@ -2,6 +2,10 @@ package uk.co.zac_h.spacex.feature.assets.vehicles.rockets
 
 import uk.co.zac_h.spacex.core.common.types.RocketFamily
 import uk.co.zac_h.spacex.core.common.types.RocketType
+import uk.co.zac_h.spacex.core.common.utils.TextResource
+import uk.co.zac_h.spacex.core.common.utils.metricFormat
+import uk.co.zac_h.spacex.feature.assets.R
+import uk.co.zac_h.spacex.feature.assets.vehicles.SpecsItem
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
 import uk.co.zac_h.spacex.network.dto.spacex.AgencyResponse
 import java.text.SimpleDateFormat
@@ -55,6 +59,64 @@ data class RocketItem(
         failedLaunches = response.failedLaunches,
         pendingLaunches = response.pendingLaunches
     )
+
+    override val specs: List<SpecsItem>
+        get() = listOfNotNull(
+            successRate?.let {
+                SpecsItem(
+                    TextResource.string(R.string.rocket_details_success_rate_label),
+                    TextResource.string(R.string.percentage, it.metricFormat())
+                )
+            },
+            maidenFlight?.let {
+                SpecsItem(
+                    TextResource.string(R.string.rocket_details_first_flight_label),
+                    TextResource.Companion.string(it)
+                )
+            },
+            stages?.let {
+                SpecsItem(
+                    TextResource.string(R.string.rocket_details_stages_label),
+                    TextResource.Companion.string(it.toString())
+                )
+            },
+            length?.let {
+                SpecsItem(
+                    TextResource.string(R.string.rocket_details_height_label),
+                    TextResource.string(R.string.measurement_meters, it.metricFormat())
+                )
+            },
+            diameter?.let {
+                SpecsItem(
+                    TextResource.string(R.string.rocket_details_diameter_label),
+                    TextResource.string(R.string.measurement_meters, it.metricFormat())
+                )
+            },
+            launchMass?.let {
+                SpecsItem(
+                    TextResource.string(R.string.rocket_details_mass_label),
+                    TextResource.string(R.string.mass_tonne, it)
+                )
+            },
+            toThrust?.let {
+                SpecsItem(
+                    TextResource.string(R.string.rocket_details_thrust_at_liftoff_label),
+                    TextResource.string(R.string.thrust_kn, it.metricFormat())
+                )
+            },
+            leoCapacity?.let {
+                SpecsItem(
+                    TextResource.string(R.string.rocket_details_mass_to_leo_label),
+                    TextResource.string(R.string.mass_kg, it.metricFormat())
+                )
+            },
+            gtoCapacity?.let {
+                SpecsItem(
+                    TextResource.string(R.string.rocket_details_mass_to_gto_label),
+                    TextResource.string(R.string.mass_kg, it.metricFormat())
+                )
+            }
+        )
 
     val successRate: Float?
         get() = if (successfulLaunches != null && failedLaunches != null && successfulLaunches > 0) {

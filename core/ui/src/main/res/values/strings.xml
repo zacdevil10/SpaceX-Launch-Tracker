@@ -3,6 +3,7 @@
 
     <!-- LaunchView -->
     <string name="reused">Reused</string>
+    <string name="launch_site_label">Launch site:</string>
 
     <!-- Crew -->
     <string name="details_label">Details</string>

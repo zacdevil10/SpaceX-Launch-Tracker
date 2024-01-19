@@ -1,22 +1,23 @@
 package uk.co.zac_h.spacex.feature.launch
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.liveData
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import uk.co.zac_h.spacex.core.common.recyclerview.RecyclerViewItem
-import uk.co.zac_h.spacex.feature.launch.adapters.Header
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
-import uk.co.zac_h.spacex.network.async
-import uk.co.zac_h.spacex.network.dto.spacex.LaunchResponse
+import uk.co.zac_h.spacex.network.apiFlow
+import uk.co.zac_h.spacex.network.dto.news.ArticleResponse
+import uk.co.zac_h.spacex.network.toType
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,39 +25,41 @@ class LaunchesViewModel @Inject constructor(
     private val repository: LaunchesRepository
 ) : ViewModel() {
 
-    private val _upcomingLaunchesLiveData = MutableLiveData<ApiResult<List<LaunchItem>>>()
-    val upcomingLaunchesLiveData: LiveData<ApiResult<List<LaunchItem>>> = _upcomingLaunchesLiveData
+    private val _uiState = MutableStateFlow(LaunchesUIState())
+    val uiState: StateFlow<LaunchesUIState> = _uiState
 
-    val previousLaunchesLiveData: LiveData<PagingData<LaunchResponse>> = Pager(
+    val upcomingLaunches: Flow<ApiResult<List<LaunchItem>>> = apiFlow {
+        repository.fetch(key = "upcoming_launches", cachePolicy = CachePolicy.EXPIRES)
+    }.toType(::LaunchItem)
+
+    val previousLaunchesLiveData: Flow<PagingData<LaunchItem>> = Pager(
         PagingConfig(pageSize = 10)
     ) {
         repository.previousLaunchesPagingSource
-    }.liveData.cachedIn(viewModelScope)
+    }.flow.toType(::LaunchItem).cachedIn(viewModelScope)
 
-    var launch: LaunchItem? = null
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val articlesFlow: Flow<PagingData<ArticleResponse>> = _uiState.flatMapLatest {
+        Pager(
+            PagingConfig(pageSize = 10)
+        ) {
+            repository.articlesPagingSource(it.openedLaunch?.id)
+        }.flow
+    }
 
-    val cores: List<RecyclerViewItem>
-        get() = launch?.firstStage?.let { firstStageList ->
-            if (firstStageList.size > 1) {
-                firstStageList.groupBy { firstStageItem ->
-                    firstStageItem.type
-                }.flatMap { firstStageItem ->
-                    listOf(Header(firstStageItem.key.type)) + firstStageItem.value
-                }
-            } else {
-                firstStageList
-            }
-        } ?: emptyList()
+    fun setOpenedLaunch(launch: LaunchItem, contentType: ContentType) {
+        _uiState.value = LaunchesUIState(
+            openedLaunch = launch,
+            isDetailOnlyOpen = contentType == ContentType.SINGLE_PANE
+        )
+    }
 
-    fun getUpcomingLaunches(cachePolicy: CachePolicy = CachePolicy.ALWAYS) {
-        viewModelScope.launch {
-            val response = async(_upcomingLaunchesLiveData) {
-                repository.fetch(key = "upcoming_launches", cachePolicy = cachePolicy)
-            }
-
-            _upcomingLaunchesLiveData.value = response.await().map {
-                it.results.map { launch -> LaunchItem(launch) }
-            }
-        }
+    fun closeDetailScreen() {
+        _uiState.value = _uiState.value.copy(isDetailOnlyOpen = false)
     }
 }
+
+data class LaunchesUIState(
+    val openedLaunch: LaunchItem? = null,
+    val isDetailOnlyOpen: Boolean = false
+)

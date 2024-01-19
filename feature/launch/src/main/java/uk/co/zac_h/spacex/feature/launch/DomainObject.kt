@@ -1,17 +1,13 @@
 package uk.co.zac_h.spacex.feature.launch
 
-import android.content.res.Resources
 import androidx.core.net.toUri
+import uk.co.zac_h.spacex.core.common.Header
 import uk.co.zac_h.spacex.core.common.recyclerview.RecyclerViewItem
 import uk.co.zac_h.spacex.core.common.types.CoreType
 import uk.co.zac_h.spacex.core.common.types.CrewStatus
 import uk.co.zac_h.spacex.core.common.utils.formatCrewDate
 import uk.co.zac_h.spacex.core.common.utils.formatDate
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
-import uk.co.zac_h.spacex.core.common.utils.toCountdownDays
-import uk.co.zac_h.spacex.core.common.utils.toCountdownHours
-import uk.co.zac_h.spacex.core.common.utils.toCountdownMinutes
-import uk.co.zac_h.spacex.core.common.utils.toCountdownSeconds
 import uk.co.zac_h.spacex.core.common.utils.toMillis
 import uk.co.zac_h.spacex.network.SPACEX_CREW_LOST_IN_TRAINING
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_ACTIVE
@@ -79,24 +75,18 @@ data class LaunchItem(
         val description: String?
     )
 
-    fun countdown(resources: Resources): String? {
-        val remaining = calculateCountdown()
-
-        return when {
-            upcoming && !webcastLive && remaining > 0 -> String.format(
-                "T-%02d:%02d:%02d:%02d",
-                remaining.toCountdownDays(),
-                remaining.toCountdownHours(),
-                remaining.toCountdownMinutes(),
-                remaining.toCountdownSeconds()
-            )
-
-            webcastLive -> resources.getString(R.string.launches_webcast_live)
-            else -> null
-        }
-    }
-
-    private fun calculateCountdown() = launchDateUnix?.minus(System.currentTimeMillis()) ?: 0
+    val cores: List<RecyclerViewItem>
+        get() = firstStage?.let { firstStageList ->
+            if (firstStageList.size > 1) {
+                firstStageList.groupBy { firstStageItem ->
+                    firstStageItem.type
+                }.flatMap { firstStageItem ->
+                    listOf(Header(firstStageItem.key.type)) + firstStageItem.value
+                }
+            } else {
+                firstStageList
+            }
+        } ?: emptyList()
 
     companion object {
 

@@ -1,5 +1,8 @@
 package uk.co.zac_h.spacex.feature.assets.vehicles.spacecraft
 
+import uk.co.zac_h.spacex.core.common.utils.TextResource
+import uk.co.zac_h.spacex.feature.assets.R
+import uk.co.zac_h.spacex.feature.assets.vehicles.SpecsItem
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
 import uk.co.zac_h.spacex.network.dto.spacex.SpacecraftResponse
 
@@ -31,4 +34,20 @@ data class SpacecraftItem(
         longDescription = response.description,
         type = response.spacecraftConfig?.name
     )
+
+    override val specs: List<SpecsItem>
+        get() = listOfNotNull(
+            status?.let {
+                SpecsItem(
+                    TextResource.string(R.string.capsule_details_status_label),
+                    TextResource.Companion.string(it.replaceFirstChar(Char::uppercase))
+                )
+            },
+            type?.let {
+                SpecsItem(
+                    TextResource.string(R.string.capsule_details_type_label),
+                    TextResource.Companion.string(it)
+                )
+            }
+        )
 }

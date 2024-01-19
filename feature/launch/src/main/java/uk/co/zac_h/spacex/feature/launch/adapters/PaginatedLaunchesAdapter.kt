@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import uk.co.zac_h.spacex.core.ui.LaunchContainer
+import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 import uk.co.zac_h.spacex.feature.launch.LaunchItem
 import uk.co.zac_h.spacex.feature.launch.databinding.ListItemLaunchesBinding
 
@@ -26,25 +28,21 @@ class PaginatedLaunchesAdapter(val onClick: (LaunchItem) -> Unit) :
 
         launch?.let {
             with(holder.binding) {
-                root.transitionName = launch.id
-
-                launchView.apply {
-                    patch = launch.missionPatch
-                    vehicle = launch.rocket
-                    missionName = launch.missionName
-                    date = launch.launchDate
-
-                    if (launch.rocket == "Falcon 9") {
-                        isReused = launch.firstStage?.firstOrNull()?.reused ?: false
-                        landingPad = launch.firstStage?.firstOrNull()?.landingLocation
-                    } else {
-                        isReused = false
-                        landingPad = null
+                launchView.setContent {
+                    SpaceXTheme {
+                        LaunchContainer(
+                            patch = launch.missionPatch,
+                            missionName = launch.missionName,
+                            date = launch.launchDate,
+                            vehicle = launch.rocket,
+                            reused = launch.rocket == "Falcon 9" && launch.firstStage?.firstOrNull()?.reused ?: false,
+                            landingPad = launch.firstStage?.firstOrNull()?.landingLocation?.let {
+                                if (launch.rocket != "Falcon 9" && it == "N/A") null else it
+                            }
+                        ) {
+                            onClick(launch)
+                        }
                     }
-                }
-
-                root.setOnClickListener {
-                    onClick(launch)
                 }
             }
         }

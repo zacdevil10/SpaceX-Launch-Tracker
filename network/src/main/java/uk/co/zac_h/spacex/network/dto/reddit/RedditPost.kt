@@ -3,50 +3,52 @@ package uk.co.zac_h.spacex.network.dto.reddit
 import com.squareup.moshi.Json
 
 data class SubredditModel(
-    @field:Json(name = "data") var data: SubredditDataModel
+    var data: SubredditDataModel
 )
 
 data class SubredditDataModel(
-    @field:Json(name = "children") var children: List<SubredditPostModel>
+    var children: List<SubredditPostModel>
 )
 
 data class SubredditPostModel(
-    @field:Json(name = "data") var data: RedditPostData
+    var data: RedditPostData
 )
 
 data class RedditPostData(
+    var id: String,
     @field:Json(name = "selftext_html") var textHtml: String?,
-    @field:Json(name = "title") var title: String,
-    @field:Json(name = "name") var name: String,
-    @field:Json(name = "author") var author: String,
+    var title: String,
+    var name: String,
+    var author: String,
     @field:Json(name = "created_utc") var created: Float,
-    @field:Json(name = "thumbnail") var thumbnail: String,
-    @field:Json(name = "score") var score: Int,
+    var thumbnail: String,
+    var score: Int,
     @field:Json(name = "num_comments") var commentsCount: Int,
-    @field:Json(name = "preview") var preview: RedditPreviewListModel?,
-    @field:Json(name = "domain") var domain: String,
-    @field:Json(name = "stickied") var stickied: Boolean,
+    var preview: RedditPreviewListModel?,
+    var domain: String,
+    var stickied: Boolean,
     @field:Json(name = "is_self") var isSelf: Boolean,
     @field:Json(name = "is_reddit_media_domain") var redditDomain: Boolean,
-    @field:Json(name = "permalink") var permalink: String
+    var permalink: String
 )
 
 data class RedditPreviewListModel(
-    @field:Json(name = "images") var images: List<RedditMediaAlternatesModel>
+    var images: List<RedditMediaAlternatesModel>
 )
 
 data class RedditMediaAlternatesModel(
-    @field:Json(name = "source") var source: RedditMediaModel,
-    @field:Json(name = "resolutions") var resolutions: List<RedditMediaModel>
+    var source: RedditMediaModel,
+    var resolutions: List<RedditMediaModel>
 )
 
 data class RedditMediaModel(
-    @field:Json(name = "url") var url: String,
-    @field:Json(name = "width") var width: Int,
-    @field:Json(name = "height") var height: Int
+    var url: String,
+    var width: Int,
+    var height: Int
 )
 
 data class RedditPost(
+    var id: String,
     var name: String,
     var title: String,
     var description: String?,
@@ -64,6 +66,7 @@ data class RedditPost(
 ) {
 
     constructor(data: RedditPostData) : this(
+        id = data.id,
         name = data.name,
         title = data.title,
         description = data.textHtml,

@@ -10,10 +10,4 @@ import javax.inject.Inject
 class RocketRepository @Inject constructor(
     @AgencyDataSourceClient agencyDataSource: RemoteDataSource<AgencyResponse>,
     cache: Cache<AgencyResponse>
-) : Repository<AgencyResponse>(agencyDataSource, cache) {
-
-    val cacheLocation: RequestLocation
-        get() = location
-
-    var launcherConfigId: Int? = null
-}
+) : Repository<AgencyResponse>(agencyDataSource, cache)
