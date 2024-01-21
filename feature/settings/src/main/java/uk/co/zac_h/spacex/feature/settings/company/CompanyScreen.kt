@@ -37,14 +37,13 @@ import uk.co.zac_h.spacex.network.ApiResult
 
 @Composable
 fun CompanyScreen(
-    modifier: Modifier = Modifier,
     contentType: ContentType,
     viewModel: CompanyViewModel = hiltViewModel()
 ) {
     val company by viewModel.company.collectAsStateWithLifecycle(ApiResult.Pending)
 
     NetworkContent(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxSize()
             .background(
                 when (contentType) {

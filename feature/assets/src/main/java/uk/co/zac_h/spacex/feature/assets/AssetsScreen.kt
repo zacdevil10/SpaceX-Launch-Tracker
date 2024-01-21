@@ -20,9 +20,11 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,12 +34,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.ui.component.PagerItem
 import uk.co.zac_h.spacex.core.ui.component.SpaceXTabLayout
+import uk.co.zac_h.spacex.core.ui.component.TabRowDefaults
 import uk.co.zac_h.spacex.feature.assets.astronauts.AstronautsScreen
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleDetailsScreen
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
@@ -46,16 +50,17 @@ import uk.co.zac_h.spacex.feature.assets.vehicles.launcher.LauncherScreen
 import uk.co.zac_h.spacex.feature.assets.vehicles.rockets.RocketsScreen
 import uk.co.zac_h.spacex.feature.assets.vehicles.spacecraft.SpacecraftScreen
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AssetsScreen(
-    modifier: Modifier = Modifier,
     contentType: ContentType,
     viewModel: AssetsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val pagerState = rememberPagerState(pageCount = { 5 })
+
+    val scrollBehavior = TabRowDefaults.pinnedScrollBehavior()
 
     LaunchedEffect(key1 = pagerState) {
         if (uiState.openedAssetPage != pagerState.currentPage) viewModel.closeDetailScreen()
@@ -71,7 +76,6 @@ fun AssetsScreen(
 
     when (contentType) {
         ContentType.DUAL_PANE -> AssetsTwoPaneContent(
-            modifier = modifier,
             contentType = contentType,
             uiState = uiState,
             pagerState = pagerState,
@@ -85,11 +89,11 @@ fun AssetsScreen(
             capsulesListState = capsulesLazyListState,
             setExpanded = {
                 expanded = it
-            }
+            },
+            scrollBehavior = scrollBehavior
         )
 
         ContentType.SINGLE_PANE -> AssetsSinglePaneContent(
-            modifier = modifier,
             contentType = contentType,
             uiState = uiState,
             pagerState = pagerState,
@@ -104,12 +108,13 @@ fun AssetsScreen(
             capsulesListState = capsulesLazyListState,
             setExpanded = {
                 expanded = it
-            }
+            },
+            scrollBehavior = scrollBehavior
         )
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AssetsTwoPaneContent(
     modifier: Modifier = Modifier,
@@ -125,6 +130,7 @@ fun AssetsTwoPaneContent(
     capsulesListState: LazyListState,
     expanded: Int,
     setExpanded: (Int) -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     Row(
         modifier = modifier
@@ -148,7 +154,8 @@ fun AssetsTwoPaneContent(
                 dragonListState = dragonListState,
                 coreListState = coreListState,
                 capsulesListState = capsulesListState,
-                setExpanded = setExpanded
+                setExpanded = setExpanded,
+                scrollBehavior = scrollBehavior
             )
         }
         Card(
@@ -178,7 +185,7 @@ fun AssetsTwoPaneContent(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AssetsSinglePaneContent(
     modifier: Modifier = Modifier,
@@ -195,6 +202,7 @@ fun AssetsSinglePaneContent(
     capsulesListState: LazyListState,
     expanded: Int,
     setExpanded: (Int) -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     AnimatedContent(
         targetState = uiState.openedAsset != null && uiState.isDetailOnlyOpen,
@@ -232,13 +240,14 @@ fun AssetsSinglePaneContent(
                 dragonListState = dragonListState,
                 coreListState = coreListState,
                 capsulesListState = capsulesListState,
-                setExpanded = setExpanded
+                setExpanded = setExpanded,
+                scrollBehavior = scrollBehavior
             )
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AssetsList(
     modifier: Modifier = Modifier,
@@ -253,6 +262,7 @@ fun AssetsList(
     capsulesListState: LazyListState,
     expanded: Int,
     setExpanded: (Int) -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     val screens = listOf(
         PagerItem(label = "Astronauts") { page ->
@@ -305,12 +315,14 @@ fun AssetsList(
     )
 
     Scaffold(
-        modifier = modifier,
+        modifier = modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             SpaceXTabLayout(
                 pagerState = pagerState,
                 screens = screens,
-                scrollable = true
+                scrollable = true,
+                scrollBehavior = scrollBehavior
             )
         }
     ) { padding ->

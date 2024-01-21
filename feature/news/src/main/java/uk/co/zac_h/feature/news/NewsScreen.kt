@@ -9,25 +9,30 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import uk.co.zac_h.feature.news.articles.ArticlesScreen
 import uk.co.zac_h.feature.news.reddit.RedditFeedScreen
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.ui.component.PagerItem
 import uk.co.zac_h.spacex.core.ui.component.SpaceXTabLayout
+import uk.co.zac_h.spacex.core.ui.component.TabRowDefaults
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun NewsScreen(
-    modifier: Modifier = Modifier,
     contentType: ContentType
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
+
+    val scrollBehavior = TabRowDefaults.pinnedScrollBehavior()
 
     val screens = listOf(
         PagerItem(label = "Articles", icon = R.drawable.ic_newspaper) {
@@ -43,17 +48,26 @@ fun NewsScreen(
     )
 
     when (contentType) {
-        ContentType.SINGLE_PANE -> NewsSinglePaneContent(pagerState = pagerState, screens = screens)
-        ContentType.DUAL_PANE -> NewsTwoPaneContent(pagerState = pagerState, screens = screens)
+        ContentType.SINGLE_PANE -> NewsSinglePaneContent(
+            pagerState = pagerState,
+            screens = screens,
+            scrollBehavior = scrollBehavior
+        )
+        ContentType.DUAL_PANE -> NewsTwoPaneContent(
+            pagerState = pagerState,
+            screens = screens,
+            scrollBehavior = scrollBehavior
+        )
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun NewsTwoPaneContent(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    screens: List<PagerItem>
+    screens: List<PagerItem>,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     Box(
         modifier = modifier
@@ -64,22 +78,32 @@ fun NewsTwoPaneContent(
                 .fillMaxSize()
                 .padding(8.dp)
         ) {
-            NewsSinglePaneContent(pagerState = pagerState, screens = screens)
+            NewsSinglePaneContent(
+                pagerState = pagerState,
+                screens = screens,
+                scrollBehavior = scrollBehavior
+            )
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun NewsSinglePaneContent(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    screens: List<PagerItem>
+    screens: List<PagerItem>,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     Scaffold(
-        modifier = modifier,
+        modifier = modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            SpaceXTabLayout(pagerState = pagerState, screens = screens)
+            SpaceXTabLayout(
+                pagerState = pagerState,
+                screens = screens,
+                scrollBehavior = scrollBehavior
+            )
         }
     ) { padding ->
         HorizontalPager(

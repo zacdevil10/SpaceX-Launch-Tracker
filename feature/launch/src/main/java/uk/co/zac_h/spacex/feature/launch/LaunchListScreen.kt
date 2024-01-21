@@ -21,14 +21,17 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -37,13 +40,14 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.ui.component.PagerItem
 import uk.co.zac_h.spacex.core.ui.component.SpaceXTabLayout
+import uk.co.zac_h.spacex.core.ui.component.TabRowDefaults
 import uk.co.zac_h.spacex.feature.launch.container.LaunchContainerScreen
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.dto.news.ArticleResponse
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LaunchListScreen(
-    modifier: Modifier = Modifier,
     contentType: ContentType,
     viewModel: LaunchesViewModel = hiltViewModel()
 ) {
@@ -56,9 +60,10 @@ fun LaunchListScreen(
     val upcomingLazyListState = rememberLazyListState()
     val previousLazyListState = rememberLazyListState()
 
+    val scrollBehavior = TabRowDefaults.pinnedScrollBehavior()
+
     when (contentType) {
         ContentType.DUAL_PANE -> LaunchesTwoPaneContent(
-            modifier = modifier,
             uiState = uiState,
             upcoming = upcoming,
             previous = previous,
@@ -67,11 +72,10 @@ fun LaunchListScreen(
             previousLazyListState = previousLazyListState,
             openedLaunch = uiState.openedLaunch,
             retry = { viewModel.getUpcoming() },
-            navigateToDetail = { launch, pane -> viewModel.setOpenedLaunch(launch, pane) }
+            navigateToDetail = { launch, pane -> viewModel.setOpenedLaunch(launch, pane) },
+            scrollBehavior = scrollBehavior
         )
-
         ContentType.SINGLE_PANE -> LaunchesSinglePaneContent(
-            modifier = modifier,
             uiState = uiState,
             upcoming = upcoming,
             previous = previous,
@@ -81,12 +85,13 @@ fun LaunchListScreen(
             openedLaunch = uiState.openedLaunch,
             retry = { viewModel.getUpcoming() },
             closeDetailScreen = { viewModel.closeDetailScreen() },
-            navigateToDetail = { launch, pane -> viewModel.setOpenedLaunch(launch, pane) }
+            navigateToDetail = { launch, pane -> viewModel.setOpenedLaunch(launch, pane) },
+            scrollBehavior = scrollBehavior
         )
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun LaunchesTwoPaneContent(
     modifier: Modifier = Modifier,
@@ -98,7 +103,8 @@ fun LaunchesTwoPaneContent(
     previousLazyListState: LazyListState,
     openedLaunch: LaunchItem?,
     retry: () -> Unit,
-    navigateToDetail: (LaunchItem, ContentType) -> Unit
+    navigateToDetail: (LaunchItem, ContentType) -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
 
@@ -123,7 +129,8 @@ fun LaunchesTwoPaneContent(
                 previousLazyListState = previousLazyListState,
                 openedLaunch = openedLaunch,
                 retry = retry,
-                navigateToDetail = navigateToDetail
+                navigateToDetail = navigateToDetail,
+                scrollBehavior = scrollBehavior
             )
         }
         Card(
@@ -154,7 +161,7 @@ fun LaunchesTwoPaneContent(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun LaunchesSinglePaneContent(
     modifier: Modifier = Modifier,
@@ -167,7 +174,8 @@ fun LaunchesSinglePaneContent(
     openedLaunch: LaunchItem?,
     retry: () -> Unit,
     closeDetailScreen: () -> Unit,
-    navigateToDetail: (LaunchItem, ContentType) -> Unit
+    navigateToDetail: (LaunchItem, ContentType) -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
 
@@ -208,13 +216,14 @@ fun LaunchesSinglePaneContent(
                 previousLazyListState = previousLazyListState,
                 openedLaunch = openedLaunch,
                 retry = retry,
-                navigateToDetail = navigateToDetail
+                navigateToDetail = navigateToDetail,
+                scrollBehavior = scrollBehavior
             )
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun LaunchList(
     modifier: Modifier = Modifier,
@@ -226,7 +235,8 @@ fun LaunchList(
     previousLazyListState: LazyListState,
     openedLaunch: LaunchItem?,
     retry: () -> Unit,
-    navigateToDetail: (LaunchItem, ContentType) -> Unit
+    navigateToDetail: (LaunchItem, ContentType) -> Unit,
+    scrollBehavior: TopAppBarScrollBehavior
 ) {
     val screens = listOf(
         PagerItem(label = "Upcoming", icon = R.drawable.ic_baseline_schedule_24) {
@@ -253,9 +263,14 @@ fun LaunchList(
     )
 
     Scaffold(
-        modifier = modifier,
+        modifier = modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            SpaceXTabLayout(pagerState = pagerState, screens = screens)
+            SpaceXTabLayout(
+                pagerState = pagerState,
+                screens = screens,
+                scrollBehavior = scrollBehavior
+            )
         }
     ) { padding ->
         HorizontalPager(

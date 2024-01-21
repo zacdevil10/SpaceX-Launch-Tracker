@@ -11,9 +11,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.paging.compose.LazyPagingItems
 import uk.co.zac_h.spacex.core.ui.component.PagerItem
 import uk.co.zac_h.spacex.core.ui.component.SpaceXAppBar
@@ -34,6 +36,8 @@ fun LaunchContainerScreen(
     isFullscreen: Boolean = true,
     navigateUp: () -> Unit = {}
 ) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
     val screens = listOfNotNull(
         PagerItem("Details") {
             LaunchDetailsScreen(launch = launch, isFullscreen = isFullscreen)
@@ -54,18 +58,22 @@ fun LaunchContainerScreen(
     val pagerState = rememberPagerState(pageCount = { screens.size })
 
     Scaffold(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             Column {
                 if (isFullscreen) SpaceXAppBar(
                     label = launch.missionName,
                     navigationIcon = Icons.Filled.ArrowBack,
-                    navigationIconAction = { navigateUp() }
+                    navigationIconAction = { navigateUp() },
+                    scrollBehavior = scrollBehavior
                 )
                 SpaceXTabLayout(
                     pagerState = pagerState,
                     screens = screens,
-                    scrollable = screens.size > 3
+                    scrollable = screens.size > 3,
+                    scrollBehavior = scrollBehavior
                 )
             }
         }

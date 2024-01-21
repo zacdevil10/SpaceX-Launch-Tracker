@@ -1,17 +1,18 @@
 package uk.co.zac_h.spacex.core.ui.component
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.AnimationSpec
+import androidx.compose.animation.core.DecayAnimationSpec
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LeadingIconTab
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProvideTextStyle
@@ -20,13 +21,19 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.TopAppBarState
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -36,46 +43,29 @@ import uk.co.zac_h.spacex.core.ui.DynamicThemePreviews
 import uk.co.zac_h.spacex.core.ui.R
 import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
-@Composable
-fun SpaceXAppBar(
-    modifier: Modifier = Modifier,
-    label: String,
-    isFullscreen: Boolean = true,
-    navigationIcon: ImageVector,
-    navigationIconAction: () -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior? = null
-) {
-    TopAppBar(
-        modifier = modifier,
-        title = {
-            Text(
-                modifier = Modifier.basicMarquee(),
-                text = label,
-                maxLines = 1
-            )
-        },
-        navigationIcon = {
-            if (isFullscreen) IconButton(onClick = { navigationIconAction() }) {
-                Icon(
-                    imageVector = navigationIcon,
-                    contentDescription = ""
-                )
-            }
-        },
-        scrollBehavior = scrollBehavior
-    )
-}
-
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun SpaceXTabLayout(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
     screens: List<PagerItem>,
-    scrollable: Boolean = false
+    scrollable: Boolean = false,
+    scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     val coroutineScope = rememberCoroutineScope()
+
+    val heightOffsetLimit = with(LocalDensity.current) { -48.dp.toPx() }
+    SideEffect {
+        if (scrollBehavior?.state?.heightOffsetLimit != heightOffsetLimit) {
+            scrollBehavior?.state?.heightOffsetLimit = heightOffsetLimit
+        }
+    }
+
+    val tabRowContainerColor by animateColorAsState(
+        targetValue = scrollBehavior.containerColor(),
+        animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+        label = ""
+    )
 
     val tabs: @Composable () -> Unit = {
         for (i in 0..<pagerState.pageCount) {
@@ -117,13 +107,15 @@ fun SpaceXTabLayout(
         SpaceXScrollableTabLayout(
             modifier = modifier,
             pagerState = pagerState,
-            tabs = tabs
+            tabs = tabs,
+            color = tabRowContainerColor
         )
     } else {
         SpaceXTabLayout(
             modifier = modifier,
             pagerState = pagerState,
-            tabs = tabs
+            tabs = tabs,
+            color = tabRowContainerColor
         )
     }
 }
@@ -133,12 +125,13 @@ fun SpaceXTabLayout(
 private fun SpaceXScrollableTabLayout(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    tabs: @Composable () -> Unit
+    tabs: @Composable () -> Unit,
+    color: Color
 ) {
     ScrollableTabRow(
         selectedTabIndex = pagerState.currentPage,
         modifier = modifier,
-        containerColor = Color.Transparent,
+        containerColor = color,
         contentColor = MaterialTheme.colorScheme.onSurface,
         edgePadding = 0.dp,
         indicator = { tabPositions ->
@@ -157,12 +150,13 @@ private fun SpaceXScrollableTabLayout(
 private fun SpaceXTabLayout(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    tabs: @Composable () -> Unit
+    tabs: @Composable () -> Unit,
+    color: Color
 ) {
     TabRow(
         selectedTabIndex = pagerState.currentPage,
         modifier = modifier,
-        containerColor = Color.Transparent,
+        containerColor = color,
         contentColor = MaterialTheme.colorScheme.onSurface,
         indicator = { tabPositions ->
             TabRowDefaults.Indicator(
@@ -181,21 +175,42 @@ data class PagerItem(
     val screen: @Composable (Int) -> Unit
 )
 
+object TabRowDefaults {
+
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun pinnedScrollBehavior(
+        state: TopAppBarState = rememberTopAppBarState(),
+        canScroll: () -> Boolean = { true }
+    ): TopAppBarScrollBehavior = PinnedScrollBehavior(state = state, canScroll = canScroll)
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
-@DynamicThemePreviews
-@ComponentPreviews
-@Composable
-fun SpaceXAppBarPreview() {
-    SpaceXTheme {
-        SpaceXAppBar(
-            label = "App Bar",
-            navigationIcon = Icons.Filled.Menu,
-            navigationIconAction = {}
-        )
+private class PinnedScrollBehavior(
+    override val state: TopAppBarState,
+    val canScroll: () -> Boolean = { true }
+) : TopAppBarScrollBehavior {
+    override val isPinned: Boolean = true
+    override val snapAnimationSpec: AnimationSpec<Float>? = null
+    override val flingAnimationSpec: DecayAnimationSpec<Float>? = null
+    override var nestedScrollConnection = object : NestedScrollConnection {
+        override fun onPostScroll(
+            consumed: Offset,
+            available: Offset,
+            source: NestedScrollSource
+        ): Offset {
+            if (!canScroll()) return Offset.Zero
+            if (consumed.y == 0f && available.y > 0f) {
+                state.contentOffset = 0f
+            } else {
+                state.contentOffset += consumed.y
+            }
+            return Offset.Zero
+        }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @DynamicThemePreviews
 @ComponentPreviews
 @Composable
@@ -213,7 +228,7 @@ fun SpaceXTabLayoutPreview() {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @DynamicThemePreviews
 @ComponentPreviews
 @Composable
@@ -231,7 +246,7 @@ fun SpaceXTabLayoutWithIconPreview() {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @DynamicThemePreviews
 @ComponentPreviews
 @Composable
