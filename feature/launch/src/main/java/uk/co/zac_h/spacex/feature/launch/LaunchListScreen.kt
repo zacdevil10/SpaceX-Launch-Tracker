@@ -35,8 +35,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import uk.co.zac_h.spacex.core.common.ContentType
-import uk.co.zac_h.spacex.core.ui.PagerItem
-import uk.co.zac_h.spacex.core.ui.SpaceXTabLayout
+import uk.co.zac_h.spacex.core.ui.component.PagerItem
+import uk.co.zac_h.spacex.core.ui.component.SpaceXTabLayout
 import uk.co.zac_h.spacex.feature.launch.container.LaunchContainerScreen
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.dto.news.ArticleResponse
@@ -267,7 +267,7 @@ fun LaunchList(
             verticalAlignment = Alignment.Top,
             key = { screens[it].label }
         ) { page ->
-            screens[page].screen()
+            screens[page].screen(page)
         }
     }
 }

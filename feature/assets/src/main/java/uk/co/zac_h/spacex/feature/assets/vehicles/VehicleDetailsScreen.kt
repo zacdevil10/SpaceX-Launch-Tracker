@@ -26,8 +26,8 @@ import coil.compose.AsyncImage
 import uk.co.zac_h.spacex.core.common.utils.TextResource
 import uk.co.zac_h.spacex.core.ui.DevicePreviews
 import uk.co.zac_h.spacex.core.ui.LabelValue
-import uk.co.zac_h.spacex.core.ui.SpaceXAppBar
 import uk.co.zac_h.spacex.core.ui.SpaceXTheme
+import uk.co.zac_h.spacex.core.ui.component.SpaceXAppBar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

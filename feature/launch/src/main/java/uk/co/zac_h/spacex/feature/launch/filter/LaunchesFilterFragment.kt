@@ -146,14 +146,14 @@ class LaunchesFilterFragment : Fragment() {
             }
 
             order.observe(viewLifecycleOwner) {
-                when (it.order) {
+                when (it.value) {
                     Order.ASCENDING -> launchFilter.ascending.isChecked = true
                     Order.DESCENDING -> launchFilter.descending.isChecked = true
                 }
             }
 
             rocketType.observe(viewLifecycleOwner) {
-                if (it.rockets.isNullOrEmpty()) with(launchFilter) {
+                if (it.value.isNullOrEmpty()) with(launchFilter) {
                     falconOneChip.isChecked = false
                     falconNineChip.isChecked = false
                     falconHeavyChip.isChecked = false

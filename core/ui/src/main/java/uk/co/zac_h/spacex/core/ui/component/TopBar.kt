@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.core.ui
+package uk.co.zac_h.spacex.core.ui.component
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -31,6 +31,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import uk.co.zac_h.spacex.core.ui.ComponentPreviews
+import uk.co.zac_h.spacex.core.ui.DynamicThemePreviews
+import uk.co.zac_h.spacex.core.ui.R
+import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -174,7 +178,7 @@ private fun SpaceXTabLayout(
 data class PagerItem(
     val label: String,
     @DrawableRes val icon: Int? = null,
-    val screen: @Composable () -> Unit
+    val screen: @Composable (Int) -> Unit
 )
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.feature.assets.vehicles.launcher
 
-import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -13,16 +13,15 @@ fun LauncherScreen(
     contentType: ContentType,
     viewModel: LauncherViewModel = hiltViewModel(),
     openedAsset: VehicleItem?,
+    state: LazyListState,
     onItemClick: (VehicleItem) -> Unit
 ) {
     val launchers = viewModel.launcherLiveData.collectAsLazyPagingItems()
 
-    val launcherListState = rememberLazyListState()
-
     VehiclePaginatedList(
         vehicles = launchers,
         contentType = contentType,
-        state = launcherListState,
+        state = state,
         openedAsset = openedAsset,
         navigate = onItemClick
     )

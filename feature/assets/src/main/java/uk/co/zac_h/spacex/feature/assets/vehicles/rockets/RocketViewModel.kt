@@ -7,9 +7,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import uk.co.zac_h.spacex.core.common.filter.FilterOrder
 import uk.co.zac_h.spacex.core.common.filter.RocketFamilyFilter
 import uk.co.zac_h.spacex.core.common.filter.RocketTypeFilter
+import uk.co.zac_h.spacex.core.common.filter.toFilter
 import uk.co.zac_h.spacex.core.common.types.Order
 import uk.co.zac_h.spacex.core.common.types.RocketFamily
 import uk.co.zac_h.spacex.core.common.types.RocketType
@@ -34,12 +36,12 @@ class RocketViewModel @Inject constructor(
         result.map { rocketList ->
             rocketList.filterAll(
                 if (filter.family.isFiltered) { rocket ->
-                    rocket.family == filter.family.family
+                    rocket.family == filter.family.value
                 } else null,
                 if (filter.type.isFiltered) { rocket ->
-                    rocket.type in filter.type.rockets
+                    rocket.type in filter.type.value
                 } else null
-            ).sortedBy(filter.order.order) { rocket -> rocket.maidenFlightMillis }
+            ).sortedBy(filter.order.value) { rocket -> rocket.maidenFlightMillis }
         }
     }
 
@@ -55,16 +57,32 @@ class RocketViewModel @Inject constructor(
         }
     }
 
-    fun updateFilter(
-        family: RocketFamily? = null,
-        type: List<RocketType>? = null,
-        order: Order? = null
-    ) {
-        _filter.value = _filter.value.copy(
-            family = family?.let { RocketFamilyFilter(it) } ?: _filter.value.family,
-            type = type?.let { RocketTypeFilter(it) } ?: _filter.value.type,
-            order = order?.let { FilterOrder(it) } ?: _filter.value.order
-        )
+    fun filterByRocketFamily(family: RocketFamily) {
+        _filter.update {
+            it.copy(
+                family = if (it.family.value == family) {
+                    RocketFamily.NONE.toFilter()
+                } else {
+                    family.toFilter()
+                },
+                type = if (family != RocketFamily.FALCON) RocketTypeFilter() else it.type
+            )
+        }
+    }
+
+    fun filterByRocketType(type: RocketType) {
+        _filter.update {
+            val list = it.type.value.toMutableList()
+            if (type in list) list.remove(type) else list.add(type)
+
+            it.copy(type = list.toFilter())
+        }
+    }
+
+    fun updateOrder(order: Order) {
+        _filter.update {
+            it.copy(order = order.toFilter())
+        }
     }
 
     fun clearFilter() {

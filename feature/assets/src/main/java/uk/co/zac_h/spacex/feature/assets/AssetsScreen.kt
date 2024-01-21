@@ -30,16 +30,14 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.flow.distinctUntilChanged
 import uk.co.zac_h.spacex.core.common.ContentType
-import uk.co.zac_h.spacex.core.ui.PagerItem
-import uk.co.zac_h.spacex.core.ui.SpaceXTabLayout
+import uk.co.zac_h.spacex.core.ui.component.PagerItem
+import uk.co.zac_h.spacex.core.ui.component.SpaceXTabLayout
 import uk.co.zac_h.spacex.feature.assets.astronauts.AstronautsScreen
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleDetailsScreen
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
@@ -60,12 +58,14 @@ fun AssetsScreen(
     val pagerState = rememberPagerState(pageCount = { 5 })
 
     LaunchedEffect(key1 = pagerState) {
-        snapshotFlow { pagerState.currentPage }.distinctUntilChanged().collect { page ->
-            viewModel.closeDetailScreen()
-        }
+        if (uiState.openedAssetPage != pagerState.currentPage) viewModel.closeDetailScreen()
     }
 
     val astronautsLazyListState = rememberLazyListState()
+    val rocketsLazyListState = rememberLazyListState()
+    val dragonLazyListState = rememberLazyListState()
+    val coreLazyListState = rememberLazyListState()
+    val capsulesLazyListState = rememberLazyListState()
 
     var expanded by rememberSaveable { mutableIntStateOf(-1) }
 
@@ -76,11 +76,13 @@ fun AssetsScreen(
             uiState = uiState,
             pagerState = pagerState,
             openedAsset = uiState.openedAsset,
-            navigateToDetail = { asset, pane ->
-                viewModel.setOpenedAsset(asset, pane)
-            },
+            navigateToDetail = viewModel::setOpenedAsset,
             expanded = expanded,
-            state = astronautsLazyListState,
+            astronautListState = astronautsLazyListState,
+            rocketsListState = rocketsLazyListState,
+            dragonListState = dragonLazyListState,
+            coreListState = coreLazyListState,
+            capsulesListState = capsulesLazyListState,
             setExpanded = {
                 expanded = it
             }
@@ -92,14 +94,14 @@ fun AssetsScreen(
             uiState = uiState,
             pagerState = pagerState,
             openedAsset = uiState.openedAsset,
-            closeDetailScreen = {
-                viewModel.closeDetailScreen()
-            },
-            navigateToDetail = { asset, pane ->
-                viewModel.setOpenedAsset(asset, pane)
-            },
+            closeDetailScreen = viewModel::closeDetailScreen,
+            navigateToDetail = viewModel::setOpenedAsset,
             expanded = expanded,
-            state = astronautsLazyListState,
+            astronautListState = astronautsLazyListState,
+            rocketsListState = rocketsLazyListState,
+            dragonListState = dragonLazyListState,
+            coreListState = coreLazyListState,
+            capsulesListState = capsulesLazyListState,
             setExpanded = {
                 expanded = it
             }
@@ -115,8 +117,12 @@ fun AssetsTwoPaneContent(
     uiState: AssetsUIState,
     pagerState: PagerState,
     openedAsset: VehicleItem?,
-    navigateToDetail: (VehicleItem, ContentType) -> Unit,
-    state: LazyListState,
+    navigateToDetail: (VehicleItem, Int, ContentType) -> Unit,
+    astronautListState: LazyListState,
+    rocketsListState: LazyListState,
+    dragonListState: LazyListState,
+    coreListState: LazyListState,
+    capsulesListState: LazyListState,
     expanded: Int,
     setExpanded: (Int) -> Unit,
 ) {
@@ -137,7 +143,11 @@ fun AssetsTwoPaneContent(
                 openedAsset = openedAsset,
                 navigateToDetail = navigateToDetail,
                 expanded = expanded,
-                state = state,
+                astronautListState = astronautListState,
+                rocketsListState = rocketsListState,
+                dragonListState = dragonListState,
+                coreListState = coreListState,
+                capsulesListState = capsulesListState,
                 setExpanded = setExpanded
             )
         }
@@ -177,8 +187,12 @@ fun AssetsSinglePaneContent(
     pagerState: PagerState,
     openedAsset: VehicleItem?,
     closeDetailScreen: () -> Unit,
-    navigateToDetail: (VehicleItem, ContentType) -> Unit,
-    state: LazyListState,
+    navigateToDetail: (VehicleItem, Int, ContentType) -> Unit,
+    astronautListState: LazyListState,
+    rocketsListState: LazyListState,
+    dragonListState: LazyListState,
+    coreListState: LazyListState,
+    capsulesListState: LazyListState,
     expanded: Int,
     setExpanded: (Int) -> Unit,
 ) {
@@ -213,7 +227,11 @@ fun AssetsSinglePaneContent(
                 openedAsset = openedAsset,
                 navigateToDetail = navigateToDetail,
                 expanded = expanded,
-                state = state,
+                astronautListState = astronautListState,
+                rocketsListState = rocketsListState,
+                dragonListState = dragonListState,
+                coreListState = coreListState,
+                capsulesListState = capsulesListState,
                 setExpanded = setExpanded
             )
         }
@@ -227,53 +245,61 @@ fun AssetsList(
     pagerState: PagerState,
     contentType: ContentType,
     openedAsset: VehicleItem?,
-    navigateToDetail: (VehicleItem, ContentType) -> Unit,
-    state: LazyListState,
+    navigateToDetail: (VehicleItem, Int, ContentType) -> Unit,
+    astronautListState: LazyListState,
+    rocketsListState: LazyListState,
+    dragonListState: LazyListState,
+    coreListState: LazyListState,
+    capsulesListState: LazyListState,
     expanded: Int,
     setExpanded: (Int) -> Unit,
 ) {
     val screens = listOf(
-        PagerItem(label = "Astronauts") {
+        PagerItem(label = "Astronauts") { page ->
             AstronautsScreen(
                 contentType = contentType,
                 openedAsset = openedAsset,
                 expanded = expanded,
-                state = state,
+                state = astronautListState,
                 setExpanded = setExpanded
             ) {
-                navigateToDetail(it, ContentType.SINGLE_PANE)
+                navigateToDetail(it, page, ContentType.SINGLE_PANE)
             }
         },
-        PagerItem(label = "Rockets") {
+        PagerItem(label = "Rockets") { page ->
             RocketsScreen(
                 contentType = contentType,
-                openedAsset = openedAsset
+                openedAsset = openedAsset,
+                state = rocketsListState
             ) {
-                navigateToDetail(it, ContentType.SINGLE_PANE)
+                navigateToDetail(it, page, ContentType.SINGLE_PANE)
             }
         },
-        PagerItem(label = "Second stage") {
+        PagerItem(label = "Second stage") { page ->
             DragonScreen(
                 contentType = contentType,
-                openedAsset = openedAsset
+                openedAsset = openedAsset,
+                state = dragonListState
             ) {
-                navigateToDetail(it, ContentType.SINGLE_PANE)
+                navigateToDetail(it, page, ContentType.SINGLE_PANE)
             }
         },
-        PagerItem(label = "Core") {
+        PagerItem(label = "Core") { page ->
             LauncherScreen(
                 contentType = contentType,
-                openedAsset = openedAsset
+                openedAsset = openedAsset,
+                state = coreListState
             ) {
-                navigateToDetail(it, ContentType.SINGLE_PANE)
+                navigateToDetail(it, page, ContentType.SINGLE_PANE)
             }
         },
-        PagerItem(label = "Capsules") {
+        PagerItem(label = "Capsules") { page ->
             SpacecraftScreen(
                 contentType = contentType,
-                openedAsset = openedAsset
+                openedAsset = openedAsset,
+                state = capsulesListState
             ) {
-                navigateToDetail(it, ContentType.SINGLE_PANE)
+                navigateToDetail(it, page, ContentType.SINGLE_PANE)
             }
         }
     )
@@ -297,7 +323,7 @@ fun AssetsList(
             verticalAlignment = Alignment.Top,
             key = { screens[it].label }
         ) { page ->
-            screens[page].screen()
+            screens[page].screen(page)
         }
     }
 }

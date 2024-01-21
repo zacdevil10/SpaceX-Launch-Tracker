@@ -15,9 +15,10 @@ class AssetsViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(AssetsUIState())
     val uiState: StateFlow<AssetsUIState> = _uiState
 
-    fun setOpenedAsset(vehicleItem: VehicleItem, contentType: ContentType) {
+    fun setOpenedAsset(vehicleItem: VehicleItem, openedAssetPage: Int?, contentType: ContentType) {
         _uiState.value = AssetsUIState(
             openedAsset = vehicleItem,
+            openedAssetPage = openedAssetPage,
             isDetailOnlyOpen = contentType == ContentType.SINGLE_PANE && vehicleItem !is AstronautItem
         )
     }
@@ -29,5 +30,6 @@ class AssetsViewModel @Inject constructor() : ViewModel() {
 
 data class AssetsUIState(
     val openedAsset: VehicleItem? = null,
+    val openedAssetPage: Int? = null,
     val isDetailOnlyOpen: Boolean = false
 )

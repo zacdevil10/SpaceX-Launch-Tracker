@@ -15,6 +15,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import uk.co.zac_h.spacex.core.ui.component.DynamicAsyncImage
 
 @Composable
 fun Article(

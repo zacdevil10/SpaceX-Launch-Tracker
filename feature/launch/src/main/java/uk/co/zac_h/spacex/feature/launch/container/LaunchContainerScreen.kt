@@ -15,9 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.paging.compose.LazyPagingItems
-import uk.co.zac_h.spacex.core.ui.PagerItem
-import uk.co.zac_h.spacex.core.ui.SpaceXAppBar
-import uk.co.zac_h.spacex.core.ui.SpaceXTabLayout
+import uk.co.zac_h.spacex.core.ui.component.PagerItem
+import uk.co.zac_h.spacex.core.ui.component.SpaceXAppBar
+import uk.co.zac_h.spacex.core.ui.component.SpaceXTabLayout
 import uk.co.zac_h.spacex.feature.launch.LaunchItem
 import uk.co.zac_h.spacex.feature.launch.container.cores.LaunchCoresScreen
 import uk.co.zac_h.spacex.feature.launch.container.crew.LaunchCrewScreen
@@ -79,7 +79,7 @@ fun LaunchContainerScreen(
             verticalAlignment = Alignment.Top,
             key = { screens[it].label }
         ) { page ->
-            screens[page].screen()
+            screens[page].screen(page)
         }
     }
 }

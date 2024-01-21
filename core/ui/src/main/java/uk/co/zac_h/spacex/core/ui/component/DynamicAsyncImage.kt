@@ -1,4 +1,4 @@
-package uk.co.zac_h.spacex.core.ui
+package uk.co.zac_h.spacex.core.ui.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box

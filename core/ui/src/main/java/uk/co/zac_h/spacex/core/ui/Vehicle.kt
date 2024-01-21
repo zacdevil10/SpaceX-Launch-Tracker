@@ -24,6 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
+import uk.co.zac_h.spacex.core.ui.component.DynamicAsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

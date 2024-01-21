@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import uk.co.zac_h.spacex.core.common.filter.FilterOrder
+import uk.co.zac_h.spacex.core.common.filter.toFilter
 import uk.co.zac_h.spacex.core.common.types.Order
 import uk.co.zac_h.spacex.core.common.utils.sortedBy
 import uk.co.zac_h.spacex.network.ApiResult
@@ -28,7 +30,7 @@ class DragonViewModel @Inject constructor(
     val dragons: Flow<ApiResult<List<SecondStageItem>>> =
         combine(_dragons, _filter) { result, filter ->
             result.map { dragonList ->
-                dragonList.sortedBy(filter.order.order) { item -> item.maidenFlightMillis }
+                dragonList.sortedBy(filter.order.value) { item -> item.maidenFlightMillis }
             }
         }
 
@@ -44,8 +46,10 @@ class DragonViewModel @Inject constructor(
         }
     }
 
-    fun updateFilter(order: Order) {
-        _filter.value = _filter.value.copy(order = FilterOrder(order))
+    fun updateOrder(order: Order) {
+        _filter.update {
+            it.copy(order = order.toFilter())
+        }
     }
 
     fun resetFilter() {
