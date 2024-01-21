@@ -72,7 +72,6 @@ fun LaunchContainerScreen(
                 SpaceXTabLayout(
                     pagerState = pagerState,
                     screens = screens,
-                    scrollable = screens.size > 3,
                     scrollBehavior = scrollBehavior
                 )
             }

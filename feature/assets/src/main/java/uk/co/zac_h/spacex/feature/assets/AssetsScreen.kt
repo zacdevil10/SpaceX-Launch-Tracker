@@ -321,7 +321,6 @@ fun AssetsList(
             SpaceXTabLayout(
                 pagerState = pagerState,
                 screens = screens,
-                scrollable = true,
                 scrollBehavior = scrollBehavior
             )
         }
