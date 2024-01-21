@@ -18,8 +18,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -30,15 +28,7 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import uk.co.zac_h.feature.news.NewsScreen
 import uk.co.zac_h.spacex.core.common.ContentType
-import uk.co.zac_h.spacex.core.common.ModalNavigationDrawerContent
-import uk.co.zac_h.spacex.core.common.NavigationActions
 import uk.co.zac_h.spacex.core.common.NavigationType
-import uk.co.zac_h.spacex.core.common.PermanentNavigationDrawerContent
-import uk.co.zac_h.spacex.core.common.SpaceXBottomNavigationBar
-import uk.co.zac_h.spacex.core.common.SpaceXNavigationRail
-import uk.co.zac_h.spacex.core.common.TopLevelNavigation
-import uk.co.zac_h.spacex.core.ui.DevicePreviews
-import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 import uk.co.zac_h.spacex.feature.assets.AssetsScreen
 import uk.co.zac_h.spacex.feature.launch.LaunchListScreen
 import uk.co.zac_h.spacex.feature.settings.SettingsDialog
@@ -99,7 +89,7 @@ fun SpaceXNavigationWrapper(
     if (navigationType == NavigationType.PERMANENT_NAVIGATION_DRAWER) {
         PermanentNavigationDrawer(
             drawerContent = {
-                PermanentNavigationDrawerContent(
+                SpaceXPermanentNavigationDrawerContent(
                     selectedDestination = selectedDestination,
                     navigateToTopLevelDestination = navigationActions::navigateTo
                 )
@@ -116,7 +106,7 @@ fun SpaceXNavigationWrapper(
     } else {
         ModalNavigationDrawer(
             drawerContent = {
-                ModalNavigationDrawerContent(
+                SpaceXModalNavigationDrawerContent(
                     selectedDestination = selectedDestination,
                     navigateToTopLevelDestination = navigationActions::navigateTo,
                     onDrawerClicked = {
@@ -228,37 +218,4 @@ fun SpaceXNavHost(
             )
         }
     }
-}
-
-@DevicePreviews
-@Composable
-fun SpaceXAppPreview(
-    @PreviewParameter(NavigationPreviewParameterProvider::class) navigation: NavigationPreview
-) {
-    SpaceXTheme {
-        SpaceXNavigationWrapper(
-            navigationType = navigation.value.first,
-            contentType = navigation.value.second
-        )
-    }
-}
-
-sealed class NavigationPreview(val value: Pair<NavigationType, ContentType>) {
-    data object SinglePane :
-        NavigationPreview(NavigationType.BOTTOM_NAVIGATION to ContentType.SINGLE_PANE)
-
-    data object DualPane :
-        NavigationPreview(NavigationType.NAVIGATION_RAIL to ContentType.DUAL_PANE)
-
-    data object DualPanePermanent :
-        NavigationPreview(NavigationType.PERMANENT_NAVIGATION_DRAWER to ContentType.DUAL_PANE)
-}
-
-class NavigationPreviewParameterProvider : PreviewParameterProvider<NavigationPreview> {
-    override val values: Sequence<NavigationPreview> =
-        sequenceOf(
-            NavigationPreview.SinglePane,
-            NavigationPreview.DualPane,
-            NavigationPreview.DualPanePermanent
-        )
 }
