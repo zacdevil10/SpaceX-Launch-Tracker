@@ -31,7 +31,7 @@ abstract class SpaceXPagingSource<T : Any> : PagingSource<Int, T>() {
         LoadResult.Error(
             when (e.code()) {
                 429 -> TooManyRequestsException(
-                    e.message().filter { it.isDigit() }.toInt()
+                    e.response()?.errorBody()?.string()?.filter { it.isDigit() }?.toInt()
                 )
                 else -> Exception(e.message())
             }
