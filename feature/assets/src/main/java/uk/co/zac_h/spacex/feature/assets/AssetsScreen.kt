@@ -1,17 +1,6 @@
 package uk.co.zac_h.spacex.feature.assets
 
-import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.SizeTransform
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
@@ -19,11 +8,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,13 +21,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uk.co.zac_h.spacex.core.common.ContentType
-import uk.co.zac_h.spacex.core.ui.component.PagerItem
+import uk.co.zac_h.spacex.core.ui.component.SinglePane
 import uk.co.zac_h.spacex.core.ui.component.SpaceXTabLayout
-import uk.co.zac_h.spacex.core.ui.component.TabRowDefaults
+import uk.co.zac_h.spacex.core.ui.component.SpaceXTabRowDefaults
+import uk.co.zac_h.spacex.core.ui.component.Tab
+import uk.co.zac_h.spacex.core.ui.component.TwoPane
 import uk.co.zac_h.spacex.feature.assets.astronauts.AstronautsScreen
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleDetailsScreen
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
@@ -60,7 +47,7 @@ fun AssetsScreen(
 
     val pagerState = rememberPagerState(pageCount = { 5 })
 
-    val scrollBehavior = TabRowDefaults.pinnedScrollBehavior()
+    val scrollBehavior = SpaceXTabRowDefaults.pinnedScrollBehavior()
 
     LaunchedEffect(key1 = pagerState) {
         if (uiState.openedAssetPage != pagerState.currentPage) viewModel.closeDetailScreen()
@@ -87,12 +74,9 @@ fun AssetsScreen(
             dragonListState = dragonLazyListState,
             coreListState = coreLazyListState,
             capsulesListState = capsulesLazyListState,
-            setExpanded = {
-                expanded = it
-            },
+            setExpanded = { expanded = it },
             scrollBehavior = scrollBehavior
         )
-
         ContentType.SINGLE_PANE -> AssetsSinglePaneContent(
             contentType = contentType,
             uiState = uiState,
@@ -106,9 +90,7 @@ fun AssetsScreen(
             dragonListState = dragonLazyListState,
             coreListState = coreLazyListState,
             capsulesListState = capsulesLazyListState,
-            setExpanded = {
-                expanded = it
-            },
+            setExpanded = { expanded = it },
             scrollBehavior = scrollBehavior
         )
     }
@@ -132,16 +114,9 @@ fun AssetsTwoPaneContent(
     setExpanded: (Int) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
-    Row(
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.inverseOnSurface)
-    ) {
-        Card(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp)
-                .weight(1f)
-        ) {
+    TwoPane(
+        modifier = modifier,
+        left = {
             AssetsList(
                 modifier = Modifier.fillMaxSize(),
                 pagerState = pagerState,
@@ -157,32 +132,20 @@ fun AssetsTwoPaneContent(
                 setExpanded = setExpanded,
                 scrollBehavior = scrollBehavior
             )
-        }
-        Card(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp)
-                .weight(1f)
-        ) {
-            uiState.openedAsset?.let {
-                key(it.id) {
-                    VehicleDetailsScreen(
-                        modifier = Modifier
-                            .fillMaxSize(),
-                        vehicle = it,
-                        isFullscreen = false
-                    )
-                }
-            } ?: Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = "Select an asset")
+        },
+        rightContent = uiState.openedAsset,
+        right = {
+            key(it.id) {
+                VehicleDetailsScreen(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    vehicle = it,
+                    isFullscreen = false
+                )
             }
-        }
-    }
+        },
+        emptyLabel = "Select an asset"
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -204,30 +167,9 @@ fun AssetsSinglePaneContent(
     setExpanded: (Int) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
-    AnimatedContent(
-        targetState = uiState.openedAsset != null && uiState.isDetailOnlyOpen,
-        label = "",
-        transitionSpec = {
-            if (targetState > initialState) {
-                (slideInHorizontally { width -> width / 2 } + fadeIn())
-                    .togetherWith(slideOutHorizontally { width -> -(width / 2) } + fadeOut())
-            } else {
-                (slideInHorizontally { width -> -(width / 2) } + fadeIn())
-                    .togetherWith(slideOutHorizontally { width -> width / 2 } + fadeOut())
-            }.using(SizeTransform(clip = false))
-        }
-    ) {
-        if (it && uiState.openedAsset != null) {
-            BackHandler {
-                closeDetailScreen()
-            }
-            VehicleDetailsScreen(
-                modifier = modifier,
-                vehicle = uiState.openedAsset
-            ) {
-                closeDetailScreen()
-            }
-        } else {
+    SinglePane(
+        isDetailOpen = uiState.isDetailOnlyOpen,
+        list = {
             AssetsList(
                 modifier = modifier.fillMaxSize(),
                 pagerState = pagerState,
@@ -243,8 +185,18 @@ fun AssetsSinglePaneContent(
                 setExpanded = setExpanded,
                 scrollBehavior = scrollBehavior
             )
-        }
-    }
+        },
+        detailContent = uiState.openedAsset,
+        detail = {
+            VehicleDetailsScreen(
+                modifier = modifier,
+                vehicle = it
+            ) {
+                closeDetailScreen()
+            }
+        },
+        closeDetailScreen = closeDetailScreen
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
@@ -264,54 +216,12 @@ fun AssetsList(
     setExpanded: (Int) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
-    val screens = listOf(
-        PagerItem(label = "Astronauts") { page ->
-            AstronautsScreen(
-                contentType = contentType,
-                openedAsset = openedAsset,
-                expanded = expanded,
-                state = astronautListState,
-                setExpanded = setExpanded
-            ) {
-                navigateToDetail(it, page, ContentType.SINGLE_PANE)
-            }
-        },
-        PagerItem(label = "Rockets") { page ->
-            RocketsScreen(
-                contentType = contentType,
-                openedAsset = openedAsset,
-                state = rocketsListState
-            ) {
-                navigateToDetail(it, page, ContentType.SINGLE_PANE)
-            }
-        },
-        PagerItem(label = "Second stage") { page ->
-            DragonScreen(
-                contentType = contentType,
-                openedAsset = openedAsset,
-                state = dragonListState
-            ) {
-                navigateToDetail(it, page, ContentType.SINGLE_PANE)
-            }
-        },
-        PagerItem(label = "Core") { page ->
-            LauncherScreen(
-                contentType = contentType,
-                openedAsset = openedAsset,
-                state = coreListState
-            ) {
-                navigateToDetail(it, page, ContentType.SINGLE_PANE)
-            }
-        },
-        PagerItem(label = "Capsules") { page ->
-            SpacecraftScreen(
-                contentType = contentType,
-                openedAsset = openedAsset,
-                state = capsulesListState
-            ) {
-                navigateToDetail(it, page, ContentType.SINGLE_PANE)
-            }
-        }
+    val tabs = listOf(
+        Tab(label = "Astronauts"),
+        Tab(label = "Rockets"),
+        Tab(label = "Second stage"),
+        Tab(label = "Core"),
+        Tab(label = "Capsules")
     )
 
     Scaffold(
@@ -320,7 +230,7 @@ fun AssetsList(
         topBar = {
             SpaceXTabLayout(
                 pagerState = pagerState,
-                screens = screens,
+                tabs = tabs,
                 scrollBehavior = scrollBehavior
             )
         }
@@ -332,9 +242,42 @@ fun AssetsList(
             state = pagerState,
             beyondBoundsPageCount = 1,
             verticalAlignment = Alignment.Top,
-            key = { screens[it].label }
+            key = { tabs[it].label }
         ) { page ->
-            screens[page].screen(page)
+            when (page) {
+                0 -> AstronautsScreen(
+                    contentType = contentType,
+                    openedAsset = openedAsset,
+                    expanded = expanded,
+                    state = astronautListState,
+                    setExpanded = setExpanded,
+                    onItemClick = { navigateToDetail(it, page, ContentType.SINGLE_PANE) }
+                )
+                1 -> RocketsScreen(
+                    contentType = contentType,
+                    openedAsset = openedAsset,
+                    state = rocketsListState,
+                    onItemClick = { navigateToDetail(it, page, ContentType.SINGLE_PANE) }
+                )
+                2 -> DragonScreen(
+                    contentType = contentType,
+                    openedAsset = openedAsset,
+                    state = dragonListState,
+                    onItemClick = { navigateToDetail(it, page, ContentType.SINGLE_PANE) }
+                )
+                3 -> LauncherScreen(
+                    contentType = contentType,
+                    openedAsset = openedAsset,
+                    state = coreListState,
+                    onItemClick = { navigateToDetail(it, page, ContentType.SINGLE_PANE) }
+                )
+                4 -> SpacecraftScreen(
+                    contentType = contentType,
+                    openedAsset = openedAsset,
+                    state = capsulesListState,
+                    onItemClick = { navigateToDetail(it, page, ContentType.SINGLE_PANE) }
+                )
+            }
         }
     }
 }

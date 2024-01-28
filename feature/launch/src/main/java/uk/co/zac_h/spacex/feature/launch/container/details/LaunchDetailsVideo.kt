@@ -4,19 +4,23 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.Button
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import uk.co.zac_h.spacex.core.ui.ComponentPreviews
 import uk.co.zac_h.spacex.core.ui.SpaceXTheme
+import uk.co.zac_h.spacex.core.ui.component.DynamicAsyncImage
 import uk.co.zac_h.spacex.feature.launch.R
 import uk.co.zac_h.spacex.feature.launch.VideoItem
 
@@ -33,11 +37,14 @@ fun LaunchDetailsVideo(
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            AsyncImage(
-                modifier = Modifier.aspectRatio(16f / 9f),
+            DynamicAsyncImage(
+                modifier = Modifier
+                    .aspectRatio(16f / 9f)
+                    .clip(CardDefaults.outlinedShape),
                 model = videoItem.imageUrl,
                 contentDescription = "",
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                placeholder = Icons.Outlined.PlayArrow
             )
             videoItem.title?.let { title ->
                 Text(

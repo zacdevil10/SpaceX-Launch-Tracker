@@ -21,9 +21,9 @@ import androidx.compose.ui.unit.dp
 import uk.co.zac_h.feature.news.articles.ArticlesScreen
 import uk.co.zac_h.feature.news.reddit.RedditFeedScreen
 import uk.co.zac_h.spacex.core.common.ContentType
-import uk.co.zac_h.spacex.core.ui.component.PagerItem
 import uk.co.zac_h.spacex.core.ui.component.SpaceXTabLayout
-import uk.co.zac_h.spacex.core.ui.component.TabRowDefaults
+import uk.co.zac_h.spacex.core.ui.component.SpaceXTabRowDefaults
+import uk.co.zac_h.spacex.core.ui.component.Tab
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -32,30 +32,17 @@ fun NewsScreen(
 ) {
     val pagerState = rememberPagerState(pageCount = { 2 })
 
-    val scrollBehavior = TabRowDefaults.pinnedScrollBehavior()
-
-    val screens = listOf(
-        PagerItem(label = "Articles", icon = R.drawable.ic_newspaper) {
-            ArticlesScreen(
-                contentType = contentType
-            )
-        },
-        PagerItem(label = "Reddit", icon = R.drawable.reddit) {
-            RedditFeedScreen(
-                contentType = contentType
-            )
-        }
-    )
+    val scrollBehavior = SpaceXTabRowDefaults.pinnedScrollBehavior()
 
     when (contentType) {
         ContentType.SINGLE_PANE -> NewsSinglePaneContent(
+            contentType = contentType,
             pagerState = pagerState,
-            screens = screens,
             scrollBehavior = scrollBehavior
         )
         ContentType.DUAL_PANE -> NewsTwoPaneContent(
+            contentType = contentType,
             pagerState = pagerState,
-            screens = screens,
             scrollBehavior = scrollBehavior
         )
     }
@@ -65,8 +52,8 @@ fun NewsScreen(
 @Composable
 fun NewsTwoPaneContent(
     modifier: Modifier = Modifier,
+    contentType: ContentType,
     pagerState: PagerState,
-    screens: List<PagerItem>,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
     Box(
@@ -79,8 +66,8 @@ fun NewsTwoPaneContent(
                 .padding(8.dp)
         ) {
             NewsSinglePaneContent(
+                contentType = contentType,
                 pagerState = pagerState,
-                screens = screens,
                 scrollBehavior = scrollBehavior
             )
         }
@@ -91,17 +78,22 @@ fun NewsTwoPaneContent(
 @Composable
 fun NewsSinglePaneContent(
     modifier: Modifier = Modifier,
+    contentType: ContentType,
     pagerState: PagerState,
-    screens: List<PagerItem>,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
+    val tabs = listOf(
+        Tab(label = "Articles", icon = R.drawable.ic_newspaper),
+        Tab(label = "Reddit", icon = R.drawable.reddit)
+    )
+
     Scaffold(
         modifier = modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             SpaceXTabLayout(
                 pagerState = pagerState,
-                screens = screens,
+                tabs = tabs,
                 scrollBehavior = scrollBehavior
             )
         }
@@ -113,9 +105,12 @@ fun NewsSinglePaneContent(
             state = pagerState,
             beyondBoundsPageCount = 1,
             verticalAlignment = Alignment.Top,
-            key = { screens[it].label }
+            key = { tabs[it].label }
         ) { page ->
-            screens[page].screen(page)
+            when (page) {
+                0 -> ArticlesScreen(contentType = contentType)
+                1 -> RedditFeedScreen(contentType = contentType)
+            }
         }
     }
 }

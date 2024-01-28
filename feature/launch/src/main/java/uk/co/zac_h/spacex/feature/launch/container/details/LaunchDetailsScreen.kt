@@ -8,12 +8,15 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Place
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,12 +35,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import uk.co.zac_h.spacex.core.ui.Countdown
 import uk.co.zac_h.spacex.core.ui.DevicePreviews
 import uk.co.zac_h.spacex.core.ui.LabelValue
 import uk.co.zac_h.spacex.core.ui.LaunchContainer
 import uk.co.zac_h.spacex.core.ui.SpaceXTheme
+import uk.co.zac_h.spacex.core.ui.component.DynamicAsyncImage
 import uk.co.zac_h.spacex.feature.launch.LaunchItem
 import uk.co.zac_h.spacex.feature.launch.R
 import uk.co.zac_h.spacex.feature.launch.preview.LaunchPreviewParameterProvider
@@ -194,13 +197,15 @@ fun LaunchDetailsScreen(
                 }
             ) {
                 Column {
-                    AsyncImage(
+                    DynamicAsyncImage(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .aspectRatio(16f / 9f)
                             .clip(CardDefaults.outlinedShape),
                         model = launch.launchLocationMap,
                         contentDescription = "",
-                        contentScale = ContentScale.Crop
+                        contentScale = ContentScale.Crop,
+                        placeholder = Icons.Outlined.Place
                     )
                     LabelValue(
                         modifier = Modifier.padding(16.dp),

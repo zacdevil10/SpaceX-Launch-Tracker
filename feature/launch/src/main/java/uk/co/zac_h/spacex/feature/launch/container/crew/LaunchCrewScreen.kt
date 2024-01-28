@@ -5,10 +5,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -23,10 +19,10 @@ import uk.co.zac_h.spacex.feature.launch.preview.LaunchPreviewParameterProvider
 @Composable
 fun LaunchCrewScreen(
     modifier: Modifier = Modifier,
-    crew: List<CrewItem>
+    crew: List<CrewItem>,
+    expandedPosition: Int,
+    setExpandedPosition: (Int) -> Unit
 ) {
-    var expanded by rememberSaveable { mutableIntStateOf(-1) }
-
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(top = 8.dp)
@@ -44,9 +40,11 @@ fun LaunchCrewScreen(
                 status = it.status.status,
                 firstFlight = it.firstFlight,
                 description = it.bio,
-                expanded = expanded == index
+                expanded = expandedPosition == index
             ) {
-                expanded = if (expanded != index) index else -1
+                setExpandedPosition(
+                    if (expandedPosition != index) index else -1
+                )
             }
         }
     }
@@ -60,7 +58,9 @@ fun LaunchCrewScreenPreview(
 ) {
     SpaceXTheme {
         LaunchCrewScreen(
-            crew = launches.crew!!
+            crew = launches.crew!!,
+            expandedPosition = 0,
+            setExpandedPosition = {}
         )
     }
 }
