@@ -60,11 +60,10 @@ import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 fun SpaceXTabLayout(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    screens: List<PagerItem>,
+    tabs: List<Tab>,
     scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     var scrollableTabs by remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
 
     val heightOffsetLimit = with(LocalDensity.current) { -48.dp.toPx() }
     SideEffect {
@@ -79,104 +78,68 @@ fun SpaceXTabLayout(
         label = ""
     )
 
-    val density = LocalDensity.current
     val tabTextWidths = remember {
-        mutableStateListOf(*screens.map { 0.dp }.toTypedArray())
+        mutableStateListOf(*tabs.map { 0.dp }.toTypedArray())
     }
     val tabIconWidths = remember {
-        mutableStateListOf(*screens.map { 0.dp }.toTypedArray())
+        mutableStateListOf(*tabs.map { 0.dp }.toTypedArray())
     }
 
-    val tabs: @Composable () -> Unit = {
-        for (i in 0..<pagerState.pageCount) {
-            screens[i].icon?.let {
-                LeadingIconTab(
-                    selected = pagerState.currentPage == i,
-                    onClick = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(i)
-                        }
-                    },
-                    modifier = modifier,
-                    selectedContentColor = MaterialTheme.colorScheme.primary,
-                    unselectedContentColor = MaterialTheme.colorScheme.inverseSurface,
-                    icon = {
-                        screens[i].icon?.let {
-                            Icon(
-                                modifier = Modifier.onGloballyPositioned {
-                                    tabIconWidths[i] = with(density) {
-                                        it.size.width.toDp()
-                                    }
-                                },
-                                painter = painterResource(id = it),
-                                contentDescription = ""
-                            )
-                        }
-                    },
-                    text = {
-                        Text(
-                            text = screens[i].label,
-                            onTextLayout = { textLayoutResult ->
-                                tabTextWidths[i] = with(density) {
-                                    textLayoutResult.size.width.toDp() + 8.dp
-                                }
-                            }
-                        )
-                    },
-                )
-            } ?: Tab(
-                selected = pagerState.currentPage == i,
-                onClick = {
-                    coroutineScope.launch {
-                        pagerState.animateScrollToPage(i)
-                    }
-                },
-                modifier = modifier,
-                selectedContentColor = MaterialTheme.colorScheme.primary,
-                unselectedContentColor = MaterialTheme.colorScheme.inverseSurface,
-                text = {
-                    Text(
-                        text = screens[i].label,
-                        onTextLayout = { textLayoutResult ->
-                            tabTextWidths[i] = with(density) {
-                                textLayoutResult.size.width.toDp()
-                            }
-                            if (textLayoutResult.hasVisualOverflow) scrollableTabs = true
-                        },
-                        maxLines = 1
-                    )
-                },
+    SpaceXAutoAdjustTabLayout(
+        modifier = modifier,
+        scrollableTabs = scrollableTabs,
+        selectedTabIndex = pagerState.currentPage,
+        containerColor = tabRowContainerColor,
+        indicator = { tabPositions ->
+            RoundedSpringTabIndicator(
+                currentPage = pagerState.currentPage,
+                tabPositions = tabPositions,
+                currentTabWidth = tabTextWidths[pagerState.currentPage] + tabIconWidths[pagerState.currentPage]
             )
-        }
-    }
+        },
+        tabs = {
+            tabs.mapIndexed { index, tab ->
+                SpaceXAutoAdjustTab(
+                    pagerState = pagerState,
+                    tabPosition = index,
+                    tab = tab,
+                    setTabIconWidth = {
+                        tabIconWidths[index] = it
+                    },
+                    setTabTextWidth = {
+                        tabTextWidths[index] = it
+                    },
+                    setScrollableTab = { scrollableTabs = true }
+                )
+            }
+        },
+    )
+}
 
+@Composable
+private fun SpaceXAutoAdjustTabLayout(
+    modifier: Modifier = Modifier,
+    scrollableTabs: Boolean = false,
+    selectedTabIndex: Int,
+    containerColor: Color,
+    indicator: @Composable (tabPositions: List<TabPosition>) -> Unit,
+    tabs: @Composable () -> Unit,
+) {
     if (scrollableTabs) {
         SpaceXScrollableTabLayout(
             modifier = modifier,
-            currentPage = pagerState.currentPage,
+            selectedTabIndex = selectedTabIndex,
+            containerColor = containerColor,
+            indicator = indicator,
             tabs = tabs,
-            color = tabRowContainerColor,
-            indicator = { tabPositions ->
-                RoundedSpringTabIndicator(
-                    currentPage = pagerState.currentPage,
-                    tabPositions = tabPositions,
-                    currentTabWidth = tabTextWidths[pagerState.currentPage] + tabIconWidths[pagerState.currentPage]
-                )
-            },
         )
     } else {
         SpaceXTabLayout(
             modifier = modifier,
-            currentPage = pagerState.currentPage,
+            selectedTabIndex = selectedTabIndex,
+            containerColor = containerColor,
+            indicator = indicator,
             tabs = tabs,
-            color = tabRowContainerColor,
-            indicator = { tabPositions ->
-                RoundedSpringTabIndicator(
-                    currentPage = pagerState.currentPage,
-                    tabPositions = tabPositions,
-                    currentTabWidth = tabTextWidths[pagerState.currentPage] + tabIconWidths[pagerState.currentPage]
-                )
-            },
         )
     }
 }
@@ -184,16 +147,15 @@ fun SpaceXTabLayout(
 @Composable
 private fun SpaceXScrollableTabLayout(
     modifier: Modifier = Modifier,
-    currentPage: Int,
+    selectedTabIndex: Int,
+    containerColor: Color,
     indicator: @Composable (tabPositions: List<TabPosition>) -> Unit,
     tabs: @Composable () -> Unit,
-    color: Color
 ) {
     ScrollableTabRow(
-        selectedTabIndex = currentPage,
         modifier = modifier,
-        containerColor = color,
-        contentColor = MaterialTheme.colorScheme.onSurface,
+        selectedTabIndex = selectedTabIndex,
+        containerColor = containerColor,
         edgePadding = 0.dp,
         indicator = indicator,
         tabs = tabs
@@ -203,18 +165,140 @@ private fun SpaceXScrollableTabLayout(
 @Composable
 private fun SpaceXTabLayout(
     modifier: Modifier = Modifier,
-    currentPage: Int,
+    selectedTabIndex: Int,
+    containerColor: Color,
     indicator: @Composable (tabPositions: List<TabPosition>) -> Unit,
     tabs: @Composable () -> Unit,
-    color: Color
 ) {
     TabRow(
-        selectedTabIndex = currentPage,
         modifier = modifier,
-        containerColor = color,
-        contentColor = MaterialTheme.colorScheme.onSurface,
+        selectedTabIndex = selectedTabIndex,
+        containerColor = containerColor,
         indicator = indicator,
         tabs = tabs
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun SpaceXAutoAdjustTab(
+    modifier: Modifier = Modifier,
+    pagerState: PagerState,
+    tabPosition: Int,
+    tab: Tab,
+    setTabIconWidth: (Dp) -> Unit,
+    setTabTextWidth: (Dp) -> Unit,
+    setScrollableTab: () -> Unit
+) {
+    tab.icon?.let {
+        SpaceXLeadingIconTab(
+            modifier = modifier,
+            pagerState = pagerState,
+            tabPosition = tabPosition,
+            tab = tab,
+            setTabIconWidth = setTabIconWidth,
+            setTabTextWidth = setTabTextWidth
+        )
+    } ?: SpaceXTab(
+        modifier = modifier,
+        pagerState = pagerState,
+        tabPosition = tabPosition,
+        tab = tab,
+        setTabTextWidth = setTabTextWidth,
+        setScrollableTab = setScrollableTab
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun SpaceXTab(
+    modifier: Modifier = Modifier,
+    pagerState: PagerState,
+    tabPosition: Int,
+    tab: Tab,
+    setTabTextWidth: (Dp) -> Unit,
+    setScrollableTab: () -> Unit
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val density = LocalDensity.current
+
+    Tab(
+        modifier = modifier,
+        selected = pagerState.currentPage == tabPosition,
+        onClick = {
+            coroutineScope.launch {
+                pagerState.animateScrollToPage(tabPosition)
+            }
+        },
+        selectedContentColor = MaterialTheme.colorScheme.primary,
+        unselectedContentColor = MaterialTheme.colorScheme.inverseSurface,
+        text = {
+            Text(
+                text = tab.label,
+                onTextLayout = { textLayoutResult ->
+                    setTabTextWidth(
+                        with(density) {
+                            textLayoutResult.size.width.toDp()
+                        }
+                    )
+                    if (textLayoutResult.hasVisualOverflow) setScrollableTab()
+                },
+                maxLines = 1
+            )
+        },
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun SpaceXLeadingIconTab(
+    modifier: Modifier = Modifier,
+    pagerState: PagerState,
+    tabPosition: Int,
+    tab: Tab,
+    setTabIconWidth: (Dp) -> Unit,
+    setTabTextWidth: (Dp) -> Unit
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val density = LocalDensity.current
+
+    LeadingIconTab(
+        modifier = modifier,
+        selected = pagerState.currentPage == tabPosition,
+        onClick = {
+            coroutineScope.launch {
+                pagerState.animateScrollToPage(tabPosition)
+            }
+        },
+        selectedContentColor = MaterialTheme.colorScheme.primary,
+        unselectedContentColor = MaterialTheme.colorScheme.inverseSurface,
+        icon = {
+            tab.icon?.let {
+                Icon(
+                    modifier = Modifier.onGloballyPositioned {
+                        setTabIconWidth(
+                            with(density) {
+                                it.size.width.toDp()
+                            }
+                        )
+                    },
+                    painter = painterResource(id = it),
+                    contentDescription = ""
+                )
+            }
+        },
+        text = {
+            Text(
+                text = tab.label,
+                onTextLayout = { textLayoutResult ->
+                    setTabTextWidth(
+                        with(density) {
+                            textLayoutResult.size.width.toDp() + 8.dp
+                        }
+                    )
+                }
+            )
+        },
     )
 }
 
@@ -260,9 +344,10 @@ private fun Modifier.tabIndicatorSpringOffset(
             } else {
                 spring(dampingRatio = 1f, stiffness = 1000f)
             }
-        }, label = "fancy_indicator"
+        },
+        label = "tab_indicator_start_position"
     ) {
-        ((tabPositions[it].left + tabPositions[it].right - currentTabWidth) / 2)
+        (tabPositions[it].left + tabPositions[it].right - currentTabWidth) / 2
     }
 
     val indicatorEnd by transition.animateDp(
@@ -272,9 +357,10 @@ private fun Modifier.tabIndicatorSpringOffset(
             } else {
                 spring(dampingRatio = 1f, stiffness = 50f)
             }
-        }, label = "indicator_position"
+        },
+        label = "tab_indicator_end_position"
     ) {
-        ((tabPositions[it].left + tabPositions[it].right + currentTabWidth) / 2)
+        (tabPositions[it].left + tabPositions[it].right + currentTabWidth) / 2
     }
 
     wrapContentSize(align = Alignment.BottomStart)
@@ -288,7 +374,14 @@ data class PagerItem(
     val screen: @Composable (Int) -> Unit
 )
 
-object TabRowDefaults {
+fun List<PagerItem>.toTabs() = map { Tab(label = it.label, icon = it.icon) }
+
+data class Tab(
+    val label: String,
+    @DrawableRes val icon: Int? = null
+)
+
+object SpaceXTabRowDefaults {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
@@ -331,9 +424,9 @@ private fun SpaceXTabLayoutPreview() {
         SpaceXTabLayout(
             modifier = Modifier.background(MaterialTheme.colorScheme.background),
             pagerState = rememberPagerState(pageCount = { 2 }),
-            screens = listOf(
-                PagerItem(label = "Page 1") {},
-                PagerItem(label = "Page 2") {}
+            tabs = listOf(
+                Tab(label = "Page 1"),
+                Tab(label = "Page 2")
             )
         )
     }
@@ -347,9 +440,9 @@ private fun SpaceXTabLayoutWithIconPreview() {
         SpaceXTabLayout(
             modifier = Modifier.background(MaterialTheme.colorScheme.background),
             pagerState = rememberPagerState(pageCount = { 2 }),
-            screens = listOf(
-                PagerItem(label = "Page 1", icon = R.drawable.ic_history_black_24dp) {},
-                PagerItem(label = "Page 2", icon = R.drawable.ic_history_black_24dp) {}
+            tabs = listOf(
+                Tab(label = "Page 1", icon = R.drawable.ic_history_black_24dp),
+                Tab(label = "Page 2", icon = R.drawable.ic_history_black_24dp)
             )
         )
     }
@@ -363,13 +456,13 @@ private fun SpaceXScrollableTabLayoutPreview() {
         SpaceXTabLayout(
             modifier = Modifier.background(MaterialTheme.colorScheme.background),
             pagerState = rememberPagerState(pageCount = { 6 }),
-            screens = listOf(
-                PagerItem(label = "Page 1") {},
-                PagerItem(label = "Page 2") {},
-                PagerItem(label = "Page 3") {},
-                PagerItem(label = "Page 4") {},
-                PagerItem(label = "Page 5") {},
-                PagerItem(label = "Page 6") {}
+            tabs = listOf(
+                Tab(label = "Page 1"),
+                Tab(label = "Page 2"),
+                Tab(label = "Page 3"),
+                Tab(label = "Page 4"),
+                Tab(label = "Page 5"),
+                Tab(label = "Page 6")
             )
         )
     }
