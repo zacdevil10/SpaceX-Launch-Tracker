@@ -30,7 +30,7 @@ import uk.co.zac_h.feature.news.NewsScreen
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.NavigationType
 import uk.co.zac_h.spacex.feature.assets.AssetsScreen
-import uk.co.zac_h.spacex.feature.launch.LaunchListScreen
+import uk.co.zac_h.spacex.feature.launch.LaunchesScreen
 import uk.co.zac_h.spacex.feature.settings.SettingsDialog
 import uk.co.zac_h.spacex.feature.settings.company.CompanyScreen
 
@@ -193,7 +193,7 @@ fun SpaceXNavHost(
         startDestination = TopLevelNavigation.Launches.route
     ) {
         composable(TopLevelNavigation.Launches.route) {
-            LaunchListScreen(
+            LaunchesScreen(
                 contentType = contentType
             )
         }

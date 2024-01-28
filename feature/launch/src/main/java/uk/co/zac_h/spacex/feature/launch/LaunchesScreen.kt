@@ -20,10 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import uk.co.zac_h.spacex.core.common.ContentType
-import uk.co.zac_h.spacex.core.ui.component.SinglePane
+import uk.co.zac_h.spacex.core.ui.component.SelectableContent
 import uk.co.zac_h.spacex.core.ui.component.SpaceXTabLayout
 import uk.co.zac_h.spacex.core.ui.component.SpaceXTabRowDefaults
 import uk.co.zac_h.spacex.core.ui.component.Tab
@@ -34,7 +35,7 @@ import uk.co.zac_h.spacex.network.dto.news.ArticleResponse
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun LaunchListScreen(
+fun LaunchesScreen(
     contentType: ContentType,
     viewModel: LaunchesViewModel = hiltViewModel()
 ) {
@@ -51,90 +52,27 @@ fun LaunchListScreen(
 
     val launchListPagerState = rememberPagerState(pageCount = { 2 })
 
-    when (contentType) {
-        ContentType.DUAL_PANE -> LaunchesTwoPaneContent(
-            uiState = uiState,
-            upcoming = upcoming,
-            previous = previous,
-            articles = articles,
-            pagerState = launchListPagerState,
-            upcomingLazyListState = upcomingLazyListState,
-            previousLazyListState = previousLazyListState,
-            openedLaunch = uiState.openedLaunch,
-            retry = { viewModel.getUpcoming() },
-            navigateToDetail = { launch, pane -> viewModel.setOpenedLaunch(launch, pane) },
-            scrollBehavior = scrollBehavior
-        )
-        ContentType.SINGLE_PANE -> LaunchesSinglePaneContent(
-            uiState = uiState,
-            upcoming = upcoming,
-            previous = previous,
-            articles = articles,
-            pagerState = launchListPagerState,
-            upcomingLazyListState = upcomingLazyListState,
-            previousLazyListState = previousLazyListState,
-            openedLaunch = uiState.openedLaunch,
-            retry = { viewModel.getUpcoming() },
-            closeDetailScreen = { viewModel.closeDetailScreen() },
-            navigateToDetail = { launch, pane -> viewModel.setOpenedLaunch(launch, pane) },
-            scrollBehavior = scrollBehavior
-        )
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
-@Composable
-fun LaunchesTwoPaneContent(
-    uiState: LaunchesUIState,
-    upcoming: ApiResult<List<LaunchItem>>,
-    previous: LazyPagingItems<LaunchItem>,
-    articles: LazyPagingItems<ArticleResponse>,
-    pagerState: PagerState,
-    upcomingLazyListState: LazyListState,
-    previousLazyListState: LazyListState,
-    openedLaunch: LaunchItem?,
-    retry: () -> Unit,
-    navigateToDetail: (LaunchItem, ContentType) -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior
-) {
-    TwoPane(
-        modifier = Modifier
-            .fillMaxSize(),
-        left = {
-            LaunchList(
-                modifier = Modifier
-                    .fillMaxSize(),
-                pagerState = pagerState,
-                contentType = ContentType.DUAL_PANE,
-                upcoming = upcoming,
-                previous = previous,
-                upcomingLazyListState = upcomingLazyListState,
-                previousLazyListState = previousLazyListState,
-                openedLaunch = openedLaunch,
-                retry = retry,
-                navigateToDetail = navigateToDetail,
-                scrollBehavior = scrollBehavior
-            )
-        },
-        rightContent = uiState.openedLaunch,
-        right = {
-            key(it.id) {
-                LaunchContainerScreen(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    launch = it,
-                    articles = articles,
-                    isFullscreen = false
-                )
-            }
-        },
-        emptyLabel = "Select a launch"
+    LaunchesContent(
+        uiState = uiState,
+        upcoming = upcoming,
+        previous = previous,
+        articles = articles,
+        pagerState = launchListPagerState,
+        upcomingLazyListState = upcomingLazyListState,
+        previousLazyListState = previousLazyListState,
+        openedLaunch = uiState.openedLaunch,
+        retry = { viewModel.getUpcoming() },
+        navigateToDetail = { launch, pane -> viewModel.setOpenedLaunch(launch, pane) },
+        scrollBehavior = scrollBehavior,
+        contentType = contentType,
+        closeDetailScreen = { viewModel.closeDetailScreen() }
     )
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun LaunchesSinglePaneContent(
+fun LaunchesContent(
+    contentType: ContentType,
     uiState: LaunchesUIState,
     upcoming: ApiResult<List<LaunchItem>>,
     previous: LazyPagingItems<LaunchItem>,
@@ -148,14 +86,15 @@ fun LaunchesSinglePaneContent(
     navigateToDetail: (LaunchItem, ContentType) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
-    SinglePane(
-        isDetailOpen = uiState.isDetailOnlyOpen,
-        list = {
-            LaunchList(
+    TwoPane(
+        modifier = Modifier
+            .fillMaxSize(),
+        first = {
+            LaunchListScreen(
                 modifier = Modifier
                     .fillMaxSize(),
                 pagerState = pagerState,
-                contentType = ContentType.SINGLE_PANE,
+                contentType = contentType,
                 upcoming = upcoming,
                 previous = previous,
                 upcomingLazyListState = upcomingLazyListState,
@@ -166,24 +105,38 @@ fun LaunchesSinglePaneContent(
                 scrollBehavior = scrollBehavior
             )
         },
-        detailContent = uiState.openedLaunch,
-        detail = {
-            LaunchContainerScreen(
-                modifier = Modifier
-                    .fillMaxSize(),
-                launch = it,
-                articles = articles
-            ) {
-                closeDetailScreen()
-            }
+        second = {
+            SelectableContent(
+                value = uiState.openedLaunch,
+                content = {
+                    key(it.id) {
+                        LaunchContainerScreen(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            launch = it,
+                            articles = articles,
+                            isFullscreen = contentType == ContentType.SINGLE_PANE,
+                            navigateUp = closeDetailScreen
+                        )
+                    }
+                },
+                label = when (pagerState.currentPage) {
+                    0 -> if (upcoming is ApiResult.Pending) "" else "Select a launch"
+                    1 -> if (previous.loadState.refresh is LoadState.Loading) "" else "Select a launch"
+                    else -> "Select a launch"
+                }
+            )
         },
+        isTablet = contentType == ContentType.DUAL_PANE,
+        isDetailOpen = uiState.isDetailOnlyOpen,
+        hasDetailContent = uiState.openedLaunch != null,
         closeDetailScreen = closeDetailScreen
     )
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun LaunchList(
+fun LaunchListScreen(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
     contentType: ContentType,

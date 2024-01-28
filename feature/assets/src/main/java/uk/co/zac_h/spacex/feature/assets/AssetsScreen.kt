@@ -24,7 +24,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uk.co.zac_h.spacex.core.common.ContentType
-import uk.co.zac_h.spacex.core.ui.component.SinglePane
+import uk.co.zac_h.spacex.core.ui.component.SelectableContent
 import uk.co.zac_h.spacex.core.ui.component.SpaceXTabLayout
 import uk.co.zac_h.spacex.core.ui.component.SpaceXTabRowDefaults
 import uk.co.zac_h.spacex.core.ui.component.Tab
@@ -61,44 +61,27 @@ fun AssetsScreen(
 
     var expanded by rememberSaveable { mutableIntStateOf(-1) }
 
-    when (contentType) {
-        ContentType.DUAL_PANE -> AssetsTwoPaneContent(
-            contentType = contentType,
-            uiState = uiState,
-            pagerState = pagerState,
-            openedAsset = uiState.openedAsset,
-            navigateToDetail = viewModel::setOpenedAsset,
-            expanded = expanded,
-            astronautListState = astronautsLazyListState,
-            rocketsListState = rocketsLazyListState,
-            dragonListState = dragonLazyListState,
-            coreListState = coreLazyListState,
-            capsulesListState = capsulesLazyListState,
-            setExpanded = { expanded = it },
-            scrollBehavior = scrollBehavior
-        )
-        ContentType.SINGLE_PANE -> AssetsSinglePaneContent(
-            contentType = contentType,
-            uiState = uiState,
-            pagerState = pagerState,
-            openedAsset = uiState.openedAsset,
-            closeDetailScreen = viewModel::closeDetailScreen,
-            navigateToDetail = viewModel::setOpenedAsset,
-            expanded = expanded,
-            astronautListState = astronautsLazyListState,
-            rocketsListState = rocketsLazyListState,
-            dragonListState = dragonLazyListState,
-            coreListState = coreLazyListState,
-            capsulesListState = capsulesLazyListState,
-            setExpanded = { expanded = it },
-            scrollBehavior = scrollBehavior
-        )
-    }
+    AssetsContent(
+        contentType = contentType,
+        uiState = uiState,
+        pagerState = pagerState,
+        openedAsset = uiState.openedAsset,
+        navigateToDetail = viewModel::setOpenedAsset,
+        expanded = expanded,
+        astronautListState = astronautsLazyListState,
+        rocketsListState = rocketsLazyListState,
+        dragonListState = dragonLazyListState,
+        coreListState = coreLazyListState,
+        capsulesListState = capsulesLazyListState,
+        setExpanded = { expanded = it },
+        scrollBehavior = scrollBehavior,
+        closeDetailScreen = { viewModel.closeDetailScreen() }
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
-fun AssetsTwoPaneContent(
+fun AssetsContent(
     modifier: Modifier = Modifier,
     contentType: ContentType,
     uiState: AssetsUIState,
@@ -110,13 +93,14 @@ fun AssetsTwoPaneContent(
     dragonListState: LazyListState,
     coreListState: LazyListState,
     capsulesListState: LazyListState,
+    closeDetailScreen: () -> Unit,
     expanded: Int,
     setExpanded: (Int) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
     TwoPane(
         modifier = modifier,
-        left = {
+        first = {
             AssetsList(
                 modifier = Modifier.fillMaxSize(),
                 pagerState = pagerState,
@@ -133,69 +117,26 @@ fun AssetsTwoPaneContent(
                 scrollBehavior = scrollBehavior
             )
         },
-        rightContent = uiState.openedAsset,
-        right = {
-            key(it.id) {
-                VehicleDetailsScreen(
-                    modifier = Modifier
-                        .fillMaxSize(),
-                    vehicle = it,
-                    isFullscreen = false
-                )
-            }
-        },
-        emptyLabel = "Select an asset"
-    )
-}
-
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
-@Composable
-fun AssetsSinglePaneContent(
-    modifier: Modifier = Modifier,
-    contentType: ContentType,
-    uiState: AssetsUIState,
-    pagerState: PagerState,
-    openedAsset: VehicleItem?,
-    closeDetailScreen: () -> Unit,
-    navigateToDetail: (VehicleItem, Int, ContentType) -> Unit,
-    astronautListState: LazyListState,
-    rocketsListState: LazyListState,
-    dragonListState: LazyListState,
-    coreListState: LazyListState,
-    capsulesListState: LazyListState,
-    expanded: Int,
-    setExpanded: (Int) -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior
-) {
-    SinglePane(
-        isDetailOpen = uiState.isDetailOnlyOpen,
-        list = {
-            AssetsList(
-                modifier = modifier.fillMaxSize(),
-                pagerState = pagerState,
-                contentType = contentType,
-                openedAsset = openedAsset,
-                navigateToDetail = navigateToDetail,
-                expanded = expanded,
-                astronautListState = astronautListState,
-                rocketsListState = rocketsListState,
-                dragonListState = dragonListState,
-                coreListState = coreListState,
-                capsulesListState = capsulesListState,
-                setExpanded = setExpanded,
-                scrollBehavior = scrollBehavior
+        second = {
+            SelectableContent(
+                value = uiState.openedAsset,
+                content = {
+                    key(it.id) {
+                        VehicleDetailsScreen(
+                            modifier = Modifier
+                                .fillMaxSize(),
+                            vehicle = it,
+                            isFullscreen = false
+                        )
+                    }
+                },
+                label = "Select an asset"
             )
         },
-        detailContent = uiState.openedAsset,
-        detail = {
-            VehicleDetailsScreen(
-                modifier = modifier,
-                vehicle = it
-            ) {
-                closeDetailScreen()
-            }
-        },
-        closeDetailScreen = closeDetailScreen
+        isTablet = contentType == ContentType.DUAL_PANE,
+        isDetailOpen = uiState.isDetailOnlyOpen,
+        hasDetailContent = uiState.openedAsset != null,
+        closeDetailScreen = closeDetailScreen,
     )
 }
 

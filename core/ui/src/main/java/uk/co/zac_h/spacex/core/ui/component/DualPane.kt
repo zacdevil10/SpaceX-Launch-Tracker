@@ -1,51 +1,78 @@
 package uk.co.zac_h.spacex.core.ui.component
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun <T> TwoPane(
+fun TwoPane(
     modifier: Modifier = Modifier,
-    left: @Composable () -> Unit,
-    rightContent: T?,
-    right: @Composable (T) -> Unit,
-    emptyLabel: String? = null,
+    first: @Composable () -> Unit,
+    second: @Composable () -> Unit,
+    isTablet: Boolean,
+    isDetailOpen: Boolean,
+    hasDetailContent: Boolean,
+    closeDetailScreen: () -> Unit
 ) {
-    Row(
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.inverseOnSurface)
-    ) {
-        Card(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp)
-                .weight(1f)
+    if (isTablet) {
+        Row(
+            modifier = modifier
+                .background(MaterialTheme.colorScheme.inverseOnSurface)
         ) {
-            left()
-        }
-        Card(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp)
-                .weight(1f)
-        ) {
-            rightContent?.let { right(it) } ?: Box(
+            Card(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background),
-                contentAlignment = Alignment.Center
+                    .padding(8.dp)
+                    .weight(1f)
             ) {
-                emptyLabel?.let { Text(text = it) }
+                first()
+            }
+            Card(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp)
+                    .weight(1f)
+            ) {
+                second()
+            }
+        }
+    } else {
+        AnimatedContent(
+            targetState = isDetailOpen,
+            label = "",
+            transitionSpec = {
+                if (targetState) {
+                    (slideInHorizontally { width -> width / 2 } + fadeIn())
+                        .togetherWith(slideOutHorizontally { width -> -(width / 2) } + fadeOut())
+                } else {
+                    (slideInHorizontally { width -> -(width / 2) } + fadeIn())
+                        .togetherWith(slideOutHorizontally { width -> width / 2 } + fadeOut())
+                }.using(SizeTransform(clip = false)).apply {
+                    targetContentZIndex = if (targetState) 1f else 0f
+                }
+            }
+        ) {
+            if (it && hasDetailContent) {
+                BackHandler {
+                    closeDetailScreen()
+                }
+                second()
+            } else {
+                first()
             }
         }
     }
