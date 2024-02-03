@@ -1,6 +1,8 @@
 package uk.co.zac_h.spacex.core.ui
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -35,7 +37,15 @@ fun Banner(
         mutableStateOf(isVisible)
     }
 
-    AnimatedVisibility(visible = isVisibleInternal) {
+    AnimatedVisibility(
+        visible = isVisibleInternal,
+        enter = slideInVertically(
+            initialOffsetY = { -it }
+        ),
+        exit = slideOutVertically(
+            targetOffsetY = { -it }
+        )
+    ) {
         Column(
             modifier = modifier
                 .background(MaterialTheme.colorScheme.background)

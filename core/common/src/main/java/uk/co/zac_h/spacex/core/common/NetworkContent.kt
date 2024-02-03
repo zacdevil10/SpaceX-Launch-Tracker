@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.core.common
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
+import uk.co.zac_h.spacex.core.ui.DevicePreviews
+import uk.co.zac_h.spacex.core.ui.SpaceXTheme
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.TooManyRequestsException
 
@@ -31,12 +34,10 @@ fun <T> NetworkContent(
     Column(
         modifier = modifier
     ) {
-        ApiLimitBanner(exception = (result as? ApiResult.Failure)?.exception as? TooManyRequestsException)
-
         when (result) {
             is ApiResult.Pending -> LoadingIndicator()
             is ApiResult.Success -> content(result.result)
-            is ApiResult.Failure -> NetworkError(retry = retry)
+            is ApiResult.Failure -> NetworkError(exception = result.exception, retry = retry)
         }
     }
 }
@@ -51,9 +52,9 @@ fun <T : Any> NetworkContent(
         modifier = modifier
             .fillMaxSize()
     ) {
-        when (result.loadState.refresh) {
+        when (val loadState = result.loadState.refresh) {
             is LoadState.Loading -> LoadingIndicator()
-            is LoadState.Error -> NetworkError(retry = result::retry)
+            is LoadState.Error -> NetworkError(exception = loadState.error, retry = result::retry)
             is LoadState.NotLoading -> content()
         }
     }
@@ -70,9 +71,9 @@ fun <T : Any> NetworkVerticalListContent(
         modifier = modifier
             .fillMaxSize()
     ) {
-        when (result.loadState.refresh) {
+        when (val loadState = result.loadState.refresh) {
             is LoadState.Loading -> LoadingIndicator()
-            is LoadState.Error -> NetworkError(retry = result::retry)
+            is LoadState.Error -> NetworkError(exception = loadState.error, retry = result::retry)
             is LoadState.NotLoading -> LazyColumn(
                 modifier = modifier,
                 state = state
@@ -114,16 +115,26 @@ internal fun LoadingIndicator() {
 }
 
 @Composable
-internal fun NetworkError(retry: () -> Unit) {
-    Box(
+internal fun NetworkError(
+    exception: Throwable,
+    retry: () -> Unit
+) {
+    Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Button(
-            modifier = Modifier.align(Alignment.Center),
-            onClick = retry
+        ApiLimitBanner(exception = exception)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .animateContentSize()
         ) {
-            Text(text = "Retry")
+            Button(
+                modifier = Modifier.align(Alignment.Center),
+                onClick = retry
+            ) {
+                Text(text = "Retry")
+            }
         }
     }
 }
@@ -144,5 +155,13 @@ internal fun PagingError(
         ) {
             Text(text = "Retry")
         }
+    }
+}
+
+@DevicePreviews
+@Composable
+fun NetworkErrorPreview() {
+    SpaceXTheme {
+        NetworkError(exception = TooManyRequestsException()) {}
     }
 }

@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.network
 
+import retrofit2.HttpException
 import uk.co.zac_h.spacex.network.datasource.remote.RemoteDataSource
 
 abstract class Repository<T>(
@@ -24,6 +25,20 @@ abstract class Repository<T>(
                 } else null
             }
         } ?: fetchAndCache(key)
+    } catch (e: HttpException) {
+        println(e.message())
+        ApiResult.Failure(
+            when (e.code()) {
+                429 -> {
+                    TooManyRequestsException(
+                        e.message().filter { it.isDigit() }.let {
+                            if (it.isNotEmpty()) it.toInt() else null
+                        }
+                    )
+                }
+                else -> Exception(e.message())
+            }
+        )
     } catch (e: Throwable) {
         ApiResult.Failure(e)
     }
@@ -34,5 +49,5 @@ abstract class Repository<T>(
         cache.store(data = it, key = key)
     }
 
-    private suspend fun fetch(): ApiResult<T> = remoteDataSource.fetchAsync().toApiResource { it }
+    private suspend fun fetch(): ApiResult<T> = ApiResult.Success(remoteDataSource.fetchAsync())
 }
