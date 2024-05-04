@@ -2,6 +2,7 @@ package uk.co.zac_h.spacex.feature.settings.company
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -42,40 +43,31 @@ fun CompanyScreen(
 ) {
     val company by viewModel.company.collectAsStateWithLifecycle(ApiResult.Pending)
 
-    NetworkContent(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                when (contentType) {
-                    ContentType.SINGLE_PANE -> MaterialTheme.colorScheme.background
-                    ContentType.DUAL_PANE -> MaterialTheme.colorScheme.inverseOnSurface
-                }
-            ),
+    CompanyContent(
+        contentType = contentType,
         result = company,
-        retry = { viewModel.getCompany() }
-    ) {
-        CompanyContent(
-            contentType = contentType,
-            company = it
-        )
-    }
+        retry = viewModel::getCompany
+    )
 }
 
 @Composable
 fun CompanyContent(
     modifier: Modifier = Modifier,
     contentType: ContentType,
-    company: Company
+    result: ApiResult<Company>,
+    retry: () -> Unit
 ) {
     when (contentType) {
         ContentType.SINGLE_PANE -> CompanySinglePane(
             modifier = modifier,
-            company = company
+            result = result,
+            retry = retry
         )
 
         ContentType.DUAL_PANE -> CompanyDualPane(
             modifier = modifier,
-            company = company
+            result = result,
+            retry = retry
         )
     }
 }
@@ -83,7 +75,8 @@ fun CompanyContent(
 @Composable
 fun CompanySinglePane(
     modifier: Modifier = Modifier,
-    company: Company
+    result: ApiResult<Company>,
+    retry: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -93,7 +86,9 @@ fun CompanySinglePane(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CompanyDetails(
-            company = company
+            modifier = Modifier.fillMaxSize(),
+            result = result,
+            retry = retry
         )
     }
 }
@@ -101,28 +96,35 @@ fun CompanySinglePane(
 @Composable
 fun CompanyDualPane(
     modifier: Modifier = Modifier,
-    company: Company
+    result: ApiResult<Company>,
+    retry: () -> Unit
 ) {
-    Card(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(8.dp)
+    Box(
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.inverseOnSurface)
     ) {
-        Column(
-            modifier = modifier
+        Card(
+            modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(8.dp)
         ) {
             Column(
-                Modifier
-                    .width(400.dp)
+                modifier = modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                CompanyDetails(
-                    company = company
-                )
+                Column(
+                    Modifier
+                        .width(400.dp)
+                ) {
+                    CompanyDetails(
+                        result = result,
+                        retry = retry
+                    )
+                }
             }
         }
     }
@@ -130,66 +132,73 @@ fun CompanyDualPane(
 
 @Composable
 fun CompanyDetails(
-    company: Company
+    modifier: Modifier = Modifier,
+    result: ApiResult<Company>,
+    retry: () -> Unit
 ) {
     val uriHandler = LocalUriHandler.current
-
-    Spacer(modifier = Modifier.height(64.dp))
-    Image(
-        modifier = Modifier.fillMaxWidth(),
-        painter = painterResource(id = R.drawable.ic_spacex_logo),
-        contentDescription = "",
-        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
-    )
-    Spacer(modifier = Modifier.height(48.dp))
-    company.description?.let { Text(text = it) }
-    company.website?.let {
-        Button(
-            modifier = Modifier
-                .padding(top = 16.dp)
-                .fillMaxWidth(),
-            onClick = { uriHandler.openUri(it) }
-        ) {
-            Icon(
-                modifier = Modifier.padding(end = 8.dp),
-                painter = painterResource(id = R.drawable.ic_baseline_web_24),
-                contentDescription = ""
-            )
-            Text(text = "Website")
-        }
-    }
-    company.wiki?.let {
-        Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
-            onClick = { uriHandler.openUri(it) }
-        ) {
-            Icon(
-                modifier = Modifier.padding(end = 8.dp),
-                painter = painterResource(id = R.drawable.ic_wikipedia),
-                contentDescription = ""
-            )
-            Text(text = "Wikipedia")
-        }
-    }
-    company.foundingYear?.let {
-        LabelValue(
-            modifier = Modifier
-                .padding(top = 16.dp),
-            label = stringResource(id = R.string.founded_label),
-            value = it
+    NetworkContent(
+        modifier = modifier,
+        result = result,
+        retry = retry
+    ) { company ->
+        Spacer(modifier = Modifier.height(64.dp))
+        Image(
+            modifier = Modifier.fillMaxWidth(),
+            painter = painterResource(id = R.drawable.ic_spacex_logo),
+            contentDescription = "",
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
         )
+        Spacer(modifier = Modifier.height(48.dp))
+        company.description?.let { Text(text = it) }
+        company.website?.let {
+            Button(
+                modifier = Modifier
+                    .padding(top = 16.dp)
+                    .fillMaxWidth(),
+                onClick = { uriHandler.openUri(it) }
+            ) {
+                Icon(
+                    modifier = Modifier.padding(end = 8.dp),
+                    painter = painterResource(id = R.drawable.ic_baseline_web_24),
+                    contentDescription = ""
+                )
+                Text(text = "Website")
+            }
+        }
+        company.wiki?.let {
+            Button(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                onClick = { uriHandler.openUri(it) }
+            ) {
+                Icon(
+                    modifier = Modifier.padding(end = 8.dp),
+                    painter = painterResource(id = R.drawable.ic_wikipedia),
+                    contentDescription = ""
+                )
+                Text(text = "Wikipedia")
+            }
+        }
+        company.foundingYear?.let {
+            LabelValue(
+                modifier = Modifier
+                    .padding(top = 16.dp),
+                label = stringResource(id = R.string.founded_label),
+                value = it
+            )
+        }
+        company.administrator?.let {
+            LabelValue(
+                modifier = Modifier
+                    .padding(top = 16.dp),
+                label = stringResource(id = R.string.ceo_label),
+                value = it.removePrefix("CEO: ")
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
     }
-    company.administrator?.let {
-        LabelValue(
-            modifier = Modifier
-                .padding(top = 16.dp),
-            label = stringResource(id = R.string.ceo_label),
-            value = it.removePrefix("CEO: ")
-        )
-    }
-    Spacer(modifier = Modifier.height(16.dp))
 }
 
 @DevicePreviews
@@ -199,16 +208,19 @@ fun CompanyContentPreview() {
         CompanyContent(
             modifier = Modifier.background(MaterialTheme.colorScheme.background),
             contentType = ContentType.SINGLE_PANE,
-            company = Company(
-                id = 0,
-                name = "SpaceX",
-                description = "Description",
-                administrator = "Admin",
-                foundingYear = "2002",
-                totalLaunchCount = 800,
-                website = "url",
-                wiki = "wiki_url"
-            )
+            result = ApiResult.Success(
+                Company(
+                    id = 0,
+                    name = "SpaceX",
+                    description = "Description",
+                    administrator = "Admin",
+                    foundingYear = "2002",
+                    totalLaunchCount = 800,
+                    website = "url",
+                    wiki = "wiki_url"
+                )
+            ),
+            retry = {}
         )
     }
 }

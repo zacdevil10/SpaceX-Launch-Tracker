@@ -6,9 +6,9 @@ sealed class ApiResult<out R> {
     data class Success<out T>(val result: T) : ApiResult<T>()
     data class Failure(val exception: Throwable) : ApiResult<Nothing>()
 
-    fun <T> map(transform: (value: R) -> T): ApiResult<T> = when (this) {
+    fun <T> map(transform: (R) -> T): ApiResult<T> = when (this) {
         is Pending -> this
-        is Success -> Success(this.result.let(transform))
+        is Success -> Success(transform(result))
         is Failure -> this
     }
 }

@@ -99,7 +99,7 @@ fun LaunchCoresScreen(
                                 LabelValue(
                                     modifier = Modifier
                                         .padding(top = 8.dp),
-                                    label = "Preview Flight",
+                                    label = "Previous Flight",
                                     value = previousFlight.replace(" | ", "\n")
                                 )
                             }
