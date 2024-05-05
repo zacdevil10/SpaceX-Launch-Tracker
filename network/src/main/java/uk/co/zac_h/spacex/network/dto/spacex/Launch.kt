@@ -86,6 +86,7 @@ data class LaunchResponse(
             @Serializable
             data class Launcher(
                 val id: Int,
+                val details: String?,
                 @SerialName("serial_number") val serialNumber: String?,
                 val status: String?,
                 val flights: Int?,

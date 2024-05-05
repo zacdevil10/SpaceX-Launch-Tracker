@@ -101,7 +101,7 @@ data class FirstStageItem(
     val reused: Boolean,
     val totalFlights: Int?,
     val landingAttempt: Boolean,
-    val landingDescription: String?,
+    val description: String?,
     val landingType: String?,
     val landingLocation: String?,
     val landingLocationFull: String?,
@@ -118,7 +118,11 @@ data class FirstStageItem(
         reused = response.reused ?: false,
         totalFlights = response.launcher?.flights,
         landingAttempt = response.landing?.attempt ?: false,
-        landingDescription = response.landing?.description,
+        description = if (response.launcher?.details != null && response.landing?.description != null) {
+            "${response.launcher?.details}\n${response.landing?.description}"
+        } else {
+            response.launcher?.details ?: response.landing?.description
+        },
         landingType = response.landing?.type?.abbrev,
         landingLocation = response.landing?.location?.abbrev,
         landingLocationFull = response.landing?.location?.name,

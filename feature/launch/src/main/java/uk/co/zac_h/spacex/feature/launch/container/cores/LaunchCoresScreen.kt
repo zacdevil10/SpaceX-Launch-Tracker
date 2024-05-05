@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import uk.co.zac_h.spacex.core.common.Header
 import uk.co.zac_h.spacex.core.common.recyclerview.RecyclerViewItem
 import uk.co.zac_h.spacex.core.ui.DevicePreviews
@@ -70,11 +71,12 @@ fun LaunchCoresScreen(
                                 modifier = Modifier
                                     .padding(top = 8.dp)
                             )
-                            it.landingDescription?.let { description ->
+                            it.description?.let { description ->
                                 Text(
                                     modifier = Modifier
                                         .padding(top = 8.dp),
-                                    text = description
+                                    text = description,
+                                    lineHeight = 2.em
                                 )
                             }
                             if (it.landingAttempt) {
