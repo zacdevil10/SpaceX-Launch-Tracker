@@ -35,7 +35,7 @@ class LaunchesViewModel @Inject constructor(
     val upcomingLaunches: Flow<ApiResult<List<LaunchItem>>> = _upcomingLaunches
 
     val previousLaunchesLiveData: Flow<PagingData<LaunchItem>> = Pager(
-        PagingConfig(pageSize = 10)
+        PagingConfig(pageSize = 5)
     ) {
         repository.previousLaunchesPagingSource
     }.flow.toType(::LaunchItem).cachedIn(viewModelScope)

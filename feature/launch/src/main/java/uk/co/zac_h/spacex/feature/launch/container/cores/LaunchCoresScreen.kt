@@ -12,9 +12,9 @@ import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import uk.co.zac_h.spacex.core.common.Header
 import uk.co.zac_h.spacex.core.common.recyclerview.RecyclerViewItem
 import uk.co.zac_h.spacex.core.ui.DevicePreviews
@@ -53,7 +53,6 @@ fun LaunchCoresScreen(
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
-
                 is FirstStageItem -> {
                     OutlinedCard(
                         modifier = Modifier
@@ -71,12 +70,17 @@ fun LaunchCoresScreen(
                                 modifier = Modifier
                                     .padding(top = 8.dp)
                             )
-                            it.description?.let { description ->
+                            if (it.launcherDetails != null || it.landingDetails != null) {
                                 Text(
                                     modifier = Modifier
                                         .padding(top = 8.dp),
-                                    text = description,
-                                    lineHeight = 2.em
+                                    text = buildAnnotatedString {
+                                        it.launcherDetails?.let { details -> append(details) }
+                                        if (it.launcherDetails != null && it.landingDetails != null) {
+                                            append(" ")
+                                        }
+                                        it.landingDetails?.let { details -> append(details) }
+                                    },
                                 )
                             }
                             if (it.landingAttempt) {
