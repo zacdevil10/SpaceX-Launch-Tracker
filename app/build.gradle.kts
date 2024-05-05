@@ -60,6 +60,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.material)
+
     implementation(libs.kotlin.stdlib.jdk8)
     implementation(libs.androidx.core)
 
@@ -78,7 +80,6 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
-    implementation(libs.firebase.messaging)
 
     //Hilt
     implementation(libs.hilt.android)

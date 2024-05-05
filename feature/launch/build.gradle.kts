@@ -2,7 +2,6 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
-    id("androidx.navigation.safeargs.kotlin")
     id("dagger.hilt.android.plugin")
 }
 
@@ -47,9 +46,6 @@ android {
 dependencies {
     implementation(libs.androidx.core)
     implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.recyclerview)
 
     implementation(project(":core:common"))
     implementation(project(":core:ui"))
@@ -58,9 +54,6 @@ dependencies {
     implementation(libs.androidx.viewmodel)
     implementation(libs.androidx.fragment)
     implementation(libs.androidx.compose.lifecycle.viewmodel)
-
-    implementation(libs.androidx.navigation.fragment)
-    implementation(libs.androidx.navigation.ui)
 
     implementation(libs.androidx.compose.hilt.navigation)
     implementation(libs.hilt.android)

@@ -43,15 +43,8 @@ android {
 }
 
 dependencies {
-    implementation(libs.material)
-    implementation(libs.androidx.constraintlayout)
-
     implementation(libs.androidx.compose.navigation)
-
-    //Paging
     implementation(libs.androidx.compose.paging)
-
-    //Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
