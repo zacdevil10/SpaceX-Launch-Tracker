@@ -126,7 +126,8 @@ fun AssetsContent(
                             modifier = Modifier
                                 .fillMaxSize(),
                             vehicle = it,
-                            isFullscreen = false
+                            isFullscreen = contentType == ContentType.SINGLE_PANE,
+                            navigateUp = closeDetailScreen
                         )
                     }
                 },
