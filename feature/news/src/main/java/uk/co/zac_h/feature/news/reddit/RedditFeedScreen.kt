@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -26,6 +27,8 @@ fun RedditFeedScreen(
     val posts = viewModel.redditFeed.collectAsLazyPagingItems()
 
     val postsLazyListState = rememberLazyStaggeredGridState()
+
+    val uriHandler = LocalUriHandler.current
 
     NetworkContent(
         modifier = Modifier.fillMaxSize(),
@@ -63,10 +66,9 @@ fun RedditFeedScreen(
                             it.images.first().resolutions[it.images.first().resolutions.size - 1].url
                         },
                         score = post.score,
-                        comments = post.commentsCount
-                    ) {
-
-                    }
+                        comments = post.commentsCount,
+                        onClick = { uriHandler.openUri("https://www.reddit.com${post.permalink}") }
+                    )
                 }
             }
 
