@@ -1,25 +1,29 @@
 package uk.co.zac_h.spacex.network.dto.spacex
 
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class AstronautResponse(
-    @field:Json(name = "id") val id: Int,
-    @field:Json(name = "name") val name: String,
-    @field:Json(name = "status") val status: Status?,
-    @field:Json(name = "agency") val agency: Agency?,
-    @field:Json(name = "nationality") val nationality: String?,
-    @field:Json(name = "bio") val bio: String?,
-    @field:Json(name = "profile_image") val image: String?,
-    @field:Json(name = "first_flight") val firstFlight: String?
+    val id: Int,
+    val name: String,
+    val status: Status?,
+    val agency: Agency?,
+    val nationality: String?,
+    val bio: String?,
+    @SerialName("profile_image") val image: String?,
+    @SerialName("first_flight") val firstFlight: String?
 ) {
 
+    @Serializable
     data class Status(
-        @field:Json(name = "id") val id: Int,
-        @field:Json(name = "name") val name: String?,
+        val id: Int,
+        val name: String?,
     )
 
+    @Serializable
     data class Agency(
-        @field:Json(name = "id") val id: Int,
-        @field:Json(name = "name") val name: String?
+        val id: Int,
+        val name: String?
     )
 }

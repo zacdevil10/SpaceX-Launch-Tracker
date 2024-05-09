@@ -1,0 +1,91 @@
+[versions]
+androidx-activity-compose = "1.9.0"
+androidx-lifecycle-runtime-compose = "2.7.0"
+androidx-navigation-compose = "2.7.7"
+androidx-hilt-navigation-compose = "1.2.0"
+appcompat = "1.6.1"
+compose = "2024.05.00"
+coil-compose = "2.5.0"
+constraintlayout = "2.1.4"
+core = "1.13.1"
+firebase-crashlytics-gradle = "2.9.9"
+firebase = "33.0.0"
+google-services = "4.4.1"
+gradle = "8.4.0"
+hilt = "2.50"
+fragment = "1.7.0"
+kotlin = "1.9.22"
+kotlinxSerializationJson = "1.6.2"
+ksp = "1.9.22-1.0.16"
+logging-interceptor = "4.12.0"
+retrofit2KotlinxSerializationConverter = "1.0.0"
+paging = "3.2.1"
+lifecycle = "2.7.0"
+material = "1.12.0"
+retrofit = "2.9.0"
+lifecycle-viewmodel-compose = "2.7.0"
+paging-compose = "3.2.1"
+datastore-preferences = "1.1.1"
+
+minSdk = "26"
+targetSdk = "34"
+compileSdk = "34"
+compose-compiler = "1.5.8"
+
+[libraries]
+
+# AndroidX
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
+androidx-core = { module = "androidx.core:core-ktx", version.ref = "core" }
+androidx-paging = { module = "androidx.paging:paging-runtime-ktx", version.ref = "paging" }
+androidx-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore-preferences" }
+
+# Compose
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose" }
+androidx-compose-activity = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
+androidx-compose-materialWindow = { module = "androidx.compose.material3:material3-window-size-class" }
+androidx-compose-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle-runtime-compose" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-ui-toolingpreview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle-viewmodel-compose" }
+androidx-compose-paging = { group = "androidx.paging", name = "paging-compose", version.ref = "paging-compose" }
+androidx-compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
+androidx-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation-compose" }
+androidx-compose-hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidx-hilt-navigation-compose" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
+
+# Hilt
+hilt-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+
+# Kotlin
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
+
+# Firebase
+firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebase-crashlytics-gradle" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+
+material = { module = "com.google.android.material:material", version.ref = "material" }
+
+google-services = { module = "com.google.gms:google-services", version.ref = "google-services" }
+
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+
+# Retrofit
+squareup-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+kotlinx-serialization-converter = { module = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter", version.ref = "retrofit2KotlinxSerializationConverter" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "logging-interceptor" }
+
+[plugins]
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
+[bundles]
+

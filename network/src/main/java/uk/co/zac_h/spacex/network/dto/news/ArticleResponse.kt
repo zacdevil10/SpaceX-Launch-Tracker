@@ -1,22 +1,25 @@
 package uk.co.zac_h.spacex.network.dto.news
 
-import com.squareup.moshi.Json
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class ArticleResponse(
-    @field:Json(name = "id") val id: Int,
-    @field:Json(name = "title") val title: String,
-    @field:Json(name = "url") val url: String,
-    @field:Json(name = "image_url") val imageUrl: String,
-    @field:Json(name = "news_site") val newsSite: String,
-    @field:Json(name = "summary") val summary: String,
-    @field:Json(name = "published_at") val publishedAt: String,
-    @field:Json(name = "updated_at") val updatedAt: String,
-    @field:Json(name = "featured") val featured: Boolean,
-    @field:Json(name = "launches") val launches: List<Launch>
+    val id: Int,
+    val title: String,
+    val url: String,
+    @SerialName("image_url") val imageUrl: String,
+    @SerialName("news_site") val newsSite: String,
+    val summary: String,
+    @SerialName("published_at") val publishedAt: String,
+    @SerialName("updated_at") val updatedAt: String,
+    val featured: Boolean,
+    val launches: List<Launch>
 ) {
 
+    @Serializable
     data class Launch(
-        @field:Json(name = "launch_id") val id: String,
-        @field:Json(name = "provider") val provider: String,
+        @SerialName("launch_id") val id: String,
+        val provider: String,
     )
 }

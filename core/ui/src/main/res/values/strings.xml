@@ -3,5 +3,14 @@
 
     <!-- LaunchView -->
     <string name="reused">Reused</string>
+    <string name="launch_site_label">Launch site:</string>
+
+    <!-- Crew -->
+    <string name="details_label">Details</string>
+    <string name="crew_status_label">Status:</string>
+    <string name="crew_first_flight_label">First flight:</string>
+
+    <!-- FragmentViewPager -->
+    <string name="filter_desc">Open filter</string>
 
 </resources>

@@ -1,23 +1,19 @@
 package uk.co.zac_h.spacex.feature.launch
 
-import android.content.res.Resources
 import androidx.core.net.toUri
+import uk.co.zac_h.spacex.core.common.Header
 import uk.co.zac_h.spacex.core.common.recyclerview.RecyclerViewItem
 import uk.co.zac_h.spacex.core.common.types.CoreType
+import uk.co.zac_h.spacex.core.common.types.CrewStatus
 import uk.co.zac_h.spacex.core.common.utils.formatCrewDate
 import uk.co.zac_h.spacex.core.common.utils.formatDate
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
-import uk.co.zac_h.spacex.core.common.utils.toCountdownDays
-import uk.co.zac_h.spacex.core.common.utils.toCountdownHours
-import uk.co.zac_h.spacex.core.common.utils.toCountdownMinutes
-import uk.co.zac_h.spacex.core.common.utils.toCountdownSeconds
 import uk.co.zac_h.spacex.core.common.utils.toMillis
 import uk.co.zac_h.spacex.network.SPACEX_CREW_LOST_IN_TRAINING
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_ACTIVE
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_DECEASED
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_INACTIVE
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_RETIRED
-import uk.co.zac_h.spacex.network.dto.spacex.CrewStatus
 import uk.co.zac_h.spacex.network.dto.spacex.LaunchResponse
 import java.util.Locale
 
@@ -79,24 +75,18 @@ data class LaunchItem(
         val description: String?
     )
 
-    fun countdown(resources: Resources): String? {
-        val remaining = calculateCountdown()
-
-        return when {
-            upcoming && !webcastLive && remaining > 0 -> String.format(
-                "T-%02d:%02d:%02d:%02d",
-                remaining.toCountdownDays(),
-                remaining.toCountdownHours(),
-                remaining.toCountdownMinutes(),
-                remaining.toCountdownSeconds()
-            )
-
-            webcastLive -> resources.getString(R.string.launches_webcast_live)
-            else -> null
-        }
-    }
-
-    private fun calculateCountdown() = launchDateUnix?.minus(System.currentTimeMillis()) ?: 0
+    val cores: List<RecyclerViewItem>
+        get() = firstStage?.let { firstStageList ->
+            if (firstStageList.size > 1) {
+                firstStageList.groupBy { firstStageItem ->
+                    firstStageItem.type
+                }.flatMap { firstStageItem ->
+                    listOf(Header(firstStageItem.key.type)) + firstStageItem.value
+                }
+            } else {
+                firstStageList
+            }
+        } ?: emptyList()
 
     companion object {
 
@@ -111,7 +101,8 @@ data class FirstStageItem(
     val reused: Boolean,
     val totalFlights: Int?,
     val landingAttempt: Boolean,
-    val landingDescription: String?,
+    val launcherDetails: String?,
+    val landingDetails: String?,
     val landingType: String?,
     val landingLocation: String?,
     val landingLocationFull: String?,
@@ -128,7 +119,8 @@ data class FirstStageItem(
         reused = response.reused ?: false,
         totalFlights = response.launcher?.flights,
         landingAttempt = response.landing?.attempt ?: false,
-        landingDescription = response.landing?.description,
+        launcherDetails = response.launcher?.details,
+        landingDetails = response.landing?.description,
         landingType = response.landing?.type?.abbrev,
         landingLocation = response.landing?.location?.abbrev,
         landingLocationFull = response.landing?.location?.name,

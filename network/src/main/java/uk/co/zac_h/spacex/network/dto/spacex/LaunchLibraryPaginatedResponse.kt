@@ -1,11 +1,23 @@
 package uk.co.zac_h.spacex.network.dto.spacex
 
-import com.squareup.moshi.Json
+import kotlinx.serialization.Serializable
+import uk.co.zac_h.spacex.network.ApiResult
 
+@Serializable
 data class LaunchLibraryPaginatedResponse<T>(
-    @field:Json(name = "count") val count: Int,
-    @field:Json(name = "next") val next: String?,
-    @field:Json(name = "previous") val previous: String?,
-    @field:Json(name = "results") val results: List<T>,
-    @field:Json(name = "detail") val detail: String?
+    val count: Int,
+    val next: String?,
+    val previous: String?,
+    val results: List<T>,
+    val detail: String?
 )
+
+fun <R, T> ApiResult<LaunchLibraryPaginatedResponse<T>>.mapResults(
+    transform: (value: T) -> R
+) = map {
+    it.mapResponse(transform)
+}
+
+internal fun <R, T> LaunchLibraryPaginatedResponse<T>.mapResponse(
+    transform: (value: T) -> R
+) = results.map(transform)

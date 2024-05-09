@@ -3,7 +3,7 @@ package uk.co.zac_h.spacex.feature.settings.company
 import uk.co.zac_h.spacex.network.dto.spacex.AgencyResponse
 
 data class Company(
-    val id: String,
+    val id: Int,
     val name: String?,
     val description: String?,
     val administrator: String?,

@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="nav_header_title">SpaceX - Launch Tracker</string>
-    <string name="nav_header_subtitle">By Zac Hadjineophytou</string>
-
     <!--Menu-->
     <string name="search">Search</string>
 
@@ -14,5 +11,15 @@
     <string name="starship">Starship</string>
 
     <string name="percentage">%1$s%%</string>
+
+    <string name="retry_button_label">Retry</string>
+
+    <!-- API Throttling -->
+    <string name="primary_upgrade_label">Dismiss</string>
+    <plurals name="api_throttled">
+        <item quantity="one">API requests are limited to 15 every hour. Expect availability again in %1$d minutes.</item>
+        <item quantity="other">API requests are limited to 15 every hour. Expect availability again in %1$d minutes.</item>
+    </plurals>
+    <string name="api_throttled_no_time">API requests are limited to 15 every hour. Upgrade to increase this limit.</string>
 
 </resources>

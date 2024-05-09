@@ -14,7 +14,7 @@
             android:targetPackage="uk.co.zac_h.spacex" />
     </shortcut>-->
 
-    <shortcut
+    <!--<shortcut
         android:shortcutId="news"
         android:enabled="true"
         android:icon="@drawable/ic_newspaper"
@@ -25,19 +25,6 @@
             android:data="spacex://news"
             android:targetClass="uk.co.zac_h.spacex.base.MainActivity"
             android:targetPackage="uk.co.zac_h.spacex" />
-    </shortcut>
-
-    <shortcut
-        android:shortcutId="launches"
-        android:enabled="true"
-        android:icon="@drawable/ic_rocket"
-        android:shortcutShortLabel="@string/menu_launches"
-        android:shortcutLongLabel="@string/menu_launches">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:data="spacex://launches"
-            android:targetClass="uk.co.zac_h.spacex.base.MainActivity"
-            android:targetPackage="uk.co.zac_h.spacex" />
-    </shortcut>
+    </shortcut>-->
 
 </shortcuts>
