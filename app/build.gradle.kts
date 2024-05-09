@@ -15,8 +15,8 @@ android {
         applicationId = "uk.co.zac_h.spacex"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 210010702
-        versionName = "1.7.2"
+        versionCode = 260020000
+        versionName = "2.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
