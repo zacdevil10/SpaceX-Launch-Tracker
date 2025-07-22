@@ -2,8 +2,10 @@ package uk.co.zac_h.spacex
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
@@ -170,7 +172,8 @@ fun SpaceXAppContent(
                         navigateToTopLevelDestination = navigateToTopLevelDestination
                     )
                 }
-            }
+            },
+            contentWindowInsets = WindowInsets.navigationBars
         ) {
             SpaceXNavHost(
                 modifier = modifier.padding(it),

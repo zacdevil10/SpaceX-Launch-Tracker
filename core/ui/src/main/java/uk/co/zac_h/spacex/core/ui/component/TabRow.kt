@@ -61,7 +61,7 @@ fun SpaceXTabLayout(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
     tabs: List<Tab>,
-    scrollBehavior: TopAppBarScrollBehavior? = null
+    scrollBehavior: TopAppBarScrollBehavior? = null,
 ) {
     var scrollableTabs by remember { mutableStateOf(false) }
 

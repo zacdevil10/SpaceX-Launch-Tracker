@@ -3,6 +3,8 @@ package uk.co.zac_h.spacex.feature.assets.vehicles.rockets
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -110,7 +112,8 @@ fun RocketsContent(
                     }
                 )
             }
-        }
+        },
+        contentWindowInsets = WindowInsets.ime
     ) { contentPadding ->
         VehiclesList(
             modifier = modifier

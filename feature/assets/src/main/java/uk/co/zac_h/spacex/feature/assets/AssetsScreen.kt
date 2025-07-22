@@ -1,8 +1,12 @@
 package uk.co.zac_h.spacex.feature.assets
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
@@ -99,7 +103,8 @@ fun AssetsContent(
     scrollBehavior: TopAppBarScrollBehavior
 ) {
     TwoPane(
-        modifier = modifier,
+        modifier = modifier
+            .padding(WindowInsets.statusBars.asPaddingValues()),
         first = {
             AssetsList(
                 modifier = Modifier.fillMaxSize(),
@@ -175,7 +180,8 @@ fun AssetsList(
                 tabs = tabs,
                 scrollBehavior = scrollBehavior
             )
-        }
+        },
+        contentWindowInsets = WindowInsets.ime
     ) { padding ->
         HorizontalPager(
             modifier = Modifier

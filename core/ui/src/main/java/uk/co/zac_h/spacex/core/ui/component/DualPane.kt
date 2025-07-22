@@ -52,6 +52,7 @@ fun TwoPane(
         }
     } else {
         AnimatedContent(
+            modifier = modifier,
             targetState = isDetailOpen,
             label = "",
             transitionSpec = {

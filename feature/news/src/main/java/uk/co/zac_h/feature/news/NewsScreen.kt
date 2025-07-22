@@ -3,8 +3,12 @@ package uk.co.zac_h.feature.news
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -59,6 +63,7 @@ fun NewsTwoPaneContent(
     Box(
         modifier = modifier
             .background(MaterialTheme.colorScheme.inverseOnSurface)
+            .padding(WindowInsets.statusBars.asPaddingValues())
     ) {
         Card(
             modifier = Modifier
@@ -68,7 +73,8 @@ fun NewsTwoPaneContent(
             NewsSinglePaneContent(
                 contentType = contentType,
                 pagerState = pagerState,
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                windowInsets = WindowInsets.ime
             )
         }
     }
@@ -80,7 +86,8 @@ fun NewsSinglePaneContent(
     modifier: Modifier = Modifier,
     contentType: ContentType,
     pagerState: PagerState,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
+    windowInsets: WindowInsets = WindowInsets.statusBars,
 ) {
     val tabs = listOf(
         Tab(label = "Articles", icon = R.drawable.ic_newspaper),
@@ -89,6 +96,7 @@ fun NewsSinglePaneContent(
 
     Scaffold(
         modifier = modifier
+            .padding(windowInsets.asPaddingValues())
             .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             SpaceXTabLayout(
@@ -96,7 +104,8 @@ fun NewsSinglePaneContent(
                 tabs = tabs,
                 scrollBehavior = scrollBehavior
             )
-        }
+        },
+        contentWindowInsets = WindowInsets.ime
     ) { padding ->
         HorizontalPager(
             modifier = Modifier
