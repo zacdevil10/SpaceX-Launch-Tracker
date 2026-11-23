@@ -86,3 +86,10 @@ kotlin {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
 }
+
+hilt {
+    // Aggregate in KSP rather than the separate hiltJavaCompile task. That task runs
+    // hilt-compiler through javac, whose bundled kotlin-metadata-jvm (Hilt 2.58) can't
+    // read Kotlin 2.4 metadata. Hilt 2.59+ fixes this but requires AGP 9.
+    enableAggregatingTask = false
+}
