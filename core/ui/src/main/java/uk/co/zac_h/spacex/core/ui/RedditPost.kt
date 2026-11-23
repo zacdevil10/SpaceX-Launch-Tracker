@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -62,7 +62,7 @@ fun RedditPost(
                         .padding(end = 4.dp),
                     text = author
                 )
-                Divider(
+                HorizontalDivider(
                     modifier = Modifier
                         .size(1.dp),
                     color = MaterialTheme.colorScheme.onBackground
