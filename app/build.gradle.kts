@@ -1,11 +1,10 @@
 plugins {
-    id("com.android.application")
-    id("com.google.devtools.ksp")
-    id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics")
-    id("dagger.hilt.android.plugin")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.compose)
 }
 
 android {
@@ -85,11 +84,4 @@ kotlin {
     compilerOptions {
         jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
     }
-}
-
-hilt {
-    // Aggregate in KSP rather than the separate hiltJavaCompile task. That task runs
-    // hilt-compiler through javac, whose bundled kotlin-metadata-jvm (Hilt 2.58) can't
-    // read Kotlin 2.4 metadata. Hilt 2.59+ fixes this but requires AGP 9.
-    enableAggregatingTask = false
 }
