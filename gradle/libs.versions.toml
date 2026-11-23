@@ -1,6 +1,5 @@
 [versions]
 androidx-activity-compose = "1.9.0"
-androidx-lifecycle-runtime-compose = "2.7.0"
 androidx-navigation-compose = "2.7.7"
 androidx-hilt-navigation-compose = "1.2.0"
 appcompat = "1.6.1"
@@ -19,10 +18,9 @@ ksp = "2.3.14"
 logging-interceptor = "4.12.0"
 retrofit2KotlinxSerializationConverter = "1.0.0"
 paging = "3.2.1"
-lifecycle = "2.7.0"
+lifecycle = "2.11.1"
 material = "1.12.0"
 retrofit = "2.9.0"
-lifecycle-viewmodel-compose = "2.7.0"
 paging-compose = "3.2.1"
 datastore-preferences = "1.1.1"
 
@@ -45,11 +43,11 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose" }
 androidx-compose-activity = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity-compose" }
 androidx-compose-materialWindow = { module = "androidx.compose.material3:material3-window-size-class" }
-androidx-compose-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle-runtime-compose" }
+androidx-compose-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-compose-ui-toolingpreview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
-androidx-compose-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle-viewmodel-compose" }
+androidx-compose-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
 androidx-compose-paging = { group = "androidx.paging", name = "paging-compose", version.ref = "paging-compose" }
 androidx-compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
 androidx-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation-compose" }
