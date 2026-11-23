@@ -62,7 +62,6 @@ android {
 dependencies {
     implementation(libs.material)
 
-    implementation(libs.kotlin.stdlib.jdk8)
     implementation(libs.androidx.core)
 
     implementation(libs.androidx.compose.activity)
