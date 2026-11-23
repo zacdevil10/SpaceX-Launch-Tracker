@@ -6,7 +6,6 @@ androidx-hilt-navigation-compose = "1.2.0"
 appcompat = "1.6.1"
 compose = "2024.05.00"
 coil-compose = "2.5.0"
-constraintlayout = "2.1.4"
 core = "1.13.1"
 firebase-crashlytics-gradle = "2.9.9"
 firebase = "33.0.0"
@@ -64,7 +63,6 @@ hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt"
 
 # Kotlin
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 
 # Firebase
 firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebase-crashlytics-gradle" }
