@@ -3,10 +3,13 @@ package uk.co.zac_h.spacex
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
@@ -146,8 +149,10 @@ fun SpaceXAppContent(
     navigateToTopLevelDestination: (TopLevelNavigation) -> Unit,
     onDrawerClicked: () -> Unit = {}
 ) {
+    val showNavigationRail = navigationType == NavigationType.NAVIGATION_RAIL
+
     Row(modifier = modifier.fillMaxSize()) {
-        AnimatedVisibility(visible = navigationType == NavigationType.NAVIGATION_RAIL) {
+        AnimatedVisibility(visible = showNavigationRail) {
             Row {
                 SpaceXNavigationRail(
                     selectedDestination = selectedDestination,
@@ -173,10 +178,21 @@ fun SpaceXAppContent(
                     )
                 }
             },
-            contentWindowInsets = WindowInsets.navigationBars
+            // The app draws edge-to-edge (enforced from targetSdk 35). The navigation rail pads the
+            // start edge itself, so the content only needs the remaining sides. The insets are
+            // consumed here so screens and their top app bars don't apply them a second time.
+            contentWindowInsets = WindowInsets.safeDrawing.only(
+                if (showNavigationRail) {
+                    WindowInsetsSides.Top + WindowInsetsSides.End + WindowInsetsSides.Bottom
+                } else {
+                    WindowInsetsSides.Top + WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+                }
+            )
         ) {
             SpaceXNavHost(
-                modifier = modifier.padding(it),
+                modifier = Modifier
+                    .padding(it)
+                    .consumeWindowInsets(it),
                 navController = navController,
                 contentType = contentType
             )

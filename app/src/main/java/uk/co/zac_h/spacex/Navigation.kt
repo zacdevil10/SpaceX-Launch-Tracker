@@ -3,9 +3,13 @@ package uk.co.zac_h.spacex
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -78,7 +82,10 @@ fun SpaceXModalNavigationDrawerContent(
     onDrawerClicked: () -> Unit = {}
 ) {
     ModalDrawerSheet(
-        modifier = modifier
+        modifier = modifier,
+        windowInsets = WindowInsets.safeDrawing.only(
+            WindowInsetsSides.Vertical + WindowInsetsSides.Start
+        )
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
@@ -116,7 +123,10 @@ fun SpaceXBottomNavigationBar(
 ) {
     NavigationBar(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        windowInsets = WindowInsets.safeDrawing.only(
+            WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom
+        )
     ) {
         TopLevelNavigation.entries.forEach {
             NavigationBarItem(
@@ -148,7 +158,11 @@ fun SpaceXNavigationRail(
         containerColor = when (contentType) {
             ContentType.SINGLE_PANE -> NavigationRailDefaults.ContainerColor
             ContentType.DUAL_PANE -> MaterialTheme.colorScheme.inverseOnSurface
-        }
+        },
+        // Include the display cutout, which landscape phones put on the rail's side.
+        windowInsets = WindowInsets.safeDrawing.only(
+            WindowInsetsSides.Vertical + WindowInsetsSides.Start
+        )
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
