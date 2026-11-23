@@ -5,25 +5,18 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.DecayAnimationSpec
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LeadingIconTab
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SecondaryScrollableTabRow
-import androidx.compose.material3.SecondaryTabRow
+import androidx.compose.material3.PrimaryScrollableTabRow
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabIndicatorScope
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
@@ -31,7 +24,6 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -41,12 +33,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.lerp
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.core.ui.ComponentPreviews
 import uk.co.zac_h.spacex.core.ui.R
@@ -75,36 +64,17 @@ fun SpaceXTabLayout(
         label = ""
     )
 
-    val tabTextWidths = remember {
-        mutableStateListOf(*tabs.map { 0.dp }.toTypedArray())
-    }
-    val tabIconWidths = remember {
-        mutableStateListOf(*tabs.map { 0.dp }.toTypedArray())
-    }
-
     SpaceXAutoAdjustTabLayout(
         modifier = modifier,
         scrollableTabs = scrollableTabs,
         selectedTabIndex = pagerState.currentPage,
         containerColor = tabRowContainerColor,
-        indicator = {
-            RoundedSpringTabIndicator(
-                currentPage = pagerState.currentPage,
-                currentTabWidth = tabTextWidths[pagerState.currentPage] + tabIconWidths[pagerState.currentPage]
-            )
-        },
         tabs = {
             tabs.mapIndexed { index, tab ->
                 SpaceXAutoAdjustTab(
                     pagerState = pagerState,
                     tabPosition = index,
                     tab = tab,
-                    setTabIconWidth = {
-                        tabIconWidths[index] = it
-                    },
-                    setTabTextWidth = {
-                        tabTextWidths[index] = it
-                    },
                     setScrollableTab = { scrollableTabs = true }
                 )
             }
@@ -118,61 +88,24 @@ private fun SpaceXAutoAdjustTabLayout(
     scrollableTabs: Boolean = false,
     selectedTabIndex: Int,
     containerColor: Color,
-    indicator: @Composable TabIndicatorScope.() -> Unit,
     tabs: @Composable () -> Unit,
 ) {
     if (scrollableTabs) {
-        SpaceXScrollableTabLayout(
+        PrimaryScrollableTabRow(
             modifier = modifier,
             selectedTabIndex = selectedTabIndex,
             containerColor = containerColor,
-            indicator = indicator,
-            tabs = tabs,
+            edgePadding = 0.dp,
+            tabs = tabs
         )
     } else {
-        SpaceXTabLayout(
+        PrimaryTabRow(
             modifier = modifier,
             selectedTabIndex = selectedTabIndex,
             containerColor = containerColor,
-            indicator = indicator,
-            tabs = tabs,
+            tabs = tabs
         )
     }
-}
-
-@Composable
-private fun SpaceXScrollableTabLayout(
-    modifier: Modifier = Modifier,
-    selectedTabIndex: Int,
-    containerColor: Color,
-    indicator: @Composable TabIndicatorScope.() -> Unit,
-    tabs: @Composable () -> Unit,
-) {
-    SecondaryScrollableTabRow(
-        modifier = modifier,
-        selectedTabIndex = selectedTabIndex,
-        containerColor = containerColor,
-        edgePadding = 0.dp,
-        indicator = indicator,
-        tabs = tabs
-    )
-}
-
-@Composable
-private fun SpaceXTabLayout(
-    modifier: Modifier = Modifier,
-    selectedTabIndex: Int,
-    containerColor: Color,
-    indicator: @Composable TabIndicatorScope.() -> Unit,
-    tabs: @Composable () -> Unit,
-) {
-    SecondaryTabRow(
-        modifier = modifier,
-        selectedTabIndex = selectedTabIndex,
-        containerColor = containerColor,
-        indicator = indicator,
-        tabs = tabs
-    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -182,8 +115,6 @@ private fun SpaceXAutoAdjustTab(
     pagerState: PagerState,
     tabPosition: Int,
     tab: Tab,
-    setTabIconWidth: (Dp) -> Unit,
-    setTabTextWidth: (Dp) -> Unit,
     setScrollableTab: () -> Unit
 ) {
     tab.icon?.let {
@@ -191,16 +122,13 @@ private fun SpaceXAutoAdjustTab(
             modifier = modifier,
             pagerState = pagerState,
             tabPosition = tabPosition,
-            tab = tab,
-            setTabIconWidth = setTabIconWidth,
-            setTabTextWidth = setTabTextWidth
+            tab = tab
         )
     } ?: SpaceXTab(
         modifier = modifier,
         pagerState = pagerState,
         tabPosition = tabPosition,
         tab = tab,
-        setTabTextWidth = setTabTextWidth,
         setScrollableTab = setScrollableTab
     )
 }
@@ -212,11 +140,9 @@ private fun SpaceXTab(
     pagerState: PagerState,
     tabPosition: Int,
     tab: Tab,
-    setTabTextWidth: (Dp) -> Unit,
     setScrollableTab: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val density = LocalDensity.current
 
     Tab(
         modifier = modifier,
@@ -232,11 +158,6 @@ private fun SpaceXTab(
             Text(
                 text = tab.label,
                 onTextLayout = { textLayoutResult ->
-                    setTabTextWidth(
-                        with(density) {
-                            textLayoutResult.size.width.toDp()
-                        }
-                    )
                     if (textLayoutResult.hasVisualOverflow) setScrollableTab()
                 },
                 maxLines = 1
@@ -251,12 +172,9 @@ private fun SpaceXLeadingIconTab(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
     tabPosition: Int,
-    tab: Tab,
-    setTabIconWidth: (Dp) -> Unit,
-    setTabTextWidth: (Dp) -> Unit
+    tab: Tab
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val density = LocalDensity.current
 
     LeadingIconTab(
         modifier = modifier,
@@ -271,109 +189,14 @@ private fun SpaceXLeadingIconTab(
         icon = {
             tab.icon?.let {
                 Icon(
-                    modifier = Modifier.onGloballyPositioned {
-                        setTabIconWidth(
-                            with(density) {
-                                it.size.width.toDp()
-                            }
-                        )
-                    },
                     painter = painterResource(id = it),
                     contentDescription = ""
                 )
             }
         },
         text = {
-            Text(
-                text = tab.label,
-                onTextLayout = { textLayoutResult ->
-                    setTabTextWidth(
-                        with(density) {
-                            textLayoutResult.size.width.toDp() + 8.dp
-                        }
-                    )
-                }
-            )
+            Text(text = tab.label)
         },
-    )
-}
-
-/**
- * Indicator whose leading edge springs ahead of its trailing edge when switching tabs. The edges are
- * animated as fractional tab indices and resolved against the tab positions at layout time.
- */
-@Composable
-private fun TabIndicatorScope.RoundedSpringTabIndicator(
-    modifier: Modifier = Modifier,
-    currentPage: Int,
-    currentTabWidth: Dp
-) {
-    val transition = updateTransition(currentPage, label = "tab_indicator")
-    val indicatorStart by transition.animateFloat(
-        transitionSpec = {
-            if (initialState < targetState) {
-                spring(dampingRatio = 1f, stiffness = 50f)
-            } else {
-                spring(dampingRatio = 1f, stiffness = 1000f)
-            }
-        },
-        label = "tab_indicator_start_position"
-    ) { it.toFloat() }
-    val indicatorEnd by transition.animateFloat(
-        transitionSpec = {
-            if (initialState < targetState) {
-                spring(dampingRatio = 1f, stiffness = 1000f)
-            } else {
-                spring(dampingRatio = 1f, stiffness = 50f)
-            }
-        },
-        label = "tab_indicator_end_position"
-    ) { it.toFloat() }
-    val indicatorWidth by animateDpAsState(
-        targetValue = currentTabWidth,
-        animationSpec = spring(dampingRatio = 1f, stiffness = 1000f),
-        label = "tab_indicator_width"
-    )
-
-    RoundedTabIndicator(
-        modifier = modifier.tabIndicatorLayout { measurable, constraints, tabPositions ->
-            if (tabPositions.isEmpty()) return@tabIndicatorLayout layout(0, 0) {}
-
-            fun centreAt(position: Float): Dp {
-                val lower = position.toInt().coerceIn(0, tabPositions.lastIndex)
-                val upper = (lower + 1).coerceAtMost(tabPositions.lastIndex)
-                val fraction = (position - lower).coerceIn(0f, 1f)
-                val lowerTab = tabPositions[lower]
-                val upperTab = tabPositions[upper]
-                return lerp(
-                    (lowerTab.left + lowerTab.right) / 2,
-                    (upperTab.left + upperTab.right) / 2,
-                    fraction
-                )
-            }
-
-            val start = centreAt(indicatorStart) - indicatorWidth / 2
-            val end = centreAt(indicatorEnd) + indicatorWidth / 2
-            val width = (end - start).roundToPx().coerceAtLeast(0)
-            val placeable = measurable.measure(
-                constraints.copy(minWidth = width, maxWidth = width)
-            )
-            layout(placeable.width, placeable.height) {
-                placeable.place(start.roundToPx(), 0)
-            }
-        }
-    )
-}
-
-@Composable
-private fun RoundedTabIndicator(modifier: Modifier = Modifier) {
-    Box(
-        modifier
-            .height(3.dp)
-            .background(
-                MaterialTheme.colorScheme.primary,
-                RoundedCornerShape(topStart = 3.dp, topEnd = 3.dp),
-            ),
     )
 }
 
