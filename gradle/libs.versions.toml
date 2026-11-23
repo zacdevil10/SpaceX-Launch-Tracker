@@ -27,8 +27,9 @@ paging-compose = "3.2.1"
 datastore-preferences = "1.1.1"
 
 minSdk = "26"
-targetSdk = "36"
-compileSdk = "36"
+targetSdk = "37"
+compileSdk = "37"
+compileSdkMinor = "1"
 
 [libraries]
 
