@@ -5,16 +5,14 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.DecayAnimationSpec
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,10 +20,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LeadingIconTab
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SecondaryScrollableTabRow
+import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabPosition
-import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabIndicatorScope
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
@@ -38,9 +36,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -50,6 +46,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.core.ui.ComponentPreviews
 import uk.co.zac_h.spacex.core.ui.R
@@ -90,10 +87,9 @@ fun SpaceXTabLayout(
         scrollableTabs = scrollableTabs,
         selectedTabIndex = pagerState.currentPage,
         containerColor = tabRowContainerColor,
-        indicator = { tabPositions ->
+        indicator = {
             RoundedSpringTabIndicator(
                 currentPage = pagerState.currentPage,
-                tabPositions = tabPositions,
                 currentTabWidth = tabTextWidths[pagerState.currentPage] + tabIconWidths[pagerState.currentPage]
             )
         },
@@ -122,7 +118,7 @@ private fun SpaceXAutoAdjustTabLayout(
     scrollableTabs: Boolean = false,
     selectedTabIndex: Int,
     containerColor: Color,
-    indicator: @Composable (tabPositions: List<TabPosition>) -> Unit,
+    indicator: @Composable TabIndicatorScope.() -> Unit,
     tabs: @Composable () -> Unit,
 ) {
     if (scrollableTabs) {
@@ -149,10 +145,10 @@ private fun SpaceXScrollableTabLayout(
     modifier: Modifier = Modifier,
     selectedTabIndex: Int,
     containerColor: Color,
-    indicator: @Composable (tabPositions: List<TabPosition>) -> Unit,
+    indicator: @Composable TabIndicatorScope.() -> Unit,
     tabs: @Composable () -> Unit,
 ) {
-    ScrollableTabRow(
+    SecondaryScrollableTabRow(
         modifier = modifier,
         selectedTabIndex = selectedTabIndex,
         containerColor = containerColor,
@@ -167,10 +163,10 @@ private fun SpaceXTabLayout(
     modifier: Modifier = Modifier,
     selectedTabIndex: Int,
     containerColor: Color,
-    indicator: @Composable (tabPositions: List<TabPosition>) -> Unit,
+    indicator: @Composable TabIndicatorScope.() -> Unit,
     tabs: @Composable () -> Unit,
 ) {
-    TabRow(
+    SecondaryTabRow(
         modifier = modifier,
         selectedTabIndex = selectedTabIndex,
         containerColor = containerColor,
@@ -302,20 +298,70 @@ private fun SpaceXLeadingIconTab(
     )
 }
 
+/**
+ * Indicator whose leading edge springs ahead of its trailing edge when switching tabs. The edges are
+ * animated as fractional tab indices and resolved against the tab positions at layout time.
+ */
 @Composable
-private fun RoundedSpringTabIndicator(
+private fun TabIndicatorScope.RoundedSpringTabIndicator(
     modifier: Modifier = Modifier,
     currentPage: Int,
-    tabPositions: List<TabPosition>,
     currentTabWidth: Dp
 ) {
+    val transition = updateTransition(currentPage, label = "tab_indicator")
+    val indicatorStart by transition.animateFloat(
+        transitionSpec = {
+            if (initialState < targetState) {
+                spring(dampingRatio = 1f, stiffness = 50f)
+            } else {
+                spring(dampingRatio = 1f, stiffness = 1000f)
+            }
+        },
+        label = "tab_indicator_start_position"
+    ) { it.toFloat() }
+    val indicatorEnd by transition.animateFloat(
+        transitionSpec = {
+            if (initialState < targetState) {
+                spring(dampingRatio = 1f, stiffness = 1000f)
+            } else {
+                spring(dampingRatio = 1f, stiffness = 50f)
+            }
+        },
+        label = "tab_indicator_end_position"
+    ) { it.toFloat() }
+    val indicatorWidth by animateDpAsState(
+        targetValue = currentTabWidth,
+        animationSpec = spring(dampingRatio = 1f, stiffness = 1000f),
+        label = "tab_indicator_width"
+    )
+
     RoundedTabIndicator(
-        modifier = modifier
-            .tabIndicatorSpringOffset(
-                currentPage = currentPage,
-                tabPositions = tabPositions,
-                currentTabWidth = currentTabWidth
+        modifier = modifier.tabIndicatorLayout { measurable, constraints, tabPositions ->
+            if (tabPositions.isEmpty()) return@tabIndicatorLayout layout(0, 0) {}
+
+            fun centreAt(position: Float): Dp {
+                val lower = position.toInt().coerceIn(0, tabPositions.lastIndex)
+                val upper = (lower + 1).coerceAtMost(tabPositions.lastIndex)
+                val fraction = (position - lower).coerceIn(0f, 1f)
+                val lowerTab = tabPositions[lower]
+                val upperTab = tabPositions[upper]
+                return lerp(
+                    (lowerTab.left + lowerTab.right) / 2,
+                    (upperTab.left + upperTab.right) / 2,
+                    fraction
+                )
+            }
+
+            val start = centreAt(indicatorStart) - indicatorWidth / 2
+            val end = centreAt(indicatorEnd) + indicatorWidth / 2
+            val width = (end - start).roundToPx().coerceAtLeast(0)
+            val placeable = measurable.measure(
+                constraints.copy(minWidth = width, maxWidth = width)
             )
+            layout(placeable.width, placeable.height) {
+                placeable.place(start.roundToPx(), 0)
+            }
+        }
     )
 }
 
@@ -329,43 +375,6 @@ private fun RoundedTabIndicator(modifier: Modifier = Modifier) {
                 RoundedCornerShape(topStart = 3.dp, topEnd = 3.dp),
             ),
     )
-}
-
-private fun Modifier.tabIndicatorSpringOffset(
-    currentPage: Int,
-    tabPositions: List<TabPosition>,
-    currentTabWidth: Dp
-): Modifier = composed {
-    val transition = updateTransition(currentPage, label = "")
-    val indicatorStart by transition.animateDp(
-        transitionSpec = {
-            if (initialState < targetState) {
-                spring(dampingRatio = 1f, stiffness = 50f)
-            } else {
-                spring(dampingRatio = 1f, stiffness = 1000f)
-            }
-        },
-        label = "tab_indicator_start_position"
-    ) {
-        (tabPositions[it].left + tabPositions[it].right - currentTabWidth) / 2
-    }
-
-    val indicatorEnd by transition.animateDp(
-        transitionSpec = {
-            if (initialState < targetState) {
-                spring(dampingRatio = 1f, stiffness = 1000f)
-            } else {
-                spring(dampingRatio = 1f, stiffness = 50f)
-            }
-        },
-        label = "tab_indicator_end_position"
-    ) {
-        (tabPositions[it].left + tabPositions[it].right + currentTabWidth) / 2
-    }
-
-    wrapContentSize(align = Alignment.BottomStart)
-        .offset(x = indicatorStart)
-        .width(indicatorEnd - indicatorStart)
 }
 
 data class PagerItem(

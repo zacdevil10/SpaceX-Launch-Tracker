@@ -4,7 +4,7 @@ androidx-lifecycle-runtime-compose = "2.7.0"
 androidx-navigation-compose = "2.7.7"
 androidx-hilt-navigation-compose = "1.2.0"
 appcompat = "1.6.1"
-compose = "2024.05.00"
+compose = "2026.11.01"
 coil-compose = "2.5.0"
 core = "1.13.1"
 firebase-crashlytics-gradle = "3.0.8"
@@ -47,6 +47,7 @@ androidx-compose-activity = { module = "androidx.activity:activity-compose", ver
 androidx-compose-materialWindow = { module = "androidx.compose.material3:material3-window-size-class" }
 androidx-compose-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle-runtime-compose" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-compose-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
 androidx-compose-ui-toolingpreview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle-viewmodel-compose" }

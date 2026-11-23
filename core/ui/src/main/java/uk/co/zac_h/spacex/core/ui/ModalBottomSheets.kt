@@ -57,7 +57,9 @@ fun ModalFilterBottomSheetPreview() {
         ModalFilterBottomSheet(
             setSheetState = {},
             sheetState = SheetState(
-                skipPartiallyExpanded = true,
+                enabledValues = setOf(SheetValue.Expanded, SheetValue.Hidden),
+                positionalThreshold = { 0f },
+                velocityThreshold = { 0f },
                 initialValue = SheetValue.Expanded
             ),
             reset = {}
