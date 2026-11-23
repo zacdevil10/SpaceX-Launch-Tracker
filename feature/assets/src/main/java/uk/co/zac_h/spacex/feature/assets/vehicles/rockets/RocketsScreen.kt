@@ -13,8 +13,9 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.rememberBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -49,7 +50,7 @@ fun RocketsScreen(
     val rockets by viewModel.rockets.collectAsStateWithLifecycle(ApiResult.Pending)
     val filter by viewModel.filter.collectAsStateWithLifecycle(RocketsFilterState())
 
-    val sheetState = rememberModalBottomSheetState()
+    val sheetState = rememberBottomSheetState(initialValue = SheetValue.Hidden)
     var showBottomSheet by remember { mutableStateOf(false) }
 
     LaunchedEffect(key1 = filter) {
