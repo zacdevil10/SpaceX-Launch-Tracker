@@ -48,7 +48,8 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    implementation(libs.androidx.datastore.preferences)
+    // api: DataStore appears in SettingsModule/SettingsRepository signatures, which :app's Hilt KSP aggregation must resolve
+    api(libs.androidx.datastore.preferences)
 }
 
 kotlin {
