@@ -16,7 +16,7 @@ fun String.formatDate(): String {
         Locale.ENGLISH
     ).apply {
         timeZone = TimeZone.getTimeZone("UTC")
-    }.parse(this)
+    }.parse(this) ?: return this
 
     return SimpleDateFormat(
         "dd MMM yy - HH:mm",
@@ -32,7 +32,7 @@ fun String.formatCrewDate(): String {
         Locale.ENGLISH
     ).apply {
         timeZone = TimeZone.getTimeZone("UTC")
-    }.parse(this)
+    }.parse(this) ?: return this
 
     return SimpleDateFormat(
         "dd MMM yy",

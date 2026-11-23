@@ -11,11 +11,11 @@ firebase-crashlytics-gradle = "2.9.9"
 firebase = "33.0.0"
 google-services = "4.4.1"
 gradle = "8.13.2"
-hilt = "2.50"
+hilt = "2.58"
 fragment = "1.7.0"
-kotlin = "1.9.22"
+kotlin = "2.4.21"
 kotlinxSerializationJson = "1.6.2"
-ksp = "1.9.22-1.0.16"
+ksp = "2.3.14"
 logging-interceptor = "4.12.0"
 retrofit2KotlinxSerializationConverter = "1.0.0"
 paging = "3.2.1"
@@ -29,7 +29,6 @@ datastore-preferences = "1.1.1"
 minSdk = "26"
 targetSdk = "36"
 compileSdk = "36"
-compose-compiler = "1.5.8"
 
 [libraries]
 
@@ -63,6 +62,8 @@ hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt"
 
 # Kotlin
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-compose-compiler-gradle-plugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
+kotlin-serialization-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlin" }
 
 # Firebase
 firebase-crashlytics-gradle = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebase-crashlytics-gradle" }
