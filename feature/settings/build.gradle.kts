@@ -1,9 +1,8 @@
 plugins {
-    id("com.android.library")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.compose")
-    id("dagger.hilt.android.plugin")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -14,7 +13,7 @@ android {
         minSdk = libs.versions.minSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-proguard-rules.pro")
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -48,8 +47,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    // api: DataStore appears in SettingsModule/SettingsRepository signatures, which :app's Hilt KSP aggregation must resolve
-    api(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.preferences)
 }
 
 kotlin {

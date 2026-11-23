@@ -1,9 +1,8 @@
 plugins {
-    id("com.android.library")
-    id("com.google.devtools.ksp")
-    id("dagger.hilt.android.plugin")
-    id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.plugin.serialization")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -13,7 +12,7 @@ android {
         minSdk = libs.versions.minSdk.get().toInt()
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-proguard-rules.pro")
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
