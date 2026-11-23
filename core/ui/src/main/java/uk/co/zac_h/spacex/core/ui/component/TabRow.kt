@@ -5,6 +5,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.DecayAnimationSpec
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -17,6 +18,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TabIndicatorScope
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
@@ -35,7 +38,10 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.constrainWidth
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.core.ui.ComponentPreviews
 import uk.co.zac_h.spacex.core.ui.R
@@ -96,6 +102,7 @@ private fun SpaceXAutoAdjustTabLayout(
             selectedTabIndex = selectedTabIndex,
             containerColor = containerColor,
             edgePadding = 0.dp,
+            indicator = { CentredTabIndicator(selectedTabIndex) },
             tabs = tabs
         )
     } else {
@@ -103,9 +110,61 @@ private fun SpaceXAutoAdjustTabLayout(
             modifier = modifier,
             selectedTabIndex = selectedTabIndex,
             containerColor = containerColor,
+            indicator = { CentredTabIndicator(selectedTabIndex) },
             tabs = tabs
         )
     }
+}
+
+/**
+ * The default M3 primary indicator, matched to the tab's content width and centred under it.
+ *
+ * [TabIndicatorScope.tabIndicatorOffset] with `matchContentSize = true` relies on the tab row
+ * re-centring an undersized indicator, which leaves it offset to the right of the tab content in a
+ * fixed [PrimaryTabRow]. This sizes the indicator layout to the incoming constraints and places the
+ * indicator explicitly instead.
+ */
+@Composable
+private fun TabIndicatorScope.CentredTabIndicator(selectedTabIndex: Int) {
+    val position by animateFloatAsState(
+        targetValue = selectedTabIndex.toFloat(),
+        animationSpec = spring(dampingRatio = 1f, stiffness = Spring.StiffnessMediumLow),
+        label = "tab_indicator_position"
+    )
+
+    TabRowDefaults.PrimaryIndicator(
+        modifier = Modifier.tabIndicatorLayout { measurable, constraints, tabPositions ->
+            if (tabPositions.isEmpty()) return@tabIndicatorLayout layout(0, 0) {}
+
+            val lower = position.toInt().coerceIn(0, tabPositions.lastIndex)
+            val upper = (lower + 1).coerceAtMost(tabPositions.lastIndex)
+            val fraction = (position - lower).coerceIn(0f, 1f)
+            val lowerTab = tabPositions[lower]
+            val upperTab = tabPositions[upper]
+
+            val contentWidth: Dp = lerp(lowerTab.contentWidth, upperTab.contentWidth, fraction)
+            val tabLeft: Dp = lerp(lowerTab.left, upperTab.left, fraction)
+            val tabWidth: Dp = lerp(lowerTab.width, upperTab.width, fraction)
+
+            val indicatorWidth = contentWidth.roundToPx()
+            val placeable = measurable.measure(
+                constraints.copy(minWidth = indicatorWidth, maxWidth = indicatorWidth)
+            )
+            // A fixed tab row hands the indicator the selected tab's full width and places it at
+            // the row's start; a scrollable row hands it the content width and centres it under
+            // the first tab. Matching the incoming width keeps both cases free of re-centring.
+            val layoutWidth = constraints.constrainWidth(indicatorWidth)
+            val centringOffset = if (layoutWidth > indicatorWidth) {
+                (tabWidth.roundToPx() - indicatorWidth) / 2
+            } else {
+                0
+            }
+            layout(layoutWidth, placeable.height) {
+                placeable.placeRelative(tabLeft.roundToPx() + centringOffset, 0)
+            }
+        },
+        width = Dp.Unspecified
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
