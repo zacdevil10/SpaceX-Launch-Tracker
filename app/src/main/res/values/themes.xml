@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.SpaceX" parent="Theme.Material3.DynamicColors.Light" />
+    <!-- The UI is drawn by Compose (see core/ui Theme.kt), so the window theme only
+         sets the background shown before the first frame. -->
+    <style name="Theme.SpaceX" parent="android:Theme.Material.Light.NoActionBar" />
 
 </resources>

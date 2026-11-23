@@ -20,7 +20,6 @@ logging-interceptor = "4.12.0"
 retrofit2KotlinxSerializationConverter = "1.0.0"
 paging = "3.2.1"
 lifecycle = "2.7.0"
-material = "1.12.0"
 retrofit = "2.9.0"
 lifecycle-viewmodel-compose = "2.7.0"
 paging-compose = "3.2.1"
@@ -65,7 +64,6 @@ firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "fir
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
 
-material = { module = "com.google.android.material:material", version.ref = "material" }
 
 
 
