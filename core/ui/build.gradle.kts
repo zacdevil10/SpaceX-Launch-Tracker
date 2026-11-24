@@ -33,11 +33,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    lint {
-        // The compose-runtime lint check from Compose BOM 2024.05 crashes under Kotlin 2.4's UAST
-        // (NPE in ComposableCoroutineCreationDetector on TabRow.kt). Re-enable after the Compose BOM update.
-        disable += "CoroutineCreationDuringComposition"
-    }
     buildFeatures {
         compose = true
     }
@@ -48,6 +43,7 @@ dependencies {
 
     api(platform(libs.androidx.compose.bom))
     api(libs.androidx.compose.material3)
+    api(libs.androidx.compose.material.icons.core)
     api(libs.androidx.compose.ui.toolingpreview)
     debugApi(libs.androidx.compose.ui.tooling)
 

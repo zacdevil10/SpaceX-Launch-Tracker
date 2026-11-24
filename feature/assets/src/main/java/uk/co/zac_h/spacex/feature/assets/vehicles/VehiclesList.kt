@@ -46,7 +46,7 @@ fun VehiclesList(
             ) { vehicle ->
                 Vehicle(
                     modifier = Modifier
-                        .animateItemPlacement()
+                        .animateItem(fadeInSpec = null, fadeOutSpec = null)
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     image = vehicle.imageUrl,
                     title = vehicle.title,

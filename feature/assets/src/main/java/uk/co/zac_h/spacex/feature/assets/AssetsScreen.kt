@@ -185,7 +185,7 @@ fun AssetsList(
                 .padding(padding)
                 .fillMaxSize(),
             state = pagerState,
-            beyondBoundsPageCount = 1,
+            beyondViewportPageCount = 1,
             verticalAlignment = Alignment.Top,
             key = { tabs[it].label }
         ) { page ->
