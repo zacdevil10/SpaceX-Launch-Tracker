@@ -53,7 +53,7 @@ dependencies {
     implementation(libs.androidx.fragment)
     implementation(libs.androidx.compose.lifecycle.viewmodel)
 
-    implementation(libs.androidx.compose.hilt.navigation)
+    implementation(libs.androidx.compose.hilt.viewmodel)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
