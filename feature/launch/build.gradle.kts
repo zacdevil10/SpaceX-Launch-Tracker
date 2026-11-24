@@ -43,14 +43,12 @@ android {
 
 dependencies {
     implementation(libs.androidx.core)
-    implementation(libs.androidx.appcompat)
 
     implementation(project(":core:common"))
     implementation(project(":core:ui"))
     implementation(project(":network"))
 
     implementation(libs.androidx.viewmodel)
-    implementation(libs.androidx.fragment)
     implementation(libs.androidx.compose.lifecycle.viewmodel)
 
     implementation(libs.androidx.compose.hilt.viewmodel)

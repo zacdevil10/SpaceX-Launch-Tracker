@@ -1,16 +1,15 @@
 package uk.co.zac_h.spacex.network.retrofit
 
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import uk.co.zac_h.spacex.network.BuildConfig
 import uk.co.zac_h.spacex.network.REDDIT_BASE_URL
 import uk.co.zac_h.spacex.network.SPACEFLIGHT_NEWS_BASE_URL
@@ -35,7 +34,6 @@ object NetworkModule {
     @RedditHttpClient
     fun providesRedditClient(): RedditService = createClient(REDDIT_BASE_URL)
 
-    @OptIn(ExperimentalSerializationApi::class)
     private val json = Json {
         ignoreUnknownKeys = true
         explicitNulls = false
