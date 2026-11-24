@@ -3,16 +3,14 @@ androidx-activity-compose = "1.9.0"
 androidx-lifecycle-runtime-compose = "2.7.0"
 androidx-navigation-compose = "2.10.2"
 androidx-hilt-navigation-compose = "1.2.0"
-appcompat = "1.6.1"
 compose = "2026.11.01"
 coil-compose = "2.5.0"
-core = "1.13.1"
+core = "1.19.1"
 firebase-crashlytics-gradle = "3.0.8"
 firebase = "35.2.0"
 google-services = "4.6.0"
 agp = "9.5.2"
 hilt = "2.60.1"
-fragment = "1.7.0"
 kotlin = "2.4.21"
 kotlinxSerializationJson = "1.13.0"
 ksp = "2.3.14"
@@ -23,7 +21,7 @@ material = "1.12.0"
 retrofit = "3.0.0"
 lifecycle-viewmodel-compose = "2.7.0"
 paging-compose = "3.2.1"
-datastore-preferences = "1.1.1"
+datastore-preferences = "1.3.0"
 
 minSdk = "26"
 targetSdk = "37"
@@ -33,11 +31,9 @@ compileSdkMinor = "1"
 [libraries]
 
 # AndroidX
-androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompat" }
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "core" }
 androidx-paging = { module = "androidx.paging:paging-runtime-ktx", version.ref = "paging" }
 androidx-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
-androidx-fragment = { module = "androidx.fragment:fragment-ktx", version.ref = "fragment" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore-preferences" }
 
 # Compose
