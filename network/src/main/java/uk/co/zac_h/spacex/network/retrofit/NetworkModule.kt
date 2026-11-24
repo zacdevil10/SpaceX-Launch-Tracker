@@ -13,8 +13,8 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import uk.co.zac_h.spacex.network.BuildConfig
 import uk.co.zac_h.spacex.network.REDDIT_BASE_URL
 import uk.co.zac_h.spacex.network.SPACEFLIGHT_NEWS_BASE_URL
-import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
+import kotlin.time.Duration.Companion.minutes
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -48,8 +48,8 @@ object NetworkModule {
     }.build().create(T::class.java)
 
     private fun okHttpClient(hasLogging: Boolean = false) = OkHttpClient.Builder().apply {
-        readTimeout(1, TimeUnit.MINUTES)
-        connectTimeout(1, TimeUnit.MINUTES)
+        readTimeout(1.minutes)
+        connectTimeout(1.minutes)
         if (hasLogging) addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
     }.build()
 }
