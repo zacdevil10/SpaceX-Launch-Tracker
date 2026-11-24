@@ -5,27 +5,21 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.DecayAnimationSpec
 import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateDp
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LeadingIconTab
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.PrimaryScrollableTabRow
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabPosition
-import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabIndicatorScope
+import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.material3.TopAppBarState
@@ -33,23 +27,21 @@ import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.constrainWidth
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.lerp
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.core.ui.ComponentPreviews
 import uk.co.zac_h.spacex.core.ui.R
@@ -78,37 +70,17 @@ fun SpaceXTabLayout(
         label = ""
     )
 
-    val tabTextWidths = remember {
-        mutableStateListOf(*tabs.map { 0.dp }.toTypedArray())
-    }
-    val tabIconWidths = remember {
-        mutableStateListOf(*tabs.map { 0.dp }.toTypedArray())
-    }
-
     SpaceXAutoAdjustTabLayout(
         modifier = modifier,
         scrollableTabs = scrollableTabs,
         selectedTabIndex = pagerState.currentPage,
         containerColor = tabRowContainerColor,
-        indicator = { tabPositions ->
-            RoundedSpringTabIndicator(
-                currentPage = pagerState.currentPage,
-                tabPositions = tabPositions,
-                currentTabWidth = tabTextWidths[pagerState.currentPage] + tabIconWidths[pagerState.currentPage]
-            )
-        },
         tabs = {
             tabs.mapIndexed { index, tab ->
                 SpaceXAutoAdjustTab(
                     pagerState = pagerState,
                     tabPosition = index,
                     tab = tab,
-                    setTabIconWidth = {
-                        tabIconWidths[index] = it
-                    },
-                    setTabTextWidth = {
-                        tabTextWidths[index] = it
-                    },
                     setScrollableTab = { scrollableTabs = true }
                 )
             }
@@ -122,60 +94,76 @@ private fun SpaceXAutoAdjustTabLayout(
     scrollableTabs: Boolean = false,
     selectedTabIndex: Int,
     containerColor: Color,
-    indicator: @Composable (tabPositions: List<TabPosition>) -> Unit,
     tabs: @Composable () -> Unit,
 ) {
     if (scrollableTabs) {
-        SpaceXScrollableTabLayout(
+        PrimaryScrollableTabRow(
             modifier = modifier,
             selectedTabIndex = selectedTabIndex,
             containerColor = containerColor,
-            indicator = indicator,
-            tabs = tabs,
+            edgePadding = 0.dp,
+            indicator = { CentredTabIndicator(selectedTabIndex) },
+            tabs = tabs
         )
     } else {
-        SpaceXTabLayout(
+        PrimaryTabRow(
             modifier = modifier,
             selectedTabIndex = selectedTabIndex,
             containerColor = containerColor,
-            indicator = indicator,
-            tabs = tabs,
+            indicator = { CentredTabIndicator(selectedTabIndex) },
+            tabs = tabs
         )
     }
 }
 
+/**
+ * The default M3 primary indicator, matched to the tab's content width and centred under it.
+ *
+ * [TabIndicatorScope.tabIndicatorOffset] with `matchContentSize = true` relies on the tab row
+ * re-centring an undersized indicator, which leaves it offset to the right of the tab content in a
+ * fixed [PrimaryTabRow]. This sizes the indicator layout to the incoming constraints and places the
+ * indicator explicitly instead.
+ */
 @Composable
-private fun SpaceXScrollableTabLayout(
-    modifier: Modifier = Modifier,
-    selectedTabIndex: Int,
-    containerColor: Color,
-    indicator: @Composable (tabPositions: List<TabPosition>) -> Unit,
-    tabs: @Composable () -> Unit,
-) {
-    ScrollableTabRow(
-        modifier = modifier,
-        selectedTabIndex = selectedTabIndex,
-        containerColor = containerColor,
-        edgePadding = 0.dp,
-        indicator = indicator,
-        tabs = tabs
+private fun TabIndicatorScope.CentredTabIndicator(selectedTabIndex: Int) {
+    val position by animateFloatAsState(
+        targetValue = selectedTabIndex.toFloat(),
+        animationSpec = spring(dampingRatio = 1f, stiffness = Spring.StiffnessMediumLow),
+        label = "tab_indicator_position"
     )
-}
 
-@Composable
-private fun SpaceXTabLayout(
-    modifier: Modifier = Modifier,
-    selectedTabIndex: Int,
-    containerColor: Color,
-    indicator: @Composable (tabPositions: List<TabPosition>) -> Unit,
-    tabs: @Composable () -> Unit,
-) {
-    TabRow(
-        modifier = modifier,
-        selectedTabIndex = selectedTabIndex,
-        containerColor = containerColor,
-        indicator = indicator,
-        tabs = tabs
+    TabRowDefaults.PrimaryIndicator(
+        modifier = Modifier.tabIndicatorLayout { measurable, constraints, tabPositions ->
+            if (tabPositions.isEmpty()) return@tabIndicatorLayout layout(0, 0) {}
+
+            val lower = position.toInt().coerceIn(0, tabPositions.lastIndex)
+            val upper = (lower + 1).coerceAtMost(tabPositions.lastIndex)
+            val fraction = (position - lower).coerceIn(0f, 1f)
+            val lowerTab = tabPositions[lower]
+            val upperTab = tabPositions[upper]
+
+            val contentWidth: Dp = lerp(lowerTab.contentWidth, upperTab.contentWidth, fraction)
+            val tabLeft: Dp = lerp(lowerTab.left, upperTab.left, fraction)
+            val tabWidth: Dp = lerp(lowerTab.width, upperTab.width, fraction)
+
+            val indicatorWidth = contentWidth.roundToPx()
+            val placeable = measurable.measure(
+                constraints.copy(minWidth = indicatorWidth, maxWidth = indicatorWidth)
+            )
+            // A fixed tab row hands the indicator the selected tab's full width and places it at
+            // the row's start; a scrollable row hands it the content width and centres it under
+            // the first tab. Matching the incoming width keeps both cases free of re-centring.
+            val layoutWidth = constraints.constrainWidth(indicatorWidth)
+            val centringOffset = if (layoutWidth > indicatorWidth) {
+                (tabWidth.roundToPx() - indicatorWidth) / 2
+            } else {
+                0
+            }
+            layout(layoutWidth, placeable.height) {
+                placeable.placeRelative(tabLeft.roundToPx() + centringOffset, 0)
+            }
+        },
+        width = Dp.Unspecified
     )
 }
 
@@ -186,8 +174,6 @@ private fun SpaceXAutoAdjustTab(
     pagerState: PagerState,
     tabPosition: Int,
     tab: Tab,
-    setTabIconWidth: (Dp) -> Unit,
-    setTabTextWidth: (Dp) -> Unit,
     setScrollableTab: () -> Unit
 ) {
     tab.icon?.let {
@@ -195,16 +181,13 @@ private fun SpaceXAutoAdjustTab(
             modifier = modifier,
             pagerState = pagerState,
             tabPosition = tabPosition,
-            tab = tab,
-            setTabIconWidth = setTabIconWidth,
-            setTabTextWidth = setTabTextWidth
+            tab = tab
         )
     } ?: SpaceXTab(
         modifier = modifier,
         pagerState = pagerState,
         tabPosition = tabPosition,
         tab = tab,
-        setTabTextWidth = setTabTextWidth,
         setScrollableTab = setScrollableTab
     )
 }
@@ -216,11 +199,9 @@ private fun SpaceXTab(
     pagerState: PagerState,
     tabPosition: Int,
     tab: Tab,
-    setTabTextWidth: (Dp) -> Unit,
     setScrollableTab: () -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val density = LocalDensity.current
 
     Tab(
         modifier = modifier,
@@ -236,11 +217,6 @@ private fun SpaceXTab(
             Text(
                 text = tab.label,
                 onTextLayout = { textLayoutResult ->
-                    setTabTextWidth(
-                        with(density) {
-                            textLayoutResult.size.width.toDp()
-                        }
-                    )
                     if (textLayoutResult.hasVisualOverflow) setScrollableTab()
                 },
                 maxLines = 1
@@ -255,12 +231,9 @@ private fun SpaceXLeadingIconTab(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
     tabPosition: Int,
-    tab: Tab,
-    setTabIconWidth: (Dp) -> Unit,
-    setTabTextWidth: (Dp) -> Unit
+    tab: Tab
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val density = LocalDensity.current
 
     LeadingIconTab(
         modifier = modifier,
@@ -275,97 +248,15 @@ private fun SpaceXLeadingIconTab(
         icon = {
             tab.icon?.let {
                 Icon(
-                    modifier = Modifier.onGloballyPositioned {
-                        setTabIconWidth(
-                            with(density) {
-                                it.size.width.toDp()
-                            }
-                        )
-                    },
                     painter = painterResource(id = it),
                     contentDescription = ""
                 )
             }
         },
         text = {
-            Text(
-                text = tab.label,
-                onTextLayout = { textLayoutResult ->
-                    setTabTextWidth(
-                        with(density) {
-                            textLayoutResult.size.width.toDp() + 8.dp
-                        }
-                    )
-                }
-            )
+            Text(text = tab.label)
         },
     )
-}
-
-@Composable
-private fun RoundedSpringTabIndicator(
-    modifier: Modifier = Modifier,
-    currentPage: Int,
-    tabPositions: List<TabPosition>,
-    currentTabWidth: Dp
-) {
-    RoundedTabIndicator(
-        modifier = modifier
-            .tabIndicatorSpringOffset(
-                currentPage = currentPage,
-                tabPositions = tabPositions,
-                currentTabWidth = currentTabWidth
-            )
-    )
-}
-
-@Composable
-private fun RoundedTabIndicator(modifier: Modifier = Modifier) {
-    Box(
-        modifier
-            .height(3.dp)
-            .background(
-                MaterialTheme.colorScheme.primary,
-                RoundedCornerShape(topStart = 3.dp, topEnd = 3.dp),
-            ),
-    )
-}
-
-private fun Modifier.tabIndicatorSpringOffset(
-    currentPage: Int,
-    tabPositions: List<TabPosition>,
-    currentTabWidth: Dp
-): Modifier = composed {
-    val transition = updateTransition(currentPage, label = "")
-    val indicatorStart by transition.animateDp(
-        transitionSpec = {
-            if (initialState < targetState) {
-                spring(dampingRatio = 1f, stiffness = 50f)
-            } else {
-                spring(dampingRatio = 1f, stiffness = 1000f)
-            }
-        },
-        label = "tab_indicator_start_position"
-    ) {
-        (tabPositions[it].left + tabPositions[it].right - currentTabWidth) / 2
-    }
-
-    val indicatorEnd by transition.animateDp(
-        transitionSpec = {
-            if (initialState < targetState) {
-                spring(dampingRatio = 1f, stiffness = 1000f)
-            } else {
-                spring(dampingRatio = 1f, stiffness = 50f)
-            }
-        },
-        label = "tab_indicator_end_position"
-    ) {
-        (tabPositions[it].left + tabPositions[it].right + currentTabWidth) / 2
-    }
-
-    wrapContentSize(align = Alignment.BottomStart)
-        .offset(x = indicatorStart)
-        .width(indicatorEnd - indicatorStart)
 }
 
 data class PagerItem(
