@@ -57,7 +57,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.material)
 
     implementation(libs.androidx.core)
 
