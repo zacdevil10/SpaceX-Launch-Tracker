@@ -4,8 +4,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.filter
-import androidx.paging.map
+import androidx.paging.flatMap
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import uk.co.zac_h.spacex.core.database.FetchMetadataDao
@@ -114,7 +113,7 @@ class LaunchStore @Inject constructor(
         ) {
             launchDao.previousPagingSource()
         }.flow.map { page ->
-            page.map { decode(it) }.filter { it != null }.map { checkNotNull(it) }
+            page.flatMap { listOfNotNull(decode(it)) }
         }
 
     /** Whether previous launches were checked for changes within their window. */
