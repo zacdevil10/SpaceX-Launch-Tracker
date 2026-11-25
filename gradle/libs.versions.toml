@@ -3,7 +3,7 @@ androidx-activity-compose = "1.13.0"
 androidx-navigation-compose = "2.10.2"
 androidx-hilt-lifecycle-viewmodel-compose = "1.4.0"
 compose = "2026.11.01"
-coil-compose = "2.5.0"
+coil = "3.6.3"
 core = "1.19.1"
 firebase-crashlytics-gradle = "3.0.8"
 firebase = "35.2.0"
@@ -46,7 +46,8 @@ androidx-compose-paging = { group = "androidx.paging", name = "paging-compose", 
 androidx-compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
 androidx-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation-compose" }
 androidx-compose-hilt-viewmodel = { group = "androidx.hilt", name = "hilt-lifecycle-viewmodel-compose", version.ref = "androidx-hilt-lifecycle-viewmodel-compose" }
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coil" }
 
 # Hilt
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }

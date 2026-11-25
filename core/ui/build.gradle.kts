@@ -50,6 +50,9 @@ dependencies {
     implementation(libs.androidx.compose.navigation)
 
     api(libs.coil.compose)
+    //Coil 3 needs a network artifact to load http(s) URLs. Pin its transitive OkHttp 4.x to 5.x via the BOM.
+    implementation(libs.coil.network.okhttp)
+    implementation(platform(libs.okhttp.bom))
 }
 
 kotlin {

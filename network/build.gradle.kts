@@ -50,7 +50,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.serialization.converter)
 
-    //OkHttp: pinned via the BOM so Retrofit's (and Coil's) transitive 4.x resolves to 5.x
+    //OkHttp: pinned via the BOM so Retrofit's transitive 4.x resolves to 5.x
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
