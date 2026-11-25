@@ -11,14 +11,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.network.ApiResult
-import uk.co.zac_h.spacex.network.CachePolicy
 import uk.co.zac_h.spacex.network.dto.news.ArticleResponse
-import uk.co.zac_h.spacex.network.dto.spacex.mapResults
-import uk.co.zac_h.spacex.network.get
 import uk.co.zac_h.spacex.network.toType
 import javax.inject.Inject
 
@@ -30,9 +29,21 @@ class LaunchesViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(LaunchesUIState())
     val uiState: StateFlow<LaunchesUIState> = _uiState
 
-    private val _upcomingLaunches: MutableStateFlow<ApiResult<List<LaunchItem>>> =
-        MutableStateFlow(ApiResult.Pending)
-    val upcomingLaunches: Flow<ApiResult<List<LaunchItem>>> = _upcomingLaunches
+    private val upcomingRefresh = MutableStateFlow<ApiResult<Unit>>(ApiResult.Pending)
+
+    /**
+     * Upcoming launches from the database. Stored launches are shown even while a refresh is
+     * running or after it failed; an error is shown only when there is nothing stored.
+     */
+    val upcomingLaunches: Flow<ApiResult<List<LaunchItem>>> =
+        combine(repository.upcomingLaunches, upcomingRefresh) { launches, refresh ->
+            when {
+                launches.isNotEmpty() -> ApiResult.Success(launches.map(::LaunchItem))
+                refresh is ApiResult.Failure -> refresh
+                refresh is ApiResult.Success -> ApiResult.Success(emptyList())
+                else -> ApiResult.Pending
+            }
+        }
 
     val previousLaunchesLiveData: Flow<PagingData<LaunchItem>> = Pager(
         PagingConfig(pageSize = 5)
@@ -55,10 +66,11 @@ class LaunchesViewModel @Inject constructor(
         getUpcoming()
     }
 
-    fun getUpcoming() {
-        _upcomingLaunches.get(viewModelScope) {
-            repository.fetch(key = "", cachePolicy = CachePolicy.REFRESH)
-                .mapResults(::LaunchItem)
+    /** Refreshes upcoming launches if they are out of date, or always when [force]. */
+    fun getUpcoming(force: Boolean = false) {
+        upcomingRefresh.value = ApiResult.Pending
+        viewModelScope.launch {
+            upcomingRefresh.value = repository.refreshUpcoming(force)
         }
     }
 

@@ -142,6 +142,9 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
 
+    //Room: the source of truth for Launch Library data
+    api(project(":core:database"))
+
     //Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

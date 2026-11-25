@@ -63,7 +63,7 @@ fun LaunchesScreen(
         upcomingLazyListState = upcomingLazyListState,
         previousLazyListState = previousLazyListState,
         openedLaunch = uiState.openedLaunch,
-        retry = { viewModel.getUpcoming() },
+        retry = { viewModel.getUpcoming(force = true) },
         navigateToDetail = { launch, pane -> viewModel.setOpenedLaunch(launch, pane) },
         scrollBehavior = scrollBehavior,
         contentType = contentType,
