@@ -4,10 +4,10 @@ import uk.co.zac_h.spacex.network.Cache
 import uk.co.zac_h.spacex.network.Repository
 import uk.co.zac_h.spacex.network.datasource.remote.AgencyDataSourceClient
 import uk.co.zac_h.spacex.network.datasource.remote.RemoteDataSource
-import uk.co.zac_h.spacex.network.launchlibrary.model.AgencyEndpointDetailed
+import uk.co.zac_h.spacex.network.launchlibrary.model.AgencyEndpointDetailedDto
 import javax.inject.Inject
 
 class CompanyRepository @Inject constructor(
-    @AgencyDataSourceClient companyDataSource: RemoteDataSource<AgencyEndpointDetailed>,
-    cache: Cache<AgencyEndpointDetailed>
-) : Repository<AgencyEndpointDetailed>(companyDataSource, cache)
+    @AgencyDataSourceClient companyDataSource: RemoteDataSource<AgencyEndpointDetailedDto>,
+    cache: Cache<AgencyEndpointDetailedDto>
+) : Repository<AgencyEndpointDetailedDto>(companyDataSource, cache)

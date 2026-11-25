@@ -14,11 +14,11 @@ import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_ACTIVE
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_DECEASED
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_INACTIVE
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_RETIRED
-import uk.co.zac_h.spacex.network.launchlibrary.model.AstronautFlight
-import uk.co.zac_h.spacex.network.launchlibrary.model.FirstStageNormal
-import uk.co.zac_h.spacex.network.launchlibrary.model.LaunchDetailed
-import uk.co.zac_h.spacex.network.launchlibrary.model.LaunchStatus
-import uk.co.zac_h.spacex.network.launchlibrary.model.VidURL
+import uk.co.zac_h.spacex.network.launchlibrary.model.AstronautFlightDto
+import uk.co.zac_h.spacex.network.launchlibrary.model.FirstStageNormalDto
+import uk.co.zac_h.spacex.network.launchlibrary.model.LaunchDetailedDto
+import uk.co.zac_h.spacex.network.launchlibrary.model.LaunchStatusDto
+import uk.co.zac_h.spacex.network.launchlibrary.model.VidURLDto
 import java.time.Duration
 import java.util.Locale
 
@@ -46,7 +46,7 @@ data class LaunchItem(
 ) : RecyclerViewItem {
 
     constructor(
-        response: LaunchDetailed
+        response: LaunchDetailedDto
     ) : this(
         id = response.id.orEmpty(),
         upcoming = response.status.isUpcoming(),
@@ -96,9 +96,9 @@ data class LaunchItem(
 
     companion object {
 
-        private fun LaunchStatus?.isUpcoming() = this?.id in listOf(1, 2, 5, 6, 8)
+        private fun LaunchStatusDto?.isUpcoming() = this?.id in listOf(1, 2, 5, 6, 8)
 
-        private val LaunchDetailed.missionName: String
+        private val LaunchDetailedDto.missionName: String
             get() = mission?.name ?: name.orEmpty()
     }
 }
@@ -120,7 +120,7 @@ data class FirstStageItem(
 ) : RecyclerViewItem {
 
     constructor(
-        response: FirstStageNormal
+        response: FirstStageNormalDto
     ) : this(
         id = response.id.toString(),
         serial = response.launcher?.serialNumber.orUnknown(),
@@ -165,7 +165,7 @@ data class CrewItem(
 ) : RecyclerViewItem {
 
     constructor(
-        response: AstronautFlight
+        response: AstronautFlightDto
     ) : this(
         id = response.id.toString(),
         name = response.astronaut?.name,
@@ -200,7 +200,7 @@ data class VideoItem(
     constructor(
         missionName: String,
         image: String?,
-        response: VidURL
+        response: VidURLDto
     ) : this(
         title = if (response.type != null) {
             "${if (response.title.isNullOrEmpty()) missionName else response.title} - ${response.type?.name}"

@@ -7,7 +7,7 @@ import uk.co.zac_h.spacex.core.common.utils.metricFormat
 import uk.co.zac_h.spacex.feature.assets.R
 import uk.co.zac_h.spacex.feature.assets.vehicles.SpecsItem
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
-import uk.co.zac_h.spacex.network.launchlibrary.model.LauncherConfigDetailedSerializerNoManufacturer
+import uk.co.zac_h.spacex.network.launchlibrary.model.LauncherConfigDetailedSerializerNoManufacturerDto
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -37,7 +37,7 @@ data class RocketItem(
     val pendingLaunches: Int?
 ) : VehicleItem {
 
-    constructor(response: LauncherConfigDetailedSerializerNoManufacturer) : this(
+    constructor(response: LauncherConfigDetailedSerializerNoManufacturerDto) : this(
         id = response.id ?: 0,
         title = response.fullName,
         fullName = response.fullName,

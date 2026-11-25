@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.feature.settings.company
 
-import uk.co.zac_h.spacex.network.launchlibrary.model.AgencyEndpointDetailed
+import uk.co.zac_h.spacex.network.launchlibrary.model.AgencyEndpointDetailedDto
 
 data class Company(
     val id: Int,
@@ -14,7 +14,7 @@ data class Company(
 ) {
 
     constructor(
-        response: AgencyEndpointDetailed
+        response: AgencyEndpointDetailedDto
     ) : this(
         id = response.id ?: 0,
         name = response.name,

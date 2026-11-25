@@ -11,7 +11,7 @@ import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_DECEASED
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_INACTIVE
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_IN_TRAINING
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_RETIRED
-import uk.co.zac_h.spacex.network.launchlibrary.model.AstronautEndpointNormal
+import uk.co.zac_h.spacex.network.launchlibrary.model.AstronautEndpointNormalDto
 
 data class AstronautItem(
     override val id: Int,
@@ -26,7 +26,7 @@ data class AstronautItem(
 ) : VehicleItem {
 
     constructor(
-        response: AstronautEndpointNormal
+        response: AstronautEndpointNormalDto
     ) : this(
         id = response.id ?: 0,
         title = response.name,

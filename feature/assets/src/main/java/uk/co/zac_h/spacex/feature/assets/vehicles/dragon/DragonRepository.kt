@@ -4,10 +4,10 @@ import uk.co.zac_h.spacex.network.Cache
 import uk.co.zac_h.spacex.network.Repository
 import uk.co.zac_h.spacex.network.datasource.remote.AgencyDataSourceClient
 import uk.co.zac_h.spacex.network.datasource.remote.RemoteDataSource
-import uk.co.zac_h.spacex.network.launchlibrary.model.AgencyEndpointDetailed
+import uk.co.zac_h.spacex.network.launchlibrary.model.AgencyEndpointDetailedDto
 import javax.inject.Inject
 
 class DragonRepository @Inject constructor(
-    @AgencyDataSourceClient agencyDataSource: RemoteDataSource<AgencyEndpointDetailed>,
-    cache: Cache<AgencyEndpointDetailed>
-) : Repository<AgencyEndpointDetailed>(agencyDataSource, cache)
+    @AgencyDataSourceClient agencyDataSource: RemoteDataSource<AgencyEndpointDetailedDto>,
+    cache: Cache<AgencyEndpointDetailedDto>
+) : Repository<AgencyEndpointDetailedDto>(agencyDataSource, cache)

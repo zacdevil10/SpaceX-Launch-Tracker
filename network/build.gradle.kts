@@ -57,6 +57,7 @@ val generateLaunchLibraryModels by tasks.registering(GenerateTask::class) {
     ignoreFileOverride.set(layout.projectDirectory.file("openapi/.openapi-generator-ignore").asFile.absolutePath)
     modelPackage.set("uk.co.zac_h.spacex.network.launchlibrary.model")
     packageName.set("uk.co.zac_h.spacex.network.launchlibrary")
+    modelNameSuffix.set("Dto")
     // Only the models: the Retrofit service stays hand-written so it can ask for exactly the
     // `mode` and filters each screen needs.
     globalProperties.set(mapOf("models" to "", "modelDocs" to "false", "modelTests" to "false"))

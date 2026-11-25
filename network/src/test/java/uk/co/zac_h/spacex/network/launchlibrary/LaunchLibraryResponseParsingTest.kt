@@ -5,11 +5,11 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import uk.co.zac_h.spacex.network.dto.spacex.LaunchLibraryPaginatedResponse
-import uk.co.zac_h.spacex.network.launchlibrary.model.AgencyEndpointDetailed
-import uk.co.zac_h.spacex.network.launchlibrary.model.AstronautEndpointNormal
-import uk.co.zac_h.spacex.network.launchlibrary.model.LaunchDetailed
-import uk.co.zac_h.spacex.network.launchlibrary.model.LauncherDetailed
-import uk.co.zac_h.spacex.network.launchlibrary.model.SpacecraftNormal
+import uk.co.zac_h.spacex.network.launchlibrary.model.AgencyEndpointDetailedDto
+import uk.co.zac_h.spacex.network.launchlibrary.model.AstronautEndpointNormalDto
+import uk.co.zac_h.spacex.network.launchlibrary.model.LaunchDetailedDto
+import uk.co.zac_h.spacex.network.launchlibrary.model.LauncherDetailedDto
+import uk.co.zac_h.spacex.network.launchlibrary.model.SpacecraftNormalDto
 import uk.co.zac_h.spacex.network.networkJson
 
 /**
@@ -29,7 +29,7 @@ class LaunchLibraryResponseParsingTest {
 
     @Test
     fun `upcoming launches parse`() {
-        val response = parse<LaunchLibraryPaginatedResponse<LaunchDetailed>>("upcoming")
+        val response = parse<LaunchLibraryPaginatedResponse<LaunchDetailedDto>>("upcoming")
         assertTrue(response.results.isNotEmpty())
         response.results.forEach { launch ->
             assertNotNull(launch.id)
@@ -41,7 +41,7 @@ class LaunchLibraryResponseParsingTest {
 
     @Test
     fun `previous launches parse`() {
-        val response = parse<LaunchLibraryPaginatedResponse<LaunchDetailed>>("previous")
+        val response = parse<LaunchLibraryPaginatedResponse<LaunchDetailedDto>>("previous")
         assertTrue(response.results.isNotEmpty())
         assertNotNull(response.next)
         assertTrue(response.results.all { it.id != null && it.net != null })
@@ -49,7 +49,7 @@ class LaunchLibraryResponseParsingTest {
 
     @Test
     fun `launchers parse`() {
-        val response = parse<LaunchLibraryPaginatedResponse<LauncherDetailed>>("launchers")
+        val response = parse<LaunchLibraryPaginatedResponse<LauncherDetailedDto>>("launchers")
         assertTrue(response.results.isNotEmpty())
         assertTrue(response.results.all { it.serialNumber != null })
         assertTrue(response.results.any { it.launcherConfig?.fullName != null })
@@ -57,21 +57,21 @@ class LaunchLibraryResponseParsingTest {
 
     @Test
     fun `spacecraft parse`() {
-        val response = parse<LaunchLibraryPaginatedResponse<SpacecraftNormal>>("spacecraft")
+        val response = parse<LaunchLibraryPaginatedResponse<SpacecraftNormalDto>>("spacecraft")
         assertTrue(response.results.isNotEmpty())
         assertTrue(response.results.all { it.name != null && it.status?.name != null })
     }
 
     @Test
     fun `astronauts parse`() {
-        val response = parse<LaunchLibraryPaginatedResponse<AstronautEndpointNormal>>("astronauts")
+        val response = parse<LaunchLibraryPaginatedResponse<AstronautEndpointNormalDto>>("astronauts")
         assertTrue(response.results.isNotEmpty())
         assertTrue(response.results.all { it.name != null && it.status?.name != null })
     }
 
     @Test
     fun `spacex agency parses with its launcher and spacecraft configs`() {
-        val agency = parse<AgencyEndpointDetailed>("agency")
+        val agency = parse<AgencyEndpointDetailedDto>("agency")
         assertEquals(121, agency.id)
         assertTrue(!agency.launcherList.isNullOrEmpty())
         assertTrue(!agency.spacecraftList.isNullOrEmpty())

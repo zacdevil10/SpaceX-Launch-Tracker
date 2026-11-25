@@ -5,7 +5,7 @@ import uk.co.zac_h.spacex.core.common.utils.metricFormat
 import uk.co.zac_h.spacex.feature.assets.R
 import uk.co.zac_h.spacex.feature.assets.vehicles.SpecsItem
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
-import uk.co.zac_h.spacex.network.launchlibrary.model.SpacecraftConfigDetailed
+import uk.co.zac_h.spacex.network.launchlibrary.model.SpacecraftConfigDetailedDto
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -33,7 +33,7 @@ data class SecondStageItem(
     val info: String?
 ) : VehicleItem {
 
-    constructor(response: SpacecraftConfigDetailed) : this(
+    constructor(response: SpacecraftConfigDetailedDto) : this(
         id = response.id ?: 0,
         title = response.name,
         name = response.name,
