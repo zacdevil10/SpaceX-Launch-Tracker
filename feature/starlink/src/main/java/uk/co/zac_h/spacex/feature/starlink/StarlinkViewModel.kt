@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.feature.starlink
 
+import android.util.Log
 import androidx.compose.ui.geometry.Offset
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -89,7 +90,9 @@ class StarlinkViewModel @Inject constructor(
     fun refresh(force: Boolean = false) {
         viewModelScope.launch {
             refreshState.value = ApiResult.Pending
-            refreshState.value = store.refresh(force)
+            val result = store.refresh(force)
+            if (result is ApiResult.Failure) Log.w(TAG, "Couldn't refresh Starlink orbits", result.exception)
+            refreshState.value = result
         }
     }
 
@@ -125,6 +128,8 @@ class StarlinkViewModel @Inject constructor(
         )
     }
 }
+
+private const val TAG = "StarlinkViewModel"
 
 data class StarlinkUiState(
     val satelliteCount: Int = 0,

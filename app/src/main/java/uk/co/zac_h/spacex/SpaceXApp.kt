@@ -119,7 +119,10 @@ fun SpaceXNavigationWrapper(
                     }
                 )
             },
-            drawerState = drawerState
+            drawerState = drawerState,
+            // Horizontal drags on the Starlink globe turn it, so the edge swipe mustn't open the
+            // drawer there. The drawer can still be closed by swiping while it's open.
+            gesturesEnabled = drawerState.isOpen || selectedDestination != TopLevelNavigation.Starlink.route
         ) {
             SpaceXAppContent(
                 navigationType = navigationType,

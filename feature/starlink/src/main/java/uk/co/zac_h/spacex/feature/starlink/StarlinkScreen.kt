@@ -59,6 +59,7 @@ import uk.co.zac_h.spacex.feature.starlink.globe.GlobeRenderer
 import uk.co.zac_h.spacex.feature.starlink.globe.SatelliteFrame
 import uk.co.zac_h.spacex.feature.starlink.orbit.SatelliteFix
 import uk.co.zac_h.spacex.network.ApiResult
+import uk.co.zac_h.spacex.network.CelestrakRateLimitedException
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
@@ -217,9 +218,15 @@ private fun StarlinkHeader(
                     style = MaterialTheme.typography.bodySmall
                 )
             }
-            val failed = uiState.refresh is ApiResult.Failure
+            val error = (uiState.refresh as? ApiResult.Failure)?.exception
             when {
-                failed && uiState.satelliteCount > 0 -> Row(verticalAlignment = Alignment.CenterVertically) {
+                error is CelestrakRateLimitedException && uiState.satelliteCount > 0 -> Text(
+                    text = rateLimitedText(error),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                error != null && uiState.satelliteCount > 0 -> Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = stringResource(R.string.starlink_update_failed),
                         style = MaterialTheme.typography.bodySmall,
@@ -327,7 +334,12 @@ private fun EmptyState(modifier: Modifier, refresh: ApiResult<Unit>, onRetry: ()
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            if (refresh is ApiResult.Failure) {
+            val error = (refresh as? ApiResult.Failure)?.exception
+            if (error is CelestrakRateLimitedException) {
+                // Retrying early can't work and CelesTrak blocks IPs that keep asking, so no button.
+                Text(stringResource(R.string.starlink_load_failed))
+                Text(text = rateLimitedText(error), style = MaterialTheme.typography.bodyMedium)
+            } else if (error != null) {
                 Text(stringResource(R.string.starlink_load_failed))
                 Button(onClick = onRetry) { Text(stringResource(R.string.starlink_retry)) }
             } else {
@@ -336,6 +348,15 @@ private fun EmptyState(modifier: Modifier, refresh: ApiResult<Unit>, onRetry: ()
             }
         }
     }
+}
+
+@Composable
+private fun rateLimitedText(error: CelestrakRateLimitedException): String {
+    val context = LocalContext.current
+    return stringResource(
+        R.string.starlink_rate_limited,
+        DateUtils.formatDateTime(context, error.retryAtMillis, DateUtils.FORMAT_SHOW_TIME)
+    )
 }
 
 @Composable

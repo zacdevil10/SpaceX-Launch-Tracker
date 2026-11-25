@@ -10,6 +10,7 @@
     <string name="starlink_loading">Downloading Starlink orbits…</string>
     <string name="starlink_load_failed">Couldn\'t download Starlink orbits</string>
     <string name="starlink_retry">Retry</string>
+    <string name="starlink_rate_limited">CelesTrak allows one download every 2 hours. Try again after %1$s.</string>
     <string name="starlink_live">Live</string>
     <string name="starlink_speed">%1$d×</string>
     <string name="starlink_simulated_time">%1$s UTC</string>

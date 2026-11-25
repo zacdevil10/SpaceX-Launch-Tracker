@@ -8,7 +8,12 @@ import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import okhttp3.ResponseBody.Companion.toResponseBody
+import retrofit2.HttpException
+import retrofit2.Response
 import uk.co.zac_h.spacex.network.ApiResult
+import uk.co.zac_h.spacex.network.CelestrakRateLimitedException
+import uk.co.zac_h.spacex.network.celestrakRetryAt
 import uk.co.zac_h.spacex.network.dto.celestrak.GpElementDto
 import uk.co.zac_h.spacex.network.retrofit.CelestrakService
 import uk.co.zac_h.spacex.network.retrofit.networkJson
@@ -19,6 +24,7 @@ class StarlinkStoreTest {
     private var now = 1_800_000_000_000L
     private var calls = 0
     private var response: List<GpElementDto> = emptyList()
+    private var failWith: Exception? = null
     private val dao = FakeStarlinkDao()
     private lateinit var store: StarlinkStore
 
@@ -26,6 +32,7 @@ class StarlinkStoreTest {
         override suspend fun getGroup(group: String, format: String): List<GpElementDto> {
             calls++
             assertEquals("starlink", group)
+            failWith?.let { throw it }
             return response
         }
     }
@@ -33,7 +40,8 @@ class StarlinkStoreTest {
     @Before
     fun setUp() {
         response = networkJson.decodeFromString(ListSerializer(GpElementDto.serializer()), resource())
-        store = StarlinkStore(service, dao, Refresher(FakeFetchMetadataDao()) { now })
+        val metadata = FakeFetchMetadataDao()
+        store = StarlinkStore(service, dao, Refresher(metadata) { now }, metadata) { now }
     }
 
     private fun resource(): String =
@@ -79,4 +87,39 @@ class StarlinkStoreTest {
         assertTrue(result is ApiResult.Failure)
         assertEquals(2, store.satellites.first().size)
     }
+
+    @Test
+    fun `a 403 waits until two hours after the last download before asking again`() = runBlocking {
+        // 2027-01-15T08:00:00Z
+        now = 1_800_000_000_000L
+        val lastDownload = now - 30 * 60_000L
+        failWith = HttpException(
+            Response.error<Any>(
+                403,
+                ("GP data has not updated since your last successful download of GROUP=starlink at " +
+                    "2027-01-15 07:30:00 UTC. Data is updated once every 2 hours.").toResponseBody()
+            )
+        )
+        val result = store.refresh()
+        val error = (result as ApiResult.Failure).exception as CelestrakRateLimitedException
+        assertEquals(lastDownload + 2.hours.inWholeMilliseconds, error.retryAtMillis)
+
+        // Retrying, even forced, doesn't reach CelesTrak again until then.
+        now += 60.minutes()
+        assertTrue((store.refresh(force = true) as ApiResult.Failure).exception is CelestrakRateLimitedException)
+        assertEquals(1, calls)
+
+        now = error.retryAtMillis
+        failWith = null
+        assertEquals(ApiResult.Success(Unit), store.refresh())
+        assertEquals(2, calls)
+    }
+
+    @Test
+    fun `retry time falls back to two hours from now when the 403 body is unreadable`() {
+        assertEquals(1_000L + 2.hours.inWholeMilliseconds, celestrakRetryAt("Forbidden", 1_000L))
+        assertEquals(1_000L + 2.hours.inWholeMilliseconds, celestrakRetryAt(null, 1_000L))
+    }
+
+    private fun Int.minutes() = this * 60_000L
 }
