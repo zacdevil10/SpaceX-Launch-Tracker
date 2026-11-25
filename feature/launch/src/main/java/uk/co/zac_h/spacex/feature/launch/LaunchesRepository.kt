@@ -9,29 +9,24 @@ import uk.co.zac_h.spacex.network.retrofit.LaunchLibraryClient
 import uk.co.zac_h.spacex.network.retrofit.LaunchLibraryService
 import uk.co.zac_h.spacex.network.retrofit.SpaceflightNewsClient
 import uk.co.zac_h.spacex.network.retrofit.SpaceflightNewsService
-import uk.co.zac_h.spacex.network.store.Freshness
-import uk.co.zac_h.spacex.network.store.LaunchLibraryStore
+import uk.co.zac_h.spacex.network.store.LaunchStore
 import javax.inject.Inject
 
 class LaunchesRepository @Inject constructor(
     @LaunchLibraryClient private val httpService: LaunchLibraryService,
     @SpaceflightNewsClient private val newsHttpService: SpaceflightNewsService,
-    store: LaunchLibraryStore
+    private val launchStore: LaunchStore
 ) {
 
-    private val upcoming = store.upcomingLaunches
-
     /** Upcoming launches from the database, updated whenever [refreshUpcoming] stores new ones. */
-    val upcomingLaunches: Flow<List<LaunchDetailedDto>> = upcoming.items
+    val upcomingLaunches: Flow<List<LaunchDetailedDto>> = launchStore.upcomingLaunches
 
     /** When upcoming launches were last fetched, in milliseconds since the epoch. */
-    val upcomingFetchedAt: Flow<Long?> = upcoming.fetchedAt
+    val upcomingFetchedAt: Flow<Long?> = launchStore.upcomingFetchedAt
 
     /** Fetches upcoming launches if the stored ones are older than their window, or if [force]. */
     suspend fun refreshUpcoming(force: Boolean = false): ApiResult<Unit> =
-        upcoming.refresh(maxAge = Freshness.UPCOMING_LAUNCHES, force = force) {
-            httpService.getUpcomingLaunches().results
-        }
+        launchStore.refreshUpcoming(force)
 
     val previousLaunchesPagingSource: LaunchesPreviousPagingSource
         get() = LaunchesPreviousPagingSource(httpService)

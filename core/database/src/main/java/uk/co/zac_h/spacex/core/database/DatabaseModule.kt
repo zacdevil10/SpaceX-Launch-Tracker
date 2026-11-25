@@ -22,7 +22,7 @@ object DatabaseModule {
             .build()
 
     @Provides
-    fun providesCachedItemDao(database: SpaceXDatabase): CachedItemDao = database.cachedItemDao()
+    fun providesLaunchDao(database: SpaceXDatabase): LaunchDao = database.launchDao()
 
     @Provides
     fun providesFetchMetadataDao(database: SpaceXDatabase): FetchMetadataDao =

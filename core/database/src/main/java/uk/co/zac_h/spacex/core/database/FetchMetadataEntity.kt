@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-/** When the list stored under [key] was last fetched, in milliseconds since the epoch. */
+/** When the data stored under [key] was last fetched, in milliseconds since the epoch. */
 @Entity(tableName = "fetch_metadata")
 data class FetchMetadataEntity(
     @PrimaryKey val key: String,

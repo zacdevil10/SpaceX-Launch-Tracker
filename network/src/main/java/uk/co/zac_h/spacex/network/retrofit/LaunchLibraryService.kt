@@ -25,7 +25,10 @@ interface LaunchLibraryService {
     suspend fun getUpcomingLaunches(
         @Query("limit") limit: Int = 10,
         @Query("search") search: String = "SpaceX",
-        @Query("mode") mode: String = "detailed"
+        @Query("mode") mode: String = "detailed",
+        // Launches stay in upcoming for 24 hours after they fly unless hidden. Hiding them keeps
+        // each launch in exactly one of upcoming and previous.
+        @Query("hide_recent_previous") hideRecentPrevious: Boolean = true
     ): LaunchLibraryPaginatedResponse<LaunchDetailedDto>
 
     @GET(SPACEX_PREVIOUS_LAUNCHES)
