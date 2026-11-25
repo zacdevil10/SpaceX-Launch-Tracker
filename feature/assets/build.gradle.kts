@@ -54,7 +54,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.androidx.compose.lifecycle.runtime)
     ksp(libs.hilt.compiler)
-    implementation(libs.androidx.compose.hilt.navigation)
+    implementation(libs.androidx.compose.hilt.viewmodel)
     implementation(libs.androidx.compose.paging)
 }
 

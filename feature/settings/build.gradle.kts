@@ -41,7 +41,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.compose.hilt.navigation)
+    implementation(libs.androidx.compose.hilt.viewmodel)
     implementation(libs.androidx.compose.lifecycle.runtime)
 
     implementation(project(":core:common"))

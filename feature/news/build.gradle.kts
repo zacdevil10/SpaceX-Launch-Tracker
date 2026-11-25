@@ -52,7 +52,7 @@ dependencies {
 
     implementation(libs.androidx.compose.paging)
 
-    implementation(libs.androidx.compose.hilt.navigation)
+    implementation(libs.androidx.compose.hilt.viewmodel)
 }
 
 kotlin {

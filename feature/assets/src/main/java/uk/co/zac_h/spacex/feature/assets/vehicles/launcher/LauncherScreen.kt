@@ -2,7 +2,7 @@ package uk.co.zac_h.spacex.feature.assets.vehicles.launcher
 
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
