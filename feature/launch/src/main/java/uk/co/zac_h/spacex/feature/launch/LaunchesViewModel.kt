@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.network.ApiResult
+import uk.co.zac_h.spacex.network.PREVIOUS_LAUNCHES_PAGE_SIZE
 import uk.co.zac_h.spacex.network.dto.news.ArticleResponse
 import uk.co.zac_h.spacex.network.toType
 import javax.inject.Inject
@@ -46,7 +47,10 @@ class LaunchesViewModel @Inject constructor(
         }
 
     val previousLaunchesLiveData: Flow<PagingData<LaunchItem>> = Pager(
-        PagingConfig(pageSize = 5)
+        PagingConfig(
+            pageSize = PREVIOUS_LAUNCHES_PAGE_SIZE,
+            initialLoadSize = PREVIOUS_LAUNCHES_PAGE_SIZE
+        )
     ) {
         repository.previousLaunchesPagingSource
     }.flow.toType(::LaunchItem).cachedIn(viewModelScope)
