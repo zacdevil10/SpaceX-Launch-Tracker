@@ -1,0 +1,4 @@
+# The oneOf "Polymorphic" wrappers aren't used: the service asks for one `mode` per endpoint
+# and deserialises straight into that concrete model (e.g. LaunchDetailedDto).
+**/Polymorphic*.kt
+**/PaginatedPolymorphic*.kt

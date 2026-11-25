@@ -5,7 +5,7 @@ import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.feature.assets.R
 import uk.co.zac_h.spacex.feature.assets.vehicles.SpecsItem
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
-import uk.co.zac_h.spacex.network.dto.spacex.LauncherResponse
+import uk.co.zac_h.spacex.network.launchlibrary.model.LauncherDetailedDto
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -24,12 +24,12 @@ data class CoreItem(
 ) : VehicleItem {
 
     constructor(
-        response: LauncherResponse
+        response: LauncherDetailedDto
     ) : this(
         id = response.id.toString(),
         title = response.serialNumber.orUnknown(),
         serial = response.serialNumber.orUnknown(),
-        status = response.status,
+        status = response.status?.name,
         description = if (response.details?.isEmpty() == false) {
             response.details
         } else {
@@ -40,7 +40,7 @@ data class CoreItem(
         } else {
             response.launcherConfig?.fullName
         },
-        imageUrl = response.imageUrl,
+        imageUrl = response.image?.imageUrl,
         flights = response.flights,
         lastLaunchDate = response.lastLaunchDate?.formatDate(),
         firstLaunchDate = response.firstLaunchDate?.formatDate()

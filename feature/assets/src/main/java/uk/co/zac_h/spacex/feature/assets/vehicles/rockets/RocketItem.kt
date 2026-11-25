@@ -7,10 +7,11 @@ import uk.co.zac_h.spacex.core.common.utils.metricFormat
 import uk.co.zac_h.spacex.feature.assets.R
 import uk.co.zac_h.spacex.feature.assets.vehicles.SpecsItem
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
-import uk.co.zac_h.spacex.network.dto.spacex.AgencyResponse
+import uk.co.zac_h.spacex.network.launchlibrary.model.LauncherConfigDetailedSerializerNoManufacturerDto
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
+import kotlin.math.roundToInt
 
 data class RocketItem(
     override val id: Int,
@@ -36,24 +37,27 @@ data class RocketItem(
     val pendingLaunches: Int?
 ) : VehicleItem {
 
-    constructor(response: AgencyResponse.Launcher) : this(
+    constructor(response: LauncherConfigDetailedSerializerNoManufacturerDto) : this(
         id = response.id,
         title = response.fullName,
         fullName = response.fullName,
         type = response.name?.toType(),
-        family = response.family.toFamily(),
+        // 2.3.0 lists every family a config belongs to, e.g. "Falcon" and "Falcon 9".
+        family = response.families.orEmpty()
+            .map { it.name.toFamily() }
+            .firstOrNull { it != RocketFamily.NONE } ?: RocketFamily.NONE,
         description = response.description,
         longDescription = response.description,
         stages = response.maxStage,
-        length = response.length,
-        diameter = response.diameter,
+        length = response.length?.toFloat(),
+        diameter = response.diameter?.toFloat(),
         maidenFlight = response.maidenFlight,
         maidenFlightMillis = response.maidenFlight?.toMillis(),
-        launchMass = response.launchMass,
-        leoCapacity = response.leoCapacity,
-        gtoCapacity = response.gtoCapacity,
-        toThrust = response.toThrust,
-        imageUrl = response.imageUrl,
+        launchMass = response.launchMass?.roundToInt(),
+        leoCapacity = response.leoCapacity?.roundToInt(),
+        gtoCapacity = response.gtoCapacity?.roundToInt(),
+        toThrust = response.toThrust?.roundToInt(),
+        imageUrl = response.image?.imageUrl,
         consecutiveSuccessfulLaunches = response.consecutiveSuccessfulLaunches,
         successfulLaunches = response.successfulLaunches,
         failedLaunches = response.failedLaunches,

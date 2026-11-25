@@ -11,7 +11,7 @@ import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_DECEASED
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_INACTIVE
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_IN_TRAINING
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_RETIRED
-import uk.co.zac_h.spacex.network.dto.spacex.AstronautResponse
+import uk.co.zac_h.spacex.network.launchlibrary.model.AstronautEndpointNormalDto
 
 data class AstronautItem(
     override val id: Int,
@@ -26,16 +26,17 @@ data class AstronautItem(
 ) : VehicleItem {
 
     constructor(
-        response: AstronautResponse
+        response: AstronautEndpointNormalDto
     ) : this(
         id = response.id,
         title = response.name,
         status = response.status?.name.toCrewStatus(),
         agency = response.agency?.name,
-        nationality = response.nationality,
+        nationality = response.nationality?.mapNotNull { it.nationalityName }
+            ?.joinToString()?.ifEmpty { null },
         description = response.bio,
         longDescription = response.bio,
-        imageUrl = response.image,
+        imageUrl = response.image?.imageUrl,
         firstFlight = response.firstFlight?.formatCrewDate()
     )
 

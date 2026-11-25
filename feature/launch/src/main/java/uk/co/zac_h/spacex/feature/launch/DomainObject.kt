@@ -14,7 +14,12 @@ import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_ACTIVE
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_DECEASED
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_INACTIVE
 import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_RETIRED
-import uk.co.zac_h.spacex.network.dto.spacex.LaunchResponse
+import uk.co.zac_h.spacex.network.launchlibrary.model.AstronautFlightDto
+import uk.co.zac_h.spacex.network.launchlibrary.model.FirstStageNormalDto
+import uk.co.zac_h.spacex.network.launchlibrary.model.LaunchDetailedDto
+import uk.co.zac_h.spacex.network.launchlibrary.model.LaunchStatusDto
+import uk.co.zac_h.spacex.network.launchlibrary.model.VidURLDto
+import java.time.Duration
 import java.util.Locale
 
 data class LaunchItem(
@@ -41,12 +46,12 @@ data class LaunchItem(
 ) : RecyclerViewItem {
 
     constructor(
-        response: LaunchResponse
+        response: LaunchDetailedDto
     ) : this(
         id = response.id,
         upcoming = response.status.isUpcoming(),
         missionPatch = response.missionPatches?.firstOrNull()?.imageUrl,
-        missionName = response.mission?.name ?: response.name,
+        missionName = response.missionName,
         rocket = response.rocket?.configuration?.name,
         launchDate = response.net?.formatDate(),
         launchDateUnix = response.net?.toMillis(),
@@ -54,19 +59,20 @@ data class LaunchItem(
         launchLocationMap = response.pad?.mapImage,
         launchLocationMapUrl = response.pad?.mapUrl,
         status = Status(response.status?.id, response.status?.name, response.status?.description),
-        holdReason = response.holdReason,
-        failReason = response.failReason,
+        // 2.3.0 no longer has a hold reason field.
+        holdReason = null,
+        failReason = response.failreason,
         description = response.mission?.description,
         type = response.mission?.type,
         orbit = response.mission?.orbit?.name,
-        webcast = response.video?.groupBy { it.title }?.values
-            ?.map { videos -> videos.minBy { it.priority } }
-            ?.map { VideoItem(response.mission?.name ?: response.name, response.image, it) },
+        webcast = response.vidUrls?.filter { it.url != null }
+            ?.groupBy { it.title }?.values
+            ?.map { videos -> videos.minBy { it.priority ?: Int.MAX_VALUE } }
+            ?.map { VideoItem(response.missionName, response.image?.imageUrl, it) },
         webcastLive = response.webcastLive ?: false,
-        firstStage = response.rocket?.launcherStage?.mapNotNull { launcherStage ->
-            launcherStage?.let { FirstStageItem(it) }
-        },
-        crew = response.rocket?.spacecraftStage?.launchCrew?.mapNotNull { it?.let { CrewItem(it) } }
+        firstStage = response.rocket?.launcherStage?.map { FirstStageItem(it) },
+        crew = response.rocket?.spacecraftStage?.flatMap { it.launchCrew.orEmpty() }
+            ?.map { CrewItem(it) }
     )
 
     data class Status(
@@ -90,7 +96,10 @@ data class LaunchItem(
 
     companion object {
 
-        private fun LaunchResponse.Status?.isUpcoming() = this?.id in listOf(1, 2, 5, 6, 8)
+        private fun LaunchStatusDto?.isUpcoming() = this?.id in listOf(1, 2, 5, 6, 8)
+
+        private val LaunchDetailedDto.missionName: String
+            get() = mission?.name ?: name.orEmpty()
     }
 }
 
@@ -111,7 +120,7 @@ data class FirstStageItem(
 ) : RecyclerViewItem {
 
     constructor(
-        response: LaunchResponse.Rocket.LauncherStage
+        response: FirstStageNormalDto
     ) : this(
         id = response.id.toString(),
         serial = response.launcher?.serialNumber.orUnknown(),
@@ -122,15 +131,11 @@ data class FirstStageItem(
         launcherDetails = response.launcher?.details,
         landingDetails = response.landing?.description,
         landingType = response.landing?.type?.abbrev,
-        landingLocation = response.landing?.location?.abbrev,
-        landingLocationFull = response.landing?.location?.name,
+        landingLocation = response.landing?.landingLocation?.abbrev,
+        landingLocationFull = response.landing?.landingLocation?.name,
         previousFlight = response.previousFlight?.name,
-        turnAroundTimeDays = if (response.turnAroundTimeDays == 0
-            && (response.launcher?.flights ?: 0) < 2
-        ) {
-            null
-        } else {
-            response.turnAroundTimeDays
+        turnAroundTimeDays = response.turnAroundTime?.isoDurationDays()?.takeUnless {
+            it == 0 && (response.launcher?.flights ?: 0) < 2
         }
     )
 
@@ -141,6 +146,10 @@ data class FirstStageItem(
             "Strap-On Booster" -> CoreType.BOOSTER
             else -> CoreType.OTHER
         }
+
+        /** 2.3.0 sends turnaround as an ISO 8601 duration, e.g. "P32DT21H13M9S". */
+        private fun String.isoDurationDays(): Int? =
+            runCatching { Duration.parse(this).toDays().toInt() }.getOrNull()
     }
 }
 
@@ -156,14 +165,14 @@ data class CrewItem(
 ) : RecyclerViewItem {
 
     constructor(
-        response: LaunchResponse.Rocket.SpacecraftStage.LaunchCrew
+        response: AstronautFlightDto
     ) : this(
         id = response.id.toString(),
         name = response.astronaut?.name,
         status = response.astronaut?.status?.name.toCrewStatus(),
         agency = response.astronaut?.agency?.name,
         bio = response.astronaut?.bio,
-        image = response.astronaut?.profileImage,
+        image = response.astronaut?.image?.imageUrl,
         role = response.role?.role,
         firstFlight = response.astronaut?.firstFlight?.formatCrewDate()
     )
@@ -191,7 +200,7 @@ data class VideoItem(
     constructor(
         missionName: String,
         image: String?,
-        response: LaunchResponse.Video
+        response: VidURLDto
     ) : this(
         title = if (response.type != null) {
             "${if (response.title.isNullOrEmpty()) missionName else response.title} - ${response.type?.name}"
@@ -200,8 +209,8 @@ data class VideoItem(
         },
         description = response.description,
         imageUrl = response.featureImage ?: image,
-        url = response.url,
-        source = (response.source ?: response.url.toUri().host)
+        url = response.url.orEmpty(),
+        source = (response.source ?: response.url?.toUri()?.host)
             ?.replace("www.", "")
             ?.replace(".com", "")
             ?.replaceFirstChar { it.titlecase(Locale.getDefault()) }

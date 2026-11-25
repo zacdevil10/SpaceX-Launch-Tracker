@@ -4,7 +4,7 @@ import uk.co.zac_h.spacex.core.common.utils.TextResource
 import uk.co.zac_h.spacex.feature.assets.R
 import uk.co.zac_h.spacex.feature.assets.vehicles.SpecsItem
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
-import uk.co.zac_h.spacex.network.dto.spacex.SpacecraftResponse
+import uk.co.zac_h.spacex.network.launchlibrary.model.SpacecraftNormalDto
 
 data class SpacecraftItem(
     override val id: Int,
@@ -18,7 +18,7 @@ data class SpacecraftItem(
     val type: String?
 ) : VehicleItem {
 
-    constructor(response: SpacecraftResponse) : this(
+    constructor(response: SpacecraftNormalDto) : this(
         id = response.id,
         name = response.name,
         title = response.serialNumber?.let {
