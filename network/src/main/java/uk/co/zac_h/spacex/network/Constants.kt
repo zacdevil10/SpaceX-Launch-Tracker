@@ -16,6 +16,13 @@ const val SPACEX_AGENCY = "agencies/121/"
 // Free: calls to it do not count toward the 15 per hour limit.
 const val API_THROTTLE = "api-throttle/"
 
+//Paging
+// Launch Library allows only 15 calls per hour per IP and up to 100 results per call, so pages
+// are large to make scrolling cheap. Previous launches use mode=detailed (about 50 KB each before
+// gzip), so their pages are smaller.
+const val LAUNCH_LIBRARY_PAGE_SIZE = 50
+const val PREVIOUS_LAUNCHES_PAGE_SIZE = 20
+
 //CREW
 const val SPACEX_CREW_STATUS_IN_TRAINING = "In-Training"
 const val SPACEX_CREW_STATUS_ACTIVE = "Active"
