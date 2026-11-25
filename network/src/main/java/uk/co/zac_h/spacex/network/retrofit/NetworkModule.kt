@@ -29,12 +29,7 @@ object NetworkModule {
     fun providesSpaceflightNewsHttpClient(): SpaceflightNewsService =
         createClient(SPACEFLIGHT_NEWS_BASE_URL)
 
-    private val json = Json {
-        ignoreUnknownKeys = true
-        explicitNulls = false
-    }
-
-    private val jsonConverterFactory = json.asConverterFactory("application/json".toMediaType())
+    private val jsonConverterFactory = networkJson.asConverterFactory("application/json".toMediaType())
 
     private inline fun <reified T> createClient(baseUrl: String): T = Retrofit.Builder().apply {
         baseUrl(baseUrl)
@@ -47,6 +42,15 @@ object NetworkModule {
         connectTimeout(1.minutes)
         if (hasLogging) addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
     }.build()
+}
+
+/**
+ * Shared by every API client. `ignoreUnknownKeys` lets the APIs add fields without breaking us, and
+ * `explicitNulls = false` treats missing nullable fields as null.
+ */
+internal val networkJson = Json {
+    ignoreUnknownKeys = true
+    explicitNulls = false
 }
 
 @Qualifier
