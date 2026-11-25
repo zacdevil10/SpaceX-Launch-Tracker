@@ -9,13 +9,22 @@ import androidx.room.RoomDatabase
  * older than its window.
  */
 @Database(
-    entities = [LaunchEntity::class, FetchMetadataEntity::class],
+    entities = [
+        LaunchEntity::class,
+        ListItemEntity::class,
+        DocumentEntity::class,
+        FetchMetadataEntity::class
+    ],
     version = 1,
     exportSchema = false
 )
 abstract class SpaceXDatabase : RoomDatabase() {
 
     abstract fun launchDao(): LaunchDao
+
+    abstract fun listItemDao(): ListItemDao
+
+    abstract fun documentDao(): DocumentDao
 
     abstract fun fetchMetadataDao(): FetchMetadataDao
 }
