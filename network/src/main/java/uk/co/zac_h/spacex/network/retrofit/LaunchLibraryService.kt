@@ -25,7 +25,9 @@ interface LaunchLibraryService {
     suspend fun getUpcomingLaunches(
         @Query("limit") limit: Int = 10,
         @Query("search") search: String = "SpaceX",
-        @Query("mode") mode: String = "detailed"
+        @Query("mode") mode: String = "detailed",
+        // Comma-separated status ids to filter by, or null for all.
+        @Query("status__ids") statusIds: String? = null
     ): LaunchLibraryPaginatedResponse<LaunchDetailedDto>
 
     @GET(SPACEX_PREVIOUS_LAUNCHES)

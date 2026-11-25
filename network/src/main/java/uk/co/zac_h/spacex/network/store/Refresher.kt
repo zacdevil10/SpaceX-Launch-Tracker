@@ -31,6 +31,11 @@ class Refresher @Inject constructor(
     /** When the data under [key] was last fetched, in milliseconds since the epoch, or null if never. */
     fun fetchedAt(key: String): Flow<Long?> = metadataDao.observe(key).map { it?.fetchedAt }
 
+    /** Records that the data under [key] is current as of now, e.g. when a wider fetch covered it. */
+    suspend fun markFetched(key: String) {
+        metadataDao.upsert(FetchMetadataEntity(key = key, fetchedAt = clock.now()))
+    }
+
     suspend fun isStale(key: String, maxAge: Duration): Boolean {
         val fetchedAt = metadataDao.get(key)?.fetchedAt ?: return true
         return clock.now() - fetchedAt >= maxAge.inWholeMilliseconds
@@ -50,7 +55,7 @@ class Refresher @Inject constructor(
         if (!force && !isStale(key, maxAge)) return@withLock ApiResult.Success(Unit)
         try {
             fetch()
-            metadataDao.upsert(FetchMetadataEntity(key = key, fetchedAt = clock.now()))
+            markFetched(key)
             ApiResult.Success(Unit)
         } catch (e: CancellationException) {
             throw e

@@ -15,6 +15,7 @@ import uk.co.zac_h.spacex.network.API_THROTTLE
 import uk.co.zac_h.spacex.network.BuildConfig
 import uk.co.zac_h.spacex.network.RateLimitGate
 import uk.co.zac_h.spacex.network.SPACEFLIGHT_NEWS_BASE_URL
+import uk.co.zac_h.spacex.network.store.CallBudget
 import javax.inject.Qualifier
 import javax.inject.Singleton
 import kotlin.time.Duration.Companion.minutes
@@ -27,7 +28,8 @@ object NetworkModule {
     @Singleton
     @LaunchLibraryClient
     fun providesLaunchLibraryHttpClient(
-        rateLimitGate: RateLimitGate
+        rateLimitGate: RateLimitGate,
+        callBudget: CallBudget
     ): LaunchLibraryService {
         // A plain client for the free api-throttle/ endpoint, outside the gate.
         val throttleClient = okHttpClient()
@@ -44,6 +46,8 @@ object NetworkModule {
                         }
                     }
                 )
+                // Counts calls that reach the network, for the automatic refresh budget.
+                addNetworkInterceptor(callBudget)
             }
         )
     }

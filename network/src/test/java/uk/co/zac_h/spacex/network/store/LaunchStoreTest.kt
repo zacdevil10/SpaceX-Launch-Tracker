@@ -9,9 +9,9 @@ import org.junit.Before
 import org.junit.Test
 import uk.co.zac_h.spacex.network.dto.spacex.LaunchLibraryPaginatedResponse
 import uk.co.zac_h.spacex.network.launchlibrary.model.LaunchDetailedDto
-import uk.co.zac_h.spacex.network.retrofit.LaunchLibraryService
 import uk.co.zac_h.spacex.network.retrofit.networkJson
-import java.lang.reflect.Proxy
+import uk.co.zac_h.spacex.network.ApiResult
+import kotlin.time.Duration.Companion.minutes
 
 class LaunchStoreTest {
 
@@ -25,16 +25,15 @@ class LaunchStoreTest {
         networkJson.decodeFromString<LaunchLibraryPaginatedResponse<LaunchDetailedDto>>(text).results
     }
 
-    /** A service the store must not call: these tests only exercise storage. */
-    private val unusedService = Proxy.newProxyInstance(
-        LaunchLibraryService::class.java.classLoader,
-        arrayOf(LaunchLibraryService::class.java)
-    ) { _, method, _ -> error("Unexpected call to ${method.name}") } as LaunchLibraryService
+    private lateinit var service: FakeLaunchLibraryService
+    private lateinit var callBudget: CallBudget
 
     @Before
     fun setUp() {
         launchDao = FakeLaunchDao()
-        store = LaunchStore(unusedService, launchDao, Refresher(FakeFetchMetadataDao()) { now }) { now }
+        service = FakeLaunchLibraryService()
+        callBudget = CallBudget { now }
+        store = LaunchStore(service, launchDao, Refresher(FakeFetchMetadataDao()) { now }, callBudget) { now }
     }
 
     private fun upcoming() = runBlocking { store.upcomingLaunches.first() }
@@ -125,5 +124,79 @@ class LaunchStoreTest {
 
         assertEquals(java.time.Instant.parse("2026-12-01T10:00:00Z").toEpochMilli(), entity.net)
         assertEquals(java.time.Instant.parse("2026-11-20T08:30:00.123Z").toEpochMilli(), entity.lastUpdated)
+    }
+
+    private fun at(time: String) = java.time.Instant.parse(time).toEpochMilli()
+
+    @Test
+    fun `next launch refresh fetches all upcoming when they are due anyway`() {
+        service.upcoming = listOf(launch("a", "2026-12-01T10:00:00Z"), launch("b", "2026-12-02T10:00:00Z"))
+
+        runBlocking { store.refreshNextLaunch() }
+
+        assertEquals(listOf(10 to null), service.upcomingCalls)
+        assertEquals(listOf("a", "b"), upcoming().map { it.id })
+    }
+
+    @Test
+    fun `next launch refresh asks for one launch without a result`() {
+        service.upcoming = listOf(launch("a", "2026-12-01T10:00:00Z"), launch("b", "2026-12-02T10:00:00Z"))
+        runBlocking { store.refreshUpcoming() }
+        now += 2.minutes.inWholeMilliseconds
+        service.upcomingCalls.clear()
+
+        runBlocking { store.refreshNextLaunch() }
+
+        assertEquals(listOf(1 to "1,2,5,6,8"), service.upcomingCalls)
+    }
+
+    @Test
+    fun `next launch is not refetched within a minute`() {
+        service.upcoming = listOf(launch("a", "2026-12-01T10:00:00Z"))
+        runBlocking { store.refreshUpcoming() }
+        service.upcomingCalls.clear()
+        now += 30_000
+
+        runBlocking { store.refreshNextLaunch() }
+
+        assertEquals(emptyList<Pair<Int, String?>>(), service.upcomingCalls)
+    }
+
+    @Test
+    fun `a different next launch refetches all upcoming`() {
+        service.upcoming = listOf(launch("a", "2026-12-01T10:00:00Z"), launch("b", "2026-12-02T10:00:00Z"))
+        runBlocking { store.refreshUpcoming() }
+        now += 2.minutes.inWholeMilliseconds
+        // "a" is delayed past "b".
+        service.upcoming = listOf(launch("a", "2026-12-03T10:00:00Z"), launch("b", "2026-12-02T10:00:00Z"))
+        service.upcomingCalls.clear()
+
+        val result = runBlocking { store.refreshNextLaunch() }
+
+        assertEquals(ApiResult.Success(Unit), result)
+        assertEquals(listOf(1 to "1,2,5,6,8", 10 to null), service.upcomingCalls)
+        assertEquals(listOf("b", "a"), upcoming().map { it.id })
+    }
+
+    @Test
+    fun `polling stops before using the calls kept for screens`() {
+        service.upcoming = listOf(launch("a", "2026-12-01T10:00:00Z"))
+        repeat(CallBudget.LIMIT - CallBudget.RESERVED_FOR_SCREENS) { callBudget.record() }
+
+        assertNull(runBlocking { store.pollNextLaunch() })
+        assertEquals(emptyList<Pair<Int, String?>>(), service.upcomingCalls)
+    }
+
+    @Test
+    fun `polls more often from an hour before launch`() {
+        service.upcoming = listOf(launch("a", "2026-12-01T10:00:00Z"))
+        runBlocking { store.refreshUpcoming() }
+
+        now = at("2026-12-01T08:00:00Z")
+        assertEquals(Freshness.NEXT_LAUNCH_POLL, runBlocking { store.nextLaunchPollInterval() })
+        now = at("2026-12-01T09:00:00Z")
+        assertEquals(Freshness.NEXT_LAUNCH_POLL_NEAR, runBlocking { store.nextLaunchPollInterval() })
+        now = at("2026-12-01T10:30:00Z")
+        assertEquals(Freshness.NEXT_LAUNCH_POLL_NEAR, runBlocking { store.nextLaunchPollInterval() })
     }
 }
