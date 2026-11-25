@@ -11,7 +11,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import uk.co.zac_h.spacex.network.BuildConfig
-import uk.co.zac_h.spacex.network.REDDIT_BASE_URL
 import uk.co.zac_h.spacex.network.SPACEFLIGHT_NEWS_BASE_URL
 import javax.inject.Qualifier
 import kotlin.time.Duration.Companion.minutes
@@ -29,10 +28,6 @@ object NetworkModule {
     @SpaceflightNewsClient
     fun providesSpaceflightNewsHttpClient(): SpaceflightNewsService =
         createClient(SPACEFLIGHT_NEWS_BASE_URL)
-
-    @Provides
-    @RedditHttpClient
-    fun providesRedditClient(): RedditService = createClient(REDDIT_BASE_URL)
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -61,7 +56,3 @@ annotation class LaunchLibraryClient
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class SpaceflightNewsClient
-
-@Qualifier
-@Retention(AnnotationRetention.BINARY)
-annotation class RedditHttpClient
