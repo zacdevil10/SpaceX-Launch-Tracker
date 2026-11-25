@@ -25,4 +25,10 @@ object Freshness {
 
     /** The least time between two taps of the refresh button. */
     val MANUAL_REFRESH_COOLDOWN: Duration = 30.seconds
+
+    /**
+     * Starlink orbital elements from CelesTrak. Positions are propagated on the device, so day-old
+     * elements are still accurate to a few kilometres.
+     */
+    val STARLINK: Duration = 24.hours
 }

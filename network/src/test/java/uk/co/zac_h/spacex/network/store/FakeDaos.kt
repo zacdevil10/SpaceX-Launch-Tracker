@@ -7,6 +7,8 @@ import uk.co.zac_h.spacex.core.database.FetchMetadataDao
 import uk.co.zac_h.spacex.core.database.FetchMetadataEntity
 import uk.co.zac_h.spacex.core.database.LaunchDao
 import uk.co.zac_h.spacex.core.database.LaunchEntity
+import uk.co.zac_h.spacex.core.database.StarlinkDao
+import uk.co.zac_h.spacex.core.database.StarlinkSatelliteEntity
 
 /** In-memory stand-ins for the Room DAOs, so the store logic runs as a plain JVM test. */
 class FakeLaunchDao : LaunchDao {
@@ -36,5 +38,19 @@ class FakeFetchMetadataDao : FetchMetadataDao {
 
     override suspend fun upsert(metadata: FetchMetadataEntity) {
         rows.value = rows.value + (metadata.key to metadata)
+    }
+}
+
+class FakeStarlinkDao : StarlinkDao {
+    val rows = MutableStateFlow<List<StarlinkSatelliteEntity>>(emptyList())
+
+    override fun observeAll(): Flow<List<StarlinkSatelliteEntity>> = rows
+
+    override suspend fun insertAll(satellites: List<StarlinkSatelliteEntity>) {
+        rows.value = rows.value + satellites
+    }
+
+    override suspend fun deleteAll() {
+        rows.value = emptyList()
     }
 }

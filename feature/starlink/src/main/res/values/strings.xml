@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="starlink_title">Starlink</string>
+    <plurals name="starlink_satellite_count">
+        <item quantity="one">%1$d satellite</item>
+        <item quantity="other">%1$d satellites</item>
+    </plurals>
+    <string name="starlink_updated">Orbits from CelesTrak, updated %1$s</string>
+    <string name="starlink_update_failed">Couldn\'t update orbits from CelesTrak</string>
+    <string name="starlink_loading">Downloading Starlink orbits…</string>
+    <string name="starlink_load_failed">Couldn\'t download Starlink orbits</string>
+    <string name="starlink_retry">Retry</string>
+    <string name="starlink_live">Live</string>
+    <string name="starlink_speed">%1$d×</string>
+    <string name="starlink_simulated_time">%1$s UTC</string>
+    <string name="starlink_close">Close</string>
+    <string name="starlink_norad_id">NORAD %1$d</string>
+    <string name="starlink_altitude">Altitude</string>
+    <string name="starlink_altitude_value">%1$.0f km</string>
+    <string name="starlink_speed_label">Speed</string>
+    <string name="starlink_speed_value">%1$.2f km/s</string>
+    <string name="starlink_position">Position</string>
+    <string name="starlink_position_value">%1$.2f°, %2$.2f°</string>
+</resources>

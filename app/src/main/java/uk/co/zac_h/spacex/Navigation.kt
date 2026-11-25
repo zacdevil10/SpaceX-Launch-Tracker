@@ -275,6 +275,11 @@ enum class TopLevelNavigation(val route: String, @DrawableRes val icon: Int, val
         icon = R.drawable.ic_rocket,
         label = "Assets"
     ),
+    Starlink(
+        route = "starlink",
+        icon = R.drawable.ic_satellite_orbit,
+        label = "Starlink"
+    ),
     Company(
         route = "company",
         icon = R.drawable.ic_baseline_domain_24,

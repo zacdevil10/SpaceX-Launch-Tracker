@@ -35,6 +35,7 @@ import uk.co.zac_h.spacex.feature.assets.AssetsScreen
 import uk.co.zac_h.spacex.feature.launch.LaunchesScreen
 import uk.co.zac_h.spacex.feature.settings.SettingsDialog
 import uk.co.zac_h.spacex.feature.settings.company.CompanyScreen
+import uk.co.zac_h.spacex.feature.starlink.StarlinkScreen
 
 @Composable
 fun SpaceXApp(
@@ -218,6 +219,9 @@ fun SpaceXNavHost(
             AssetsScreen(
                 contentType = contentType
             )
+        }
+        composable(TopLevelNavigation.Starlink.route) {
+            StarlinkScreen()
         }
         composable(TopLevelNavigation.Company.route) {
             CompanyScreen(

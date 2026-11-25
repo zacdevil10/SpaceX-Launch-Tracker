@@ -36,8 +36,8 @@ jobs:
         run: ./gradlew lintDevDebug
 
       - name: Unit tests
-        # :network has no product flavours, so its tests run under testDebugUnitTest.
-        run: ./gradlew testDevDebugUnitTest :network:testDebugUnitTest
+        # :network and :feature:starlink have no product flavours, so their tests run under testDebugUnitTest.
+        run: ./gradlew testDevDebugUnitTest :network:testDebugUnitTest :feature:starlink:testDebugUnitTest
 
       - name: Upload lint and test reports
         if: always()
