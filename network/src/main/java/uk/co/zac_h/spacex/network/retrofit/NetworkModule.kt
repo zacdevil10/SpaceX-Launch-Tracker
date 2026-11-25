@@ -7,10 +7,13 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import uk.co.zac_h.spacex.network.API_THROTTLE
 import uk.co.zac_h.spacex.network.BuildConfig
+import uk.co.zac_h.spacex.network.RateLimitGate
 import uk.co.zac_h.spacex.network.SPACEFLIGHT_NEWS_BASE_URL
 import uk.co.zac_h.spacex.network.store.CallBudget
 import javax.inject.Qualifier
@@ -24,27 +27,44 @@ object NetworkModule {
     @Provides
     @Singleton
     @LaunchLibraryClient
-    fun providesLaunchLibraryHttpClient(callBudget: CallBudget): LaunchLibraryService =
-        createClient(BuildConfig.URL) {
-            // Counts calls that reach the network, for the automatic refresh budget.
-            addNetworkInterceptor(callBudget)
-        }
+    fun providesLaunchLibraryHttpClient(
+        rateLimitGate: RateLimitGate,
+        callBudget: CallBudget
+    ): LaunchLibraryService {
+        // A plain client for the free api-throttle/ endpoint, outside the gate.
+        val throttleClient = okHttpClient()
+        return createClient(
+            baseUrl = BuildConfig.URL,
+            client = okHttpClient(hasLogging = true) {
+                addInterceptor(
+                    RateLimitInterceptor(rateLimitGate) {
+                        val request = Request.Builder().url(BuildConfig.URL + API_THROTTLE).build()
+                        throttleClient.newCall(request).execute().use { response ->
+                            if (response.isSuccessful) {
+                                RateLimitInterceptor.secondsFromThrottleEndpoint(response.body.string())
+                            } else null
+                        }
+                    }
+                )
+                // Counts calls that reach the network, for the automatic refresh budget.
+                addNetworkInterceptor(callBudget)
+            }
+        )
+    }
 
     @Provides
     @SpaceflightNewsClient
     fun providesSpaceflightNewsHttpClient(): SpaceflightNewsService =
-        createClient(SPACEFLIGHT_NEWS_BASE_URL)
+        createClient(SPACEFLIGHT_NEWS_BASE_URL, okHttpClient(hasLogging = true))
 
     private val jsonConverterFactory = networkJson.asConverterFactory("application/json".toMediaType())
 
-    private inline fun <reified T> createClient(
-        baseUrl: String,
-        noinline configure: OkHttpClient.Builder.() -> Unit = {}
-    ): T = Retrofit.Builder().apply {
-        baseUrl(baseUrl)
-        addConverterFactory(jsonConverterFactory)
-        client(okHttpClient(true, configure))
-    }.build().create(T::class.java)
+    private inline fun <reified T> createClient(baseUrl: String, client: OkHttpClient): T =
+        Retrofit.Builder().apply {
+            baseUrl(baseUrl)
+            addConverterFactory(jsonConverterFactory)
+            client(client)
+        }.build().create(T::class.java)
 
     private fun okHttpClient(
         hasLogging: Boolean = false,
