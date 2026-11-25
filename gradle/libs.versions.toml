@@ -14,10 +14,9 @@ kotlin = "2.4.21"
 kotlinxSerializationJson = "1.13.0"
 ksp = "2.3.14"
 okhttp = "5.5.1"
-paging = "3.2.1"
+paging = "3.5.3"
 lifecycle = "2.11.1"
 retrofit = "3.0.0"
-paging-compose = "3.2.1"
 datastore-preferences = "1.3.0"
 
 minSdk = "26"
@@ -29,7 +28,7 @@ compileSdkMinor = "1"
 
 # AndroidX
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "core" }
-androidx-paging = { module = "androidx.paging:paging-runtime-ktx", version.ref = "paging" }
+androidx-paging = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
 androidx-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore-preferences" }
 
@@ -43,7 +42,7 @@ androidx-compose-material-icons-core = { group = "androidx.compose.material", na
 androidx-compose-ui-toolingpreview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-compose-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
-androidx-compose-paging = { group = "androidx.paging", name = "paging-compose", version.ref = "paging-compose" }
+androidx-compose-paging = { group = "androidx.paging", name = "paging-compose", version.ref = "paging" }
 androidx-compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
 androidx-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidx-navigation-compose" }
 androidx-compose-hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "androidx-hilt-navigation-compose" }
