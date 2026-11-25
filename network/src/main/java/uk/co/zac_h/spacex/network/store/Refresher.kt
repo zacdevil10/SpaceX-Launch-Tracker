@@ -8,7 +8,7 @@ import retrofit2.HttpException
 import uk.co.zac_h.spacex.core.database.FetchMetadataDao
 import uk.co.zac_h.spacex.core.database.FetchMetadataEntity
 import uk.co.zac_h.spacex.network.ApiResult
-import uk.co.zac_h.spacex.network.TooManyRequestsException
+import uk.co.zac_h.spacex.network.toApiException
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -55,15 +55,7 @@ class Refresher @Inject constructor(
         } catch (e: CancellationException) {
             throw e
         } catch (e: HttpException) {
-            ApiResult.Failure(
-                when (e.code()) {
-                    429 -> TooManyRequestsException(
-                        runCatching { e.response()?.errorBody()?.string() }.getOrNull()
-                            ?.filter { it.isDigit() }?.toIntOrNull()
-                    )
-                    else -> Exception(e.message())
-                }
-            )
+            ApiResult.Failure(e.toApiException())
         } catch (e: Exception) {
             ApiResult.Failure(e)
         }
