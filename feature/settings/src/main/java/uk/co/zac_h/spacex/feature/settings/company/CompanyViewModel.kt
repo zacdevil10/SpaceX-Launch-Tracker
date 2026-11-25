@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
+import uk.co.zac_h.spacex.network.CachePolicyExpiry
 import uk.co.zac_h.spacex.network.get
 import javax.inject.Inject
 
@@ -24,7 +25,11 @@ class CompanyViewModel @Inject constructor(
 
     fun getCompany() {
         _company.get(viewModelScope) {
-            repository.fetch(key = "agency", cachePolicy = CachePolicy.ALWAYS).map(::Company)
+            repository.fetch(
+                key = "agency",
+                cachePolicy = CachePolicy.EXPIRES,
+                maxAge = CachePolicyExpiry.AGENCY
+            ).map(::Company)
         }
     }
 }

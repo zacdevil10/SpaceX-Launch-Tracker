@@ -2,6 +2,7 @@ package uk.co.zac_h.spacex.network
 
 import retrofit2.HttpException
 import uk.co.zac_h.spacex.network.datasource.remote.RemoteDataSource
+import kotlin.time.Duration
 
 abstract class Repository<T>(
     private val remoteDataSource: RemoteDataSource<T>,
@@ -10,7 +11,8 @@ abstract class Repository<T>(
 
     suspend fun fetch(
         key: String,
-        cachePolicy: CachePolicy
+        cachePolicy: CachePolicy,
+        maxAge: Duration = CachePolicyExpiry.DEFAULT
     ): ApiResult<T> = try {
         when (cachePolicy) {
             CachePolicy.NEVER -> fetch()
@@ -19,11 +21,7 @@ abstract class Repository<T>(
                 cache.clear(key)
             }
             CachePolicy.REFRESH -> fetchAndCache(key)
-            CachePolicy.EXPIRES -> cache.get(key)?.let {
-                if (it.createdAt.plus(CachePolicyExpiry.LENGTH) > System.currentTimeMillis()) {
-                    it.value
-                } else null
-            }
+            CachePolicy.EXPIRES -> cache.get(key)?.takeIf { cache.isFresh(it, maxAge) }?.value
         } ?: fetchAndCache(key)
     } catch (e: HttpException) {
         println(e.message())

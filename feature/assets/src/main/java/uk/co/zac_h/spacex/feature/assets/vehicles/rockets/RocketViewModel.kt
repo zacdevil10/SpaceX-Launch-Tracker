@@ -19,6 +19,7 @@ import uk.co.zac_h.spacex.core.common.utils.filterAll
 import uk.co.zac_h.spacex.core.common.utils.sortedBy
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
+import uk.co.zac_h.spacex.network.CachePolicyExpiry
 import uk.co.zac_h.spacex.network.get
 import javax.inject.Inject
 
@@ -51,7 +52,11 @@ class RocketViewModel @Inject constructor(
 
     fun getRockets() {
         _rockets.get(viewModelScope) {
-            repository.fetch(key = "agency", cachePolicy = CachePolicy.EXPIRES).map {
+            repository.fetch(
+                key = "agency",
+                cachePolicy = CachePolicy.EXPIRES,
+                maxAge = CachePolicyExpiry.AGENCY
+            ).map {
                 it.launcherList?.map(::RocketItem) ?: emptyList()
             }
         }
