@@ -19,9 +19,17 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalInspectionMode
-import coil.compose.AsyncImagePainter
-import coil.compose.rememberAsyncImagePainter
+import androidx.compose.ui.unit.IntSize
+import coil3.compose.AsyncImagePainter
+import coil3.compose.LocalPlatformContext
+import coil3.compose.rememberAsyncImagePainter
+import coil3.request.ImageRequest
+import coil3.size.Size
+import coil3.size.SizeResolver
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 
 @Composable
 fun DynamicAsyncImage(
@@ -37,13 +45,27 @@ fun DynamicAsyncImage(
     var isSuccess by remember { mutableStateOf(false) }
     var isError by remember { mutableStateOf(false) }
 
+    // Coil 3's painter loads at the original image size unless told otherwise, which makes the
+    // image's intrinsic size drive layouts such as IntrinsicSize.Max rows. Size the request from
+    // the Image's laid-out size instead, as Coil 2 did. Constraints can't be used here: intrinsic
+    // passes measure with unbounded constraints, which would resolve to the original size again.
+    val context = LocalPlatformContext.current
+    val sizeResolver = remember { LayoutSizeResolver() }
+    val request = remember(context, model, sizeResolver) {
+        ImageRequest.Builder(context)
+            .data(model)
+            .size(sizeResolver)
+            .build()
+    }
+
     val imageLoader = rememberAsyncImagePainter(
-        model = model,
+        model = request,
         onState = { state ->
             isLoading = state is AsyncImagePainter.State.Loading
             isSuccess = state is AsyncImagePainter.State.Success
             isError = state is AsyncImagePainter.State.Error
         },
+        contentScale = contentScale,
     )
 
     val isLocalInspection = LocalInspectionMode.current
@@ -58,7 +80,9 @@ fun DynamicAsyncImage(
             )
         }
         Image(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .onSizeChanged(sizeResolver::onSizeChanged),
             painter = if (isError.not() && !isLocalInspection) imageLoader else placeholder,
             contentDescription = contentDescription,
             colorFilter = if (isSuccess) null else ColorFilter.tint(tint),
@@ -83,3 +107,17 @@ fun DynamicAsyncImage(
     tint = tint,
     contentScale = contentScale
 )
+
+/** Resolves to the Image's size once it has been laid out, ignoring intrinsic measurement passes. */
+private class LayoutSizeResolver : SizeResolver {
+    private val layoutSize = MutableStateFlow(IntSize.Zero)
+
+    fun onSizeChanged(size: IntSize) {
+        if (size.width > 0 && size.height > 0) layoutSize.value = size
+    }
+
+    override suspend fun size(): Size {
+        val size = layoutSize.first { it.width > 0 && it.height > 0 }
+        return Size(size.width, size.height)
+    }
+}
