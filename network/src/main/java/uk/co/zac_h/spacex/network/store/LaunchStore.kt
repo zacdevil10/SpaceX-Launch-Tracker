@@ -13,6 +13,7 @@ import uk.co.zac_h.spacex.core.database.FetchMetadataEntity
 import uk.co.zac_h.spacex.core.database.LaunchDao
 import uk.co.zac_h.spacex.core.database.LaunchEntity
 import uk.co.zac_h.spacex.network.ApiResult
+import uk.co.zac_h.spacex.network.PREVIOUS_LAUNCHES_PAGE_SIZE
 import uk.co.zac_h.spacex.network.launchlibrary.model.LaunchDetailedDto
 import uk.co.zac_h.spacex.network.retrofit.LaunchLibraryClient
 import uk.co.zac_h.spacex.network.retrofit.LaunchLibraryService
@@ -199,9 +200,6 @@ class LaunchStore @Inject constructor(
          * `last_updated` seen, and the next change check asks for launches changed since then.
          */
         internal const val PREVIOUS_CHANGES_SINCE = "launches_previous_changes_since"
-
-        /** Previous launches use mode=detailed (about 50 KB each before gzip), so pages stay small. */
-        const val PREVIOUS_LAUNCHES_PAGE_SIZE = 20
 
         /** The most results Launch Library returns per call. */
         private const val MAX_PAGE_SIZE = 100

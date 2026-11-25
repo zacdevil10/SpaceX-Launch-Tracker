@@ -14,5 +14,6 @@ class AstronautViewModel @Inject constructor(
     private val repository: AstronautRepository
 ) : ViewModel() {
 
-    val astronautLiveData: Flow<PagingData<AstronautItem>> = repository.astronauts().toType(::AstronautItem).cachedIn(viewModelScope)
+    val astronautLiveData: Flow<PagingData<AstronautItem>> =
+        repository.astronauts().toType(::AstronautItem).cachedIn(viewModelScope)
 }

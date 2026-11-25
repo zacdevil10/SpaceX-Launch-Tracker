@@ -14,5 +14,6 @@ class SpacecraftViewModel @Inject constructor(
     private val repository: SpacecraftRepository
 ) : ViewModel() {
 
-    val spacecraftLiveData: Flow<PagingData<SpacecraftItem>> = repository.spacecraft().toType(::SpacecraftItem).cachedIn(viewModelScope)
+    val spacecraftLiveData: Flow<PagingData<SpacecraftItem>> =
+        repository.spacecraft().toType(::SpacecraftItem).cachedIn(viewModelScope)
 }

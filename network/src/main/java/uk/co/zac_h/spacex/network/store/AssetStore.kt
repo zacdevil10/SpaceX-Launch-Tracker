@@ -7,6 +7,7 @@ import uk.co.zac_h.spacex.core.database.DocumentDao
 import uk.co.zac_h.spacex.core.database.DocumentEntity
 import uk.co.zac_h.spacex.core.database.ListItemDao
 import uk.co.zac_h.spacex.network.ApiResult
+import uk.co.zac_h.spacex.network.LAUNCH_LIBRARY_PAGE_SIZE
 import uk.co.zac_h.spacex.network.launchlibrary.model.AgencyEndpointDetailedDto
 import uk.co.zac_h.spacex.network.launchlibrary.model.AstronautEndpointNormalDto
 import uk.co.zac_h.spacex.network.launchlibrary.model.LauncherDetailedDto
@@ -57,13 +58,13 @@ class AssetStore @Inject constructor(
         refresher = refresher
     ) { limit, offset -> httpService.getAstronauts(limit = limit, offset = offset) }
 
-    fun launchers(pageSize: Int = LIST_PAGE_SIZE): Flow<PagingData<LauncherDetailedDto>> =
+    fun launchers(pageSize: Int = LAUNCH_LIBRARY_PAGE_SIZE): Flow<PagingData<LauncherDetailedDto>> =
         launchers.items(pageSize)
 
-    fun spacecraft(pageSize: Int = LIST_PAGE_SIZE): Flow<PagingData<SpacecraftNormalDto>> =
+    fun spacecraft(pageSize: Int = LAUNCH_LIBRARY_PAGE_SIZE): Flow<PagingData<SpacecraftNormalDto>> =
         spacecraft.items(pageSize)
 
-    fun astronauts(pageSize: Int = LIST_PAGE_SIZE): Flow<PagingData<AstronautEndpointNormalDto>> =
+    fun astronauts(pageSize: Int = LAUNCH_LIBRARY_PAGE_SIZE): Flow<PagingData<AstronautEndpointNormalDto>> =
         astronauts.items(pageSize)
 
     /** The SpaceX agency, or null until it has been fetched once. */
@@ -92,8 +93,5 @@ class AssetStore @Inject constructor(
         internal const val LAUNCHERS = "launchers"
         internal const val SPACECRAFT = "spacecraft"
         internal const val ASTRONAUTS = "astronauts"
-
-        /** Normal and detailed list items are small, so a page covers most of each list. */
-        const val LIST_PAGE_SIZE = 50
     }
 }

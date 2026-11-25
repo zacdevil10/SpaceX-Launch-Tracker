@@ -14,5 +14,6 @@ class LauncherViewModel @Inject constructor(
     private val repository: LauncherRepository
 ) : ViewModel() {
 
-    val launcherLiveData: Flow<PagingData<CoreItem>> = repository.launchers().toType(::CoreItem).cachedIn(viewModelScope)
+    val launcherLiveData: Flow<PagingData<CoreItem>> =
+        repository.launchers().toType(::CoreItem).cachedIn(viewModelScope)
 }
