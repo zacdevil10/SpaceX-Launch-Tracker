@@ -29,8 +29,30 @@ class FakeLaunchLibraryService : LaunchLibraryService {
         return LaunchLibraryPaginatedResponse(count = results.size, results = results)
     }
 
-    override suspend fun getPreviousLaunches(limit: Int, offset: Int, search: String, mode: String) =
-        unused()
+    var previous: List<LaunchDetailedDto> = emptyList()
+
+    /** (limit, net__lt, last_updated__gte) of each previous launches call. */
+    val previousCalls = mutableListOf<Triple<Int, String?, String?>>()
+
+    override suspend fun getPreviousLaunches(
+        limit: Int,
+        netLt: String?,
+        lastUpdatedGte: String?,
+        search: String,
+        mode: String
+    ): LaunchLibraryPaginatedResponse<LaunchDetailedDto> {
+        previousCalls += Triple(limit, netLt, lastUpdatedGte)
+        val matching = previous
+            .filter { netLt == null || checkNotNull(it.net) < netLt }
+            .filter { lastUpdatedGte == null || checkNotNull(it.lastUpdated) >= lastUpdatedGte }
+            .sortedByDescending { it.net }
+        val results = matching.take(limit)
+        return LaunchLibraryPaginatedResponse(
+            count = matching.size,
+            next = if (matching.size > limit) "next" else null,
+            results = results
+        )
+    }
 
     override suspend fun getLaunchers(
         limit: Int, offset: Int, launcherConfigManufacturerName: String, ordering: String,

@@ -1,7 +1,15 @@
 package uk.co.zac_h.spacex.network.store
 
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.filter
+import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import uk.co.zac_h.spacex.core.database.FetchMetadataDao
+import uk.co.zac_h.spacex.core.database.FetchMetadataEntity
 import uk.co.zac_h.spacex.core.database.LaunchDao
 import uk.co.zac_h.spacex.core.database.LaunchEntity
 import uk.co.zac_h.spacex.network.ApiResult
@@ -23,6 +31,7 @@ import kotlin.time.Duration
 class LaunchStore @Inject constructor(
     @LaunchLibraryClient private val httpService: LaunchLibraryService,
     private val launchDao: LaunchDao,
+    private val metadataDao: FetchMetadataDao,
     private val refresher: Refresher,
     private val callBudget: CallBudget,
     private val clock: Clock
@@ -92,6 +101,80 @@ class LaunchStore @Inject constructor(
     }
 
     /**
+     * Previous launches from the database, most recent first, paged as the list scrolls.
+     * [PreviousLaunchesMediator] fetches only what is missing: launches older than the oldest
+     * stored one, and launches that changed since the last sync.
+     */
+    @OptIn(ExperimentalPagingApi::class)
+    fun previousLaunches(pageSize: Int = PREVIOUS_LAUNCHES_PAGE_SIZE): Flow<PagingData<LaunchDetailedDto>> =
+        Pager(
+            config = PagingConfig(pageSize = pageSize, initialLoadSize = pageSize),
+            remoteMediator = PreviousLaunchesMediator(this)
+        ) {
+            launchDao.previousPagingSource()
+        }.flow.map { page ->
+            page.map { decode(it) }.filter { it != null }.map { checkNotNull(it) }
+        }
+
+    /** Whether previous launches were checked for changes within their window. */
+    suspend fun previousLaunchesAreFresh(): Boolean =
+        !refresher.isStale(PREVIOUS_LAUNCHES, Freshness.PREVIOUS_LAUNCHES)
+
+    /**
+     * Brings stored previous launches up to date, if not done within the last hour or if [force].
+     *
+     * With nothing synced yet, fetches the most recent page. Otherwise asks only for launches
+     * changed since the last sync (`last_updated__gte`): newly completed launches and corrections,
+     * usually none or a couple. If more changed than one call returns, the app was away too long
+     * to catch up cheaply, so the stored previous launches are replaced by the most recent page
+     * and older pages are fetched again as the list scrolls.
+     */
+    suspend fun refreshPreviousLaunches(
+        force: Boolean = false,
+        pageSize: Int = PREVIOUS_LAUNCHES_PAGE_SIZE
+    ): ApiResult<Unit> = refresher.refresh(PREVIOUS_LAUNCHES, Freshness.PREVIOUS_LAUNCHES, force) {
+        val since = metadataDao.get(PREVIOUS_CHANGES_SINCE)?.fetchedAt
+        val changes = since?.let {
+            httpService.getPreviousLaunches(limit = MAX_PAGE_SIZE, lastUpdatedGte = it.toIso8601())
+        }
+        if (changes != null && changes.next == null) {
+            launchDao.upsertAll(changes.results.map { it.toPreviousEntity() })
+            advanceChangesSince(changes.results)
+        } else {
+            val latest = httpService.getPreviousLaunches(limit = pageSize).results
+            launchDao.replacePrevious(latest.map { it.toPreviousEntity() })
+            metadataDao.upsert(FetchMetadataEntity(PREVIOUS_CHANGES_SINCE, latest.newestChange() ?: 0))
+        }
+    }
+
+    /**
+     * Moves the sync point to the newest change seen. Only the most recent page and change
+     * responses move it: an older page can hold a recently corrected launch, and moving the sync
+     * point to that would skip changes to other launches made in between.
+     */
+    private suspend fun advanceChangesSince(results: List<LaunchDetailedDto>) {
+        val newest = results.newestChange() ?: return
+        val current = metadataDao.get(PREVIOUS_CHANGES_SINCE)?.fetchedAt
+        if (current == null || newest > current) {
+            metadataDao.upsert(FetchMetadataEntity(PREVIOUS_CHANGES_SINCE, newest))
+        }
+    }
+
+    private fun List<LaunchDetailedDto>.newestChange(): Long? =
+        mapNotNull { it.lastUpdated.toEpochMillis() }.maxOrNull()
+
+    /**
+     * Fetches the page of previous launches older than the oldest stored one (`net__lt`). Each
+     * page is fetched once and kept. Returns true when there are no older launches left.
+     */
+    suspend fun loadOlderPreviousLaunches(pageSize: Int): Boolean {
+        val oldest = launchDao.oldestPreviousNet()
+        val response = httpService.getPreviousLaunches(limit = pageSize, netLt = oldest?.toIso8601())
+        launchDao.upsertAll(response.results.map { it.toPreviousEntity() })
+        return response.next == null || response.results.isEmpty()
+    }
+
+    /**
      * Stores the upcoming endpoint's response. The endpoint also returns launches for 24 hours
      * after they fly, so each launch's list comes from its status: one still in flight stays in
      * upcoming, and one with a result moves to previous.
@@ -109,6 +192,19 @@ class LaunchStore @Inject constructor(
     companion object {
         internal const val UPCOMING_LAUNCHES = "launches_upcoming"
         internal const val NEXT_LAUNCH = "launches_next"
+        internal const val PREVIOUS_LAUNCHES = "launches_previous"
+
+        /**
+         * Sync point for previous launch changes: its `fetched_at` holds the newest
+         * `last_updated` seen, and the next change check asks for launches changed since then.
+         */
+        internal const val PREVIOUS_CHANGES_SINCE = "launches_previous_changes_since"
+
+        /** Previous launches use mode=detailed (about 50 KB each before gzip), so pages stay small. */
+        const val PREVIOUS_LAUNCHES_PAGE_SIZE = 20
+
+        /** The most results Launch Library returns per call. */
+        private const val MAX_PAGE_SIZE = 100
     }
 }
 
@@ -125,6 +221,12 @@ internal val UPCOMING_STATUS_IDS = setOf(1, 2, 5, 6, 8)
 internal fun LaunchDetailedDto.isUpcoming(fromUpcomingEndpoint: Boolean): Boolean =
     status?.id?.let { it in UPCOMING_STATUS_IDS } ?: fromUpcomingEndpoint
 
+/** A launch from the previous endpoint: previous unless its status says it has no result yet. */
+private fun LaunchDetailedDto.toPreviousEntity() =
+    toEntity(upcoming = isUpcoming(fromUpcomingEndpoint = false))
+
+private fun Long.toIso8601(): String = Instant.ofEpochMilli(this).toString()
+
 internal fun LaunchDetailedDto.toEntity(upcoming: Boolean) = LaunchEntity(
     id = id,
     net = net.toEpochMillis(),
@@ -133,7 +235,7 @@ internal fun LaunchDetailedDto.toEntity(upcoming: Boolean) = LaunchEntity(
     json = networkJson.encodeToString(LaunchDetailedDto.serializer(), this)
 )
 
-private fun String?.toEpochMillis(): Long? = this?.let {
+internal fun String?.toEpochMillis(): Long? = this?.let {
     runCatching { Instant.parse(it).toEpochMilli() }.getOrNull()
         ?: runCatching { OffsetDateTime.parse(it).toInstant().toEpochMilli() }.getOrNull()
 }

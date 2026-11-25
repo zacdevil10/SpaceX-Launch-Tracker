@@ -48,11 +48,8 @@ class LaunchesViewModel @Inject constructor(
             }
         }
 
-    val previousLaunchesLiveData: Flow<PagingData<LaunchItem>> = Pager(
-        PagingConfig(pageSize = 5)
-    ) {
-        repository.previousLaunchesPagingSource
-    }.flow.toType(::LaunchItem).cachedIn(viewModelScope)
+    val previousLaunchesLiveData: Flow<PagingData<LaunchItem>> =
+        repository.previousLaunches().toType(::LaunchItem).cachedIn(viewModelScope)
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val articlesFlow: Flow<PagingData<ArticleResponse>> = _uiState.flatMapLatest {

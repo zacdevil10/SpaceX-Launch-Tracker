@@ -59,18 +59,18 @@ class Refresher @Inject constructor(
             ApiResult.Success(Unit)
         } catch (e: CancellationException) {
             throw e
-        } catch (e: HttpException) {
-            ApiResult.Failure(
-                when (e.code()) {
-                    429 -> TooManyRequestsException(
-                        runCatching { e.response()?.errorBody()?.string() }.getOrNull()
-                            ?.filter { it.isDigit() }?.toIntOrNull()
-                    )
-                    else -> Exception(e.message())
-                }
-            )
         } catch (e: Exception) {
-            ApiResult.Failure(e)
+            ApiResult.Failure(e.toApiException())
         }
     }
+}
+
+/** Turns a failed call into the exception the screens show, reading the wait from a 429. */
+internal fun Exception.toApiException(): Exception = when {
+    this !is HttpException -> this
+    code() == 429 -> TooManyRequestsException(
+        runCatching { response()?.errorBody()?.string() }.getOrNull()
+            ?.filter { it.isDigit() }?.toIntOrNull()
+    )
+    else -> Exception(message())
 }
