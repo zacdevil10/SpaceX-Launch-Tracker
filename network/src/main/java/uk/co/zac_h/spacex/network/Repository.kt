@@ -26,19 +26,7 @@ abstract class Repository<T>(
             }
         } ?: fetchAndCache(key)
     } catch (e: HttpException) {
-        println(e.message())
-        ApiResult.Failure(
-            when (e.code()) {
-                429 -> {
-                    TooManyRequestsException(
-                        e.message().filter { it.isDigit() }.let {
-                            if (it.isNotEmpty()) it.toInt() else null
-                        }
-                    )
-                }
-                else -> Exception(e.message())
-            }
-        )
+        ApiResult.Failure(e.toApiException())
     } catch (e: Throwable) {
         ApiResult.Failure(e)
     }
