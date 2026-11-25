@@ -21,7 +21,10 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalInspectionMode
 import coil3.compose.AsyncImagePainter
+import coil3.compose.LocalPlatformContext
 import coil3.compose.rememberAsyncImagePainter
+import coil3.compose.rememberConstraintsSizeResolver
+import coil3.request.ImageRequest
 
 @Composable
 fun DynamicAsyncImage(
@@ -37,8 +40,20 @@ fun DynamicAsyncImage(
     var isSuccess by remember { mutableStateOf(false) }
     var isError by remember { mutableStateOf(false) }
 
+    // Coil 3's painter loads at the original image size unless told otherwise, which makes the
+    // image's intrinsic size drive layouts such as IntrinsicSize.Max rows. Size the request from
+    // the Image's layout constraints instead, as Coil 2 did.
+    val context = LocalPlatformContext.current
+    val sizeResolver = rememberConstraintsSizeResolver()
+    val request = remember(context, model, sizeResolver) {
+        ImageRequest.Builder(context)
+            .data(model)
+            .size(sizeResolver)
+            .build()
+    }
+
     val imageLoader = rememberAsyncImagePainter(
-        model = model,
+        model = request,
         onState = { state ->
             isLoading = state is AsyncImagePainter.State.Loading
             isSuccess = state is AsyncImagePainter.State.Success
@@ -58,7 +73,9 @@ fun DynamicAsyncImage(
             )
         }
         Image(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .then(sizeResolver),
             painter = if (isError.not() && !isLocalInspection) imageLoader else placeholder,
             contentDescription = contentDescription,
             colorFilter = if (isSuccess) null else ColorFilter.tint(tint),
