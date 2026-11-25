@@ -6,8 +6,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import uk.co.zac_h.spacex.network.datasource.remote.about.AgencyDataSource
 import uk.co.zac_h.spacex.network.launchlibrary.model.AgencyEndpointDetailedDto
-import uk.co.zac_h.spacex.network.dto.spacex.LaunchLibraryPaginatedResponse
-import uk.co.zac_h.spacex.network.launchlibrary.model.LaunchDetailedDto
 import javax.inject.Qualifier
 
 @Module
@@ -17,14 +15,7 @@ abstract class DataSourceModule {
     @Binds
     @AgencyDataSourceClient
     abstract fun bindAgencyDataSource(agencyDataSource: AgencyDataSource): RemoteDataSource<AgencyEndpointDetailedDto>
-
-    @Binds
-    @LaunchesDataSourceClient
-    abstract fun bindLaunchesDataSource(launchesDataSource: LaunchesDataSource): RemoteDataSource<LaunchLibraryPaginatedResponse<LaunchDetailedDto>>
 }
 
 @Qualifier
 annotation class AgencyDataSourceClient
-
-@Qualifier
-annotation class LaunchesDataSourceClient

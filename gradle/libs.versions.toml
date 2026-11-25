@@ -15,6 +15,7 @@ kotlinxSerializationJson = "1.13.0"
 ksp = "2.3.14"
 okhttp = "5.5.1"
 paging = "3.5.3"
+room = "2.7.2"
 lifecycle = "2.11.1"
 retrofit = "3.0.0"
 datastore-preferences = "1.3.0"
@@ -32,6 +33,9 @@ compileSdkMinor = "1"
 androidx-core = { module = "androidx.core:core-ktx", version.ref = "core" }
 androidx-paging = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
 androidx-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore-preferences" }
 
 # Compose
