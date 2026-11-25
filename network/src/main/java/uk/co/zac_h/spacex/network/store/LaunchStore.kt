@@ -39,8 +39,16 @@ class LaunchStore @Inject constructor(
             storeUpcoming(httpService.getUpcomingLaunches().results)
         }
 
+    /**
+     * Stores the upcoming endpoint's response. The endpoint also returns launches for 24 hours
+     * after they fly, so each launch's list comes from its status: one still in flight stays in
+     * upcoming, and one with a result moves to previous.
+     */
     internal suspend fun storeUpcoming(launches: List<LaunchDetailedDto>) {
-        launchDao.replaceUpcoming(launches.map { it.toEntity(upcoming = true) }, clock.now())
+        launchDao.replaceUpcoming(
+            launches.map { it.toEntity(upcoming = it.isUpcoming(fromUpcomingEndpoint = true)) },
+            clock.now()
+        )
     }
 
     private fun decode(entity: LaunchEntity): LaunchDetailedDto? =
@@ -50,6 +58,19 @@ class LaunchStore @Inject constructor(
         internal const val UPCOMING_LAUNCHES = "launches_upcoming"
     }
 }
+
+/**
+ * Launch Library status ids for a launch without a result yet: Go (1), TBD (2), Hold (5),
+ * In Flight (6) and TBC (8). Success (3), Failure (4) and Partial Failure (7) are results.
+ */
+private val UPCOMING_STATUS_IDS = setOf(1, 2, 5, 6, 8)
+
+/**
+ * Whether a launch belongs in upcoming: until it has a result, including while in flight. With no
+ * status, falls back to which endpoint it came from.
+ */
+internal fun LaunchDetailedDto.isUpcoming(fromUpcomingEndpoint: Boolean): Boolean =
+    status?.id?.let { it in UPCOMING_STATUS_IDS } ?: fromUpcomingEndpoint
 
 internal fun LaunchDetailedDto.toEntity(upcoming: Boolean) = LaunchEntity(
     id = id,

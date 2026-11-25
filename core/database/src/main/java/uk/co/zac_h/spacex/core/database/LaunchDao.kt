@@ -22,11 +22,12 @@ interface LaunchDao {
     suspend fun deleteByIds(ids: List<String>)
 
     /**
-     * Stores [launches] as the complete set of upcoming launches.
+     * Stores [launches], the complete response of the upcoming endpoint (each already marked
+     * upcoming or not from its status).
      *
-     * A stored upcoming launch missing from [launches] has either completed (it is kept and moved
-     * to previous launches) or, if its time is still in the future, was removed from the API (it is
-     * deleted).
+     * A stored upcoming launch missing from [launches] has either finished more than a day ago
+     * (it is kept and moved to previous launches) or, if its time is still in the future, was
+     * removed from the API (it is deleted).
      */
     @Transaction
     suspend fun replaceUpcoming(launches: List<LaunchEntity>, now: Long) {

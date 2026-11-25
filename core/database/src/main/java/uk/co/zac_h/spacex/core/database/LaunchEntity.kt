@@ -20,7 +20,7 @@ data class LaunchEntity(
     @PrimaryKey val id: String,
     /** Launch time (NET) in milliseconds since the epoch, or null if the API has none. */
     val net: Long?,
-    /** True if the launch came from the upcoming endpoint, false if from the previous endpoint. */
+    /** True until the launch has a result (still true while it is in flight). */
     val upcoming: Boolean,
     /** When Launch Library last changed this launch, in milliseconds since the epoch. */
     @ColumnInfo(name = "last_updated") val lastUpdated: Long?,
