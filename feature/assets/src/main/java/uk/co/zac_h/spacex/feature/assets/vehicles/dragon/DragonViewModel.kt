@@ -14,7 +14,6 @@ import uk.co.zac_h.spacex.core.common.types.Order
 import uk.co.zac_h.spacex.core.common.utils.sortedBy
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
-import uk.co.zac_h.spacex.network.CachePolicyExpiry
 import uk.co.zac_h.spacex.network.get
 import javax.inject.Inject
 
@@ -41,11 +40,7 @@ class DragonViewModel @Inject constructor(
 
     fun getDragons() {
         _dragons.get(viewModelScope) {
-            repository.fetch(
-                key = "agency",
-                cachePolicy = CachePolicy.EXPIRES,
-                maxAge = CachePolicyExpiry.AGENCY
-            ).map {
+            repository.fetch(key = "agency", cachePolicy = CachePolicy.REFRESH).map {
                 it.spacecraftList?.map(::SecondStageItem) ?: emptyList()
             }
         }

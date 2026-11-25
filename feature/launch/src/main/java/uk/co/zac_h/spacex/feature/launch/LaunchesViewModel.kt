@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.flowOf
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CachePolicy
-import uk.co.zac_h.spacex.network.CachePolicyExpiry
 import uk.co.zac_h.spacex.network.PREVIOUS_LAUNCHES_PAGE_SIZE
 import uk.co.zac_h.spacex.network.dto.news.ArticleResponse
 import uk.co.zac_h.spacex.network.dto.spacex.mapResults
@@ -62,11 +61,7 @@ class LaunchesViewModel @Inject constructor(
 
     fun getUpcoming() {
         _upcomingLaunches.get(viewModelScope) {
-            repository.fetch(
-                key = "upcoming",
-                cachePolicy = CachePolicy.EXPIRES,
-                maxAge = CachePolicyExpiry.UPCOMING_LAUNCHES
-            )
+            repository.fetch(key = "", cachePolicy = CachePolicy.REFRESH)
                 .mapResults(::LaunchItem)
         }
     }
