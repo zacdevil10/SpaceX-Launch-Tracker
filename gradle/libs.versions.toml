@@ -76,6 +76,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 okhttp-bom = { module = "com.squareup.okhttp3:okhttp-bom", version.ref = "okhttp" }
 okhttp = { module = "com.squareup.okhttp3:okhttp" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor" }
+mockwebserver = { module = "com.squareup.okhttp3:mockwebserver3" }
 
 # Testing
 junit = { module = "junit:junit", version.ref = "junit" }

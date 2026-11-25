@@ -13,6 +13,9 @@ const val SPACEX_SPACECRAFT = "spacecraft/"
 const val SPACEX_ASTRONAUTS = "astronauts/"
 const val SPACEX_AGENCY = "agencies/121/"
 
+// Free: calls to it do not count toward the 15 per hour limit.
+const val API_THROTTLE = "api-throttle/"
+
 //Paging
 // Launch Library allows only 15 calls per hour per IP and up to 100 results per call, so pages
 // are large to make scrolling cheap. Previous launches use mode=detailed (about 50 KB each before
