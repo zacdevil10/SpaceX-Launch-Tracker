@@ -9,6 +9,7 @@ import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import uk.co.zac_h.spacex.network.toType
+import uk.co.zac_h.spacex.network.LAUNCH_LIBRARY_PAGE_SIZE
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,7 +18,10 @@ class LauncherViewModel @Inject constructor(
 ) : ViewModel() {
 
     val launcherLiveData: Flow<PagingData<CoreItem>> = Pager(
-        PagingConfig(pageSize = 10)
+        PagingConfig(
+            pageSize = LAUNCH_LIBRARY_PAGE_SIZE,
+            initialLoadSize = LAUNCH_LIBRARY_PAGE_SIZE
+        )
     ) {
         repository.launcherPagingSource
     }.flow.toType(::CoreItem).cachedIn(viewModelScope)
