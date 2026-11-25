@@ -27,7 +27,9 @@ fun UpcomingLaunchesScreen(
     listState: LazyListState,
     openedLaunch: LaunchItem?,
     retry: () -> Unit,
-    onItemClick: (LaunchItem) -> Unit
+    onItemClick: (LaunchItem) -> Unit,
+    nextLaunchUpdate: NextLaunchUpdate = NextLaunchUpdate(),
+    onRefreshNextLaunch: () -> Unit = {}
 ) {
     NetworkContent(
         modifier = modifier,
@@ -38,6 +40,9 @@ fun UpcomingLaunchesScreen(
             modifier = Modifier,
             state = listState
         ) {
+            item(key = "next_launch_update") {
+                NextLaunchUpdateRow(update = nextLaunchUpdate, onRefresh = onRefreshNextLaunch)
+            }
             itemsIndexed(it) { position, launch ->
                 LaunchContainer(
                     patch = launch.missionPatch,

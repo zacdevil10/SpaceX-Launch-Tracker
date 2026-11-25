@@ -15,13 +15,17 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -42,6 +46,7 @@ fun LaunchesScreen(
     viewModel: LaunchesViewModel = hiltViewModel()
 ) {
     val upcoming by viewModel.upcomingLaunches.collectAsStateWithLifecycle(ApiResult.Pending)
+    val nextLaunchUpdate by viewModel.nextLaunchUpdate.collectAsStateWithLifecycle(NextLaunchUpdate())
     val previous = viewModel.previousLaunchesLiveData.collectAsLazyPagingItems()
     val articles = viewModel.articlesFlow.collectAsLazyPagingItems()
 
@@ -51,6 +56,14 @@ fun LaunchesScreen(
     val previousLazyListState = rememberLazyListState()
 
     val scrollBehavior = SpaceXTabRowDefaults.pinnedScrollBehavior()
+
+    // Keep the next launch current only while this screen is on screen.
+    val lifecycleOwner = LocalLifecycleOwner.current
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            viewModel.keepNextLaunchFresh()
+        }
+    }
 
     val launchListPagerState = rememberPagerState(pageCount = { 2 })
 
@@ -64,6 +77,8 @@ fun LaunchesScreen(
         previousLazyListState = previousLazyListState,
         openedLaunch = uiState.openedLaunch,
         retry = { viewModel.getUpcoming(force = true) },
+        nextLaunchUpdate = nextLaunchUpdate,
+        onRefreshNextLaunch = { viewModel.refreshNextLaunch() },
         navigateToDetail = { launch, pane -> viewModel.setOpenedLaunch(launch, pane) },
         scrollBehavior = scrollBehavior,
         contentType = contentType,
@@ -86,7 +101,9 @@ fun LaunchesContent(
     retry: () -> Unit,
     closeDetailScreen: () -> Unit,
     navigateToDetail: (LaunchItem, ContentType) -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
+    nextLaunchUpdate: NextLaunchUpdate = NextLaunchUpdate(),
+    onRefreshNextLaunch: () -> Unit = {}
 ) {
     TwoPane(
         modifier = Modifier
@@ -104,7 +121,9 @@ fun LaunchesContent(
                 openedLaunch = openedLaunch,
                 retry = retry,
                 navigateToDetail = navigateToDetail,
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                nextLaunchUpdate = nextLaunchUpdate,
+                onRefreshNextLaunch = onRefreshNextLaunch
             )
         },
         second = {
@@ -149,7 +168,9 @@ fun LaunchListScreen(
     openedLaunch: LaunchItem?,
     retry: () -> Unit,
     navigateToDetail: (LaunchItem, ContentType) -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior
+    scrollBehavior: TopAppBarScrollBehavior,
+    nextLaunchUpdate: NextLaunchUpdate = NextLaunchUpdate(),
+    onRefreshNextLaunch: () -> Unit = {}
 ) {
     val tabs = listOf(
         Tab(label = "Upcoming", icon = R.drawable.ic_baseline_schedule_24),
@@ -184,7 +205,9 @@ fun LaunchListScreen(
                     listState = upcomingLazyListState,
                     openedLaunch = openedLaunch,
                     retry = retry,
-                    onItemClick = { navigateToDetail(it, ContentType.SINGLE_PANE) }
+                    onItemClick = { navigateToDetail(it, ContentType.SINGLE_PANE) },
+                    nextLaunchUpdate = nextLaunchUpdate,
+                    onRefreshNextLaunch = onRefreshNextLaunch
                 )
                 1 -> PreviousLaunchesScreen(
                     previous = previous,

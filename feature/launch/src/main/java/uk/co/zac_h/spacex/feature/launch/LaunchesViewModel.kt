@@ -8,16 +8,19 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.dto.news.ArticleResponse
+import uk.co.zac_h.spacex.network.store.Freshness
 import uk.co.zac_h.spacex.network.toType
 import javax.inject.Inject
 
@@ -62,8 +65,52 @@ class LaunchesViewModel @Inject constructor(
         } ?: flowOf(PagingData.empty())
     }
 
+    private val nextLaunchRefresh = MutableStateFlow(NextLaunchRefresh())
+    private var manualRefreshAllowedAt = 0L
+
+    /** What the "Updated X ago" row above the next launch shows. */
+    val nextLaunchUpdate: Flow<NextLaunchUpdate> =
+        combine(repository.nextLaunchFetchedAt, nextLaunchRefresh) { fetchedAt, refresh ->
+            NextLaunchUpdate(
+                fetchedAt = fetchedAt,
+                isRefreshing = refresh.isRefreshing,
+                error = refresh.error
+            )
+        }
+
     init {
         getUpcoming()
+    }
+
+    /**
+     * Keeps the next launch current while the launches screen is visible: refreshes it straight
+     * away if it is more than a minute old, then every 10 minutes, or every 5 from an hour before
+     * launch. Run from the screen with repeatOnLifecycle(STARTED), so it stops when the app is
+     * not on screen: nothing refreshes in the background.
+     */
+    suspend fun keepNextLaunchFresh() {
+        while (true) {
+            repository.pollNextLaunch()?.let(::onNextLaunchResult)
+            delay(repository.nextLaunchPollInterval())
+        }
+    }
+
+    /** The refresh button. Ignored while refreshing or within 30 seconds of the last tap. */
+    fun refreshNextLaunch() {
+        val now = System.currentTimeMillis()
+        if (nextLaunchRefresh.value.isRefreshing || now < manualRefreshAllowedAt) return
+        manualRefreshAllowedAt = now + Freshness.MANUAL_REFRESH_COOLDOWN.inWholeMilliseconds
+        nextLaunchRefresh.update { it.copy(isRefreshing = true) }
+        viewModelScope.launch {
+            onNextLaunchResult(repository.refreshNextLaunch(force = true))
+        }
+    }
+
+    private fun onNextLaunchResult(result: ApiResult<Unit>) {
+        nextLaunchRefresh.value = NextLaunchRefresh(
+            isRefreshing = false,
+            error = (result as? ApiResult.Failure)?.exception
+        )
     }
 
     /** Refreshes upcoming launches if they are out of date, or always when [force]. */
@@ -85,6 +132,19 @@ class LaunchesViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(isDetailOnlyOpen = false)
     }
 }
+
+private data class NextLaunchRefresh(
+    val isRefreshing: Boolean = false,
+    val error: Throwable? = null
+)
+
+data class NextLaunchUpdate(
+    /** When the next launch was last fetched, in milliseconds since the epoch, or null if never. */
+    val fetchedAt: Long? = null,
+    val isRefreshing: Boolean = false,
+    /** Why the last refresh failed, or null if it succeeded. */
+    val error: Throwable? = null
+)
 
 data class LaunchesUIState(
     val openedLaunch: LaunchItem? = null,

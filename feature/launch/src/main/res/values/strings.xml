@@ -9,6 +9,28 @@
     <string name="launches_launch_location_label">Launch site:</string>
     <string name="launches_event_button_label">Create event</string>
 
+    <!-- Next launch "Updated X ago" row -->
+    <string name="launches_updated_never">Not updated yet</string>
+    <string name="launches_updated_just_now">Updated just now</string>
+    <plurals name="launches_updated_minutes_ago">
+        <item quantity="one">Updated %1$d min ago</item>
+        <item quantity="other">Updated %1$d min ago</item>
+    </plurals>
+    <plurals name="launches_updated_hours_ago">
+        <item quantity="one">Updated %1$d hour ago</item>
+        <item quantity="other">Updated %1$d hours ago</item>
+    </plurals>
+    <plurals name="launches_updated_days_ago">
+        <item quantity="one">Updated %1$d day ago</item>
+        <item quantity="other">Updated %1$d days ago</item>
+    </plurals>
+    <string name="launches_update_failed">Couldn\'t update</string>
+    <plurals name="launches_try_again_minutes">
+        <item quantity="one">Limit reached. Try again in %1$d min</item>
+        <item quantity="other">Limit reached. Try again in %1$d min</item>
+    </plurals>
+    <string name="launches_refresh_description">Refresh next launch</string>
+
     <!--Launch Filter-->
     <string name="date_range_label">Date range:</string>
     <string name="date_picker_button_label">Select</string>
