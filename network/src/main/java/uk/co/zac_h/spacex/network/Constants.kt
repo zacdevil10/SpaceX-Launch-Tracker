@@ -13,6 +13,9 @@ const val SPACEX_SPACECRAFT = "spacecraft/"
 const val SPACEX_ASTRONAUTS = "astronauts/"
 const val SPACEX_AGENCY = "agencies/121/"
 
+// Free: calls to it do not count toward the 15 per hour limit.
+const val API_THROTTLE = "api-throttle/"
+
 //CREW
 const val SPACEX_CREW_STATUS_IN_TRAINING = "In-Training"
 const val SPACEX_CREW_STATUS_ACTIVE = "Active"

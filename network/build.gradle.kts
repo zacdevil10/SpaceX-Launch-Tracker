@@ -150,6 +150,8 @@ dependencies {
     implementation(libs.androidx.paging)
 
     testImplementation(libs.junit)
+    testImplementation(platform(libs.okhttp.bom))
+    testImplementation(libs.mockwebserver)
 }
 
 kotlin {
