@@ -31,6 +31,8 @@ import kotlinx.coroutines.launch
 import uk.co.zac_h.feature.news.NewsScreen
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.NavigationType
+import uk.co.zac_h.spacex.debug.DebugTools
+import uk.co.zac_h.spacex.debug.debugToolsDestination
 import uk.co.zac_h.spacex.feature.assets.AssetsScreen
 import uk.co.zac_h.spacex.feature.launch.LaunchesScreen
 import uk.co.zac_h.spacex.feature.settings.SettingsDialog
@@ -226,8 +228,12 @@ fun SpaceXNavHost(
         }
         dialog(TopLevelNavigation.Settings.route) {
             SettingsDialog(
-                onDismiss = { navController.popBackStack() }
+                onDismiss = { navController.popBackStack() },
+                onOpenDebugTools = if (DebugTools.IS_AVAILABLE) {
+                    { navController.navigate(DebugTools.ROUTE) }
+                } else null
             )
         }
+        debugToolsDestination(onDismiss = { navController.popBackStack() })
     }
 }

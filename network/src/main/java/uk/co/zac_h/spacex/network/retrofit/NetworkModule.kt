@@ -12,7 +12,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import uk.co.zac_h.spacex.network.API_THROTTLE
-import uk.co.zac_h.spacex.network.BuildConfig
+import uk.co.zac_h.spacex.network.LaunchLibraryEnvironment
+import uk.co.zac_h.spacex.network.LaunchLibraryEnvironmentSource
 import uk.co.zac_h.spacex.network.RateLimitGate
 import uk.co.zac_h.spacex.network.SPACEFLIGHT_NEWS_BASE_URL
 import uk.co.zac_h.spacex.network.store.CallBudget
@@ -29,16 +30,19 @@ object NetworkModule {
     @LaunchLibraryClient
     fun providesLaunchLibraryHttpClient(
         rateLimitGate: RateLimitGate,
-        callBudget: CallBudget
+        callBudget: CallBudget,
+        environment: LaunchLibraryEnvironmentSource
     ): LaunchLibraryService {
         // A plain client for the free api-throttle/ endpoint, outside the gate.
         val throttleClient = okHttpClient()
         return createClient(
-            baseUrl = BuildConfig.URL,
+            // Rewritten per request to the current server by LaunchLibraryEnvironmentInterceptor.
+            baseUrl = LaunchLibraryEnvironment.PRODUCTION.baseUrl,
             client = okHttpClient(hasLogging = true) {
+                addInterceptor(LaunchLibraryEnvironmentInterceptor(environment))
                 addInterceptor(
                     RateLimitInterceptor(rateLimitGate) {
-                        val request = Request.Builder().url(BuildConfig.URL + API_THROTTLE).build()
+                        val request = Request.Builder().url(environment.current().baseUrl + API_THROTTLE).build()
                         throttleClient.newCall(request).execute().use { response ->
                             if (response.isSuccessful) {
                                 RateLimitInterceptor.secondsFromThrottleEndpoint(response.body.string())

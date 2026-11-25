@@ -109,18 +109,11 @@ android {
                     "proguard-rules.pro"
                 )
             )
-            buildConfigField("String", "URL", "\"https://ll.thespacedevs.com/2.3.0/\"")
-        }
-        debug {
-            buildConfigField("String", "URL", "\"https://lldev.thespacedevs.com/2.3.0/\"")
         }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-    buildFeatures {
-        buildConfig = true
     }
     namespace = "uk.co.zac_h.spacex.network"
 
@@ -148,6 +141,9 @@ dependencies {
     //Hilt
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+    //Debug tools settings (debug builds only)
+    debugImplementation(libs.androidx.datastore.preferences)
 
     //Paging
     implementation(libs.androidx.paging)

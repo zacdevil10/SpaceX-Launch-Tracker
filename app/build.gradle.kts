@@ -81,6 +81,10 @@ dependencies {
     ksp(libs.hilt.compiler)
 
     implementation(libs.androidx.compose.navigation)
+
+    //Debug tools menu (debug builds only)
+    debugImplementation(libs.androidx.compose.hilt.viewmodel)
+    debugImplementation(libs.androidx.compose.lifecycle.runtime)
 }
 
 kotlin {
