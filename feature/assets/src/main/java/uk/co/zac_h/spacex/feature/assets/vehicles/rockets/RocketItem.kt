@@ -38,7 +38,7 @@ data class RocketItem(
 ) : VehicleItem {
 
     constructor(response: LauncherConfigDetailedSerializerNoManufacturerDto) : this(
-        id = response.id ?: 0,
+        id = response.id,
         title = response.fullName,
         fullName = response.fullName,
         type = response.name?.toType(),

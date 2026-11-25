@@ -34,7 +34,7 @@ data class SecondStageItem(
 ) : VehicleItem {
 
     constructor(response: SpacecraftConfigDetailedDto) : this(
-        id = response.id ?: 0,
+        id = response.id,
         title = response.name,
         name = response.name,
         description = response.history,

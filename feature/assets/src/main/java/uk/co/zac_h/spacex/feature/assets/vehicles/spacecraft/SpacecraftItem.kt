@@ -19,7 +19,7 @@ data class SpacecraftItem(
 ) : VehicleItem {
 
     constructor(response: SpacecraftNormalDto) : this(
-        id = response.id ?: 0,
+        id = response.id,
         name = response.name,
         title = response.serialNumber?.let {
             if (response.name?.contains(it) == false) {

@@ -28,7 +28,7 @@ data class AstronautItem(
     constructor(
         response: AstronautEndpointNormalDto
     ) : this(
-        id = response.id ?: 0,
+        id = response.id,
         title = response.name,
         status = response.status?.name.toCrewStatus(),
         agency = response.agency?.name,

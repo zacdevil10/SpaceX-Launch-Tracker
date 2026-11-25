@@ -32,7 +32,6 @@ class LaunchLibraryResponseParsingTest {
         val response = parse<LaunchLibraryPaginatedResponse<LaunchDetailedDto>>("upcoming")
         assertTrue(response.results.isNotEmpty())
         response.results.forEach { launch ->
-            assertNotNull(launch.id)
             assertNotNull(launch.name)
             assertNotNull(launch.status?.id)
         }
@@ -44,7 +43,7 @@ class LaunchLibraryResponseParsingTest {
         val response = parse<LaunchLibraryPaginatedResponse<LaunchDetailedDto>>("previous")
         assertTrue(response.results.isNotEmpty())
         assertNotNull(response.next)
-        assertTrue(response.results.all { it.id != null && it.net != null })
+        assertTrue(response.results.all { it.net != null })
     }
 
     @Test

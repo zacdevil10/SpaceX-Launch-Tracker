@@ -19,9 +19,10 @@ val launchLibraryGeneratedSources = "build/generated/openapi/launchlibrary/src/m
 
 // The schema marks many fields as required and non-null that the API does return as null
 // (landing, previous_flight, turn_around_time...), which crashes kotlinx.serialization at
-// runtime. Drop every `required` list so all generated properties are nullable with defaults.
+// runtime. Strip every `required` list down to just `id`, so ids stay non-null and every other
+// generated property is nullable with a default.
 val relaxLaunchLibrarySpec = tasks.register("relaxLaunchLibrarySpec") {
-    description = "Makes every property in the Launch Library schema optional."
+    description = "Makes every property in the Launch Library schema except id optional."
     val input = launchLibrarySpec
     val output = launchLibraryRelaxedSpec
     inputs.file(input)
@@ -30,8 +31,12 @@ val relaxLaunchLibrarySpec = tasks.register("relaxLaunchLibrarySpec") {
         fun relax(node: Any?) {
             when (node) {
                 is MutableMap<*, *> -> {
-                    @Suppress("UNCHECKED_CAST")
-                    if (node["required"] is List<*>) (node as MutableMap<Any?, Any?>).remove("required")
+                    val required = node["required"]
+                    if (required is List<*>) {
+                        @Suppress("UNCHECKED_CAST")
+                        val schema = node as MutableMap<Any?, Any?>
+                        if ("id" in required) schema["required"] = listOf("id") else schema.remove("required")
+                    }
                     node.values.forEach(::relax)
                 }
                 is List<*> -> node.forEach(::relax)

@@ -16,7 +16,7 @@ data class Company(
     constructor(
         response: AgencyEndpointDetailedDto
     ) : this(
-        id = response.id ?: 0,
+        id = response.id,
         name = response.name,
         description = response.description,
         administrator = response.administrator,

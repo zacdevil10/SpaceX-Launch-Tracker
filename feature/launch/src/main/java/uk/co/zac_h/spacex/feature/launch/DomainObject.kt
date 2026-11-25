@@ -48,7 +48,7 @@ data class LaunchItem(
     constructor(
         response: LaunchDetailedDto
     ) : this(
-        id = response.id.orEmpty(),
+        id = response.id,
         upcoming = response.status.isUpcoming(),
         missionPatch = response.missionPatches?.firstOrNull()?.imageUrl,
         missionName = response.missionName,
