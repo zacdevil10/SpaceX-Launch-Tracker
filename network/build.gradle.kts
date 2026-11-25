@@ -20,7 +20,7 @@ val launchLibraryGeneratedSources = "build/generated/openapi/launchlibrary/src/m
 // The schema marks many fields as required and non-null that the API does return as null
 // (landing, previous_flight, turn_around_time...), which crashes kotlinx.serialization at
 // runtime. Drop every `required` list so all generated properties are nullable with defaults.
-val relaxLaunchLibrarySpec by tasks.registering {
+val relaxLaunchLibrarySpec = tasks.register("relaxLaunchLibrarySpec") {
     description = "Makes every property in the Launch Library schema optional."
     val input = launchLibrarySpec
     val output = launchLibraryRelaxedSpec
@@ -47,7 +47,7 @@ val relaxLaunchLibrarySpec by tasks.registering {
     }
 }
 
-val generateLaunchLibraryModels by tasks.registering(GenerateTask::class) {
+val generateLaunchLibraryModels = tasks.register<GenerateTask>("generateLaunchLibraryModels") {
     description = "Generates Launch Library 2.3.0 models from the OpenAPI schema."
     dependsOn(relaxLaunchLibrarySpec)
     generatorName.set("kotlin")
@@ -121,7 +121,7 @@ android {
 
     sourceSets {
         getByName("main") {
-            kotlin.srcDir(launchLibraryGeneratedSources)
+            kotlin.directories.add(launchLibraryGeneratedSources)
         }
     }
 }

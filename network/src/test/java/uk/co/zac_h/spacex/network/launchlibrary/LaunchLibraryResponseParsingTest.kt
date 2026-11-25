@@ -10,7 +10,7 @@ import uk.co.zac_h.spacex.network.launchlibrary.model.AstronautEndpointNormalDto
 import uk.co.zac_h.spacex.network.launchlibrary.model.LaunchDetailedDto
 import uk.co.zac_h.spacex.network.launchlibrary.model.LauncherDetailedDto
 import uk.co.zac_h.spacex.network.launchlibrary.model.SpacecraftNormalDto
-import uk.co.zac_h.spacex.network.networkJson
+import uk.co.zac_h.spacex.network.retrofit.networkJson
 
 /**
  * Parses real Launch Library 2.3.0 responses (src/test/resources/launchlibrary, captured from
