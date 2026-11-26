@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.ListPosition
 import uk.co.zac_h.spacex.core.common.rememberTrackedLazyListState
 import uk.co.zac_h.spacex.core.ui.component.SpaceXTabLayout
@@ -39,14 +38,13 @@ import uk.co.zac_h.spacex.feature.assets.vehicles.spacecraft.SpacecraftScreen
  * The asset lists: astronauts, rockets, second stages, cores and capsules.
  *
  * @param selectedType the type of the asset open in the detail pane, if any.
- * @param selectedId the id of the asset open in the detail pane, highlighted on wide screens.
+ * @param selectedId the id of the asset open in the detail pane, highlighted in the list.
  * @param onVehicleClick opens an asset's details.
  * @param onCloseDetail closes the open asset's details, when another tab is picked.
  */
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AssetsScreen(
-    contentType: ContentType,
     selectedType: VehicleType?,
     selectedId: String?,
     onVehicleClick: (type: VehicleType, id: String) -> Unit,
@@ -76,7 +74,6 @@ fun AssetsScreen(
     AssetsList(
         modifier = Modifier.fillMaxSize(),
         pagerState = pagerState,
-        contentType = contentType,
         selectedType = selectedType,
         selectedId = selectedId,
         onVehicleClick = { type, vehicle -> onVehicleClick(type, vehicle.id.toString()) },
@@ -101,7 +98,6 @@ private fun rememberTrackedListState(viewModel: AssetsViewModel, type: VehicleTy
 fun AssetsList(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    contentType: ContentType,
     selectedType: VehicleType?,
     selectedId: String?,
     onVehicleClick: (VehicleType, VehicleItem) -> Unit,
@@ -145,31 +141,26 @@ fun AssetsList(
             val selectedIdOnPage = selectedId.takeIf { selectedType == type }
             when (page) {
                 0 -> AstronautsScreen(
-                    contentType = contentType,
                     selectedId = selectedIdOnPage,
                     state = astronautListState,
                     onItemClick = { onVehicleClick(type, it) }
                 )
                 1 -> RocketsScreen(
-                    contentType = contentType,
                     selectedId = selectedIdOnPage,
                     state = rocketsListState,
                     onItemClick = { onVehicleClick(type, it) }
                 )
                 2 -> DragonScreen(
-                    contentType = contentType,
                     selectedId = selectedIdOnPage,
                     state = dragonListState,
                     onItemClick = { onVehicleClick(type, it) }
                 )
                 3 -> LauncherScreen(
-                    contentType = contentType,
                     selectedId = selectedIdOnPage,
                     state = coreListState,
                     onItemClick = { onVehicleClick(type, it) }
                 )
                 4 -> SpacecraftScreen(
-                    contentType = contentType,
                     selectedId = selectedIdOnPage,
                     state = capsulesListState,
                     onItemClick = { onVehicleClick(type, it) }

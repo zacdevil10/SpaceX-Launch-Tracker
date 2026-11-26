@@ -2,18 +2,16 @@ package uk.co.zac_h.spacex.feature.settings.company
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,7 +26,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.NetworkContent
 import uk.co.zac_h.spacex.core.ui.DevicePreviews
 import uk.co.zac_h.spacex.core.ui.LabelValue
@@ -38,13 +35,11 @@ import uk.co.zac_h.spacex.network.ApiResult
 
 @Composable
 fun CompanyScreen(
-    contentType: ContentType,
     viewModel: CompanyViewModel = hiltViewModel()
 ) {
     val company by viewModel.company.collectAsStateWithLifecycle(ApiResult.Pending)
 
     CompanyContent(
-        contentType = contentType,
         result = company,
         retry = viewModel::getCompany
     )
@@ -53,80 +48,25 @@ fun CompanyScreen(
 @Composable
 fun CompanyContent(
     modifier: Modifier = Modifier,
-    contentType: ContentType,
-    result: ApiResult<Company>,
-    retry: () -> Unit
-) {
-    when (contentType) {
-        ContentType.SINGLE_PANE -> CompanySinglePane(
-            modifier = modifier,
-            result = result,
-            retry = retry
-        )
-
-        ContentType.DUAL_PANE -> CompanyDualPane(
-            modifier = modifier,
-            result = result,
-            retry = retry
-        )
-    }
-}
-
-@Composable
-fun CompanySinglePane(
-    modifier: Modifier = Modifier,
     result: ApiResult<Company>,
     retry: () -> Unit
 ) {
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Full width on phones, and a readable column on wider windows.
         CompanyDetails(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .widthIn(max = 400.dp)
+                .fillMaxWidth(),
             result = result,
             retry = retry
         )
-    }
-}
-
-@Composable
-fun CompanyDualPane(
-    modifier: Modifier = Modifier,
-    result: ApiResult<Company>,
-    retry: () -> Unit
-) {
-    Box(
-        modifier = modifier
-            .background(MaterialTheme.colorScheme.inverseOnSurface)
-    ) {
-        Card(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp)
-        ) {
-            Column(
-                modifier = modifier
-                    .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.background)
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Column(
-                    Modifier
-                        .width(400.dp)
-                ) {
-                    CompanyDetails(
-                        result = result,
-                        retry = retry
-                    )
-                }
-            }
-        }
     }
 }
 
@@ -207,7 +147,6 @@ fun CompanyContentPreview() {
     SpaceXTheme {
         CompanyContent(
             modifier = Modifier.background(MaterialTheme.colorScheme.background),
-            contentType = ContentType.SINGLE_PANE,
             result = ApiResult.Success(
                 Company(
                     id = 0,

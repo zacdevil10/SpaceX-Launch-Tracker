@@ -12,7 +12,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
-import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.NetworkContent
 import uk.co.zac_h.spacex.core.common.NetworkVerticalListContent
 import uk.co.zac_h.spacex.core.ui.Vehicle
@@ -24,7 +23,6 @@ import uk.co.zac_h.spacex.network.ApiResult
 fun VehiclesList(
     modifier: Modifier = Modifier,
     vehicles: ApiResult<List<VehicleItem>>,
-    contentType: ContentType,
     state: LazyListState,
     selectedId: String?,
     retry: () -> Unit,
@@ -51,7 +49,7 @@ fun VehiclesList(
                     image = vehicle.imageUrl,
                     title = vehicle.title,
                     buttonText = stringResource(R.string.vehicle_list_item_specs_button_label),
-                    isSelected = selectedId == vehicle.id.toString() && contentType == ContentType.DUAL_PANE,
+                    isSelected = selectedId == vehicle.id.toString(),
                     navigate = {
                         navigate(vehicle)
                     }
@@ -73,7 +71,6 @@ fun VehiclesList(
 fun <T : VehicleItem> VehiclePaginatedList(
     modifier: Modifier = Modifier,
     vehicles: LazyPagingItems<T>,
-    contentType: ContentType,
     state: LazyListState,
     selectedId: String?,
     navigate: (VehicleItem) -> Unit
@@ -96,7 +93,7 @@ fun <T : VehicleItem> VehiclePaginatedList(
                     image = vehicle.imageUrl,
                     title = vehicle.title,
                     buttonText = stringResource(R.string.vehicle_list_item_specs_button_label),
-                    isSelected = selectedId == vehicle.id.toString() && contentType == ContentType.DUAL_PANE,
+                    isSelected = selectedId == vehicle.id.toString(),
                     navigate = {
                         navigate(vehicle)
                     }

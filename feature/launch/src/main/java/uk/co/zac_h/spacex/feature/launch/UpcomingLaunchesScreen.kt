@@ -10,7 +10,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
-import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.NetworkContent
 import uk.co.zac_h.spacex.core.ui.DevicePreviews
 import uk.co.zac_h.spacex.core.ui.LaunchContainer
@@ -23,7 +22,7 @@ import uk.co.zac_h.spacex.network.ApiResult
 fun UpcomingLaunchesScreen(
     modifier: Modifier = Modifier,
     upcoming: ApiResult<List<LaunchItem>>,
-    contentType: ContentType,
+    detailPaneVisible: Boolean,
     listState: LazyListState,
     selectedLaunchId: String?,
     retry: () -> Unit,
@@ -56,16 +55,12 @@ fun UpcomingLaunchesScreen(
                     launchSite = launch.launchLocation,
                     description = launch.description,
                     dateUnix = launch.launchDateUnix,
-                    state = when (contentType) {
-                        ContentType.SINGLE_PANE -> {
-                            if (position == 0) LaunchState.FULL else LaunchState.COMPACT
-                        }
-
-                        ContentType.DUAL_PANE -> {
-                            if (position == 0) LaunchState.EXPANDED else LaunchState.COMPACT
-                        }
+                    state = when {
+                        position != 0 -> LaunchState.COMPACT
+                        detailPaneVisible -> LaunchState.EXPANDED
+                        else -> LaunchState.FULL
                     },
-                    isSelected = selectedLaunchId == launch.id && contentType == ContentType.DUAL_PANE
+                    isSelected = selectedLaunchId == launch.id
                 ) {
                     onItemClick(launch)
                 }
@@ -84,7 +79,7 @@ fun UpcomingLaunchesScreenPreview(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.background),
             upcoming = ApiResult.Success(launchList),
-            contentType = ContentType.SINGLE_PANE,
+            detailPaneVisible = false,
             listState = rememberLazyListState(),
             selectedLaunchId = null,
             retry = {},
@@ -102,7 +97,7 @@ fun UpcomingLaunchesPendingScreenPreview() {
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize(),
             upcoming = ApiResult.Pending,
-            contentType = ContentType.SINGLE_PANE,
+            detailPaneVisible = false,
             listState = rememberLazyListState(),
             selectedLaunchId = null,
             retry = {},
@@ -120,7 +115,7 @@ fun UpcomingLaunchesFailureScreenPreview() {
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize(),
             upcoming = ApiResult.Failure(Exception()),
-            contentType = ContentType.SINGLE_PANE,
+            detailPaneVisible = false,
             listState = rememberLazyListState(),
             selectedLaunchId = null,
             retry = {},
