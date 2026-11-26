@@ -18,7 +18,6 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import kotlinx.coroutines.flow.MutableStateFlow
-import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.NetworkVerticalListContent
 import uk.co.zac_h.spacex.core.ui.DevicePreviews
 import uk.co.zac_h.spacex.core.ui.LaunchContainer
@@ -29,7 +28,6 @@ import uk.co.zac_h.spacex.feature.launch.preview.LaunchesPreviewParameterProvide
 fun PreviousLaunchesScreen(
     modifier: Modifier = Modifier,
     previous: LazyPagingItems<LaunchItem>,
-    contentType: ContentType,
     listState: LazyListState,
     selectedLaunchId: String?,
     onItemClick: (LaunchItem) -> Unit
@@ -58,7 +56,7 @@ fun PreviousLaunchesScreen(
                     landingPad = launch.firstStage?.firstOrNull()?.landingLocation?.let {
                         if (launch.rocket != "Falcon 9" && it == "N/A") null else it
                     },
-                    isSelected = selectedLaunchId == launch.id && contentType == ContentType.DUAL_PANE
+                    isSelected = selectedLaunchId == launch.id
                 ) {
                     onItemClick(launch)
                 }
@@ -78,7 +76,6 @@ fun PreviousLaunchesScreenPreview(
                 .background(MaterialTheme.colorScheme.background)
                 .fillMaxSize(),
             previous = MutableStateFlow(PagingData.from(launchList)).collectAsLazyPagingItems(),
-            contentType = ContentType.SINGLE_PANE,
             listState = rememberLazyListState(),
             selectedLaunchId = null
         ) {
@@ -105,7 +102,6 @@ fun PreviousLaunchesPendingScreenPreview(
                     )
                 )
             ).collectAsLazyPagingItems(),
-            contentType = ContentType.SINGLE_PANE,
             listState = rememberLazyListState(),
             selectedLaunchId = null
         ) {
@@ -132,7 +128,6 @@ fun PreviousLaunchesErrorScreenPreview(
                     )
                 )
             ).collectAsLazyPagingItems(),
-            contentType = ContentType.SINGLE_PANE,
             listState = rememberLazyListState(),
             selectedLaunchId = null
         ) {

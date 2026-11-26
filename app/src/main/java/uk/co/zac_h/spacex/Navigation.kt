@@ -30,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
-import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.R
 import uk.co.zac_h.spacex.core.ui.ComponentPreviews
 import uk.co.zac_h.spacex.core.ui.SpaceXTheme
