@@ -7,6 +7,9 @@ import androidx.room.RoomDatabase
  * The app's source of truth for Launch Library data. Screens read from here; the network only
  * fills it. Launch Library allows 15 calls per hour per IP, so data is refetched only once it is
  * older than its window.
+ *
+ * Bump [version] whenever an entity changes. Room refuses to open a database whose schema doesn't
+ * match its version, and a new version just recreates the tables (see DatabaseModule).
  */
 @Database(
     entities = [
@@ -15,7 +18,7 @@ import androidx.room.RoomDatabase
         DocumentEntity::class,
         FetchMetadataEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class SpaceXDatabase : RoomDatabase() {
