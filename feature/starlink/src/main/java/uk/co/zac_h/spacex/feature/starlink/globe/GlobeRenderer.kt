@@ -10,6 +10,8 @@ import android.opengl.GLES20.GL_COMPILE_STATUS
 import android.opengl.GLES20.GL_CULL_FACE
 import android.opengl.GLES20.GL_DEPTH_BUFFER_BIT
 import android.opengl.GLES20.GL_DEPTH_TEST
+import android.opengl.GLES20.GL_LEQUAL
+import android.opengl.GLES20.GL_LESS
 import android.opengl.GLES20.GL_DYNAMIC_DRAW
 import android.opengl.GLES20.GL_ELEMENT_ARRAY_BUFFER
 import android.opengl.GLES20.GL_FLOAT
@@ -44,6 +46,7 @@ import android.opengl.GLES20.glCompileShader
 import android.opengl.GLES20.glCreateProgram
 import android.opengl.GLES20.glCreateShader
 import android.opengl.GLES20.glDeleteShader
+import android.opengl.GLES20.glDepthFunc
 import android.opengl.GLES20.glDisable
 import android.opengl.GLES20.glDisableVertexAttribArray
 import android.opengl.GLES20.glDrawArrays
@@ -170,11 +173,13 @@ class GlobeRenderer(
         drawVertices(pointProgram, satelliteBuffer, GL_POINTS, 0, frame.count)
 
         if (frame.selected in 0 until frame.count) {
-            glDisable(GL_DEPTH_TEST)
+            // LEQUAL so the highlight wins over the satellite's own dot at the same depth, while
+            // the Earth still hides it when the satellite is on the far side.
+            glDepthFunc(GL_LEQUAL)
             glUniform1f(glGetUniformLocation(pointProgram, "uSize"), size * 2.6f + density * 3f)
             glUniform4f(glGetUniformLocation(pointProgram, "uColor"), 1f, 0.75f, 0.3f, 1f)
             drawVertices(pointProgram, satelliteBuffer, GL_POINTS, frame.selected, 1)
-            glEnable(GL_DEPTH_TEST)
+            glDepthFunc(GL_LESS)
         }
         glDisable(GL_BLEND)
     }
