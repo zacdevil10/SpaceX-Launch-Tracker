@@ -34,6 +34,7 @@ dependencies {
     implementation(project(":network"))
 
     implementation(libs.androidx.viewmodel)
+    implementation(libs.kotlinx.serialization.json)
 
     //Hilt
     implementation(libs.hilt.android)

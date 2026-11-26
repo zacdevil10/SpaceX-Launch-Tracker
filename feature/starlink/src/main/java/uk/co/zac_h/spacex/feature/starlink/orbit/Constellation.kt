@@ -16,6 +16,9 @@ data class SatelliteFix(
     val speedKmPerSecond: Double
 )
 
+/** A point on a ground track, [minutesFromNow] from the moment it was worked out for. */
+data class TrackPoint(val latitude: Double, val longitude: Double, val minutesFromNow: Double)
+
 /**
  * Propagates every satellite in a constellation. Satellites whose elements SGP4 can't use are kept
  * at the origin (inside the globe, so never drawn), so indexes always match [satellites].
@@ -73,19 +76,63 @@ class Constellation(val satellites: List<Satellite>) {
 
     /** Where the satellite at [index] is at [timeMillis], or null if it has no valid orbit. */
     fun fix(index: Int, timeMillis: Long): SatelliteFix? {
-        val sgp4 = propagators.getOrNull(index) ?: return null
-        val state = DoubleArray(6)
-        if (!sgp4.propagate(minutesSince(sgp4, timeMillis), state)) return null
         val gmst = greenwichSiderealTime(timeMillis)
-        val ecefX = cos(gmst) * state[0] + sin(gmst) * state[1]
-        val ecefY = -sin(gmst) * state[0] + cos(gmst) * state[1]
+        return fix(index, timeMillis, cos(gmst), sin(gmst), DoubleArray(6))
+    }
+
+    /** Where every satellite is at [timeMillis], indexed like [satellites]. */
+    fun fixes(timeMillis: Long): List<SatelliteFix?> {
+        val gmst = greenwichSiderealTime(timeMillis)
+        val cosGmst = cos(gmst)
+        val sinGmst = sin(gmst)
+        val state = DoubleArray(6)
+        return List(size) { fix(it, timeMillis, cosGmst, sinGmst, state) }
+    }
+
+    /**
+     * The satellite's path over the ground from [minutesBefore] before [timeMillis] to
+     * [minutesAfter] after it, one point every [stepMinutes]. Each point is where the satellite is
+     * over the turning Earth at that moment, so successive orbits drift west.
+     */
+    fun groundTrack(
+        index: Int,
+        timeMillis: Long,
+        minutesBefore: Double,
+        minutesAfter: Double,
+        stepMinutes: Double = 0.5
+    ): List<TrackPoint> {
+        val sgp4 = propagators.getOrNull(index) ?: return emptyList()
+        val state = DoubleArray(6)
+        val points = mutableListOf<TrackPoint>()
+        var offset = -minutesBefore
+        while (offset <= minutesAfter + 1e-9) {
+            val time = timeMillis + (offset * 60_000).toLong()
+            if (sgp4.propagate(minutesSince(sgp4, time), state)) {
+                val gmst = greenwichSiderealTime(time)
+                val position = temeToGeodetic(state, cos(gmst), sin(gmst))
+                points += TrackPoint(position.latitude, position.longitude, offset)
+            }
+            offset += stepMinutes
+        }
+        return points
+    }
+
+    private fun fix(index: Int, timeMillis: Long, cosGmst: Double, sinGmst: Double, state: DoubleArray): SatelliteFix? {
+        val sgp4 = propagators[index] ?: return null
+        if (!sgp4.propagate(minutesSince(sgp4, timeMillis), state)) return null
         val satellite = satellites[index]
         return SatelliteFix(
             noradId = satellite.noradId,
             name = satellite.name,
-            position = ecefToGeodetic(ecefX, ecefY, state[2]),
+            position = temeToGeodetic(state, cosGmst, sinGmst),
             speedKmPerSecond = sqrt(state[3] * state[3] + state[4] * state[4] + state[5] * state[5])
         )
+    }
+
+    private fun temeToGeodetic(state: DoubleArray, cosGmst: Double, sinGmst: Double): Geodetic {
+        val ecefX = cosGmst * state[0] + sinGmst * state[1]
+        val ecefY = -sinGmst * state[0] + cosGmst * state[1]
+        return ecefToGeodetic(ecefX, ecefY, state[2])
     }
 
     private fun minutesSince(sgp4: Sgp4, timeMillis: Long) = (timeMillis - sgp4.epochMillis) / 60_000.0

@@ -7,6 +7,7 @@ import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -57,6 +58,7 @@ import kotlinx.coroutines.flow.map
 import uk.co.zac_h.spacex.feature.starlink.globe.GlobeCamera
 import uk.co.zac_h.spacex.feature.starlink.globe.GlobeRenderer
 import uk.co.zac_h.spacex.feature.starlink.globe.SatelliteFrame
+import uk.co.zac_h.spacex.feature.starlink.list.SatelliteListScreen
 import uk.co.zac_h.spacex.feature.starlink.orbit.SatelliteFix
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.CelestrakRateLimitedException
@@ -71,9 +73,29 @@ fun StarlinkScreen(
     viewModel: StarlinkViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val tapRadius = with(LocalDensity.current) { 24.dp.toPx() }
+    val mode by viewModel.mode.collectAsStateWithLifecycle()
 
     Box(modifier = modifier.fillMaxSize()) {
+        when (mode) {
+            StarlinkMode.Globe -> GlobeMode(viewModel = viewModel, uiState = uiState)
+            StarlinkMode.List -> if (uiState.satelliteCount > 0) ListMode(viewModel = viewModel)
+        }
+
+        if (uiState.satelliteCount == 0) {
+            EmptyState(
+                modifier = Modifier.align(Alignment.Center),
+                refresh = uiState.refresh,
+                onRetry = { viewModel.refresh(force = true) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun GlobeMode(viewModel: StarlinkViewModel, uiState: StarlinkUiState) {
+    val tapRadius = with(LocalDensity.current) { 24.dp.toPx() }
+
+    Box(modifier = Modifier.fillMaxSize()) {
         Globe(
             modifier = Modifier.fillMaxSize(),
             camera = viewModel.camera,
@@ -81,14 +103,20 @@ fun StarlinkScreen(
             onTap = { offset, width, height -> viewModel.onTap(offset, width, height, tapRadius) }
         )
 
-        StarlinkHeader(
+        Column(
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .padding(12.dp),
-            uiState = uiState,
-            frames = viewModel.frames,
-            onRetry = { viewModel.refresh(force = true) }
-        )
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            ModeToggle(mode = StarlinkMode.Globe, onMode = viewModel::setMode)
+            StarlinkHeader(
+                modifier = Modifier,
+                uiState = uiState,
+                frames = viewModel.frames,
+                onRetry = { viewModel.refresh(force = true) }
+            )
+        }
 
         Column(
             modifier = Modifier
@@ -105,13 +133,57 @@ fun StarlinkScreen(
                 onLive = viewModel::goLive
             )
         }
+    }
+}
 
-        if (uiState.satelliteCount == 0) {
-            EmptyState(
-                modifier = Modifier.align(Alignment.Center),
-                refresh = uiState.refresh,
-                onRetry = { viewModel.refresh(force = true) }
-            )
+@Composable
+private fun ListMode(viewModel: StarlinkViewModel) {
+    val listState by viewModel.listState.collectAsStateWithLifecycle()
+    val filter by viewModel.filter.collectAsStateWithLifecycle()
+    val expandedId by viewModel.expandedId.collectAsStateWithLifecycle()
+    val details by viewModel.expandedDetails.collectAsStateWithLifecycle()
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        ModeToggle(
+            modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 12.dp, bottom = 8.dp),
+            mode = StarlinkMode.List,
+            onMode = viewModel::setMode
+        )
+        SatelliteListScreen(
+            state = listState,
+            filter = filter,
+            expandedId = expandedId,
+            details = details,
+            onQuery = viewModel::setQuery,
+            onToggleShell = viewModel::toggleShell,
+            onCountry = viewModel::setCountry,
+            onClearFilters = viewModel::clearFilters,
+            onToggleExpanded = viewModel::toggleExpanded,
+            onShowOnGlobe = viewModel::showOnGlobe,
+            contentPadding = PaddingValues(start = 12.dp, end = 12.dp, bottom = 12.dp)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ModeToggle(mode: StarlinkMode, onMode: (StarlinkMode) -> Unit, modifier: Modifier = Modifier) {
+    val labels = mapOf(
+        StarlinkMode.Globe to stringResource(R.string.starlink_mode_globe),
+        StarlinkMode.List to stringResource(R.string.starlink_mode_list)
+    )
+    SingleChoiceSegmentedButtonRow(modifier = modifier.widthIn(max = 280.dp)) {
+        StarlinkMode.entries.forEachIndexed { index, option ->
+            SegmentedButton(
+                selected = mode == option,
+                onClick = { onMode(option) },
+                shape = SegmentedButtonDefaults.itemShape(index, StarlinkMode.entries.size),
+                colors = SegmentedButtonDefaults.colors(
+                    inactiveContainerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.85f)
+                )
+            ) {
+                Text(labels.getValue(option))
+            }
         }
     }
 }
@@ -276,7 +348,7 @@ private fun SelectedSatellite(frames: StateFlow<SatelliteFrame?>, onClose: () ->
 }
 
 @Composable
-private fun SatelliteStats(fix: SatelliteFix) {
+internal fun SatelliteStats(fix: SatelliteFix) {
     Row(modifier = Modifier.fillMaxWidth().padding(end = 12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
         Stat(
             label = stringResource(R.string.starlink_altitude),
@@ -294,7 +366,7 @@ private fun SatelliteStats(fix: SatelliteFix) {
 }
 
 @Composable
-private fun Stat(label: String, value: String) {
+internal fun Stat(label: String, value: String) {
     Column {
         Text(text = label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Text(text = value, style = MaterialTheme.typography.bodyMedium)

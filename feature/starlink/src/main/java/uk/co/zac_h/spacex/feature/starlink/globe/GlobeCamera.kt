@@ -30,6 +30,12 @@ class GlobeCamera {
         latitude = (latitude + dy * radiansPerPixel).coerceIn(-MAX_LATITUDE, MAX_LATITUDE)
     }
 
+    /** Turns the globe so the point at [latitude], [longitude] (degrees) faces the camera. */
+    fun lookAt(latitude: Double, longitude: Double) {
+        this.longitude = Math.toRadians(longitude).toFloat()
+        this.latitude = Math.toRadians(latitude).toFloat().coerceIn(-MAX_LATITUDE, MAX_LATITUDE)
+    }
+
     fun zoom(factor: Float) {
         if (factor <= 0f) return
         distance = (distance / factor).coerceIn(MIN_DISTANCE, MAX_DISTANCE)
