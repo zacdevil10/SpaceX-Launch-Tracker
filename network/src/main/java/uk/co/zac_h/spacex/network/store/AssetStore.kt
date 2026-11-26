@@ -67,6 +67,15 @@ class AssetStore @Inject constructor(
     fun astronauts(pageSize: Int = LAUNCH_LIBRARY_PAGE_SIZE): Flow<PagingData<AstronautEndpointNormalDto>> =
         astronauts.items(pageSize)
 
+    /** One stored launcher (core) by id, or null while it isn't stored. */
+    fun launcher(id: String): Flow<LauncherDetailedDto?> = launchers.item(id)
+
+    /** One stored spacecraft (capsule) by id, or null while it isn't stored. */
+    fun spacecraft(id: String): Flow<SpacecraftNormalDto?> = spacecraft.item(id)
+
+    /** One stored astronaut by id, or null while it isn't stored. */
+    fun astronaut(id: String): Flow<AstronautEndpointNormalDto?> = astronauts.item(id)
+
     /** The SpaceX agency, or null until it has been fetched once. */
     val agency: Flow<AgencyEndpointDetailedDto?> = documentDao.observe(AGENCY).map { document ->
         document?.let {

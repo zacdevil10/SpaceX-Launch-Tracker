@@ -82,6 +82,8 @@ class FakeListItemDao : ListItemDao {
     override fun pagingSource(list: String): PagingSource<Int, ListItemEntity> =
         error("Paging reads are Room's job; tests read rows directly")
 
+    override fun observe(list: String, id: String): Flow<ListItemEntity?> = rows.map { it[list to id] }
+
     override suspend fun count(list: String): Int = rows.value.keys.count { it.first == list }
 
     override suspend fun upsertAll(items: List<ListItemEntity>) {

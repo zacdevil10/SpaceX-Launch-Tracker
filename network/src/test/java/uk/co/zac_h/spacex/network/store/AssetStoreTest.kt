@@ -111,6 +111,16 @@ class AssetStoreTest {
     }
 
     @Test
+    fun `a stored item is found by id and an unknown one is null`() {
+        service.launchers = launchers(3)
+        val launchers = launchersStore()
+        runBlocking { launchers.refresh(pageSize = 3) }
+
+        assertEquals("B2", runBlocking { launchers.item("2").first() }?.serialNumber)
+        assertNull(runBlocking { launchers.item("9").first() })
+    }
+
+    @Test
     fun `a fresh list is not fetched again`() {
         service.launchers = launchers(5)
         val launchers = launchersStore()

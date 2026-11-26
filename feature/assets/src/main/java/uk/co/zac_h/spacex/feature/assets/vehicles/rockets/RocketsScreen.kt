@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.drop
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.isScrollingUp
 import uk.co.zac_h.spacex.core.common.types.Order
@@ -43,7 +44,7 @@ import uk.co.zac_h.spacex.network.ApiResult
 fun RocketsScreen(
     contentType: ContentType,
     viewModel: RocketViewModel = hiltViewModel(),
-    openedAsset: VehicleItem?,
+    selectedId: String?,
     state: LazyListState,
     onItemClick: (VehicleItem) -> Unit
 ) {
@@ -53,8 +54,9 @@ fun RocketsScreen(
     val sheetState = rememberBottomSheetState(initialValue = SheetValue.Hidden)
     var showBottomSheet by remember { mutableStateOf(false) }
 
-    LaunchedEffect(key1 = filter) {
-        state.animateScrollToItem(index = 0)
+    // Scroll to the top when the filter changes, but not when the list comes back on screen.
+    LaunchedEffect(viewModel) {
+        viewModel.filter.drop(1).collect { state.animateScrollToItem(index = 0) }
     }
 
     RocketsContent(
@@ -70,7 +72,7 @@ fun RocketsScreen(
         setRocketType = viewModel::filterByRocketType,
         setOrder = viewModel::updateOrder,
         reset = viewModel::clearFilter,
-        openedAsset = openedAsset,
+        selectedId = selectedId,
         onItemClick = onItemClick
     )
 }
@@ -91,7 +93,7 @@ fun RocketsContent(
     setRocketType: (RocketType) -> Unit,
     setOrder: (Order) -> Unit,
     reset: () -> Unit,
-    openedAsset: VehicleItem?,
+    selectedId: String?,
     onItemClick: (VehicleItem) -> Unit
 ) {
     Scaffold(
@@ -122,7 +124,7 @@ fun RocketsContent(
             vehicles = rockets,
             contentType = contentType,
             state = state,
-            openedAsset = openedAsset,
+            selectedId = selectedId,
             retry = { retry() },
             navigate = {
                 onItemClick(it)
