@@ -33,6 +33,7 @@ fun SpaceXAppBar(
     isFullscreen: Boolean = true,
     navigationIcon: ImageVector,
     navigationIconAction: () -> Unit,
+    navigationIconContentDescription: String = "Navigate up",
     scrollBehavior: TopAppBarScrollBehavior? = null
 ) {
     val heightOffsetLimit = with(LocalDensity.current) { -64.dp.toPx() }
@@ -61,7 +62,7 @@ fun SpaceXAppBar(
             if (isFullscreen) IconButton(onClick = { navigationIconAction() }) {
                 Icon(
                     imageVector = navigationIcon,
-                    contentDescription = ""
+                    contentDescription = navigationIconContentDescription
                 )
             }
         },
@@ -80,7 +81,8 @@ fun SpaceXAppBarPreview() {
         SpaceXAppBar(
             label = "App Bar",
             navigationIcon = Icons.Filled.Menu,
-            navigationIconAction = {}
+            navigationIconAction = {},
+            navigationIconContentDescription = "Menu"
         )
     }
 }

@@ -16,6 +16,12 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.VerticalDivider
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
+import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
+import androidx.compose.material3.adaptive.navigation.BackNavigationBehavior
+import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
+import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
@@ -24,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
@@ -35,7 +42,10 @@ import kotlinx.coroutines.launch
 import uk.co.zac_h.feature.news.NewsScreen
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.NavigationType
+import uk.co.zac_h.spacex.core.ui.component.Pane
+import uk.co.zac_h.spacex.core.ui.component.PanePlaceholder
 import uk.co.zac_h.spacex.feature.assets.AssetsScreen
+import uk.co.zac_h.spacex.feature.launch.LaunchDetailScreen
 import uk.co.zac_h.spacex.feature.launch.LaunchesScreen
 import uk.co.zac_h.spacex.feature.settings.SettingsDialog
 import uk.co.zac_h.spacex.feature.settings.company.CompanyScreen
@@ -243,12 +253,22 @@ fun rememberTopLevelBackStack(): TopLevelBackStack<TopLevelNavigation, NavKey> {
     }
 }
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun SpaceXNavHost(
     modifier: Modifier = Modifier,
     topLevelBackStack: TopLevelBackStack<TopLevelNavigation, NavKey>,
     contentType: ContentType
 ) {
+    val isTablet = contentType == ContentType.DUAL_PANE
+
+    // Panes are drawn as cards with their own margins, so the scaffold adds no gap between them.
+    val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>(
+        backNavigationBehavior = BackNavigationBehavior.PopUntilCurrentDestinationChange,
+        directive = calculatePaneScaffoldDirective(currentWindowAdaptiveInfoV2())
+            .copy(horizontalPartitionSpacerSize = 0.dp)
+    )
+
     NavDisplay(
         modifier = modifier,
         backStack = topLevelBackStack.backStack,
@@ -257,12 +277,36 @@ fun SpaceXNavHost(
             rememberSaveableStateHolderNavEntryDecorator<NavKey>(),
             rememberViewModelStoreNavEntryDecorator<NavKey>()
         ),
-        sceneStrategies = listOf(remember { DialogSceneStrategy<NavKey>() }),
+        sceneStrategies = listOf(remember { DialogSceneStrategy<NavKey>() }, listDetailStrategy),
         entryProvider = entryProvider {
-            entry<LaunchesKey> {
-                LaunchesScreen(
-                    contentType = contentType
+            entry<LaunchesKey>(
+                metadata = ListDetailSceneStrategy.listPane(
+                    detailPlaceholder = {
+                        Pane(isTablet = true) { PanePlaceholder(label = "Select a launch") }
+                    }
                 )
+            ) {
+                Pane(isTablet = isTablet) {
+                    LaunchesScreen(
+                        contentType = contentType,
+                        selectedLaunchId =
+                            (topLevelBackStack.backStack.lastOrNull() as? LaunchDetailKey)?.launchId,
+                        onLaunchClick = { launchId ->
+                            topLevelBackStack.addOrReplaceTop(LaunchDetailKey(launchId)) {
+                                it is LaunchDetailKey
+                            }
+                        }
+                    )
+                }
+            }
+            entry<LaunchDetailKey>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+                Pane(isTablet = isTablet) {
+                    LaunchDetailScreen(
+                        launchId = key.launchId,
+                        isFullscreen = !isTablet,
+                        navigateUp = { topLevelBackStack.removeLast() }
+                    )
+                }
             }
             entry<NewsKey> {
                 NewsScreen(

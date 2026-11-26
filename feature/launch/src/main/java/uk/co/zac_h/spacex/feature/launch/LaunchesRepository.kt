@@ -19,6 +19,9 @@ class LaunchesRepository @Inject constructor(
     /** Upcoming launches from the database, updated whenever [refreshUpcoming] stores new ones. */
     val upcomingLaunches: Flow<List<LaunchDetailedDto>> = launchStore.upcomingLaunches
 
+    /** One stored launch, upcoming or previous, or null while it isn't stored. */
+    fun launch(id: String): Flow<LaunchDetailedDto?> = launchStore.launch(id)
+
     /** When upcoming launches were last fetched, in milliseconds since the epoch. */
     val upcomingFetchedAt: Flow<Long?> = launchStore.upcomingFetchedAt
 
