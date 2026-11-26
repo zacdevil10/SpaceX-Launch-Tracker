@@ -30,6 +30,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -96,26 +97,32 @@ fun SpaceXNavigationWrapper(
 
     val topLevelBackStack = rememberTopLevelBackStack()
 
-    // The most specific destination showing: the Settings dialog, or what's open on More.
+    // The destination showing, or the Settings dialog when it's open over one.
     val selectedDestination = TopLevelNavigation.selected(
         route = topLevelBackStack.topLevelRoute,
-        backStackTop = topLevelBackStack.backStack.lastOrNull(),
-        moreTop = topLevelBackStack.backStackOf(TopLevelNavigation.More).lastOrNull()
+        backStackTop = topLevelBackStack.backStack.lastOrNull()
     )
+
+    var showMoreSheet by rememberSaveable { mutableStateOf(false) }
 
     val navigateToTopLevelDestination: (TopLevelNavigation) -> Unit = { destination ->
         when (destination.placement) {
             TopLevelNavigation.Placement.PRIMARY,
-            TopLevelNavigation.Placement.MORE -> topLevelBackStack.selectTopLevel(destination)
+            TopLevelNavigation.Placement.SECONDARY -> topLevelBackStack.selectTopLevel(destination)
 
-            // Secondary destinations open on the More tab, replacing any other one open there.
-            TopLevelNavigation.Placement.SECONDARY -> {
-                topLevelBackStack.selectTopLevel(TopLevelNavigation.More)
-                topLevelBackStack.addOrReplaceTop(destination.key) { true }
-            }
+            TopLevelNavigation.Placement.MORE -> showMoreSheet = true
 
-            TopLevelNavigation.Placement.DIALOG -> topLevelBackStack.add(destination.key)
+            TopLevelNavigation.Placement.DIALOG ->
+                destination.key?.let { topLevelBackStack.add(it) }
         }
+    }
+
+    if (showMoreSheet) {
+        SpaceXMoreSheet(
+            selectedDestination = selectedDestination,
+            navigateToTopLevelDestination = navigateToTopLevelDestination,
+            onDismiss = { showMoreSheet = false }
+        )
     }
 
     if (navigationType == NavigationType.PERMANENT_NAVIGATION_DRAWER) {
@@ -218,36 +225,34 @@ fun SpaceXAppContent(
                     .padding(it)
                     .consumeWindowInsets(it),
                 topLevelBackStack = topLevelBackStack,
-                contentType = contentType,
-                selectedDestination = selectedDestination,
-                navigateToTopLevelDestination = navigateToTopLevelDestination
+                contentType = contentType
             )
         }
     }
 }
 
 /**
- * Remembers one Navigation 3 back stack for each destination in the bar: Launches, News, Assets
- * and More. Destinations listed under More open on the More tab's back stack, and Settings opens
- * as a dialog over whichever destination is showing. The back stacks and the selected
- * destination are saved, so they survive configuration changes and process death.
+ * Remembers one Navigation 3 back stack for each destination that has one: Launches, News, Assets
+ * and Company. More only opens a sheet, and Settings opens as a dialog over whichever destination
+ * is showing. The back stacks and the selected destination are saved, so they survive
+ * configuration changes and process death.
  */
 @Composable
 fun rememberTopLevelBackStack(): TopLevelBackStack<TopLevelNavigation, NavKey> {
-    val launches = rememberNavBackStack(TopLevelNavigation.Launches.key)
-    val news = rememberNavBackStack(TopLevelNavigation.News.key)
-    val assets = rememberNavBackStack(TopLevelNavigation.Assets.key)
-    val more = rememberNavBackStack(TopLevelNavigation.More.key)
+    val launches = rememberNavBackStack(LaunchesKey)
+    val news = rememberNavBackStack(NewsKey)
+    val assets = rememberNavBackStack(AssetsKey)
+    val company = rememberNavBackStack(CompanyKey)
     val currentRoute = rememberSaveable { mutableStateOf(TopLevelNavigation.Launches) }
 
-    return remember(launches, news, assets, more, currentRoute) {
+    return remember(launches, news, assets, company, currentRoute) {
         TopLevelBackStack(
             startRoute = TopLevelNavigation.Launches,
             stacks = mapOf(
                 TopLevelNavigation.Launches to launches,
                 TopLevelNavigation.News to news,
                 TopLevelNavigation.Assets to assets,
-                TopLevelNavigation.More to more
+                TopLevelNavigation.Company to company
             ),
             currentRoute = currentRoute
         )
@@ -259,13 +264,8 @@ fun rememberTopLevelBackStack(): TopLevelBackStack<TopLevelNavigation, NavKey> {
 fun SpaceXNavHost(
     modifier: Modifier = Modifier,
     topLevelBackStack: TopLevelBackStack<TopLevelNavigation, NavKey>,
-    contentType: ContentType,
-    selectedDestination: TopLevelNavigation,
-    navigateToTopLevelDestination: (TopLevelNavigation) -> Unit
+    contentType: ContentType
 ) {
-    val currentSelectedDestination by rememberUpdatedState(selectedDestination)
-    val currentNavigateToTopLevelDestination by rememberUpdatedState(navigateToTopLevelDestination)
-
     // Entries are created once per back stack change, so they read the window's content type
     // through state rather than capturing it.
     val currentContentType by rememberUpdatedState(contentType)
@@ -356,30 +356,9 @@ fun SpaceXNavHost(
                 )
             }
         }
-        entry<MoreKey>(
-            metadata = ListDetailSceneStrategy.listPane(
-                sceneKey = MoreKey,
-                detailPlaceholder = {
-                    Pane(isTablet = true) { PanePlaceholder(label = "Select an item") }
-                }
-            )
-        ) {
+        entry<CompanyKey> {
             Pane(isTablet = isTablet()) {
-                MoreScreen(
-                    destinations = TopLevelNavigation.moreDestinations,
-                    selectedDestination = currentSelectedDestination,
-                    onDestinationClick = { currentNavigateToTopLevelDestination(it) }
-                )
-            }
-        }
-        entry<CompanyKey>(
-            metadata = ListDetailSceneStrategy.detailPane(sceneKey = MoreKey)
-        ) {
-            Pane(isTablet = isTablet()) {
-                CompanyScreen(
-                    isFullscreen = !isTablet(),
-                    navigateUp = { topLevelBackStack.removeLast() }
-                )
+                CompanyScreen()
             }
         }
         entry<SettingsKey>(metadata = DialogSceneStrategy.dialog()) {

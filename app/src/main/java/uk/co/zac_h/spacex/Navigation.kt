@@ -1,6 +1,7 @@
 package uk.co.zac_h.spacex
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -15,9 +16,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -29,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
@@ -156,7 +162,7 @@ fun SpaceXBottomNavigationBar(
     ) {
         TopLevelNavigation.barDestinations.forEach {
             NavigationBarItem(
-                selected = selectedDestination == it,
+                selected = selectedDestination.barDestination == it,
                 onClick = {
                     navigateToTopLevelDestination(it)
                 },
@@ -213,7 +219,7 @@ fun SpaceXNavigationRail(
         ) {
             TopLevelNavigation.barDestinations.forEach { destination ->
                 NavigationRailItem(
-                    selected = selectedDestination == destination,
+                    selected = selectedDestination.barDestination == destination,
                     onClick = { navigateToTopLevelDestination(destination) },
                     icon = {
                         Icon(
@@ -273,12 +279,12 @@ private fun PermanentNavigationDrawerContentPreview() {
 }
 
 /**
- * The app's destinations, as shown in the bottom bar, navigation rail, drawers and the More list.
+ * The app's destinations, as shown in the bottom bar, navigation rail, drawers and the More sheet.
  * [key] is the Navigation 3 key each one opens, and [placement] says where it's listed and how it
  * opens.
  */
 enum class TopLevelNavigation(
-    val key: NavKey,
+    val key: NavKey?,
     @DrawableRes val icon: Int,
     val label: String,
     val placement: Placement
@@ -302,7 +308,7 @@ enum class TopLevelNavigation(
         placement = Placement.PRIMARY
     ),
     More(
-        key = MoreKey,
+        key = null,
         icon = R.drawable.ic_more_horiz,
         label = "More",
         placement = Placement.MORE
@@ -325,10 +331,10 @@ enum class TopLevelNavigation(
         /** In the bar and rail, with its own back stack. */
         PRIMARY,
 
-        /** The More tab itself: in the bar and rail, listing the secondary destinations. */
+        /** The More item in the bar and rail. It opens a sheet listing the rest, not a screen. */
         MORE,
 
-        /** Listed under More, and opened on the More tab's back stack. */
+        /** Listed under More, with its own back stack. More is highlighted while it's showing. */
         SECONDARY,
 
         /** Listed under More, and opened as a dialog over whichever destination is showing. */
@@ -337,36 +343,92 @@ enum class TopLevelNavigation(
 
     /** True for the destinations that have their own back stack. */
     val hasBackStack: Boolean
-        get() = placement == Placement.PRIMARY || placement == Placement.MORE
+        get() = placement == Placement.PRIMARY || placement == Placement.SECONDARY
+
+    /** The bar and rail item to highlight while this destination's back stack is showing. */
+    val barDestination: TopLevelNavigation
+        get() = if (placement == Placement.SECONDARY) More else this
 
     companion object {
         /** The bottom bar and navigation rail items: the primary destinations, then More. */
-        val barDestinations: List<TopLevelNavigation> = entries.filter { it.hasBackStack }
+        val barDestinations: List<TopLevelNavigation> =
+            entries.filter { it.placement == Placement.PRIMARY || it.placement == Placement.MORE }
 
         /** The destinations listed in the drawer above the More group. */
         val primaryDestinations: List<TopLevelNavigation> =
             entries.filter { it.placement == Placement.PRIMARY }
 
-        /** The destinations listed in More, and in the drawer's More group. */
+        /** The destinations listed in the More sheet, and in the drawer's More group. */
         val moreDestinations: List<TopLevelNavigation> =
             entries.filter { it.placement == Placement.SECONDARY || it.placement == Placement.DIALOG }
 
+        /** The destinations with their own back stack. */
+        val backStackDestinations: List<TopLevelNavigation> = entries.filter { it.hasBackStack }
+
         /**
-         * The destination that's showing, for highlighting: a dialog when one is open over
-         * [backStackTop], otherwise the secondary destination open on More, otherwise [route].
+         * The destination that's showing, for highlighting in the drawer and More sheet: a dialog
+         * when one is open on top of [backStackTop], otherwise [route].
          */
-        fun selected(
-            route: TopLevelNavigation,
-            backStackTop: NavKey?,
-            moreTop: NavKey?
-        ): TopLevelNavigation {
+        fun selected(route: TopLevelNavigation, backStackTop: NavKey?): TopLevelNavigation =
             entries.firstOrNull { it.placement == Placement.DIALOG && it.key == backStackTop }
-                ?.let { return it }
-            if (route == More) {
-                entries.firstOrNull { it.placement == Placement.SECONDARY && it.key == moreTop }
-                    ?.let { return it }
+                ?: route
+    }
+}
+
+/**
+ * The More sheet: the destinations that don't fit in the bottom bar or rail, such as Company and
+ * Settings. Picking one closes the sheet.
+ */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SpaceXMoreSheet(
+    selectedDestination: TopLevelNavigation,
+    navigateToTopLevelDestination: (TopLevelNavigation) -> Unit,
+    onDismiss: () -> Unit
+) {
+    ModalBottomSheet(onDismissRequest = onDismiss) {
+        SpaceXMoreSheetContent(
+            selectedDestination = selectedDestination,
+            onDestinationClick = {
+                onDismiss()
+                navigateToTopLevelDestination(it)
             }
-            return route
+        )
+    }
+}
+
+@Composable
+private fun SpaceXMoreSheetContent(
+    selectedDestination: TopLevelNavigation,
+    onDestinationClick: (TopLevelNavigation) -> Unit
+) {
+    Column(modifier = Modifier.padding(bottom = 16.dp)) {
+        TopLevelNavigation.moreDestinations.forEach { destination ->
+            ListItem(
+                modifier = Modifier.clickable { onDestinationClick(destination) },
+                headlineContent = { Text(text = destination.label) },
+                leadingContent = {
+                    Icon(painter = painterResource(destination.icon), contentDescription = null)
+                },
+                colors = if (destination == selectedDestination) {
+                    ListItemDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer
+                    )
+                } else {
+                    ListItemDefaults.colors(containerColor = Color.Transparent)
+                }
+            )
         }
+    }
+}
+
+@ComponentPreviews
+@Composable
+private fun SpaceXMoreSheetContentPreview() {
+    SpaceXTheme {
+        SpaceXMoreSheetContent(
+            selectedDestination = TopLevelNavigation.Company,
+            onDestinationClick = {}
+        )
     }
 }

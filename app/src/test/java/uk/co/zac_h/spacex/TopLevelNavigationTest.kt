@@ -19,7 +19,7 @@ class TopLevelNavigationTest {
     }
 
     @Test
-    fun `More lists Company and Settings`() {
+    fun `the More sheet lists Company and Settings`() {
         assertEquals(
             listOf(TopLevelNavigation.Company, TopLevelNavigation.Settings),
             TopLevelNavigation.moreDestinations
@@ -27,55 +27,39 @@ class TopLevelNavigationTest {
     }
 
     @Test
-    fun `a primary destination is selected as itself`() {
-        val selected = TopLevelNavigation.selected(
-            route = TopLevelNavigation.News,
-            backStackTop = NewsKey,
-            moreTop = MoreKey
+    fun `More and Settings have no back stack of their own`() {
+        assertEquals(
+            listOf(
+                TopLevelNavigation.Launches,
+                TopLevelNavigation.News,
+                TopLevelNavigation.Assets,
+                TopLevelNavigation.Company
+            ),
+            TopLevelNavigation.backStackDestinations
         )
-
-        assertEquals(TopLevelNavigation.News, selected)
     }
 
     @Test
-    fun `the More list on its own selects More`() {
-        val selected = TopLevelNavigation.selected(
-            route = TopLevelNavigation.More,
-            backStackTop = MoreKey,
-            moreTop = MoreKey
-        )
-
-        assertEquals(TopLevelNavigation.More, selected)
+    fun `More is highlighted in the bar while a destination from the sheet shows`() {
+        assertEquals(TopLevelNavigation.More, TopLevelNavigation.Company.barDestination)
+        assertEquals(TopLevelNavigation.Assets, TopLevelNavigation.Assets.barDestination)
     }
 
     @Test
-    fun `Company open on More selects Company`() {
+    fun `the destination showing is selected`() {
         val selected = TopLevelNavigation.selected(
-            route = TopLevelNavigation.More,
-            backStackTop = CompanyKey,
-            moreTop = CompanyKey
+            route = TopLevelNavigation.Company,
+            backStackTop = CompanyKey
         )
 
         assertEquals(TopLevelNavigation.Company, selected)
     }
 
     @Test
-    fun `Company left open on More isn't selected while another tab shows`() {
-        val selected = TopLevelNavigation.selected(
-            route = TopLevelNavigation.Assets,
-            backStackTop = AssetsKey,
-            moreTop = CompanyKey
-        )
-
-        assertEquals(TopLevelNavigation.Assets, selected)
-    }
-
-    @Test
     fun `the Settings dialog is selected over any destination`() {
         val selected = TopLevelNavigation.selected(
             route = TopLevelNavigation.Launches,
-            backStackTop = SettingsKey,
-            moreTop = MoreKey
+            backStackTop = SettingsKey
         )
 
         assertEquals(TopLevelNavigation.Settings, selected)
