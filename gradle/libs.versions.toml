@@ -1,6 +1,7 @@
 [versions]
 androidx-activity-compose = "1.13.0"
 androidx-navigation3 = "1.2.2"
+androidx-navigationevent = "1.1.1"
 androidx-hilt-lifecycle-viewmodel-compose = "1.4.0"
 compose = "2026.11.01"
 coil = "3.6.3"
@@ -54,6 +55,7 @@ androidx-compose-paging = { group = "androidx.paging", name = "paging-compose", 
 androidx-compose-runtime-livedata = { group = "androidx.compose.runtime", name = "runtime-livedata" }
 androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "androidx-navigation3" }
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "androidx-navigation3" }
+androidx-navigationevent-compose = { module = "androidx.navigationevent:navigationevent-compose", version.ref = "androidx-navigationevent" }
 androidx-lifecycle-viewmodel-navigation3 = { module = "androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "lifecycle" }
 androidx-compose-hilt-viewmodel = { group = "androidx.hilt", name = "hilt-lifecycle-viewmodel-compose", version.ref = "androidx-hilt-lifecycle-viewmodel-compose" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }

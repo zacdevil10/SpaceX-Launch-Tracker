@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -99,21 +100,32 @@ fun SpaceXNavigationWrapper(
 
     val topLevelBackStack = rememberTopLevelBackStack()
 
-    // Settings is a dialog over the current destination, but it's highlighted while it's open,
-    // as it was when it had its own route.
-    val selectedDestination =
-        if (topLevelBackStack.backStack.lastOrNull() == SettingsKey) {
-            TopLevelNavigation.Settings
-        } else {
-            topLevelBackStack.topLevelRoute
-        }
+    // The destination showing, or the Settings dialog when it's open over one.
+    val selectedDestination = TopLevelNavigation.selected(
+        route = topLevelBackStack.topLevelRoute,
+        backStackTop = topLevelBackStack.backStack.lastOrNull()
+    )
+
+    var showMoreSheet by rememberSaveable { mutableStateOf(false) }
 
     val navigateToTopLevelDestination: (TopLevelNavigation) -> Unit = { destination ->
-        if (destination.isDialog) {
-            topLevelBackStack.add(destination.key)
-        } else {
-            topLevelBackStack.selectTopLevel(destination)
+        when (destination.placement) {
+            TopLevelNavigation.Placement.PRIMARY,
+            TopLevelNavigation.Placement.SECONDARY -> topLevelBackStack.selectTopLevel(destination)
+
+            TopLevelNavigation.Placement.MORE -> showMoreSheet = true
+
+            TopLevelNavigation.Placement.DIALOG ->
+                destination.key?.let { topLevelBackStack.add(it) }
         }
+    }
+
+    if (showMoreSheet) {
+        SpaceXMoreSheet(
+            selectedDestination = selectedDestination,
+            navigateToTopLevelDestination = navigateToTopLevelDestination,
+            onDismiss = { showMoreSheet = false }
+        )
     }
 
     if (navigationType == NavigationType.PERMANENT_NAVIGATION_DRAWER) {
@@ -139,6 +151,7 @@ fun SpaceXNavigationWrapper(
                 SpaceXModalNavigationDrawerContent(
                     selectedDestination = selectedDestination,
                     navigateToTopLevelDestination = navigateToTopLevelDestination,
+                    drawerState = drawerState,
                     onDrawerClicked = {
                         scope.launch {
                             drawerState.close()
@@ -163,6 +176,7 @@ fun SpaceXNavigationWrapper(
                     }
                 }
             )
+            DrawerBackHandler(drawerState = drawerState)
         }
     }
 }
@@ -183,7 +197,8 @@ fun SpaceXAppContent(
         AnimatedVisibility(visible = showNavigationRail) {
             Row {
                 SpaceXNavigationRail(
-                    selectedDestination = selectedDestination,
+                    // The bar and rail highlight the tab showing, even under a dialog.
+                    selectedDestination = topLevelBackStack.topLevelRoute,
                     navigateToTopLevelDestination = navigateToTopLevelDestination,
                     onDrawerClicked = onDrawerClicked,
                     contentType = contentType
@@ -200,7 +215,7 @@ fun SpaceXAppContent(
                 val imeVisible = WindowInsets.isImeVisible
                 AnimatedVisibility(visible = navigationType == NavigationType.BOTTOM_NAVIGATION && !imeVisible) {
                     SpaceXBottomNavigationBar(
-                        selectedDestination = selectedDestination,
+                        selectedDestination = topLevelBackStack.topLevelRoute,
                         navigateToTopLevelDestination = navigateToTopLevelDestination
                     )
                 }
@@ -228,17 +243,18 @@ fun SpaceXAppContent(
 }
 
 /**
- * Remembers one Navigation 3 back stack for each top-level destination except Settings, which
- * opens as a dialog over whichever destination is showing. The back stacks and the selected
- * destination are saved, so they survive configuration changes and process death.
+ * Remembers one Navigation 3 back stack for each destination that has one: Launches, News, Assets
+ * and Company. More only opens a sheet, and Settings opens as a dialog over whichever destination
+ * is showing. The back stacks and the selected destination are saved, so they survive
+ * configuration changes and process death.
  */
 @Composable
 fun rememberTopLevelBackStack(): TopLevelBackStack<TopLevelNavigation, NavKey> {
-    val launches = rememberNavBackStack(TopLevelNavigation.Launches.key)
-    val news = rememberNavBackStack(TopLevelNavigation.News.key)
-    val assets = rememberNavBackStack(TopLevelNavigation.Assets.key)
-    val starlink = rememberNavBackStack(TopLevelNavigation.Starlink.key)
-    val company = rememberNavBackStack(TopLevelNavigation.Company.key)
+    val launches = rememberNavBackStack(LaunchesKey)
+    val news = rememberNavBackStack(NewsKey)
+    val assets = rememberNavBackStack(AssetsKey)
+    val starlink = rememberNavBackStack(StarlinkKey)
+    val company = rememberNavBackStack(CompanyKey)
     val currentRoute = rememberSaveable { mutableStateOf(TopLevelNavigation.Launches) }
 
     return remember(launches, news, assets, starlink, company, currentRoute) {
