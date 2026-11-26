@@ -243,10 +243,10 @@ fun SpaceXNavHost(
         backStack = topLevelBackStack.backStack,
         onBack = { topLevelBackStack.removeLast() },
         entryDecorators = listOf(
-            rememberSaveableStateHolderNavEntryDecorator(),
-            rememberViewModelStoreNavEntryDecorator()
+            rememberSaveableStateHolderNavEntryDecorator<NavKey>(),
+            rememberViewModelStoreNavEntryDecorator<NavKey>()
         ),
-        sceneStrategy = remember { DialogSceneStrategy() },
+        sceneStrategies = listOf(remember { DialogSceneStrategy<NavKey>() }),
         entryProvider = entryProvider {
             entry<LaunchesKey> {
                 LaunchesScreen(
