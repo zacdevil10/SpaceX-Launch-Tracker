@@ -10,6 +10,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 data object LaunchesKey : NavKey
 
+/** A launch's details, shown beside the launch list on wide screens. */
+@Serializable
+data class LaunchDetailKey(val launchId: String) : NavKey
+
 @Serializable
 data object NewsKey : NavKey
 

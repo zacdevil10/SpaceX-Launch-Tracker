@@ -54,6 +54,21 @@ class TopLevelBackStack<R : Any, T : Any>(
         if (stack.last() != entry) stack.add(entry)
     }
 
+    /**
+     * Adds [entry] on top of the current destination's stack, replacing the top entry instead when
+     * [replaces] matches it. Used for detail panes, so opening another item while one is open
+     * swaps it rather than stacking them.
+     */
+    fun addOrReplaceTop(entry: T, replaces: (T) -> Boolean) {
+        val stack = currentStack
+        val top = stack.last()
+        when {
+            top == entry -> Unit
+            stack.size > 1 && replaces(top) -> stack[stack.lastIndex] = entry
+            else -> stack.add(entry)
+        }
+    }
+
     /** Goes back one entry. */
     fun removeLast() {
         val stack = currentStack
