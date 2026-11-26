@@ -17,7 +17,12 @@ data class SatelliteFix(
 )
 
 /** A point on a ground track, [minutesFromNow] from the moment it was worked out for. */
-data class TrackPoint(val latitude: Double, val longitude: Double, val minutesFromNow: Double)
+data class TrackPoint(
+    val latitude: Double,
+    val longitude: Double,
+    val altitudeKm: Double,
+    val minutesFromNow: Double
+)
 
 /**
  * Propagates every satellite in a constellation. Satellites whose elements SGP4 can't use are kept
@@ -110,7 +115,7 @@ class Constellation(val satellites: List<Satellite>) {
             if (sgp4.propagate(minutesSince(sgp4, time), state)) {
                 val gmst = greenwichSiderealTime(time)
                 val position = temeToGeodetic(state, cos(gmst), sin(gmst))
-                points += TrackPoint(position.latitude, position.longitude, offset)
+                points += TrackPoint(position.latitude, position.longitude, position.altitudeKm, offset)
             }
             offset += stepMinutes
         }

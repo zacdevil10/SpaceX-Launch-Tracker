@@ -283,7 +283,7 @@ private fun ExpandedDetails(details: SatelliteDetails?, onShowOnGlobe: () -> Uni
             )
             Stat(
                 label = stringResource(R.string.starlink_perigee_apogee),
-                value = stringResource(R.string.starlink_perigee_apogee_value, details.shape.perigeeKm, details.shape.apogeeKm)
+                value = stringResource(R.string.starlink_perigee_apogee_value, details.lowestKm, details.highestKm)
             )
         }
         Stat(

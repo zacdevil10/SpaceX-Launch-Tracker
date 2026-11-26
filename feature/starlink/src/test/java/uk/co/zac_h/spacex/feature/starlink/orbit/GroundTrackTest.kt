@@ -38,6 +38,7 @@ class GroundTrackTest {
         assertEquals(-10.0, track.first().minutesFromNow, 1e-9)
         assertEquals(20.0, track.last().minutesFromNow, 1e-9)
         assertTrue(track.all { abs(it.latitude) <= 53.5 && it.longitude in -180.0..180.0 })
+        assertTrue(track.all { it.altitudeKm in 520.0..600.0 })
 
         // The point at "now" is where the satellite is now.
         val fix = constellation.fix(0, now)!!

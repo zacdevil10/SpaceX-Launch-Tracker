@@ -146,6 +146,15 @@ class StarlinkViewModel @Inject constructor(
                     val shape = satellite.elements.shape()
                     while (true) {
                         val now = simulation.timeAt(clock.now())
+                        val track = constellation.groundTrack(
+                            index,
+                            now,
+                            minutesBefore = shape.periodMinutes / 2,
+                            minutesAfter = shape.periodMinutes * 1.5
+                        )
+                        // Over the next full orbit, on the same oblate Earth as the altitude shown,
+                        // so the current altitude always sits between the two.
+                        val nextOrbit = track.filter { it.minutesFromNow in 0.0..shape.periodMinutes }
                         emit(
                             SatelliteDetails(
                                 noradId = satellite.noradId,
@@ -154,12 +163,9 @@ class StarlinkViewModel @Inject constructor(
                                 inclination = satellite.elements.inclination,
                                 elementsEpochMillis = satellite.elements.epochMillis,
                                 timeMillis = now,
-                                groundTrack = constellation.groundTrack(
-                                    index,
-                                    now,
-                                    minutesBefore = shape.periodMinutes / 2,
-                                    minutesAfter = shape.periodMinutes * 1.5
-                                )
+                                lowestKm = nextOrbit.minOfOrNull { it.altitudeKm } ?: shape.perigeeKm,
+                                highestKm = nextOrbit.maxOfOrNull { it.altitudeKm } ?: shape.apogeeKm,
+                                groundTrack = track
                             )
                         )
                         delay(if (simulation.speed == 1) DETAILS_INTERVAL_MILLIS else LIST_INTERVAL_FAST_MILLIS)
@@ -291,6 +297,9 @@ data class SatelliteDetails(
     val inclination: Double,
     val elementsEpochMillis: Long,
     val timeMillis: Long,
+    /** Lowest and highest altitude over the next orbit, in km. */
+    val lowestKm: Double,
+    val highestKm: Double,
     val groundTrack: List<TrackPoint>
 )
 

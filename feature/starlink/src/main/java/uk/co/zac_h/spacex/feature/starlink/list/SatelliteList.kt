@@ -11,7 +11,7 @@ enum class Shell(val label: String, private val inclinations: ClosedFloatingPoin
     Inclined43("43°", 42.0..44.0),
     Inclined53("53°", 52.5..53.5),
     Inclined70("70°", 69.0..71.0),
-    Polar("97.6° polar", 96.5..98.5),
+    Polar("Polar", 96.5..98.5),
     Other("Other", null);
 
     companion object {

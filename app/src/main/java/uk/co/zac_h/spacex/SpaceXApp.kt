@@ -4,7 +4,9 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
@@ -180,7 +182,10 @@ fun SpaceXAppContent(
             modifier = Modifier
                 .fillMaxSize(),
             bottomBar = {
-                AnimatedVisibility(visible = navigationType == NavigationType.BOTTOM_NAVIGATION) {
+                // Hidden while the keyboard is up, so a search field has room for its results.
+                @OptIn(ExperimentalLayoutApi::class)
+                val imeVisible = WindowInsets.isImeVisible
+                AnimatedVisibility(visible = navigationType == NavigationType.BOTTOM_NAVIGATION && !imeVisible) {
                     SpaceXBottomNavigationBar(
                         selectedDestination = selectedDestination,
                         navigateToTopLevelDestination = navigateToTopLevelDestination

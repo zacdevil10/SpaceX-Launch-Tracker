@@ -44,7 +44,7 @@
     <string name="starlink_inclination_value">%1$.2f°</string>
     <string name="starlink_period">Period</string>
     <string name="starlink_period_value">%1$.1f min</string>
-    <string name="starlink_perigee_apogee">Perigee / apogee</string>
+    <string name="starlink_perigee_apogee">Low / high</string>
     <string name="starlink_perigee_apogee_value">%1$.0f / %2$.0f km</string>
     <string name="starlink_elements_age">Elements</string>
     <string name="starlink_shell">Shell</string>
