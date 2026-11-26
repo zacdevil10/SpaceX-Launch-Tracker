@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import uk.co.zac_h.spacex.core.common.ListPosition
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.store.Freshness
 import uk.co.zac_h.spacex.network.toType
@@ -105,9 +106,6 @@ class LaunchesViewModel @Inject constructor(
         }
     }
 }
-
-/** A list's first visible item and how far it is scrolled. */
-data class ListPosition(val index: Int = 0, val offset: Int = 0)
 
 private data class NextLaunchRefresh(
     val isRefreshing: Boolean = false,

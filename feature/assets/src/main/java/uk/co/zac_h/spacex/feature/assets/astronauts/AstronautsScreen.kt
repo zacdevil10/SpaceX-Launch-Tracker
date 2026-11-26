@@ -29,9 +29,7 @@ fun AstronautsScreen(
     contentType: ContentType,
     viewModel: AstronautViewModel = hiltViewModel(),
     state: LazyListState,
-    expanded: Int,
-    setExpanded: (Int) -> Unit,
-    openedAsset: VehicleItem?,
+    selectedId: String?,
     onItemClick: (VehicleItem) -> Unit
 ) {
     val astronauts = viewModel.astronautLiveData.collectAsLazyPagingItems()
@@ -40,9 +38,7 @@ fun AstronautsScreen(
         astronauts = astronauts,
         contentType = contentType,
         state = state,
-        expanded = expanded,
-        setExpanded = setExpanded,
-        openedAsset = openedAsset,
+        selectedId = selectedId,
         onItemClick = onItemClick
     )
 }
@@ -53,9 +49,7 @@ fun AstronautsContent(
     astronauts: LazyPagingItems<AstronautItem>,
     contentType: ContentType,
     state: LazyListState,
-    expanded: Int,
-    setExpanded: (Int) -> Unit,
-    openedAsset: VehicleItem?,
+    selectedId: String?,
     onItemClick: (VehicleItem) -> Unit
 ) {
     NetworkVerticalListContent(
@@ -77,14 +71,10 @@ fun AstronautsContent(
                     role = astronaut.nationality,
                     title = astronaut.title,
                     agency = astronaut.agency,
-                    status = astronaut.status.status,
-                    firstFlight = astronaut.firstFlight,
-                    description = astronaut.description,
-                    expanded = contentType == ContentType.SINGLE_PANE && expanded == index,
-                    isFullscreen = contentType == ContentType.SINGLE_PANE,
-                    isSelected = openedAsset?.id == astronaut.id && contentType == ContentType.DUAL_PANE
+                    // Details open in their own screen or pane, like every other asset.
+                    expandable = false,
+                    isSelected = selectedId == astronaut.id.toString() && contentType == ContentType.DUAL_PANE
                 ) {
-                    setExpanded(if (expanded != index) index else -1)
                     onItemClick(it)
                 }
             }
@@ -103,9 +93,7 @@ fun AstronautContentSinglePanePreview(
             astronauts = MutableStateFlow(PagingData.from(astronauts)).collectAsLazyPagingItems(),
             contentType = ContentType.SINGLE_PANE,
             state = rememberLazyListState(),
-            expanded = 1,
-            setExpanded = {},
-            openedAsset = null,
+            selectedId = null,
             onItemClick = {}
         )
     }
@@ -122,9 +110,7 @@ fun AstronautContentDualPanePreview(
             astronauts = MutableStateFlow(PagingData.from(astronauts)).collectAsLazyPagingItems(),
             contentType = ContentType.DUAL_PANE,
             state = rememberLazyListState(),
-            expanded = 1,
-            setExpanded = {},
-            openedAsset = astronauts[1],
+            selectedId = astronauts[1].id.toString(),
             onItemClick = {}
         )
     }
