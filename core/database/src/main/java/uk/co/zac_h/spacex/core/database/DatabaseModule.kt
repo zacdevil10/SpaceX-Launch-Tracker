@@ -25,6 +25,12 @@ object DatabaseModule {
     fun providesLaunchDao(database: SpaceXDatabase): LaunchDao = database.launchDao()
 
     @Provides
+    fun providesListItemDao(database: SpaceXDatabase): ListItemDao = database.listItemDao()
+
+    @Provides
+    fun providesDocumentDao(database: SpaceXDatabase): DocumentDao = database.documentDao()
+
+    @Provides
     fun providesFetchMetadataDao(database: SpaceXDatabase): FetchMetadataDao =
         database.fetchMetadataDao()
 }

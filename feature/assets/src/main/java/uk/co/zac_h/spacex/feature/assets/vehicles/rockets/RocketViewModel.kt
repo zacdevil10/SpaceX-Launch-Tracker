@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.core.common.filter.FilterOrder
 import uk.co.zac_h.spacex.core.common.filter.RocketFamilyFilter
 import uk.co.zac_h.spacex.core.common.filter.RocketTypeFilter
@@ -18,8 +20,7 @@ import uk.co.zac_h.spacex.core.common.types.RocketType
 import uk.co.zac_h.spacex.core.common.utils.filterAll
 import uk.co.zac_h.spacex.core.common.utils.sortedBy
 import uk.co.zac_h.spacex.network.ApiResult
-import uk.co.zac_h.spacex.network.CachePolicy
-import uk.co.zac_h.spacex.network.get
+import uk.co.zac_h.spacex.network.withRefresh
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,8 +31,12 @@ class RocketViewModel @Inject constructor(
     private val _filter = MutableStateFlow(RocketsFilterState())
     val filter: StateFlow<RocketsFilterState> = _filter
 
-    private val _rockets: MutableStateFlow<ApiResult<List<RocketItem>>> =
-        MutableStateFlow(ApiResult.Pending)
+    private val refresh = MutableStateFlow<ApiResult<Unit>>(ApiResult.Pending)
+
+    private val _rockets: Flow<ApiResult<List<RocketItem>>> =
+        repository.agency
+            .map { agency -> agency?.let { it.launcherList?.map(::RocketItem).orEmpty() } }
+            .withRefresh(refresh)
     val rockets: Flow<ApiResult<List<RocketItem>>> = combine(_rockets, _filter) { result, filter ->
         result.map { rocketList ->
             rocketList.filterAll(
@@ -49,12 +54,10 @@ class RocketViewModel @Inject constructor(
         getRockets()
     }
 
+    /** Fetches the agency if the stored one is out of date (it holds the rockets). */
     fun getRockets() {
-        _rockets.get(viewModelScope) {
-            repository.fetch(key = "agency", cachePolicy = CachePolicy.EXPIRES).map {
-                it.launcherList?.map(::RocketItem) ?: emptyList()
-            }
-        }
+        refresh.value = ApiResult.Pending
+        viewModelScope.launch { refresh.value = repository.refreshAgency() }
     }
 
     fun filterByRocketFamily(family: RocketFamily) {
