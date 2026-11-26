@@ -23,6 +23,8 @@ class FakeLaunchDao : LaunchDao {
 
     override suspend fun getUpcoming(): List<LaunchEntity> = rows.value.values.filter { it.upcoming }
 
+    override fun observeById(id: String): Flow<LaunchEntity?> = rows.map { it[id] }
+
     override suspend fun upsertAll(launches: List<LaunchEntity>) {
         rows.value = rows.value + launches.associateBy { it.id }
     }

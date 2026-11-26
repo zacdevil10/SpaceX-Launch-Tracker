@@ -25,7 +25,7 @@ fun UpcomingLaunchesScreen(
     upcoming: ApiResult<List<LaunchItem>>,
     contentType: ContentType,
     listState: LazyListState,
-    openedLaunch: LaunchItem?,
+    selectedLaunchId: String?,
     retry: () -> Unit,
     onItemClick: (LaunchItem) -> Unit,
     nextLaunchUpdate: NextLaunchUpdate = NextLaunchUpdate(),
@@ -65,7 +65,7 @@ fun UpcomingLaunchesScreen(
                             if (position == 0) LaunchState.EXPANDED else LaunchState.COMPACT
                         }
                     },
-                    isSelected = openedLaunch?.id == launch.id && contentType == ContentType.DUAL_PANE
+                    isSelected = selectedLaunchId == launch.id && contentType == ContentType.DUAL_PANE
                 ) {
                     onItemClick(launch)
                 }
@@ -86,7 +86,7 @@ fun UpcomingLaunchesScreenPreview(
             upcoming = ApiResult.Success(launchList),
             contentType = ContentType.SINGLE_PANE,
             listState = rememberLazyListState(),
-            openedLaunch = null,
+            selectedLaunchId = null,
             retry = {},
             onItemClick = {}
         )
@@ -104,7 +104,7 @@ fun UpcomingLaunchesPendingScreenPreview() {
             upcoming = ApiResult.Pending,
             contentType = ContentType.SINGLE_PANE,
             listState = rememberLazyListState(),
-            openedLaunch = null,
+            selectedLaunchId = null,
             retry = {},
             onItemClick = {}
         )
@@ -122,7 +122,7 @@ fun UpcomingLaunchesFailureScreenPreview() {
             upcoming = ApiResult.Failure(Exception()),
             contentType = ContentType.SINGLE_PANE,
             listState = rememberLazyListState(),
-            openedLaunch = null,
+            selectedLaunchId = null,
             retry = {},
             onItemClick = {}
         )

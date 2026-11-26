@@ -2,24 +2,16 @@ package uk.co.zac_h.spacex.feature.launch
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.network.ApiResult
-import uk.co.zac_h.spacex.network.dto.news.ArticleResponse
 import uk.co.zac_h.spacex.network.store.Freshness
 import uk.co.zac_h.spacex.network.toType
 import javax.inject.Inject
@@ -28,9 +20,6 @@ import javax.inject.Inject
 class LaunchesViewModel @Inject constructor(
     private val repository: LaunchesRepository
 ) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(LaunchesUIState())
-    val uiState: StateFlow<LaunchesUIState> = _uiState
 
     private val upcomingRefresh = MutableStateFlow<ApiResult<Unit>>(ApiResult.Pending)
 
@@ -50,17 +39,6 @@ class LaunchesViewModel @Inject constructor(
 
     val previousLaunchesLiveData: Flow<PagingData<LaunchItem>> =
         repository.previousLaunches().toType(::LaunchItem).cachedIn(viewModelScope)
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val articlesFlow: Flow<PagingData<ArticleResponse>> = _uiState.flatMapLatest {
-        it.openedLaunch?.let {
-            Pager(
-                PagingConfig(pageSize = 10)
-            ) {
-                repository.articlesPagingSource(it.id)
-            }.flow
-        } ?: flowOf(PagingData.empty())
-    }
 
     private val nextLaunchRefresh = MutableStateFlow(NextLaunchRefresh())
     private var manualRefreshAllowedAt = 0L
@@ -117,17 +95,6 @@ class LaunchesViewModel @Inject constructor(
             upcomingRefresh.value = repository.refreshUpcoming(force)
         }
     }
-
-    fun setOpenedLaunch(launch: LaunchItem, contentType: ContentType) {
-        _uiState.value = LaunchesUIState(
-            openedLaunch = launch,
-            isDetailOnlyOpen = contentType == ContentType.SINGLE_PANE
-        )
-    }
-
-    fun closeDetailScreen() {
-        _uiState.value = _uiState.value.copy(isDetailOnlyOpen = false)
-    }
 }
 
 private data class NextLaunchRefresh(
@@ -141,9 +108,4 @@ data class NextLaunchUpdate(
     val isRefreshing: Boolean = false,
     /** Why the last refresh failed, or null if it succeeded. */
     val error: Throwable? = null
-)
-
-data class LaunchesUIState(
-    val openedLaunch: LaunchItem? = null,
-    val isDetailOnlyOpen: Boolean = false
 )

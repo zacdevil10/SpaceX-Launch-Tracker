@@ -17,7 +17,6 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -26,31 +25,31 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import uk.co.zac_h.spacex.core.common.ContentType
-import uk.co.zac_h.spacex.core.ui.component.SelectableContent
 import uk.co.zac_h.spacex.core.ui.component.SpaceXTabLayout
 import uk.co.zac_h.spacex.core.ui.component.SpaceXTabRowDefaults
 import uk.co.zac_h.spacex.core.ui.component.Tab
-import uk.co.zac_h.spacex.core.ui.component.TwoPane
-import uk.co.zac_h.spacex.feature.launch.container.LaunchContainerScreen
 import uk.co.zac_h.spacex.network.ApiResult
-import uk.co.zac_h.spacex.network.dto.news.ArticleResponse
 
+/**
+ * The upcoming and past launch lists.
+ *
+ * @param selectedLaunchId the launch open in the detail pane, highlighted on wide screens.
+ * @param onLaunchClick opens a launch's details.
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun LaunchesScreen(
     contentType: ContentType,
+    selectedLaunchId: String?,
+    onLaunchClick: (launchId: String) -> Unit,
     viewModel: LaunchesViewModel = hiltViewModel()
 ) {
     val upcoming by viewModel.upcomingLaunches.collectAsStateWithLifecycle(ApiResult.Pending)
     val nextLaunchUpdate by viewModel.nextLaunchUpdate.collectAsStateWithLifecycle(NextLaunchUpdate())
     val previous = viewModel.previousLaunchesLiveData.collectAsLazyPagingItems()
-    val articles = viewModel.articlesFlow.collectAsLazyPagingItems()
-
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val upcomingLazyListState = rememberLazyListState()
     val previousLazyListState = rememberLazyListState()
@@ -67,91 +66,20 @@ fun LaunchesScreen(
 
     val launchListPagerState = rememberPagerState(pageCount = { 2 })
 
-    LaunchesContent(
-        uiState = uiState,
+    LaunchListScreen(
+        modifier = Modifier.fillMaxSize(),
+        pagerState = launchListPagerState,
+        contentType = contentType,
         upcoming = upcoming,
         previous = previous,
-        articles = articles,
-        pagerState = launchListPagerState,
         upcomingLazyListState = upcomingLazyListState,
         previousLazyListState = previousLazyListState,
-        openedLaunch = uiState.openedLaunch,
+        selectedLaunchId = selectedLaunchId,
         retry = { viewModel.getUpcoming(force = true) },
-        nextLaunchUpdate = nextLaunchUpdate,
-        onRefreshNextLaunch = { viewModel.refreshNextLaunch() },
-        navigateToDetail = { launch, pane -> viewModel.setOpenedLaunch(launch, pane) },
+        onLaunchClick = { onLaunchClick(it.id) },
         scrollBehavior = scrollBehavior,
-        contentType = contentType,
-        closeDetailScreen = { viewModel.closeDetailScreen() }
-    )
-}
-
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
-@Composable
-fun LaunchesContent(
-    contentType: ContentType,
-    uiState: LaunchesUIState,
-    upcoming: ApiResult<List<LaunchItem>>,
-    previous: LazyPagingItems<LaunchItem>,
-    articles: LazyPagingItems<ArticleResponse>,
-    pagerState: PagerState,
-    upcomingLazyListState: LazyListState,
-    previousLazyListState: LazyListState,
-    openedLaunch: LaunchItem?,
-    retry: () -> Unit,
-    closeDetailScreen: () -> Unit,
-    navigateToDetail: (LaunchItem, ContentType) -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior,
-    nextLaunchUpdate: NextLaunchUpdate = NextLaunchUpdate(),
-    onRefreshNextLaunch: () -> Unit = {}
-) {
-    TwoPane(
-        modifier = Modifier
-            .fillMaxSize(),
-        first = {
-            LaunchListScreen(
-                modifier = Modifier
-                    .fillMaxSize(),
-                pagerState = pagerState,
-                contentType = contentType,
-                upcoming = upcoming,
-                previous = previous,
-                upcomingLazyListState = upcomingLazyListState,
-                previousLazyListState = previousLazyListState,
-                openedLaunch = openedLaunch,
-                retry = retry,
-                navigateToDetail = navigateToDetail,
-                scrollBehavior = scrollBehavior,
-                nextLaunchUpdate = nextLaunchUpdate,
-                onRefreshNextLaunch = onRefreshNextLaunch
-            )
-        },
-        second = {
-            SelectableContent(
-                value = uiState.openedLaunch,
-                content = {
-                    key(it.id) {
-                        LaunchContainerScreen(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            launch = it,
-                            articles = articles,
-                            isFullscreen = contentType == ContentType.SINGLE_PANE,
-                            navigateUp = closeDetailScreen
-                        )
-                    }
-                },
-                label = when (pagerState.currentPage) {
-                    0 -> if (upcoming is ApiResult.Pending) "" else "Select a launch"
-                    1 -> if (previous.loadState.refresh is LoadState.Loading) "" else "Select a launch"
-                    else -> "Select a launch"
-                }
-            )
-        },
-        isTablet = contentType == ContentType.DUAL_PANE,
-        isDetailOpen = uiState.isDetailOnlyOpen,
-        hasDetailContent = uiState.openedLaunch != null,
-        closeDetailScreen = closeDetailScreen
+        nextLaunchUpdate = nextLaunchUpdate,
+        onRefreshNextLaunch = { viewModel.refreshNextLaunch() }
     )
 }
 
@@ -165,9 +93,9 @@ fun LaunchListScreen(
     previous: LazyPagingItems<LaunchItem>,
     upcomingLazyListState: LazyListState,
     previousLazyListState: LazyListState,
-    openedLaunch: LaunchItem?,
+    selectedLaunchId: String?,
     retry: () -> Unit,
-    navigateToDetail: (LaunchItem, ContentType) -> Unit,
+    onLaunchClick: (LaunchItem) -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
     nextLaunchUpdate: NextLaunchUpdate = NextLaunchUpdate(),
     onRefreshNextLaunch: () -> Unit = {}
@@ -203,9 +131,9 @@ fun LaunchListScreen(
                     upcoming = upcoming,
                     contentType = contentType,
                     listState = upcomingLazyListState,
-                    openedLaunch = openedLaunch,
+                    selectedLaunchId = selectedLaunchId,
                     retry = retry,
-                    onItemClick = { navigateToDetail(it, ContentType.SINGLE_PANE) },
+                    onItemClick = onLaunchClick,
                     nextLaunchUpdate = nextLaunchUpdate,
                     onRefreshNextLaunch = onRefreshNextLaunch
                 )
@@ -213,8 +141,8 @@ fun LaunchListScreen(
                     previous = previous,
                     contentType = contentType,
                     listState = previousLazyListState,
-                    openedLaunch = openedLaunch,
-                    onItemClick = { navigateToDetail(it, ContentType.SINGLE_PANE) }
+                    selectedLaunchId = selectedLaunchId,
+                    onItemClick = onLaunchClick
                 )
             }
         }

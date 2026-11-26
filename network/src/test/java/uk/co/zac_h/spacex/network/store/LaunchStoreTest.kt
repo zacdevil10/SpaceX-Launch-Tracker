@@ -56,6 +56,15 @@ class LaunchStoreTest {
     }
 
     @Test
+    fun `a stored launch is found by id and an unknown one is null`() {
+        runBlocking { store.storeUpcoming(fixture) }
+        val stored = fixture.first()
+
+        assertEquals(stored, runBlocking { store.launch(stored.id).first() })
+        assertNull(runBlocking { store.launch("not-stored").first() })
+    }
+
+    @Test
     fun `upcoming launches are ordered by launch time`() {
         runBlocking {
             store.storeUpcoming(

@@ -41,6 +41,13 @@ class LaunchStore @Inject constructor(
     val upcomingLaunches: Flow<List<LaunchDetailedDto>> =
         launchDao.observeUpcoming().map { entities -> entities.mapNotNull(::decode) }
 
+    /**
+     * One stored launch, upcoming or previous, or null while it isn't stored or no longer decodes.
+     * Every launch the lists show is stored, so a launch opened from them is always found.
+     */
+    fun launch(id: String): Flow<LaunchDetailedDto?> =
+        launchDao.observeById(id).map { entity -> entity?.let(::decode) }
+
     /** When upcoming launches were last fetched, in milliseconds since the epoch. */
     val upcomingFetchedAt: Flow<Long?> = refresher.fetchedAt(UPCOMING_LAUNCHES)
 

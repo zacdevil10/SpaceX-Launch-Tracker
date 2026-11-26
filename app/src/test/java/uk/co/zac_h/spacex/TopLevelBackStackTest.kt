@@ -100,6 +100,40 @@ class TopLevelBackStackTest {
         assertEquals(listOf("home", "more"), restored.backStack)
     }
 
+    @Test
+    fun `opening a detail adds it above the list`() {
+        backStack.addOrReplaceTop("detail:1") { it.startsWith("detail:") }
+
+        assertEquals(listOf("home", "detail:1"), backStack.backStack)
+    }
+
+    @Test
+    fun `opening another detail replaces the open one`() {
+        backStack.addOrReplaceTop("detail:1") { it.startsWith("detail:") }
+        backStack.addOrReplaceTop("detail:2") { it.startsWith("detail:") }
+
+        assertEquals(listOf("home", "detail:2"), backStack.backStack)
+
+        backStack.removeLast()
+
+        assertEquals(listOf("home"), backStack.backStack)
+    }
+
+    @Test
+    fun `opening the detail already open does nothing`() {
+        backStack.addOrReplaceTop("detail:1") { it.startsWith("detail:") }
+        backStack.addOrReplaceTop("detail:1") { it.startsWith("detail:") }
+
+        assertEquals(listOf("home", "detail:1"), backStack.backStack)
+    }
+
+    @Test
+    fun `the root entry is never replaced`() {
+        backStack.addOrReplaceTop("detail:1") { true }
+
+        assertEquals(listOf("home", "detail:1"), backStack.backStack)
+    }
+
     @Test(expected = IllegalArgumentException::class)
     fun `selecting a destination without a back stack fails`() {
         TopLevelBackStack(Tab.HOME, mapOf(Tab.HOME to mutableListOf("home")), current)
