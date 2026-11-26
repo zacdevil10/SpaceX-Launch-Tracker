@@ -354,7 +354,9 @@ fun SpaceXNavHost(
             }
         }
         entry<StarlinkKey> {
-            StarlinkScreen()
+            Pane(isTablet = isTablet()) {
+                StarlinkScreen()
+            }
         }
         entry<CompanyKey> {
             Pane(isTablet = isTablet()) {
