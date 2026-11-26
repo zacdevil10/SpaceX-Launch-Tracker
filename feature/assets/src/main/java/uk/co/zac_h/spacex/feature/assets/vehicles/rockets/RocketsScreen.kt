@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.drop
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.isScrollingUp
 import uk.co.zac_h.spacex.core.common.types.Order
@@ -53,8 +54,9 @@ fun RocketsScreen(
     val sheetState = rememberBottomSheetState(initialValue = SheetValue.Hidden)
     var showBottomSheet by remember { mutableStateOf(false) }
 
-    LaunchedEffect(key1 = filter) {
-        state.animateScrollToItem(index = 0)
+    // Scroll to the top when the filter changes, but not when the list comes back on screen.
+    LaunchedEffect(viewModel) {
+        viewModel.filter.drop(1).collect { state.animateScrollToItem(index = 0) }
     }
 
     RocketsContent(

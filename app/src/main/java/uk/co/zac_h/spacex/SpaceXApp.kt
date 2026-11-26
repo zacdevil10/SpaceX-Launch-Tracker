@@ -23,15 +23,19 @@ import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneSt
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberDecoratedNavEntries
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.scene.DialogSceneStrategy
@@ -250,105 +254,133 @@ fun SpaceXNavHost(
     topLevelBackStack: TopLevelBackStack<TopLevelNavigation, NavKey>,
     contentType: ContentType
 ) {
-    val isTablet = contentType == ContentType.DUAL_PANE
+    // Entries are created once per back stack change, so they read the window's content type
+    // through state rather than capturing it.
+    val currentContentType by rememberUpdatedState(contentType)
+    fun isTablet() = currentContentType == ContentType.DUAL_PANE
 
     // Panes are drawn as cards with their own margins, so the scaffold adds no gap between them.
+    // Launches and Assets each have their own scene key, so a list from another destination lower
+    // in the back stack never joins their scene.
     val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>(
         backNavigationBehavior = BackNavigationBehavior.PopUntilCurrentDestinationChange,
         directive = calculatePaneScaffoldDirective(currentWindowAdaptiveInfoV2())
             .copy(horizontalPartitionSpacerSize = 0.dp)
     )
 
-    NavDisplay(
-        modifier = modifier,
-        backStack = topLevelBackStack.backStack,
-        onBack = { topLevelBackStack.removeLast() },
-        entryDecorators = listOf(
-            rememberSaveableStateHolderNavEntryDecorator<NavKey>(),
-            rememberViewModelStoreNavEntryDecorator<NavKey>()
-        ),
-        sceneStrategies = listOf(remember { DialogSceneStrategy<NavKey>() }, listDetailStrategy),
-        entryProvider = entryProvider {
-            entry<LaunchesKey>(
-                metadata = ListDetailSceneStrategy.listPane(
-                    detailPlaceholder = {
-                        Pane(isTablet = true) { PanePlaceholder(label = "Select a launch") }
-                    }
-                )
-            ) {
-                Pane(isTablet = isTablet) {
-                    LaunchesScreen(
-                        contentType = contentType,
-                        selectedLaunchId =
-                            (topLevelBackStack.backStack.lastOrNull() as? LaunchDetailKey)?.launchId,
-                        onLaunchClick = { launchId ->
-                            topLevelBackStack.addOrReplaceTop(LaunchDetailKey(launchId)) {
-                                it is LaunchDetailKey
-                            }
+    val provideEntry = entryProvider {
+        entry<LaunchesKey>(
+            metadata = ListDetailSceneStrategy.listPane(
+                sceneKey = LaunchesKey,
+                detailPlaceholder = {
+                    Pane(isTablet = true) { PanePlaceholder(label = "Select a launch") }
+                }
+            )
+        ) {
+            Pane(isTablet = isTablet()) {
+                LaunchesScreen(
+                    contentType = currentContentType,
+                    selectedLaunchId =
+                        (topLevelBackStack.backStack.lastOrNull() as? LaunchDetailKey)?.launchId,
+                    onLaunchClick = { launchId ->
+                        topLevelBackStack.addOrReplaceTop(LaunchDetailKey(launchId)) {
+                            it is LaunchDetailKey
                         }
-                    )
-                }
-            }
-            entry<LaunchDetailKey>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
-                Pane(isTablet = isTablet) {
-                    LaunchDetailScreen(
-                        launchId = key.launchId,
-                        isFullscreen = !isTablet,
-                        navigateUp = { topLevelBackStack.removeLast() }
-                    )
-                }
-            }
-            entry<NewsKey> {
-                NewsScreen(
-                    contentType = contentType
-                )
-            }
-            entry<AssetsKey>(
-                metadata = ListDetailSceneStrategy.listPane(
-                    detailPlaceholder = {
-                        Pane(isTablet = true) { PanePlaceholder(label = "Select an asset") }
                     }
-                )
-            ) {
-                val selected = topLevelBackStack.backStack.lastOrNull() as? VehicleDetailKey
-                Pane(isTablet = isTablet) {
-                    AssetsScreen(
-                        contentType = contentType,
-                        selectedType = selected?.type,
-                        selectedId = selected?.vehicleId,
-                        onVehicleClick = { type, vehicleId ->
-                            topLevelBackStack.addOrReplaceTop(VehicleDetailKey(type, vehicleId)) {
-                                it is VehicleDetailKey
-                            }
-                        },
-                        onCloseDetail = {
-                            if (topLevelBackStack.backStack.lastOrNull() is VehicleDetailKey) {
-                                topLevelBackStack.removeLast()
-                            }
-                        }
-                    )
-                }
-            }
-            entry<VehicleDetailKey>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
-                Pane(isTablet = isTablet) {
-                    AssetDetailScreen(
-                        type = key.type,
-                        vehicleId = key.vehicleId,
-                        isFullscreen = !isTablet,
-                        navigateUp = { topLevelBackStack.removeLast() }
-                    )
-                }
-            }
-            entry<CompanyKey> {
-                CompanyScreen(
-                    contentType = contentType
-                )
-            }
-            entry<SettingsKey>(metadata = DialogSceneStrategy.dialog()) {
-                SettingsDialog(
-                    onDismiss = { topLevelBackStack.removeLast() }
                 )
             }
         }
+        entry<LaunchDetailKey>(
+            metadata = ListDetailSceneStrategy.detailPane(sceneKey = LaunchesKey)
+        ) { key ->
+            Pane(isTablet = isTablet()) {
+                LaunchDetailScreen(
+                    launchId = key.launchId,
+                    isFullscreen = !isTablet(),
+                    navigateUp = { topLevelBackStack.removeLast() }
+                )
+            }
+        }
+        entry<NewsKey> {
+            NewsScreen(
+                contentType = currentContentType
+            )
+        }
+        entry<AssetsKey>(
+            metadata = ListDetailSceneStrategy.listPane(
+                sceneKey = AssetsKey,
+                detailPlaceholder = {
+                    Pane(isTablet = true) { PanePlaceholder(label = "Select an asset") }
+                }
+            )
+        ) {
+            val selected = topLevelBackStack.backStack.lastOrNull() as? VehicleDetailKey
+            Pane(isTablet = isTablet()) {
+                AssetsScreen(
+                    contentType = currentContentType,
+                    selectedType = selected?.type,
+                    selectedId = selected?.vehicleId,
+                    onVehicleClick = { type, vehicleId ->
+                        topLevelBackStack.addOrReplaceTop(VehicleDetailKey(type, vehicleId)) {
+                            it is VehicleDetailKey
+                        }
+                    },
+                    onCloseDetail = {
+                        if (topLevelBackStack.backStack.lastOrNull() is VehicleDetailKey) {
+                            topLevelBackStack.removeLast()
+                        }
+                    }
+                )
+            }
+        }
+        entry<VehicleDetailKey>(
+            metadata = ListDetailSceneStrategy.detailPane(sceneKey = AssetsKey)
+        ) { key ->
+            Pane(isTablet = isTablet()) {
+                AssetDetailScreen(
+                    type = key.type,
+                    vehicleId = key.vehicleId,
+                    isFullscreen = !isTablet(),
+                    navigateUp = { topLevelBackStack.removeLast() }
+                )
+            }
+        }
+        entry<CompanyKey> {
+            CompanyScreen(
+                contentType = currentContentType
+            )
+        }
+        entry<SettingsKey>(metadata = DialogSceneStrategy.dialog()) {
+            SettingsDialog(
+                onDismiss = { topLevelBackStack.removeLast() }
+            )
+        }
+    }
+
+    // Each destination's back stack is decorated on its own, so its entries keep their saved
+    // state and ViewModels while another destination is showing. They're cleared only when an
+    // entry is popped from its own back stack.
+    val entriesByRoute = topLevelBackStack.routes.associateWith { route ->
+        key(route) {
+            rememberDecoratedNavEntries(
+                backStack = topLevelBackStack.backStackOf(route),
+                entryDecorators = listOf(
+                    rememberSaveableStateHolderNavEntryDecorator(),
+                    rememberViewModelStoreNavEntryDecorator()
+                ),
+                entryProvider = provideEntry
+            )
+        }
+    }
+    val startRoute = topLevelBackStack.startRoute
+    val currentRoute = topLevelBackStack.topLevelRoute
+    val entries = entriesByRoute.getValue(startRoute) +
+        if (currentRoute != startRoute) entriesByRoute.getValue(currentRoute) else emptyList()
+
+    NavDisplay(
+        entries = entries,
+        modifier = modifier,
+        sceneStrategies = listOf(remember { DialogSceneStrategy<NavKey>() }, listDetailStrategy),
+        onBack = { topLevelBackStack.removeLast() }
     )
 }
