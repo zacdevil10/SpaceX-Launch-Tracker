@@ -16,7 +16,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfoV2
+import androidx.compose.material3.adaptive.layout.PaneExpansionAnchor
 import androidx.compose.material3.adaptive.layout.calculatePaneScaffoldDirective
+import androidx.compose.material3.adaptive.layout.rememberPaneExpansionState
 import androidx.compose.material3.adaptive.navigation.BackNavigationBehavior
 import androidx.compose.material3.adaptive.navigation3.ListDetailSceneStrategy
 import androidx.compose.material3.adaptive.navigation3.rememberListDetailSceneStrategy
@@ -276,10 +278,16 @@ fun SpaceXNavHost(
     // Panes are drawn as cards with their own margins, so the scaffold adds no gap between them.
     // Launches and Assets each have their own scene key, so a list from another destination lower
     // in the back stack never joins their scene.
+    // The list and detail panes split the width evenly, as the old two-pane layout did, rather
+    // than the scaffold's default of a fixed-width list.
     val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>(
         backNavigationBehavior = BackNavigationBehavior.PopUntilCurrentDestinationChange,
         directive = calculatePaneScaffoldDirective(currentWindowAdaptiveInfoV2())
-            .copy(horizontalPartitionSpacerSize = 0.dp)
+            .copy(horizontalPartitionSpacerSize = 0.dp),
+        paneExpansionState = rememberPaneExpansionState(
+            anchors = listOf(PaneExpansionAnchor.Proportion(0.5f)),
+            initialAnchoredIndex = 0
+        )
     )
 
     val provideEntry = entryProvider {
