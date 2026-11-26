@@ -7,11 +7,11 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.basicMarquee
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -33,9 +33,19 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import uk.co.zac_h.spacex.core.ui.component.DynamicAsyncImage
 
+/** The height of the card's photo and name row; the card is taller only when expanded. */
+private val AstronautRowHeight = 136.dp
+
+/**
+ * An astronaut's card: photo, role, name and agency.
+ *
+ * @param expandable true to show a chevron and reveal [status], [firstFlight] and [description]
+ * below the row when [expanded]. Cards that open details elsewhere instead pass false.
+ */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun Astronaut(
@@ -47,8 +57,8 @@ fun Astronaut(
     status: String? = null,
     firstFlight: String? = null,
     description: String? = null,
-    expanded: Boolean,
-    isFullscreen: Boolean = true,
+    expanded: Boolean = false,
+    expandable: Boolean = true,
     isSelected: Boolean = false,
     onClick: () -> Unit
 ) {
@@ -76,63 +86,68 @@ fun Astronaut(
         onClick = onClick
     ) {
         Column {
-            // The text sets the row's height and the photo fills it. The photo is measured after
-            // the text, at that size, so a larger cached copy of it (for example after its details
-            // screen has shown it) can't make the card grow.
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Box(modifier = Modifier.matchParentSize()) {
-                    DynamicAsyncImage(
-                        modifier = Modifier
-                            .fillMaxWidth(0.3f)
-                            .fillMaxHeight()
-                            .clip(CardDefaults.elevatedShape),
-                        model = image,
-                        contentDescription = "",
-                        placeholder = Icons.Outlined.Person,
-                        contentScale = ContentScale.Crop
-                    )
-                }
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    Spacer(modifier = Modifier.fillMaxWidth(0.3f))
-                    Column(
-                        modifier = Modifier
-                            .padding(start = 16.dp)
-                            .fillMaxWidth()
-                    ) {
-                        role?.let {
-                            Text(
-                                modifier = Modifier.padding(top = 16.dp, end = 16.dp),
-                                text = it,
-                                style = MaterialTheme.typography.labelSmall
-                            )
-                        }
-                        title?.let {
-                            Text(
-                                modifier = Modifier
-                                    .padding(top = 8.dp, end = 16.dp)
-                                    .basicMarquee(),
-                                text = it,
-                                style = MaterialTheme.typography.headlineSmall
-                            )
-                        }
-                        agency?.let {
-                            Text(
-                                modifier = Modifier
-                                    .padding(top = 8.dp, end = 16.dp)
-                                    .basicMarquee(),
-                                text = it,
-                                style = MaterialTheme.typography.labelSmall
-                            )
-                        }
-                        if (isFullscreen) Icon(
+            // A fixed height, so the card never takes its size from the photo, which can be cached
+            // larger after its details screen has shown it.
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(AstronautRowHeight)
+            ) {
+                DynamicAsyncImage(
+                    modifier = Modifier
+                        .fillMaxWidth(0.3f)
+                        .fillMaxHeight()
+                        .clip(CardDefaults.elevatedShape),
+                    model = image,
+                    contentDescription = "",
+                    placeholder = Icons.Outlined.Person,
+                    contentScale = ContentScale.Crop
+                )
+                Column(
+                    modifier = Modifier
+                        .padding(start = 16.dp)
+                        .fillMaxSize()
+                ) {
+                    role?.let {
+                        Text(
+                            modifier = Modifier.padding(top = 16.dp, end = 16.dp),
+                            text = it,
+                            style = MaterialTheme.typography.labelSmall,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                    title?.let {
+                        Text(
+                            modifier = Modifier
+                                .padding(top = 8.dp, end = 16.dp)
+                                .basicMarquee(),
+                            text = it,
+                            style = MaterialTheme.typography.headlineSmall,
+                            maxLines = 1
+                        )
+                    }
+                    agency?.let {
+                        Text(
+                            modifier = Modifier
+                                .padding(top = 8.dp, end = 16.dp)
+                                .basicMarquee(),
+                            text = it,
+                            style = MaterialTheme.typography.labelSmall,
+                            maxLines = 1
+                        )
+                    }
+                    if (expandable) {
+                        Spacer(modifier = Modifier.weight(1f))
+                        Icon(
                             modifier = Modifier
                                 .align(Alignment.End)
-                                .padding(top = 8.dp, end = 16.dp, bottom = 8.dp)
+                                .padding(end = 16.dp, bottom = 8.dp)
                                 .rotate(rotationState),
                             imageVector = Icons.Filled.KeyboardArrowDown,
                             contentDescription = "",
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        ) else Spacer(modifier = Modifier.height(32.dp))
+                        )
                     }
                 }
             }
@@ -185,7 +200,7 @@ fun AstronautCollapsedPreview(
             firstFlight = "02 Mar 19",
             description = text,
             expanded = false,
-            isFullscreen = true
+            expandable = true
         ) {}
     }
 }
@@ -206,7 +221,7 @@ fun AstronautDualPanePreview(
             firstFlight = "02 Mar 19",
             description = text,
             expanded = false,
-            isFullscreen = false
+            expandable = false
         ) {}
     }
 }
@@ -227,7 +242,7 @@ fun AstronautExpandedPreview(
             firstFlight = "02 Mar 19",
             description = text,
             expanded = true,
-            isFullscreen = true
+            expandable = true
         ) {}
     }
 }

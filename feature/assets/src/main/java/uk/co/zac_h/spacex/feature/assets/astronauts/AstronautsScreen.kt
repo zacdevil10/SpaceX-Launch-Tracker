@@ -72,8 +72,7 @@ fun AstronautsContent(
                     title = astronaut.title,
                     agency = astronaut.agency,
                     // Details open in their own screen or pane, like every other asset.
-                    expanded = false,
-                    isFullscreen = false,
+                    expandable = false,
                     isSelected = selectedId == astronaut.id.toString() && contentType == ContentType.DUAL_PANE
                 ) {
                     onItemClick(it)
