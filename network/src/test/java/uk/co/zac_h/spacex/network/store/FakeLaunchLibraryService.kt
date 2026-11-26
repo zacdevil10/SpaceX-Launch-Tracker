@@ -8,7 +8,7 @@ import uk.co.zac_h.spacex.network.launchlibrary.model.LauncherDetailedDto
 import uk.co.zac_h.spacex.network.launchlibrary.model.SpacecraftNormalDto
 import uk.co.zac_h.spacex.network.retrofit.LaunchLibraryService
 
-/** Answers upcoming launch requests from [upcoming] and records each call. */
+/** Answers Launch Library requests from the lists set on it and records each call. */
 class FakeLaunchLibraryService : LaunchLibraryService {
 
     var upcoming: List<LaunchDetailedDto> = emptyList()
@@ -54,10 +54,23 @@ class FakeLaunchLibraryService : LaunchLibraryService {
         )
     }
 
+    var launchers: List<LauncherDetailedDto> = emptyList()
+
+    /** (limit, offset) of each launchers call. */
+    val launcherCalls = mutableListOf<Pair<Int, Int>>()
+
     override suspend fun getLaunchers(
         limit: Int, offset: Int, launcherConfigManufacturerName: String, ordering: String,
         isPlaceholder: Boolean, mode: String
-    ): LaunchLibraryPaginatedResponse<LauncherDetailedDto> = unused()
+    ): LaunchLibraryPaginatedResponse<LauncherDetailedDto> {
+        launcherCalls += limit to offset
+        val results = launchers.drop(offset).take(limit)
+        return LaunchLibraryPaginatedResponse(
+            count = launchers.size,
+            next = if (offset + limit < launchers.size) "next" else null,
+            results = results
+        )
+    }
 
     override suspend fun getLaunchersForConfig(
         limit: Int, offset: Int, launcherConfigManufacturerName: String, ordering: String,
@@ -72,7 +85,13 @@ class FakeLaunchLibraryService : LaunchLibraryService {
         limit: Int, offset: Int, search: String, mode: String
     ): LaunchLibraryPaginatedResponse<AstronautEndpointNormalDto> = unused()
 
-    override suspend fun getAgency(): AgencyEndpointDetailedDto = unused()
+    var agency: AgencyEndpointDetailedDto? = null
+    var agencyCalls = 0
+
+    override suspend fun getAgency(): AgencyEndpointDetailedDto {
+        agencyCalls++
+        return checkNotNull(agency)
+    }
 
     private fun unused(): Nothing = error("Not used by these tests")
 }

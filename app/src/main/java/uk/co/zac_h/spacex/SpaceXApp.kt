@@ -17,16 +17,18 @@ import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.dialog
-import androidx.navigation.compose.rememberNavController
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.scene.DialogSceneStrategy
+import androidx.navigation3.ui.NavDisplay
 import kotlinx.coroutines.launch
 import uk.co.zac_h.feature.news.NewsScreen
 import uk.co.zac_h.spacex.core.common.ContentType
@@ -80,30 +82,40 @@ fun SpaceXNavigationWrapper(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    val navController = rememberNavController()
-    val navigationActions = remember(navController) {
-        NavigationActions(navController)
-    }
+    val topLevelBackStack = rememberTopLevelBackStack()
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    // Settings is a dialog over the current destination, but it's highlighted while it's open,
+    // as it was when it had its own route.
     val selectedDestination =
-        navBackStackEntry?.destination?.route ?: TopLevelNavigation.Launches.route
+        if (topLevelBackStack.backStack.lastOrNull() == SettingsKey) {
+            TopLevelNavigation.Settings
+        } else {
+            topLevelBackStack.topLevelRoute
+        }
+
+    val navigateToTopLevelDestination: (TopLevelNavigation) -> Unit = { destination ->
+        if (destination.isDialog) {
+            topLevelBackStack.add(destination.key)
+        } else {
+            topLevelBackStack.selectTopLevel(destination)
+        }
+    }
 
     if (navigationType == NavigationType.PERMANENT_NAVIGATION_DRAWER) {
         PermanentNavigationDrawer(
             drawerContent = {
                 SpaceXPermanentNavigationDrawerContent(
                     selectedDestination = selectedDestination,
-                    navigateToTopLevelDestination = navigationActions::navigateTo
+                    navigateToTopLevelDestination = navigateToTopLevelDestination
                 )
             }
         ) {
             SpaceXAppContent(
                 navigationType = navigationType,
                 contentType = contentType,
-                navController = navController,
+                topLevelBackStack = topLevelBackStack,
                 selectedDestination = selectedDestination,
-                navigateToTopLevelDestination = navigationActions::navigateTo
+                navigateToTopLevelDestination = navigateToTopLevelDestination
             )
         }
     } else {
@@ -111,7 +123,7 @@ fun SpaceXNavigationWrapper(
             drawerContent = {
                 SpaceXModalNavigationDrawerContent(
                     selectedDestination = selectedDestination,
-                    navigateToTopLevelDestination = navigationActions::navigateTo,
+                    navigateToTopLevelDestination = navigateToTopLevelDestination,
                     onDrawerClicked = {
                         scope.launch {
                             drawerState.close()
@@ -122,14 +134,14 @@ fun SpaceXNavigationWrapper(
             drawerState = drawerState,
             // Horizontal drags on the Starlink globe turn it, so the edge swipe mustn't open the
             // drawer there. The drawer can still be closed by swiping while it's open.
-            gesturesEnabled = drawerState.isOpen || selectedDestination != TopLevelNavigation.Starlink.route
+            gesturesEnabled = drawerState.isOpen || selectedDestination != TopLevelNavigation.Starlink
         ) {
             SpaceXAppContent(
                 navigationType = navigationType,
                 contentType = contentType,
-                navController = navController,
+                topLevelBackStack = topLevelBackStack,
                 selectedDestination = selectedDestination,
-                navigateToTopLevelDestination = navigationActions::navigateTo,
+                navigateToTopLevelDestination = navigateToTopLevelDestination,
                 onDrawerClicked = {
                     scope.launch {
                         drawerState.open()
@@ -145,8 +157,8 @@ fun SpaceXAppContent(
     modifier: Modifier = Modifier,
     navigationType: NavigationType,
     contentType: ContentType,
-    navController: NavHostController,
-    selectedDestination: String,
+    topLevelBackStack: TopLevelBackStack<TopLevelNavigation, NavKey>,
+    selectedDestination: TopLevelNavigation,
     navigateToTopLevelDestination: (TopLevelNavigation) -> Unit,
     onDrawerClicked: () -> Unit = {}
 ) {
@@ -190,51 +202,86 @@ fun SpaceXAppContent(
                 modifier = Modifier
                     .padding(it)
                     .consumeWindowInsets(it),
-                navController = navController,
+                topLevelBackStack = topLevelBackStack,
                 contentType = contentType
             )
         }
     }
 }
 
+/**
+ * Remembers one Navigation 3 back stack for each top-level destination except Settings, which
+ * opens as a dialog over whichever destination is showing. The back stacks and the selected
+ * destination are saved, so they survive configuration changes and process death.
+ */
+@Composable
+fun rememberTopLevelBackStack(): TopLevelBackStack<TopLevelNavigation, NavKey> {
+    val launches = rememberNavBackStack(TopLevelNavigation.Launches.key)
+    val news = rememberNavBackStack(TopLevelNavigation.News.key)
+    val assets = rememberNavBackStack(TopLevelNavigation.Assets.key)
+    val starlink = rememberNavBackStack(TopLevelNavigation.Starlink.key)
+    val company = rememberNavBackStack(TopLevelNavigation.Company.key)
+    val currentRoute = rememberSaveable { mutableStateOf(TopLevelNavigation.Launches) }
+
+    return remember(launches, news, assets, starlink, company, currentRoute) {
+        TopLevelBackStack(
+            startRoute = TopLevelNavigation.Launches,
+            stacks = mapOf(
+                TopLevelNavigation.Launches to launches,
+                TopLevelNavigation.News to news,
+                TopLevelNavigation.Assets to assets,
+                TopLevelNavigation.Starlink to starlink,
+                TopLevelNavigation.Company to company
+            ),
+            currentRoute = currentRoute
+        )
+    }
+}
+
 @Composable
 fun SpaceXNavHost(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
+    topLevelBackStack: TopLevelBackStack<TopLevelNavigation, NavKey>,
     contentType: ContentType
 ) {
-    NavHost(
+    NavDisplay(
         modifier = modifier,
-        navController = navController,
-        startDestination = TopLevelNavigation.Launches.route
-    ) {
-        composable(TopLevelNavigation.Launches.route) {
-            LaunchesScreen(
-                contentType = contentType
-            )
+        backStack = topLevelBackStack.backStack,
+        onBack = { topLevelBackStack.removeLast() },
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator<NavKey>(),
+            rememberViewModelStoreNavEntryDecorator<NavKey>()
+        ),
+        sceneStrategies = listOf(remember { DialogSceneStrategy<NavKey>() }),
+        entryProvider = entryProvider {
+            entry<LaunchesKey> {
+                LaunchesScreen(
+                    contentType = contentType
+                )
+            }
+            entry<NewsKey> {
+                NewsScreen(
+                    contentType = contentType
+                )
+            }
+            entry<AssetsKey> {
+                AssetsScreen(
+                    contentType = contentType
+                )
+            }
+            entry<StarlinkKey> {
+                StarlinkScreen()
+            }
+            entry<CompanyKey> {
+                CompanyScreen(
+                    contentType = contentType
+                )
+            }
+            entry<SettingsKey>(metadata = DialogSceneStrategy.dialog()) {
+                SettingsDialog(
+                    onDismiss = { topLevelBackStack.removeLast() }
+                )
+            }
         }
-        composable(TopLevelNavigation.News.route) {
-            NewsScreen(
-                contentType = contentType
-            )
-        }
-        composable(TopLevelNavigation.Assets.route) {
-            AssetsScreen(
-                contentType = contentType
-            )
-        }
-        composable(TopLevelNavigation.Starlink.route) {
-            StarlinkScreen()
-        }
-        composable(TopLevelNavigation.Company.route) {
-            CompanyScreen(
-                contentType = contentType
-            )
-        }
-        dialog(TopLevelNavigation.Settings.route) {
-            SettingsDialog(
-                onDismiss = { navController.popBackStack() }
-            )
-        }
-    }
+    )
 }

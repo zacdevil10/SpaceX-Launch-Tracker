@@ -1,14 +1,15 @@
 package uk.co.zac_h.spacex.feature.assets.astronauts
 
-import uk.co.zac_h.spacex.network.datasource.remote.AstronautPagingSource
-import uk.co.zac_h.spacex.network.retrofit.LaunchLibraryClient
-import uk.co.zac_h.spacex.network.retrofit.LaunchLibraryService
+import androidx.paging.PagingData
+import kotlinx.coroutines.flow.Flow
+import uk.co.zac_h.spacex.network.launchlibrary.model.AstronautEndpointNormalDto
+import uk.co.zac_h.spacex.network.store.AssetStore
 import javax.inject.Inject
 
 class AstronautRepository @Inject constructor(
-    @LaunchLibraryClient private val httpService: LaunchLibraryService
+    private val assetStore: AssetStore
 ) {
 
-    val astronautPagingSource: AstronautPagingSource
-        get() = AstronautPagingSource(httpService)
+    /** Stored astronauts, fetching each page once and the list again only once it is out of date. */
+    fun astronauts(): Flow<PagingData<AstronautEndpointNormalDto>> = assetStore.astronauts()
 }

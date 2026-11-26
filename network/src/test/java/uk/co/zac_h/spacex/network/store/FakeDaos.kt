@@ -4,10 +4,14 @@ import androidx.paging.PagingSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
+import uk.co.zac_h.spacex.core.database.DocumentDao
+import uk.co.zac_h.spacex.core.database.DocumentEntity
 import uk.co.zac_h.spacex.core.database.FetchMetadataDao
 import uk.co.zac_h.spacex.core.database.FetchMetadataEntity
 import uk.co.zac_h.spacex.core.database.LaunchDao
 import uk.co.zac_h.spacex.core.database.LaunchEntity
+import uk.co.zac_h.spacex.core.database.ListItemDao
+import uk.co.zac_h.spacex.core.database.ListItemEntity
 import uk.co.zac_h.spacex.core.database.StarlinkDao
 import uk.co.zac_h.spacex.core.database.StarlinkSatelliteEntity
 
@@ -67,5 +71,36 @@ class FakeStarlinkDao : StarlinkDao {
 
     override suspend fun deleteAll() {
         rows.value = emptyList()
+    }
+}
+
+class FakeListItemDao : ListItemDao {
+    val rows = MutableStateFlow<Map<Pair<String, String>, ListItemEntity>>(emptyMap())
+
+    override fun pagingSource(list: String): PagingSource<Int, ListItemEntity> =
+        error("Paging reads are Room's job; tests read rows directly")
+
+    override suspend fun count(list: String): Int = rows.value.keys.count { it.first == list }
+
+    override suspend fun upsertAll(items: List<ListItemEntity>) {
+        rows.value = rows.value + items.associateBy { it.list to it.id }
+    }
+
+    override suspend fun deleteList(list: String) {
+        rows.value = rows.value.filterKeys { it.first != list }
+    }
+
+    /** The ids stored under [list], in the order the list shows them. */
+    fun ids(list: String): List<String> =
+        rows.value.values.filter { it.list == list }.sortedBy { it.position }.map { it.id }
+}
+
+class FakeDocumentDao : DocumentDao {
+    val rows = MutableStateFlow<Map<String, DocumentEntity>>(emptyMap())
+
+    override fun observe(key: String): Flow<DocumentEntity?> = rows.map { it[key] }
+
+    override suspend fun upsert(document: DocumentEntity) {
+        rows.value = rows.value + (document.key to document)
     }
 }
