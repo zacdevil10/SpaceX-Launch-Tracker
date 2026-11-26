@@ -58,12 +58,24 @@ private fun DrawScope.drawTrack(points: List<TrackPoint>, color: Color, stroke: 
     val path = Path()
     points.forEachIndexed { index, point ->
         val offset = project(point)
-        // Crossing the antimeridian: start a new line on the other edge rather than drawing
-        // one across the whole map.
-        if (index == 0 || abs(point.longitude - points[index - 1].longitude) > 180) {
-            path.moveTo(offset.x, offset.y)
-        } else {
-            path.lineTo(offset.x, offset.y)
+        val previous = points.getOrNull(index - 1)
+        when {
+            previous == null -> path.moveTo(offset.x, offset.y)
+            abs(point.longitude - previous.longitude) > 180 -> {
+                // Crossing the antimeridian: run the line to the map's edge, then carry on from
+                // the opposite edge, rather than drawing it back across the whole map.
+                val eastward = point.longitude < previous.longitude
+                val unwrapped = point.longitude + if (eastward) 360 else -360
+                val edge = if (eastward) 180.0 else -180.0
+                val fraction = (edge - previous.longitude) / (unwrapped - previous.longitude)
+                val latitude = previous.latitude + (point.latitude - previous.latitude) * fraction
+                val exit = project(TrackPoint(latitude, edge, 0.0, 0.0))
+                val entry = project(TrackPoint(latitude, -edge, 0.0, 0.0))
+                path.lineTo(exit.x, exit.y)
+                path.moveTo(entry.x, entry.y)
+                path.lineTo(offset.x, offset.y)
+            }
+            else -> path.lineTo(offset.x, offset.y)
         }
     }
     drawPath(path, color, style = stroke)

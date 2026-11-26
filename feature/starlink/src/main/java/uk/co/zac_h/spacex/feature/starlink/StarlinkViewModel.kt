@@ -150,11 +150,11 @@ class StarlinkViewModel @Inject constructor(
                             index,
                             now,
                             minutesBefore = shape.periodMinutes / 2,
-                            minutesAfter = shape.periodMinutes * 1.5
+                            minutesAfter = shape.periodMinutes / 2
                         )
-                        // Over the next full orbit, on the same oblate Earth as the altitude shown,
-                        // so the current altitude always sits between the two.
-                        val nextOrbit = track.filter { it.minutesFromNow in 0.0..shape.periodMinutes }
+                        // The track is exactly one orbit, measured on the same oblate Earth as the
+                        // altitude shown, so the current altitude always sits between the two.
+                        val nextOrbit = track
                         emit(
                             SatelliteDetails(
                                 noradId = satellite.noradId,
@@ -297,7 +297,7 @@ data class SatelliteDetails(
     val inclination: Double,
     val elementsEpochMillis: Long,
     val timeMillis: Long,
-    /** Lowest and highest altitude over the next orbit, in km. */
+    /** Lowest and highest altitude over the orbit around now, in km. */
     val lowestKm: Double,
     val highestKm: Double,
     val groundTrack: List<TrackPoint>

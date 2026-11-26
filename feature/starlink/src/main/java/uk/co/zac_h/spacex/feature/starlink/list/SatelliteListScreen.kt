@@ -297,7 +297,8 @@ private fun ExpandedDetails(details: SatelliteDetails?, onShowOnGlobe: () -> Uni
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             GroundTrackMap(track = details.groundTrack, modifier = Modifier.fillMaxWidth())
             Text(
-                text = stringResource(R.string.starlink_ground_track),
+                // The Earth turns 360° in a sidereal day, so each orbit's track lands this far west.
+                text = stringResource(R.string.starlink_ground_track, details.shape.periodMinutes * 360 / SIDEREAL_DAY_MINUTES),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -385,3 +386,5 @@ private fun CountryRow(name: String, count: Int?, selected: Boolean, onClick: ()
         }
     }
 }
+
+private const val SIDEREAL_DAY_MINUTES = 1436.07

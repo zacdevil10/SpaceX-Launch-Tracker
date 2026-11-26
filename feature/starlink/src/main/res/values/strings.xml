@@ -48,6 +48,6 @@
     <string name="starlink_perigee_apogee_value">%1$.0f / %2$.0f km</string>
     <string name="starlink_elements_age">Elements</string>
     <string name="starlink_shell">Shell</string>
-    <string name="starlink_ground_track">Ground track: last half orbit faded, next 1½ orbits in orange</string>
+    <string name="starlink_ground_track">One orbit: the last half faded, the next half in orange. The ends don\'t meet because the Earth turns %1$.0f° under the satellite each orbit.</string>
     <string name="starlink_show_on_globe">Show on 3D globe</string>
 </resources>
