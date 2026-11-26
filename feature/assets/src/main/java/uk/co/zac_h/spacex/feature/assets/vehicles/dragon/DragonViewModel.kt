@@ -7,14 +7,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.core.common.filter.FilterOrder
 import uk.co.zac_h.spacex.core.common.filter.toFilter
 import uk.co.zac_h.spacex.core.common.types.Order
 import uk.co.zac_h.spacex.core.common.utils.sortedBy
 import uk.co.zac_h.spacex.network.ApiResult
-import uk.co.zac_h.spacex.network.CachePolicy
-import uk.co.zac_h.spacex.network.get
+import uk.co.zac_h.spacex.network.withRefresh
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,8 +26,11 @@ class DragonViewModel @Inject constructor(
     private val _filter = MutableStateFlow(DragonFilterState())
     val filter: StateFlow<DragonFilterState> = _filter
 
-    private val _dragons: MutableStateFlow<ApiResult<List<SecondStageItem>>> =
-        MutableStateFlow(ApiResult.Pending)
+    private val refresh = MutableStateFlow<ApiResult<Unit>>(ApiResult.Pending)
+
+    private val _dragons: Flow<ApiResult<List<SecondStageItem>>> = repository.agency
+        .map { agency -> agency?.let { it.spacecraftList?.map(::SecondStageItem).orEmpty() } }
+        .withRefresh(refresh)
     val dragons: Flow<ApiResult<List<SecondStageItem>>> =
         combine(_dragons, _filter) { result, filter ->
             result.map { dragonList ->
@@ -38,12 +42,10 @@ class DragonViewModel @Inject constructor(
         getDragons()
     }
 
+    /** Fetches the agency if the stored one is out of date (it holds the Dragon spacecraft). */
     fun getDragons() {
-        _dragons.get(viewModelScope) {
-            repository.fetch(key = "agency", cachePolicy = CachePolicy.REFRESH).map {
-                it.spacecraftList?.map(::SecondStageItem) ?: emptyList()
-            }
-        }
+        refresh.value = ApiResult.Pending
+        viewModelScope.launch { refresh.value = repository.refreshAgency() }
     }
 
     fun updateOrder(order: Order) {

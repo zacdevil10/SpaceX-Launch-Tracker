@@ -29,8 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation3.runtime.NavKey
 import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.R
 import uk.co.zac_h.spacex.core.ui.ComponentPreviews
@@ -41,7 +40,7 @@ import uk.co.zac_h.spacex.core.ui.component.SpaceXNavDrawerItem
 @Composable
 fun SpaceXPermanentNavigationDrawerContent(
     modifier: Modifier = Modifier,
-    selectedDestination: String,
+    selectedDestination: TopLevelNavigation,
     navigateToTopLevelDestination: (TopLevelNavigation) -> Unit
 ) {
     PermanentDrawerSheet(
@@ -61,7 +60,7 @@ fun SpaceXPermanentNavigationDrawerContent(
             ) {
                 TopLevelNavigation.entries.forEach { destination ->
                     SpaceXNavDrawerItem(
-                        selected = selectedDestination == destination.route,
+                        selected = selectedDestination == destination,
                         label = destination.label,
                         icon = destination.icon,
                         navigateToTopLevelDestination = {
@@ -77,7 +76,7 @@ fun SpaceXPermanentNavigationDrawerContent(
 @Composable
 fun SpaceXModalNavigationDrawerContent(
     modifier: Modifier = Modifier,
-    selectedDestination: String,
+    selectedDestination: TopLevelNavigation,
     navigateToTopLevelDestination: (TopLevelNavigation) -> Unit,
     onDrawerClicked: () -> Unit = {}
 ) {
@@ -102,7 +101,7 @@ fun SpaceXModalNavigationDrawerContent(
             ) {
                 TopLevelNavigation.entries.forEach { destination ->
                     SpaceXNavDrawerItem(
-                        selected = selectedDestination == destination.route,
+                        selected = selectedDestination == destination,
                         label = destination.label,
                         icon = destination.icon,
                         navigateToTopLevelDestination = {
@@ -118,7 +117,7 @@ fun SpaceXModalNavigationDrawerContent(
 
 @Composable
 fun SpaceXBottomNavigationBar(
-    selectedDestination: String,
+    selectedDestination: TopLevelNavigation,
     navigateToTopLevelDestination: (TopLevelNavigation) -> Unit
 ) {
     NavigationBar(
@@ -130,7 +129,7 @@ fun SpaceXBottomNavigationBar(
     ) {
         TopLevelNavigation.entries.forEach {
             NavigationBarItem(
-                selected = selectedDestination == it.route,
+                selected = selectedDestination == it,
                 onClick = {
                     navigateToTopLevelDestination(it)
                 },
@@ -147,7 +146,7 @@ fun SpaceXBottomNavigationBar(
 
 @Composable
 fun SpaceXNavigationRail(
-    selectedDestination: String,
+    selectedDestination: TopLevelNavigation,
     navigateToTopLevelDestination: (TopLevelNavigation) -> Unit,
     onDrawerClicked: () -> Unit = {},
     contentType: ContentType
@@ -187,7 +186,7 @@ fun SpaceXNavigationRail(
         ) {
             TopLevelNavigation.entries.forEach { destination ->
                 NavigationRailItem(
-                    selected = selectedDestination == destination.route,
+                    selected = selectedDestination == destination,
                     onClick = { navigateToTopLevelDestination(destination) },
                     icon = {
                         Icon(
@@ -206,7 +205,7 @@ fun SpaceXNavigationRail(
 private fun SpaceXBottomNavigationBarPreview() {
     SpaceXTheme {
         SpaceXBottomNavigationBar(
-            selectedDestination = TopLevelNavigation.Launches.route,
+            selectedDestination = TopLevelNavigation.Launches,
             navigateToTopLevelDestination = {}
         )
     }
@@ -217,7 +216,7 @@ private fun SpaceXBottomNavigationBarPreview() {
 fun SpaceXNavigationRailPreview() {
     SpaceXTheme {
         SpaceXNavigationRail(
-            selectedDestination = TopLevelNavigation.Launches.route,
+            selectedDestination = TopLevelNavigation.Launches,
             navigateToTopLevelDestination = {},
             contentType = ContentType.SINGLE_PANE
         )
@@ -229,7 +228,7 @@ fun SpaceXNavigationRailPreview() {
 private fun SpaceXModalNavigationDrawerContentPreview() {
     SpaceXTheme {
         SpaceXModalNavigationDrawerContent(
-            selectedDestination = TopLevelNavigation.Launches.route,
+            selectedDestination = TopLevelNavigation.Launches,
             navigateToTopLevelDestination = {}
         )
     }
@@ -240,49 +239,47 @@ private fun SpaceXModalNavigationDrawerContentPreview() {
 private fun PermanentNavigationDrawerContentPreview() {
     SpaceXTheme {
         SpaceXPermanentNavigationDrawerContent(
-            selectedDestination = TopLevelNavigation.Launches.route,
+            selectedDestination = TopLevelNavigation.Launches,
             navigateToTopLevelDestination = {}
         )
     }
 }
 
-class NavigationActions(private val navController: NavController) {
-
-    fun navigateTo(destination: TopLevelNavigation) {
-        navController.navigate(destination.route) {
-            popUpTo(navController.graph.findStartDestination().id) {
-                saveState = true
-            }
-            launchSingleTop = true
-            restoreState = true
-        }
-    }
-}
-
-enum class TopLevelNavigation(val route: String, @DrawableRes val icon: Int, val label: String) {
+/**
+ * The destinations shown in the bottom bar, navigation rail and drawers. [key] is the Navigation 3
+ * key each one opens. Settings opens as a dialog over the current destination instead of switching
+ * to its own back stack; see [isDialog].
+ */
+enum class TopLevelNavigation(
+    val key: NavKey,
+    @DrawableRes val icon: Int,
+    val label: String,
+    val isDialog: Boolean = false
+) {
     Launches(
-        route = "launches",
+        key = LaunchesKey,
         icon = R.drawable.ic_calendar_plus,
         label = "Launches"
     ),
     News(
-        route = "news",
+        key = NewsKey,
         icon = R.drawable.ic_newspaper,
         label = "News"
     ),
     Assets(
-        route = "assets",
+        key = AssetsKey,
         icon = R.drawable.ic_rocket,
         label = "Assets"
     ),
     Company(
-        route = "company",
+        key = CompanyKey,
         icon = R.drawable.ic_baseline_domain_24,
         label = "Company"
     ),
     Settings(
-        route = "settings",
+        key = SettingsKey,
         icon = R.drawable.ic_baseline_settings_24,
-        label = "Settings"
+        label = "Settings",
+        isDialog = true
     )
 }

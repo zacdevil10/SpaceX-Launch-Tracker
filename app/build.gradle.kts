@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -80,7 +81,12 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
 
-    implementation(libs.androidx.compose.navigation)
+    // Navigation 3
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+
+    testImplementation(libs.junit)
 
     //Debug tools menu (debug builds only)
     debugImplementation(libs.androidx.compose.hilt.viewmodel)
