@@ -30,10 +30,16 @@ interface LaunchLibraryService {
         @Query("status__ids") statusIds: String? = null
     ): LaunchLibraryPaginatedResponse<LaunchDetailedDto>
 
+    /**
+     * Previous launches, most recent first. Pass [netLt] to fetch only launches older than the
+     * oldest stored one, or [lastUpdatedGte] to fetch only launches changed since the last sync
+     * (both ISO 8601), so stored launches are never fetched again.
+     */
     @GET(SPACEX_PREVIOUS_LAUNCHES)
     suspend fun getPreviousLaunches(
         @Query("limit") limit: Int,
-        @Query("offset") offset: Int,
+        @Query("net__lt") netLt: String? = null,
+        @Query("last_updated__gte") lastUpdatedGte: String? = null,
         @Query("search") search: String = "SpaceX",
         @Query("mode") mode: String = "detailed"
     ): LaunchLibraryPaginatedResponse<LaunchDetailedDto>

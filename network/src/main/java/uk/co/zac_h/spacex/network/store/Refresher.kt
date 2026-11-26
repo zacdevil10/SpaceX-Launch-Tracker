@@ -8,7 +8,7 @@ import retrofit2.HttpException
 import uk.co.zac_h.spacex.core.database.FetchMetadataDao
 import uk.co.zac_h.spacex.core.database.FetchMetadataEntity
 import uk.co.zac_h.spacex.network.ApiResult
-import uk.co.zac_h.spacex.network.toApiException
+import uk.co.zac_h.spacex.network.toApiException as httpToApiException
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -59,10 +59,12 @@ class Refresher @Inject constructor(
             ApiResult.Success(Unit)
         } catch (e: CancellationException) {
             throw e
-        } catch (e: HttpException) {
-            ApiResult.Failure(e.toApiException())
         } catch (e: Exception) {
-            ApiResult.Failure(e)
+            ApiResult.Failure(e.toApiException())
         }
     }
 }
+
+/** Turns a failed call into the exception the screens show, reading the wait from a 429. */
+internal fun Exception.toApiException(): Exception =
+    if (this is HttpException) httpToApiException() else this

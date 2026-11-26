@@ -13,6 +13,9 @@ import kotlin.time.Duration.Companion.seconds
 object Freshness {
     val UPCOMING_LAUNCHES: Duration = 15.minutes
 
+    /** How often to ask for previous launches that changed (newly completed, or corrected). */
+    val PREVIOUS_LAUNCHES: Duration = 1.hours
+
     /** The next launch is kept as current as possible: refetched on open if older than this. */
     val NEXT_LAUNCH: Duration = 1.minutes
 

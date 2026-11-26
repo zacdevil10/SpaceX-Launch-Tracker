@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.network.store
 
+import androidx.paging.PagingSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -27,6 +28,20 @@ class FakeLaunchDao : LaunchDao {
     override suspend fun deleteByIds(ids: List<String>) {
         rows.value = rows.value - ids.toSet()
     }
+
+    override fun previousPagingSource(): PagingSource<Int, LaunchEntity> =
+        error("Paging reads are Room's job; tests read rows directly")
+
+    override suspend fun oldestPreviousNet(): Long? =
+        rows.value.values.filter { !it.upcoming }.mapNotNull { it.net }.minOrNull()
+
+    override suspend fun deletePrevious() {
+        rows.value = rows.value.filterValues { it.upcoming }
+    }
+
+    /** Previous launch ids, most recent first, as the list would show them. */
+    fun previousIds(): List<String> = rows.value.values.filter { !it.upcoming }
+        .sortedByDescending { it.net }.map { it.id }
 }
 
 class FakeFetchMetadataDao : FetchMetadataDao {
