@@ -27,7 +27,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.drop
-import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.isScrollingUp
 import uk.co.zac_h.spacex.core.common.types.Order
 import uk.co.zac_h.spacex.core.common.types.RocketFamily
@@ -42,7 +41,6 @@ import uk.co.zac_h.spacex.network.ApiResult
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RocketsScreen(
-    contentType: ContentType,
     viewModel: RocketViewModel = hiltViewModel(),
     selectedId: String?,
     state: LazyListState,
@@ -61,7 +59,6 @@ fun RocketsScreen(
 
     RocketsContent(
         rockets = rockets,
-        contentType = contentType,
         state = state,
         retry = { viewModel.getRockets() },
         showBottomSheet = showBottomSheet,
@@ -82,7 +79,6 @@ fun RocketsScreen(
 fun RocketsContent(
     modifier: Modifier = Modifier,
     rockets: ApiResult<List<VehicleItem>>,
-    contentType: ContentType,
     state: LazyListState,
     retry: () -> Unit,
     showBottomSheet: Boolean,
@@ -122,7 +118,6 @@ fun RocketsContent(
             modifier = modifier
                 .padding(contentPadding),
             vehicles = rockets,
-            contentType = contentType,
             state = state,
             selectedId = selectedId,
             retry = { retry() },

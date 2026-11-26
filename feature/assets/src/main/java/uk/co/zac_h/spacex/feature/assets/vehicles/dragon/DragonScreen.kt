@@ -27,7 +27,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.drop
-import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.isScrollingUp
 import uk.co.zac_h.spacex.core.common.types.Order
 import uk.co.zac_h.spacex.core.ui.FilterRow
@@ -40,7 +39,6 @@ import uk.co.zac_h.spacex.network.ApiResult
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DragonScreen(
-    contentType: ContentType,
     viewModel: DragonViewModel = hiltViewModel(),
     selectedId: String?,
     state: LazyListState,
@@ -59,7 +57,6 @@ fun DragonScreen(
 
     DragonContent(
         dragons = dragons,
-        contentType = contentType,
         state = state,
         retry = { viewModel.getDragons() },
         showBottomSheet = showBottomSheet,
@@ -78,7 +75,6 @@ fun DragonScreen(
 fun DragonContent(
     modifier: Modifier = Modifier,
     dragons: ApiResult<List<VehicleItem>>,
-    contentType: ContentType,
     state: LazyListState,
     retry: () -> Unit,
     showBottomSheet: Boolean,
@@ -116,7 +112,6 @@ fun DragonContent(
             modifier = modifier
                 .padding(contentPadding),
             vehicles = dragons,
-            contentType = contentType,
             state = state,
             selectedId = selectedId,
             retry = { retry() },

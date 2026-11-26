@@ -4,13 +4,11 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.runtime.Composable
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
-import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehiclePaginatedList
 
 @Composable
 fun SpacecraftScreen(
-    contentType: ContentType,
     viewModel: SpacecraftViewModel = hiltViewModel(),
     selectedId: String?,
     state: LazyListState,
@@ -20,7 +18,6 @@ fun SpacecraftScreen(
 
     VehiclePaginatedList(
         vehicles = spacecraft,
-        contentType = contentType,
         state = state,
         selectedId = selectedId,
         navigate = onItemClick

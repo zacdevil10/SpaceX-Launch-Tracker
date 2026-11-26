@@ -6,19 +6,20 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.rememberLazyStaggeredGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
-import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.NetworkContent
 import uk.co.zac_h.spacex.core.common.pagingFooter
 import uk.co.zac_h.spacex.core.common.utils.convertDate
 import uk.co.zac_h.spacex.core.common.utils.toMillis
 import uk.co.zac_h.spacex.core.ui.Article
 
+private val ArticleMinWidth = 360.dp
+
 @Composable
 fun ArticlesScreen(
-    contentType: ContentType,
     viewModel: ArticlesViewModel = hiltViewModel()
 ) {
     val articles = viewModel.articlesLiveData.collectAsLazyPagingItems()
@@ -30,12 +31,8 @@ fun ArticlesScreen(
         result = articles
     ) {
         LazyVerticalStaggeredGrid(
-            columns = StaggeredGridCells.Fixed(
-                when (contentType) {
-                    ContentType.SINGLE_PANE -> 1
-                    ContentType.DUAL_PANE -> 2
-                }
-            ),
+            // One column on phones, more as the window widens.
+            columns = StaggeredGridCells.Adaptive(minSize = ArticleMinWidth),
             state = articlesLazyListState
         ) {
             items(
