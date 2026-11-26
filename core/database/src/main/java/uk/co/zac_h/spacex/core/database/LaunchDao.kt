@@ -16,6 +16,10 @@ interface LaunchDao {
     @Query("SELECT * FROM launches WHERE upcoming = 1")
     suspend fun getUpcoming(): List<LaunchEntity>
 
+    /** One launch, upcoming or previous, or null while it isn't stored. */
+    @Query("SELECT * FROM launches WHERE id = :id")
+    fun observeById(id: String): Flow<LaunchEntity?>
+
     /** Previous launches, most recent first, read page by page as the list scrolls. */
     @Query("SELECT * FROM launches WHERE upcoming = 0 ORDER BY net IS NULL, net DESC")
     fun previousPagingSource(): PagingSource<Int, LaunchEntity>

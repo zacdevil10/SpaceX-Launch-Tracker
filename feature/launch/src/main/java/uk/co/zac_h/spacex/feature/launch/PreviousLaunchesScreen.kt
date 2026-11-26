@@ -31,7 +31,7 @@ fun PreviousLaunchesScreen(
     previous: LazyPagingItems<LaunchItem>,
     contentType: ContentType,
     listState: LazyListState,
-    openedLaunch: LaunchItem?,
+    selectedLaunchId: String?,
     onItemClick: (LaunchItem) -> Unit
 ) {
     NetworkVerticalListContent(
@@ -58,7 +58,7 @@ fun PreviousLaunchesScreen(
                     landingPad = launch.firstStage?.firstOrNull()?.landingLocation?.let {
                         if (launch.rocket != "Falcon 9" && it == "N/A") null else it
                     },
-                    isSelected = openedLaunch?.id == launch.id && contentType == ContentType.DUAL_PANE
+                    isSelected = selectedLaunchId == launch.id && contentType == ContentType.DUAL_PANE
                 ) {
                     onItemClick(launch)
                 }
@@ -80,7 +80,7 @@ fun PreviousLaunchesScreenPreview(
             previous = MutableStateFlow(PagingData.from(launchList)).collectAsLazyPagingItems(),
             contentType = ContentType.SINGLE_PANE,
             listState = rememberLazyListState(),
-            openedLaunch = null
+            selectedLaunchId = null
         ) {
 
         }
@@ -107,7 +107,7 @@ fun PreviousLaunchesPendingScreenPreview(
             ).collectAsLazyPagingItems(),
             contentType = ContentType.SINGLE_PANE,
             listState = rememberLazyListState(),
-            openedLaunch = null
+            selectedLaunchId = null
         ) {
 
         }
@@ -134,7 +134,7 @@ fun PreviousLaunchesErrorScreenPreview(
             ).collectAsLazyPagingItems(),
             contentType = ContentType.SINGLE_PANE,
             listState = rememberLazyListState(),
-            openedLaunch = null
+            selectedLaunchId = null
         ) {
 
         }
