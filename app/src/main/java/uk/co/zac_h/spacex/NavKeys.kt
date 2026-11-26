@@ -25,6 +25,11 @@ data object AssetsKey : NavKey
 @Serializable
 data class VehicleDetailKey(val type: VehicleType, val vehicleId: String) : NavKey
 
+/** The More list, which holds the destinations that don't fit in the bottom bar. */
+@Serializable
+data object MoreKey : NavKey
+
+/** Company information, opened from More. */
 @Serializable
 data object CompanyKey : NavKey
 
