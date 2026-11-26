@@ -17,7 +17,7 @@ import androidx.compose.runtime.MutableState
  * @param currentRoute holds the selected top-level destination.
  */
 class TopLevelBackStack<R : Any, T : Any>(
-    private val startRoute: R,
+    val startRoute: R,
     private val stacks: Map<R, MutableList<T>>,
     private val currentRoute: MutableState<R>,
 ) {
@@ -30,6 +30,13 @@ class TopLevelBackStack<R : Any, T : Any>(
     /** The selected top-level destination. */
     val topLevelRoute: R
         get() = currentRoute.value
+
+    /** Every top-level destination that has its own back stack. */
+    val routes: Set<R>
+        get() = stacks.keys
+
+    /** The back stack of [route] on its own, whether or not it's showing. */
+    fun backStackOf(route: R): List<T> = stacks.getValue(route)
 
     /** The entries to display, oldest first. */
     val backStack: List<T>

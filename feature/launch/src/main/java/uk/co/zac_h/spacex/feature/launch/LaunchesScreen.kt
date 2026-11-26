@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -29,6 +28,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import uk.co.zac_h.spacex.core.common.ContentType
+import uk.co.zac_h.spacex.core.common.rememberTrackedLazyListState
 import uk.co.zac_h.spacex.core.ui.component.SpaceXTabLayout
 import uk.co.zac_h.spacex.core.ui.component.SpaceXTabRowDefaults
 import uk.co.zac_h.spacex.core.ui.component.Tab
@@ -52,14 +52,12 @@ fun LaunchesScreen(
     val nextLaunchUpdate by viewModel.nextLaunchUpdate.collectAsStateWithLifecycle(NextLaunchUpdate())
     val previous = viewModel.previousLaunchesLiveData.collectAsLazyPagingItems()
 
-    val upcomingLazyListState = rememberLazyListState(
-        viewModel.upcomingPosition.index,
-        viewModel.upcomingPosition.offset
-    )
-    val previousLazyListState = rememberLazyListState(
-        viewModel.previousPosition.index,
-        viewModel.previousPosition.offset
-    )
+    val upcomingLazyListState = rememberTrackedLazyListState(viewModel.upcomingPosition) {
+        viewModel.upcomingPosition = it
+    }
+    val previousLazyListState = rememberTrackedLazyListState(viewModel.previousPosition) {
+        viewModel.previousPosition = it
+    }
 
     val scrollBehavior = SpaceXTabRowDefaults.pinnedScrollBehavior()
 
@@ -76,16 +74,10 @@ fun LaunchesScreen(
         pageCount = { 2 }
     )
 
-    // Keep the tab and scroll positions in the ViewModel, so they carry over when the list moves
-    // between the single-pane and two-pane layouts.
+    // Keep the tab in the ViewModel, so it carries over when the list moves between the
+    // single-pane and two-pane layouts.
     LaunchedEffect(launchListPagerState) {
         snapshotFlow { launchListPagerState.currentPage }.collect { viewModel.selectedPage = it }
-    }
-    LaunchedEffect(upcomingLazyListState) {
-        snapshotFlow { upcomingLazyListState.position() }.collect { viewModel.upcomingPosition = it }
-    }
-    LaunchedEffect(previousLazyListState) {
-        snapshotFlow { previousLazyListState.position() }.collect { viewModel.previousPosition = it }
     }
 
     LaunchListScreen(
@@ -104,9 +96,6 @@ fun LaunchesScreen(
         onRefreshNextLaunch = { viewModel.refreshNextLaunch() }
     )
 }
-
-private fun LazyListState.position() =
-    ListPosition(index = firstVisibleItemIndex, offset = firstVisibleItemScrollOffset)
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable

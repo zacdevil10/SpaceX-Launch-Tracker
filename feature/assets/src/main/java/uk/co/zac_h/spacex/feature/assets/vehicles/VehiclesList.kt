@@ -26,7 +26,7 @@ fun VehiclesList(
     vehicles: ApiResult<List<VehicleItem>>,
     contentType: ContentType,
     state: LazyListState,
-    openedAsset: VehicleItem?,
+    selectedId: String?,
     retry: () -> Unit,
     navigate: (VehicleItem) -> Unit,
     filter: @Composable () -> Unit = {}
@@ -51,7 +51,7 @@ fun VehiclesList(
                     image = vehicle.imageUrl,
                     title = vehicle.title,
                     buttonText = stringResource(R.string.vehicle_list_item_specs_button_label),
-                    isSelected = openedAsset?.id == vehicle.id && contentType == ContentType.DUAL_PANE,
+                    isSelected = selectedId == vehicle.id.toString() && contentType == ContentType.DUAL_PANE,
                     navigate = {
                         navigate(vehicle)
                     }
@@ -75,7 +75,7 @@ fun <T : VehicleItem> VehiclePaginatedList(
     vehicles: LazyPagingItems<T>,
     contentType: ContentType,
     state: LazyListState,
-    openedAsset: VehicleItem?,
+    selectedId: String?,
     navigate: (VehicleItem) -> Unit
 ) {
     NetworkVerticalListContent(
@@ -96,7 +96,7 @@ fun <T : VehicleItem> VehiclePaginatedList(
                     image = vehicle.imageUrl,
                     title = vehicle.title,
                     buttonText = stringResource(R.string.vehicle_list_item_specs_button_label),
-                    isSelected = openedAsset?.id == vehicle.id && contentType == ContentType.DUAL_PANE,
+                    isSelected = selectedId == vehicle.id.toString() && contentType == ContentType.DUAL_PANE,
                     navigate = {
                         navigate(vehicle)
                     }

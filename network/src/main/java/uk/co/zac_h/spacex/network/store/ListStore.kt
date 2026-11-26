@@ -42,6 +42,9 @@ internal class ListStore<T : Any>(
         page.flatMap { listOfNotNull(decode(it)) }
     }
 
+    /** One stored item by its id, or null while it isn't stored or no longer decodes. */
+    fun item(id: String): Flow<T?> = listItemDao.observe(list, id).map { entity -> entity?.let(::decode) }
+
     suspend fun isFresh(): Boolean = !refresher.isStale(list, maxAge)
 
     /**
