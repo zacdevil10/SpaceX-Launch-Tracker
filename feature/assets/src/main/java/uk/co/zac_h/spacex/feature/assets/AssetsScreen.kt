@@ -15,7 +15,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -76,7 +76,34 @@ fun AssetsScreen(
     val coreListState = rememberTrackedListState(viewModel, VehicleType.CORE)
     val capsulesListState = rememberTrackedListState(viewModel, VehicleType.CAPSULE)
 
-    var expanded by rememberSaveable { mutableIntStateOf(viewModel.expandedAstronaut) }
+    var expanded by rememberSaveable { mutableStateOf(viewModel.expandedAstronaut) }
+    fun setExpanded(id: String?) {
+        expanded = id
+        viewModel.expandedAstronaut = id
+    }
+
+    // The picked astronaut follows the layout: it expands inline in the single-pane layout and
+    // opens in the detail pane in the two-pane one, so folding or unfolding keeps it in view.
+    val currentOnVehicleClick by rememberUpdatedState(onVehicleClick)
+    LaunchedEffect(contentType, selectedType, selectedId) {
+        val layoutChanged = viewModel.lastContentType != contentType
+        viewModel.lastContentType = contentType
+        when {
+            selectedType == VehicleType.ASTRONAUT -> {
+                setExpanded(selectedId)
+                if (contentType == ContentType.SINGLE_PANE) currentOnCloseDetail()
+            }
+            contentType == ContentType.DUAL_PANE && selectedType == null -> {
+                val id = expanded
+                if (!layoutChanged) {
+                    // The detail pane was closed, by back or by another tab.
+                    setExpanded(null)
+                } else if (id != null && pagerState.currentPage == VehicleType.ASTRONAUT.page) {
+                    currentOnVehicleClick(VehicleType.ASTRONAUT, id)
+                }
+            }
+        }
+    }
 
     AssetsList(
         modifier = Modifier.fillMaxSize(),
@@ -85,9 +112,12 @@ fun AssetsScreen(
         selectedType = selectedType,
         selectedId = selectedId,
         onVehicleClick = { type, vehicle ->
-            // On phones astronauts expand in the list instead of opening details.
-            if (type != VehicleType.ASTRONAUT || contentType == ContentType.DUAL_PANE) {
-                onVehicleClick(type, vehicle.id.toString())
+            val id = vehicle.id.toString()
+            when {
+                type != VehicleType.ASTRONAUT || contentType == ContentType.DUAL_PANE ->
+                    onVehicleClick(type, id)
+                // In the single-pane layout astronauts expand in the list instead.
+                else -> setExpanded(if (expanded == id) null else id)
             }
         },
         expanded = expanded,
@@ -96,10 +126,6 @@ fun AssetsScreen(
         dragonListState = dragonListState,
         coreListState = coreListState,
         capsulesListState = capsulesListState,
-        setExpanded = {
-            expanded = it
-            viewModel.expandedAstronaut = it
-        },
         scrollBehavior = scrollBehavior
     )
 }
@@ -125,8 +151,7 @@ fun AssetsList(
     dragonListState: LazyListState,
     coreListState: LazyListState,
     capsulesListState: LazyListState,
-    expanded: Int,
-    setExpanded: (Int) -> Unit,
+    expanded: String?,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
     val tabs = listOf(
@@ -164,9 +189,8 @@ fun AssetsList(
                 0 -> AstronautsScreen(
                     contentType = contentType,
                     selectedId = selectedIdOnPage,
-                    expanded = expanded,
+                    expandedId = expanded,
                     state = astronautListState,
-                    setExpanded = setExpanded,
                     onItemClick = { onVehicleClick(type, it) }
                 )
                 1 -> RocketsScreen(

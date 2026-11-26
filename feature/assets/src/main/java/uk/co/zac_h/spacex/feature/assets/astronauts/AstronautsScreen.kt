@@ -29,8 +29,7 @@ fun AstronautsScreen(
     contentType: ContentType,
     viewModel: AstronautViewModel = hiltViewModel(),
     state: LazyListState,
-    expanded: Int,
-    setExpanded: (Int) -> Unit,
+    expandedId: String?,
     selectedId: String?,
     onItemClick: (VehicleItem) -> Unit
 ) {
@@ -40,8 +39,7 @@ fun AstronautsScreen(
         astronauts = astronauts,
         contentType = contentType,
         state = state,
-        expanded = expanded,
-        setExpanded = setExpanded,
+        expandedId = expandedId,
         selectedId = selectedId,
         onItemClick = onItemClick
     )
@@ -53,8 +51,7 @@ fun AstronautsContent(
     astronauts: LazyPagingItems<AstronautItem>,
     contentType: ContentType,
     state: LazyListState,
-    expanded: Int,
-    setExpanded: (Int) -> Unit,
+    expandedId: String?,
     selectedId: String?,
     onItemClick: (VehicleItem) -> Unit
 ) {
@@ -80,11 +77,11 @@ fun AstronautsContent(
                     status = astronaut.status.status,
                     firstFlight = astronaut.firstFlight,
                     description = astronaut.description,
-                    expanded = contentType == ContentType.SINGLE_PANE && expanded == index,
+                    expanded = contentType == ContentType.SINGLE_PANE &&
+                        expandedId == astronaut.id.toString(),
                     isFullscreen = contentType == ContentType.SINGLE_PANE,
                     isSelected = selectedId == astronaut.id.toString() && contentType == ContentType.DUAL_PANE
                 ) {
-                    setExpanded(if (expanded != index) index else -1)
                     onItemClick(it)
                 }
             }
@@ -103,8 +100,7 @@ fun AstronautContentSinglePanePreview(
             astronauts = MutableStateFlow(PagingData.from(astronauts)).collectAsLazyPagingItems(),
             contentType = ContentType.SINGLE_PANE,
             state = rememberLazyListState(),
-            expanded = 1,
-            setExpanded = {},
+            expandedId = astronauts[1].id.toString(),
             selectedId = null,
             onItemClick = {}
         )
@@ -122,8 +118,7 @@ fun AstronautContentDualPanePreview(
             astronauts = MutableStateFlow(PagingData.from(astronauts)).collectAsLazyPagingItems(),
             contentType = ContentType.DUAL_PANE,
             state = rememberLazyListState(),
-            expanded = 1,
-            setExpanded = {},
+            expandedId = null,
             selectedId = astronauts[1].id.toString(),
             onItemClick = {}
         )
