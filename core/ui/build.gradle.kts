@@ -43,9 +43,9 @@ dependencies {
     api(libs.androidx.compose.material3)
     api(libs.androidx.compose.material.icons.core)
     api(libs.androidx.compose.ui.toolingpreview)
+    implementation(libs.androidx.compose.activity)
     debugApi(libs.androidx.compose.ui.tooling)
 
-    implementation(libs.androidx.compose.navigation)
 
     api(libs.coil.compose)
     //Coil 3 needs a network artifact to load http(s) URLs. Pin its transitive OkHttp 4.x to 5.x via the BOM.
