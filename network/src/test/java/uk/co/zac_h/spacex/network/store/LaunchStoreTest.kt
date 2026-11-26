@@ -33,7 +33,8 @@ class LaunchStoreTest {
         launchDao = FakeLaunchDao()
         service = FakeLaunchLibraryService()
         callBudget = CallBudget { now }
-        store = LaunchStore(service, launchDao, Refresher(FakeFetchMetadataDao()) { now }, callBudget) { now }
+        val metadataDao = FakeFetchMetadataDao()
+        store = LaunchStore(service, launchDao, metadataDao, Refresher(metadataDao) { now }, callBudget) { now }
     }
 
     private fun upcoming() = runBlocking { store.upcomingLaunches.first() }
@@ -198,5 +199,100 @@ class LaunchStoreTest {
         assertEquals(Freshness.NEXT_LAUNCH_POLL_NEAR, runBlocking { store.nextLaunchPollInterval() })
         now = at("2026-12-01T10:30:00Z")
         assertEquals(Freshness.NEXT_LAUNCH_POLL_NEAR, runBlocking { store.nextLaunchPollInterval() })
+    }
+
+    /** A finished launch (status 3 = Success) with the given launch time and last change. */
+    private fun flown(id: String, net: String, lastUpdated: String = net) =
+        launch(id, net, statusId = 3).copy(lastUpdated = lastUpdated)
+
+    private val history = listOf(
+        flown("p1", "2026-11-20T10:00:00Z"),
+        flown("p2", "2026-11-10T10:00:00Z"),
+        flown("p3", "2026-11-01T10:00:00Z"),
+        flown("p4", "2026-10-20T10:00:00Z"),
+        flown("p5", "2026-10-10T10:00:00Z")
+    )
+
+    @Test
+    fun `first open fetches the most recent page of previous launches`() {
+        service.previous = history
+
+        val result = runBlocking { store.refreshPreviousLaunches(pageSize = 2) }
+
+        assertEquals(ApiResult.Success(Unit), result)
+        assertEquals(listOf(Triple(2, null, null)), service.previousCalls)
+        assertEquals(listOf("p1", "p2"), launchDao.previousIds())
+    }
+
+    @Test
+    fun `scrolling fetches only launches older than the oldest stored`() {
+        service.previous = history
+        runBlocking { store.refreshPreviousLaunches(pageSize = 2) }
+
+        val end1 = runBlocking { store.loadOlderPreviousLaunches(pageSize = 2) }
+        val end2 = runBlocking { store.loadOlderPreviousLaunches(pageSize = 2) }
+
+        assertEquals(
+            listOf(Triple(2, null, null), Triple(2, "2026-11-10T10:00:00Z", null), Triple(2, "2026-10-20T10:00:00Z", null)),
+            service.previousCalls
+        )
+        assertEquals(false, end1)
+        assertEquals(true, end2)
+        assertEquals(listOf("p1", "p2", "p3", "p4", "p5"), launchDao.previousIds())
+    }
+
+    @Test
+    fun `previous launches are not checked again within the hour`() {
+        service.previous = history
+        runBlocking { store.refreshPreviousLaunches(pageSize = 2) }
+        now += 59.minutes.inWholeMilliseconds
+
+        runBlocking { store.refreshPreviousLaunches(pageSize = 2) }
+
+        assertEquals(1, service.previousCalls.size)
+    }
+
+    @Test
+    fun `later opens ask only for launches changed since the last sync`() {
+        service.previous = history
+        runBlocking { store.refreshPreviousLaunches(pageSize = 2) }
+        runBlocking { store.loadOlderPreviousLaunches(pageSize = 2) }
+        now += 61.minutes.inWholeMilliseconds
+        // A new launch completes and an old one is corrected.
+        service.previous = listOf(flown("p0", "2026-11-24T10:00:00Z", lastUpdated = "2026-11-24T12:00:00Z")) +
+            history.map { if (it.id == "p3") it.copy(lastUpdated = "2026-11-24T13:00:00Z", name = "Corrected") else it }
+        service.previousCalls.clear()
+
+        runBlocking { store.refreshPreviousLaunches(pageSize = 2) }
+
+        assertEquals(listOf(Triple(100, null, "2026-11-20T10:00:00Z")), service.previousCalls)
+        assertEquals(listOf("p0", "p1", "p2", "p3", "p4"), launchDao.previousIds())
+        val p3 = networkJson.decodeFromString(LaunchDetailedDto.serializer(), launchDao.rows.value.getValue("p3").json)
+        assertEquals("Corrected", p3.name)
+    }
+
+    @Test
+    fun `too many changes replaces previous launches with the most recent page`() {
+        service.previous = history
+        runBlocking { store.refreshPreviousLaunches(pageSize = 2) }
+        runBlocking { store.loadOlderPreviousLaunches(pageSize = 2) }
+        now += 61.minutes.inWholeMilliseconds
+        service.previous = (1..101).map { flown("n$it", "2026-11-2${it % 5}T%02d:00:00Z".format(it % 24), "2026-11-25T00:00:00Z") } + history
+        service.previousCalls.clear()
+
+        runBlocking { store.refreshPreviousLaunches(pageSize = 2) }
+
+        assertEquals(2, service.previousCalls.size)
+        assertEquals(2, launchDao.previousIds().size)
+    }
+
+    @Test
+    fun `a launch in flight from the previous endpoint stays in upcoming`() {
+        service.previous = listOf(launch("flying", "2026-11-25T10:00:00Z", statusId = 6).copy(lastUpdated = "2026-11-25T10:01:00Z"))
+
+        runBlocking { store.refreshPreviousLaunches(pageSize = 2) }
+
+        assertEquals(emptyList<String>(), launchDao.previousIds())
+        assertEquals(listOf("flying"), upcoming().map { it.id })
     }
 }
