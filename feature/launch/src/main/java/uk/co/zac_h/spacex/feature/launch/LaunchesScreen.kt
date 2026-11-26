@@ -27,7 +27,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import uk.co.zac_h.spacex.core.common.ContentType
 import uk.co.zac_h.spacex.core.common.rememberTrackedLazyListState
 import uk.co.zac_h.spacex.core.ui.component.SpaceXTabLayout
 import uk.co.zac_h.spacex.core.ui.component.SpaceXTabRowDefaults
@@ -37,13 +36,15 @@ import uk.co.zac_h.spacex.network.ApiResult
 /**
  * The upcoming and past launch lists.
  *
- * @param selectedLaunchId the launch open in the detail pane, highlighted on wide screens.
+ * @param detailPaneVisible true when launch details show beside the list, so the next launch's
+ * card leaves out the launch site and description.
+ * @param selectedLaunchId the launch open in the detail pane, highlighted in the list.
  * @param onLaunchClick opens a launch's details.
  */
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun LaunchesScreen(
-    contentType: ContentType,
+    detailPaneVisible: Boolean,
     selectedLaunchId: String?,
     onLaunchClick: (launchId: String) -> Unit,
     viewModel: LaunchesViewModel = hiltViewModel()
@@ -83,7 +84,7 @@ fun LaunchesScreen(
     LaunchListScreen(
         modifier = Modifier.fillMaxSize(),
         pagerState = launchListPagerState,
-        contentType = contentType,
+        detailPaneVisible = detailPaneVisible,
         upcoming = upcoming,
         previous = previous,
         upcomingLazyListState = upcomingLazyListState,
@@ -102,7 +103,7 @@ fun LaunchesScreen(
 fun LaunchListScreen(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    contentType: ContentType,
+    detailPaneVisible: Boolean,
     upcoming: ApiResult<List<LaunchItem>>,
     previous: LazyPagingItems<LaunchItem>,
     upcomingLazyListState: LazyListState,
@@ -143,7 +144,7 @@ fun LaunchListScreen(
             when (page) {
                 0 -> UpcomingLaunchesScreen(
                     upcoming = upcoming,
-                    contentType = contentType,
+                    detailPaneVisible = detailPaneVisible,
                     listState = upcomingLazyListState,
                     selectedLaunchId = selectedLaunchId,
                     retry = retry,
@@ -153,7 +154,6 @@ fun LaunchListScreen(
                 )
                 1 -> PreviousLaunchesScreen(
                     previous = previous,
-                    contentType = contentType,
                     listState = previousLazyListState,
                     selectedLaunchId = selectedLaunchId,
                     onItemClick = onLaunchClick

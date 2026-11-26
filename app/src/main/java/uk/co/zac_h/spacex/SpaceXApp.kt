@@ -42,8 +42,6 @@ import androidx.navigation3.scene.DialogSceneStrategy
 import androidx.navigation3.ui.NavDisplay
 import kotlinx.coroutines.launch
 import uk.co.zac_h.feature.news.NewsScreen
-import uk.co.zac_h.spacex.core.common.ContentType
-import uk.co.zac_h.spacex.core.common.NavigationType
 import uk.co.zac_h.spacex.core.ui.component.Pane
 import uk.co.zac_h.spacex.core.ui.component.PanePlaceholder
 import uk.co.zac_h.spacex.feature.assets.AssetsScreen
@@ -279,7 +277,7 @@ fun SpaceXNavHost(
         ) {
             Pane(isTablet = isTablet()) {
                 LaunchesScreen(
-                    contentType = currentContentType,
+                    detailPaneVisible = isTablet(),
                     selectedLaunchId =
                         (topLevelBackStack.backStack.lastOrNull() as? LaunchDetailKey)?.launchId,
                     onLaunchClick = { launchId ->
@@ -302,9 +300,9 @@ fun SpaceXNavHost(
             }
         }
         entry<NewsKey> {
-            NewsScreen(
-                contentType = currentContentType
-            )
+            Pane(isTablet = isTablet()) {
+                NewsScreen()
+            }
         }
         entry<AssetsKey>(
             metadata = ListDetailSceneStrategy.listPane(
@@ -317,7 +315,6 @@ fun SpaceXNavHost(
             val selected = topLevelBackStack.backStack.lastOrNull() as? VehicleDetailKey
             Pane(isTablet = isTablet()) {
                 AssetsScreen(
-                    contentType = currentContentType,
                     selectedType = selected?.type,
                     selectedId = selected?.vehicleId,
                     onVehicleClick = { type, vehicleId ->
@@ -346,9 +343,9 @@ fun SpaceXNavHost(
             }
         }
         entry<CompanyKey> {
-            CompanyScreen(
-                contentType = currentContentType
-            )
+            Pane(isTablet = isTablet()) {
+                CompanyScreen()
+            }
         }
         entry<SettingsKey>(metadata = DialogSceneStrategy.dialog()) {
             SettingsDialog(
