@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -16,132 +15,101 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import uk.co.zac_h.spacex.core.common.ContentType
-import uk.co.zac_h.spacex.core.ui.component.SelectableContent
+import uk.co.zac_h.spacex.core.common.ListPosition
+import uk.co.zac_h.spacex.core.common.rememberTrackedLazyListState
 import uk.co.zac_h.spacex.core.ui.component.SpaceXTabLayout
 import uk.co.zac_h.spacex.core.ui.component.SpaceXTabRowDefaults
 import uk.co.zac_h.spacex.core.ui.component.Tab
-import uk.co.zac_h.spacex.core.ui.component.TwoPane
 import uk.co.zac_h.spacex.feature.assets.astronauts.AstronautsScreen
-import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleDetailsScreen
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
+import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleType
 import uk.co.zac_h.spacex.feature.assets.vehicles.dragon.DragonScreen
 import uk.co.zac_h.spacex.feature.assets.vehicles.launcher.LauncherScreen
 import uk.co.zac_h.spacex.feature.assets.vehicles.rockets.RocketsScreen
 import uk.co.zac_h.spacex.feature.assets.vehicles.spacecraft.SpacecraftScreen
 
+/**
+ * The asset lists: astronauts, rockets, second stages, cores and capsules.
+ *
+ * @param selectedType the type of the asset open in the detail pane, if any.
+ * @param selectedId the id of the asset open in the detail pane, highlighted on wide screens.
+ * @param onVehicleClick opens an asset's details.
+ * @param onCloseDetail closes the open asset's details, when another tab is picked.
+ */
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AssetsScreen(
     contentType: ContentType,
+    selectedType: VehicleType?,
+    selectedId: String?,
+    onVehicleClick: (type: VehicleType, id: String) -> Unit,
+    onCloseDetail: () -> Unit,
     viewModel: AssetsViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    val pagerState = rememberPagerState(pageCount = { 5 })
+    val pagerState = rememberPagerState(initialPage = viewModel.selectedPage, pageCount = { 5 })
 
     val scrollBehavior = SpaceXTabRowDefaults.pinnedScrollBehavior()
 
-    LaunchedEffect(key1 = pagerState) {
-        if (uiState.openedAssetPage != pagerState.currentPage) viewModel.closeDetailScreen()
+    // Picking another tab closes the open asset, which belongs to the tab being left.
+    val currentSelectedType by rememberUpdatedState(selectedType)
+    val currentOnCloseDetail by rememberUpdatedState(onCloseDetail)
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }.collect { page ->
+            viewModel.selectedPage = page
+            if (currentSelectedType != null && currentSelectedType?.page != page) currentOnCloseDetail()
+        }
     }
 
-    val astronautsLazyListState = rememberLazyListState()
-    val rocketsLazyListState = rememberLazyListState()
-    val dragonLazyListState = rememberLazyListState()
-    val coreLazyListState = rememberLazyListState()
-    val capsulesLazyListState = rememberLazyListState()
+    val astronautListState = rememberTrackedListState(viewModel, VehicleType.ASTRONAUT)
+    val rocketsListState = rememberTrackedListState(viewModel, VehicleType.ROCKET)
+    val dragonListState = rememberTrackedListState(viewModel, VehicleType.SECOND_STAGE)
+    val coreListState = rememberTrackedListState(viewModel, VehicleType.CORE)
+    val capsulesListState = rememberTrackedListState(viewModel, VehicleType.CAPSULE)
 
-    var expanded by rememberSaveable { mutableIntStateOf(-1) }
+    var expanded by rememberSaveable { mutableIntStateOf(viewModel.expandedAstronaut) }
 
-    AssetsContent(
-        contentType = contentType,
-        uiState = uiState,
+    AssetsList(
+        modifier = Modifier.fillMaxSize(),
         pagerState = pagerState,
-        openedAsset = uiState.openedAsset,
-        navigateToDetail = viewModel::setOpenedAsset,
+        contentType = contentType,
+        selectedType = selectedType,
+        selectedId = selectedId,
+        onVehicleClick = { type, vehicle ->
+            // On phones astronauts expand in the list instead of opening details.
+            if (type != VehicleType.ASTRONAUT || contentType == ContentType.DUAL_PANE) {
+                onVehicleClick(type, vehicle.id.toString())
+            }
+        },
         expanded = expanded,
-        astronautListState = astronautsLazyListState,
-        rocketsListState = rocketsLazyListState,
-        dragonListState = dragonLazyListState,
-        coreListState = coreLazyListState,
-        capsulesListState = capsulesLazyListState,
-        setExpanded = { expanded = it },
-        scrollBehavior = scrollBehavior,
-        closeDetailScreen = { viewModel.closeDetailScreen() }
+        astronautListState = astronautListState,
+        rocketsListState = rocketsListState,
+        dragonListState = dragonListState,
+        coreListState = coreListState,
+        capsulesListState = capsulesListState,
+        setExpanded = {
+            expanded = it
+            viewModel.expandedAstronaut = it
+        },
+        scrollBehavior = scrollBehavior
     )
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+/** A tab's list state, starting from and saving to its position in [viewModel]. */
 @Composable
-fun AssetsContent(
-    modifier: Modifier = Modifier,
-    contentType: ContentType,
-    uiState: AssetsUIState,
-    pagerState: PagerState,
-    openedAsset: VehicleItem?,
-    navigateToDetail: (VehicleItem, Int, ContentType) -> Unit,
-    astronautListState: LazyListState,
-    rocketsListState: LazyListState,
-    dragonListState: LazyListState,
-    coreListState: LazyListState,
-    capsulesListState: LazyListState,
-    closeDetailScreen: () -> Unit,
-    expanded: Int,
-    setExpanded: (Int) -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior
-) {
-    TwoPane(
-        modifier = modifier,
-        first = {
-            AssetsList(
-                modifier = Modifier.fillMaxSize(),
-                pagerState = pagerState,
-                contentType = contentType,
-                openedAsset = openedAsset,
-                navigateToDetail = navigateToDetail,
-                expanded = expanded,
-                astronautListState = astronautListState,
-                rocketsListState = rocketsListState,
-                dragonListState = dragonListState,
-                coreListState = coreListState,
-                capsulesListState = capsulesListState,
-                setExpanded = setExpanded,
-                scrollBehavior = scrollBehavior
-            )
-        },
-        second = {
-            SelectableContent(
-                value = uiState.openedAsset,
-                content = {
-                    key(it.id) {
-                        VehicleDetailsScreen(
-                            modifier = Modifier
-                                .fillMaxSize(),
-                            vehicle = it,
-                            isFullscreen = contentType == ContentType.SINGLE_PANE,
-                            navigateUp = closeDetailScreen
-                        )
-                    }
-                },
-                label = "Select an asset"
-            )
-        },
-        isTablet = contentType == ContentType.DUAL_PANE,
-        isDetailOpen = uiState.isDetailOnlyOpen,
-        hasDetailContent = uiState.openedAsset != null,
-        closeDetailScreen = closeDetailScreen,
-    )
-}
+private fun rememberTrackedListState(viewModel: AssetsViewModel, type: VehicleType): LazyListState =
+    rememberTrackedLazyListState(viewModel.listPositions[type.page] ?: ListPosition()) {
+        viewModel.listPositions[type.page] = it
+    }
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
@@ -149,8 +117,9 @@ fun AssetsList(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
     contentType: ContentType,
-    openedAsset: VehicleItem?,
-    navigateToDetail: (VehicleItem, Int, ContentType) -> Unit,
+    selectedType: VehicleType?,
+    selectedId: String?,
+    onVehicleClick: (VehicleType, VehicleItem) -> Unit,
     astronautListState: LazyListState,
     rocketsListState: LazyListState,
     dragonListState: LazyListState,
@@ -189,38 +158,40 @@ fun AssetsList(
             verticalAlignment = Alignment.Top,
             key = { tabs[it].label }
         ) { page ->
+            val type = VehicleType.forPage(page)
+            val selectedIdOnPage = selectedId.takeIf { selectedType == type }
             when (page) {
                 0 -> AstronautsScreen(
                     contentType = contentType,
-                    openedAsset = openedAsset,
+                    selectedId = selectedIdOnPage,
                     expanded = expanded,
                     state = astronautListState,
                     setExpanded = setExpanded,
-                    onItemClick = { navigateToDetail(it, page, ContentType.SINGLE_PANE) }
+                    onItemClick = { onVehicleClick(type, it) }
                 )
                 1 -> RocketsScreen(
                     contentType = contentType,
-                    openedAsset = openedAsset,
+                    selectedId = selectedIdOnPage,
                     state = rocketsListState,
-                    onItemClick = { navigateToDetail(it, page, ContentType.SINGLE_PANE) }
+                    onItemClick = { onVehicleClick(type, it) }
                 )
                 2 -> DragonScreen(
                     contentType = contentType,
-                    openedAsset = openedAsset,
+                    selectedId = selectedIdOnPage,
                     state = dragonListState,
-                    onItemClick = { navigateToDetail(it, page, ContentType.SINGLE_PANE) }
+                    onItemClick = { onVehicleClick(type, it) }
                 )
                 3 -> LauncherScreen(
                     contentType = contentType,
-                    openedAsset = openedAsset,
+                    selectedId = selectedIdOnPage,
                     state = coreListState,
-                    onItemClick = { navigateToDetail(it, page, ContentType.SINGLE_PANE) }
+                    onItemClick = { onVehicleClick(type, it) }
                 )
                 4 -> SpacecraftScreen(
                     contentType = contentType,
-                    openedAsset = openedAsset,
+                    selectedId = selectedIdOnPage,
                     state = capsulesListState,
-                    onItemClick = { navigateToDetail(it, page, ContentType.SINGLE_PANE) }
+                    onItemClick = { onVehicleClick(type, it) }
                 )
             }
         }

@@ -41,7 +41,7 @@ import uk.co.zac_h.spacex.network.ApiResult
 fun DragonScreen(
     contentType: ContentType,
     viewModel: DragonViewModel = hiltViewModel(),
-    openedAsset: VehicleItem?,
+    selectedId: String?,
     state: LazyListState,
     onItemClick: (VehicleItem) -> Unit
 ) {
@@ -66,7 +66,7 @@ fun DragonScreen(
         filter = filter,
         setOrder = viewModel::updateOrder,
         reset = viewModel::resetFilter,
-        openedAsset = openedAsset,
+        selectedId = selectedId,
         onItemClick = onItemClick
     )
 }
@@ -85,7 +85,7 @@ fun DragonContent(
     filter: DragonFilterState,
     setOrder: (Order) -> Unit,
     reset: () -> Unit,
-    openedAsset: VehicleItem?,
+    selectedId: String?,
     onItemClick: (VehicleItem) -> Unit
 ) {
     Scaffold(
@@ -116,7 +116,7 @@ fun DragonContent(
             vehicles = dragons,
             contentType = contentType,
             state = state,
-            openedAsset = openedAsset,
+            selectedId = selectedId,
             retry = { retry() },
             navigate = {
                 onItemClick(it)

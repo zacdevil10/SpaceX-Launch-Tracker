@@ -43,6 +43,7 @@ import uk.co.zac_h.spacex.core.common.NavigationType
 import uk.co.zac_h.spacex.core.ui.component.Pane
 import uk.co.zac_h.spacex.core.ui.component.PanePlaceholder
 import uk.co.zac_h.spacex.feature.assets.AssetsScreen
+import uk.co.zac_h.spacex.feature.assets.vehicles.AssetDetailScreen
 import uk.co.zac_h.spacex.feature.launch.LaunchDetailScreen
 import uk.co.zac_h.spacex.feature.launch.LaunchesScreen
 import uk.co.zac_h.spacex.feature.settings.SettingsDialog
@@ -302,10 +303,41 @@ fun SpaceXNavHost(
                     contentType = contentType
                 )
             }
-            entry<AssetsKey> {
-                AssetsScreen(
-                    contentType = contentType
+            entry<AssetsKey>(
+                metadata = ListDetailSceneStrategy.listPane(
+                    detailPlaceholder = {
+                        Pane(isTablet = true) { PanePlaceholder(label = "Select an asset") }
+                    }
                 )
+            ) {
+                val selected = topLevelBackStack.backStack.lastOrNull() as? VehicleDetailKey
+                Pane(isTablet = isTablet) {
+                    AssetsScreen(
+                        contentType = contentType,
+                        selectedType = selected?.type,
+                        selectedId = selected?.vehicleId,
+                        onVehicleClick = { type, vehicleId ->
+                            topLevelBackStack.addOrReplaceTop(VehicleDetailKey(type, vehicleId)) {
+                                it is VehicleDetailKey
+                            }
+                        },
+                        onCloseDetail = {
+                            if (topLevelBackStack.backStack.lastOrNull() is VehicleDetailKey) {
+                                topLevelBackStack.removeLast()
+                            }
+                        }
+                    )
+                }
+            }
+            entry<VehicleDetailKey>(metadata = ListDetailSceneStrategy.detailPane()) { key ->
+                Pane(isTablet = isTablet) {
+                    AssetDetailScreen(
+                        type = key.type,
+                        vehicleId = key.vehicleId,
+                        isFullscreen = !isTablet,
+                        navigateUp = { topLevelBackStack.removeLast() }
+                    )
+                }
             }
             entry<CompanyKey> {
                 CompanyScreen(

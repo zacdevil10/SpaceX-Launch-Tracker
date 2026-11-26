@@ -43,7 +43,7 @@ import uk.co.zac_h.spacex.network.ApiResult
 fun RocketsScreen(
     contentType: ContentType,
     viewModel: RocketViewModel = hiltViewModel(),
-    openedAsset: VehicleItem?,
+    selectedId: String?,
     state: LazyListState,
     onItemClick: (VehicleItem) -> Unit
 ) {
@@ -70,7 +70,7 @@ fun RocketsScreen(
         setRocketType = viewModel::filterByRocketType,
         setOrder = viewModel::updateOrder,
         reset = viewModel::clearFilter,
-        openedAsset = openedAsset,
+        selectedId = selectedId,
         onItemClick = onItemClick
     )
 }
@@ -91,7 +91,7 @@ fun RocketsContent(
     setRocketType: (RocketType) -> Unit,
     setOrder: (Order) -> Unit,
     reset: () -> Unit,
-    openedAsset: VehicleItem?,
+    selectedId: String?,
     onItemClick: (VehicleItem) -> Unit
 ) {
     Scaffold(
@@ -122,7 +122,7 @@ fun RocketsContent(
             vehicles = rockets,
             contentType = contentType,
             state = state,
-            openedAsset = openedAsset,
+            selectedId = selectedId,
             retry = { retry() },
             navigate = {
                 onItemClick(it)

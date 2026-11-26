@@ -31,7 +31,7 @@ fun AstronautsScreen(
     state: LazyListState,
     expanded: Int,
     setExpanded: (Int) -> Unit,
-    openedAsset: VehicleItem?,
+    selectedId: String?,
     onItemClick: (VehicleItem) -> Unit
 ) {
     val astronauts = viewModel.astronautLiveData.collectAsLazyPagingItems()
@@ -42,7 +42,7 @@ fun AstronautsScreen(
         state = state,
         expanded = expanded,
         setExpanded = setExpanded,
-        openedAsset = openedAsset,
+        selectedId = selectedId,
         onItemClick = onItemClick
     )
 }
@@ -55,7 +55,7 @@ fun AstronautsContent(
     state: LazyListState,
     expanded: Int,
     setExpanded: (Int) -> Unit,
-    openedAsset: VehicleItem?,
+    selectedId: String?,
     onItemClick: (VehicleItem) -> Unit
 ) {
     NetworkVerticalListContent(
@@ -82,7 +82,7 @@ fun AstronautsContent(
                     description = astronaut.description,
                     expanded = contentType == ContentType.SINGLE_PANE && expanded == index,
                     isFullscreen = contentType == ContentType.SINGLE_PANE,
-                    isSelected = openedAsset?.id == astronaut.id && contentType == ContentType.DUAL_PANE
+                    isSelected = selectedId == astronaut.id.toString() && contentType == ContentType.DUAL_PANE
                 ) {
                     setExpanded(if (expanded != index) index else -1)
                     onItemClick(it)
@@ -105,7 +105,7 @@ fun AstronautContentSinglePanePreview(
             state = rememberLazyListState(),
             expanded = 1,
             setExpanded = {},
-            openedAsset = null,
+            selectedId = null,
             onItemClick = {}
         )
     }
@@ -124,7 +124,7 @@ fun AstronautContentDualPanePreview(
             state = rememberLazyListState(),
             expanded = 1,
             setExpanded = {},
-            openedAsset = astronauts[1],
+            selectedId = astronauts[1].id.toString(),
             onItemClick = {}
         )
     }

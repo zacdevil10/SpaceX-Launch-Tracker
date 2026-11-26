@@ -12,7 +12,7 @@ import uk.co.zac_h.spacex.feature.assets.vehicles.VehiclePaginatedList
 fun LauncherScreen(
     contentType: ContentType,
     viewModel: LauncherViewModel = hiltViewModel(),
-    openedAsset: VehicleItem?,
+    selectedId: String?,
     state: LazyListState,
     onItemClick: (VehicleItem) -> Unit
 ) {
@@ -22,7 +22,7 @@ fun LauncherScreen(
         vehicles = launchers,
         contentType = contentType,
         state = state,
-        openedAsset = openedAsset,
+        selectedId = selectedId,
         navigate = onItemClick
     )
 }
