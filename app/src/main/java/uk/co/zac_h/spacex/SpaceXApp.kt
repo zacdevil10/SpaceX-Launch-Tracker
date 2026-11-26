@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -170,6 +171,11 @@ fun SpaceXNavigationWrapper(
                     }
                 }
             )
+            // Back handlers registered later take priority, so this one, composed after the
+            // navigation host, closes an open drawer before back can navigate the screen behind.
+            BackHandler(enabled = drawerState.isOpen) {
+                scope.launch { drawerState.close() }
+            }
         }
     }
 }
