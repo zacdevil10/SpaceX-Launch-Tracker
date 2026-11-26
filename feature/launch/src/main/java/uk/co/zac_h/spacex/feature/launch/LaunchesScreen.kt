@@ -17,6 +17,7 @@ import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -51,8 +52,14 @@ fun LaunchesScreen(
     val nextLaunchUpdate by viewModel.nextLaunchUpdate.collectAsStateWithLifecycle(NextLaunchUpdate())
     val previous = viewModel.previousLaunchesLiveData.collectAsLazyPagingItems()
 
-    val upcomingLazyListState = rememberLazyListState()
-    val previousLazyListState = rememberLazyListState()
+    val upcomingLazyListState = rememberLazyListState(
+        viewModel.upcomingPosition.index,
+        viewModel.upcomingPosition.offset
+    )
+    val previousLazyListState = rememberLazyListState(
+        viewModel.previousPosition.index,
+        viewModel.previousPosition.offset
+    )
 
     val scrollBehavior = SpaceXTabRowDefaults.pinnedScrollBehavior()
 
@@ -64,7 +71,22 @@ fun LaunchesScreen(
         }
     }
 
-    val launchListPagerState = rememberPagerState(pageCount = { 2 })
+    val launchListPagerState = rememberPagerState(
+        initialPage = viewModel.selectedPage,
+        pageCount = { 2 }
+    )
+
+    // Keep the tab and scroll positions in the ViewModel, so they carry over when the list moves
+    // between the single-pane and two-pane layouts.
+    LaunchedEffect(launchListPagerState) {
+        snapshotFlow { launchListPagerState.currentPage }.collect { viewModel.selectedPage = it }
+    }
+    LaunchedEffect(upcomingLazyListState) {
+        snapshotFlow { upcomingLazyListState.position() }.collect { viewModel.upcomingPosition = it }
+    }
+    LaunchedEffect(previousLazyListState) {
+        snapshotFlow { previousLazyListState.position() }.collect { viewModel.previousPosition = it }
+    }
 
     LaunchListScreen(
         modifier = Modifier.fillMaxSize(),
@@ -82,6 +104,9 @@ fun LaunchesScreen(
         onRefreshNextLaunch = { viewModel.refreshNextLaunch() }
     )
 }
+
+private fun LazyListState.position() =
+    ListPosition(index = firstVisibleItemIndex, offset = firstVisibleItemScrollOffset)
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable

@@ -21,6 +21,15 @@ class LaunchesViewModel @Inject constructor(
     private val repository: LaunchesRepository
 ) : ViewModel() {
 
+    /**
+     * The selected list tab and each list's scroll position. The list is composed again when it
+     * moves between the single-pane and two-pane layouts, for example on rotation, and saved
+     * state alone doesn't carry over then; this ViewModel is shared by both.
+     */
+    var selectedPage: Int = 0
+    var upcomingPosition: ListPosition = ListPosition()
+    var previousPosition: ListPosition = ListPosition()
+
     private val upcomingRefresh = MutableStateFlow<ApiResult<Unit>>(ApiResult.Pending)
 
     /**
@@ -96,6 +105,9 @@ class LaunchesViewModel @Inject constructor(
         }
     }
 }
+
+/** A list's first visible item and how far it is scrolled. */
+data class ListPosition(val index: Int = 0, val offset: Int = 0)
 
 private data class NextLaunchRefresh(
     val isRefreshing: Boolean = false,
