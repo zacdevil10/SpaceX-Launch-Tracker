@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,8 +31,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.IntrinsicMeasurable
+import androidx.compose.ui.layout.IntrinsicMeasureScope
+import androidx.compose.ui.layout.LayoutModifier
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.MeasureResult
+import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import uk.co.zac_h.spacex.core.ui.component.DynamicAsyncImage
 
@@ -83,6 +91,8 @@ fun Astronaut(
                 DynamicAsyncImage(
                     modifier = Modifier
                         .fillMaxWidth(0.3f)
+                        .fillMaxHeight()
+                        .withoutIntrinsicHeight()
                         .clip(CardDefaults.elevatedShape),
                     model = image,
                     contentDescription = "",
@@ -162,6 +172,33 @@ fun Astronaut(
         }
     }
 }
+
+/**
+ * Leaves this element out of its parent's intrinsic height, so the photo fills the height the text
+ * needs instead of setting it. Otherwise the row grows once a larger copy of the photo is cached,
+ * for example after its details screen has shown it.
+ */
+private fun Modifier.withoutIntrinsicHeight(): Modifier = this.then(
+    object : LayoutModifier {
+        override fun MeasureScope.measure(
+            measurable: Measurable,
+            constraints: Constraints
+        ): MeasureResult {
+            val placeable = measurable.measure(constraints)
+            return layout(placeable.width, placeable.height) { placeable.place(0, 0) }
+        }
+
+        override fun IntrinsicMeasureScope.minIntrinsicHeight(
+            measurable: IntrinsicMeasurable,
+            width: Int
+        ): Int = 0
+
+        override fun IntrinsicMeasureScope.maxIntrinsicHeight(
+            measurable: IntrinsicMeasurable,
+            width: Int
+        ): Int = 0
+    }
+)
 
 @DynamicThemePreviews
 @ComponentPreviews
