@@ -148,6 +148,7 @@ fun SpaceXNavigationWrapper(
                 SpaceXModalNavigationDrawerContent(
                     selectedDestination = selectedDestination,
                     navigateToTopLevelDestination = navigateToTopLevelDestination,
+                    drawerState = drawerState,
                     onDrawerClicked = {
                         scope.launch {
                             drawerState.close()

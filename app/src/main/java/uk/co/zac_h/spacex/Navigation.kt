@@ -1,7 +1,6 @@
 package uk.co.zac_h.spacex
 
 import androidx.annotation.DrawableRes
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -17,10 +16,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalDrawerSheet
@@ -31,10 +30,10 @@ import androidx.compose.material3.NavigationRailDefaults
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavKey
@@ -79,9 +78,13 @@ fun SpaceXModalNavigationDrawerContent(
     modifier: Modifier = Modifier,
     selectedDestination: TopLevelNavigation,
     navigateToTopLevelDestination: (TopLevelNavigation) -> Unit,
+    drawerState: DrawerState = rememberDrawerState(DrawerValue.Open),
     onDrawerClicked: () -> Unit = {}
 ) {
+    // Given the drawer's state, the sheet closes on system back (with predictive back) instead
+    // of letting back navigate the screen behind it.
     ModalDrawerSheet(
+        drawerState = drawerState,
         modifier = modifier,
         windowInsets = WindowInsets.safeDrawing.only(
             WindowInsetsSides.Vertical + WindowInsetsSides.Start
@@ -402,21 +405,16 @@ private fun SpaceXMoreSheetContent(
     selectedDestination: TopLevelNavigation,
     onDestinationClick: (TopLevelNavigation) -> Unit
 ) {
-    Column(modifier = Modifier.padding(bottom = 16.dp)) {
+    Column(
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         TopLevelNavigation.moreDestinations.forEach { destination ->
-            ListItem(
-                modifier = Modifier.clickable { onDestinationClick(destination) },
-                headlineContent = { Text(text = destination.label) },
-                leadingContent = {
-                    Icon(painter = painterResource(destination.icon), contentDescription = null)
-                },
-                colors = if (destination == selectedDestination) {
-                    ListItemDefaults.colors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer
-                    )
-                } else {
-                    ListItemDefaults.colors(containerColor = Color.Transparent)
-                }
+            SpaceXNavDrawerItem(
+                selected = destination == selectedDestination,
+                label = destination.label,
+                icon = destination.icon,
+                navigateToTopLevelDestination = { onDestinationClick(destination) }
             )
         }
     }
