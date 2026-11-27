@@ -3,8 +3,8 @@ package uk.co.zac_h.spacex.feature.launch
 import androidx.core.net.toUri
 import uk.co.zac_h.spacex.core.common.Header
 import uk.co.zac_h.spacex.core.common.recyclerview.RecyclerViewItem
-import uk.co.zac_h.spacex.core.common.types.CoreType
-import uk.co.zac_h.spacex.core.common.types.CrewStatus
+import uk.co.zac_h.spacex.core.model.CoreType
+import uk.co.zac_h.spacex.core.model.CrewStatus
 import uk.co.zac_h.spacex.core.common.utils.formatCrewDate
 import uk.co.zac_h.spacex.core.common.utils.formatDate
 import uk.co.zac_h.spacex.core.common.utils.orUnknown

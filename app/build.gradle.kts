@@ -1,27 +1,19 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.spacex.android.application)
+    alias(libs.plugins.spacex.android.compose)
+    alias(libs.plugins.spacex.hilt)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
 }
 
 android {
-    compileSdk {
-        version = release(libs.versions.compileSdk.get().toInt()) {
-            minorApiLevel = libs.versions.compileSdkMinor.get().toInt()
-        }
-    }
+    namespace = "uk.co.zac_h.spacex"
 
     defaultConfig {
         applicationId = "uk.co.zac_h.spacex"
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 260020000
         versionName = "2.0.0"
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -35,14 +27,6 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    buildFeatures {
-        compose = true
-    }
 
     flavorDimensions.add("firebaseEnv")
 
@@ -54,7 +38,6 @@ android {
             dimension = "firebaseEnv"
         }
     }
-    namespace = "uk.co.zac_h.spacex"
 }
 
 dependencies {
@@ -78,10 +61,6 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
 
-    //Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-
     // Navigation 3
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
@@ -90,10 +69,4 @@ dependencies {
     implementation(libs.androidx.compose.material3.adaptive.navigation3)
 
     testImplementation(libs.junit)
-}
-
-kotlin {
-    compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-    }
 }
