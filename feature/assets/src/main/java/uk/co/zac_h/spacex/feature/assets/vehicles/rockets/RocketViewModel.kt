@@ -19,13 +19,14 @@ import uk.co.zac_h.spacex.core.model.RocketFamily
 import uk.co.zac_h.spacex.core.model.RocketType
 import uk.co.zac_h.spacex.core.common.utils.filterAll
 import uk.co.zac_h.spacex.core.common.utils.sortedBy
+import uk.co.zac_h.spacex.core.data.VehicleRepository
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.withRefresh
 import javax.inject.Inject
 
 @HiltViewModel
 class RocketViewModel @Inject constructor(
-    private val repository: RocketRepository
+    private val repository: VehicleRepository
 ) : ViewModel() {
 
     private val _filter = MutableStateFlow(RocketsFilterState())
@@ -34,8 +35,8 @@ class RocketViewModel @Inject constructor(
     private val refresh = MutableStateFlow<ApiResult<Unit>>(ApiResult.Pending)
 
     private val _rockets: Flow<ApiResult<List<RocketItem>>> =
-        repository.agency
-            .map { agency -> agency?.let { it.launcherList?.map(::RocketItem).orEmpty() } }
+        repository.rockets
+            .map { rockets -> rockets?.map(::RocketItem) }
             .withRefresh(refresh)
     val rockets: Flow<ApiResult<List<RocketItem>>> = combine(_rockets, _filter) { result, filter ->
         result.map { rocketList ->

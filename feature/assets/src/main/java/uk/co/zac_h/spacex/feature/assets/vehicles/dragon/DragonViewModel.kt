@@ -14,13 +14,14 @@ import uk.co.zac_h.spacex.core.common.filter.FilterOrder
 import uk.co.zac_h.spacex.core.common.filter.toFilter
 import uk.co.zac_h.spacex.core.model.Order
 import uk.co.zac_h.spacex.core.common.utils.sortedBy
+import uk.co.zac_h.spacex.core.data.VehicleRepository
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.withRefresh
 import javax.inject.Inject
 
 @HiltViewModel
 class DragonViewModel @Inject constructor(
-    private val repository: DragonRepository
+    private val repository: VehicleRepository
 ) : ViewModel() {
 
     private val _filter = MutableStateFlow(DragonFilterState())
@@ -28,8 +29,8 @@ class DragonViewModel @Inject constructor(
 
     private val refresh = MutableStateFlow<ApiResult<Unit>>(ApiResult.Pending)
 
-    private val _dragons: Flow<ApiResult<List<SecondStageItem>>> = repository.agency
-        .map { agency -> agency?.let { it.spacecraftList?.map(::SecondStageItem).orEmpty() } }
+    private val _dragons: Flow<ApiResult<List<SecondStageItem>>> = repository.spacecraftConfigurations
+        .map { configurations -> configurations?.map(::SecondStageItem) }
         .withRefresh(refresh)
     val dragons: Flow<ApiResult<List<SecondStageItem>>> =
         combine(_dragons, _filter) { result, filter ->

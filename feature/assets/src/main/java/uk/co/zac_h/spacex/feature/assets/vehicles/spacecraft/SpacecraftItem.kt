@@ -1,10 +1,10 @@
 package uk.co.zac_h.spacex.feature.assets.vehicles.spacecraft
 
 import uk.co.zac_h.spacex.core.common.utils.TextResource
+import uk.co.zac_h.spacex.core.model.Spacecraft
 import uk.co.zac_h.spacex.feature.assets.R
 import uk.co.zac_h.spacex.feature.assets.vehicles.SpecsItem
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
-import uk.co.zac_h.spacex.network.launchlibrary.model.SpacecraftNormalDto
 
 data class SpacecraftItem(
     override val id: Int,
@@ -18,21 +18,22 @@ data class SpacecraftItem(
     val type: String?
 ) : VehicleItem {
 
-    constructor(response: SpacecraftNormalDto) : this(
-        id = response.id,
-        name = response.name,
-        title = response.serialNumber?.let {
-            if (response.name?.contains(it) == false) {
-                "${response.name} - ${response.serialNumber}"
+    // The list has never shown spacecraft images, so imageUrl keeps its null default.
+    constructor(spacecraft: Spacecraft) : this(
+        id = spacecraft.id,
+        name = spacecraft.name,
+        title = spacecraft.serial?.let {
+            if (spacecraft.name?.contains(it) == false) {
+                "${spacecraft.name} - ${spacecraft.serial}"
             } else {
-                response.name
+                spacecraft.name
             }
-        } ?: response.name,
-        serialNumber = response.serialNumber,
-        status = response.status?.name,
-        description = response.description,
-        longDescription = response.description,
-        type = response.spacecraftConfig?.name
+        } ?: spacecraft.name,
+        serialNumber = spacecraft.serial,
+        status = spacecraft.status,
+        description = spacecraft.description,
+        longDescription = spacecraft.description,
+        type = spacecraft.configuration
     )
 
     override val specs: List<SpecsItem>
