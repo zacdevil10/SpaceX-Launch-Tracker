@@ -2,6 +2,7 @@ package uk.co.zac_h.spacex.network
 
 //Hosts
 const val SPACEFLIGHT_NEWS_BASE_URL = "https://api.spaceflightnewsapi.net/v4/"
+const val CELESTRAK_BASE_URL = "https://celestrak.org/"
 
 //region SpaceX
 
@@ -47,6 +48,13 @@ const val SPACEX_UNDER_CONSTRUCTION = "Under construction"
 //region Spaceflight News
 
 const val SPACEFLIGHT_NEWS_ARTICLES = "articles"
+
+//endregion
+
+//region CelesTrak
+
+const val CELESTRAK_GP = "NORAD/elements/gp.php"
+const val CELESTRAK_GROUP_STARLINK = "starlink"
 
 //endregion
 

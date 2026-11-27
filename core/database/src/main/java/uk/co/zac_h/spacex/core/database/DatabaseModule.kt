@@ -33,4 +33,7 @@ object DatabaseModule {
     @Provides
     fun providesFetchMetadataDao(database: SpaceXDatabase): FetchMetadataDao =
         database.fetchMetadataDao()
+
+    @Provides
+    fun providesStarlinkDao(database: SpaceXDatabase): StarlinkDao = database.starlinkDao()
 }

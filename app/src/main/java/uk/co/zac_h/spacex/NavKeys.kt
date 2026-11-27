@@ -30,3 +30,6 @@ data object CompanyKey : NavKey
 
 @Serializable
 data object SettingsKey : NavKey
+
+@Serializable
+data object StarlinkKey : NavKey

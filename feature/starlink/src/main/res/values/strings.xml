@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="starlink_title">Starlink</string>
+    <plurals name="starlink_satellite_count">
+        <item quantity="one">%1$d satellite</item>
+        <item quantity="other">%1$d satellites</item>
+    </plurals>
+    <string name="starlink_updated">Orbits from CelesTrak, updated %1$s</string>
+    <string name="starlink_update_failed">Couldn\'t update orbits from CelesTrak</string>
+    <string name="starlink_loading">Downloading Starlink orbits…</string>
+    <string name="starlink_load_failed">Couldn\'t download Starlink orbits</string>
+    <string name="starlink_retry">Retry</string>
+    <string name="starlink_rate_limited">CelesTrak allows one download every 2 hours. Try again after %1$s.</string>
+    <string name="starlink_live">Live</string>
+    <string name="starlink_speed">%1$d×</string>
+    <string name="starlink_simulated_time">%1$s UTC</string>
+    <string name="starlink_close">Close</string>
+    <string name="starlink_norad_id">NORAD %1$d</string>
+    <string name="starlink_altitude">Altitude</string>
+    <string name="starlink_altitude_value">%1$.0f km</string>
+    <string name="starlink_speed_label">Speed</string>
+    <string name="starlink_speed_value">%1$.2f km/s</string>
+    <string name="starlink_position">Position</string>
+    <string name="starlink_position_value">%1$.2f°, %2$.2f°</string>
+    <string name="starlink_mode_globe">Globe</string>
+    <string name="starlink_mode_list">List</string>
+    <string name="starlink_search">Search by name or NORAD id</string>
+    <string name="starlink_clear_search">Clear search</string>
+    <string name="starlink_filter_country">Over a country</string>
+    <string name="starlink_filter_country_selected">Over %1$s</string>
+    <string name="starlink_filter_clear">Clear filters</string>
+    <string name="starlink_list_count">Showing %1$s of %2$s</string>
+    <string name="starlink_list_loading">Working out where every satellite is…</string>
+    <string name="starlink_list_empty">No satellites match. Satellites move fast, so a country may have some again in a minute.</string>
+    <string name="starlink_over_country">Over %1$s</string>
+    <string name="starlink_over_sea">Over the sea</string>
+    <string name="starlink_no_position">No current position</string>
+    <string name="starlink_country_picker_title">Satellites over a country</string>
+    <string name="starlink_country_search">Search countries</string>
+    <string name="starlink_country_anywhere">Anywhere</string>
+    <string name="starlink_country_count">%1$d now</string>
+    <string name="starlink_cancel">Cancel</string>
+    <string name="starlink_inclination">Inclination</string>
+    <string name="starlink_inclination_value">%1$.2f°</string>
+    <string name="starlink_period">Period</string>
+    <string name="starlink_period_value">%1$.1f min</string>
+    <string name="starlink_perigee_apogee">Low / high</string>
+    <string name="starlink_perigee_apogee_value">%1$.0f / %2$.0f km</string>
+    <string name="starlink_elements_age">Elements</string>
+    <string name="starlink_shell">Shell</string>
+    <string name="starlink_ground_track">One orbit: the last half faded, the next half in orange. The ends don\'t meet because the Earth turns %1$.0f° under the satellite each orbit.</string>
+    <string name="starlink_show_on_globe">Show on 3D globe</string>
+</resources>

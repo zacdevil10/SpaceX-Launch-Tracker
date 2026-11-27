@@ -13,6 +13,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import uk.co.zac_h.spacex.network.API_THROTTLE
 import uk.co.zac_h.spacex.network.BuildConfig
+import uk.co.zac_h.spacex.network.CELESTRAK_BASE_URL
 import uk.co.zac_h.spacex.network.RateLimitGate
 import uk.co.zac_h.spacex.network.SPACEFLIGHT_NEWS_BASE_URL
 import uk.co.zac_h.spacex.network.store.CallBudget
@@ -56,6 +57,12 @@ object NetworkModule {
     @SpaceflightNewsClient
     fun providesSpaceflightNewsHttpClient(): SpaceflightNewsService =
         createClient(SPACEFLIGHT_NEWS_BASE_URL, okHttpClient(hasLogging = true))
+
+    @Provides
+    @Singleton
+    fun providesCelestrakService(): CelestrakService =
+        // No body logging: the Starlink group is several megabytes of JSON.
+        createClient(CELESTRAK_BASE_URL, okHttpClient())
 
     private val jsonConverterFactory = networkJson.asConverterFactory("application/json".toMediaType())
 

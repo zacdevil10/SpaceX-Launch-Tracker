@@ -19,9 +19,9 @@ class TopLevelNavigationTest {
     }
 
     @Test
-    fun `the More sheet lists Company and Settings`() {
+    fun `the More sheet lists Starlink, Company and Settings`() {
         assertEquals(
-            listOf(TopLevelNavigation.Company, TopLevelNavigation.Settings),
+            listOf(TopLevelNavigation.Starlink, TopLevelNavigation.Company, TopLevelNavigation.Settings),
             TopLevelNavigation.moreDestinations
         )
     }
@@ -33,6 +33,7 @@ class TopLevelNavigationTest {
                 TopLevelNavigation.Launches,
                 TopLevelNavigation.News,
                 TopLevelNavigation.Assets,
+                TopLevelNavigation.Starlink,
                 TopLevelNavigation.Company
             ),
             TopLevelNavigation.backStackDestinations
@@ -42,6 +43,7 @@ class TopLevelNavigationTest {
     @Test
     fun `More is highlighted in the bar while a destination from the sheet shows`() {
         assertEquals(TopLevelNavigation.More, TopLevelNavigation.Company.barDestination)
+        assertEquals(TopLevelNavigation.More, TopLevelNavigation.Starlink.barDestination)
         assertEquals(TopLevelNavigation.Assets, TopLevelNavigation.Assets.barDestination)
     }
 

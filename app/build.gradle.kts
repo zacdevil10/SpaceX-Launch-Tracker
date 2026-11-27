@@ -51,6 +51,7 @@ dependencies {
     implementation(project(":feature:news"))
     implementation(project(":feature:assets"))
     implementation(project(":feature:settings"))
+    implementation(project(":feature:starlink"))
 
     implementation(project(":core:common"))
     implementation(project(":core:ui"))

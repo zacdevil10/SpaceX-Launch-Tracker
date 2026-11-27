@@ -4,7 +4,9 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
@@ -53,6 +55,7 @@ import uk.co.zac_h.spacex.feature.launch.LaunchDetailScreen
 import uk.co.zac_h.spacex.feature.launch.LaunchesScreen
 import uk.co.zac_h.spacex.feature.settings.SettingsDialog
 import uk.co.zac_h.spacex.feature.settings.company.CompanyScreen
+import uk.co.zac_h.spacex.feature.starlink.StarlinkScreen
 
 @Composable
 fun SpaceXApp(
@@ -158,7 +161,10 @@ fun SpaceXNavigationWrapper(
                     }
                 )
             },
-            drawerState = drawerState
+            drawerState = drawerState,
+            // Horizontal drags on the Starlink globe turn it, so the edge swipe mustn't open the
+            // drawer there. The drawer can still be closed by swiping while it's open.
+            gesturesEnabled = drawerState.isOpen || selectedDestination != TopLevelNavigation.Starlink
         ) {
             SpaceXAppContent(
                 navigationType = navigationType,
@@ -206,7 +212,10 @@ fun SpaceXAppContent(
             modifier = Modifier
                 .fillMaxSize(),
             bottomBar = {
-                AnimatedVisibility(visible = navigationType == NavigationType.BOTTOM_NAVIGATION) {
+                // Hidden while the keyboard is up, so a search field has room for its results.
+                @OptIn(ExperimentalLayoutApi::class)
+                val imeVisible = WindowInsets.isImeVisible
+                AnimatedVisibility(visible = navigationType == NavigationType.BOTTOM_NAVIGATION && !imeVisible) {
                     SpaceXBottomNavigationBar(
                         selectedDestination = topLevelBackStack.topLevelRoute,
                         navigateToTopLevelDestination = navigateToTopLevelDestination
@@ -246,16 +255,18 @@ fun rememberTopLevelBackStack(): TopLevelBackStack<TopLevelNavigation, NavKey> {
     val launches = rememberNavBackStack(LaunchesKey)
     val news = rememberNavBackStack(NewsKey)
     val assets = rememberNavBackStack(AssetsKey)
+    val starlink = rememberNavBackStack(StarlinkKey)
     val company = rememberNavBackStack(CompanyKey)
     val currentRoute = rememberSaveable { mutableStateOf(TopLevelNavigation.Launches) }
 
-    return remember(launches, news, assets, company, currentRoute) {
+    return remember(launches, news, assets, starlink, company, currentRoute) {
         TopLevelBackStack(
             startRoute = TopLevelNavigation.Launches,
             stacks = mapOf(
                 TopLevelNavigation.Launches to launches,
                 TopLevelNavigation.News to news,
                 TopLevelNavigation.Assets to assets,
+                TopLevelNavigation.Starlink to starlink,
                 TopLevelNavigation.Company to company
             ),
             currentRoute = currentRoute
@@ -364,6 +375,11 @@ fun SpaceXNavHost(
                     isFullscreen = !isTablet(),
                     navigateUp = { topLevelBackStack.removeLast() }
                 )
+            }
+        }
+        entry<StarlinkKey> {
+            Pane(isTablet = isTablet()) {
+                StarlinkScreen()
             }
         }
         entry<CompanyKey> {

@@ -316,6 +316,12 @@ enum class TopLevelNavigation(
         label = "More",
         placement = Placement.MORE
     ),
+    Starlink(
+        key = StarlinkKey,
+        icon = R.drawable.ic_satellite_orbit,
+        label = "Starlink",
+        placement = Placement.SECONDARY
+    ),
     Company(
         key = CompanyKey,
         icon = R.drawable.ic_baseline_domain_24,
