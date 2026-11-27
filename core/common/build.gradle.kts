@@ -41,6 +41,8 @@ android {
 }
 
 dependencies {
+    api(project(":core:model"))
+
     implementation(libs.androidx.compose.paging)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)

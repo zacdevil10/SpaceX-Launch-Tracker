@@ -1,8 +1,8 @@
 package uk.co.zac_h.spacex.feature.launch.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import uk.co.zac_h.spacex.core.common.types.CoreType
-import uk.co.zac_h.spacex.core.common.types.CrewStatus
+import uk.co.zac_h.spacex.core.model.CoreType
+import uk.co.zac_h.spacex.core.model.CrewStatus
 import uk.co.zac_h.spacex.feature.launch.CrewItem
 import uk.co.zac_h.spacex.feature.launch.FirstStageItem
 import uk.co.zac_h.spacex.feature.launch.LaunchItem

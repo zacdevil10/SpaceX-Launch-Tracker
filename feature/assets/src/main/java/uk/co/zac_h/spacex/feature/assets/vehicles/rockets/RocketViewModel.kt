@@ -14,9 +14,9 @@ import uk.co.zac_h.spacex.core.common.filter.FilterOrder
 import uk.co.zac_h.spacex.core.common.filter.RocketFamilyFilter
 import uk.co.zac_h.spacex.core.common.filter.RocketTypeFilter
 import uk.co.zac_h.spacex.core.common.filter.toFilter
-import uk.co.zac_h.spacex.core.common.types.Order
-import uk.co.zac_h.spacex.core.common.types.RocketFamily
-import uk.co.zac_h.spacex.core.common.types.RocketType
+import uk.co.zac_h.spacex.core.model.Order
+import uk.co.zac_h.spacex.core.model.RocketFamily
+import uk.co.zac_h.spacex.core.model.RocketType
 import uk.co.zac_h.spacex.core.common.utils.filterAll
 import uk.co.zac_h.spacex.core.common.utils.sortedBy
 import uk.co.zac_h.spacex.network.ApiResult

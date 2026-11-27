@@ -28,7 +28,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.flow.drop
 import uk.co.zac_h.spacex.core.common.isScrollingUp
-import uk.co.zac_h.spacex.core.common.types.Order
+import uk.co.zac_h.spacex.core.model.Order
 import uk.co.zac_h.spacex.core.ui.FilterRow
 import uk.co.zac_h.spacex.core.ui.ModalFilterBottomSheet
 import uk.co.zac_h.spacex.feature.assets.R

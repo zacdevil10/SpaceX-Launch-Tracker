@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.feature.assets.astronauts
 
-import uk.co.zac_h.spacex.core.common.types.CrewStatus
+import uk.co.zac_h.spacex.core.model.CrewStatus
 import uk.co.zac_h.spacex.core.common.utils.TextResource
 import uk.co.zac_h.spacex.core.common.utils.formatCrewDate
 import uk.co.zac_h.spacex.feature.assets.vehicles.SpecsItem

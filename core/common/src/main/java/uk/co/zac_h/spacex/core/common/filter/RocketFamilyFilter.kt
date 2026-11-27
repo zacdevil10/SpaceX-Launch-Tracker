@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.core.common.filter
 
-import uk.co.zac_h.spacex.core.common.types.RocketFamily
+import uk.co.zac_h.spacex.core.model.RocketFamily
 
 @JvmInline
 value class RocketFamilyFilter(val value: RocketFamily = RocketFamily.NONE) : Filter {
