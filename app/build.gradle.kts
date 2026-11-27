@@ -68,4 +68,8 @@ dependencies {
     implementation(libs.androidx.compose.material3.adaptive.navigation3)
 
     testImplementation(libs.junit)
+
+    //Debug tools menu (debug builds only)
+    debugImplementation(libs.androidx.compose.hilt.viewmodel)
+    debugImplementation(libs.androidx.compose.lifecycle.runtime)
 }

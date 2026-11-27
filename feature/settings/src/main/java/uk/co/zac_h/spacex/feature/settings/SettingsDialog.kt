@@ -30,6 +30,7 @@ import uk.co.zac_h.spacex.core.ui.supportsDynamicTheming
 @Composable
 fun SettingsDialog(
     onDismiss: () -> Unit,
+    onOpenDebugTools: (() -> Unit)? = null,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val theme by viewModel.settingsUiState.collectAsStateWithLifecycle()
@@ -38,7 +39,8 @@ fun SettingsDialog(
         settings = theme,
         onDismiss = onDismiss,
         onChangeDynamicColorPreference = viewModel::updateDynamicColorPreferences,
-        onChangeDarkThemeConfig = viewModel::updateDarkThemeConfig
+        onChangeDarkThemeConfig = viewModel::updateDarkThemeConfig,
+        onOpenDebugTools = onOpenDebugTools
     )
 }
 
@@ -48,7 +50,9 @@ fun SettingsDialog(
     supportDynamicColor: Boolean = supportsDynamicTheming(),
     onDismiss: () -> Unit,
     onChangeDynamicColorPreference: (useDynamicColor: Boolean) -> Unit,
-    onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit
+    onChangeDarkThemeConfig: (darkThemeConfig: DarkThemeConfig) -> Unit,
+    /** Opens the debug tools menu. Null, and the entry hidden, in release builds. */
+    onOpenDebugTools: (() -> Unit)? = null
 ) {
     AlertDialog(
         onDismissRequest = { onDismiss() },
@@ -95,6 +99,16 @@ fun SettingsDialog(
                         text = "Dark",
                         selected = settings.darkThemeConfig == DarkThemeConfig.DARK,
                         onClick = { onChangeDarkThemeConfig(DarkThemeConfig.DARK) },
+                    )
+                }
+                if (onOpenDebugTools != null) {
+                    SettingsDialogSectionTitle(text = "Developer")
+                    Text(
+                        text = "Debug tools",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(role = Role.Button) { onOpenDebugTools() }
+                            .padding(12.dp)
                     )
                 }
             }

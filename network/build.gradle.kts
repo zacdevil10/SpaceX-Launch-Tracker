@@ -88,18 +88,6 @@ tasks.named("preBuild") {
 android {
     namespace = "uk.co.zac_h.spacex.network"
 
-    buildTypes {
-        release {
-            buildConfigField("String", "URL", "\"https://ll.thespacedevs.com/2.3.0/\"")
-        }
-        debug {
-            buildConfigField("String", "URL", "\"https://lldev.thespacedevs.com/2.3.0/\"")
-        }
-    }
-    buildFeatures {
-        buildConfig = true
-    }
-
     sourceSets {
         getByName("main") {
             kotlin.directories.add(launchLibraryGeneratedSources)
@@ -120,6 +108,9 @@ dependencies {
 
     //Room: the source of truth for Launch Library data
     api(project(":core:database"))
+
+    //Debug tools settings (debug builds only)
+    debugImplementation(libs.androidx.datastore.preferences)
 
     //Paging
     implementation(libs.androidx.paging)

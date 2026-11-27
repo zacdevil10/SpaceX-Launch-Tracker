@@ -30,3 +30,7 @@ data object CompanyKey : NavKey
 
 @Serializable
 data object SettingsKey : NavKey
+
+/** The debug tools menu. Only debug builds have an entry for it; see DebugTools. */
+@Serializable
+data object DebugToolsKey : NavKey

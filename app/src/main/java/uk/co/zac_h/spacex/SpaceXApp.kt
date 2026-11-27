@@ -47,6 +47,7 @@ import kotlinx.coroutines.launch
 import uk.co.zac_h.feature.news.NewsScreen
 import uk.co.zac_h.spacex.core.ui.component.Pane
 import uk.co.zac_h.spacex.core.ui.component.PanePlaceholder
+import uk.co.zac_h.spacex.debug.DebugTools
 import uk.co.zac_h.spacex.feature.assets.AssetsScreen
 import uk.co.zac_h.spacex.feature.assets.vehicles.AssetDetailScreen
 import uk.co.zac_h.spacex.feature.launch.LaunchDetailScreen
@@ -373,8 +374,16 @@ fun SpaceXNavHost(
         }
         entry<SettingsKey>(metadata = DialogSceneStrategy.dialog()) {
             SettingsDialog(
-                onDismiss = { topLevelBackStack.removeLast() }
+                onDismiss = { topLevelBackStack.removeLast() },
+                onOpenDebugTools = if (DebugTools.IS_AVAILABLE) {
+                    { topLevelBackStack.add(DebugToolsKey) }
+                } else null
             )
+        }
+        if (DebugTools.IS_AVAILABLE) {
+            entry<DebugToolsKey>(metadata = DialogSceneStrategy.dialog()) {
+                DebugTools.Dialog(onDismiss = { topLevelBackStack.removeLast() })
+            }
         }
     }
 
