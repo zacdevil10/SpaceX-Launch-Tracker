@@ -9,6 +9,8 @@ android {
 }
 
 dependencies {
+    api(project(":core:model"))
+
     implementation(libs.androidx.compose.paging)
 
     implementation(project(":core:ui"))

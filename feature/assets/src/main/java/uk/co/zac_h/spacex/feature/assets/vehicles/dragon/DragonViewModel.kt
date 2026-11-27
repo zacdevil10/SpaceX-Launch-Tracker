@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.core.common.filter.FilterOrder
 import uk.co.zac_h.spacex.core.common.filter.toFilter
-import uk.co.zac_h.spacex.core.common.types.Order
+import uk.co.zac_h.spacex.core.model.Order
 import uk.co.zac_h.spacex.core.common.utils.sortedBy
 import uk.co.zac_h.spacex.network.ApiResult
 import uk.co.zac_h.spacex.network.withRefresh

@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.core.common.utils
 
-import uk.co.zac_h.spacex.core.common.types.Order
+import uk.co.zac_h.spacex.core.model.Order
 
 fun <T> Iterable<T>.filterAll(vararg predicates: ((T) -> Boolean?)?): List<T> = filter { value ->
     predicates.filterNotNull().all { it(value) ?: true }

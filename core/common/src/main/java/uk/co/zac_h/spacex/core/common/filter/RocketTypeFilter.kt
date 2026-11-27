@@ -1,6 +1,6 @@
 package uk.co.zac_h.spacex.core.common.filter
 
-import uk.co.zac_h.spacex.core.common.types.RocketType
+import uk.co.zac_h.spacex.core.model.RocketType
 
 @JvmInline
 value class RocketTypeFilter(val value: List<RocketType> = emptyList()) : Filter {
