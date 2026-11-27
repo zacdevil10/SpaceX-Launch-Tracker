@@ -1,9 +1,8 @@
 import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
+    alias(libs.plugins.spacex.android.library)
+    alias(libs.plugins.spacex.hilt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.openapi.generator)
 }
@@ -87,42 +86,19 @@ tasks.named("preBuild") {
 //endregion
 
 android {
-    compileSdk {
-        version = release(libs.versions.compileSdk.get().toInt()) {
-            minorApiLevel = libs.versions.compileSdkMinor.get().toInt()
-        }
-    }
-
-    defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
+    namespace = "uk.co.zac_h.spacex.network"
 
     buildTypes {
         release {
-            isMinifyEnabled = false
-            setProguardFiles(
-                listOf(
-                    getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
-                )
-            )
             buildConfigField("String", "URL", "\"https://ll.thespacedevs.com/2.3.0/\"")
         }
         debug {
             buildConfigField("String", "URL", "\"https://lldev.thespacedevs.com/2.3.0/\"")
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
     buildFeatures {
         buildConfig = true
     }
-    namespace = "uk.co.zac_h.spacex.network"
 
     sourceSets {
         getByName("main") {
@@ -145,20 +121,10 @@ dependencies {
     //Room: the source of truth for Launch Library data
     api(project(":core:database"))
 
-    //Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-
     //Paging
     implementation(libs.androidx.paging)
 
     testImplementation(libs.junit)
     testImplementation(platform(libs.okhttp.bom))
     testImplementation(libs.mockwebserver)
-}
-
-kotlin {
-    compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-    }
 }

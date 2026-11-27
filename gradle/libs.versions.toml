@@ -84,6 +84,10 @@ okhttp = { module = "com.squareup.okhttp3:okhttp" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor" }
 mockwebserver = { module = "com.squareup.okhttp3:mockwebserver3" }
 
+# Build logic
+android-gradleApi = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
+kotlin-gradlePluginApi = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin-api", version.ref = "kotlin" }
+
 # Testing
 junit = { module = "junit:junit", version.ref = "junit" }
 
@@ -100,6 +104,12 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-gradle" }
 openapi-generator = { id = "org.openapi.generator", version.ref = "openapi-generator" }
+
+# Convention plugins, defined in build-logic
+spacex-android-application = { id = "spacex.android.application" }
+spacex-android-library = { id = "spacex.android.library" }
+spacex-android-compose = { id = "spacex.android.compose" }
+spacex-hilt = { id = "spacex.hilt" }
 
 [bundles]
 
