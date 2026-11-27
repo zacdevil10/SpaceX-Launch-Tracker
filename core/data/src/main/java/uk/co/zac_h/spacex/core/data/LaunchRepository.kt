@@ -1,32 +1,44 @@
-package uk.co.zac_h.spacex.feature.launch
+package uk.co.zac_h.spacex.core.data
 
 import androidx.paging.PagingData
+import androidx.paging.map
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import uk.co.zac_h.spacex.core.data.mapper.toLaunch
+import uk.co.zac_h.spacex.core.model.Launch
 import uk.co.zac_h.spacex.network.ApiResult
-import uk.co.zac_h.spacex.network.datasource.remote.news.SpaceflightNewsPagingSource
-import uk.co.zac_h.spacex.network.launchlibrary.model.LaunchDetailedDto
-import uk.co.zac_h.spacex.network.retrofit.SpaceflightNewsClient
-import uk.co.zac_h.spacex.network.retrofit.SpaceflightNewsService
+import uk.co.zac_h.spacex.network.store.Freshness
 import uk.co.zac_h.spacex.network.store.LaunchStore
 import javax.inject.Inject
 import kotlin.time.Duration
 
-class LaunchesRepository @Inject constructor(
-    @SpaceflightNewsClient private val newsHttpService: SpaceflightNewsService,
+/**
+ * Launches for every form factor, from the Room cache that [LaunchStore] keeps current. Screens
+ * observe the flows and call the refresh functions; nothing here returns a Launch Library DTO.
+ */
+class LaunchRepository @Inject constructor(
     private val launchStore: LaunchStore
 ) {
 
-    /** Upcoming launches from the database, updated whenever [refreshUpcoming] stores new ones. */
-    val upcomingLaunches: Flow<List<LaunchDetailedDto>> = launchStore.upcomingLaunches
+    /** Upcoming launches, soonest first, updated whenever [refreshUpcoming] stores new ones. */
+    val upcomingLaunches: Flow<List<Launch>> =
+        launchStore.upcomingLaunches.map { launches -> launches.map { it.toLaunch() } }
 
     /** One stored launch, upcoming or previous, or null while it isn't stored. */
-    fun launch(id: String): Flow<LaunchDetailedDto?> = launchStore.launch(id)
+    fun launch(id: String): Flow<Launch?> = launchStore.launch(id).map { it?.toLaunch() }
+
+    /** Previous launches, newest first, fetching only older pages and changes as needed. */
+    fun previousLaunches(): Flow<PagingData<Launch>> =
+        launchStore.previousLaunches().map { page -> page.map { it.toLaunch() } }
 
     /** When upcoming launches were last fetched, in milliseconds since the epoch. */
     val upcomingFetchedAt: Flow<Long?> = launchStore.upcomingFetchedAt
 
     /** When the next launch was last fetched, in milliseconds since the epoch. */
     val nextLaunchFetchedAt: Flow<Long?> = launchStore.nextLaunchFetchedAt
+
+    /** How long a manual refresh of the next launch is ignored after the last one. */
+    val manualRefreshCooldown: Duration = Freshness.MANUAL_REFRESH_COOLDOWN
 
     /** Fetches upcoming launches if the stored ones are older than their window, or if [force]. */
     suspend fun refreshUpcoming(force: Boolean = false): ApiResult<Unit> =
@@ -39,13 +51,6 @@ class LaunchesRepository @Inject constructor(
     /** The automatic next launch refresh; null when skipped to save calls. */
     suspend fun pollNextLaunch(): ApiResult<Unit>? = launchStore.pollNextLaunch()
 
+    /** How long to wait before the next automatic refresh of the next launch. */
     suspend fun nextLaunchPollInterval(): Duration = launchStore.nextLaunchPollInterval()
-
-    /** Previous launches from the database, fetching only older pages and changes as needed. */
-    fun previousLaunches(): Flow<PagingData<LaunchDetailedDto>> = launchStore.previousLaunches()
-
-    fun articlesPagingSource(launchId: String?) = SpaceflightNewsPagingSource(
-        httpService = newsHttpService,
-        launch = launchId
-    )
 }
