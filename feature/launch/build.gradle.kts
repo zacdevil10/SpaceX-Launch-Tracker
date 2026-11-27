@@ -16,7 +16,9 @@ dependencies {
     implementation(libs.androidx.core)
 
     implementation(project(":core:common"))
+    implementation(project(":core:data"))
     implementation(project(":core:ui"))
+    // Only for ApiResult and news until they move to :core in later Phase 0 PRs.
     implementation(project(":network"))
 
     implementation(libs.androidx.viewmodel)

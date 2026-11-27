@@ -1,0 +1,135 @@
+{
+  "id": "b0d27def-0000-4000-8000-000000000001",
+  "name": "Falcon 9 Block 5 | Crew-12",
+  "net": "2026-11-29T04:39:00Z",
+  "last_updated": "2026-11-21T20:29:25Z",
+  "status": {
+    "id": 1,
+    "name": "Go for Launch",
+    "abbrev": "Go",
+    "description": "Current T-0 confirmed."
+  },
+  "image": {
+    "id": 101,
+    "image_url": "https://example.com/launch.jpg"
+  },
+  "mission_patches": [
+    {
+      "id": 105,
+      "image_url": "https://example.com/patch.png"
+    }
+  ],
+  "failreason": "",
+  "webcast_live": true,
+  "pad": {
+    "id": 104,
+    "name": "Space Launch Complex 40",
+    "map_image": "https://example.com/map.jpg",
+    "map_url": "https://maps.example.com/slc40"
+  },
+  "mission": {
+    "id": 102,
+    "name": "Crew-12",
+    "description": "Crew rotation to the ISS.",
+    "type": "Human Exploration",
+    "orbit": {
+      "id": 103,
+      "name": "Low Earth Orbit"
+    }
+  },
+  "vid_urls": [
+    {
+      "priority": 10,
+      "source": "youtube.com",
+      "title": "Crew-12 Mission",
+      "description": "Official webcast",
+      "feature_image": "https://example.com/thumb.jpg",
+      "url": "https://www.youtube.com/watch?v=abc",
+      "type": {
+        "id": 1,
+        "name": "Official Webcast"
+      }
+    },
+    {
+      "priority": 20,
+      "title": "No link yet"
+    }
+  ],
+  "rocket": {
+    "id": 106,
+    "configuration": {
+      "id": 107,
+      "name": "Falcon 9"
+    },
+    "launcher_stage": [
+      {
+        "id": 1046,
+        "type": "Core",
+        "reused": true,
+        "turn_around_time": "P39DT15H53M55S",
+        "previous_flight": {
+          "id": "df88cfbf-f504-4e11-8370-e33dd6280b5b",
+          "name": "Falcon 9 Block 5 | USSF-481"
+        },
+        "launcher": {
+          "id": 108,
+          "serial_number": "B1081",
+          "flights": 29,
+          "details": "Launched Crew-7 on its first flight."
+        },
+        "landing": {
+          "id": 109,
+          "attempt": true,
+          "description": "B1081 will land on ASDS OCISLY.",
+          "type": {
+            "id": 111,
+            "abbrev": "ASDS"
+          },
+          "landing_location": {
+            "id": 110,
+            "name": "Of Course I Still Love You",
+            "abbrev": "OCISLY"
+          }
+        }
+      }
+    ],
+    "spacecraft_stage": [
+      {
+        "id": 113,
+        "launch_crew": [
+          {
+            "id": 501,
+            "role": {
+              "id": 114,
+              "role": "Commander"
+            },
+            "astronaut": {
+              "id": 42,
+              "name": "Jane Doe",
+              "status": {
+                "id": 115,
+                "name": "Active"
+              },
+              "agency": {
+                "id": 116,
+                "name": "NASA"
+              },
+              "nationality": [
+                {
+                  "id": 118,
+                  "nationality_name": "American"
+                }
+              ],
+              "bio": "Test pilot.",
+              "image": {
+                "id": 117,
+                "image_url": "https://example.com/jane.jpg"
+              },
+              "first_flight": "2024-03-04T03:53:38Z"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}

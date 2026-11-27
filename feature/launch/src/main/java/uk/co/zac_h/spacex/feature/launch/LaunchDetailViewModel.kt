@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import uk.co.zac_h.spacex.core.data.LaunchRepository
 import uk.co.zac_h.spacex.network.dto.news.ArticleResponse
 
 /**
@@ -24,10 +25,11 @@ import uk.co.zac_h.spacex.network.dto.news.ArticleResponse
 @HiltViewModel(assistedFactory = LaunchDetailViewModel.Factory::class)
 class LaunchDetailViewModel @AssistedInject constructor(
     @Assisted val launchId: String,
-    repository: LaunchesRepository
+    launchRepository: LaunchRepository,
+    newsRepository: LaunchNewsRepository
 ) : ViewModel() {
 
-    val uiState: StateFlow<LaunchDetailUiState> = repository.launch(launchId)
+    val uiState: StateFlow<LaunchDetailUiState> = launchRepository.launch(launchId)
         .map { launch ->
             launch?.let { LaunchDetailUiState.Loaded(LaunchItem(it)) } ?: LaunchDetailUiState.NotFound
         }
@@ -35,7 +37,7 @@ class LaunchDetailViewModel @AssistedInject constructor(
 
     val articles: Flow<PagingData<ArticleResponse>> =
         Pager(PagingConfig(pageSize = 10)) {
-            repository.articlesPagingSource(launchId)
+            newsRepository.articlesPagingSource(launchId)
         }.flow.cachedIn(viewModelScope)
 
     @AssistedFactory
