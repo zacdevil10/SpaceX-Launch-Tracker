@@ -1,5 +1,6 @@
 package uk.co.zac_h.spacex.feature.assets.vehicles.rockets
 
+import uk.co.zac_h.spacex.core.model.Rocket
 import uk.co.zac_h.spacex.core.model.RocketFamily
 import uk.co.zac_h.spacex.core.model.RocketType
 import uk.co.zac_h.spacex.core.common.utils.TextResource
@@ -7,10 +8,7 @@ import uk.co.zac_h.spacex.core.common.utils.metricFormat
 import uk.co.zac_h.spacex.feature.assets.R
 import uk.co.zac_h.spacex.feature.assets.vehicles.SpecsItem
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
-import uk.co.zac_h.spacex.network.launchlibrary.model.LauncherConfigDetailedSerializerNoManufacturerDto
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.TimeZone
+import uk.co.zac_h.spacex.feature.assets.vehicles.toEpochMilliUtc
 import kotlin.math.roundToInt
 
 data class RocketItem(
@@ -37,31 +35,28 @@ data class RocketItem(
     val pendingLaunches: Int?
 ) : VehicleItem {
 
-    constructor(response: LauncherConfigDetailedSerializerNoManufacturerDto) : this(
-        id = response.id,
-        title = response.fullName,
-        fullName = response.fullName,
-        type = response.name?.toType(),
-        // 2.3.0 lists every family a config belongs to, e.g. "Falcon" and "Falcon 9".
-        family = response.families.orEmpty()
-            .map { it.name.toFamily() }
-            .firstOrNull { it != RocketFamily.NONE } ?: RocketFamily.NONE,
-        description = response.description,
-        longDescription = response.description,
-        stages = response.maxStage,
-        length = response.length?.toFloat(),
-        diameter = response.diameter?.toFloat(),
-        maidenFlight = response.maidenFlight,
-        maidenFlightMillis = response.maidenFlight?.toMillis(),
-        launchMass = response.launchMass?.roundToInt(),
-        leoCapacity = response.leoCapacity?.roundToInt(),
-        gtoCapacity = response.gtoCapacity?.roundToInt(),
-        toThrust = response.toThrust?.roundToInt(),
-        imageUrl = response.image?.imageUrl,
-        consecutiveSuccessfulLaunches = response.consecutiveSuccessfulLaunches,
-        successfulLaunches = response.successfulLaunches,
-        failedLaunches = response.failedLaunches,
-        pendingLaunches = response.pendingLaunches
+    constructor(rocket: Rocket) : this(
+        id = rocket.id,
+        title = rocket.fullName,
+        fullName = rocket.fullName,
+        type = rocket.type,
+        family = rocket.family,
+        description = rocket.description,
+        longDescription = rocket.description,
+        stages = rocket.maxStages,
+        length = rocket.length?.toFloat(),
+        diameter = rocket.diameter?.toFloat(),
+        maidenFlight = rocket.maidenFlight?.toString(),
+        maidenFlightMillis = rocket.maidenFlight?.toEpochMilliUtc(),
+        launchMass = rocket.launchMass?.roundToInt(),
+        leoCapacity = rocket.leoCapacity?.roundToInt(),
+        gtoCapacity = rocket.gtoCapacity?.roundToInt(),
+        toThrust = rocket.takeoffThrust?.roundToInt(),
+        imageUrl = rocket.imageUrl,
+        consecutiveSuccessfulLaunches = rocket.consecutiveSuccessfulLaunches,
+        successfulLaunches = rocket.successfulLaunches,
+        failedLaunches = rocket.failedLaunches,
+        pendingLaunches = rocket.pendingLaunches
     )
 
     override val specs: List<SpecsItem>
@@ -129,28 +124,4 @@ data class RocketItem(
         } else {
             null
         }
-
-    companion object {
-
-        fun String.toMillis(): Long? = SimpleDateFormat(
-            "yyyy-MM-dd",
-            Locale.ENGLISH
-        ).apply {
-            timeZone = TimeZone.getTimeZone("UTC")
-        }.parse(this)?.time
-
-        fun String?.toFamily(): RocketFamily = when (this) {
-            "Falcon" -> RocketFamily.FALCON
-            "Starship" -> RocketFamily.STARSHIP
-            else -> RocketFamily.NONE
-        }
-
-        fun String.toType(): RocketType? = when (this) {
-            "Falcon 1" -> RocketType.FALCON_ONE
-            "Falcon 9" -> RocketType.FALCON_NINE
-            "Falcon Heavy" -> RocketType.FALCON_HEAVY
-            "Starship" -> RocketType.STARSHIP
-            else -> null
-        }
-    }
 }

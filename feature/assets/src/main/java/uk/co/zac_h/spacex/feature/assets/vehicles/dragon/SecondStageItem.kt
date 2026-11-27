@@ -2,13 +2,11 @@ package uk.co.zac_h.spacex.feature.assets.vehicles.dragon
 
 import uk.co.zac_h.spacex.core.common.utils.TextResource
 import uk.co.zac_h.spacex.core.common.utils.metricFormat
+import uk.co.zac_h.spacex.core.model.SpacecraftConfiguration
 import uk.co.zac_h.spacex.feature.assets.R
 import uk.co.zac_h.spacex.feature.assets.vehicles.SpecsItem
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
-import uk.co.zac_h.spacex.network.launchlibrary.model.SpacecraftConfigDetailedDto
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.TimeZone
+import uk.co.zac_h.spacex.feature.assets.vehicles.toEpochMilliUtc
 
 data class SecondStageItem(
     override val id: Int,
@@ -33,27 +31,27 @@ data class SecondStageItem(
     val info: String?
 ) : VehicleItem {
 
-    constructor(response: SpacecraftConfigDetailedDto) : this(
-        id = response.id,
-        title = response.name,
-        name = response.name,
-        description = response.history,
-        longDescription = "${response.history}\n\n${response.details}",
-        inUse = response.inUse,
-        capability = response.capability,
-        history = response.history,
-        details = response.details,
-        maidenFlight = response.maidenFlight,
-        maidenFlightMillis = response.maidenFlight?.toMillis(),
-        height = response.height?.toFloat(),
-        diameter = response.diameter?.toFloat(),
-        humanRated = response.humanRated,
-        crewCapacity = response.crewCapacity,
-        payloadCapacity = response.payloadCapacity,
-        flightLife = response.flightLife,
-        imageUrl = response.image?.imageUrl,
-        wiki = response.wikiLink,
-        info = response.infoLink
+    constructor(configuration: SpacecraftConfiguration) : this(
+        id = configuration.id,
+        title = configuration.name,
+        name = configuration.name,
+        description = configuration.history,
+        longDescription = "${configuration.history}\n\n${configuration.details}",
+        inUse = configuration.inUse,
+        capability = configuration.capability,
+        history = configuration.history,
+        details = configuration.details,
+        maidenFlight = configuration.maidenFlight?.toString(),
+        maidenFlightMillis = configuration.maidenFlight?.toEpochMilliUtc(),
+        height = configuration.height?.toFloat(),
+        diameter = configuration.diameter?.toFloat(),
+        humanRated = configuration.humanRated,
+        crewCapacity = configuration.crewCapacity,
+        payloadCapacity = configuration.payloadCapacity,
+        flightLife = configuration.flightLife,
+        imageUrl = configuration.imageUrl,
+        wiki = configuration.wikiUrl,
+        info = configuration.infoUrl
     )
 
     override val specs: List<SpecsItem>
@@ -99,14 +97,4 @@ data class SecondStageItem(
                 )
             }
         )
-
-    companion object {
-
-        fun String.toMillis(): Long? = SimpleDateFormat(
-            "yyyy-MM-dd",
-            Locale.ENGLISH
-        ).apply {
-            timeZone = TimeZone.getTimeZone("UTC")
-        }.parse(this)?.time
-    }
 }

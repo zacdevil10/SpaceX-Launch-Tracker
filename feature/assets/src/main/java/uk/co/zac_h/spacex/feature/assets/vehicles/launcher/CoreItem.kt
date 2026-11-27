@@ -1,14 +1,12 @@
 package uk.co.zac_h.spacex.feature.assets.vehicles.launcher
 
 import uk.co.zac_h.spacex.core.common.utils.TextResource
+import uk.co.zac_h.spacex.core.model.Launcher
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
 import uk.co.zac_h.spacex.feature.assets.R
 import uk.co.zac_h.spacex.feature.assets.vehicles.SpecsItem
 import uk.co.zac_h.spacex.feature.assets.vehicles.VehicleItem
-import uk.co.zac_h.spacex.network.launchlibrary.model.LauncherDetailedDto
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.TimeZone
+import uk.co.zac_h.spacex.feature.assets.vehicles.formatLocal
 
 data class CoreItem(
     override val id: String,
@@ -23,27 +21,17 @@ data class CoreItem(
     val firstLaunchDate: String?
 ) : VehicleItem {
 
-    constructor(
-        response: LauncherDetailedDto
-    ) : this(
-        id = response.id.toString(),
-        title = response.serialNumber.orUnknown(),
-        serial = response.serialNumber.orUnknown(),
-        status = response.status?.name,
-        description = if (response.details?.isEmpty() == false) {
-            response.details
-        } else {
-            response.launcherConfig?.fullName
-        },
-        longDescription = if (response.details?.isEmpty() == false) {
-            response.details
-        } else {
-            response.launcherConfig?.fullName
-        },
-        imageUrl = response.image?.imageUrl,
-        flights = response.flights,
-        lastLaunchDate = response.lastLaunchDate?.formatDate(),
-        firstLaunchDate = response.firstLaunchDate?.formatDate()
+    constructor(launcher: Launcher) : this(
+        id = launcher.id.toString(),
+        title = launcher.serial.orUnknown(),
+        serial = launcher.serial.orUnknown(),
+        status = launcher.status,
+        description = launcher.details?.ifEmpty { null } ?: launcher.configuration,
+        longDescription = launcher.details?.ifEmpty { null } ?: launcher.configuration,
+        imageUrl = launcher.imageUrl,
+        flights = launcher.flights,
+        lastLaunchDate = launcher.lastLaunch?.formatLocal("dd MMM yyyy"),
+        firstLaunchDate = launcher.firstLaunch?.formatLocal("dd MMM yyyy")
     )
 
     override val specs: List<SpecsItem>
@@ -73,21 +61,4 @@ data class CoreItem(
                 )
             }
         )
-
-    companion object {
-
-        fun String.formatDate(): String? = SimpleDateFormat(
-            "yyyy-MM-dd'T'HH:mm:ss'Z'",
-            Locale.ENGLISH
-        ).apply {
-            timeZone = TimeZone.getTimeZone("UTC")
-        }.parse(this)?.let {
-            SimpleDateFormat(
-                "dd MMM yyyy",
-                Locale.ENGLISH
-            ).apply {
-                timeZone = TimeZone.getDefault()
-            }.format(it)
-        }
-    }
 }

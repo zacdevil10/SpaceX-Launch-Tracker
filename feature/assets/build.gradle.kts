@@ -11,6 +11,8 @@ android {
 dependencies {
     implementation(project(":core:common"))
     implementation(project(":core:ui"))
+    implementation(project(":core:data"))
+    // Only for ApiResult and withRefresh until they move to :core in a later Phase 0 PR.
     implementation(project(":network"))
 
     implementation(libs.androidx.compose.runtime.livedata)
