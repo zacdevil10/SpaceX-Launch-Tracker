@@ -84,6 +84,10 @@ okhttp = { module = "com.squareup.okhttp3:okhttp" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor" }
 mockwebserver = { module = "com.squareup.okhttp3:mockwebserver3" }
 
+# Build logic
+android-gradleApi = { module = "com.android.tools.build:gradle-api", version.ref = "agp" }
+kotlin-gradlePluginApi = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin-api", version.ref = "kotlin" }
+
 # Testing
 junit = { module = "junit:junit", version.ref = "junit" }
 
@@ -92,6 +96,7 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 # Not applied: AGP 9 compiles Kotlin itself. Declared at the root to pin KGP to our Kotlin version.
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
@@ -99,6 +104,12 @@ hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-gradle" }
 openapi-generator = { id = "org.openapi.generator", version.ref = "openapi-generator" }
+
+# Convention plugins, defined in build-logic
+spacex-android-application = { id = "spacex.android.application" }
+spacex-android-library = { id = "spacex.android.library" }
+spacex-android-compose = { id = "spacex.android.compose" }
+spacex-hilt = { id = "spacex.hilt" }
 
 [bundles]
 

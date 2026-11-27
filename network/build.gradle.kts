@@ -1,9 +1,8 @@
 import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
+    alias(libs.plugins.spacex.android.library)
+    alias(libs.plugins.spacex.hilt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.openapi.generator)
 }
@@ -87,34 +86,6 @@ tasks.named("preBuild") {
 //endregion
 
 android {
-    compileSdk {
-        version = release(libs.versions.compileSdk.get().toInt()) {
-            minorApiLevel = libs.versions.compileSdkMinor.get().toInt()
-        }
-    }
-
-    defaultConfig {
-        minSdk = libs.versions.minSdk.get().toInt()
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles("consumer-rules.pro")
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            setProguardFiles(
-                listOf(
-                    getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
-                )
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
     namespace = "uk.co.zac_h.spacex.network"
 
     sourceSets {
@@ -138,10 +109,6 @@ dependencies {
     //Room: the source of truth for Launch Library data
     api(project(":core:database"))
 
-    //Hilt
-    implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
-
     //Debug tools settings (debug builds only)
     debugImplementation(libs.androidx.datastore.preferences)
 
@@ -151,10 +118,4 @@ dependencies {
     testImplementation(libs.junit)
     testImplementation(platform(libs.okhttp.bom))
     testImplementation(libs.mockwebserver)
-}
-
-kotlin {
-    compilerOptions {
-        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
-    }
 }

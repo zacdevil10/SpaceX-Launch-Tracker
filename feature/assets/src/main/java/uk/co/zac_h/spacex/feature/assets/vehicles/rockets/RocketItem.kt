@@ -1,7 +1,7 @@
 package uk.co.zac_h.spacex.feature.assets.vehicles.rockets
 
-import uk.co.zac_h.spacex.core.common.types.RocketFamily
-import uk.co.zac_h.spacex.core.common.types.RocketType
+import uk.co.zac_h.spacex.core.model.RocketFamily
+import uk.co.zac_h.spacex.core.model.RocketType
 import uk.co.zac_h.spacex.core.common.utils.TextResource
 import uk.co.zac_h.spacex.core.common.utils.metricFormat
 import uk.co.zac_h.spacex.feature.assets.R

@@ -1,7 +1,7 @@
 package uk.co.zac_h.spacex.feature.assets.preview
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import uk.co.zac_h.spacex.core.common.types.CrewStatus
+import uk.co.zac_h.spacex.core.model.CrewStatus
 import uk.co.zac_h.spacex.feature.assets.astronauts.AstronautItem
 
 class AstronautsPreviewParameterProvider : PreviewParameterProvider<List<AstronautItem>> {
