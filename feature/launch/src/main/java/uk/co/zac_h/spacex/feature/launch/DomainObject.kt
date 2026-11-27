@@ -3,23 +3,15 @@ package uk.co.zac_h.spacex.feature.launch
 import androidx.core.net.toUri
 import uk.co.zac_h.spacex.core.common.Header
 import uk.co.zac_h.spacex.core.common.recyclerview.RecyclerViewItem
-import uk.co.zac_h.spacex.core.model.CoreType
-import uk.co.zac_h.spacex.core.model.CrewStatus
 import uk.co.zac_h.spacex.core.common.utils.formatCrewDate
 import uk.co.zac_h.spacex.core.common.utils.formatDate
 import uk.co.zac_h.spacex.core.common.utils.orUnknown
-import uk.co.zac_h.spacex.core.common.utils.toMillis
-import uk.co.zac_h.spacex.network.SPACEX_CREW_LOST_IN_TRAINING
-import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_ACTIVE
-import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_DECEASED
-import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_INACTIVE
-import uk.co.zac_h.spacex.network.SPACEX_CREW_STATUS_RETIRED
-import uk.co.zac_h.spacex.network.launchlibrary.model.AstronautFlightDto
-import uk.co.zac_h.spacex.network.launchlibrary.model.FirstStageNormalDto
-import uk.co.zac_h.spacex.network.launchlibrary.model.LaunchDetailedDto
-import uk.co.zac_h.spacex.network.launchlibrary.model.LaunchStatusDto
-import uk.co.zac_h.spacex.network.launchlibrary.model.VidURLDto
-import java.time.Duration
+import uk.co.zac_h.spacex.core.model.CoreType
+import uk.co.zac_h.spacex.core.model.CrewMember
+import uk.co.zac_h.spacex.core.model.CrewStatus
+import uk.co.zac_h.spacex.core.model.FirstStage
+import uk.co.zac_h.spacex.core.model.Launch
+import uk.co.zac_h.spacex.core.model.Webcast
 import java.util.Locale
 
 data class LaunchItem(
@@ -46,33 +38,33 @@ data class LaunchItem(
 ) : RecyclerViewItem {
 
     constructor(
-        response: LaunchDetailedDto
+        launch: Launch
     ) : this(
-        id = response.id,
-        upcoming = response.status.isUpcoming(),
-        missionPatch = response.missionPatches?.firstOrNull()?.imageUrl,
-        missionName = response.missionName,
-        rocket = response.rocket?.configuration?.name,
-        launchDate = response.net?.formatDate(),
-        launchDateUnix = response.net?.toMillis(),
-        launchLocation = response.pad?.name,
-        launchLocationMap = response.pad?.mapImage,
-        launchLocationMapUrl = response.pad?.mapUrl,
-        status = Status(response.status?.id, response.status?.name, response.status?.description),
+        id = launch.id,
+        upcoming = launch.isUpcoming,
+        missionPatch = launch.missionPatchUrl,
+        missionName = launch.name,
+        rocket = launch.rocket,
+        launchDate = launch.net?.toString()?.formatDate(),
+        launchDateUnix = launch.net?.toEpochMilli(),
+        launchLocation = launch.pad?.name,
+        launchLocationMap = launch.pad?.mapImageUrl,
+        launchLocationMapUrl = launch.pad?.mapUrl,
+        status = Status(launch.status.id, launch.status.name, launch.status.description),
         // 2.3.0 no longer has a hold reason field.
         holdReason = null,
-        failReason = response.failreason,
-        description = response.mission?.description,
-        type = response.mission?.type,
-        orbit = response.mission?.orbit?.name,
-        webcast = response.vidUrls?.filter { it.url != null }
-            ?.groupBy { it.title }?.values
-            ?.map { videos -> videos.minBy { it.priority ?: Int.MAX_VALUE } }
-            ?.map { VideoItem(response.missionName, response.image?.imageUrl, it) },
-        webcastLive = response.webcastLive ?: false,
-        firstStage = response.rocket?.launcherStage?.map { FirstStageItem(it) },
-        crew = response.rocket?.spacecraftStage?.flatMap { it.launchCrew.orEmpty() }
-            ?.map { CrewItem(it) }
+        failReason = launch.failReason,
+        description = launch.mission?.description,
+        type = launch.mission?.type,
+        orbit = launch.mission?.orbit,
+        webcast = launch.webcasts
+            .groupBy { it.title }.values
+            .map { videos -> videos.minBy { it.priority ?: Int.MAX_VALUE } }
+            .map { VideoItem(launch.name, launch.imageUrl, it) }
+            .ifEmpty { null },
+        webcastLive = launch.webcastLive,
+        firstStage = launch.firstStages.map { FirstStageItem(it) }.ifEmpty { null },
+        crew = launch.crew.map { CrewItem(it) }.ifEmpty { null }
     )
 
     data class Status(
@@ -93,14 +85,6 @@ data class LaunchItem(
                 firstStageList
             }
         } ?: emptyList()
-
-    companion object {
-
-        private fun LaunchStatusDto?.isUpcoming() = this?.id in listOf(1, 2, 5, 6, 8)
-
-        private val LaunchDetailedDto.missionName: String
-            get() = mission?.name ?: name.orEmpty()
-    }
 }
 
 data class FirstStageItem(
@@ -120,37 +104,24 @@ data class FirstStageItem(
 ) : RecyclerViewItem {
 
     constructor(
-        response: FirstStageNormalDto
+        stage: FirstStage
     ) : this(
-        id = response.id.toString(),
-        serial = response.launcher?.serialNumber.orUnknown(),
-        type = response.type.toCoreType(),
-        reused = response.reused ?: false,
-        totalFlights = response.launcher?.flights,
-        landingAttempt = response.landing?.attempt ?: false,
-        launcherDetails = response.launcher?.details,
-        landingDetails = response.landing?.description,
-        landingType = response.landing?.type?.abbrev,
-        landingLocation = response.landing?.landingLocation?.abbrev,
-        landingLocationFull = response.landing?.landingLocation?.name,
-        previousFlight = response.previousFlight?.name,
-        turnAroundTimeDays = response.turnAroundTime?.isoDurationDays()?.takeUnless {
-            it == 0 && (response.launcher?.flights ?: 0) < 2
+        id = stage.id.toString(),
+        serial = stage.serial.orUnknown(),
+        type = stage.type,
+        reused = stage.reused,
+        totalFlights = stage.totalFlights,
+        landingAttempt = stage.landing?.attempt ?: false,
+        launcherDetails = stage.launcherDetails,
+        landingDetails = stage.landing?.description,
+        landingType = stage.landing?.type,
+        landingLocation = stage.landing?.location,
+        landingLocationFull = stage.landing?.locationName,
+        previousFlight = stage.previousFlight,
+        turnAroundTimeDays = stage.turnAroundTime?.toDays()?.toInt()?.takeUnless {
+            it == 0 && (stage.totalFlights ?: 0) < 2
         }
     )
-
-    companion object {
-
-        private fun String?.toCoreType() = when (this) {
-            "Core" -> CoreType.CORE
-            "Strap-On Booster" -> CoreType.BOOSTER
-            else -> CoreType.OTHER
-        }
-
-        /** 2.3.0 sends turnaround as an ISO 8601 duration, e.g. "P32DT21H13M9S". */
-        private fun String.isoDurationDays(): Int? =
-            runCatching { Duration.parse(this).toDays().toInt() }.getOrNull()
-    }
 }
 
 data class CrewItem(
@@ -165,28 +136,17 @@ data class CrewItem(
 ) : RecyclerViewItem {
 
     constructor(
-        response: AstronautFlightDto
+        member: CrewMember
     ) : this(
-        id = response.id.toString(),
-        name = response.astronaut?.name,
-        status = response.astronaut?.status?.name.toCrewStatus(),
-        agency = response.astronaut?.agency?.name,
-        bio = response.astronaut?.bio,
-        image = response.astronaut?.image?.imageUrl,
-        role = response.role?.role,
-        firstFlight = response.astronaut?.firstFlight?.formatCrewDate()
+        id = member.id.toString(),
+        name = member.astronaut.name,
+        status = member.astronaut.status,
+        agency = member.astronaut.agency,
+        bio = member.astronaut.bio,
+        image = member.astronaut.imageUrl,
+        role = member.role,
+        firstFlight = member.astronaut.firstFlight?.toString()?.formatCrewDate()
     )
-
-    companion object {
-        private fun String?.toCrewStatus() = when (this) {
-            SPACEX_CREW_STATUS_ACTIVE -> CrewStatus.ACTIVE
-            SPACEX_CREW_STATUS_INACTIVE -> CrewStatus.INACTIVE
-            SPACEX_CREW_STATUS_RETIRED -> CrewStatus.RETIRED
-            SPACEX_CREW_STATUS_DECEASED -> CrewStatus.DECEASED
-            SPACEX_CREW_LOST_IN_TRAINING -> CrewStatus.LOST_IN_TRAINING
-            else -> CrewStatus.UNKNOWN
-        }
-    }
 }
 
 data class VideoItem(
@@ -200,17 +160,17 @@ data class VideoItem(
     constructor(
         missionName: String,
         image: String?,
-        response: VidURLDto
+        webcast: Webcast
     ) : this(
-        title = if (response.type != null) {
-            "${if (response.title.isNullOrEmpty()) missionName else response.title} - ${response.type?.name}"
+        title = if (webcast.type != null) {
+            "${if (webcast.title.isNullOrEmpty()) missionName else webcast.title} - ${webcast.type}"
         } else {
-            if (response.title.isNullOrEmpty()) missionName else response.title
+            if (webcast.title.isNullOrEmpty()) missionName else webcast.title
         },
-        description = response.description,
-        imageUrl = response.featureImage ?: image,
-        url = response.url.orEmpty(),
-        source = (response.source ?: response.url?.toUri()?.host)
+        description = webcast.description,
+        imageUrl = webcast.imageUrl ?: image,
+        url = webcast.url,
+        source = (webcast.source ?: webcast.url.toUri().host)
             ?.replace("www.", "")
             ?.replace(".com", "")
             ?.replaceFirstChar { it.titlecase(Locale.getDefault()) }

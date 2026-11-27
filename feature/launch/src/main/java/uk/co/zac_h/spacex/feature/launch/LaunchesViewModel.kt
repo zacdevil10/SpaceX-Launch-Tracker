@@ -4,22 +4,23 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import androidx.paging.map
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import uk.co.zac_h.spacex.core.common.ListPosition
+import uk.co.zac_h.spacex.core.data.LaunchRepository
 import uk.co.zac_h.spacex.network.ApiResult
-import uk.co.zac_h.spacex.network.store.Freshness
-import uk.co.zac_h.spacex.network.toType
 import javax.inject.Inject
 
 @HiltViewModel
 class LaunchesViewModel @Inject constructor(
-    private val repository: LaunchesRepository
+    private val repository: LaunchRepository
 ) : ViewModel() {
 
     /**
@@ -48,7 +49,9 @@ class LaunchesViewModel @Inject constructor(
         }
 
     val previousLaunchesLiveData: Flow<PagingData<LaunchItem>> =
-        repository.previousLaunches().toType(::LaunchItem).cachedIn(viewModelScope)
+        repository.previousLaunches()
+            .map { page -> page.map { LaunchItem(it) } }
+            .cachedIn(viewModelScope)
 
     private val nextLaunchRefresh = MutableStateFlow(NextLaunchRefresh())
     private var manualRefreshAllowedAt = 0L
@@ -84,7 +87,7 @@ class LaunchesViewModel @Inject constructor(
     fun refreshNextLaunch() {
         val now = System.currentTimeMillis()
         if (nextLaunchRefresh.value.isRefreshing || now < manualRefreshAllowedAt) return
-        manualRefreshAllowedAt = now + Freshness.MANUAL_REFRESH_COOLDOWN.inWholeMilliseconds
+        manualRefreshAllowedAt = now + repository.manualRefreshCooldown.inWholeMilliseconds
         nextLaunchRefresh.update { it.copy(isRefreshing = true) }
         viewModelScope.launch {
             onNextLaunchResult(repository.refreshNextLaunch(force = true))
